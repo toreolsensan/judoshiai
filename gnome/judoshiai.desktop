@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=JudoShiai Tournament Organizer
+Comment=Create and run judo tournaments
+Exec=judoshiai %f
+Icon=judoshiai.png
+Terminal=false
+Type=Application
+Categories=Application;Other;
+StartupNotify=true
+MimeType=application/judoshiai;

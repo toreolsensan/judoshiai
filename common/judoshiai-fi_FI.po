@@ -1,0 +1,1460 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-01-12 14:30+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../judotimer/main.c:775
+msgid "Blue won the voting"
+msgstr "Sininen voitti äänestyksen"
+
+#: ../judotimer/main.c:779
+msgid "White won the voting"
+msgstr "Valkoinen voitti äänestyksen"
+
+#: ../judotimer/main.c:1250 ../judoshiai/matches.c:1151
+#: ../judoshiai/matches.c:2048
+msgid "Match:"
+msgstr "Ottelu:"
+
+msgid "Contest:"
+msgstr "Ottelu:"
+
+#: ../judotimer/main.c:1251 ../judotimer/main.c:1746
+msgid "Next:"
+msgstr "Valmist:"
+
+#: ../judotimer/menus.c:259 ../judoshiai/httpd.c:336
+#: ../judoshiai/matches.c:813 ../judoshiai/matches.c:826
+#: ../judoshiai/matches.c:831 ../judoshiai/matches.c:852
+#: ../judoshiai/matches.c:865 ../judoshiai/matches.c:870
+#: ../judoshiai/matches.c:1117 ../judoshiai/matches.c:1313
+#: ../judoshiai/matches.c:1849 ../judoshiai/matches.c:2538
+msgid "Match"
+msgstr "Ottelu"
+
+#: ../judotimer/menus.c:601 ../judoshiai/menuacts.c:195
+msgid "Contest"
+msgstr "Ottelu"
+
+#: ../judotimer/menus.c:260 ../judotimer/menus.c:602 ../judoshiai/import.c:415
+#: ../judoshiai/menus.c:92 ../judoshiai/menus.c:499 ../judoinfo/menus.c:151
+#: ../judoinfo/menus.c:311
+msgid "Preferences"
+msgstr "Asetukset"
+
+#: ../judotimer/menus.c:261 ../judotimer/menus.c:603 ../judoshiai/menus.c:93
+#: ../judoshiai/menus.c:500 ../judoinfo/menus.c:152 ../judoinfo/menus.c:312
+msgid "Help"
+msgstr "Ohje"
+
+#: ../judotimer/menus.c:330 ../judotimer/menus.c:620 ../judoshiai/menus.c:150
+#: ../judoshiai/menus.c:508 ../judoinfo/menus.c:314
+msgid "Quit"
+msgstr "Lopeta"
+
+#: ../judotimer/menus.c:622
+msgid "Red background"
+msgstr "Punainen tausta"
+
+msgid "Tatami not chosen"
+msgstr "Tatamia ei valittu"
+
+#: ../judotimer/menus.c:645 ../judoinfo/menus.c:326
+msgid "Communication node"
+msgstr "Tietoliikennesolmu"
+
+#: ../judotimer/menus.c:646 ../judoinfo/menus.c:327 ../common/ip.c:389
+msgid "Own IP addresses"
+msgstr "Omat IP-osoitteet"
+
+#: ../judotimer/menus.c:660 ../judoshiai/menus.c:342 ../judoshiai/menus.c:562
+#: ../judoinfo/menus.c:329
+msgid "Manual"
+msgstr "Manuaali"
+
+#: ../judotimer/menus.c:662 ../judoshiai/menus.c:343 ../judoshiai/menus.c:563
+#: ../judoinfo/menus.c:330
+msgid "About"
+msgstr "Tietoja"
+
+#: ../common/ip.c:351
+msgid "Address of the communication node"
+msgstr "Tietoliikennesolmu"
+
+#: ../common/ip.c:358
+msgid "IP address:"
+msgstr "IP-osoite:"
+
+#: ../common/ip.c:367
+msgid "(Connection OK)"
+msgstr "(Yhteys OK)"
+
+#: ../common/ip.c:369
+msgid "(Connection broken)"
+msgstr "(Yhteys katkennut)"
+
+msgid ""
+"Connection established to \n"
+"%ld.%ld.%ld.%ld"
+msgstr "Yhteys muodostettu solmuun %ld.%ld.%ld.%ld"
+
+msgid "Connection to the node broken"
+msgstr "Yhteys solmuun katkennut"
+
+#: ../judotimer/menus.c:666 ../judoinfo/menus.c:334
+msgid "Change language to Finnish"
+msgstr "Muuta kieli suomeksi"
+
+#: ../judotimer/menus.c:668 ../judoinfo/menus.c:336
+msgid "Change language to Swedish"
+msgstr "Muuta kieli ruotsiksi"
+
+#: ../judotimer/menus.c:670 ../judoinfo/menus.c:338
+msgid "Change language to English"
+msgstr "Muuta kieli englanniksi"
+
+msgid "Match automatically from JudoShiai program"
+msgstr "xxx"
+
+msgid "Match time automatically from JudoShiai program"
+msgstr "Otteluaika automaattisesti JudoShiai-ohjelmalta"
+
+#: ../judotimer/menus.c:673
+msgid "Contest duration automatically from JudoShiai program"
+msgstr "Otteluaika automaattisesti JudoShiai-ohjelmalta"
+
+#: ../judotimer/main.c:1745
+msgid "Fight:"
+msgstr "Ottelu:"
+
+#: ../judotimer/menus.c:315
+msgid "Match duration: automatic"
+msgstr "Otteluaika: automaattinen"
+
+#: ../judotimer/menus.c:317
+msgid "Match duration: 2 min E-juniors"
+msgstr "Otteluaika: 2 min E-junnut"
+
+#: ../judotimer/menus.c:318
+msgid "Match duration: 2 min"
+msgstr "Otteluaika: 2 min"
+
+#: ../judotimer/menus.c:319
+msgid "Match duration: 3 min"
+msgstr "Otteluaika: 3 min"
+
+#: ../judotimer/menus.c:320
+msgid "Match duration: 4 min"
+msgstr "Otteluaika: 4 min"
+
+#: ../judotimer/menus.c:321
+msgid "Match duration: 5 min"
+msgstr "Otteluaika: 5 min"
+
+#: ../judotimer/menus.c:606
+msgid "Contest duration: automatic"
+msgstr "Otteluaika: automaattinen"
+
+#: ../judotimer/menus.c:607
+msgid "Contest duration: 2 min (short pin times)"
+msgstr "Otteluaika: 2 min E-junnut"
+
+#: ../judotimer/menus.c:608
+msgid "Contest duration: 2 min"
+msgstr "Otteluaika: 2 min"
+
+#: ../judotimer/menus.c:609
+msgid "Contest duration: 3 min"
+msgstr "Otteluaika: 3 min"
+
+#: ../judotimer/menus.c:610
+msgid "Contest duration: 4 min"
+msgstr "Otteluaika: 4 min"
+
+#: ../judotimer/menus.c:611
+msgid "Contest duration: 5 min"
+msgstr "Otteluaika: 5 min"
+
+msgid "Majority of three: blue wins"
+msgstr "Äänestys: sininen voittaa"
+
+#: ../judotimer/menus.c:324 ../judotimer/menus.c:614
+msgid "Hantei: blue wins"
+msgstr "Hantei: sininen voittaa"
+
+msgid "Majority of three: white wins"
+msgstr "Äänestys: valkoinen voittaa"
+
+#: ../judotimer/menus.c:325 ../judotimer/menus.c:615
+msgid "Hantei: white wins"
+msgstr "Hantei: valkoinen voittaa"
+
+#: ../judotimer/menus.c:635
+msgid "Contest area not chosen"
+msgstr "Mattoa ei valittu"
+
+#: ../judotimer/menus.c:636
+msgid "Contest area 1"
+msgstr "Matto 1"
+
+#: ../judotimer/menus.c:637
+msgid "Contest area 2"
+msgstr "Matto 2"
+
+#: ../judotimer/menus.c:638
+msgid "Contest area 3"
+msgstr "Matto 3"
+
+#: ../judotimer/menus.c:639
+msgid "Contest area 4"
+msgstr "Matto 4"
+
+#: ../judotimer/menus.c:640
+msgid "Contest area 5"
+msgstr "Matto 5"
+
+#: ../judotimer/menus.c:641
+msgid "Contest area 6"
+msgstr "Matto 6"
+
+#: ../judotimer/menus.c:642
+msgid "Contest area 7"
+msgstr "Matto 7"
+
+#: ../judotimer/menus.c:643
+msgid "Contest area 8"
+msgstr "Matto 8"
+
+msgid "Match duration automatically from JudoShiai program"
+msgstr "Otteluaika automaattisesti JudoShiai-ohjelmalta"
+
+msgid "installation_dir=%s\n"
+msgstr "xxx1\n"
+
+msgid "current_directory=%s\n"
+msgstr "xxx2\n"
+
+msgid "test string"
+msgstr "testi"
+
+#: ../judotimer/menus.c:648
+msgid "Increment time"
+msgstr "Lisää ottelukelloa"
+
+#: ../judotimer/menus.c:649
+msgid "Decrement time"
+msgstr "Vähennä ottelukelloa"
+
+msgid "Increment osaekomi"
+msgstr "Lisää sidontakelloa"
+
+msgid "Decrement osaekomi"
+msgstr "Vähennä sidontakelloa"
+
+#: ../judotimer/menus.c:626 ../judotimer/menus.c:632
+msgid "View clocks only"
+msgstr "Näytä vain kellot"
+
+#: ../judotimer/menus.c:650
+msgid "Increment pin time"
+msgstr "Lisää sidontakelloa"
+
+#: ../judotimer/menus.c:651
+msgid "Decrement pin time"
+msgstr "Vähennä sidontakelloa"
+
+#: ../judotimer/stopwatch.c:759
+msgid "Points going to blue"
+msgstr "Pisteet menossa siniselle"
+
+#: ../judotimer/stopwatch.c:761
+msgid "Points going to white"
+msgstr "Pisteet menossa valkoiselle"
+
+#: ../judotimer/menus.c:26
+msgid "About Judotimer"
+msgstr "Tietoja Judotimerista"
+
+msgid "Full screen"
+msgstr "Kokonäyttötila"
+
+#: ../judotimer/menus.c:623 ../judoinfo/menus.c:316
+msgid "Full screen mode"
+msgstr "Kokonäyttötila"
+
+#: ../judotimer/menus.c:654
+msgid "Normal operation"
+msgstr "Normaalitila"
+
+#: ../judotimer/menus.c:655
+msgid "Master mode"
+msgstr "Isäntä"
+
+#: ../judotimer/menus.c:656
+msgid "Slave mode"
+msgstr "Orja"
+
+#: ../judotimer/menus.c:262 ../judotimer/menus.c:604
+msgid "Undo!"
+msgstr "Eiku!"
+
+#: ../judotimer/menus.c:138 ../judotimer/menus.c:652
+msgid "Set clocks"
+msgstr "Aseta kellot"
+
+#: ../judotimer/menus.c:162
+msgid "Clock:"
+msgstr "Ottelukello:"
+
+msgid "Year 2009 rules"
+msgstr "Vuoden 2009 säännöt"
+
+msgid "Short pin times"
+msgstr "Lyhyet sidonta-ajat"
+
+#: ../judotimer/menus.c:326 ../judotimer/menus.c:616
+msgid "Hansoku-make to blue"
+msgstr "Hansoku-make siniselle"
+
+#: ../judotimer/menus.c:327 ../judotimer/menus.c:617
+msgid "Hansoku-make to white"
+msgstr "Hansoku-make valkoiselle"
+
+#: ../judotimer/menus.c:328 ../judotimer/menus.c:618
+msgid "Clear selection"
+msgstr "Poista valinta"
+
+#: ../judotimer/menus.c:628
+msgid "Display layout 1"
+msgstr "Näytön asettelu 1"
+
+#: ../judotimer/menus.c:629
+msgid "Display layout 2"
+msgstr "Näytön asettelu 2"
+
+#: ../judotimer/menus.c:630
+msgid "Display layout 3"
+msgstr "Näytön asettelu 3"
+
+#: ../judotimer/menus.c:631
+msgid "Display layout 4"
+msgstr "Näytön asettelu 4"
+
+#: ../judotimer/menus.c:633
+msgid "Display layout 5"
+msgstr "Näytön asettelu 5"
+
+#: ../judotimer/menus.c:661
+msgid "Quick guide"
+msgstr "Pikaopas"
+
+#: ../judotimer/menus.c:658
+msgid "Advertise"
+msgstr "Mainosta"
+
+#: ../judotimer/show-ad.c:1720
+msgid "Run Advertisements"
+msgstr "Mainosta"
+
+#: ../judoshiai/competitors.c:926 ../judoshiai/competitors.c:1392
+#: ../judoshiai/httpd.c:723 ../judoshiai/menus.c:87 ../judoshiai/menus.c:494
+msgid "Competitors"
+msgstr "Kilpailijat"
+
+#: ../judoshiai/category-graph.c:351 ../judoshiai/category-graph.c:537
+#: ../judoshiai/httpd.c:277 ../judoshiai/menus.c:88 ../judoshiai/menus.c:495
+msgid "Categories"
+msgstr "Sarjat"
+
+#: ../judoshiai/menus.c:89 ../judoshiai/menus.c:496
+msgid "Drawing"
+msgstr "Arvonta"
+
+#: ../judoshiai/menus.c:90 ../judoshiai/menus.c:497
+msgid "Results"
+msgstr "Tulokset"
+
+#: ../judoshiai/menus.c:91 ../judoshiai/menus.c:498
+msgid "Judotimer"
+msgstr "Judotimer"
+
+#: ../judoshiai/menus.c:144 ../judoshiai/menus.c:502
+msgid "New Tournament"
+msgstr "Uusi"
+
+#: ../judoshiai/menus.c:145 ../judoshiai/menus.c:503
+msgid "Open Tournament"
+msgstr "Valitse"
+
+#: ../judoshiai/menus.c:146 ../judoshiai/menus.c:504
+msgid "Open Tournament from Net"
+msgstr "Valitse verkosta"
+
+#: ../judoshiai/menus.c:147 ../judoshiai/menus.c:220 ../judoshiai/menus.c:505
+#: ../judoshiai/menus.c:527
+msgid "Properties"
+msgstr "Ominaisuudet"
+
+#: ../judoshiai/menus.c:173 ../judoshiai/menus.c:510
+msgid "New Competitor"
+msgstr "Uusi"
+
+#: ../judoshiai/menus.c:174 ../judoshiai/menus.c:511
+msgid "Search Competitor"
+msgstr "Etsi"
+
+#: ../judoshiai/menus.c:175 ../judoshiai/menus.c:512
+msgid "Select From Another Shiai"
+msgstr "Lisää valikoiden toisesta kisasta"
+
+#: ../judoshiai/menus.c:176 ../judoshiai/menus.c:513
+msgid "Add From a Text File"
+msgstr "Lisää tekstitiedostosta"
+
+#: ../judoshiai/menus.c:177 ../judoshiai/menus.c:514
+msgid "Add All From Another Shiai"
+msgstr "Lisää kaikki toisesta salikisasta"
+
+#: ../judoshiai/menus.c:178 ../judoshiai/menus.c:515
+msgid "Add All with Weights"
+msgstr "Lisää kaikki toisesta salikisasta painoineen"
+
+#: ../judoshiai/menus.c:179 ../judoshiai/menus.c:516
+msgid "Remove Unweighted"
+msgstr "Poista punnitsemattomat"
+
+#: ../judoshiai/menus.c:180 ../judoshiai/menus.c:517
+msgid "Restore Removed"
+msgstr "Palauta poistetut"
+
+#: ../judoshiai/menus.c:181 ../judoshiai/menus.c:518
+msgid "Bar Code Search"
+msgstr "Viivakoodihaku"
+
+#: ../judoshiai/menus.c:182 ../judoshiai/menus.c:519
+msgid "Print Weight Notes"
+msgstr "Tulosta punnituslaput"
+
+#: ../judoshiai/menus.c:214 ../judoshiai/menus.c:521
+msgid "New Category"
+msgstr "Uusi"
+
+#: ../judoshiai/menus.c:215 ../judoshiai/menus.c:522
+msgid "Remove Empty"
+msgstr "Poista tyhjät"
+
+#: ../judoshiai/menus.c:216 ../judoshiai/menus.c:523
+msgid "Create Categories"
+msgstr "Muodosta viralliset sarjat"
+
+#: ../judoshiai/menus.c:217 ../judoshiai/menus.c:524
+msgid "Print All"
+msgstr "Tulosta kaikki sarjat"
+
+#: ../judoshiai/menus.c:221 ../judoshiai/menus.c:528
+msgid "Best of Three"
+msgstr "3 ottelua kahden poolissa"
+
+#: ../judoshiai/menus.c:223 ../judoshiai/menus.c:531
+msgid "Place To"
+msgstr "Sijoita"
+
+#: ../judoshiai/menus.c:223 ../judoshiai/menus.c:531
+msgid "Tatamis"
+msgstr "Tatamille"
+
+#: ../judoshiai/menus.c:258 ../judoshiai/menus.c:535
+msgid "Draw All Categories"
+msgstr "Arvo kaikki"
+
+#: ../judoshiai/menus.c:264 ../judoshiai/menus.c:537
+msgid "Print All (Web And PDF)"
+msgstr "Tulosta kaikki (Web ja PDF)"
+
+#: ../judoshiai/menus.c:265 ../judoshiai/menus.c:538
+msgid "Print Schedule to Printer"
+msgstr "Tulosta aikataulu (tulostin)"
+
+#: ../judoshiai/menus.c:266 ../judoshiai/menus.c:539
+msgid "Print Schedule to PDF"
+msgstr "Tulosta aikataulu (PDF)"
+
+#: ../judoshiai/menus.c:281 ../judoshiai/menus.c:542
+msgid "Control Tatami"
+msgstr "Ohjaa tatamia"
+
+#: ../judoshiai/menus.c:290 ../judoshiai/menus.c:546
+msgid "Communication Node"
+msgstr "Tietoliikennesolmu"
+
+#: ../judoshiai/menus.c:291 ../judoshiai/menus.c:547
+msgid "Own IP Addresses"
+msgstr "Omat IP-osoitteet"
+
+#: ../judoshiai/menus.c:292 ../judoshiai/menus.c:548
+msgid "Show Attached Connections"
+msgstr "Näytä yhteydet tähän solmuun"
+
+#: ../judoshiai/menus.c:293 ../judoshiai/menus.c:549
+msgid "Automatic Sheet Update"
+msgstr "Autom. kaavion päivitys"
+
+#: ../judoshiai/write-results.c:862
+msgid "Automatic Web Page Update"
+msgstr "Autom. web-sivun päivitys"
+
+#: ../judoshiai/menus.c:296 ../judoshiai/menus.c:552
+msgid "Results in Finnish"
+msgstr "Tulostus suomeksi"
+
+#: ../judoshiai/menus.c:298 ../judoshiai/menus.c:553
+msgid "Results in Swedish"
+msgstr "Tulostus ruotsiksi"
+
+#: ../judoshiai/menus.c:300 ../judoshiai/menus.c:554
+msgid "Results in English"
+msgstr "Tulostus englanniksi"
+
+#: ../judoshiai/menus.c:302 ../judoshiai/menus.c:556
+msgid "Weights Visible in Pool Sheets"
+msgstr "Poolikaavioihin painot"
+
+#: ../judoshiai/menus.c:303 ../judoshiai/menus.c:557
+msgid "Sheet Font"
+msgstr "Kaavion fontti"
+
+#: ../judoshiai/httpd.c:514 ../judoshiai/menus.c:304 ../judoshiai/menus.c:558
+#: ../judoshiai/set-password.c:22
+msgid "Password"
+msgstr "Salasana"
+
+#: ../judoshiai/set-password.c:29
+msgid "Password:"
+msgstr "Salasana:"
+
+#: ../judoshiai/another-shiai.c:401
+msgid "Competitor already exists!"
+msgstr "Kilpailija on jo olemassa!"
+
+#: ../judoshiai/another-shiai.c:424 ../judoshiai/competitors.c:305
+#: ../judoshiai/drawing.c:823
+msgid "Competitor"
+msgstr "Kilpailija"
+
+#: ../judoshiai/another-shiai.c:424
+msgid "copied"
+msgstr "kopioitu"
+
+#: ../judoshiai/another-shiai.c:437
+msgid "Category already exists!"
+msgstr "Sarja on jo olemassa!"
+
+#: ../judoshiai/another-shiai.c:479 ../judoshiai/competitors.c:123
+#: ../judoshiai/competitors.c:305 ../judoshiai/matches.c:1834
+#: ../judoshiai/matches.c:2535 ../judoshiai/sheets.c:1460
+msgid "Category"
+msgstr "Sarja"
+
+#: ../judoshiai/another-shiai.c:479
+msgid "has been copied with competitors and matches"
+msgstr "kopioitu kilpailijoineen ja otteluineen"
+
+#: ../judoshiai/another-shiai.c:509 ../judoshiai/competitors.c:728
+#: ../judoshiai/competitors.c:1371
+msgid "Last Name"
+msgstr "Sukunimi"
+
+#: ../judoshiai/another-shiai.c:523 ../judoshiai/competitors.c:742
+#: ../judoshiai/competitors.c:1374
+msgid "First Name"
+msgstr "Etunimi"
+
+#: ../judoshiai/another-shiai.c:538 ../judoshiai/competitors.c:758
+#: ../judoshiai/competitors.c:1377
+msgid "Year of Birth"
+msgstr "Syntymävuosi"
+
+#: ../judoshiai/another-shiai.c:553 ../judoshiai/competitors.c:773
+#: ../judoshiai/competitors.c:1380
+msgid "Grade"
+msgstr "Vyö"
+
+#: ../judoshiai/another-shiai.c:567 ../judoshiai/competitors.c:787
+#: ../judoshiai/competitors.c:1383
+msgid "Club"
+msgstr "Seura"
+
+#: ../judoshiai/another-shiai.c:582 ../judoshiai/competitors.c:802
+#: ../judoshiai/competitors.c:1386
+msgid "Reg. Category"
+msgstr "Ilm. sarja"
+
+#: ../judoshiai/another-shiai.c:597 ../judoshiai/competitors.c:817
+#: ../judoshiai/competitors.c:1389
+msgid "Weight"
+msgstr "Paino"
+
+#: ../judoshiai/drawing.c:643
+msgid "Drawing not finished!"
+msgstr "Arvonta kesken!"
+
+#: ../judoshiai/drawing.c:760
+msgid "Matches matched in category"
+msgstr "Otteluita oteltu sarjassa"
+
+#: ../judoshiai/drawing.c:761
+msgid "Clear the results first"
+msgstr "Nollaa tulokset ensin"
+
+#: ../judoshiai/drawing.c:801
+msgid "Move the competitors"
+msgstr "Sijoita ottelijat"
+
+#: ../judoshiai/drawing.c:822
+msgid "Number"
+msgstr "Numero"
+
+#: ../judoshiai/drawing.c:911
+msgid "Select first a competitor and then a number."
+msgstr "Valitse ensin ottelija ja sitten numero."
+
+#: ../judoshiai/drawing.c:962
+msgid "All the categories has been drawn"
+msgstr "Kaikki sarjat arvottu"
+
+#: ../judotimer/show-ad.c:1713 ../judoshiai/menuacts.c:505
+#: ../judoshiai/write-results.c:853
+msgid "Choose a directory"
+msgstr "Valitse hakemisto"
+
+#: ../judoshiai/categories.c:215
+msgid "Category drawn"
+msgstr "Sarja arvottu"
+
+#: ../judoshiai/categories.c:317
+msgid "All the categories located to the tatamis"
+msgstr "Kaikki sarjat sijoitettu tatameille"
+
+#: ../judoshiai/category-graph.c:239
+msgid "Unlocated"
+msgstr "Sijoittamattomat"
+
+#: ../judoshiai/comm.c:640
+msgid "Connections to this node"
+msgstr "Yhteydet tähän solmuun"
+
+#: ../judoshiai/competitors.c:123
+msgid "already exists!"
+msgstr "on jo olemassa!"
+
+#: ../judoshiai/competitors.c:578 ../judoshiai/matches.c:1816
+#: ../judoshiai/matches.c:2532
+msgid "Group"
+msgstr "Ryhmä"
+
+#: ../judoshiai/competitors.c:379
+msgid "Group:"
+msgstr "Ryhmä:"
+
+#: ../judoshiai/competitors.c:326 ../judoshiai/import.c:428
+msgid "Last Name:"
+msgstr "Sukunimi:"
+
+#: ../judoshiai/competitors.c:327 ../judoshiai/import.c:429
+msgid "First Name:"
+msgstr "Etunimi:"
+
+#: ../judoshiai/competitors.c:328 ../judoshiai/import.c:430
+msgid "Year of Birth:"
+msgstr "Syntymävuosi:"
+
+#: ../judoshiai/competitors.c:330 ../judoshiai/import.c:431
+msgid "Grade:"
+msgstr "Vyö:"
+
+#: ../judoshiai/competitors.c:338 ../judoshiai/import.c:432
+msgid "Club:"
+msgstr "Seura:"
+
+msgid "Reg. Category:"
+msgstr "Ilm. sarja:"
+
+#: ../judoshiai/competitors.c:340 ../judoshiai/import.c:434
+msgid "Weight:"
+msgstr "Paino:"
+
+#: ../judoshiai/competitors.c:339 ../judoshiai/competitors.c:365
+#: ../judoshiai/import.c:433
+msgid "Category:"
+msgstr "Sarja:"
+
+#: ../judoshiai/competitors.c:347
+msgid "No seeding"
+msgstr "Ei sijoitusta"
+
+msgid "Gold medalist"
+msgstr "Kultamitalisti"
+
+msgid "Silver medalist"
+msgstr "Hopeamitalisti"
+
+msgid "Bronze medalist"
+msgstr "Pronssimitalisti"
+
+#: ../judoshiai/competitors.c:1109
+msgid "Empty categories removed"
+msgstr "Tyhjät sarjat poistettu"
+
+#: ../judoshiai/competitors.c:1173
+msgid "Unweighted competitors removed"
+msgstr "Punnitsemattomat kilpailijat poistettu"
+
+#: ../judoshiai/competitors.c:1222
+msgid "Matches exist. Undo the drawing first."
+msgstr "Otteluita arvottu. Poista arvonta ensin."
+
+#: ../judoshiai/competitors.c:1239
+msgid "Competitors removed"
+msgstr "Kilpailijoita poistettu"
+
+#: ../judoshiai/competitors.c:1346
+msgid "Type the barcode:"
+msgstr "Anna viivakoodi:"
+
+#: ../judoshiai/competitors.c:1340
+msgid "Bar code search"
+msgstr "Viivakoodihaku"
+
+#: ../judoshiai/httpd.c:277 ../judoshiai/match-graph.c:466
+#: ../judoshiai/match-graph.c:740 ../judoshiai/print.c:770
+msgid "Matches"
+msgstr "Ottelut"
+
+#: ../judoshiai/menuacts.c:193
+msgid "Contests"
+msgstr "Ottelut"
+
+#: ../judoshiai/httpd.c:277
+msgid "Sheet"
+msgstr "Kaavio"
+
+#: ../judoshiai/httpd.c:300
+msgid "Previous winner"
+msgstr "Edellinen voittaja"
+
+#: ../judoshiai/httpd.c:304
+msgid "Cancel the match"
+msgstr "Peruuta ottelu"
+
+#: ../judoshiai/httpd.c:365
+msgid "Select a tatami"
+msgstr "Valitse matto"
+
+#: ../judoshiai/httpd.c:508
+msgid "Password accepted.<br>"
+msgstr "Salasana hyv&auml;ksytty.<br>"
+
+#: ../judoshiai/httpd.c:514
+msgid "User"
+msgstr "Käyttäjä"
+
+#: ../judoshiai/httpd.c:514 ../judoshiai/httpd.c:525 ../judoshiai/httpd.c:539
+msgid "Back"
+msgstr "Takaisin"
+
+#: ../judoshiai/httpd.c:525
+msgid "Wrong password"
+msgstr "Salasana virheellinen"
+
+#: ../judoshiai/httpd.c:550
+msgid "Match controlling and browsing"
+msgstr "Ottelujen ohjaus ja katselu"
+
+msgid "Contest controlling and browsing"
+msgstr "Ottelujen ohjaus ja katselu"
+
+#: ../judoshiai/httpd.c:552
+msgid "Java applet, Java must be enabled"
+msgstr "Java-appletti, javan tulee olla sallittuna"
+
+#: ../judoshiai/httpd.c:555
+msgid "Password not in use"
+msgstr "Salasana ei k&auml;yt&ouml;ss&auml;"
+
+#: ../judoshiai/httpd.c:557
+msgid "Logout"
+msgstr "Kirjaudu ulos"
+
+#: ../judoshiai/httpd.c:560
+msgid "Login is required"
+msgstr "Sis&auml;&auml;nkirjautuminen tarvitaan"
+
+#: ../judoshiai/httpd.c:560
+msgid "if you want to report match results"
+msgstr "jos halutaan raportoida ottelujen lopputuloksia"
+
+#: ../judoshiai/httpd.c:561
+msgid "User name can be anything"
+msgstr "K&auml;ytt&auml;j&auml;nimi voi olla mit&auml; vain"
+
+#: ../judoshiai/httpd.c:562 ../judoshiai/httpd.c:685
+msgid "Login"
+msgstr "Kirjaudu sis&auml;&auml;n"
+
+#: ../judoshiai/httpd.c:684
+msgid "No rights to give results"
+msgstr "Ei oikeutta antaa tuloksia"
+
+#: ../judoshiai/import.c:354
+msgid "Not used"
+msgstr "Ei käytössä"
+
+#: ../judoshiai/import.c:356
+msgid "Column"
+msgstr "Sarake"
+
+#: ../judoshiai/import.c:361
+msgid "Import from file"
+msgstr "Tuo tiedostosta"
+
+#: ../judoshiai/import.c:435
+msgid "Sex:"
+msgstr "Sukupuoli:"
+
+#: ../judoshiai/import.c:436
+msgid "Girl Text:"
+msgstr "Tyttöteksti:"
+
+#: ../judoshiai/import.c:437
+msgid "Column Separator:"
+msgstr "Sarake-erotin:"
+
+#: ../judoshiai/import.c:464
+msgid "competitors added"
+msgstr "kilpailijaa lisätty"
+
+#: ../judoshiai/import.c:465
+msgid "errors"
+msgstr "virhettä"
+
+#: ../judoshiai/import.c:466
+msgid "competitors existed already"
+msgstr "kilpailijaa oli jo"
+
+#: ../judoshiai/log.c:101 ../judoshiai/log.c:247 ../judoshiai/matches.c:1952
+#: ../judoshiai/matches.c:2553
+msgid "Time"
+msgstr "Aika"
+
+#: ../judoshiai/log.c:114 ../judoshiai/log.c:250
+msgid "Class"
+msgstr "Luokka"
+
+#: ../judoshiai/log.c:137 ../judoshiai/log.c:253
+msgid "Message"
+msgstr "Viesti"
+
+#: ../judoshiai/log.c:175 ../judoshiai/log.c:256
+msgid "Log"
+msgstr "Loki"
+
+#: ../judoshiai/main.c:379
+msgid "Is there another JudoShiai program running?"
+msgstr "Onko toinen JudoShiai-ohjelma käynnissä?"
+
+#: ../judoshiai/main.c:382
+msgid "Yes, another JudoShiai program is running"
+msgstr ""
+"Kyllä, toinen JudoShiai-ohjelma \n"
+"on käynnissä"
+
+#: ../judoshiai/main.c:383
+msgid ""
+"No, this the only JudoShiai program. \n"
+"Purge erroneous lock file."
+msgstr ""
+"Ei, tämä on ainut JudoShiai-ohjelma. \n"
+"Pura virheellinen lukitus."
+
+#: ../judoshiai/main.c:392
+msgid ""
+"Communication is blocked! \n"
+"You can still use the program to create categories etc."
+msgstr ""
+"Tietoliikenne on estetty!\n"
+"Ohjelmaa voi silti käyttää sarjojen luontiin ym."
+
+#: ../judoshiai/matches.c:85
+msgid "Pool"
+msgstr "Pooli"
+
+#: ../judoshiai/matches.c:86
+msgid "Double pool"
+msgstr "Tuplapooli"
+
+#: ../judoshiai/matches.c:87
+msgid "Double repechage"
+msgstr "Ranskalainen"
+
+#: ../judoshiai/match-graph.c:590 ../judoshiai/matches.c:275
+#: ../judoshiai/matches.c:1597
+msgid "Next match"
+msgstr "Seuraava ottelu"
+
+msgid "Next contest"
+msgstr "Seuraava ottelu"
+
+#: ../judoshiai/match-graph.c:596 ../judoshiai/matches.c:278
+#: ../judoshiai/matches.c:1188 ../judoshiai/matches.c:1193
+#: ../judoshiai/matches.c:1602
+msgid "Preparing"
+msgstr "Valmistautuvat"
+
+#: ../judoshiai/matches.c:1224 ../judoshiai/matches.c:2049
+msgid "Preparing:"
+msgstr "Valmistautuvat:"
+
+#: ../judoshiai/match-graph.c:602 ../judoshiai/matches.c:281
+#: ../judoshiai/matches.c:1607
+msgid "Delay the match"
+msgstr "Viivytä ottelua"
+
+msgid "Delay the contest"
+msgstr "Viivytä ottelua"
+
+#: ../judoshiai/matches.c:302 ../judoshiai/popup-menu.c:137
+msgid "Matches matched. Clear the results first."
+msgstr "Otteluita oteltu. Nollaa tulokset ensin."
+
+#: ../judoshiai/matches.c:816 ../judoshiai/matches.c:829
+#: ../judoshiai/matches.c:855 ../judoshiai/matches.c:868
+msgid "canceled"
+msgstr "mitätöity"
+
+#: ../judoshiai/matches.c:832 ../judoshiai/matches.c:872
+msgid "changed"
+msgstr "muuttunut"
+
+#: ../judoshiai/matches.c:1314
+msgid "winner"
+msgstr "voittaja"
+
+#: ../judoshiai/matches.c:1315
+msgid "points"
+msgstr "pisteet"
+
+#: ../judoshiai/matches.c:1506 ../judoshiai/popup-menu.c:299
+msgid "Expand All"
+msgstr "Avaa kaikki"
+
+#: ../judoshiai/matches.c:1511 ../judoshiai/popup-menu.c:304
+msgid "Collapse All"
+msgstr "Sulje kaikki"
+
+#: ../judoshiai/matches.c:1612
+msgid "Remove comment"
+msgstr "Poista kommentti"
+
+#: ../judoshiai/matches.c:1862 ../judoshiai/matches.c:2541
+msgid "Blue"
+msgstr "Sininen"
+
+#: ../judoshiai/matches.c:1936 ../judoshiai/matches.c:2550
+msgid "White"
+msgstr "Valkoinen"
+
+#: ../judoshiai/matches.c:1968 ../judoshiai/matches.c:2556
+msgid "Comment"
+msgstr "Kommentti"
+
+#: ../judoshiai/matches.c:1894 ../judoshiai/matches.c:1907
+#: ../judoshiai/matches.c:2544 ../judoshiai/matches.c:2547
+msgid "Points"
+msgstr "Pisteet"
+
+#: ../judoshiai/match-graph.c:161 ../judoinfo/main.c:184
+msgid "Prev. winner:"
+msgstr "Ed. voittaja:"
+
+#: ../judoshiai/match-graph.c:331
+#, c-format
+msgid "Delayed"
+msgstr "Viivytetyt"
+
+#: ../judoshiai/match-graph.c:608
+msgid "Remove delay"
+msgstr "Poista viivytys"
+
+#: ../judoshiai/menuacts.c:57 ../judoshiai/menuacts.c:325
+msgid "Date:"
+msgstr "Päivämäärä:"
+
+#: ../judoshiai/menuacts.c:58 ../judoshiai/menuacts.c:326
+msgid "Place:"
+msgstr "Paikka:"
+
+#: ../judoshiai/menuacts.c:59 ../judoshiai/menuacts.c:327
+msgid "Start time:"
+msgstr "Aloitusaika:"
+
+#: ../judoshiai/menuacts.c:60
+msgid "Number of tatamis"
+msgstr "Tatamien lkm:"
+
+#: ../judoshiai/menuacts.c:124
+msgid "Tournament from the net"
+msgstr "Kilpailu verkosta"
+
+#: ../judoshiai/menuacts.c:244
+msgid "Select sheet font"
+msgstr "Valitse kaavioiden fontti"
+
+msgid "Contest properties"
+msgstr "Kilpailun tiedot"
+
+msgid "Number of competitors:"
+msgstr "Ottelijoita:"
+
+#: ../judoshiai/another-shiai.c:678 ../judoshiai/main.c:174
+#: ../judoshiai/menuacts.c:49 ../judoshiai/menus.c:86 ../judoshiai/menus.c:493
+msgid "Tournament"
+msgstr "Kilpailu"
+
+#: ../judoshiai/menuacts.c:56 ../judoshiai/menuacts.c:324
+msgid "Tournament:"
+msgstr "Kilpailu:"
+
+#: ../judoshiai/another-shiai.c:676 ../judoshiai/menuacts.c:372
+msgid "Tournaments"
+msgstr "Kilpailut"
+
+#: ../judoshiai/menuacts.c:329
+msgid "Competitors:"
+msgstr "Ottelijoita:"
+
+#: ../judoshiai/menuacts.c:330
+msgid "Weighted:"
+msgstr "Punnittuja:"
+
+#: ../judoshiai/menuacts.c:374
+msgid "Add competitors"
+msgstr "Lisää kilpailijat"
+
+#: ../judoshiai/menuacts.c:381
+msgid "Clean up duplicates and update reg. categories"
+msgstr ""
+"Korjaa ilm. sarjat iänmukaisiksi ja \n"
+"ota kilpailija vain kerran"
+
+#: ../judoshiai/menuacts.c:411
+msgid "competitors added and updated"
+msgstr "kilpailijaa lisätty päivittäen"
+
+#: ../judoshiai/menuacts.c:411
+msgid "competitors already existed"
+msgstr "kilpailijaa oli jo"
+
+#: ../judoshiai/menuacts.c:413
+msgid "competitors added unchanged"
+msgstr "kilpailijaa lisätty muuttamatta"
+
+#: ../judoshiai/popup-menu.c:76 ../judoshiai/popup-menu.c:248
+msgid "Remove drawing first"
+msgstr "Poista arvonta ensin"
+
+#: ../judoshiai/popup-menu.c:235
+msgid "already exists"
+msgstr "on jo olemassa"
+
+#: ../judoshiai/popup-menu.c:316
+msgid "Move Competitors to Category..."
+msgstr "Siirra kilpailijat sarjaan..."
+
+#: ../judoshiai/popup-menu.c:340
+msgid "Move Competitors Here"
+msgstr "Siirrä kilpailijat tänne"
+
+#: ../judoshiai/popup-menu.c:345
+msgid "Compose Unoffial Category"
+msgstr "Muodosta valituista salikisasarja"
+
+msgid "Draw"
+msgstr "Arvo sarja"
+
+msgid "Draw and Print"
+msgstr "Arvo ja tulosta sarja"
+
+#: ../judoshiai/popup-menu.c:361
+msgid "Draw Manually"
+msgstr "Arvo sarja käsin"
+
+#: ../judoshiai/popup-menu.c:366
+msgid "Remove Drawing"
+msgstr "Poista arvonta"
+
+#: ../judoshiai/popup-menu.c:373
+msgid "Copy Competitors"
+msgstr "Kopioi kilpailijat"
+
+#: ../judoshiai/popup-menu.c:378
+msgid "Remove Competitors"
+msgstr "Poista kilpailijat"
+
+#: ../judoshiai/popup-menu.c:386
+msgid "Show Sheet"
+msgstr "Näytä kaavio"
+
+msgid "Print Sheet (Printer)"
+msgstr "Tulosta kaavio (tulostin)"
+
+msgid "Print Sheet (PDF)"
+msgstr "Tulosta kaavio (PDF)"
+
+#: ../judoshiai/search.c:130
+msgid "Search"
+msgstr "Etsi"
+
+#: ../judoshiai/set-categories.c:351
+msgid "----- Men -----"
+msgstr "----- Miehet -----"
+
+#: ../judoshiai/set-categories.c:357
+msgid "----- Women -----"
+msgstr "----- Naiset -----"
+
+#: ../judoshiai/set-categories.c:366
+msgid "Highest age:"
+msgstr "Ylin ikä:"
+
+#: ../judoshiai/set-categories.c:367
+msgid "Age text:"
+msgstr "Ikäteksti:"
+
+#: ../judoshiai/set-categories.c:368
+msgid "Match time:"
+msgstr "Otteluaika:"
+
+msgid "Contest duration:"
+msgstr "Otteluaika:"
+
+#: ../judoshiai/set-categories.c:369
+msgid "Rest time:"
+msgstr "Lepoaika:"
+
+#: ../judoshiai/set-categories.c:371
+msgid "Pin times (IWYK):"
+msgstr "Sidont.(IWYK):"
+
+#: ../judoshiai/set-categories.c:428
+msgid "Highest weight (g):"
+msgstr "Ylin paino (g):"
+
+#: ../judoshiai/set-categories.c:429
+msgid "Weight text:"
+msgstr "Painoteksti:"
+
+#: ../judoshiai/print.c:169
+msgid "Save file"
+msgstr "Tallenna tiedosto"
+
+#: ../judoshiai/util.c:363
+msgid "Which one is correct?"
+msgstr "Kumpi on oikein?"
+
+#: ../judoshiai/util.c:366
+msgid "Own database"
+msgstr "Oma tietokanta"
+
+#: ../judoshiai/util.c:367
+msgid "Foreign database"
+msgstr "Vieras tietokanta"
+
+#: ../judoshiai/util.c:368
+msgid "Do not change"
+msgstr "Jätä ennalleen"
+
+#: ../judoshiai/util.c:369
+msgid "Stop synchronization"
+msgstr "Lopeta synkronointi"
+
+#: ../judoshiai/matches.c:1517
+msgid "Remove Matches"
+msgstr "Poista ottelut"
+
+#: ../judoshiai/menuacts.c:328
+msgid "Number of tatamis:"
+msgstr "Tatamien lkm:"
+
+msgid "Number of contest areas:"
+msgstr "Tatamien lkm:"
+
+#: ../judoshiai/sheets.c:1724 ../judoshiai/sheets.c:1815
+msgid "Sheets"
+msgstr "Kaaviot"
+
+#: ../judoinfo/main.c:198
+msgid "Category starts"
+msgstr "Sarja alkaa"
+
+#: ../judoshiai/matches.c:952 ../judoinfo/main.c:207
+msgid "Gold medal match"
+msgstr "Kultamitaliottelu"
+
+#: ../judoshiai/matches.c:954 ../judoinfo/main.c:209
+msgid "Bronze match A"
+msgstr "Pronssiottelu A"
+
+#: ../judoshiai/matches.c:956 ../judoinfo/main.c:211
+msgid "Bronze match B"
+msgstr "Pronssiottelu B"
+
+#: ../judoshiai/matches.c:958 ../judoinfo/main.c:213
+msgid "Semifinal A"
+msgstr "Semifinaali A"
+
+#: ../judoshiai/matches.c:960 ../judoinfo/main.c:215
+msgid "Semifinal B"
+msgstr "Semifinaali B"
+
+#: ../judoinfo/menus.c:322
+msgid "Show Tatami"
+msgstr "Näytä tatami"
+
+#: ../judotimer/stopwatch.c:545
+msgid "Start New Match?"
+msgstr "Aloita uusi ottelu?"
+
+msgid "Start New Contest?"
+msgstr "Aloita uusi ottelu?"
+
+#: ../judotimer/main.c:783
+msgid "Hansokumake to blue"
+msgstr "Hansoku-make siniselle"
+
+#: ../judotimer/main.c:787
+msgid "Hansokumake to white"
+msgstr "Hansoku-make valkoiselle"
+
+#: ../judotimer/menus.c:322 ../judotimer/menus.c:612
+msgid "Golden Score"
+msgstr "Jatkoaika"
+
+#: ../judotimer/stopwatch.c:436
+msgid "Start Golden Score?"
+msgstr "Aloitetaanko jatkoaika?"
+
+#: ../judotimer/stopwatch.c:483
+msgid "Hantei"
+msgstr "Hantei"
+
+#: ../judotimer/stopwatch.c:487
+msgid "Blue wins"
+msgstr "Sininen voittaa"
+
+#: ../judotimer/stopwatch.c:488
+msgid "White wins"
+msgstr "Valkoinen voittaa"
+
+#: ../judotimer/stopwatch.c:610
+msgid "REST TIME"
+msgstr "LEPOAIKA"
+
+#: ../judoshiai/competitors.c:344
+msgid "Seeding:"
+msgstr "Sijoitus:"
+
+#: ../judoshiai/competitors.c:348
+msgid "1"
+msgstr "1"
+
+#: ../judoshiai/competitors.c:349
+msgid "2"
+msgstr "2"
+
+#: ../judoshiai/competitors.c:350
+msgid "3"
+msgstr "3"
+
+#: ../judoshiai/competitors.c:351
+msgid "4"
+msgstr "4"
+
+#: ../judoshiai/match-graph.c:616
+msgid "Freeze match order"
+msgstr "Jäädytä ottelujärjestys"
+
+#: ../judoshiai/match-graph.c:622
+msgid "Unfreeze exported"
+msgstr "Vapauta viedyt"
+
+#: ../judoshiai/match-graph.c:628
+msgid "Unfreeze imported"
+msgstr "Vapauta tuodut"
+
+#: ../judoshiai/match-graph.c:634
+msgid "Unfreeze this"
+msgstr "Vapauta tämä"
+
+#: ../judoshiai/menus.c:149 ../judoshiai/menus.c:507
+msgid "SQL Dialog"
+msgstr "SQL-dialogi"
+
+#: ../judoshiai/menus.c:218 ../judoshiai/menus.c:525
+msgid "Print All (PDF)"
+msgstr "Tulosta kaikki (PDF)"
+
+#: ../judoshiai/set-categories.c:370
+msgid "Golden Score:"
+msgstr "Jatkoaika:"
+
+#: ../judoshiai/sql-dialog.c:98
+msgid "SQL"
+msgstr "SQL"
+
+#: ../judoinfo/menus.c:40
+msgid "About JudoInfo"
+msgstr "Tietoja JudoInfosta"
+
+#: ../judoshiai/drawing.c:804
+msgid "Next"
+msgstr "Seuraava"
+
+#: ../judoshiai/drawing.c:805
+msgid "Rest"
+msgstr "Loput"
+
+#: ../judoshiai/menuacts.c:512
+msgid "Do Backup"
+msgstr "Tee varmuuskopio"
+
+#: ../judoshiai/menuacts.c:580
+msgid "CANNOT OPEN BACKUP FILE"
+msgstr "EI VOI AVATA KOPIOTIEDOSTOA"
+
+#: ../judoshiai/menus.c:148 ../judoshiai/menus.c:506
+msgid "Tournament Backup"
+msgstr "Varmuuskopio"
+
+#: ../judoinfo/menus.c:317
+msgid "Small display"
+msgstr "Pieni näyttö"
+
+#: ../judoshiai/popup-menu.c:351
+msgid "Draw Selected"
+msgstr "Arvo valitut sarjat"
+
+#: ../judoshiai/popup-menu.c:356
+msgid "Draw and Print Selected"
+msgstr "Arvo ja tulosta valitut sarjat"
+
+#: ../judoshiai/popup-menu.c:391
+msgid "Print Selected Sheets (Printer)"
+msgstr "Tulosta valitut kaaviot (Tulostin)"
+
+#: ../judoshiai/popup-menu.c:396
+msgid "Print Selected Sheets (PDF)"
+msgstr "Tulosta valitut kaaviot (PDF)"
+
+#: ../judotimer/show-ad.c:1684
+msgid "Advertisement"
+msgstr "Mainos"
+
+#: ../judoshiai/menuacts.c:317
+msgid "Tournament properties"
+msgstr "Kilpailun tiedot"
+
+#: ../judoshiai/menus.c:219 ../judoshiai/menus.c:526
+msgid "Print Matches (CSV)"
+msgstr "Tulosta ottelut (CSV)"
+
+#: ../judoshiai/print.c:772
+msgid "Match File"
+msgstr "Ottelutiedosto"
+
+#: ../judoshiai/print.c:784
+msgid "Print Not Started Categories"
+msgstr "Tulosta aloittamattomat sarjat"
+
+#: ../judoshiai/print.c:788
+msgid "Print Started Categories"
+msgstr "Tulosta aloitetut sarjat"
+
+#: ../judoshiai/print.c:792
+msgid "Print Finished Categories"
+msgstr "Tulosta päättyneet sarjat"
+
+#: ../judoshiai/print.c:796
+msgid "Print Result"
+msgstr "Tulosta tulos"
+
+#: ../judoshiai/print.c:800
+msgid "Print IWYKS"
+msgstr "Tulosta IWYKS"
+
+#: ../judoshiai/print.c:804
+msgid "Print Comment"
+msgstr "Tulosta kommentti"
+
+msgid "Medals"
+msgstr "Mitalit"
+
+msgid "Statistics"
+msgstr "Tilastot"
+
+msgid "Name"
+msgstr "Nimi"
+
+#: ../judoshiai/write-results.c:864
+msgid "Create Statistics"
+msgstr "Tee tilastot"
+
+msgid "Total"
+msgstr "Yhteensä"
+
+msgid "Matches:"
+msgstr "Otteluja:"
+
+#: ../judoshiai/util.c:448
+msgid "NOTE"
+msgstr "HUOMAA"
+
+#: ../judoshiai/util.c:448
+msgid "is not a valid ASCII string!"
+msgstr "ei ole hyväksyttävä ASCII-merkkijono!"
+
+#: ../judotimer/menus.c:624
+msgid "No koka"
+msgstr "Koka ei käytössä"
+
+#: ../judotimer/menus.c:625
+msgid "Leave points for GS"
+msgstr "Jätä pisteet tauluun"
+
+#: ../judoshiai/menus.c:560
+msgid "Automatic Match Delay"
+msgstr "Autom. viivytys"
+
+#: ../judoshiai/categories.c:132
+msgid "Cannot move"
+msgstr "Ei voi siirtää"
+
+#: ../judoshiai/menus.c:559
+msgid "Mirror Tatami Order"
+msgstr ""
+
+#: ../judoinfo/menus.c:318
+msgid "Mirror tatami order"
+msgstr ""

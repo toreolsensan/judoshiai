@@ -1,0 +1,7 @@
+application/judoshiai:
+	open=judoshiai %f
+	description=JudoShiai
+	icon_filename=judoshiai.png
+	default_action_type=application
+	category=Other
+	short_list_application_ids_for_novice_user_level=judoshiai

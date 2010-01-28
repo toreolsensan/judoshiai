@@ -1,0 +1,190 @@
+H1 { 
+    font-family: Verdana, Arial; 
+    text-align: center; 
+    color: #003060; 
+}
+H2 { 
+    font-family: Verdana, Arial; 
+    color: #003060; 
+}
+H3 { font-family: Verdana, Arial; 
+     color: #003060; 
+}
+
+table.categorylinks {
+    font-family: Verdana, Arial; 
+    background-color: #c8d7e6;
+    width: 200px;
+    border-collapse: collapse; 
+    border-width: 0;
+}
+td.categorylinksonly, td.categorylinksleft, td.categorylinksright {
+    background-color: #E0E8EF;
+    font-family: Verdana;
+    font-size: 14px;
+    font-weight: normal;
+    text-decoration: none;
+    width: 200px;
+    color: black;
+}
+
+table.resultslink, table.competitorslink, table.categorieshdr, table.nextmatcheslink,
+table.statisticslink, table.medalslink {
+    font-family: Verdana, Arial; 
+    background-color: #c8d7e6;
+    width: 200px;
+    margin-top: 4px;
+}
+td.resultslink, td.competitorslink, td.categorieshdr, td.nextmatcheslink,
+td.statisticslink, td.medalslink {
+    font-family: Verdana;
+    font-size: 14px;
+    font-weight: normal;
+    text-decoration: none;
+    width: 200px;
+    color: black;
+}
+
+table.competitors { 
+    font-family: Verdana, Arial; 
+    background: #ffffff; 
+    border-collapse: collapse; 
+}
+table.competitors td {
+    font-family: Verdana;
+    font-size: 14px;
+    font-weight: normal;
+    text-decoration: none;
+    color: black;
+}
+
+table.resultlist td {
+    font-family: Verdana;
+    font-size: 14px;
+    font-weight: normal;
+    text-decoration: none;
+    color: black;
+}
+table.resultlist td a {
+    font-family: Verdana;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: underline;
+    color: black;
+}
+
+table.medals {
+    border-width: 4;
+}
+
+table.medals td {
+    font-family: Verdana;
+    font-size: 14px;
+    font-weight: normal;
+    text-decoration: none;
+    color: black;
+    border-spacing: 8px 0px;
+}
+
+table.medals td.medalhdr {
+    text-align: center; 
+}
+
+table.medals td.medalcnt {
+    font-family: Verdana;
+    font-size: 14px;
+    font-weight: normal;
+    text-decoration: none;
+    color: black;
+    border-spacing: 8px 0px;
+    text-align: center; 
+    width: 20px;
+}
+
+table.medals th {
+    font-family: Verdana;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
+    color: black;
+    text-align: left; 
+}
+
+table.medals th.medalcnt {
+    font-family: Verdana;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
+    color: black;
+    text-align: center; 
+    width: 20px;
+}
+
+table.compstat {
+    /*border: solid black;*/
+    background-color: #E0E8EF;
+    border-collapse: separate;
+    border-spacing: 8px 0px;
+}
+
+td.cshdr {
+    border-bottom: 1px solid black;
+}
+
+td.bscore {
+    font-family: Courier;
+    background: blue;
+    color: white;
+    text-align: center;
+}
+
+td.wscore {
+    font-family: Courier;
+    background: white;
+    text-align: center;
+}
+
+table.statistics {
+    border-spacing: 8px 0px;
+}
+
+table.statistics td {
+    font-family: Verdana;
+    font-size: 14px;
+    font-weight: normal;
+    text-decoration: none;
+    color: black;
+    text-align: right;
+}
+
+table.statistics td.stat1 {
+    font-family: Verdana;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
+    color: black;
+    text-align: left;
+}
+
+table.statistics td.stat2 {
+    text-align: center;
+}
+
+table.statistics th {
+    font-family: Verdana;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
+    color: black;
+    text-align: right;
+}
+
+table.statistics th.stat1 {
+    font-family: Verdana;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
+    color: black;
+    text-align: left;
+}
+

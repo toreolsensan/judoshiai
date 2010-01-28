@@ -1,0 +1,470 @@
+/* -*- mode: C; c-basic-offset: 4;  -*- */
+
+/*
+ * Copyright (C) 2006-2010 by Hannu Jokinen
+ * Full copyright text is included in the software package.
+ */ 
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <gtk/gtk.h>
+#include <gdk/gdkkeysyms.h> 
+
+#include "judoshiai.h"
+
+enum {
+    TXT_LAST = 0,
+    TXT_FIRST,
+    TXT_BIRTH,
+    TXT_BELT,
+    TXT_CLUB,
+    TXT_REGCAT,
+    TXT_WEIGHT,
+    TXT_GENDER,
+    TXT_GIRLSTR,
+    TXT_SEPARATOR,
+    NUM_TXTS
+};
+
+struct i_text {
+    GtkWidget *lineread;
+    GtkWidget *fields[NUM_TXTS];
+    gchar *filename;
+    gchar separator[8];
+    gchar girlstr[20];
+    GtkWidget *labels[NUM_TXTS];
+    gint columns[NUM_TXTS];
+    gint errors;
+    gint comp_added;
+    gint comp_exists;
+    gboolean utf8;
+};
+
+static gchar *combotxts[11] = {0};
+
+static gboolean valid_data(gint item, gchar **tokens, gint num_cols, struct i_text *d) 
+{
+    if (d->columns[item] == 0)
+        return FALSE;
+
+    if (d->columns[item] > num_cols)
+        return FALSE;
+
+    return TRUE;
+}
+
+static gboolean print_item(gint item, gchar **tokens, gint num_cols, struct i_text *d) 
+{
+    if (!valid_data(item, tokens, num_cols, d))
+        return FALSE;
+
+    gtk_label_set_text(GTK_LABEL(d->labels[item]), tokens[d->columns[item] - 1]);
+    //g_print("Item %d = %s\n", item, tokens[d->columns[item]-1]);
+    return TRUE;
+}
+
+static gboolean add_competitor(gchar **tokens, gint num_cols, struct i_text *d) 
+{
+    gchar *newcat = NULL;
+    gchar *lastname = NULL;
+    struct judoka j;
+
+    if (!valid_data(TXT_LAST, tokens, num_cols, d))
+        return FALSE;
+    if (!valid_data(TXT_FIRST, tokens, num_cols, d))
+        return FALSE;
+#if 0        
+    if (!valid_data(TXT_BELT, tokens, num_cols, d))
+        return FALSE;
+    if (!valid_data(TXT_CLUB, tokens, num_cols, d))
+        return FALSE;
+    if ((valid_data(TXT_WEIGHT, tokens, num_cols, d) == FALSE ||
+         valid_data(TXT_BIRTH, tokens, num_cols, d) == FALSE) &&
+        valid_data(TXT_REGCAT, tokens, num_cols, d) == FALSE)
+        return FALSE;
+#endif
+
+    memset(&j, 0, sizeof(j));
+    j.index = current_index++;
+    j.visible = TRUE;
+    j.category = "?";
+    j.club = "";
+
+    lastname = g_utf8_strup(tokens[d->columns[TXT_LAST] - 1], -1);
+    j.last = lastname;
+
+    j.first = tokens[d->columns[TXT_FIRST] - 1];
+
+    /* year of birth. 0 == unknown */
+    if (valid_data(TXT_BIRTH, tokens, num_cols, d))
+        j.birthyear = atoi(tokens[d->columns[TXT_BIRTH] - 1]);
+
+    /* belt */
+    if (valid_data(TXT_BELT, tokens, num_cols, d)) {
+        gchar *b = tokens[d->columns[TXT_BELT] - 1];
+        gboolean kyu = strchr(b, 'k') != NULL || strchr(b, 'K') != NULL;
+        while (*b && (*b < '0' || *b > '9'))
+            b++;
+
+        gint grade = atoi(b);
+
+        if (grade)
+            j.belt = kyu ? 7 - grade : 6 + grade;
+
+        if (j.belt < 0 || j.belt > 13)
+            j.belt = 0;
+    }
+
+    if (valid_data(TXT_CLUB, tokens, num_cols, d))
+        j.club = tokens[d->columns[TXT_CLUB] - 1];
+
+    if (valid_data(TXT_REGCAT, tokens, num_cols, d))
+        j.regcategory = tokens[d->columns[TXT_REGCAT] - 1];
+
+    if (valid_data(TXT_WEIGHT, tokens, num_cols, d))
+        j.weight = weight_grams(tokens[d->columns[TXT_WEIGHT] - 1]);
+
+#if 0
+    if (j.birthyear > 20 && j.birthyear <= 99)
+        j.birthyear += 1900;
+    else if (j.birthyear <= 20)
+        j.birthyear += 2000;
+#endif
+
+    if ((j.regcategory == 0 || j.regcategory[0] == 0) /*&& j.weight > 10000*/) {
+        gint gender = 0;
+        gint age = current_year - j.birthyear;
+
+        if (valid_data(TXT_GENDER, tokens, num_cols, d)) {
+            if (strstr(tokens[d->columns[TXT_GENDER] - 1], d->girlstr))
+                gender = IS_FEMALE;
+            else
+                gender = IS_MALE;
+        } else {
+            gender = find_gender(j.first);
+        }
+
+        j.regcategory = newcat = find_correct_category(age, j.weight, gender, NULL, TRUE);
+        if (j.regcategory == NULL)
+            j.regcategory = newcat = g_strdup("");
+    }
+
+    GtkTreeIter iter;
+    if (find_iter_name_2(&iter, j.last, j.first, j.club, j.regcategory)) {
+        d->comp_exists++;
+        g_free(lastname);
+        g_free(newcat);
+        return FALSE;
+    }
+
+    db_add_judoka(j.index, &j);
+    display_one_judoka(&j);
+    //update_competitors_categories(j.index);
+    //matches_refresh();
+
+    g_free(lastname);
+    g_free(newcat);
+    return TRUE;
+}
+
+static void import_txt(gchar *fname, gboolean test, struct i_text *d) 
+{
+    gsize x;
+    gint num_cols = 0, i;
+    gchar **tokens, **p;
+    gchar line[256];
+    gboolean first_time = TRUE;
+    FILE *f = fopen(fname, "r");
+    if (!f)
+        return;
+
+    if (d->separator[0] == 0) 
+        return;
+
+    d->errors = 0;
+    d->comp_added = 0;
+    d->comp_exists = 0;
+
+    while (fgets(line, sizeof(line), f)) {
+        gchar *utf = NULL;
+        gchar *p1 = strchr(line, '\r');
+        if (p1)	*p1 = 0;
+        p1 = strchr(line, '\n');
+        if (p1)	*p1 = 0;
+
+        if (strlen(line) < 2)
+            continue;
+
+        if (d->utf8 == FALSE)
+            utf = g_convert(line, -1, "UTF-8", "ISO-8859-1", NULL, &x, NULL);
+
+        if (first_time) {
+            gtk_label_set_text(GTK_LABEL(d->lineread), utf ? utf : line);
+            first_time = FALSE;
+        }
+
+        num_cols = 0;
+
+        tokens = g_strsplit(utf ? utf : line, d->separator, 16);
+        for (p = tokens; *p; p++) {
+            num_cols++;
+        }
+
+        if (test) {
+            for (i = 0; i <= TXT_GENDER; i++) {
+                print_item(i, tokens, num_cols, d);
+            }
+        } else {
+            if (add_competitor(tokens, num_cols, d))
+                d->comp_added++;
+            else
+                d->errors++;
+        }
+
+        g_free(utf);
+        g_strfreev(tokens);
+
+        if (test)
+            break;
+    }
+
+    fclose(f);
+}
+
+static void read_values(struct i_text *d) 
+{
+    gint i;
+
+    strcpy(d->separator,
+           gtk_entry_get_text(GTK_ENTRY(d->fields[TXT_SEPARATOR])));
+    if (d->separator[0] == '\\' && d->separator[1] == 't') {
+        d->separator[0] = '\t';
+        d->separator[1] = 0;
+    }
+
+    for (i = 0; i < TXT_SEPARATOR; i++) {
+        if (i == TXT_GIRLSTR) {
+            strcpy(d->girlstr,
+                   gtk_entry_get_text(GTK_ENTRY(d->fields[TXT_GIRLSTR])));
+        } else {
+            d->columns[i] = gtk_combo_box_get_active(GTK_COMBO_BOX(d->fields[i]));
+        }
+    }
+}
+
+static void selecter(GtkComboBox *combo, gpointer arg) 
+{
+    struct i_text *d = arg;
+    read_values(d);
+    import_txt(d->filename, TRUE, d);
+}
+
+static GtkWidget *set_text_entry(GtkWidget *table, int row,
+				 char *text, const char *deftxt, struct i_text *data) 
+{
+    GtkWidget *tmp;
+
+    tmp = gtk_label_new(text);
+    gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, row, row + 1);
+
+    data->labels[row] = tmp = gtk_label_new("        ");
+    gtk_table_attach_defaults(GTK_TABLE(table), tmp, 2, 3, row, row + 1);
+
+    tmp = gtk_entry_new();
+    gtk_entry_set_max_length(GTK_ENTRY(tmp), 20);
+    gtk_entry_set_text(GTK_ENTRY(tmp), deftxt ? deftxt : "");
+
+    g_signal_connect(G_OBJECT(tmp), "changed", G_CALLBACK(selecter), data);
+
+    gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, row, row + 1);
+    return tmp;
+}
+
+static GtkWidget *set_col_entry(GtkWidget *table, int row,
+				char *text, const gint defpos, struct i_text *data) 
+{
+    GtkWidget *tmp;
+    gint i;
+
+    tmp = gtk_label_new(text);
+    gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, row, row + 1);
+
+    data->labels[row] = tmp = gtk_label_new("        ");
+    gtk_table_attach_defaults(GTK_TABLE(table), tmp, 2, 3, row, row + 1);
+
+    tmp = gtk_combo_box_new_text();
+    for (i = 0; i <= 10; i++) {
+        gtk_combo_box_append_text(GTK_COMBO_BOX(tmp), combotxts[i]);
+    }
+    gtk_combo_box_set_active(GTK_COMBO_BOX(tmp), defpos);
+
+    g_signal_connect(G_OBJECT(tmp), "changed", G_CALLBACK(selecter), data);
+
+    gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, row, row + 1);
+    return tmp;
+}
+
+static void set_preferences_int(gchar *name, gint data)
+{
+    g_key_file_set_integer(keyfile, "preferences", name, data);
+}
+
+static void set_preferences_str(gchar *name, gchar *data)
+{
+    g_key_file_set_string(keyfile, "preferences", name, data);
+}
+
+static gboolean get_preferences_int(gchar *name, gint *out)
+{
+    GError  *error = NULL;
+    gint     x;
+    x = g_key_file_get_integer(keyfile, "preferences", name, &error);
+    if (!error) {
+        *out = x;
+        return TRUE;
+    }
+    *out = 0;
+    return FALSE;
+}
+
+static gboolean get_preferences_str(gchar *name, gchar *out)
+{
+    GError  *error = NULL;
+    gchar   *x;
+    x = g_key_file_get_string(keyfile, "preferences", name, &error);
+    if (!error) {
+        strcpy(out, x);
+        g_free(x);
+        return TRUE;
+    }
+    out[0] = 0;
+    return FALSE;
+}
+
+void import_txt_dialog(GtkWidget *w, gpointer arg) 
+{
+    GtkWidget *dialog, *table, *utf8;
+    gchar *name = NULL;
+    gchar buf[32];
+    gint i;
+    gboolean utf8code = FALSE;
+
+    if (!combotxts[0]) {
+        combotxts[0] = g_strdup(_("Not used"));
+        for (i = 1; i <= 10; i++) {
+            sprintf(buf, "%s %d", _("Column"), i);
+            combotxts[i] = g_strdup(buf);
+        }
+    }
+
+    dialog = gtk_file_chooser_dialog_new (_("Import from file"),
+                                          NULL,
+                                          GTK_FILE_CHOOSER_ACTION_OPEN,
+                                          GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                                          GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+                                          NULL);
+    utf8 = gtk_check_button_new_with_label("UTF-8");
+    gtk_widget_show(utf8);
+    gtk_file_chooser_set_extra_widget(GTK_FILE_CHOOSER(dialog), utf8);
+
+    if (database_name[0] == 0) {
+        if (current_directory[0] != '.')
+            gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), current_directory);
+        else
+            gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), g_get_home_dir());
+    } else {
+        gchar *dirname = g_path_get_dirname(database_name);
+        gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), dirname);
+        g_free(dirname);
+    }
+
+    if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT) {
+        name = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
+        utf8code = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(utf8));
+    }
+
+    gtk_widget_destroy (dialog);
+
+    if (!name)
+        return ;
+
+    valid_ascii_string(name);
+
+    /* settings */
+
+    struct i_text *data = g_malloc(sizeof(*data));
+    memset(data, 0, sizeof(*data));
+
+    data->filename = name;
+    data->utf8 = utf8code;
+
+    get_preferences_int("importtxtcollast",   &data->columns[TXT_LAST]);
+    get_preferences_int("importtxtcolfirst",  &data->columns[TXT_FIRST]);
+    get_preferences_int("importtxtcolbirth",  &data->columns[TXT_BIRTH]);
+    get_preferences_int("importtxtcolbelt",   &data->columns[TXT_BELT]);
+    get_preferences_int("importtxtcolclub",   &data->columns[TXT_CLUB]);
+    get_preferences_int("importtxtcolregcat", &data->columns[TXT_REGCAT]);
+    get_preferences_int("importtxtcolweight", &data->columns[TXT_WEIGHT]);
+    get_preferences_int("importtxtcolgender", &data->columns[TXT_GENDER]);
+    get_preferences_str("importtxtgirlstr",    data->girlstr);
+    get_preferences_str("importtxtseparator",  data->separator);
+    if (data->separator[0] == 0)
+        strcpy(data->separator, ",");
+
+    dialog = gtk_dialog_new_with_buttons (_("Preferences"),
+                                          NULL,
+                                          GTK_DIALOG_MODAL,
+                                          GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                                          GTK_STOCK_OK, GTK_RESPONSE_OK,
+                                          NULL);
+
+    data->lineread = gtk_label_new("");
+    gtk_container_add(GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), data->lineread);
+
+    table = gtk_table_new(3, 9, FALSE);
+    gtk_container_add(GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), table);
+
+    data->fields[TXT_LAST]      = set_col_entry (table, 0, _("Last Name:"),        data->columns[TXT_LAST],   data);
+    data->fields[TXT_FIRST]     = set_col_entry (table, 1, _("First Name:"),       data->columns[TXT_FIRST],  data);
+    data->fields[TXT_BIRTH]     = set_col_entry (table, 2, _("Year of Birth:"),    data->columns[TXT_BIRTH],  data);
+    data->fields[TXT_BELT]      = set_col_entry (table, 3, _("Grade:"),            data->columns[TXT_BELT],   data);
+    data->fields[TXT_CLUB]      = set_col_entry (table, 4, _("Club:"),             data->columns[TXT_CLUB],   data);
+    data->fields[TXT_REGCAT]    = set_col_entry (table, 5, _("Category:"),         data->columns[TXT_REGCAT], data);
+    data->fields[TXT_WEIGHT]    = set_col_entry (table, 6, _("Weight:"),           data->columns[TXT_WEIGHT], data);
+    data->fields[TXT_GENDER]    = set_col_entry (table, 7, _("Sex:"),              data->columns[TXT_GENDER], data);
+    data->fields[TXT_GIRLSTR]   = set_text_entry(table, 8, _("Girl Text:"),        data->girlstr,             data);
+    data->fields[TXT_SEPARATOR] = set_text_entry(table, 9, _("Column Separator:"), data->separator,           data);
+
+    gtk_widget_show_all(dialog);
+
+    read_values(data);
+    import_txt(name, TRUE, data);
+
+    if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_OK) {
+        read_values(data);
+        import_txt(name, FALSE, data);
+        //matches_refresh();
+
+        set_preferences_int("importtxtcollast",   data->columns[TXT_LAST]);
+        set_preferences_int("importtxtcolfirst",  data->columns[TXT_FIRST]);
+        set_preferences_int("importtxtcolbirth",  data->columns[TXT_BIRTH]);
+        set_preferences_int("importtxtcolbelt",   data->columns[TXT_BELT]);
+        set_preferences_int("importtxtcolclub",   data->columns[TXT_CLUB]);
+        set_preferences_int("importtxtcolregcat", data->columns[TXT_REGCAT]);
+        set_preferences_int("importtxtcolweight", data->columns[TXT_WEIGHT]);
+        set_preferences_int("importtxtcolgender", data->columns[TXT_GENDER]);
+        set_preferences_str("importtxtgirlstr",   data->girlstr);
+        set_preferences_str("importtxtseparator", data->separator);
+    }
+
+    gtk_widget_destroy(dialog);
+
+    SHOW_MESSAGE("%d %s (%d %s, %d %s).", 
+                 data->comp_added, _("competitors added"), 
+                 data->errors-data->comp_exists, _("errors"), 
+                 data->comp_exists, _("competitors existed already"));
+
+    g_free(data);
+    g_free(name);
+}

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=JudoInfo Display for Audience
+Comment=Show next matches
+Exec=judoinfo
+Icon=judoinfo.png
+Terminal=false
+Type=Application
+Categories=Application;Other;
+StartupNotify=true

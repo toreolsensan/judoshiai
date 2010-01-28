@@ -1,0 +1,3 @@
+?package(judoshiai):needs="X11" section="Applications/Other" \
+  title="JudoShiai Tournament Organizer" command="/usr/bin/judoshiai" \
+  icon="/usr/share/pixmaps/judoshiai.png"

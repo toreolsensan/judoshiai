@@ -1,0 +1,14 @@
+#!/bin/sh
+set -e
+
+if which update-icon-caches >/dev/null 2>&1 ; then
+	update-icon-caches /usr/share/icons/hicolor
+fi
+
+if [ "$1" = "remove" ] && which update-desktop-database >/dev/null 2>&1 ; then
+	update-desktop-database -q
+fi
+
+if which update-mime >/dev/null 2>&1; then update-mime; fi
+
+if [ -x "`which update-menus 2>/dev/null`" ]; then update-menus ; fi
