@@ -1,0 +1,61 @@
+JudoShiai software helps you to arrange judo tournaments. 
+JudoShiai consists of the following programs:
+
+* JudoShiai: Tournament planning, drawing, and results printing.
+* JudoTimer: Clocks and scoreboard.
+* JudoInfo: Information display for the announcer and audience.
+* Flash versions of JudoTimer and JudoInfo.
+
+Windows XP, Vista and Linux are the supported operating systems.
+
+For compilation you need the following software:
+
+Linux (Ubuntu):
+- Gnome development tools. In Ubuntu this is the gnome-devel
+  software package.
+- Open Office to export documents to PDF format. You have to create
+  some macros that are described in the doc/Makefile.
+- For Flash versions you need a haXe environment (http://haxe.org).
+- CheckInstall (http://www.asic-linux.com.mx/~izto/checkinstall/) 
+  to create a Debian package.
+
+Windows:
+- GTK+ library for Windows (http://www.gtk.org/download-windows.html).
+  Install a All-in-one bundle. Edit common/Makefile to set
+  the correct directory.
+- MinGW and MSYS (http://www.mingw.org). They provide 
+  ports of the GNU software for the Windows environment.
+- Open Office to export documents to PDF format. You have to create
+  some macros that are described in the doc/Makefile.
+- For Flash versions you need a haXe environment (http://haxe.org).
+- Inno Setup to create a setup binary (http://www.jrsoftware.org/isinfo.php).
+
+Compilation:
+
+Get the judoshiai sources:
+  svn co https://judoshiai.svn.sourceforge.net/svnroot/judoshiai judoshiai
+
+Go to the main level:
+  cd judoshiai/trunk
+
+Compile:
+  make
+
+Now you have a release directory containing a binary tree. Create
+a setup binary file:
+  make setup
+
+In release directory you will find a Linux runnable file
+  judoshiai-setup-<ver>.bin
+or a Windows setup file
+  judoshiai-setup-<ver>.exe
+
+In the Linux environment you can also create a Debian package file
+  sudo make debian
+
+Give your password and accept the suggested options. Software
+is temporarily installed and then removed.
+Finally in the release directory you will find 
+judoshiai_<ver>-1_i386.deb.
+
+Note: Flash versions are not available yet.
