@@ -1,138 +1,148 @@
 Anjalankosken Judo
-Arashi
+Arashi=ARA>Loviisa
 Asahi
-Bodonos
-Budokan
+Bodonos=BOD>Kerava
+Budokan=BUD>Vaasa
 Budokwai
-Budoviikingit
-Byakuya
-Chikara
-Darmakai
-Enbukan
-Espoon Judokerho
-Espoon Urheilijat
-Finndai
+Budoviikingit=BDV>Helsinki
+Byakuya=BYA>Sodankylä
+Chikara=CHI>Helsinki
+Darmakai=DAR>Laukaa
+Enbukan=ENB>Pietarsaari
+Espoon Judokerho=EJK
+Espoon Urheilijat=ESU
+Finndai=FND>Helsinki
 Fojudo
 Forssan Alku
-Fudoshin
-Fuguda
+Fudoshin=FUD>Pori
+Fuguda=FUG>Karjaa
 Hämeenkosken Judo
-Hämeenlinnan JS
+Hämeenlinnan JS=HÄM
 Hachigatsu
-Haminan Judoseura
-Hauve-kan
-Holjutai
-Hontai Judo
+Haminan Judoseura=HAM
+Hauve-kan=HAU>Haukipudas
+Holjutai=HOL>Hollola
+Hontai Judo=HON>Helsinki
 Hyrysalmen Judokat
-Hyvinkään Judoseura
-Iisalmen Judoseura
-Ippon
-Jämsä
-Järvenpään Akagi
-Jigogu
-Jigotai
-Joen Yawara
-Joutsan Tarmo
-Judo Club Raahe
-Judo-Kan
-Judoseura Koshado
+Hyvinkään Judoseura=HYV
+Iisalmen Judoseura=IIS
+Ippon=IPP>Loimaa
+Jämsän Yoshi=JÄM
+Järvenpään Akagi=AKA
+Jigogu=JGO>Lieksa
+Jigotai=JIG>Jyväskylä
+Joen Yawara=YAW>Joensuu
+Joutsan Tarmo=JOU
+Judo Club Raahe=JCR
+Judo-Kan=JDK>Espoo
+Judoseura Koshado=KOS>Kaavi
 Judoviikingit
-Jukata
-Ju Shin Kan
-Kaarinan Urheilijat
-Kabudo
-Kaigan
-Kajaanin Judokerho
+Jukata=JKT>Mäntsälä
+Ju Shin Kan=JUS>Ähtäri
+Kaarinan Urheilijat=KAA
+Kabudo=KAB>Karstula
+Kaigan=KAI>Rauma
+Kajaanin Judokerho=KAJ
 Kalajoen Judoklubi
-Kamiza
-Kankaanpään Judokat
+Kamiza=KAM>Lappeenranta
+Kankaanpään Judokat=KAN
 Kärkälän Kisa-Judo
 Kashi-no-kai
-Katana
-Kauhajoen Karhu
-Kaustisen Pohjan-Veikot
+Katana=KAT>Kangasniemi
+Kauhajoen Karhu=KAU
+Kaustisen Pohjan-Veikot=KPV
 Kazoku
-Keido-kan
-KeJuBo
-Kerimäen Judonoko
-Kestilän Kisa-Veikot
-Kippon
-Kirkkonummen JS
-Kita-Kan
-Kokkai-Kan
-Kokkolan Budo
-Kotkan Judoseura
-Koulujudo
-Kouvolan Judoseura
-Koyama
+Keido-kan=KEI>Siuntio
+KeJuBo=KEU>Keuruu
+Kerimäen Judonoko=KER
+Kestilän Kisa-Veikot=KES
+Kippon=KIP>Kitee
+Kirkkonummen JS=KIR
+Kita-Kan=KIT>Kemi
+Kokkai-Kan=KOK>Tornio
+Kokkolan Budo=KBU
+Kotkan Judoseura=KOT
+Koulujudo=KOJ
+Kouvolan Judoseura=KOU
+Koyama=KOY>Rovaniemi
 Kristiinan Seudun Judo
-Kuttulan Judo
-Kuusankosken JS
-Lahden Judoseura
+Kuttulan Judo=KUT>Mäntyharju
+Kuusankosken JS=KUU
+Lahden Judoseura=LAH
 Lahden Urheilukoulu
-Lammin Judoseura
-Lappajärven Veikot
-Lohjan Urheilijat
+Lammin Judoseura=LAM
+Lappajärven Veikot=LPV
+Lohjan Urheilijat=LOH
 Loviisan Judokat
-Mäntyharjun Judo
-Maskun Tempo
-Meidokan
-Mikkelin Judo
-Nummelan Judo
-Nokian Judo
-Numa no kai
+Mäntyharjun Judo=MÄN
+Maskun Tempo=MAS
+Meidokan=MEI>Helsinki
+Mikkelin Judo=MIK
+Nummelan Judo=NUM
+Nokian Judo=NOK
+Numa-no-kai=NNK>Suolahti
 Oka-Doo
-Orimattilan JS
+Orimattilan JS=ORI
 Oriveden JS Wakaido
-Oulun Judokerho
-Pellon Judoseura
-Pikadon
-Pingviinit
-Pirkkalan Judokerho
-Popinniemen Isku
-Punkaharjun Judo
-Punkalaitumen Kunto
+Oulun Judokerho=OJK
+Pellon Judoseura=PEL
+Pikadon=PIK>Pieksamäki
+Pingviinit=PIN>Nurmijärvi
+Pirkkalan Judokerho=PIR
+Popinniemen Isku=POP>Kotka
+Punkaharjun Judo=PNK
+Punkalaitumen Kunto=PUN
 Pyhäjärven Judo
-Raahen Judo
-Raision Ryhti
-Rauman JS Samurai
-Riihimäen Judoseura
+Raahen Judo=RAA
+Raision Ryhti=RAI
+Rauman JS Samurai=RAU
+Riihimäen Judoseura=RII
 Ryo-do-kai
-Sakura
-Salon Budoseura
-Samurai
+Sakura=SAK>Kuopio
+Salon Budoseura=SAL
+Samurai=SAM>Valkeakoski
 Savitaipaleen JS
-Savonlinnan Shikata
-Seibukan
-Seinäjoen Judoseura
-Shinrai
+Savonlinnan Shikata=SAV
+Seibukan=KUR>Kurikka
+Seinäjoen Judoseura=SEI
+Shinrai=SNR>Pirkkala
 Shirakaba
-Shiranami
-Shirokawa
-Shogun
+Shiranami=SRA>Lapinlahti
+Shirokawa=SRO>Porvoo
+Shogun=SHO>Espoo
 Shudokan
-Sobudo
-Soinin Sisu/Shinmeikan
-Sotkamon Tsuyoi
-Sukoshi
-Suomen kamppailu-ur.
-Tampereen Judo
-Tapanilan Erä
+Sobudo=SOB>Somero
+Soinin Sisu/Shinmeikan=SHI
+Sotkamon Tsuyoi=TSU>Vuokatti
+Sukoshi=SUK>Imatra
+Suomen kamppailu-ur.=SKU
+Tampereen Judo=TRE
+Tapanilan Erä=TAP>Helsinki
 Tatakai
-Tikkurilan Judokat
-TNS-Judo
-Tomodachi
+Tikkurilan Judokat=TIK>Vantaa
+TNS-Judo=TNS>Toijala
+Tomodachi=KJT>Kuopio
 Toodokan
-Tsukuri
-Tsunami
-Turun Judoseura
-Vantaan Jukara
-Vihannin Judo
+Tsukuri=TSK>Hanko
+Tsunami=TSA>Nurmes
+Turun Judoseura=TUR
+Vantaan Jukara=JKR
+Vihannin Judo=VIH
 Virtain U/Seidokan
-Waseda-Club
+Waseda-Club=WAC>Uusikaupunki
 Waza-Aite
-Yama-Arashi
-Yanagi
-Zenjudo
-Ålands Judoklubb
-
+Yama-Arashi=YAM>Varkaus
+Yanagi=YAG>Heinävesi
+Zenjudo=ZEN>Naantali
+Ålands Judoklubb=ÅJK>Maarianhamina
+Heinolan Judoseura=HEI
+Himangan Judoseura=HIM
+Ilomantsin Toroo-kai=ILO
+Kristiinankaupungin ja Närpiön Judo=KRS
+Savukosken Kuohu=KUO
+OYUS Judo=OYJ>Oulu
+Skärgårdens Judoklubb=ROS>Rosala
+Sarko=SAR>Turku
+Suomenlinnan urheilijat=SUO>Helsinki
+Pyhäsalmen Sykkeen Judo=SYK
+Vammalan Veikot=VAM
