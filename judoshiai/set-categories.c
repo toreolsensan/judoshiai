@@ -204,6 +204,9 @@ out:
     return strcmp(cat1, cat2);
 }
 
+extern void db_insert_cat_def_table_data_begin(void);
+extern void db_insert_cat_def_table_data_end(void);
+
 void read_cat_definitions(void)
 {
     gint row;
@@ -212,6 +215,8 @@ void read_cat_definitions(void)
     if (catdef_needs_init()) {
         gint i, j;
         struct cat_def def;
+
+	db_insert_cat_def_table_data_begin();
 
         for (i = 1; i < NUM_CAT; i++) {
             def.age = agelist[i];
@@ -245,6 +250,8 @@ void read_cat_definitions(void)
             sprintf(def.weights[0].weighttext, "+%d", official[i][j-1]/1000);
             db_insert_cat_def_table_data(&def);
         }
+
+	db_insert_cat_def_table_data_end();
     }
 
     memset(&category_definitions, 0, sizeof(category_definitions));
@@ -504,6 +511,7 @@ void set_categories_dialog(GtkWidget *w, gpointer arg)
         struct cat_def def;
 
         db_delete_cat_def_table_data();
+	db_insert_cat_def_table_data_begin();
 
         for (i = 0; i < NUM_CATEGORIES; i++) {
             def.age = atoi(gtk_entry_get_text(GTK_ENTRY(fields[i].age)));
@@ -531,6 +539,7 @@ void set_categories_dialog(GtkWidget *w, gpointer arg)
             }
         }
 
+	db_insert_cat_def_table_data_end();
         read_cat_definitions();
 
         db_cat_def_table_done();

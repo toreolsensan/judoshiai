@@ -80,13 +80,15 @@ static gint set_one_category(GtkTreeModel *model, GtkTreeIter *iter, guint index
     j.first = "";
     j.birthyear = group;
     j.club = "";
+    j.country = "";
     j.regcategory = "";
     j.belt = tatami;
     j.weight = sys;
     j.visible = FALSE;
     j.category = "";
     j.deleted = 0;
-        
+    j.id = "";
+
     put_data_by_iter_model(&j, iter, model);
 
     return j.index;
@@ -167,6 +169,8 @@ static int db_competitor_callback(void *data, int argc, char **argv, char **azCo
             j.birthyear = argv[i] ? atoi(argv[i]) : 0;
         else if (IS(club))
             j.club = argv[i] ? argv[i] : "?";
+        else if (IS(country))
+            j.country = argv[i] ? argv[i] : "";
         else if (IS(regcategory) || IS(wclass))
             j.regcategory = argv[i] ? argv[i] : "?";
         else if (IS(belt))
@@ -179,6 +183,8 @@ static int db_competitor_callback(void *data, int argc, char **argv, char **azCo
             j.category = argv[i] ? argv[i] : "?";
         else if (IS(deleted))
             j.deleted = argv[i] ? atoi(argv[i]) : 0;
+        else if (IS(id))
+            j.id = argv[i] ? argv[i] : "";
     }
 
     if ((j.deleted & DELETED))
@@ -297,11 +303,13 @@ static GtkTreeModel *create_and_fill_model(gchar *dbname)
                                    G_TYPE_UINT,   /* birthyear */
                                    G_TYPE_UINT,   /* belt */
                                    G_TYPE_STRING, /* club */
+                                   G_TYPE_STRING, /* country */
                                    G_TYPE_STRING, /* regcategory */
                                    G_TYPE_INT,    /* weight */
                                    G_TYPE_BOOLEAN,/* visible */
                                    G_TYPE_STRING, /* category */
-                                   G_TYPE_UINT    /* deleted */
+                                   G_TYPE_UINT,   /* deleted */
+                                   G_TYPE_STRING  /* id */
         );
 
     model = GTK_TREE_MODEL(treestore);
@@ -574,6 +582,21 @@ static GtkWidget *create_view_and_model(gchar *dbname)
     //gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (col), TRUE);
     gtk_tree_view_column_set_sort_column_id(GTK_TREE_VIEW_COLUMN(col), COL_CLUB);
 
+    /* --- Column country --- */
+
+    renderer = gtk_cell_renderer_text_new();
+    g_object_set (renderer, "xalign", 0.0, NULL);
+    col_offset = gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (view),
+                                                              -1, _("Country"),
+                                                              renderer, "text",
+                                                              COL_COUNTRY,
+                                                              "visible",
+                                                              COL_VISIBLE,
+                                                              NULL);
+    col = gtk_tree_view_get_column (GTK_TREE_VIEW (view), col_offset - 1);
+    //gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (col), TRUE);
+    gtk_tree_view_column_set_sort_column_id(GTK_TREE_VIEW_COLUMN(col), COL_COUNTRY);
+
     /* --- Column regcategory --- */
 
     renderer = gtk_cell_renderer_text_new();
@@ -602,6 +625,18 @@ static GtkWidget *create_view_and_model(gchar *dbname)
     gtk_tree_view_column_set_cell_data_func(col, renderer, weight_cell_data_func, NULL, NULL);
     //gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (col), TRUE);
     gtk_tree_view_column_set_sort_column_id(GTK_TREE_VIEW_COLUMN(col), COL_WEIGHT);
+
+    /* --- Column id --- */
+
+    renderer = gtk_cell_renderer_text_new();
+    g_object_set (renderer, "xalign", 0.0, NULL);
+    col_offset = gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (view),
+                                                              -1, _("Id"),
+                                                              renderer, "text",
+                                                              COL_ID,
+                                                              NULL);
+    col = gtk_tree_view_get_column (GTK_TREE_VIEW (view), col_offset - 1);
+    gtk_tree_view_column_set_sort_column_id(GTK_TREE_VIEW_COLUMN(col), COL_ID);
 
     /*****/
 
@@ -648,6 +683,11 @@ static GtkWidget *create_view_and_model(gchar *dbname)
                                      COL_BELT,
                                      sort_iter_compare_func,
                                      GINT_TO_POINTER(SORTID_BELT),
+                                     NULL);
+    gtk_tree_sortable_set_sort_func (GTK_TREE_SORTABLE(model),
+                                     COL_COUNTRY,
+                                     sort_iter_compare_func,
+                                     GINT_TO_POINTER(SORTID_COUNTRY),
                                      NULL);
 
     gtk_tree_view_set_search_column(GTK_TREE_VIEW(view), COL_LAST_NAME);

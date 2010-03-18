@@ -19,8 +19,10 @@ enum {
     TXT_BIRTH,
     TXT_BELT,
     TXT_CLUB,
+    TXT_COUNTRY,
     TXT_REGCAT,
     TXT_WEIGHT,
+    TXT_ID,
     TXT_GENDER,
     TXT_GIRLSTR,
     TXT_SEPARATOR,
@@ -74,22 +76,14 @@ static gboolean add_competitor(gchar **tokens, gint num_cols, struct i_text *d)
         return FALSE;
     if (!valid_data(TXT_FIRST, tokens, num_cols, d))
         return FALSE;
-#if 0        
-    if (!valid_data(TXT_BELT, tokens, num_cols, d))
-        return FALSE;
-    if (!valid_data(TXT_CLUB, tokens, num_cols, d))
-        return FALSE;
-    if ((valid_data(TXT_WEIGHT, tokens, num_cols, d) == FALSE ||
-         valid_data(TXT_BIRTH, tokens, num_cols, d) == FALSE) &&
-        valid_data(TXT_REGCAT, tokens, num_cols, d) == FALSE)
-        return FALSE;
-#endif
 
     memset(&j, 0, sizeof(j));
     j.index = current_index++;
     j.visible = TRUE;
     j.category = "?";
     j.club = "";
+    j.country = "";
+    j.id = "";
 
     lastname = g_utf8_strup(tokens[d->columns[TXT_LAST] - 1], -1);
     j.last = lastname;
@@ -118,6 +112,12 @@ static gboolean add_competitor(gchar **tokens, gint num_cols, struct i_text *d)
 
     if (valid_data(TXT_CLUB, tokens, num_cols, d))
         j.club = tokens[d->columns[TXT_CLUB] - 1];
+
+    if (valid_data(TXT_COUNTRY, tokens, num_cols, d))
+        j.country = tokens[d->columns[TXT_COUNTRY] - 1];
+
+    if (valid_data(TXT_ID, tokens, num_cols, d))
+        j.id = tokens[d->columns[TXT_ID] - 1];
 
     if (valid_data(TXT_REGCAT, tokens, num_cols, d))
         j.regcategory = tokens[d->columns[TXT_REGCAT] - 1];
@@ -404,6 +404,8 @@ void import_txt_dialog(GtkWidget *w, gpointer arg)
     get_preferences_int("importtxtcolbirth",  &data->columns[TXT_BIRTH]);
     get_preferences_int("importtxtcolbelt",   &data->columns[TXT_BELT]);
     get_preferences_int("importtxtcolclub",   &data->columns[TXT_CLUB]);
+    get_preferences_int("importtxtcolcountry",&data->columns[TXT_COUNTRY]);
+    get_preferences_int("importtxtcolid",     &data->columns[TXT_ID]);
     get_preferences_int("importtxtcolregcat", &data->columns[TXT_REGCAT]);
     get_preferences_int("importtxtcolweight", &data->columns[TXT_WEIGHT]);
     get_preferences_int("importtxtcolgender", &data->columns[TXT_GENDER]);
@@ -430,11 +432,13 @@ void import_txt_dialog(GtkWidget *w, gpointer arg)
     data->fields[TXT_BIRTH]     = set_col_entry (table, 2, _("Year of Birth:"),    data->columns[TXT_BIRTH],  data);
     data->fields[TXT_BELT]      = set_col_entry (table, 3, _("Grade:"),            data->columns[TXT_BELT],   data);
     data->fields[TXT_CLUB]      = set_col_entry (table, 4, _("Club:"),             data->columns[TXT_CLUB],   data);
-    data->fields[TXT_REGCAT]    = set_col_entry (table, 5, _("Category:"),         data->columns[TXT_REGCAT], data);
-    data->fields[TXT_WEIGHT]    = set_col_entry (table, 6, _("Weight:"),           data->columns[TXT_WEIGHT], data);
-    data->fields[TXT_GENDER]    = set_col_entry (table, 7, _("Sex:"),              data->columns[TXT_GENDER], data);
-    data->fields[TXT_GIRLSTR]   = set_text_entry(table, 8, _("Girl Text:"),        data->girlstr,             data);
-    data->fields[TXT_SEPARATOR] = set_text_entry(table, 9, _("Column Separator:"), data->separator,           data);
+    data->fields[TXT_COUNTRY]   = set_col_entry (table, 5, _("Country:"),          data->columns[TXT_COUNTRY],data);
+    data->fields[TXT_REGCAT]    = set_col_entry (table, 6, _("Category:"),         data->columns[TXT_REGCAT], data);
+    data->fields[TXT_WEIGHT]    = set_col_entry (table, 7, _("Weight:"),           data->columns[TXT_WEIGHT], data);
+    data->fields[TXT_ID]        = set_col_entry (table, 8, _("Id:"),               data->columns[TXT_ID],     data);
+    data->fields[TXT_GENDER]    = set_col_entry (table, 9, _("Sex:"),              data->columns[TXT_GENDER], data);
+    data->fields[TXT_GIRLSTR]   = set_text_entry(table,10, _("Girl Text:"),        data->girlstr,             data);
+    data->fields[TXT_SEPARATOR] = set_text_entry(table,11, _("Column Separator:"), data->separator,           data);
 
     gtk_widget_show_all(dialog);
 
@@ -451,6 +455,8 @@ void import_txt_dialog(GtkWidget *w, gpointer arg)
         set_preferences_int("importtxtcolbirth",  data->columns[TXT_BIRTH]);
         set_preferences_int("importtxtcolbelt",   data->columns[TXT_BELT]);
         set_preferences_int("importtxtcolclub",   data->columns[TXT_CLUB]);
+        set_preferences_int("importtxtcolcountry",data->columns[TXT_COUNTRY]);
+        set_preferences_int("importtxtcolid",     data->columns[TXT_ID]);
         set_preferences_int("importtxtcolregcat", data->columns[TXT_REGCAT]);
         set_preferences_int("importtxtcolweight", data->columns[TXT_WEIGHT]);
         set_preferences_int("importtxtcolgender", data->columns[TXT_GENDER]);

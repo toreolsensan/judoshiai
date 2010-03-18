@@ -29,6 +29,7 @@ avl_tree *competitors_tree = NULL;
 avl_tree *competitors_hash_tree = NULL;
 
 avl_tree *club_tree = NULL;
+avl_tree *club_name_tree = NULL;
 
 avl_tree *html_tree = NULL;
 
@@ -64,13 +65,30 @@ static int club_avl_compare(void *compare_arg, void *a, void *b)
         return -1;
     if (b1 == NULL || b1->name == NULL)
         return 1;
-#if 0
-    gchar *country1 = strrchr(a1->name, '/');
-    gchar *country2 = strrchr(b1->name, '/');
 
-    if (country1 && country2)
-        return sort_by_name(country1, country2);
-#endif
+    if (club_text == CLUB_TEXT_CLUB)
+	return sort_by_name(a1->name, b1->name);
+
+    gint ret = sort_by_name(a1->country, b1->country);
+    if (club_text == CLUB_TEXT_COUNTRY)
+	return ret;
+
+    if (ret == 0)
+	return sort_by_name(a1->name, b1->name);
+
+    return ret;
+}
+
+static int club_name_avl_compare(void *compare_arg, void *a, void *b)
+{
+    struct club_name_data *a1 = a;
+    struct club_name_data *b1 = b;
+
+    if (a1 == NULL || a1->name == NULL)
+        return -1;
+    if (b1 == NULL || b1->name == NULL)
+        return 1;
+
     return sort_by_name(a1->name, b1->name);
 }
 
@@ -91,6 +109,17 @@ static int free_club_avl_key(void *key)
 {
     struct club_data *key1 = key;
     g_free(key1->name);
+    g_free(key1->country);
+    g_free(key);
+    return 1;
+}
+
+static int free_club_name_avl_key(void *key)
+{
+    struct club_name_data *key1 = key;
+    g_free(key1->name);
+    g_free(key1->abbreviation);
+    g_free(key1->address);
     g_free(key);
     return 1;
 }
@@ -554,6 +583,8 @@ const gchar *utf8_to_html(const gchar *txt)
         return txt;
     }
 
+    buffers[sel][0] = 0;
+
     while (*p) {
         if (*p < 128) {
             if (n < 63)
@@ -604,27 +635,29 @@ void init_club_tree(void)
     club_tree = avl_tree_new(club_avl_compare, NULL);
 }
 
-void club_stat_add(const gchar *club, gint num)
+void init_club_name_tree(void)
+{
+    if (club_name_tree)
+        avl_tree_free(club_name_tree, free_club_name_avl_key);
+    club_name_tree = avl_tree_new(club_name_avl_compare, NULL);
+}
+
+void club_stat_add(const gchar *club, const gchar *country, gint num)
 {
     struct club_data key;
     struct club_data *data;
-    const gchar *p = NULL;
 
     if (!club_tree)
         return;
 
-    //p = strrchr(club, '/');
-    if (p)
-        p++;
-    else 
-        p = club;
-
-    key.name = (gchar *)p;
+    key.name = (gchar *)club;
+    key.country = (gchar *)country;
 
     if (avl_get_by_key(club_tree, &key, (void *)&data)) {
         data = g_malloc(sizeof(*data));
         memset(data, 0, sizeof(*data));
-        data->name = g_strdup(p);
+        data->name = g_strdup(club);
+        data->country = g_strdup(country);
         avl_insert(club_tree, data);
     }
 
@@ -636,6 +669,49 @@ void club_stat_add(const gchar *club, gint num)
     case 4: data->fourth++; break;
     case 5: data->fifth++; break;
     }
+}
+
+void club_name_set(const gchar *club, 
+		   const gchar *abbr,
+		   const gchar *address)
+{
+    struct club_name_data key;
+    struct club_name_data *data;
+
+    if (!club_name_tree)
+        return;
+
+    key.name = (gchar *)club;
+
+    if (avl_get_by_key(club_name_tree, &key, (void *)&data)) {
+        data = g_malloc(sizeof(*data));
+        memset(data, 0, sizeof(*data));
+        data->name = g_strdup(club);
+        data->abbreviation = g_strdup(abbr);
+        data->address = g_strdup(address);
+        avl_insert(club_name_tree, data);
+    } else {
+	g_free(data->abbreviation);
+	g_free(data->address);
+        data->abbreviation = g_strdup(abbr);
+        data->address = g_strdup(address);
+    }
+}
+
+struct club_name_data *club_name_get(const gchar *club)
+{
+    struct club_name_data key;
+    struct club_name_data *data = NULL;
+
+    if (!club_name_tree)
+        return NULL;
+
+    key.name = (gchar *)club;
+
+    if (avl_get_by_key(club_name_tree, &key, (void *)&data))
+	return NULL;
+
+    return data;
 }
 
 static struct club_data clubs, *tail = NULL;

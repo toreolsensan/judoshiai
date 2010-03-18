@@ -19,6 +19,8 @@
 **
 ** This amalgamation was generated on 2009-06-27 14:10:06 UTC.
 */
+//#define SQLITE_NO_SYNC 1
+
 #define SQLITE_CORE 1
 #define SQLITE_AMALGAMATION 1
 #ifndef SQLITE_PRIVATE

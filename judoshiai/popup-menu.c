@@ -138,7 +138,7 @@ static void view_popup_menu_remove_draw(GtkWidget *menuitem, gpointer userdata)
         return;
     }
 
-    db_set_system((gint)userdata, 0);
+    db_set_system((gint)userdata, get_cat_system((gint)userdata)&SYSTEM_WISH_MASK);
     db_remove_matches((gint)userdata);
     update_category_status_info((gint)userdata);
     matches_refresh();

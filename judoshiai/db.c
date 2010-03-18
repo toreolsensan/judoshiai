@@ -36,32 +36,32 @@ gint db_exec(const char *dbn, char *cmd, void *data, void *dbcb)
     int rc;
 
     if (db_name == dbn)
-        G_LOCK(db);
+	G_LOCK(db);
 
     rc = sqlite3_open(dbn, &db);
     if (rc) {
-        fprintf(stderr, "Can't open database: %s\n", 
-                sqlite3_errmsg(db));
-        sqlite3_close(db);
-        if (db_name == dbn)
-            G_UNLOCK(db);
-        exit(1);
+	fprintf(stderr, "Can't open database: %s\n", 
+		sqlite3_errmsg(db));
+	sqlite3_close(db);
+	if (db_name == dbn)
+	    G_UNLOCK(db);
+	exit(1);
     }
 
     //g_print("\nSQL: %s:\n  %s\n", db_name, cmd);
     rc = sqlite3_exec(db, cmd, dbcb, data, &zErrMsg);
 
     if (rc != SQLITE_OK && rc != SQLITE_ABORT && zErrMsg) {
-        g_print("SQL error: %s\n%s\n", zErrMsg, cmd);
+	g_print("SQL error: %s\n%s\n", zErrMsg, cmd);
     }
 
     if (zErrMsg)
-        sqlite3_free(zErrMsg);
+	sqlite3_free(zErrMsg);
 
     sqlite3_close(db);
 
     if (db_name == dbn)
-        G_UNLOCK(db);
+	G_UNLOCK(db);
 
     return rc;
 }
@@ -74,6 +74,74 @@ void db_exec_str(void *data, void *dbcb, gchar *format, ...)
     va_end(args);
     db_exec(db_name, text, data, dbcb);
     g_free(text);
+}
+
+static sqlite3 *maindb;
+
+void db_close(void)
+{
+    if (!maindb) {
+	g_print("%s: maindb was not open!\n", __FUNCTION__);
+	return;
+    }
+
+    sqlite3_close(maindb);
+    maindb = NULL;
+    G_UNLOCK(db);
+}
+
+gint db_open(void)
+{
+    if (maindb) {
+	g_print("%s: maindb was already open!\n", __FUNCTION__);
+	return -1;
+    }
+
+    if (!db_name) {
+	g_print("%s: db_name is null!\n", __FUNCTION__);
+	return -2;
+    }
+
+    G_LOCK(db);
+
+    gint rc = sqlite3_open(db_name, &maindb);
+
+    if (rc) {
+	g_print("%s: cannot open maindb (%s)!\n", __FUNCTION__, 
+		sqlite3_errmsg(maindb));
+	sqlite3_close(maindb);
+	maindb = NULL;
+	G_UNLOCK(db);
+    }
+
+    return rc;
+}
+
+gint db_cmd(void *data, void *dbcb, gchar *format, ...)
+{
+    char *zErrMsg = NULL;
+    va_list args;
+    va_start(args, format);
+    gchar *text = g_strdup_vprintf(format, args);
+    va_end(args);
+
+    if (!maindb) {
+	g_print("db_cmd SQL error: maindb is null\n");
+	return -1;
+    }
+
+    gint rc = sqlite3_exec(maindb, text, dbcb, data, &zErrMsg);
+
+    if (rc != SQLITE_OK && rc != SQLITE_ABORT && zErrMsg) {
+	g_print("db_cmd SQL error: %s\n%s\n", zErrMsg, text);
+    }
+
+    if (zErrMsg)
+	sqlite3_free(zErrMsg);
+
+    g_free(text);
+
+    return rc;
 }
 
 static int db_info_cb(void *data, int argc, char **argv, char **azColName)
@@ -100,7 +168,7 @@ static int db_info_cb(void *data, int argc, char **argv, char **azColName)
     return 0;
 }
 
-static gboolean tatami_exists, number_exists;
+static gboolean tatami_exists, number_exists, country_exists, id_exists;
 
 static int db_callback_tables(void *data, int argc, char **argv, char **azColName)
 {
@@ -112,6 +180,10 @@ static int db_callback_tables(void *data, int argc, char **argv, char **azColNam
                 tatami_exists = TRUE;
             if (strstr(argv[i], "matches") && strstr(argv[i], "forcednumber"))
                 number_exists = TRUE;
+            if (strstr(argv[i], "competitors") && strstr(argv[i], "country"))
+                country_exists = TRUE;
+            if (strstr(argv[i], "competitors") && strstr(argv[i], "\"id\""))
+                id_exists = TRUE;
         }
     }
 
@@ -142,7 +214,7 @@ void db_init(const char *dbname)
 
     read_cat_definitions();
 
-    tatami_exists = number_exists = FALSE;
+    tatami_exists = number_exists = country_exists = id_exists = FALSE;
     db_exec(db_name, 
             "SELECT sql FROM sqlite_master", 
             NULL, db_callback_tables);
@@ -155,6 +227,14 @@ void db_init(const char *dbname)
         g_print("forcednumber does not exist, add one\n");
         db_exec(db_name, "ALTER TABLE matches ADD \"forcednumber\" INTEGER", NULL, NULL);
         db_exec(db_name, "UPDATE matches SET 'forcednumber'=0", NULL, NULL);
+    }
+    if (!country_exists) {
+        g_print("country does not exist, add one\n");
+        db_exec(db_name, "ALTER TABLE competitors ADD \"country\" TEXT", NULL, NULL);
+    }
+    if (!id_exists) {
+        g_print("id does not exist, add one\n");
+        db_exec(db_name, "ALTER TABLE competitors ADD \"id\" TEXT", NULL, NULL);
     }
 }
 
@@ -172,8 +252,8 @@ void db_new(const char *dbname,
         "\"index\" INTEGER, \"last\" TEXT, \"first\" TEXT, \"birthyear\" INTEGER, "
         "\"belt\" INTEGER, \"club\" TEXT, \"regcategory\" TEXT, "
         "\"weight\" INTEGER, \"visible\" INTEGER, "
-        "\"category\" TEXT, \"deleted\" INTEGER "
-        ")";
+        "\"category\" TEXT, \"deleted\" INTEGER, "
+        "\"country\" TEXT, \"id\" TEXT )";
     char *cmd3 = "CREATE TABLE categories ("
         "\"index\" INTEGER, \"category\" TEXT, \"tatami\" INTEGER, "
         "\"deleted\" INTEGER, \"group\" INTEGER, \"system\" INTEGER "
@@ -196,7 +276,7 @@ void db_new(const char *dbname,
     strcpy(info_time, start_time);
     strcpy(info_num_tatamis, num_tatamis);
 
-    if ((f = fopen(db_name, "rb"))) {
+    if (FALSE && (f = fopen(db_name, "rb"))) {
         /* exists */
         fclose(f);
 
@@ -401,6 +481,18 @@ void db_delete_cat_def_table_data(void)
     db_exec(db_name, cmd, 0, 0);
 }
 
+void db_insert_cat_def_table_data_begin(void)
+{
+    db_open();
+    db_cmd(NULL, NULL, "begin transaction");
+}
+
+void db_insert_cat_def_table_data_end(void)
+{
+    db_cmd(NULL, NULL, "commit");
+    db_close();
+}
+
 void db_insert_cat_def_table_data(struct cat_def *def)
 {
     char buf[1024];
@@ -410,7 +502,8 @@ void db_insert_cat_def_table_data(struct cat_def *def)
             def->weights[0].weight, def->weights[0].weighttext,
             def->match_time, def->pin_time_koka, def->pin_time_yuko, 
             def->pin_time_wazaari, def->pin_time_ippon, def->rest_time, def->gs_time); 
-    db_exec(db_name, buf, 0, 0);
+    db_cmd(NULL, NULL, buf);
+    //db_exec(db_name, buf, 0, 0);
 }
 
 void db_cat_def_table_done(void)

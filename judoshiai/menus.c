@@ -20,6 +20,8 @@ extern void open_shiai_from_net(GtkWidget *w, gpointer data);
 extern void open_shiai(GtkWidget *w, gpointer data);
 extern void font_dialog(GtkWidget *w, gpointer data);
 extern void set_lang(gpointer data, guint action, GtkWidget *w);
+extern void set_club_text(gpointer data, guint action, GtkWidget *w);
+extern void set_draw_system(gpointer data, guint action, GtkWidget *w);
 extern void toggle_automatic_sheet_update(gpointer callback_data, 
 					  guint callback_action, GtkWidget *menu_item);
 extern void toggle_automatic_web_page_update(gpointer callback_data, 
@@ -53,15 +55,18 @@ static GtkWidget *menubar,
     *category_new, *category_remove_empty, *category_create_official, 
     *category_print_all, *category_print_all_pdf, *category_print_matches,
     *category_properties, *category_best_of_three, *category_to_tatamis[NUM_TATAMIS],
-    *draw_all_categories, *results_print_all, *results_print_schedule_printer, *results_print_schedule_pdf,
+    *draw_all_categories, *draw_international, *draw_finnish, 
+    *draw_swedish, *draw_estonian,
+    *results_print_all, *results_print_schedule_printer, *results_print_schedule_pdf,
     *preference_comm_node, *preference_own_ip_addr, *preference_show_connections,
     *preference_auto_sheet_update/*, *preference_auto_web_update*/, *preference_results_in_finnish, 
     *preference_results_in_swedish, *preference_results_in_english, *preference_weights_to_pool_sheets,
     *preference_sheet_font, *preference_password, *judotimer_control[NUM_TATAMIS],
-    *preference_mirror, *preference_auto_arrange,
+    *preference_mirror, *preference_auto_arrange, 
+    *preference_club_text_club, *preference_club_text_country, *preference_club_text_both,
     *help_manual, *help_about;
 
-static GSList *lang_group = NULL;
+static GSList *lang_group = NULL, *club_group = NULL, *draw_group = NULL;
 
 static GtkTooltips *menu_tips;
 
@@ -101,8 +106,11 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(menu_flag_fi), flag_fi);        
     gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(menu_flag_se), flag_se);        
     gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(menu_flag_uk), flag_uk);        
+    gtk_image_menu_item_set_always_show_image(GTK_IMAGE_MENU_ITEM(menu_flag_fi), TRUE);
+    gtk_image_menu_item_set_always_show_image(GTK_IMAGE_MENU_ITEM(menu_flag_se), TRUE);
+    gtk_image_menu_item_set_always_show_image(GTK_IMAGE_MENU_ITEM(menu_flag_uk), TRUE);
 
-    tournament_menu     = gtk_menu_new();
+    tournament_menu  = gtk_menu_new();
     competitors_menu = gtk_menu_new();
     categories_menu  = gtk_menu_new();
     drawing_menu     = gtk_menu_new();
@@ -259,6 +267,27 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_menu_shell_append(GTK_MENU_SHELL(drawing_menu), draw_all_categories);
     g_signal_connect(G_OBJECT(draw_all_categories), "activate", G_CALLBACK(draw_all), 0);
 
+    draw_international = gtk_radio_menu_item_new_with_label(draw_group, "");
+    draw_group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(draw_international));
+    draw_finnish = gtk_radio_menu_item_new_with_label(draw_group, "");
+    draw_group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(draw_finnish));
+    draw_swedish = gtk_radio_menu_item_new_with_label(draw_group, "");
+    draw_group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(draw_swedish));
+    draw_estonian = gtk_radio_menu_item_new_with_label(draw_group, "");
+    gtk_menu_shell_append(GTK_MENU_SHELL(drawing_menu), gtk_separator_menu_item_new());
+    gtk_menu_shell_append(GTK_MENU_SHELL(drawing_menu), draw_international);
+    gtk_menu_shell_append(GTK_MENU_SHELL(drawing_menu), draw_finnish);
+    gtk_menu_shell_append(GTK_MENU_SHELL(drawing_menu), draw_swedish);
+    gtk_menu_shell_append(GTK_MENU_SHELL(drawing_menu), draw_estonian);
+    g_signal_connect(G_OBJECT(draw_international), "activate", G_CALLBACK(set_draw_system), 
+		     (gpointer)DRAW_INTERNATIONAL);
+    g_signal_connect(G_OBJECT(draw_finnish),       "activate", G_CALLBACK(set_draw_system), 
+		     (gpointer)DRAW_FINNISH);
+    g_signal_connect(G_OBJECT(draw_swedish),       "activate", G_CALLBACK(set_draw_system), 
+		     (gpointer)DRAW_SWEDISH);
+    g_signal_connect(G_OBJECT(draw_estonian),      "activate", G_CALLBACK(set_draw_system), 
+		     (gpointer)DRAW_ESTONIAN);
+
 
     /* Create the Results menu content. */
     results_print_all              = gtk_menu_item_new_with_label(_("Print All (Web And PDF)"));
@@ -299,6 +328,12 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     lang_group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(preference_results_in_swedish));
     preference_results_in_english     = gtk_radio_menu_item_new_with_label(lang_group, _("Results in English"));
 
+    preference_club_text_club         = gtk_radio_menu_item_new_with_label(club_group, _("Club Name Only"));
+    club_group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(preference_club_text_club));
+    preference_club_text_country      = gtk_radio_menu_item_new_with_label(club_group, _("Country Name Only"));
+    club_group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(preference_club_text_country));
+    preference_club_text_both         = gtk_radio_menu_item_new_with_label(club_group, _("Both Club and Country"));
+
     preference_weights_to_pool_sheets = gtk_check_menu_item_new_with_label(_("Weights Visible in Pool Sheets"));
     preference_sheet_font             = gtk_menu_item_new_with_label(_("Sheet Font"));
     preference_password               = gtk_menu_item_new_with_label(_("Password"));
@@ -317,6 +352,10 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_results_in_swedish);
     gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_results_in_english);
     gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), gtk_separator_menu_item_new());
+    gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_club_text_club);
+    gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_club_text_country);
+    gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_club_text_both);
+    gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), gtk_separator_menu_item_new());
     gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_weights_to_pool_sheets);
     gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_mirror);
     gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_auto_arrange);
@@ -328,9 +367,18 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     g_signal_connect(G_OBJECT(preference_show_connections),       "activate", G_CALLBACK(show_node_connections), 0);
     g_signal_connect(G_OBJECT(preference_auto_sheet_update),      "activate", G_CALLBACK(toggle_automatic_sheet_update), 0);
     //g_signal_connect(G_OBJECT(preference_auto_web_update),        "activate", G_CALLBACK(toggle_automatic_web_page_update), 0);
+
     g_signal_connect(G_OBJECT(preference_results_in_finnish),     "activate", G_CALLBACK(set_lang), (gpointer)LANG_FI);
     g_signal_connect(G_OBJECT(preference_results_in_swedish),     "activate", G_CALLBACK(set_lang), (gpointer)LANG_SW);
     g_signal_connect(G_OBJECT(preference_results_in_english),     "activate", G_CALLBACK(set_lang), (gpointer)LANG_EN);
+
+    g_signal_connect(G_OBJECT(preference_club_text_club),    "activate", 
+		     G_CALLBACK(set_club_text), (gpointer)CLUB_TEXT_CLUB);
+    g_signal_connect(G_OBJECT(preference_club_text_country), "activate", 
+		     G_CALLBACK(set_club_text), (gpointer)CLUB_TEXT_COUNTRY);
+    g_signal_connect(G_OBJECT(preference_club_text_both),    "activate", 
+		     G_CALLBACK(set_club_text), (gpointer)(CLUB_TEXT_CLUB|CLUB_TEXT_COUNTRY));
+
     g_signal_connect(G_OBJECT(preference_weights_to_pool_sheets), "activate", G_CALLBACK(toggle_weights_in_sheets), 0);
     g_signal_connect(G_OBJECT(preference_sheet_font),             "activate", G_CALLBACK(font_dialog), 0);
     g_signal_connect(G_OBJECT(preference_password),               "activate", G_CALLBACK(set_webpassword_dialog), 0);
@@ -455,6 +503,36 @@ void set_preferences(void)
     default:
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(preference_results_in_finnish), TRUE);
     }
+
+    error = NULL;
+    x1 = g_key_file_get_integer(keyfile, "preferences", "clubtext", &error);
+    if (!error)
+        club_text = x1;
+    else
+        club_text = CLUB_TEXT_CLUB;
+
+    if (club_text == CLUB_TEXT_CLUB)
+        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(preference_club_text_club), TRUE);
+    else if (club_text == CLUB_TEXT_COUNTRY)
+        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(preference_club_text_country), TRUE);
+    else if (club_text == (CLUB_TEXT_CLUB|CLUB_TEXT_COUNTRY))
+        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(preference_club_text_both), TRUE);
+
+    error = NULL;
+    x1 = g_key_file_get_integer(keyfile, "preferences", "drawsystem", &error);
+    if (!error)
+        draw_system = x1;
+    else
+        draw_system = DRAW_INTERNATIONAL;
+
+    if (draw_system == DRAW_INTERNATIONAL)
+        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(draw_international), TRUE);
+    else if (draw_system == DRAW_FINNISH)
+        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(draw_finnish), TRUE);
+    else if (draw_system == DRAW_SWEDISH)
+        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(draw_swedish), TRUE);
+    else if (draw_system == DRAW_ESTONIAN)
+        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(draw_estonian), TRUE);
 }
 
 static void change_menu_label(GtkWidget *item, const gchar *new_text)
@@ -533,6 +611,10 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     }
 
     change_menu_label(draw_all_categories, _("Draw All Categories"));
+    change_menu_label(draw_international,  _("International System"));
+    change_menu_label(draw_finnish,        _("Finnish System"));
+    change_menu_label(draw_swedish,        _("Swedish System"));
+    change_menu_label(draw_estonian,       _("Estonian System"));
 
     change_menu_label(results_print_all             , _("Print All (Web And PDF)"));
     change_menu_label(results_print_schedule_printer, _("Print Schedule to Printer"));
@@ -552,6 +634,10 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(preference_results_in_finnish    , _("Results in Finnish"));
     change_menu_label(preference_results_in_swedish    , _("Results in Swedish"));
     change_menu_label(preference_results_in_english    , _("Results in English"));
+
+    change_menu_label(preference_club_text_club        , _("Club Name Only"));
+    change_menu_label(preference_club_text_country     , _("Country Name Only"));
+    change_menu_label(preference_club_text_both        , _("Both Club and Country"));
 
     change_menu_label(preference_weights_to_pool_sheets, _("Weights Visible in Pool Sheets"));
     change_menu_label(preference_sheet_font            , _("Sheet Font"));

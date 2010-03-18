@@ -59,14 +59,52 @@
 
 #define NUM_TATAMIS 8
 
-#define SYSTEM_MASK      0x000f0000
-#define COMPETITORS_MASK 0x0000ffff
-#define SYSTEM_POOL      0x00010000
-#define SYSTEM_DPOOL     0x00020000
-#define SYSTEM_FRENCH_8  0x00030000
-#define SYSTEM_FRENCH_16 0x00040000
-#define SYSTEM_FRENCH_32 0x00050000
-#define SYSTEM_FRENCH_64 0x00060000
+#define COMPETITORS_MASK   0x0000ffff
+#define SYSTEM_MASK        0x000f0000
+#define SYSTEM_MASK_SHIFT  16
+#define SYSTEM_POOL        0x00010000
+#define SYSTEM_DPOOL       0x00020000
+#define SYSTEM_FRENCH_8    0x00030000
+#define SYSTEM_FRENCH_16   0x00040000
+#define SYSTEM_FRENCH_32   0x00050000
+#define SYSTEM_FRENCH_64   0x00060000
+#define SYSTEM_TABLE_MASK  0x00f00000
+#define SYSTEM_TABLE_SHIFT 20
+#define SYSTEM_WISH_MASK   0x0f000000
+#define SYSTEM_WISH_SHIFT  24
+
+enum tables {
+    TABLE_DOUBLE_REPECHAGE = 0,
+    TABLE_SWE_DUBBELT_AATERKVAL,
+    TABLE_SWE_DIREKT_AATERKVAL,
+    TABLE_EST_D_KLASS,
+    TABLE_NO_REPECHAGE,
+    TABLE_SWE_ENKELT_AATERKVAL,
+    NUM_TABLES
+};
+
+enum cat_systems {
+    CAT_SYSTEM_DEFAULT = 0,
+    CAT_SYSTEM_POOL,
+    CAT_SYSTEM_DPOOL,
+    CAT_SYSTEM_REPECHAGE,
+    CAT_SYSTEM_DUBBELT_AATERKVAL,
+    CAT_SYSTEM_DIREKT_AATERKVAL,
+    CAT_SYSTEM_EST_D_KLASS,
+    CAT_SYSTEM_NO_REPECHAGE,
+    CAT_SYSTEM_ENKELT_AATERKVAL,
+    NUM_SYSTEMS
+};
+
+enum french_systems {
+    FRENCH_8 = 0,
+    FRENCH_16,
+    FRENCH_32,
+    FRENCH_64,
+    NUM_FRENCH
+};
+
+#define NUM_MATCHES 128
 
 #define NO_COMPETITOR  0
 #define GHOST          1
@@ -125,11 +163,13 @@ enum {
     COL_BIRTHYEAR,
     COL_BELT,
     COL_CLUB,
+    COL_COUNTRY,
     COL_WCLASS,
     COL_WEIGHT,
     COL_VISIBLE,
     COL_CATEGORY,
     COL_DELETED,
+    COL_ID,
     NUM_COLS
 };
 
@@ -138,7 +178,8 @@ enum {
     SORTID_WEIGHT,
     SORTID_CLUB,
     SORTID_WCLASS,
-    SORTID_BELT
+    SORTID_BELT,
+    SORTID_COUNTRY
 };
 
 enum comments {
@@ -245,6 +286,21 @@ enum button_responses {
     Q_QUIT
 };
 
+// Club text is composed of club name and/or country name.
+// Also abbreviation and club address may be used.
+#define CLUB_TEXT_CLUB         1
+#define CLUB_TEXT_COUNTRY      2
+#define CLUB_TEXT_ABBREVIATION 4
+#define CLUB_TEXT_ADDRESS      8
+
+// Default drawing system
+enum default_drawing_system {
+    DRAW_INTERNATIONAL,
+    DRAW_FINNISH,
+    DRAW_SWEDISH,
+    DRAW_ESTONIAN
+};
+
 struct judoka {
     gint          index;
     const  gchar *last;
@@ -259,6 +315,8 @@ struct judoka {
     gboolean      visible;
     const gchar  *category;
     guint         deleted;
+    const gchar  *country;
+    const gchar  *id;
 };
 
 struct match {
@@ -362,6 +420,7 @@ struct competitor_data {
 
 struct club_data {
     gchar *name;
+    gchar *country;
     gint gold;
     gint silver;
     gint bronze;
@@ -371,10 +430,17 @@ struct club_data {
     struct club_data *next;
 };
 
+struct club_name_data {
+    gchar *name;
+    gchar *abbreviation;
+    gchar *address;
+};
+
 struct paint_data {
     cairo_t *c;
     gint     category;
     gint     page;
+    gint     systm;
     gdouble  paper_width;
     gdouble  paper_height;
     gdouble  total_width;
@@ -392,7 +458,7 @@ extern gchar *program_path;
 extern guint current_year;
 extern gchar *installation_dir;
 extern gulong my_ip_address, node_ip_addr;
-extern gint print_lang;
+extern gint print_lang, club_text, draw_system;
 extern gint number_of_tatamis;
 extern gint language;
 
@@ -419,11 +485,15 @@ extern char *belts[];
 extern gchar *cat_names[];
 extern gint official[][10];
 
-extern guint pools[8][11][2];
-extern guint competitors_1st_match[8][8][2];
-extern guint french_size[4];
-extern guint french_num_matches[4];
-extern gint french_matches[4][80][2];
+extern const guint pools[8][11][2];
+//extern guint competitors_1st_match[8][8][2];
+//extern const guint french_size[NUM_FRENCH];
+extern const guint french_num_matches[NUM_TABLES][NUM_FRENCH];
+extern const gint french_matches[NUM_TABLES][NUM_FRENCH][NUM_MATCHES][2];
+extern const gint medal_matches[NUM_TABLES][NUM_FRENCH][3];
+extern const gchar french_64_matches_to_page[NUM_TABLES][NUM_MATCHES];
+extern const gint result_y_position[NUM_TABLES][NUM_FRENCH];
+extern const gint repechage_start[NUM_TABLES][NUM_FRENCH][2];
 extern struct next_match_info next_matches_info[NUM_TATAMIS][2];
 
 extern FILE *result_file;
@@ -506,6 +576,8 @@ extern void show_note(gchar *format, ...);
 extern void print_time(gchar *fname, gint lineno);
 extern gint timeval_subtract(GTimeVal *result, GTimeVal *x, GTimeVal *y);
 extern gboolean valid_ascii_string(const gchar *s);
+extern const gchar *get_club_text(struct judoka *j, gint flags);
+
 
 /* db */
 
@@ -522,8 +594,12 @@ extern void db_init(const char *db);
 extern void db_matches_init(void);
 extern void db_save_config(void);
 extern void set_configuration(void);
+
 extern gint db_exec(const char *dbn, char *cmd, void *data, void *dbcb);
 extern void db_exec_str(void *data, void *dbcb, gchar *format, ...);
+extern gint db_open(void);
+extern void db_close(void);
+extern gint db_cmd(void *data, void *dbcb, gchar *format, ...);
 
 extern void db_read_judokas(void);
 extern void db_add_judoka(int num, struct judoka *j);
@@ -605,6 +681,7 @@ extern int get_output_directory(void);
 extern void make_next_matches_html(void);
 extern void update_category_status_info(gint category);
 extern void update_category_status_info_all(void);
+extern gint get_cat_system(gint index);
 
 /* set_one_judoka */
 extern gint set_category(GtkTreeIter *iter, guint index, 
@@ -743,9 +820,14 @@ extern time_t avl_get_competitor_last_match_time(gint index);
 extern void avl_set_competitor_status(gint index, gint status);
 extern gint avl_get_competitor_status(gint index);
 extern void init_club_tree(void);
-extern void club_stat_add(const gchar *club, gint num);
+extern void club_stat_add(const gchar *club, const gchar *country, gint num);
 extern void club_stat_print(FILE *f);
 extern const gchar *utf8_to_html(const gchar *txt);
+extern void init_club_name_tree(void);
+extern void club_name_set(const gchar *club, 
+			  const gchar *abbr,
+			  const gchar *address);
+extern struct club_name_data *club_name_get(const gchar *club);
 
 /* match_graph */
 extern void set_match_graph_page(GtkWidget *notebook);
@@ -774,5 +856,10 @@ extern void print_matches(GtkWidget *menuitem, gpointer userdata);
 
 /* print_texts */
 extern gchar *print_texts[][3];
+
+/* match-data */
+extern gchar *get_system_name_for_menu(gint num);
+extern gint get_system_number_by_menu_pos(gint num);
+extern gint get_system_menu_selection(gint active);
 
 #endif

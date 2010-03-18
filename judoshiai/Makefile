@@ -7,7 +7,7 @@ OBJS = main.o competitors.o sheets.o set-one-judoka.o sqlite3.o \
        completion.o another-shiai.o avl.o httpp.o httpd.o import.o set-password.o \
        trees.o match-graph.o search.o menus.o menuacts.o \
        sql-dialog.o drawing.o print.o print-texts.o db-competitors.o db-categories.o \
-       db-matches.o db-table.o write-results.o
+       db-matches.o db-table.o write-results.o match-data.o
 
 #PROF=-pg
 PROF=

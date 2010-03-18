@@ -34,13 +34,15 @@ gint set_category(GtkTreeIter *iter, guint index,
     j.first = "";
     j.birthyear = group;
     j.club = "";
+    j.country = "";
     j.regcategory = "";
     j.belt = tatami;
     j.weight = 0;
     j.visible = FALSE;
     j.category = "";
     j.deleted = 0;
-        
+    j.id = "";
+
     put_data_by_iter(&j, iter);
 
     return j.index;

@@ -307,7 +307,7 @@ static void paint_weight_notes(struct paint_data *pd)
 
     numrows = db_get_table("select * from competitors "
                            "where \"deleted\"&1=0 "
-                           "order by \"club\",\"last\",\"first\" asc");
+                           "order by \"country\",\"club\",\"last\",\"first\" asc");
     if (numrows < 0)
         return;
 
@@ -354,12 +354,13 @@ static void paint_weight_notes(struct paint_data *pd)
             gchar *last = db_get_data(row, "last");
             gchar *first = db_get_data(row, "first");
             gchar *club = db_get_data(row, "club");
+            gchar *country = db_get_data(row, "country");
             gchar *cat = db_get_data(row, "regcategory");
             gchar *id = db_get_data(row, "index");
 
             sprintf(id_str, "%04d", atoi(id));
 
-            snprintf(buf, sizeof(buf), "%s    %s", cat, club);
+            snprintf(buf, sizeof(buf), "%s    %s", cat, country && country[0] ? country : club);
             cairo_move_to(pd->c, x, y);
             cairo_show_text(pd->c, buf);
 
@@ -898,8 +899,8 @@ void print_matches(GtkWidget *menuitem, gpointer userdata)
 
             fprintf(f, "\"%s\",\"%d\",\"%s %s, %s\",\"%s %s, %s\"",
                     c?c->last:"", number,
-                    j1?j1->first:"", j1?j1->last:"", j1?j1->club:"",
-                    j2?j2->first:"", j2?j2->last:"", j2?j2->club:"");
+                    j1?j1->first:"", j1?j1->last:"", j1?get_club_text(j1, 0):"",
+                    j2?j2->first:"", j2?j2->last:"", j2?get_club_text(j2, 0):"");
             if (pr)
                 fprintf(f, ",\"%d-%d\"", points_b, points_w);
             if (pi)

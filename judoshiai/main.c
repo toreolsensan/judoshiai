@@ -43,7 +43,7 @@ gchar *installation_dir = NULL;
 GKeyFile *keyfile;
 gchar *conffile, *lockfile;
 GCompletion *club_completer;
-gint print_lang = 0;
+gint print_lang = 0, club_text = 0, draw_system = 0;
 gboolean first_instance = FALSE;
 gint number_of_tatamis = 3;
 gint language = LANG_FI;
@@ -68,6 +68,7 @@ static gboolean delete_event( GtkWidget *widget,
 }
 
 extern void print_stat(void);
+extern void db_close(void);
 
 /* Another callback */
 void destroy( GtkWidget *widget,
@@ -368,6 +369,7 @@ ok:
     gtk_widget_show_all(main_window);
 #endif
 
+    init_club_name_tree();
     club_completer = club_completer_new();
 
     set_font("Arial 12");

@@ -184,7 +184,9 @@ void msg_received(struct message *input_msg)
             output_msg.u.name_info.index = input_msg->u.name_req.index;
             strncpy(output_msg.u.name_info.last, j->last, sizeof(output_msg.u.name_info.last)-1);
             strncpy(output_msg.u.name_info.first, j->first, sizeof(output_msg.u.name_info.first)-1);
-            strncpy(output_msg.u.name_info.club, j->club, sizeof(output_msg.u.name_info.club)-1);
+            strncpy(output_msg.u.name_info.club, 
+		    j->country && j->country[0] ? j->country : j->club, 
+		    sizeof(output_msg.u.name_info.club)-1);
             send_packet(&output_msg);
             free_judoka(j);
         }
@@ -346,7 +348,9 @@ gpointer node_thread(gpointer args)
     gint reuse = 1;
     fd_set read_fd, fds;
 
+#ifndef WIN32
     signal(SIGPIPE, SIG_IGN);
+#endif
 
     if ((node_fd = socket(AF_INET, SOCK_STREAM, 0)) == INVALID_SOCKET) {
         perror("serv socket");

@@ -118,6 +118,18 @@ GCompletion *club_completer_new(void)
 
         if (strlen(line) < 2)
             continue;
+
+	p1 = strchr(line, '=');
+	if (p1) {
+	    *p1 = 0;
+	    p1++;
+	    gchar *p2 = strchr(p1, '>');
+	    if (p2) {
+		*p2 = 0;
+		p2++;
+	    }
+	    club_name_set(line, p1, p2 ? p2 : "");
+	}
 		
         items = g_list_append(items, g_strdup(line));
     }

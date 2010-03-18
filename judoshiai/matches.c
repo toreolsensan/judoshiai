@@ -293,23 +293,6 @@ static void comment_cell_data_func (GtkTreeViewColumn *col,
     }
 }  
 
-#if 0
-static void remove_matches(GtkWidget *menuitem, gpointer userdata)
-{
-    guint category = (guint)userdata;
-
-    if (db_matched_matches_exist(category)) {
-        show_message(_("Matches matched. Clear the results first."));
-        return;
-    }
-
-    db_set_system(category, 0);
-    db_remove_matches(category);
-    update_category_status_info((gint)userdata);
-    matches_refresh();
-}
-#endif
-
 #define IGNORE_MATCHES(_i) ((ju[c[_i]]->deleted & HANSOKUMAKE) && all[c[_i]] == FALSE)
 #define APPROVE_MATCHES(_i) (((ju[c[_i]]->deleted & HANSOKUMAKE) == 0) || all[c[_i]])
 
@@ -351,8 +334,8 @@ static void remove_matches(GtkWidget *menuitem, gpointer userdata)
 
 #define WINNER_OR_LOSER(x) (x < 0 ? LOSER_1(-x) : WINNER_1(x))
 
-#define PREV_BLUE(_x) french_matches[sys][_x][0]
-#define PREV_WHITE(_x) french_matches[sys][_x][1]
+#define PREV_BLUE(_x) french_matches[table][sys][_x][0]
+#define PREV_WHITE(_x) french_matches[table][sys][_x][1]
 
 #define GET_PREV(_x) (_x < 0 ?                                          \
                       (m[-_x].blue_points ? PREV_WHITE(-_x) : PREV_BLUE(-_x)) : \
@@ -361,10 +344,17 @@ static void remove_matches(GtkWidget *menuitem, gpointer userdata)
 #define CAN_WIN_H (yes[c[j]] && (ju[c[j]]->deleted & HANSOKUMAKE) == 0)
 #define CAN_WIN (yes[c[j]])
 
-#define CHECK_HANSOKUMAKE(_to, _from)  do {                     \
+/*
+#define COPY_PLAYER(_to, _from)  do {                     \
         _to = _from;                                            \
         if (db_has_hansokumake(_to)) _to = GHOST; } while (0)
-
+*/
+#define COPY_PLAYER(_to, _which, _from)  do {				\
+	if (!MATCHED(_to))						\
+	    m[_to]._which = _from;					\
+	else if (m[_to]._which != _from)				\
+	    g_print("MISMATCH match=%d old=%d new=%d\n", _to, m[_to]._which, _from); \
+    } while (0)
 
 void get_pool_winner(gint num, gint c[], gboolean yes[], 
                      gint wins[], gint pts[], 
@@ -659,115 +649,106 @@ out:
     empty_pool_struct(&pm);
 }
 
-gint french_matches[4][80][2] = {
-    /* 8 competitors */
-    {
-        {0,0},
-        /*  01,     02,     03,     04,     05,     06,     07,     08,     09,     10 */
-        { 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 1, 2},{ 3, 4},{-1,-2},{-3,-4},{ 7,-6},{ 8,-5},
-        { 5, 6}
-    },
-    /* <= 16 competitors */
-    {
-        {0,0},
-        /*  01,     02,     03,     04,     05,     06,     07,     08,     09,     10 */
-        { 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 1, 2},{ 3, 4},
-        /*  11,     12,     13,     14,     15,     16,     17,     18,     19,     20 */
-        { 5, 6},{ 7, 8},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 9,10},{11,12},{13,14},{15,16},
-        /*  21,     22,     23 */
-        {19,-18},{20,-17},{17,18}
-    },
-    /* <= 32 competitors */
-    {
-        {0,0},
-        /*  01,     02,     03,     04,     05,     06,     07,     08,     09,     10 */
-        { 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},
-        /*  11,     12,     13,     14,     15,     16,     17,     18,     19,     20 */
-        { 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 1, 2},{ 3, 4},{ 5, 6},{ 7, 8},
-        /*  21,     22,     23,     24,     25,     26,     27,     28,     29,     30 */
-        { 9,10},{11,12},{13,14},{15,16},{17,18},{19,20},{21,22},{23,24},{ 0, 0},{ 0, 0},
-        /*  31,     32,     33,     34,     35,     36,     37,     38,     39,     40 */
-        { 0, 0},{ 0, 0},{29, 0},{30, 0},{31, 0},{32, 0},{25,26},{27,28},{33,34},{35,36},
-        /*  41,     42,     43 */
-        {39,-38},{40,-37},{37,38}
-    },
-    /* <= 64 competitors */
-    {
-        {0,0},
-        /*  01,     02,     03,     04,     05,     06,     07,     08,     09,     10 */
-        { 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},
-        /*  11,     12,     13,     14,     15,     16,     17,     18,     19,     20 */
-        { 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},
-        /*  21,     22,     23,     24,     25,     26,     27,     28,     29,     30 */
-        { 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},
-        /*  31,     32,     33,     34,     35,     36,     37,     38,     39,     40 */
-        { 0, 0},{ 0, 0},{ 1, 2},{ 3, 4},{ 5, 6},{ 7, 8},{ 9,10},{11,12},{13,14},{15,16},
-        /*  41,     42,     43,     44,     45,     46,     47,     48,     49,     50 */
-        {17,18},{19,20},{21,22},{23,24},{25,26},{27,28},{29,30},{31,32},{33,34},{35,36},
-        /*  51,     52,     53,     54,     55,     56,     57,     58,     59,     60 */
-        {37,38},{39,40},{41,42},{43,44},{45,46},{47,48},{49,50},{51,52},{53,54},{55,56},
-        /*  61,     62,     63,     64,     65,     66,     67,     68,     69,     70 */
-        { 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{61, 0},{62, 0},{63, 0},{64, 0},{65,-57},{66,-58},
-        /*  71,     72,     73,     74,     75,     76,     77,     78,     79         */
-        {67,-59},{68,-60},{57,58},{59,60},{69,70},{71,72},{75,-74},{76,-73},{73,74}
-    }
-};
 
-static void set_repechage_16(struct match m[], gint i)
+static void set_repechage_16(struct match m[], gint table, gint i)
 {
     gint p;
     gint sys = 1;
+    
+    if (table == TABLE_SWE_ENKELT_AATERKVAL) {
+	if (!MATCHED_FRENCH(13+i))
+	    return;
 
-    if (!MATCHED_FRENCH(9+i))
-        return;
+	p = GET_PREV(13+i);
+	COPY_PLAYER((15+i), white, LOSER(p));
+	p = GET_PREV(p);
+	COPY_PLAYER((15+i), blue, LOSER(p));
+	set_match(&m[15+i]); db_set_match(&m[15+i]);
+    } else {
+	if (!MATCHED_FRENCH(9+i))
+	    return;
 
-    m[13+i].white = LOSER(9+i);
-    p = GET_PREV(9+i);
-    CHECK_HANSOKUMAKE(m[13+i].blue, LOSER(p));
-    set_match(&m[13+i]); db_set_match(&m[13+i]);
+	COPY_PLAYER((13+i), white, LOSER(9+i));
+	p = GET_PREV(9+i);
+	COPY_PLAYER((13+i), blue, LOSER(p));
+	set_match(&m[13+i]); db_set_match(&m[13+i]);
+    }
 }
 
-static void set_repechage_32(struct match m[], gint i)
+static void set_repechage_32(struct match m[], gint table, gint i)
 {
     gint p;
     gint sys = 2;
 
-    if (!MATCHED_FRENCH(25+i))
-        return;
+    if (table == TABLE_SWE_ENKELT_AATERKVAL) {
+	if (!MATCHED_FRENCH(29+i))
+	    return;
 
-    CHECK_HANSOKUMAKE(m[33+i].white, LOSER(25+i));
-    p = GET_PREV(25+i);
-    CHECK_HANSOKUMAKE(m[29+i].white, LOSER(p));
-    p = GET_PREV(p);
-    CHECK_HANSOKUMAKE(m[29+i].blue, LOSER(p));
-    set_match(&m[33+i]); db_set_match(&m[33+i]);
-    set_match(&m[29+i]); db_set_match(&m[29+i]);
+	p = GET_PREV(29+i);
+	COPY_PLAYER((33+i), white, LOSER(p));
+	p = GET_PREV(p);
+	COPY_PLAYER((31+i), white, LOSER(p));
+	p = GET_PREV(p);
+	COPY_PLAYER((31+i), blue, LOSER(p));
+	set_match(&m[33+i]); db_set_match(&m[33+i]);
+	set_match(&m[31+i]); db_set_match(&m[29+i]);
+    } else {
+	if (!MATCHED_FRENCH(25+i))
+	    return;
+
+	COPY_PLAYER((33+i), white, LOSER(25+i));
+	p = GET_PREV(25+i);
+	COPY_PLAYER((29+i), white, LOSER(p));
+	p = GET_PREV(p);
+	COPY_PLAYER((29+i), blue, LOSER(p));
+	set_match(&m[33+i]); db_set_match(&m[33+i]);
+	set_match(&m[29+i]); db_set_match(&m[29+i]);
+    }
 }
 
-static void set_repechage_64(struct match m[], gint i)
+static void set_repechage_64(struct match m[], gint table, gint i)
 {
     gint p;
     gint sys = 3;
 
-    if (!MATCHED_FRENCH(57+i))
-        return;
+    if (table == TABLE_SWE_ENKELT_AATERKVAL) {
+	if (!MATCHED_FRENCH(61+i))
+	    return;
 
-    CHECK_HANSOKUMAKE(m[69+i].white, LOSER(57+i));
-    p = GET_PREV(57+i);
-    CHECK_HANSOKUMAKE(m[65+i].white, LOSER(p));
-    p = GET_PREV(p);
-    CHECK_HANSOKUMAKE(m[61+i].white, LOSER(p));
-    p = GET_PREV(p);
-    CHECK_HANSOKUMAKE(m[61+i].blue, LOSER(p));
-    set_match(&m[69+i]); db_set_match(&m[69+i]);
-    set_match(&m[65+i]); db_set_match(&m[65+i]);
-    set_match(&m[61+i]); db_set_match(&m[61+i]);
+	p = GET_PREV(61+i);
+	COPY_PLAYER((67+i), white, LOSER(p));
+	p = GET_PREV(p);
+	COPY_PLAYER((65+i), white, LOSER(p));
+	p = GET_PREV(p);
+	COPY_PLAYER((63+i), white, LOSER(p));
+	p = GET_PREV(p);
+	COPY_PLAYER((63+i), blue, LOSER(p));
+	set_match(&m[67+i]); db_set_match(&m[69+i]);
+	set_match(&m[65+i]); db_set_match(&m[65+i]);
+	set_match(&m[63+i]); db_set_match(&m[61+i]);
+    } else {
+	if (!MATCHED_FRENCH(57+i))
+	    return;
+
+	COPY_PLAYER((69+i), white, LOSER(57+i));
+	p = GET_PREV(57+i);
+	COPY_PLAYER((65+i), white, LOSER(p));
+	p = GET_PREV(p);
+	COPY_PLAYER((61+i), white, LOSER(p));
+	p = GET_PREV(p);
+	COPY_PLAYER((61+i), blue, LOSER(p));
+	set_match(&m[69+i]); db_set_match(&m[69+i]);
+	set_match(&m[65+i]); db_set_match(&m[65+i]);
+	set_match(&m[61+i]); db_set_match(&m[61+i]);
+    }
 }
 
-static void update_french_matches(gint category, gint sys)
+static void update_french_matches(gint category, gint systm)
 {
     gint i;
-    struct match m[80];
+    struct match m[NUM_MATCHES];
+    gint sys = ((systm & SYSTEM_MASK) - SYSTEM_FRENCH_8) >> SYSTEM_MASK_SHIFT;
+    gint table = (systm & SYSTEM_TABLE_MASK) >> SYSTEM_TABLE_SHIFT;
 
     if (automatic_sheet_update || automatic_web_page_update)
         current_category = category;
@@ -776,28 +757,38 @@ static void update_french_matches(gint category, gint sys)
     memset(m, 0, sizeof(m));
     db_read_category_matches(category, m);
         
-    /* Repechage */
-    if (sys == 1) {
-        set_repechage_16(m, 0);
-        set_repechage_16(m, 1);
-        set_repechage_16(m, 2);
-        set_repechage_16(m, 3);
-    } else if (sys == 2) {
-        set_repechage_32(m, 0);
-        set_repechage_32(m, 1);
-        set_repechage_32(m, 2);
-        set_repechage_32(m, 3);
-    } else if (sys == 3) {
-        set_repechage_64(m, 0);
-        set_repechage_64(m, 1);
-        set_repechage_64(m, 2);
-        set_repechage_64(m, 3);
+    if (table == TABLE_DOUBLE_REPECHAGE || 
+	table == TABLE_SWE_DUBBELT_AATERKVAL ||
+	table == TABLE_SWE_ENKELT_AATERKVAL) {
+	/* Repechage */
+	if (sys == FRENCH_16) {
+	    set_repechage_16(m, table, 0);
+	    set_repechage_16(m, table, 1);
+	    if (table != TABLE_SWE_ENKELT_AATERKVAL) {
+		set_repechage_16(m, table, 2);
+		set_repechage_16(m, table, 3);
+	    }
+	} else if (sys == FRENCH_32) {
+	    set_repechage_32(m, table, 0);
+	    set_repechage_32(m, table, 1);
+	    if (table != TABLE_SWE_ENKELT_AATERKVAL) {
+		set_repechage_32(m, table, 2);
+		set_repechage_32(m, table, 3);
+	    }
+	} else if (sys == FRENCH_64) {
+	    set_repechage_64(m, table, 0);
+	    set_repechage_64(m, table, 1);
+	    if (table != TABLE_SWE_ENKELT_AATERKVAL) {
+		set_repechage_64(m, table, 2);
+		set_repechage_64(m, table, 3);
+	    }
+	}
     }
 
-    for (i = 1; i <= french_num_matches[sys]; i++) {
+    for (i = 1; i <= french_num_matches[table][sys]; i++) {
         if (1 || m[i].blue == 0 || m[i].white == 0) {
-            gint prev_match_blue = french_matches[sys][i][0];
-            gint prev_match_white = french_matches[sys][i][1];
+            gint prev_match_blue = french_matches[table][sys][i][0];
+            gint prev_match_white = french_matches[table][sys][i][1];
 
             m[i].category = category;
             m[i].number = i;
@@ -817,10 +808,11 @@ static void update_french_matches(gint category, gint sys)
                         m[i].blue_points = m[i].white_points = 0;
                     }
                     m[i].blue = WINNER_OR_LOSER(prev_match_blue);
-					
-                    if (db_has_hansokumake(m[i].blue) && prev_match_blue < 0)
+
+                    if (db_has_hansokumake(m[i].blue) && prev_match_blue < 0 &&
+			!MATCHED(i))
                         m[i].blue = GHOST;
-					
+
                 } else if (m[i].blue) {
                     if (MATCHED(i))
                         SHOW_MESSAGE("%s %s:%d (%d-%d) %s!", _("Match"),
@@ -836,11 +828,11 @@ static void update_french_matches(gint category, gint sys)
 
                 free_judoka(g);
             } else {
-                if (db_has_hansokumake(m[i].blue) &&
-                    m[i].white >= COMPETITOR &&
-                    m[i].blue_points == 0 && m[i].white_points == 0)
-                    m[i].white_points = 10;
-            }
+		if (db_has_hansokumake(m[i].blue) &&
+		    m[i].white >= COMPETITOR &&
+		    m[i].blue_points == 0 && m[i].white_points == 0)
+		    m[i].white_points = 10;
+	    }
                                 
             if (prev_match_white != 0) {
                 struct judoka *g = get_data(category);
@@ -856,10 +848,11 @@ static void update_french_matches(gint category, gint sys)
                         m[i].blue_points = m[i].white_points = 0;
                     }
                     m[i].white = WINNER_OR_LOSER(prev_match_white);
-					
-                    if (db_has_hansokumake(m[i].white) && prev_match_white < 0)
+
+                    if (db_has_hansokumake(m[i].white) && prev_match_white < 0 &&
+			!MATCHED(i))
                         m[i].white = GHOST;
-					
+
                 } else if (m[i].white) {
                     if (MATCHED(i))
                         SHOW_MESSAGE("%s %s:%d (%d-%d) %s!", _("Match"),
@@ -875,11 +868,11 @@ static void update_french_matches(gint category, gint sys)
 
                 free_judoka(g);
             } else {
-                if (db_has_hansokumake(m[i].white) &&
-                    m[i].blue >= COMPETITOR &&
-                    m[i].blue_points == 0 && m[i].white_points == 0)
-                    m[i].blue_points = 10;
-            }
+		if (db_has_hansokumake(m[i].white) &&
+		    m[i].blue >= COMPETITOR &&
+		    m[i].blue_points == 0 && m[i].white_points == 0)
+		    m[i].blue_points = 10;
+	    }
 
             set_match(&m[i]);
             db_set_match(&m[i]);
@@ -909,37 +902,40 @@ gint get_match_number_flag(gint category, gint number)
     if (!cat)
         return 0;
 
+    gint sys = ((cat->system & SYSTEM_MASK) - SYSTEM_FRENCH_8) >> SYSTEM_MASK_SHIFT;
+    gint table = (cat->system & SYSTEM_TABLE_MASK) >> SYSTEM_TABLE_SHIFT;
+
     gint matchnum = 1000;
 			
     switch (cat->system & SYSTEM_MASK) {
+    case SYSTEM_POOL:
+	return 0;
+
     case SYSTEM_DPOOL:
         if ((cat->system & COMPETITORS_MASK) == 6)
             matchnum = 9;
         else
             matchnum = 12;
-        break;
-    case SYSTEM_FRENCH_8:
-        matchnum = 11;
-        break;
-    case SYSTEM_FRENCH_16:
-        matchnum = 23;
-        break;
-    case SYSTEM_FRENCH_32:
-        matchnum = 43;
-        break;
-    case SYSTEM_FRENCH_64:
-        matchnum = 79;
-        break;
-    }
 
-    if (number == matchnum - 2)
-        return (cat->system & SYSTEM_MASK) == SYSTEM_DPOOL ? 
-            MATCH_FLAG_SEMIFINAL_A : MATCH_FLAG_BRONZE_A;
-    else if (number == matchnum - 1)
-        return (cat->system & SYSTEM_MASK) == SYSTEM_DPOOL ?
-            MATCH_FLAG_SEMIFINAL_B : MATCH_FLAG_BRONZE_B;
-    else if (number == matchnum)
-        return MATCH_FLAG_GOLD;
+	if (number == matchnum - 2)
+	    return MATCH_FLAG_SEMIFINAL_A;
+	else if (number == matchnum - 1)
+	    return MATCH_FLAG_SEMIFINAL_B;
+	else if (number == matchnum)
+	    return MATCH_FLAG_GOLD;
+	return 0;
+
+    case SYSTEM_FRENCH_8:
+    case SYSTEM_FRENCH_16:
+    case SYSTEM_FRENCH_32:
+    case SYSTEM_FRENCH_64:
+	if (number == medal_matches[table][sys][0])
+	    return MATCH_FLAG_BRONZE_A;
+	else if (number == medal_matches[table][sys][1])
+	    return MATCH_FLAG_BRONZE_B;
+	else if (number == medal_matches[table][sys][2])
+	    return MATCH_FLAG_GOLD;
+    }
 
     return 0;
 }
@@ -1020,7 +1016,7 @@ void send_matches(gint tatami)
 void update_matches_small(guint category, gint sys_or_tatami)
 {
     if (sys_or_tatami == 0)
-        sys_or_tatami = db_get_system(category);
+        sys_or_tatami = get_cat_system(category);
 
     switch (sys_or_tatami & SYSTEM_MASK) {
     case SYSTEM_POOL:
@@ -1031,7 +1027,7 @@ void update_matches_small(guint category, gint sys_or_tatami)
     case SYSTEM_FRENCH_16:
     case SYSTEM_FRENCH_32:
     case SYSTEM_FRENCH_64:
-        update_french_matches(category, ((sys_or_tatami & SYSTEM_MASK) - SYSTEM_FRENCH_8)>>16);
+        update_french_matches(category, sys_or_tatami);
         break;
     }
 }
@@ -1055,7 +1051,7 @@ void update_matches(guint category, gint sys, gint tatami)
         case SYSTEM_FRENCH_16:
         case SYSTEM_FRENCH_32:
         case SYSTEM_FRENCH_64:
-            update_french_matches(category, ((sys & SYSTEM_MASK) - SYSTEM_FRENCH_8)>>16);
+            update_french_matches(category, sys);
             break;
         }
     }
@@ -1110,24 +1106,24 @@ void update_matches(guint category, gint sys, gint tatami)
                      "%s", g->last);
             snprintf(msg.u.next_match.blue_1, 
                      sizeof(msg.u.next_match.blue_1),
-                     "%s %s, %s", j1->first, j1->last, j1->club);
+                     "%s %s, %s", j1->first, j1->last, get_club_text(j1, CLUB_TEXT_ABBREVIATION));
             snprintf(msg.u.next_match.white_1, sizeof(msg.u.next_match.white_1),
-                     "%s %s, %s", j2->first, j2->last, j2->club);
+                     "%s %s, %s", j2->first, j2->last, get_club_text(j2, CLUB_TEXT_ABBREVIATION));
 
             snprintf(buf, sizeof(buf), "%s: %s: %s %s, %s - %s %s, %s", _("Match"), 
                      g->last, 
-                     j1->first, j1->last, j1->club,
-                     j2->first, j2->last, j2->club);
+                     j1->first, j1->last, get_club_text(j1, 0),
+                     j2->first, j2->last, get_club_text(j2, 0));
 
             if (tatami > 0 && tatami <= NUM_TATAMIS) {
                 gtk_label_set_text(GTK_LABEL(next_match[tatami-1][0]), buf); 
                 COPY_MATCH_INFO(category, tatami, 0, g->last); 
                 COPY_MATCH_INFO(blue_first, tatami, 0, j1->first); 
                 COPY_MATCH_INFO(blue_last, tatami, 0, j1->last); 
-                COPY_MATCH_INFO(blue_club, tatami, 0, j1->club); 
+                COPY_MATCH_INFO(blue_club, tatami, 0, get_club_text(j1, 0)); 
                 COPY_MATCH_INFO(white_first, tatami, 0, j2->first); 
                 COPY_MATCH_INFO(white_last, tatami, 0, j2->last); 
-                COPY_MATCH_INFO(white_club, tatami, 0, j2->club); 
+                COPY_MATCH_INFO(white_club, tatami, 0, get_club_text(j2, 0)); 
                 next_matches_info[tatami-1][0].catnum = nm[0].category;
                 next_matches_info[tatami-1][0].matchnum = nm[0].number;
                 next_matches_info[tatami-1][0].blue = nm[0].blue;
@@ -1174,21 +1170,23 @@ void update_matches(guint category, gint sys, gint tatami)
                      "%s", g->last);
             if (j1)
                 snprintf(msg.u.next_match.blue_2, sizeof(msg.u.next_match.blue_2),
-                         "%s %s, %s", j1->first, j1->last, j1->club);
+                         "%s %s, %s", j1->first, j1->last, 
+			 get_club_text(j1, CLUB_TEXT_ABBREVIATION));
             else
                 snprintf(msg.u.next_match.blue_2, sizeof(msg.u.next_match.blue_2), "?");
 
             if (j2)
                 snprintf(msg.u.next_match.white_2, sizeof(msg.u.next_match.white_2),
-                         "%s %s, %s", j2->first, j2->last, j2->club);
+                         "%s %s, %s", j2->first, j2->last, 
+			 get_club_text(j2, CLUB_TEXT_ABBREVIATION));
             else
                 snprintf(msg.u.next_match.white_2, sizeof(msg.u.next_match.white_2), "?");
 
             if (j1 && j2)
                 snprintf(buf, sizeof(buf), "%s: %s: %s %s, %s - %s %s, %s", _("Preparing"), 
                          g->last, 
-                         j1->first, j1->last, j1->club, 
-                         j2->first, j2->last, j2->club);
+                         j1->first, j1->last, get_club_text(j1, 0), 
+                         j2->first, j2->last, get_club_text(j2, 0));
             else
                 snprintf(buf, sizeof(buf), "%s: %s: ? - ?", _("Preparing"), g->last); 
 
@@ -1197,10 +1195,10 @@ void update_matches(guint category, gint sys, gint tatami)
                 COPY_MATCH_INFO(category, tatami, 1, g->last); 
                 COPY_MATCH_INFO(blue_first, tatami, 1, j1 ? j1->first : "?"); 
                 COPY_MATCH_INFO(blue_last, tatami, 1, j1 ? j1->last : "?"); 
-                COPY_MATCH_INFO(blue_club, tatami, 1, j1 ? j1->club : "?"); 
+                COPY_MATCH_INFO(blue_club, tatami, 1, j1 ? get_club_text(j1, 0) : "?"); 
                 COPY_MATCH_INFO(white_first, tatami, 1, j2 ? j2->first : "?"); 
                 COPY_MATCH_INFO(white_last, tatami, 1, j2 ? j2->last : "?"); 
-                COPY_MATCH_INFO(white_club, tatami, 1, j2 ? j2->club : "?"); 
+                COPY_MATCH_INFO(white_club, tatami, 1, j2 ? get_club_text(j2, 0) : "?"); 
                 next_matches_info[tatami-1][1].catnum = nm[1].category;
                 next_matches_info[tatami-1][1].matchnum = nm[1].number;
                 next_matches_info[tatami-1][1].blue = nm[1].blue;
@@ -1418,13 +1416,6 @@ void set_points_and_score(struct message *msg)
         return;
 
     if (winscore != losescore) {
-        /* In pool matches only the differentiating score is meaningfull. */
-#if 0
-        if (numcompetitors >= 8 ||
-            (numcompetitors == 6 && number > 6) ||
-            (numcompetitors == 7 && number > 9))
-            losescore = 0;
-#endif
         if ((winscore & 0xf0000) && (losescore & 0xf0000) == 0) points = 10;
         else if ((winscore & 0xf000) && (losescore & 0xf000) == 0) points = 7;
         else if ((winscore & 0xf00) > (losescore & 0xf00)) points = 5;

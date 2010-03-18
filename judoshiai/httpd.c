@@ -61,8 +61,10 @@ struct judoka unknown_judoka = {
     .last = "?",
     .first = "?",
     .club = "?",
+    .country = "",
     .regcategory = "?",
-    .category = "?"
+    .category = "?",
+    .id = ""
 };
 
 void sighandler(int sig)
@@ -327,10 +329,10 @@ void get_categories(http_parser_t *parser)
 
             gchar *b_first = g_convert(blue->first, -1, "ISO-8859-1", "UTF-8", NULL, &x, NULL);
             gchar *b_last = g_convert(blue->last, -1, "ISO-8859-1", "UTF-8", NULL, &x, NULL);
-            gchar *b_club = g_convert(blue->club, -1, "ISO-8859-1", "UTF-8", NULL, &x, NULL);
+            gchar *b_club = g_convert(get_club_text(blue, 0), -1, "ISO-8859-1", "UTF-8", NULL, &x, NULL);
             gchar *w_first = g_convert(white->first, -1, "ISO-8859-1", "UTF-8", NULL, &x, NULL);
             gchar *w_last = g_convert(white->last, -1, "ISO-8859-1", "UTF-8", NULL, &x, NULL);
-            gchar *w_club = g_convert(white->club, -1, "ISO-8859-1", "UTF-8", NULL, &x, NULL);
+            gchar *w_club = g_convert(get_club_text(white, 0), -1, "ISO-8859-1", "UTF-8", NULL, &x, NULL);
 
             sendf(s, "<tr %s><td><b>%s %d:</b></td><td><b>%s</b></td></tr>", 
                   bgcolor, _("Match"), k+1, cat->last);
@@ -344,7 +346,8 @@ void get_categories(http_parser_t *parser)
             }
 
             sendf(s, "<tr %s><td>%s %s<br>%s<br>&nbsp;</td><td>%s %s<br>%s<br>&nbsp;</td></tr>", 
-                  bgcolor, b_first, b_last, blue->club, w_first, w_last, white->club);
+                  bgcolor, b_first, b_last, get_club_text(blue, 0), 
+		  w_first, w_last, get_club_text(white, 0));
 			
             g_free(b_first);
             g_free(b_last);
@@ -676,8 +679,8 @@ void run_judotimer(http_parser_t *parser)
         gchar *b_last = g_convert(blue->last, -1, "ISO-8859-1", "UTF-8", NULL, &x, NULL);
         gchar *w_first = g_convert(white->first, -1, "ISO-8859-1", "UTF-8", NULL, &x, NULL);
         gchar *w_last = g_convert(white->last, -1, "ISO-8859-1", "UTF-8", NULL, &x, NULL);
-        gchar *b_club = g_convert(blue->club, -1, "ISO-8859-1", "UTF-8", NULL, &x, NULL);
-        gchar *w_club = g_convert(white->club, -1, "ISO-8859-1", "UTF-8", NULL, &x, NULL);
+        gchar *b_club = g_convert(get_club_text(blue, 0), -1, "ISO-8859-1", "UTF-8", NULL, &x, NULL);
+        gchar *w_club = g_convert(get_club_text(white, 0), -1, "ISO-8859-1", "UTF-8", NULL, &x, NULL);
 
         sendf(s, "%s\r\n", cat->last);
         if (k == 0 && !is_accepted(parser->address)) {

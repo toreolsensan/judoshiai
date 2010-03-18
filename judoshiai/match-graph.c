@@ -274,7 +274,7 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
                 cairo_show_text(c, j->first);
 
                 cairo_move_to(c, left+5, y_pos+3*BOX_HEIGHT+extents.height);
-                cairo_show_text(c, j->club);
+                cairo_show_text(c, get_club_text(j, 0));
                 free_judoka(j);
             }
             j = get_data(m->white);
@@ -305,7 +305,7 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
                 cairo_show_text(c, j->first);
 
                 cairo_move_to(c, left+5+colwidth/2, y_pos+3*BOX_HEIGHT+extents.height);
-                cairo_show_text(c, j->club);
+                cairo_show_text(c, get_club_text(j, 0));
                 free_judoka(j);
             }
 

@@ -48,6 +48,9 @@ struct judoka_widget {
     GtkWidget *ok;
     GtkWidget *seeding;
     GtkWidget *hansokumake;
+    GtkWidget *country;
+    GtkWidget *id;
+    GtkWidget *system;
 };
 
 static gboolean      editing_ongoing = FALSE;
@@ -71,6 +74,8 @@ static void judoka_edited_callback(GtkWidget *widget,
     struct judoka edited;
     struct judoka_widget *judoka_tmp = data;
     gint ix = judoka_tmp->index;
+    struct category_data *catdata = avl_get_category(ix);
+    gint system = catdata ? catdata->system : CAT_SYSTEM_DEFAULT << SYSTEM_WISH_SHIFT;
 
     memset(&edited, 0, sizeof(edited));
         
@@ -86,6 +91,9 @@ static void judoka_edited_callback(GtkWidget *widget,
 
     if (judoka_tmp->club)
         edited.club        = g_strdup(gtk_entry_get_text(GTK_ENTRY(judoka_tmp->club)));
+
+    if (judoka_tmp->country)
+        edited.country     = g_strdup(gtk_entry_get_text(GTK_ENTRY(judoka_tmp->country)));
 
     if (judoka_tmp->regcategory)
         edited.regcategory = g_strdup(gtk_entry_get_text(GTK_ENTRY(judoka_tmp->regcategory)));
@@ -106,6 +114,13 @@ static void judoka_edited_callback(GtkWidget *widget,
         gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(judoka_tmp->hansokumake)))
         edited.deleted |= HANSOKUMAKE;
 
+    if (judoka_tmp->id)
+        edited.id = g_strdup(gtk_entry_get_text(GTK_ENTRY(judoka_tmp->id)));
+
+    if (judoka_tmp->system)
+	system = (system & ~SYSTEM_WISH_MASK) | 
+	    (get_system_number_by_menu_pos(gtk_combo_box_get_active(GTK_COMBO_BOX(judoka_tmp->system)))
+	     << SYSTEM_WISH_SHIFT);
 
     if (event_id != GTK_RESPONSE_OK || edited.last == NULL || 
         edited.last[0] == 0 || edited.last[0] == '?')
@@ -189,6 +204,7 @@ static void judoka_edited_callback(GtkWidget *widget,
 			
             /* update database */
             db_update_category(edited.index, &edited);
+	    db_set_system(edited.index, system);
             //XXX???? db_read_categories();
             //XXX???? db_read_judokas();
         }
@@ -216,7 +232,9 @@ out:
     g_free((gpointer)edited.last);
     g_free((gpointer)edited.first);
     g_free((gpointer)edited.club);
+    g_free((gpointer)edited.country);
     g_free((gpointer)edited.regcategory);
+    g_free((gpointer)edited.id);
     g_free(data);
 
     editing_ongoing = FALSE;
@@ -254,14 +272,16 @@ void view_on_row_activated(GtkTreeView        *treeview,
         *first = NULL, 
         *club = NULL, 
         *regcategory = NULL,
-        *category = NULL;
+        *category = NULL,
+	*country = NULL,
+	*id = NULL;
     guint belt, index, birthyear;
     gint weight;
     gboolean visible;
     guint deleted;
     char weight_s[10], birthyear_s[10];
     GtkAccelGroup *accel_group;
-
+    struct category_data *catdata = NULL;
     /*if (editing_ongoing)
       return;*/
 
@@ -283,10 +303,14 @@ void view_on_row_activated(GtkTreeView        *treeview,
                                COL_VISIBLE, &visible,
                                COL_CATEGORY, &category,
                                COL_DELETED, &deleted,
+			       COL_COUNTRY, &country,
+			       COL_ID, &id,
                                -1);
             sprintf(weight_s, "%d,%02d", weight/1000, (weight%1000)/10);
             sprintf(birthyear_s, "%d", birthyear);
-        }
+
+	    catdata = avl_get_category(index);
+	}
     } else {
         visible = (gboolean) ((int)userdata == NEW_JUDOKA ? TRUE : FALSE);
         category = strdup("?");
@@ -336,36 +360,52 @@ void view_on_row_activated(GtkTreeView        *treeview,
         gtk_combo_box_set_active((GtkComboBox *)tmp, belt);
 
         judoka_tmp->club = set_entry(table, 4, _("Club:"), club);
-        judoka_tmp->regcategory = set_entry(table, 5, _("Category:"), regcategory);
-        judoka_tmp->weight = set_entry(table, 6, _("Weight:"), weight_s);
+        judoka_tmp->country = set_entry(table, 5, _("Country:"), country);
+        judoka_tmp->regcategory = set_entry(table, 6, _("Category:"), regcategory);
+        judoka_tmp->weight = set_entry(table, 7, _("Weight:"), weight_s);
         if (last && last[0])
             gtk_widget_grab_focus(judoka_tmp->weight);
 
         tmp = gtk_label_new(_("Seeding:"));
-        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, 7, 8);
+        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, 8, 9);
         judoka_tmp->seeding = tmp = gtk_combo_box_new_text();
         gtk_combo_box_append_text((GtkComboBox *)tmp, _("No seeding"));
         gtk_combo_box_append_text((GtkComboBox *)tmp, _("1"));
         gtk_combo_box_append_text((GtkComboBox *)tmp, _("2"));
         gtk_combo_box_append_text((GtkComboBox *)tmp, _("3"));
         gtk_combo_box_append_text((GtkComboBox *)tmp, _("4"));
-        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, 7, 8);
+        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, 8, 9);
         gtk_combo_box_set_active((GtkComboBox *)tmp, deleted >> 2);
 
         tmp = gtk_label_new("Hansoku-make:");
-        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, 8, 9);
+        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, 9, 10);
         judoka_tmp->hansokumake = gtk_check_button_new();
-        gtk_table_attach_defaults(GTK_TABLE(table), judoka_tmp->hansokumake, 1, 2, 8, 9);
+        gtk_table_attach_defaults(GTK_TABLE(table), judoka_tmp->hansokumake, 1, 2, 9, 10);
         if (deleted & HANSOKUMAKE)
             gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(judoka_tmp->hansokumake), TRUE);
+
+        judoka_tmp->id = set_entry(table, 10, _("Id:"), id);
 
         g_signal_connect(G_OBJECT(judoka_tmp->club), "key-press-event", 
                          G_CALLBACK(complete_cb), club_completer);
     } else {
         judoka_tmp->last = set_entry(table, 0, _("Category:"), last ? last : "");
 
-        tmp = gtk_label_new("Tatami:");
+        tmp = gtk_label_new(_("System:"));
         gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, 1, 2);
+        judoka_tmp->system = tmp = gtk_combo_box_new_text();
+
+	for (i = 0; i < NUM_SYSTEMS; i++)
+	    gtk_combo_box_append_text(GTK_COMBO_BOX(tmp), get_system_name_for_menu(i));
+
+        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, 1, 2);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(tmp), 
+				 catdata ? 
+				 get_system_menu_selection((catdata->system & SYSTEM_WISH_MASK) >> SYSTEM_WISH_SHIFT) :
+				 CAT_SYSTEM_DEFAULT);
+
+        tmp = gtk_label_new("Tatami:");
+        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, 2, 3);
         judoka_tmp->belt = tmp = gtk_combo_box_new_text();
         gtk_combo_box_append_text(GTK_COMBO_BOX(tmp), "?");
         for (i = 0; i < NUM_TATAMIS; i++) {
@@ -373,10 +413,10 @@ void view_on_row_activated(GtkTreeView        *treeview,
             sprintf(buf, "T %d", i+1);
             gtk_combo_box_append_text(GTK_COMBO_BOX(tmp), buf);
         }
-        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, 1, 2);
+        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, 2, 3);
         gtk_combo_box_set_active(GTK_COMBO_BOX(tmp), belt);
 
-        judoka_tmp->birthyear = set_entry(table, 2, _("Group:"), birthyear_s);
+        judoka_tmp->birthyear = set_entry(table, 3, _("Group:"), birthyear_s);
     }
 
     g_free(last); 
@@ -384,6 +424,8 @@ void view_on_row_activated(GtkTreeView        *treeview,
     g_free(club); 
     g_free(regcategory);
     g_free(category);
+    g_free(country);
+    g_free(id);
 
     gtk_widget_show_all(dialog);
     editing_ongoing = TRUE;
@@ -415,11 +457,13 @@ static GtkTreeModel *create_and_fill_model (void)
                                       G_TYPE_UINT,   /* birthyear */
                                       G_TYPE_UINT,   /* belt */
                                       G_TYPE_STRING, /* club */
+				      G_TYPE_STRING, /* country */
                                       G_TYPE_STRING, /* regcategory */
                                       G_TYPE_INT,    /* weight */
                                       G_TYPE_BOOLEAN,/* visible */
                                       G_TYPE_STRING, /* category */
-                                      G_TYPE_UINT    /* deleted */
+                                      G_TYPE_UINT,   /* deleted */
+				      G_TYPE_STRING  /* id */
         );
     current_model = (GtkTreeModel *)td.treestore;
     sortable = GTK_TREE_SORTABLE(current_model);
@@ -794,6 +838,21 @@ static GtkWidget *create_view_and_model(void)
     //gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (col), TRUE);
     gtk_tree_view_column_set_sort_column_id(GTK_TREE_VIEW_COLUMN(col), COL_CLUB);
 
+    /* --- Column country --- */
+
+    renderer = gtk_cell_renderer_text_new();
+    g_object_set (renderer, "xalign", 0.0, NULL);
+    col_offset = gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (view),
+                                                              -1, _("Country"),
+                                                              renderer, "text",
+                                                              COL_COUNTRY,
+                                                              "visible",
+                                                              COL_VISIBLE,
+                                                              NULL);
+    col = gtk_tree_view_get_column (GTK_TREE_VIEW (view), col_offset - 1);
+    //gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (col), TRUE);
+    gtk_tree_view_column_set_sort_column_id(GTK_TREE_VIEW_COLUMN(col), COL_COUNTRY);
+
     /* --- Column regcategory --- */
 
     renderer = gtk_cell_renderer_text_new();
@@ -822,6 +881,18 @@ static GtkWidget *create_view_and_model(void)
     gtk_tree_view_column_set_cell_data_func(col, renderer, weight_cell_data_func, NULL, NULL);
     //gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (col), TRUE);
     gtk_tree_view_column_set_sort_column_id(GTK_TREE_VIEW_COLUMN(col), COL_WEIGHT);
+
+    /* --- Column id --- */
+
+    renderer = gtk_cell_renderer_text_new();
+    g_object_set (renderer, "xalign", 0.0, NULL);
+    col_offset = gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (view),
+                                                              -1, _("Id"),
+                                                              renderer, "text",
+                                                              COL_ID,
+                                                              NULL);
+    col = gtk_tree_view_get_column (GTK_TREE_VIEW (view), col_offset - 1);
+    gtk_tree_view_column_set_sort_column_id(GTK_TREE_VIEW_COLUMN(col), COL_ID);
 
     /*****/
 
@@ -870,6 +941,11 @@ static GtkWidget *create_view_and_model(void)
                                      COL_BELT,
                                      sort_iter_compare_func,
                                      GINT_TO_POINTER(SORTID_BELT),
+                                     NULL);
+    gtk_tree_sortable_set_sort_func (GTK_TREE_SORTABLE(current_model),
+                                     COL_COUNTRY,
+                                     sort_iter_compare_func,
+                                     GINT_TO_POINTER(SORTID_COUNTRY),
                                      NULL);
 
     gtk_tree_view_set_search_column(GTK_TREE_VIEW(view), COL_LAST_NAME);
@@ -1039,6 +1115,21 @@ gint sort_iter_compare_func(GtkTreeModel *model,
                 ret = (weight1 > weight2) ? 1 : -1;
             }
         }
+    }
+    break;
+
+    case SORTID_COUNTRY:
+    {
+        gchar *club1, *club2, *country1, *country2;
+        gtk_tree_model_get(model, a, COL_CLUB, &club1, COL_COUNTRY, &country1, -1);
+        gtk_tree_model_get(model, b, COL_CLUB, &club2, COL_COUNTRY, &country2, -1);
+        ret = sort_by_name(country1, country2);
+	if (ret == 0)
+	    ret = sort_by_name(club1, club2);
+        g_free(club1);
+        g_free(club2);
+        g_free(country1);
+        g_free(country2);
     }
     break;
 
@@ -1382,11 +1473,18 @@ void set_competitors_col_titles(void)
     col = gtk_tree_view_get_column(GTK_TREE_VIEW(current_view), COL_CLUB-1);
     gtk_tree_view_column_set_title(col, _("Club"));
 
+    col = gtk_tree_view_get_column(GTK_TREE_VIEW(current_view), COL_COUNTRY-1);
+    gtk_tree_view_column_set_title(col, _("Country"));
+
     col = gtk_tree_view_get_column(GTK_TREE_VIEW(current_view), COL_WCLASS-1);
     gtk_tree_view_column_set_title(col, _("Reg. Category"));
 
     col = gtk_tree_view_get_column(GTK_TREE_VIEW(current_view), COL_WEIGHT-1);
     gtk_tree_view_column_set_title(col, _("Weight"));
+
+    col = gtk_tree_view_get_column(GTK_TREE_VIEW(current_view), COL_ID-1);
+    gtk_tree_view_column_set_title(col, _("Id"));
+
 
     if (competitor_label)
         gtk_label_set_text(GTK_LABEL(competitor_label), _("Competitors"));

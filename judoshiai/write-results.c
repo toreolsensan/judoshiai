@@ -22,13 +22,26 @@ static gint saved_competitors[SAVED_COMP_SIZE];
 static gint saved_competitor_cnt = 0;
 
 
-static void write_result(FILE *f, gint num, const gchar *first, const gchar *last, const gchar *club)
+static void write_result(FILE *f, gint num, const gchar *first, const gchar *last, 
+			 const gchar *club, const gchar *country)
 {
-    fprintf(f, "<tr><td>%d.</td><td>%s %s</td><td>%s</td></tr>\n", 
-            num, utf8_to_html(first), utf8_to_html(last), utf8_to_html(club));
+    if (club_text == (CLUB_TEXT_CLUB|CLUB_TEXT_COUNTRY))
+	fprintf(f, "<tr><td>%d.</td><td>%s %s</td><td>%s/%s</td></tr>\n", 
+		num, utf8_to_html(first), utf8_to_html(last), utf8_to_html(club), utf8_to_html(country));
+    else {
+	struct club_name_data *data = club_name_get(club);
+	if (club_text == CLUB_TEXT_CLUB && 
+	    data && data->address && data->address[0])
+	    fprintf(f, "<tr><td>%d.</td><td>%s %s</td><td>%s, %s</td></tr>\n", 
+		    num, utf8_to_html(first), utf8_to_html(last), 
+		    utf8_to_html(club), utf8_to_html(data->address));
+	else
+	    fprintf(f, "<tr><td>%d.</td><td>%s %s</td><td>%s</td></tr>\n", 
+		    num, utf8_to_html(first), utf8_to_html(last), utf8_to_html(club_text==CLUB_TEXT_CLUB ? club : country));
+    }
 
     if (create_statistics)
-        club_stat_add(club, num);
+        club_stat_add(club, country, num);
 }
 
 void write_competitor(FILE *f, const gchar *first, const gchar *last, const gchar *belt, 
@@ -159,7 +172,7 @@ static void pool_results(FILE *f, gint category, struct judoka *ctg, gint num_ju
         if (i <= 3 && 
             (pm.j[pm.c[i]]->deleted & HANSOKUMAKE) == 0) {
             write_result(f, i, pm.j[pm.c[i]]->first, 
-                         pm.j[pm.c[i]]->last, pm.j[pm.c[i]]->club);
+                         pm.j[pm.c[i]]->last, pm.j[pm.c[i]]->club, pm.j[pm.c[i]]->country);
         }
     }
 
@@ -204,19 +217,19 @@ static void dpool_results(FILE *f, gint category, struct judoka *ctg, gint num_j
     }
 
     if (gold && (j1 = get_data(gold))) {
-        write_result(f, 1, j1->first, j1->last, j1->club);
+        write_result(f, 1, j1->first, j1->last, j1->club, j1->country);
         free_judoka(j1);
     }
     if (gold && (j1 = get_data(silver))) {
-        write_result(f, 2, j1->first, j1->last, j1->club);
+        write_result(f, 2, j1->first, j1->last, j1->club, j1->country);
         free_judoka(j1);
     }
     if (gold && (j1 = get_data(bronze1))) {
-        write_result(f, 3, j1->first, j1->last, j1->club);
+        write_result(f, 3, j1->first, j1->last, j1->club, j1->country);
         free_judoka(j1);
     }
     if (gold && (j1 = get_data(bronze2))) {
-        write_result(f, 3, j1->first, j1->last, j1->club);
+        write_result(f, 3, j1->first, j1->last, j1->club, j1->country);
         free_judoka(j1);
     }
 
@@ -243,60 +256,43 @@ static void dpool_results(FILE *f, gint category, struct judoka *ctg, gint num_j
         ((m[_w].white_points && m[_w].blue > GHOST) ? m[_w].blue : 0)
 
 static void french_results(FILE *f, gint category, struct judoka *ctg,
-                           gint num_judokas, gint sys, gint pagenum)
+                           gint num_judokas, gint systm, gint pagenum)
 {
-    struct match m[80];
+    struct match m[NUM_MATCHES];
     struct judoka *j1;
     gint gold = 0, silver = 0, bronze1 = 0, bronze2 = 0, fifth1 = 0, fifth2 = 0;
+    gint sys = ((systm & SYSTEM_MASK) - SYSTEM_FRENCH_8)>>16;
+    gint table = (systm & SYSTEM_TABLE_MASK) >> SYSTEM_TABLE_SHIFT;
 
     memset(m, 0, sizeof(m));
     db_read_category_matches(category, m);
 
-    switch (sys) {
-    case 0:
-        GET_GOLD(11);
-        GET_BRONZE1(9);
-        GET_BRONZE2(10);
-        break;
-    case 1:
-        GET_GOLD(23);
-        GET_BRONZE1(21);
-        GET_BRONZE2(22);
-        break;
-    case 2:
-        GET_GOLD(43);
-        GET_BRONZE1(41);
-        GET_BRONZE2(42);
-        break;
-    case 3:
-        GET_GOLD(79);
-        GET_BRONZE1(77);
-        GET_BRONZE2(78);
-        break;
-    }
+    GET_GOLD(medal_matches[table][sys][2]);
+    GET_BRONZE1(medal_matches[table][sys][0]);
+    GET_BRONZE2(medal_matches[table][sys][1]);
 
     if (gold && (j1 = get_data(gold))) {
-        write_result(f, 1, j1->first, j1->last, j1->club);
+        write_result(f, 1, j1->first, j1->last, j1->club, j1->country);
         free_judoka(j1);
     }
     if (gold && (j1 = get_data(silver))) {
-        write_result(f, 2, j1->first, j1->last, j1->club);
+        write_result(f, 2, j1->first, j1->last, j1->club, j1->country);
         free_judoka(j1);
     }
     if (gold && (j1 = get_data(bronze1))) {
-        write_result(f, 3, j1->first, j1->last, j1->club);
+        write_result(f, 3, j1->first, j1->last, j1->club, j1->country);
         free_judoka(j1);
     }
     if (gold && (j1 = get_data(bronze2))) {
-        write_result(f, 3, j1->first, j1->last, j1->club);
+        write_result(f, 3, j1->first, j1->last, j1->club, j1->country);
         free_judoka(j1);
     }
     if (gold && (j1 = get_data(fifth1))) {
-        write_result(f, 5, j1->first, j1->last, j1->club);
+        write_result(f, 5, j1->first, j1->last, j1->club, j1->country);
         free_judoka(j1);
     }
     if (gold && (j1 = get_data(fifth2))) {
-        write_result(f, 5, j1->first, j1->last, j1->club);
+        write_result(f, 5, j1->first, j1->last, j1->club, j1->country);
         free_judoka(j1);
     }
 }
@@ -332,7 +328,7 @@ static void write_cat_result(FILE *f, gint category)
     case SYSTEM_FRENCH_32:
     case SYSTEM_FRENCH_64:
         french_results(f, category, ctg, num_judokas, 
-                       ((sys & SYSTEM_MASK) - SYSTEM_FRENCH_8)>>16, 0);
+                       sys, 0);
         break;
     }
 
@@ -672,9 +668,10 @@ static void init_club_data(void)
 
     for (k = 0; k < numrows; k++) {
         gchar *club = db_get_data(k, "club");
+        gchar *country = db_get_data(k, "country");
         if (!club)
             continue;
-        club_stat_add(club, 0);
+        club_stat_add(club, country, 0);
     }
 
     db_close_table();

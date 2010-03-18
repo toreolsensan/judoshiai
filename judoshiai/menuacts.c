@@ -259,6 +259,18 @@ void set_lang(GtkWidget *w, gpointer data)
     g_key_file_set_integer(keyfile, "preferences", "printlanguage", print_lang);
 }
 
+void set_club_text(GtkWidget *w, gpointer data)
+{
+    club_text = (gint)data;
+    g_key_file_set_integer(keyfile, "preferences", "clubtext", club_text);
+}
+
+void set_draw_system(GtkWidget *w, gpointer data)
+{
+    draw_system = (gint)data;
+    g_key_file_set_integer(keyfile, "preferences", "drawsystem", draw_system);
+}
+
 void toggle_automatic_sheet_update(GtkWidget *menu_item, gpointer data)
 {
     automatic_sheet_update = GTK_CHECK_MENU_ITEM(menu_item)->active;

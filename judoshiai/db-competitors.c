@@ -58,6 +58,10 @@ static int db_callback(void *data, int argc, char **argv, char **azColName)
             j.category = argv[i] ? argv[i] : "?";
         else if (IS(deleted))
             j.deleted = argv[i] ? atoi(argv[i]) : 0;
+        else if (IS(country))
+            j.country = argv[i] ? argv[i] : "";
+        else if (IS(id))
+            j.id = argv[i] ? argv[i] : "";
     }
     //g_print("\n");
 
@@ -83,7 +87,9 @@ static int db_callback(void *data, int argc, char **argv, char **azColName)
         const gchar *b = "?";
         if (j.belt >= 0 && j.belt < 14)
             b = belts[j.belt];
-        write_competitor(print_file, j.first, j.last, b, j.club, j.category, j.index);
+        write_competitor(print_file, j.first, j.last, b, 
+			 get_club_text(&j, CLUB_TEXT_ADDRESS), 
+			 j.category, j.index);
         return 0;
     }
 
@@ -139,11 +145,11 @@ void db_add_judoka(int num, struct judoka *j)
             "INSERT INTO competitors VALUES ("
             "%d, \"%s\", \"%s\", \"%d\", "
             "%d, \"%s\", \"%s\", "
-            "%d, %d, \"%s\", %d"
+            "%d, %d, \"%s\", %d, \"%s\", \"%s\""
             ")", 
             num, j->last, j->first, j->birthyear,
             j->belt, j->club, j->regcategory,
-            j->weight, j->visible, j->category, j->deleted);
+            j->weight, j->visible, j->category, j->deleted, j->country, j->id);
 
     db_exec(db_name, buffer, NULL, db_callback);
 
@@ -160,10 +166,11 @@ void db_update_judoka(int num, struct judoka *j)
             "last=\"%s\", first=\"%s\", birthyear=\"%d\", "
             "belt=\"%d\", club=\"%s\", regcategory=\"%s\", "
             "weight=\"%d\", visible=\"%d\", "
-            "category=\"%s\", deleted=\"%d\" WHERE \"index\"=%d",
+            "category=\"%s\", deleted=\"%d\", country=\"%s\", id=\"%s\" "
+	    "WHERE \"index\"=%d",
             j->last, j->first, j->birthyear,
             j->belt, j->club, j->regcategory,
-            j->weight, j->visible, j->category, j->deleted, num);
+            j->weight, j->visible, j->category, j->deleted, j->country, j->id, num);
 
     db_exec(db_name, buffer, NULL, db_callback);
 

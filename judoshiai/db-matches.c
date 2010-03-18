@@ -448,8 +448,8 @@ void db_add_match(struct match *m)
 {
     gchar buffer[400];
 
-    assert(m->blue < 1000);
-    assert(m->white < 1000);
+    assert(m->blue < 10000);
+    assert(m->white < 10000);
 
     sprintf(buffer, "INSERT INTO matches VALUES ("
             VALINT ", " VALINT ", " VALINT ", " VALINT ", " 
@@ -469,8 +469,8 @@ void db_update_match(struct match *m)
 {
     gchar buffer[400];
 
-    assert(m->blue < 1000);
-    assert(m->white < 1000);
+    assert(m->blue < 10000);
+    assert(m->white < 10000);
 
     sprintf(buffer, "UPDATE matches SET "
             VARVAL(blue, %d) ", "
@@ -748,7 +748,7 @@ static gint competitor_cannot_match(gint index, gint tatami, gint num)
 }
 
 /* Use next_match_mutex while calling and handling data (next_match[] is static). */
-struct match *db_next_match(gint category, gint tatami)
+struct match *db_next_matchXXX(gint category, gint tatami)
 {
     gchar buffer[1000];
     gint i;
@@ -938,6 +938,211 @@ struct match *db_next_match(gint category, gint tatami)
         db_read_match(saved_matches[i].category, saved_matches[i].number);
 
     num_saved_matches = 0;
+#ifdef TATAMI_DEBUG
+    if (tatami == TATAMI_DEBUG) {
+        g_print("\nNEXT MATCHES ON TATAMI %d\n", tatami);
+        for (i = 0; i < next_match_num; i++)
+            g_print("%d: %d:%d = %d - %d\n", i, 
+                    next_match[i].category, next_match[i].number, next_match[i].blue, next_match[i].white);
+        g_print("\n");
+    }
+#endif
+    return next_match;
+}
+
+struct match *db_next_match(gint category, gint tatami)
+{
+    gchar buffer[1000];
+    gint i;
+
+    if (category) {
+        tatami = db_get_tatami(category);
+        /*** BUG
+             sprintf(buffer, "SELECT * FROM categories WHERE \"category\"=%d", category);
+             db_exec(db_name, buffer, (gpointer)DB_GET_SYSTEM, db_callback_categories);
+             tatami = j.belt;
+        ***/
+    }
+
+    if (tatami == 0)
+        return NULL;
+
+    next_match = next_matches[tatami];
+
+    for (i = 0; i < NEXT_MATCH_NUM; i++) {
+        memset(&next_match[i], 0, sizeof(struct match));
+        next_match[i].number = INVALID_MATCH;
+    }		
+
+    next_match_num = 0;
+    next_match_tatami = tatami;
+
+    db_open();
+
+    /* save current match data */
+    num_saved_matches = 0;
+    db_cmd((gpointer)SAVE_MATCH, db_callback_matches,
+	   "SELECT matches.* "
+	   "FROM matches, categories "
+	   "WHERE categories.\"tatami\"=%d AND categories.\"index\"=matches.\"category\" "
+	   "AND categories.\"deleted\"=0 "
+	   "AND (matches.\"comment\"=%d OR matches.\"comment\"=%d)"
+	   "AND matches.\"forcedtatami\"=0",
+	   tatami, COMMENT_MATCH_1, COMMENT_MATCH_2);
+
+    db_cmd((gpointer)SAVE_MATCH, db_callback_matches,
+	   "SELECT * FROM matches WHERE \"forcedtatami\"=%d "
+	   "AND (\"comment\"=%d OR \"comment\"=%d)",
+	   tatami, COMMENT_MATCH_1, COMMENT_MATCH_2);
+
+    /* remove comments from the display */
+    db_cmd((gpointer)DB_REMOVE_COMMENT, db_callback_matches,
+	   "SELECT matches.* "
+	   "FROM matches, categories "
+	   "WHERE categories.\"tatami\"=%d AND categories.\"index\"=matches.\"category\" "
+	   "AND categories.\"deleted\"=0 AND matches.\"comment\">%d "
+	   "AND matches.\"forcedtatami\"=0",
+	   tatami, COMMENT_EMPTY);
+
+    db_cmd((gpointer)DB_REMOVE_COMMENT, db_callback_matches,
+	   "SELECT * FROM matches WHERE \"forcedtatami\"=%d "
+	   "AND \"comment\">%d",
+	   tatami, COMMENT_EMPTY);
+
+    /* remove comments from old matches */
+    db_cmd(NULL, NULL, 
+	   "UPDATE matches SET \"comment\"=%d "
+	   "WHERE EXISTS (SELECT * FROM categories WHERE "
+	   "categories.\"tatami\"=%d AND (matches.\"blue_points\">0 OR "
+	   "matches.\"white_points\">0) AND categories.\"index\"=matches.\"category\" "
+	   "AND matches.\"comment\">%d AND categories.\"deleted\"=0 "
+	   "AND matches.\"forcedtatami\"=0)",
+	   COMMENT_EMPTY, tatami, COMMENT_EMPTY);
+
+    db_cmd(NULL, NULL,
+	   "UPDATE matches SET \"comment\"=%d "
+	   "WHERE \"forcedtatami\"=%d AND \"comment\">%d "
+	   "AND (\"blue_points\">0 OR \"white_points\">0)",
+	   COMMENT_EMPTY, tatami, COMMENT_EMPTY);
+
+    /* find all matches */
+    db_cmd((gpointer)DB_NEXT_MATCH, db_callback_matches,
+	   "SELECT * FROM matches "
+	   "WHERE matches.\"blue_points\"=0 "
+	   "AND matches.\"deleted\"=0 "
+	   "AND matches.\"white_points\"=0 "
+	   "AND matches.\"blue\"<>%d AND matches.\"white\"<>%d "
+	   "AND (matches.\"blue\"=0 OR EXISTS (SELECT * FROM competitors WHERE "
+	   "competitors.\"index\"=matches.\"blue\" AND competitors.\"deleted\"&3=0))"
+	   "AND (matches.\"white\"=0 OR EXISTS (SELECT * FROM competitors WHERE "
+	   "competitors.\"index\"=matches.\"white\" AND competitors.\"deleted\"&3=0))",
+	   GHOST, GHOST /*COMPETITOR, COMPETITOR*/);
+
+    db_close();
+
+    /* check for rest times */
+    if (auto_arrange &&
+        next_match[1].number != INVALID_MATCH &&
+        next_match[1].comment != COMMENT_MATCH_1 &&
+        next_match[1].comment != COMMENT_MATCH_2) {
+        gint result = 0, rtb = 0, rtw = 0;
+
+        if ((rtb = competitor_cannot_match(next_match[1].blue, tatami, 1)))
+            result |= MATCH_FLAG_BLUE_DELAYED | ((rtb & MATCH_FLAG_REST_TIME) ? MATCH_FLAG_BLUE_REST : 0);
+        if ((rtw = competitor_cannot_match(next_match[1].white, tatami, 1)))
+            result |= MATCH_FLAG_WHITE_DELAYED | ((rtw & MATCH_FLAG_REST_TIME) ? MATCH_FLAG_WHITE_REST : 0);
+
+        next_match[1].flags = result;
+
+        if (result && next_match[1].forcedtatami == 0) { // don't change fixed order
+            for (i = 2; i < NEXT_MATCH_NUM; i++) {
+                gint r = 0;
+                rtb = rtw = 0;
+
+                if (next_match[i].number == INVALID_MATCH)
+                    break;
+
+                if ((rtb = competitor_cannot_match(next_match[i].blue, tatami, i)))
+                    r |= MATCH_FLAG_BLUE_DELAYED | ((rtb & MATCH_FLAG_REST_TIME) ? MATCH_FLAG_BLUE_REST : 0);
+                if ((rtw = competitor_cannot_match(next_match[i].white, tatami, i)))
+                    r |= MATCH_FLAG_WHITE_DELAYED | ((rtw & MATCH_FLAG_REST_TIME) ? MATCH_FLAG_WHITE_REST : 0);
+                if (r == 0 && 
+                    next_match[i].blue >= COMPETITOR &&
+                    next_match[i].white >= COMPETITOR &&
+                    (next_match[1].category != next_match[i].category ||
+                     get_match_number_flag(next_match[i].category, 
+                                           next_match[i].number) == 0)) {
+                    struct match tmp = next_match[1];
+                    next_match[1] = next_match[i];
+                    next_match[i] = tmp;
+                    break;
+                } else {
+                    next_match[i].flags = r;
+                }
+            }
+        }
+    }
+
+    db_open();
+
+    /* remove all match comments */
+    db_cmd(NULL, NULL,
+	   "UPDATE matches SET \"comment\"=%d "
+	   "WHERE EXISTS (SELECT * FROM categories WHERE categories.\"tatami\"=%d AND "
+	   "categories.\"index\"=matches.\"category\" "
+	   "AND categories.\"deleted\"=0 "
+	   "AND (matches.\"comment\"=%d OR matches.\"comment\"=%d) "
+	   "AND matches.\"forcedtatami\"=0)",
+	   COMMENT_EMPTY, tatami, COMMENT_MATCH_1, COMMENT_MATCH_2);
+
+    db_cmd(NULL, NULL,
+	   "UPDATE matches SET \"comment\"=%d "
+	   "WHERE (\"comment\"=%d OR \"comment\"=%d) "
+	   "AND \"forcedtatami\"=%d",
+	   COMMENT_EMPTY, COMMENT_MATCH_1, COMMENT_MATCH_2, tatami);
+
+    /* set new next match */
+    if (next_match[0].number != INVALID_MATCH) {
+	db_cmd(NULL, NULL,
+	       "UPDATE matches SET \"comment\"=%d WHERE "
+	       "\"category\"=%d AND \"number\"=%d "
+	       "AND \"deleted\"=0",
+	       COMMENT_MATCH_1, next_match[0].category, next_match[0].number);
+    }
+
+    /* set new second match */
+    if (next_match[1].number != INVALID_MATCH) {
+	db_cmd(NULL, NULL,
+	       "UPDATE matches SET \"comment\"=%d WHERE "
+	       "\"category\"=%d AND \"number\"=%d "
+	       "AND \"deleted\"=0",
+	       COMMENT_MATCH_2, next_match[1].category, next_match[1].number);
+    }
+
+    /* update the display */
+    db_cmd((gpointer)ADD_MATCH, db_callback_matches,
+	   "SELECT matches.* "
+	   "FROM matches, categories "
+	   "WHERE categories.\"tatami\"=%d AND categories.\"index\"=matches.\"category\" "
+	   "AND categories.\"deleted\"=0 AND matches.\"comment\">%d "
+	   "AND matches.\"forcedtatami\"=0",
+	   tatami, COMMENT_EMPTY);
+
+    db_cmd((gpointer)ADD_MATCH, db_callback_matches,
+	   "SELECT * FROM matches "
+	   "WHERE \"forcedtatami\"=%d "
+	   "AND \"comment\">%d",
+	   tatami, COMMENT_EMPTY);
+
+    for (i = 0; i < num_saved_matches; i++) {
+	db_cmd((gpointer)ADD_MATCH, db_callback_matches,
+	       "SELECT * FROM matches WHERE \"category\"=%d AND \"number\"=%d",
+	       saved_matches[i].category, saved_matches[i].number);
+    }
+    num_saved_matches = 0;
+
+    db_close();
+
 #ifdef TATAMI_DEBUG
     if (tatami == TATAMI_DEBUG) {
         g_print("\nNEXT MATCHES ON TATAMI %d\n", tatami);

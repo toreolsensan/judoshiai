@@ -28,9 +28,8 @@ guint french_matches_blue[32] = {
     1, 17,  9, 25, 5, 21, 13, 29, 3, 19, 11, 27, 7, 23, 15, 31, 
     2, 18, 10, 26, 6, 22, 14, 30, 4, 20, 12, 28, 8, 24, 16, 32
 };
-guint french_matches_white_offset[4] = {4, 8, 16, 32};
-guint french_num_matches[4] = {11, 23, 43, 79};
-guint french_mul[4] = {8, 4, 2, 1};
+guint french_matches_white_offset[NUM_FRENCH] = {4, 8, 16, 32};
+guint french_mul[NUM_FRENCH] = {8, 4, 2, 1};
 
 #define MAX_MATES 12
 
@@ -41,6 +40,7 @@ struct mdata {
         gint seeded;
         gint num_mates;
         gchar *club;
+        gchar *country;
         GtkWidget *eventbox, *label;
     } mcomp[65];
 
@@ -91,17 +91,21 @@ static gint get_free_pos(gint pos[], gint num_competitors, gint group)
 }
 #endif
 
-static gint cmp_clubs(gchar *club1, gchar *club2) 
+static gint cmp_clubs(struct mcomp *m1, struct mcomp *m2) 
 {
-    if (club1 == NULL && club2 == NULL)
-        return 0;
-    if (club1 == NULL || club2 == NULL)
-        return 1;
-    gchar *country1 = strrchr(club1, '/');
-    gchar *country2 = strrchr(club2, '/');
-    if (country1 && country2)
-        return strcmp(country1, country2);
-    return strcmp(club1, club2);
+    gint result = 0;
+
+    if (m1->club && m2->club &&
+	m1->club[0] && m2->club[0] &&
+	strcmp(m1->club, m2->club) == 0)
+	result |= CLUB_TEXT_CLUB;
+    
+    if (m1->country && m2->country && 
+	m1->country[0] && m2->country[0] && 
+	strcmp(m1->country, m2->country) == 0)
+	result |= CLUB_TEXT_COUNTRY;
+
+    return result;
 }
 
 void draw_one_category(GtkTreeIter *parent, gint competitors)
@@ -134,8 +138,10 @@ void draw_one_category_manually(GtkTreeIter *parent, gint competitors)
 static void free_mdata(struct mdata *mdata)
 {
     gint i;
-    for (i = 1; i <= 64; i++)
+    for (i = 1; i <= 64; i++) {
         g_free(mdata->mcomp[i].club);
+        g_free(mdata->mcomp[i].country);
+    }
     free(mdata);
 }
 
@@ -191,17 +197,23 @@ static gint get_section(gint num, struct mdata *mdata)
 
 static gint club_mate_in_range(gint start, gint len, struct mdata *mdata)
 {
-    gchar *club = mdata->mcomp[mdata->selected].club;
-    gint i, result = 0;
+    gint i, result = 0, cmp;
 
     for (i = start; i < start+len; i++) {
         gint other = mdata->mpos[i].judoka;
         if (other == 0)
             continue;
-        if (cmp_clubs(club, mdata->mcomp[other].club) == 0) {
+        if ((cmp = cmp_clubs(&mdata->mcomp[mdata->selected], &mdata->mcomp[other]))) {
+	    gint val = 0;
+	    if (cmp & CLUB_TEXT_CLUB)
+		val++;
+	    if (cmp & CLUB_TEXT_COUNTRY)
+		val++;
             if (mdata->mcomp[other].seeded)
-                return 2;
-            result = 1;
+                val++;
+
+	    if (val > result)
+		result = val;
         }
     }
     return result;
@@ -337,12 +349,10 @@ static gint get_club_mask(struct mdata *mdata)
     if (mdata->selected == 0)
         return 0;
 
-    gchar *club = mdata->mcomp[mdata->selected].club;
-
     for (i = 1; i <= mdata->mpositions; i++) {
         gint comp = mdata->mpos[i].judoka;
         if (comp && 
-            cmp_clubs(mdata->mcomp[comp].club, club) == 0) {
+            cmp_clubs(&mdata->mcomp[comp], &mdata->mcomp[mdata->selected])) {
             res |= 1<<get_section(i, mdata);
         }
     }
@@ -676,18 +686,36 @@ static void make_manual_mathes_callback(GtkWidget *widget,
         }
     }
 
-    if (mdata->mjudokas <= 5)
-        db_set_system(mdata->mcategory_ix, SYSTEM_POOL | mdata->mjudokas);
-    else if (mdata->mjudokas <= 7)
-        db_set_system(mdata->mcategory_ix, SYSTEM_DPOOL | mdata->mjudokas);
+    gint wish = get_cat_system(mdata->mcategory_ix) & SYSTEM_WISH_MASK;
+    gint wishsys = wish >> SYSTEM_WISH_SHIFT;
+
+    if (wishsys == CAT_SYSTEM_DEFAULT &&
+	mdata->mjudokas >= 8) {
+	switch (draw_system) {
+	case DRAW_SWEDISH:
+	    wishsys = CAT_SYSTEM_DIREKT_AATERKVAL;
+	    break;
+	case DRAW_ESTONIAN:
+	    wishsys = CAT_SYSTEM_EST_D_KLASS;
+	    break;
+	}
+    }
+
+    if (wishsys >= CAT_SYSTEM_REPECHAGE)
+	wish |= (TABLE_DOUBLE_REPECHAGE + wishsys - CAT_SYSTEM_REPECHAGE) << SYSTEM_TABLE_SHIFT;
+
+    if (mdata->mjudokas <= 5 && wishsys < CAT_SYSTEM_REPECHAGE)
+        db_set_system(mdata->mcategory_ix, wish | SYSTEM_POOL | mdata->mjudokas);
+    else if (mdata->mjudokas <= 7 && wishsys < CAT_SYSTEM_REPECHAGE)
+        db_set_system(mdata->mcategory_ix, wish | SYSTEM_DPOOL | mdata->mjudokas);
     else if (mdata->mjudokas <= 8)
-        db_set_system(mdata->mcategory_ix, SYSTEM_FRENCH_8 | mdata->mjudokas);
+        db_set_system(mdata->mcategory_ix, wish | SYSTEM_FRENCH_8 | mdata->mjudokas);
     else if (mdata->mjudokas <= 16)
-        db_set_system(mdata->mcategory_ix, SYSTEM_FRENCH_16 | mdata->mjudokas);
+        db_set_system(mdata->mcategory_ix, wish | SYSTEM_FRENCH_16 | mdata->mjudokas);
     else if (mdata->mjudokas <= 32)
-        db_set_system(mdata->mcategory_ix, SYSTEM_FRENCH_32 | mdata->mjudokas);
+        db_set_system(mdata->mcategory_ix, wish | SYSTEM_FRENCH_32 | mdata->mjudokas);
     else
-        db_set_system(mdata->mcategory_ix, SYSTEM_FRENCH_64 | mdata->mjudokas);
+        db_set_system(mdata->mcategory_ix, wish | SYSTEM_FRENCH_64 | mdata->mjudokas);
 out:
 
     update_category_status_info(mdata->mcategory_ix);
@@ -718,11 +746,22 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
     gdk_color_parse("#AFAF9F", &bg1); 
     gdk_color_parse("#AFAFBF", &bg2); 
 
+    // find the index of the category
+    gtk_tree_model_get(current_model, parent,
+                       COL_INDEX, &(mdata->mcategory_ix),
+                       COL_LAST_NAME, &catname,
+                       -1);
+
     // how many positions are needed for drawing?
     mdata->mjudokas = competitors;
     if (competitors <= 7) {
-        mdata->mpositions = competitors;
-        mdata->mfrench_sys = -1;
+	if (((get_cat_system(mdata->mcategory_ix) & SYSTEM_WISH_MASK) >> SYSTEM_WISH_SHIFT) > CAT_SYSTEM_DPOOL) {
+	    mdata->mpositions = 8;
+	    mdata->mfrench_sys = 0;
+	} else {
+	    mdata->mpositions = competitors;
+	    mdata->mfrench_sys = -1;
+	}
     } else if (competitors == 8) {
         mdata->mpositions = 8;
         mdata->mfrench_sys = 0;
@@ -736,12 +775,6 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
         mdata->mpositions = 64;
         mdata->mfrench_sys = 3;
     }
-
-    // find the index of the category
-    gtk_tree_model_get(current_model, parent,
-                       COL_INDEX, &(mdata->mcategory_ix),
-                       COL_LAST_NAME, &catname,
-                       -1);
 
     if (catname && catname[0] == '?') {
         SHOW_MESSAGE("Cannot draw %s", catname);
@@ -766,13 +799,13 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
     }
 
     // Clean up the database.
-    db_set_system(mdata->mcategory_ix, 0);
+    db_set_system(mdata->mcategory_ix, get_cat_system(mdata->mcategory_ix)&SYSTEM_WISH_MASK);
     db_remove_matches(mdata->mcategory_ix);
 
     // Get data of all the competitors.
     for (i = 0; i < competitors; i++) {
         guint index;
-        gchar *club;
+        gchar *club, *country;
         gint deleted;
         GtkTreeIter iter;
         struct judoka *j;
@@ -784,15 +817,27 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
         gtk_tree_model_get(current_model, &iter,
                            COL_INDEX, &index,
                            COL_CLUB, &club,
+                           COL_COUNTRY, &country,
                            COL_DELETED, &deleted,
                            -1);
 
         j = get_data(index);
-        snprintf(buf, sizeof(buf), "%s %s, %s", 
-                 j?j->first:"?", j?j->last:"?", j?j->club:"?");
+	if (j && j->club && j->club[0] && j->country && j->country[0])
+	    snprintf(buf, sizeof(buf), "%s %s, %s/%s", 
+		     j->first, j->last, j->club, j->country);
+	else if (j && j->club && j->club[0])
+	    snprintf(buf, sizeof(buf), "%s %s, %s", 
+		     j->first, j->last, j->club);
+	else if (j && j->country && j->country[0])
+	    snprintf(buf, sizeof(buf), "%s %s, %s", 
+		     j->first, j->last, j->country);
+	else
+	    snprintf(buf, sizeof(buf), "???");
+
         mdata->mcomp[i+1].label = gtk_label_new(buf);
         mdata->mcomp[i+1].index = index;
         mdata->mcomp[i+1].club = club;
+        mdata->mcomp[i+1].country = country;
         mdata->mcomp[i+1].seeded = deleted>>2;
         free_judoka(j);
     }
@@ -871,7 +916,7 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
                 if (i == j)
                     continue;
 
-                if (cmp_clubs(mdata->mcomp[i].club, mdata->mcomp[j].club) == 0)
+                if (cmp_clubs(&mdata->mcomp[i], &mdata->mcomp[j]))
                     mdata->mcomp[j].num_mates = 
                         MAX_MATES - mdata->mcomp[i].seeded;
             }
@@ -889,7 +934,7 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
             if (i == j)
                 continue;
 
-            if (cmp_clubs(mdata->mcomp[i].club, mdata->mcomp[j].club) == 0)
+            if (cmp_clubs(&mdata->mcomp[i], &mdata->mcomp[j]))
                 mdata->mcomp[i].num_mates++;
         }
     }

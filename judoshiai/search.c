@@ -68,13 +68,14 @@ static void lookup(GtkWidget *w, gpointer arg)
         while (ok_j) {
             gint index;
             gchar *first, *last, *first_u, *last_u;
-            gchar *club, *cat;
+            gchar *club=NULL, *cat=NULL, *country=NULL;
 
             gtk_tree_model_get(current_model, &iter_j,
                                COL_INDEX, &index,
                                COL_LAST_NAME, &last,
                                COL_FIRST_NAME, &first,
                                COL_CLUB, &club, 
+                               COL_COUNTRY, &country, 
                                COL_CATEGORY, &cat,
                                -1);
 
@@ -82,8 +83,13 @@ static void lookup(GtkWidget *w, gpointer arg)
             last_u = g_utf8_casefold(last, -1);
 
             if (strncmp(name, last_u, strlen(name)) == 0) {
-                snprintf(buf, sizeof(buf), "%s, %s, %s, %s", 
-                         last, first, club, cat);
+		if (country && country[0])
+		    snprintf(buf, sizeof(buf), "%s, %s, %s/%s, %s", 
+			     last, first, club, country, cat);
+		else
+		    snprintf(buf, sizeof(buf), "%s, %s, %s, %s", 
+			     last, first, club, cat);
+
                 gtk_button_set_label(GTK_BUTTON(data->results[n]), buf);
                 data->index[n] = index;
                 data->iter[n] = iter_j;
@@ -97,6 +103,7 @@ static void lookup(GtkWidget *w, gpointer arg)
             g_free(first);
             g_free(last);
             g_free(club);
+            g_free(country);
             g_free(cat);
             g_free(first_u);
             g_free(last_u);
