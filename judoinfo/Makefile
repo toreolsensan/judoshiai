@@ -10,7 +10,7 @@ CFLAGS += -DAPPLICATION="\"judoinfo\""
 ifeq ($(OS),Windows_NT)
 
 judoinfo: judoinfo1 judoinfo-icon.res
-	../win/bin/ResHacker.exe -add judoinfo1.exe, judoinfo.exe, judoinfo-icon.res, ,,
+	ResHacker.exe -add judoinfo1.exe, judoinfo.exe, judoinfo-icon.res, ,,
 
 judoinfo-icon.res: judoinfo-icon.rc
 	windres.exe judoinfo-icon.rc judoinfo-icon.res

@@ -1,8 +1,8 @@
 include ../common/Makefile.inc
 
 ifeq ($(OS),Windows_NT)
-ODTFILE=$(shell pwd | tr '/' '\\' | sed 's/\\c\\/C:\\/')\doc\judoshiai.odt
-ODTFILE2=$(shell pwd | tr '/' '\\' | sed 's/\\c\\/C:\\/')\doc\judotimer.odg
+ODTFILE=$(shell pwd | tr '/' '\\' | sed 's/\\c\\/C:\\/')\judoshiai.odt
+ODTFILE2=$(shell pwd | tr '/' '\\' | sed 's/\\c\\/C:\\/')\judotimer.odg
 else
 ODTFILE=$(PWD)/doc/judoshiai.odt
 ODTFILE2=$(PWD)/doc/judotimer.odg

@@ -19,7 +19,7 @@ CFLAGS += -DAPPLICATION="\"judoshiai\""
 ifeq ($(OS),Windows_NT)
 
 judoshiai: judoshiai1 judoshiai-icon.res
-	../win/bin/ResHacker.exe -add judoshiai1.exe, judoshiai.exe, judoshiai-icon.res, ,,
+	ResHacker.exe -add judoshiai1.exe, judoshiai.exe, judoshiai-icon.res, ,,
 
 judoshiai-icon.res: judoshiai-icon.rc
 	windres.exe judoshiai-icon.rc judoshiai-icon.res

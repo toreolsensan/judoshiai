@@ -10,7 +10,7 @@ CFLAGS += -DAPPLICATION="\"judotimer\""
 ifeq ($(OS),Windows_NT)
 
 judotimer: judotimer1 judotimer-icon.res
-	../win/bin/ResHacker.exe -add judotimer1.exe, judotimer.exe, judotimer-icon.res, ,,
+	ResHacker.exe -add judotimer1.exe, judotimer.exe, judotimer-icon.res, ,,
 
 judotimer-icon.res: judotimer-icon.rc
 	windres.exe judotimer-icon.rc judotimer-icon.res

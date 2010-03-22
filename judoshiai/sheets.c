@@ -1020,7 +1020,8 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
 	}
         break;
     case FRENCH_64:
-	if (table == TABLE_EST_D_KLASS && pagenum == 2)
+	if ((table == TABLE_EST_D_KLASS || table == TABLE_SWE_DIREKT_AATERKVAL) && 
+	    pagenum == 2)
 	    space = NAME_S*0.25;
 	else
 	    space = NAME_S*0.35;
