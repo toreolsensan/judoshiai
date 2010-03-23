@@ -15,10 +15,216 @@
 
 #define NUM_CATEGORIES 32
 
-static gint agelist[14] = {0, 1000, 19, 16, 14, 12, 10, 1000, 19, 16, 14, 12, 10, 0};
-static gint match_time_list[14] = {0, 300, 240, 180, 180, 120, 120, 300, 240, 180, 180, 120, 120, 0};
-static gint rest_time_list[14] = {0, 600, 600, 180, 180, 180, 180, 600, 600, 180, 180, 180, 180, 0};
-static gint gs_time_list[14] = {0, 300, 300, 120, 120, 120, 120, 300, 300, 120, 120, 120, 120, 0};
+struct offial_category {
+    gchar *name; 
+    gint maxage;
+    gint match_time;
+    gint gs_time;
+    gint rest_time;
+    struct {
+        gint weight;
+        gchar *weighttext;
+    } weights[NUM_CAT_DEF_WEIGHTS];
+};
+
+struct offial_category official_categories[NUM_DRAWS][2][8] = {
+    { // international
+        { // men
+            {
+                "Men", 1000, 300, 180, 600, // name, max age, match gs rest times 
+                {{60000, "60"}, {66000, "66"}, {73000, "73"}, 
+                 {81000, "81"}, {90000, "90"}, {100000, "100"}, {0, NULL}}
+            }, {
+                "Men", 19, 240, 180, 600, // name, max age, match gs rest times 
+                {{55000, "55"}, {60000, "60"}, {66000, "66"}, {73000, "73"}, 
+                 {81000, "81"}, {90000, "90"}, {100000, "100"}, {0, NULL}}
+            }, {
+                "Men", 16, 180, 120, 600, // name, max age, match gs rest times 
+                {{45000, "45"}, {50000, "50"}, {55000, "55"}, {60000, "60"}, 
+                 {66000, "66"}, {73000, "73"}, {81000, "81"}, {90000, "90"}, {0, NULL}}
+            }, { NULL, 0, 0, 0, 0, {{0, NULL}}}
+
+        }, { // women
+            {
+                "Women", 1000, 300, 180, 600, // name, max age, match gs rest times 
+                {{48000, "48"}, {52000, "52"}, {57000, "57"}, 
+                 {63000, "63"}, {70000, "70"}, {78000, "78"}, {0, NULL}}
+            }, {
+                "Women", 19, 240, 180, 600, // name, max age, match gs rest times 
+                {{44000, "44"}, {48000, "48"}, {52000, "52"}, {57000, "57"}, 
+                 {63000, "63"}, {70000, "70"}, {78000, "78"}, {0, NULL}}
+            }, {
+                "Women", 16, 180, 120, 600, // name, max age, match gs rest times 
+                {{44000, "44"}, {48000, "48"}, {52000, "52"}, {57000, "57"}, 
+                 {63000, "63"}, {70000, "70"}, {0, NULL}}
+            }, { NULL, 0, 0, 0, 0, {{0, NULL}}}
+        }
+    }, { // finnish
+        { // men
+            {
+                "M", 1000, 300, 180, 600, // name, max age, match gs rest times 
+                {{60000, "60"}, {66000, "66"}, {73000, "73"}, 
+                 {81000, "81"}, {90000, "90"}, {100000, "100"}, {0, NULL}}
+            }, {
+                "AP", 19, 240, 180, 600, // name, max age, match gs rest times 
+                {{55000, "55"}, {60000, "60"}, {66000, "66"}, {73000, "73"}, 
+                 {81000, "81"}, {90000, "90"}, {0, NULL}}
+            }, {
+                "BP", 16, 180, 120, 600, // name, max age, match gs rest times 
+                {{45000, "45"}, {50000, "50"}, {55000, "55"}, {60000, "60"}, 
+                 {66000, "66"}, {73000, "73"}, {81000, "81"}, {0, NULL}}
+            }, {
+                "CP", 14, 180, 120, 180, // name, max age, match gs rest times 
+                {{34000, "34"}, {38000, "38"}, {42000, "42"}, {46000, "46"}, 
+                 {50000, "50"}, {55000, "55"}, {60000, "60"}, {66000, "66"}, {0, NULL}}
+            }, {
+                "DP", 12, 120, 60, 180, // name, max age, match gs rest times 
+                {{30000, "30"}, {34000, "34"}, {38000, "38"}, {42000, "42"}, 
+                 {46000, "46"}, {50000, "50"}, {55000, "55"}, {0, NULL}}
+            }, {
+                "EP", 10, 120, 60, 180, // name, max age, match gs rest times 
+                {{27000, "27"}, {30000, "30"}, {34000, "34"}, {38000, "38"}, {42000, "42"}, 
+                 {46000, "46"}, {50000, "50"}, {55000, "55"}, {0, NULL}}
+            }, { NULL, 0, 0, 0, 0, {{0, NULL}}}
+        }, { // women
+            {
+                "N", 1000, 300, 180, 600, // name, max age, match gs rest times 
+                {{48000, "48"}, {52000, "52"}, {57000, "57"}, 
+                 {63000, "63"}, {70000, "70"}, {78000, "78"}, {0, NULL}}
+            }, {
+                "AT", 19, 240, 180, 600, // name, max age, match gs rest times 
+                {{48000, "48"}, {52000, "52"}, {57000, "57"}, 
+                 {63000, "63"}, {70000, "70"}, {0, NULL}}
+            }, {
+                "BT", 16, 180, 120, 600, // name, max age, match gs rest times 
+                {{44000, "44"}, {48000, "48"}, {52000, "52"}, {57000, "57"}, 
+                 {63000, "63"}, {0, NULL}}
+            }, {
+                "CT", 14, 180, 120, 180, // name, max age, match gs rest times 
+                {{32000, "32"}, {36000, "36"}, {40000, "40"}, {44000, "44"}, 
+                 {48000, "48"}, {52000, "52"}, {57000, "57"}, {63000, "63"}, {0, NULL}}
+            }, {
+                "DT", 12, 120, 60, 180, // name, max age, match gs rest times 
+                {{28000, "28"}, {32000, "32"}, {36000, "36"}, {40000, "40"}, 
+                 {44000, "44"}, {48000, "48"}, {52000, "52"}, {0, NULL}}
+            }, {
+                "ET", 10, 120, 60, 180, // name, max age, match gs rest times 
+                {{25000, "25"}, {28000, "28"}, {32000, "32"}, {36000, "36"}, 
+                 {40000, "40"}, {44000, "44"}, {48000, "48"}, {52000, "52"}, {0, NULL}}
+            }, { NULL, 0, 0, 0, 0, {{0, NULL}}}
+        }
+    }, { // swedish
+        { // men
+            {
+                "Herrar", 1000, 300, 180, 600, // name, max age, match gs rest times 
+                {{60000, "60"}, {66000, "66"}, {73000, "73"}, 
+                 {81000, "81"}, {90000, "90"}, {100000, "100"}, {0, NULL}}
+            }, {
+                "Pojkar U20", 19, 240, 180, 600, // name, max age, match gs rest times 
+                {{55000, "55"}, {60000, "60"}, {66000, "66"}, {73000, "73"}, 
+                 {81000, "81"}, {90000, "90"}, {0, NULL}}
+            }, {
+                "Pojkar U17", 16, 180, 120, 600, // name, max age, match gs rest times 
+                {{45000, "45"}, {50000, "50"}, {55000, "55"}, {60000, "60"}, 
+                 {66000, "66"}, {73000, "73"}, {81000, "81"}, {0, NULL}}
+            }, {
+                "Pojkar U15", 14, 180, 120, 180, // name, max age, match gs rest times 
+                {{34000, "34"}, {38000, "38"}, {42000, "42"}, {46000, "46"}, 
+                 {50000, "50"}, {55000, "55"}, {60000, "60"}, {66000, "66"}, {0, NULL}}
+            }, {
+                "Pojkar U13", 12, 120, 60, 180, // name, max age, match gs rest times 
+                {{30000, "30"}, {34000, "34"}, {38000, "38"}, {42000, "42"}, 
+                 {46000, "46"}, {50000, "50"}, {55000, "55"}, {0, NULL}}
+            }, {
+                "Pojkar U11", 10, 120, 60, 180, // name, max age, match gs rest times 
+                {{27000, "27"}, {30000, "30"}, {34000, "34"}, {38000, "38"}, {42000, "42"}, 
+                 {46000, "46"}, {50000, "50"}, {55000, "55"}, {0, NULL}}
+            }, { NULL, 0, 0, 0, 0, {{0, NULL}}}
+        }, { // women
+            {
+                "Damer", 1000, 300, 180, 600, // name, max age, match gs rest times 
+                {{48000, "48"}, {52000, "52"}, {57000, "57"}, 
+                 {63000, "63"}, {70000, "70"}, {78000, "78"}, {0, NULL}}
+            }, {
+                "Flickor U20", 19, 240, 180, 600, // name, max age, match gs rest times 
+                {{48000, "48"}, {52000, "52"}, {57000, "57"}, 
+                 {63000, "63"}, {70000, "70"}, {0, NULL}}
+            }, {
+                "Flickor U17", 16, 180, 120, 600, // name, max age, match gs rest times 
+                {{44000, "44"}, {48000, "48"}, {52000, "52"}, {57000, "57"}, 
+                 {63000, "63"}, {0, NULL}}
+            }, {
+                "Flickor U15", 14, 180, 120, 180, // name, max age, match gs rest times 
+                {{32000, "32"}, {36000, "36"}, {40000, "40"}, {44000, "44"}, 
+                 {48000, "48"}, {52000, "52"}, {57000, "57"}, {63000, "63"}, {0, NULL}}
+            }, {
+                "Flickor U13", 12, 120, 60, 180, // name, max age, match gs rest times 
+                {{28000, "28"}, {32000, "32"}, {36000, "36"}, {40000, "40"}, 
+                 {44000, "44"}, {48000, "48"}, {52000, "52"}, {0, NULL}}
+            }, {
+                "Flickor U11", 10, 120, 60, 180, // name, max age, match gs rest times 
+                {{25000, "25"}, {28000, "28"}, {32000, "32"}, {36000, "36"}, 
+                 {40000, "40"}, {44000, "44"}, {48000, "48"}, {52000, "52"}, {0, NULL}}
+            }, { NULL, 0, 0, 0, 0, {{0, NULL}}}
+        }
+    }, { // estonian
+        { // men
+            {
+                "M", 1000, 300, 180, 600, // name, max age, match gs rest times 
+                {{60000, "60"}, {66000, "66"}, {73000, "73"}, 
+                 {81000, "81"}, {90000, "90"}, {100000, "100"}, {0, NULL}}
+            }, {
+                "M", 19, 240, 180, 600, // name, max age, match gs rest times 
+                {{55000, "55"}, {60000, "60"}, {66000, "66"}, {73000, "73"}, 
+                 {81000, "81"}, {90000, "90"}, {100000, "100"}, {0, NULL}}
+            }, {
+                "AP", 16, 180, 60, 600, // name, max age, match gs rest times 
+                {{50000, "50"}, {55000, "55"}, {60000, "60"}, 
+                 {66000, "66"}, {73000, "73"}, {81000, "81"}, {90000, "90"}, {0, NULL}}
+            }, {
+                "BP", 14, 180, 60, 180, // name, max age, match gs rest times 
+                {{34000, "34"}, {38000, "38"}, {42000, "42"}, {45000, "45"}, 
+                 {50000, "50"}, {55000, "55"}, {60000, "60"}, {66000, "66"}, 
+                 {73000, "73"}, {0, NULL}}
+            }, {
+                "CP", 12, 120, 60, 180, // name, max age, match gs rest times 
+                {{27000, "27"}, {30000, "30"}, {34000, "34"}, {38000, "38"}, {42000, "42"}, 
+                 {46000, "46"}, {50000, "50"}, {55000, "55"}, {60000, "60"}, {0, NULL}}
+            }, {
+                "DP", 10, 120, 60, 180, // name, max age, match gs rest times 
+                {{27000, "27"}, {30000, "30"}, {34000, "34"}, {38000, "38"}, {42000, "42"}, 
+                 {46000, "46"}, {50000, "50"}, {55000, "55"}, {0, NULL}}
+            }, { NULL, 0, 0, 0, 0, {{0, NULL}}}
+        }, { // women
+            {
+                "N", 1000, 300, 180, 600, // name, max age, match gs rest times 
+                {{48000, "48"}, {52000, "52"}, {57000, "57"}, 
+                 {63000, "63"}, {70000, "70"}, {78000, "78"}, {0, NULL}}
+            }, {
+                "N", 19, 240, 180, 600, // name, max age, match gs rest times 
+                {{44000, "44"}, {48000, "48"}, {52000, "52"}, {57000, "57"}, 
+                 {63000, "63"}, {70000, "70"}, {78000, "78"}, {0, NULL}}
+            }, {
+                "AT", 16, 180, 60, 600, // name, max age, match gs rest times 
+                {{40000, "40"}, {44000, "44"}, {48000, "48"}, {52000, "52"}, 
+                 {57000, "57"}, {63000, "63"}, {70000, "70"}, {0, NULL}}
+            }, {
+                "BT", 14, 180, 60, 180, // name, max age, match gs rest times 
+                {{36000, "36"}, {40000, "40"}, {44000, "44"}, 
+                 {48000, "48"}, {52000, "52"}, {57000, "57"}, {0, NULL}}
+            }, {
+                "CT", 12, 120, 60, 180, // name, max age, match gs rest times 
+                {{28000, "28"}, {32000, "32"}, {36000, "36"}, {40000, "40"}, 
+                 {44000, "44"}, {48000, "48"}, {0, NULL}}
+            }, {
+                "DT", 10, 120, 60, 180, // name, max age, match gs rest times 
+                {{25000, "25"}, {28000, "28"}, {32000, "32"}, {36000, "36"}, 
+                 {40000, "40"}, {44000, "44"}, {48000, "48"}, {52000, "52"}, {0, NULL}}
+            }, { NULL, 0, 0, 0, 0, {{0, NULL}}}
+        }
+    }
+};
+
 struct cat_def category_definitions[NUM_CATEGORIES];
 gint num_categories = 0;
 
@@ -207,24 +413,25 @@ out:
 extern void db_insert_cat_def_table_data_begin(void);
 extern void db_insert_cat_def_table_data_end(void);
 
-void read_cat_definitions(void)
+static void init_cat_data(void)
 {
-    gint row;
-    gint numrows;
+    gint i, j, k, n;
+    struct cat_def def;
 
-    if (catdef_needs_init()) {
-        gint i, j;
-        struct cat_def def;
+    i = draw_system;
+    if (i >= NUM_DRAWS)
+        i = 0;
 
-	db_insert_cat_def_table_data_begin();
-
-        for (i = 1; i < NUM_CAT; i++) {
-            def.age = agelist[i];
-            strcpy(def.agetext, cat_names[i]);
-            def.match_time = match_time_list[i];
-            def.rest_time = rest_time_list[i];
-            def.gs_time = gs_time_list[i];
-            if (i == 6 || i == 12) { // E-juniors
+    db_insert_cat_def_table_data_begin();
+    
+    for (j = 0; j < 2; j++) {
+        for (k = 0; official_categories[i][j][k].name; k++) {
+            def.age = official_categories[i][j][k].maxage;
+            strcpy(def.agetext, official_categories[i][j][k].name);
+            def.match_time = official_categories[i][j][k].match_time;
+            def.rest_time = official_categories[i][j][k].rest_time;
+            def.gs_time = official_categories[i][j][k].gs_time;
+            if (i == DRAW_FINNISH && def.age <= 10) { // E-juniors
                 def.pin_time_koka = 0;
                 def.pin_time_yuko = 5;
                 def.pin_time_wazaari = 10;
@@ -236,23 +443,30 @@ void read_cat_definitions(void)
                 def.pin_time_ippon = 25;
             }
 
-            if (i < CAT_W)
-                def.gender = IS_MALE;
-            else
-                def.gender = IS_FEMALE;
+            def.gender = (j == 0) ? IS_MALE : IS_FEMALE;
 
-            for (j = 0; official[i][j] > 0; j++) {
-                def.weights[0].weight = official[i][j];
-                sprintf(def.weights[0].weighttext, "-%d", official[i][j]/1000);
+            for (n = 0; official_categories[i][j][k].weights[n].weight; n++) {
+                def.weights[0].weight = official_categories[i][j][k].weights[n].weight;
+                sprintf(def.weights[0].weighttext, "-%d", def.weights[0].weight/1000);
                 db_insert_cat_def_table_data(&def);
             }
-            def.weights[0].weight = 1000000;
-            sprintf(def.weights[0].weighttext, "+%d", official[i][j-1]/1000);
-            db_insert_cat_def_table_data(&def);
-        }
 
-	db_insert_cat_def_table_data_end();
-    }
+            sprintf(def.weights[0].weighttext, "+%d", def.weights[0].weight/1000);
+            def.weights[0].weight = 1000000;
+            db_insert_cat_def_table_data(&def);
+        } // k
+    } // j
+
+    db_insert_cat_def_table_data_end();
+}
+
+void read_cat_definitions(void)
+{
+    gint row;
+    gint numrows;
+
+    if (catdef_needs_init())
+        init_cat_data();
 
     memset(&category_definitions, 0, sizeof(category_definitions));
     num_categories = 0;
@@ -325,6 +539,8 @@ out:
     db_close_table();
 }
 
+#define Q_RESET 1000
+
 void set_categories_dialog(GtkWidget *w, gpointer arg) 
 {
     GtkWidget *dialog, *tmp, *scrolled_window, *vbox, *tables[NUM_CATEGORIES];
@@ -340,6 +556,7 @@ void set_categories_dialog(GtkWidget *w, gpointer arg)
     dialog = gtk_dialog_new_with_buttons ("Sarjat",
                                           NULL,
                                           GTK_DIALOG_MODAL,
+                                          _("Reset to Defaults"), Q_RESET,
                                           GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
                                           GTK_STOCK_OK, GTK_RESPONSE_OK,
                                           NULL);
@@ -507,7 +724,9 @@ void set_categories_dialog(GtkWidget *w, gpointer arg)
 
     gtk_widget_show_all(dialog);
 
-    if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_OK) {
+    gint response = gtk_dialog_run(GTK_DIALOG(dialog));
+
+    if (response == GTK_RESPONSE_OK) {
         struct cat_def def;
 
         db_delete_cat_def_table_data();
@@ -542,6 +761,11 @@ void set_categories_dialog(GtkWidget *w, gpointer arg)
 	db_insert_cat_def_table_data_end();
         read_cat_definitions();
 
+        db_cat_def_table_done();
+    } else if (response == Q_RESET) {
+        db_delete_cat_def_table_data();
+        init_cat_data();
+        read_cat_definitions();
         db_cat_def_table_done();
     }
 

@@ -295,10 +295,11 @@ enum button_responses {
 
 // Default drawing system
 enum default_drawing_system {
-    DRAW_INTERNATIONAL,
+    DRAW_INTERNATIONAL = 0,
     DRAW_FINNISH,
     DRAW_SWEDISH,
-    DRAW_ESTONIAN
+    DRAW_ESTONIAN,
+    NUM_DRAWS
 };
 
 struct judoka {
@@ -482,8 +483,6 @@ extern gint           my_address;
 extern GdkCursor     *wait_cursor;
 
 extern char *belts[];
-extern gchar *cat_names[];
-extern gint official[][10];
 
 extern const guint pools[8][11][2];
 //extern guint competitors_1st_match[8][8][2];
