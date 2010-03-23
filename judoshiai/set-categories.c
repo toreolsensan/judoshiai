@@ -120,12 +120,12 @@ struct offial_category official_categories[NUM_DRAWS][2][8] = {
                 {{60000, "60"}, {66000, "66"}, {73000, "73"}, 
                  {81000, "81"}, {90000, "90"}, {100000, "100"}, {0, NULL}}
             }, {
-                "Pojkar U20", 19, 240, 180, 600, // name, max age, match gs rest times 
+                "Herrar U20", 19, 240, 180, 600, // name, max age, match gs rest times 
                 {{55000, "55"}, {60000, "60"}, {66000, "66"}, {73000, "73"}, 
-                 {81000, "81"}, {90000, "90"}, {0, NULL}}
+                 {81000, "81"}, {90000, "90"}, {100000, "100"}, {0, NULL}}
             }, {
                 "Pojkar U17", 16, 180, 120, 600, // name, max age, match gs rest times 
-                {{45000, "45"}, {50000, "50"}, {55000, "55"}, {60000, "60"}, 
+                {{46000, "46"}, {50000, "50"}, {55000, "55"}, {60000, "60"}, 
                  {66000, "66"}, {73000, "73"}, {81000, "81"}, {0, NULL}}
             }, {
                 "Pojkar U15", 14, 180, 120, 180, // name, max age, match gs rest times 
@@ -133,12 +133,12 @@ struct offial_category official_categories[NUM_DRAWS][2][8] = {
                  {50000, "50"}, {55000, "55"}, {60000, "60"}, {66000, "66"}, {0, NULL}}
             }, {
                 "Pojkar U13", 12, 120, 60, 180, // name, max age, match gs rest times 
-                {{30000, "30"}, {34000, "34"}, {38000, "38"}, {42000, "42"}, 
-                 {46000, "46"}, {50000, "50"}, {55000, "55"}, {0, NULL}}
+                {{24000, "24"}, {27000, "27"}, {30000, "30"}, {34000, "34"}, 
+                 {38000, "38"}, {42000, "42"}, {46000, "46"}, {50000, "50"}, {0, NULL}}
             }, {
                 "Pojkar U11", 10, 120, 60, 180, // name, max age, match gs rest times 
-                {{27000, "27"}, {30000, "30"}, {34000, "34"}, {38000, "38"}, {42000, "42"}, 
-                 {46000, "46"}, {50000, "50"}, {55000, "55"}, {0, NULL}}
+                {{24000, "24"}, {27000, "27"}, {30000, "30"}, {34000, "34"}, 
+                 {38000, "38"}, {42000, "42"}, {46000, "46"}, {50000, "50"}, {0, NULL}}
             }, { NULL, 0, 0, 0, 0, {{0, NULL}}}
         }, { // women
             {
@@ -146,25 +146,25 @@ struct offial_category official_categories[NUM_DRAWS][2][8] = {
                 {{48000, "48"}, {52000, "52"}, {57000, "57"}, 
                  {63000, "63"}, {70000, "70"}, {78000, "78"}, {0, NULL}}
             }, {
-                "Flickor U20", 19, 240, 180, 600, // name, max age, match gs rest times 
-                {{48000, "48"}, {52000, "52"}, {57000, "57"}, 
-                 {63000, "63"}, {70000, "70"}, {0, NULL}}
+                "Damer U20", 19, 240, 180, 600, // name, max age, match gs rest times 
+                {{44000, "44"}, {48000, "48"}, {52000, "52"}, {57000, "57"}, 
+                 {63000, "63"}, {70000, "70"}, {78000, "78"}, {0, NULL}}
             }, {
                 "Flickor U17", 16, 180, 120, 600, // name, max age, match gs rest times 
                 {{44000, "44"}, {48000, "48"}, {52000, "52"}, {57000, "57"}, 
-                 {63000, "63"}, {0, NULL}}
+                 {63000, "63"}, {70000, "70"}, {0, NULL}}
             }, {
                 "Flickor U15", 14, 180, 120, 180, // name, max age, match gs rest times 
                 {{32000, "32"}, {36000, "36"}, {40000, "40"}, {44000, "44"}, 
                  {48000, "48"}, {52000, "52"}, {57000, "57"}, {63000, "63"}, {0, NULL}}
             }, {
                 "Flickor U13", 12, 120, 60, 180, // name, max age, match gs rest times 
-                {{28000, "28"}, {32000, "32"}, {36000, "36"}, {40000, "40"}, 
-                 {44000, "44"}, {48000, "48"}, {52000, "52"}, {0, NULL}}
+                {{22000, "22"}, {25000, "25"}, {28000, "28"}, {32000, "32"}, 
+                 {36000, "36"}, {40000, "40"}, {44000, "44"}, {48000, "48"}, {0, NULL}}
             }, {
                 "Flickor U11", 10, 120, 60, 180, // name, max age, match gs rest times 
-                {{25000, "25"}, {28000, "28"}, {32000, "32"}, {36000, "36"}, 
-                 {40000, "40"}, {44000, "44"}, {48000, "48"}, {52000, "52"}, {0, NULL}}
+                {{22000, "22"}, {25000, "25"}, {28000, "28"}, {32000, "32"}, 
+                 {36000, "36"}, {40000, "40"}, {44000, "44"}, {48000, "48"}, {0, NULL}}
             }, { NULL, 0, 0, 0, 0, {{0, NULL}}}
         }
     }, { // estonian
@@ -231,20 +231,29 @@ gint num_categories = 0;
 gint find_age_index(const gchar *category)
 {
     gint i;
+    gchar catbuf[32];
+
+    if (category == NULL || category[0] == 0)
+        return -1;
+
+    g_strlcpy(catbuf, category, sizeof(catbuf));
+    gchar *p = strchr(catbuf, '-');
+    if (!p)
+        p = strchr(catbuf, '+');
+    if (p)
+        *p = 0;
 
     for (i = 0; i < num_categories; i++) {
-        if (category == NULL || category_definitions[i].agetext[0] == 0)
+        if (category_definitions[i].agetext[0] == 0)
             continue;
-        if (strncmp(category_definitions[i].agetext, 
-                    category,
-                    strlen(category_definitions[i].agetext)) == 0)
+        if (strcmp(category_definitions[i].agetext, catbuf) == 0)
             return i;
     }
     //g_print("could not find%s\n", category);
     return -1;
 }
 
-static gint find_age_index_by_age(gint age, gint gender)
+gint find_age_index_by_age(gint age, gint gender)
 {
     gint i, age_ix = -1, best_age = 100000000;
 

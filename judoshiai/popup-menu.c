@@ -160,6 +160,9 @@ static void do_nothing(GtkWidget *menuitem, gpointer userdata)
 }
 #endif
 
+extern struct cat_def category_definitions[];
+extern gint find_age_index_by_age(gint age, gint gender);
+
 static void create_new_category(GtkWidget *menuitem, gpointer userdata)
 {
     int i;
@@ -186,21 +189,15 @@ static void create_new_category(GtkWidget *menuitem, gpointer userdata)
                 age = current_year - j->birthyear;
         }
 
-        if (j->regcategory) {
-            const gchar *p;
+        if (j->regcategory && j->regcategory[0]) {
             gint age1 = 0;
-            for (p = j->regcategory; *p; p++) {
-                switch (*p) {
-                case 'E': if (age1 < 10) age1 = 10; break;
-                case 'D': if (age1 < 12) age1 = 12; break;
-                case 'C': if (age1 < 14) age1 = 14; break;
-                case 'B': if (age1 < 16) age1 = 16; break;
-                case 'A': if (age1 < 18) age1 = 18; break;
-                case 'M': if (age1 < 20) age1 = 20; male = TRUE; break;
-                case 'N': if (age1 < 20) age1 = 20; female = TRUE; break;
-                case 'T': female = TRUE; break;
-                case 'P': male = TRUE; break;
-                }
+            gint n = find_age_index(j->regcategory);
+            if (n >= 0) {
+                age1 = category_definitions[n].age;
+                if (category_definitions[n].gender & IS_FEMALE)
+                    female = TRUE;
+                else
+                    male = TRUE;
             }
             if (j->birthyear == 0 && age1 > age)
                 age = age1;
@@ -213,18 +210,28 @@ static void create_new_category(GtkWidget *menuitem, gpointer userdata)
     }
 
     gint k = 0;
-    if (age > 18 && male)
-        k += sprintf(cbuf+k, "M");
-    if (age > 18 && female)
-        k += sprintf(cbuf+k, "N");
-    if (age >= 0 && age <= 18) {
-        k += sprintf(cbuf+k, "%c", 
-                     "xxxxxxxxxEEDDCCBBAA"[age]);
-        if (male)
-            k += sprintf(cbuf+k, "P"); 
-        if (female)
-            k += sprintf(cbuf+k, "T");
+
+    if (draw_system == DRAW_FINNISH) {
+        if (age > 19 && male)
+            k += sprintf(cbuf+k, "M");
+        if (age > 19 && female)
+            k += sprintf(cbuf+k, "N");
+        if (age >= 0 && age <= 19) {
+            k += sprintf(cbuf+k, "%c", 
+                         "JIIHHGGFFEEDDCCBBAAA"[age]);
+            if (male)
+                k += sprintf(cbuf+k, "P"); 
+            if (female)
+                k += sprintf(cbuf+k, "T");
+        }
+    } else {
+        gint n = find_age_index_by_age(age, male ? IS_MALE : (female ? IS_FEMALE : IS_MALE));
+        if (n >= 0)
+            k += sprintf(cbuf+k, "%s", category_definitions[n].agetext);
+        else
+            k += sprintf(cbuf+k, "U%d", age+1);
     }
+
     k += sprintf(cbuf+k, "-%d,%d", 
                  weight/1000, 
                  (weight%1000)/100);
@@ -342,7 +349,7 @@ void view_popup_menu(GtkWidget *treeview,
                          (GCallback) view_popup_menu_move_judoka, userdata);
         gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
 
-        menuitem = gtk_menu_item_new_with_label(_("Compose Unoffial Category"));
+        menuitem = gtk_menu_item_new_with_label(_("Compose Unofficial Category"));
         g_signal_connect(menuitem, "activate",
                          (GCallback) create_new_category, userdata);
         gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
