@@ -444,8 +444,6 @@ void match_statistics(FILE *f)
         if (i < 0)
             continue;
 
-        gint blue_score = atoi(db_get_data(k, "blue_score"));
-        gint white_score = atoi(db_get_data(k, "white_score"));
         gint blue_points = atoi(db_get_data(k, "blue_points"));
         gint white_points = atoi(db_get_data(k, "white_points"));
         gint time = atoi(db_get_data(k, "time"));

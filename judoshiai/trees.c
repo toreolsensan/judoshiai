@@ -795,10 +795,16 @@ void club_stat_print(FILE *f)
         if (prev == NULL || compare_medals(p, prev))
             prpos = pos;
         prev = p;
+
+        struct judoka j;
+        j.club = p->name;
+        j.country = p->country;
+
         fprintf(f, "<tr><td>%d.</td><td>%s</td><td class=\"medalcnt\">%d</td>"
                 "<td class=\"medalcnt\">%d</td><td class=\"medalcnt\">%d</td>"
                 "<td class=\"medalcnt\">%d</td></tr>\n", 
-                prpos, utf8_to_html(p->name), p->gold, p->silver, p->bronze, p->competitors);
+                prpos, utf8_to_html(get_club_text(&j, CLUB_TEXT_ADDRESS)), 
+                p->gold, p->silver, p->bronze, p->competitors);
     }
 
     fprintf(f, "</table></td>");

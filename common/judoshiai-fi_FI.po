@@ -1643,7 +1643,7 @@ msgstr "SWE Lyhyt keräily"
 
 #: ../judoshiai/menus.c:331 ../judoshiai/menus.c:638
 msgid "Club Name Only"
-msgstr "Vain kerhon nimi"
+msgstr "Vain seuran nimi"
 
 #: ../judoshiai/menus.c:333 ../judoshiai/menus.c:639
 msgid "Country Name Only"
@@ -1651,7 +1651,7 @@ msgstr "Vain maan nimi"
 
 #: ../judoshiai/menus.c:335 ../judoshiai/menus.c:640
 msgid "Both Club and Country"
-msgstr "Kerhon ja maan nimi"
+msgstr "Seuran ja maan nimi"
 
 #: ../judoshiai/menus.c:614
 msgid "International System"
