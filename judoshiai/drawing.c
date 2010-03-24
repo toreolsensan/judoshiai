@@ -688,34 +688,49 @@ static void make_manual_mathes_callback(GtkWidget *widget,
 
     gint wish = get_cat_system(mdata->mcategory_ix) & SYSTEM_WISH_MASK;
     gint wishsys = wish >> SYSTEM_WISH_SHIFT;
+    struct category_data *cat = NULL;
 
-    if (wishsys == CAT_SYSTEM_DEFAULT &&
-	mdata->mjudokas >= 8) {
-	switch (draw_system) {
-	case DRAW_SWEDISH:
-	    wishsys = CAT_SYSTEM_DIREKT_AATERKVAL;
-	    break;
-	case DRAW_ESTONIAN:
-	    wishsys = CAT_SYSTEM_EST_D_KLASS;
-	    break;
-	}
+    if (mdata->mfrench_sys < 0) {
+        if (mdata->mjudokas <= 5)
+            db_set_system(mdata->mcategory_ix, wish | SYSTEM_POOL | mdata->mjudokas);
+        else
+            db_set_system(mdata->mcategory_ix, wish | SYSTEM_DPOOL | mdata->mjudokas);
+    } else {
+        if (wishsys == CAT_SYSTEM_DEFAULT) {
+            switch (draw_system) {
+            case DRAW_INTERNATIONAL:
+                break;
+            case DRAW_FINNISH:
+                break;
+            case DRAW_SWEDISH:
+                wishsys = CAT_SYSTEM_DIREKT_AATERKVAL;
+                break;
+            case DRAW_ESTONIAN:
+                /* double elimination is used for under 11 years old */
+                cat = avl_get_category(mdata->mcategory_ix);
+                if (cat) {
+                    gint aix = find_age_index(cat->category);
+                    if (aix >= 0) {
+                        if (category_definitions[aix].age <= 10)
+                            wishsys = CAT_SYSTEM_EST_D_KLASS;
+                    }
+                }
+                break;
+            }
+        }
+
+        if (wishsys >= CAT_SYSTEM_REPECHAGE)
+            wish |= (TABLE_DOUBLE_REPECHAGE + wishsys - CAT_SYSTEM_REPECHAGE) << SYSTEM_TABLE_SHIFT;
+
+        if (mdata->mjudokas <= 8)
+            db_set_system(mdata->mcategory_ix, wish | SYSTEM_FRENCH_8 | mdata->mjudokas);
+        else if (mdata->mjudokas <= 16)
+            db_set_system(mdata->mcategory_ix, wish | SYSTEM_FRENCH_16 | mdata->mjudokas);
+        else if (mdata->mjudokas <= 32)
+            db_set_system(mdata->mcategory_ix, wish | SYSTEM_FRENCH_32 | mdata->mjudokas);
+        else
+            db_set_system(mdata->mcategory_ix, wish | SYSTEM_FRENCH_64 | mdata->mjudokas);
     }
-
-    if (wishsys >= CAT_SYSTEM_REPECHAGE)
-	wish |= (TABLE_DOUBLE_REPECHAGE + wishsys - CAT_SYSTEM_REPECHAGE) << SYSTEM_TABLE_SHIFT;
-
-    if (mdata->mjudokas <= 5 && wishsys < CAT_SYSTEM_REPECHAGE)
-        db_set_system(mdata->mcategory_ix, wish | SYSTEM_POOL | mdata->mjudokas);
-    else if (mdata->mjudokas <= 7 && wishsys < CAT_SYSTEM_REPECHAGE)
-        db_set_system(mdata->mcategory_ix, wish | SYSTEM_DPOOL | mdata->mjudokas);
-    else if (mdata->mjudokas <= 8)
-        db_set_system(mdata->mcategory_ix, wish | SYSTEM_FRENCH_8 | mdata->mjudokas);
-    else if (mdata->mjudokas <= 16)
-        db_set_system(mdata->mcategory_ix, wish | SYSTEM_FRENCH_16 | mdata->mjudokas);
-    else if (mdata->mjudokas <= 32)
-        db_set_system(mdata->mcategory_ix, wish | SYSTEM_FRENCH_32 | mdata->mjudokas);
-    else
-        db_set_system(mdata->mcategory_ix, wish | SYSTEM_FRENCH_64 | mdata->mjudokas);
 out:
 
     update_category_status_info(mdata->mcategory_ix);
@@ -755,25 +770,28 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
     // how many positions are needed for drawing?
     mdata->mjudokas = competitors;
     if (competitors <= 7) {
-	if (((get_cat_system(mdata->mcategory_ix) & SYSTEM_WISH_MASK) >> SYSTEM_WISH_SHIFT) > CAT_SYSTEM_DPOOL) {
+        gint wish = (get_cat_system(mdata->mcategory_ix) & SYSTEM_WISH_MASK) >> SYSTEM_WISH_SHIFT;
+	if ((wish > CAT_SYSTEM_DPOOL) ||
+            (competitors > 5 && wish == CAT_SYSTEM_DEFAULT &&
+             (draw_system == DRAW_INTERNATIONAL || draw_system == DRAW_ESTONIAN))) {
 	    mdata->mpositions = 8;
-	    mdata->mfrench_sys = 0;
+	    mdata->mfrench_sys = FRENCH_8;
 	} else {
 	    mdata->mpositions = competitors;
 	    mdata->mfrench_sys = -1;
 	}
     } else if (competitors == 8) {
         mdata->mpositions = 8;
-        mdata->mfrench_sys = 0;
+        mdata->mfrench_sys = FRENCH_8;
     } else if (competitors <= 16) {
         mdata->mpositions = 16;
-        mdata->mfrench_sys = 1;
+        mdata->mfrench_sys = FRENCH_16;
     } else if (competitors <= 32) {
         mdata->mpositions = 32;
-        mdata->mfrench_sys = 2;
+        mdata->mfrench_sys = FRENCH_32;
     } else {
         mdata->mpositions = 64;
-        mdata->mfrench_sys = 3;
+        mdata->mfrench_sys = FRENCH_64;
     }
 
     if (catname && catname[0] == '?') {

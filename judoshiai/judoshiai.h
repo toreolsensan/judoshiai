@@ -156,6 +156,8 @@ enum french_systems {
 
 #define INVALID_MATCH              1000
 
+#define NUM_CATEGORIES 32
+
 enum {
     COL_INDEX = 0,
     COL_LAST_NAME,
@@ -494,6 +496,7 @@ extern const gchar french_64_matches_to_page[NUM_TABLES][NUM_MATCHES];
 extern const gint result_y_position[NUM_TABLES][NUM_FRENCH];
 extern const gint repechage_start[NUM_TABLES][NUM_FRENCH][2];
 extern struct next_match_info next_matches_info[NUM_TATAMIS][2];
+extern struct cat_def category_definitions[NUM_CATEGORIES];
 
 extern FILE *result_file;
 extern GKeyFile *keyfile;

@@ -13,8 +13,6 @@
 
 #include "judoshiai.h"
 
-#define NUM_CATEGORIES 32
-
 struct offial_category {
     gchar *name; 
     gint maxage;
