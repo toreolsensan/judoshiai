@@ -456,13 +456,13 @@ void match_statistics(FILE *f)
         category_definitions[i].stat.total++;
         category_definitions[i].stat.time += time;
 
-        if ((blue_score & 0xf0000) || (white_score & 0xf0000))
+        if (blue_points == 10 || white_points == 10)
             category_definitions[i].stat.ippons++;
-        else if ((blue_score & 0xf000) || (white_score & 0xf000))
+        else if (blue_points == 7 || white_points == 7)
             category_definitions[i].stat.wazaaris++;
-        else if ((blue_score & 0xf00) || (white_score & 0xf00))
+        else if (blue_points == 5 || white_points == 5)
             category_definitions[i].stat.yukos++;
-        else if ((blue_score & 0xf0) || (white_score & 0xf0))
+        else if (blue_points == 3 || white_points == 3)
             category_definitions[i].stat.kokas++;
         else
             category_definitions[i].stat.hanteis++;
