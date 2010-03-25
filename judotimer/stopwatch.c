@@ -1226,6 +1226,8 @@ static void gen_random_key(void)
 #endif
 }
 
+gchar *logfile_name = NULL;
+
 void judotimer_log(gchar *format, ...)
 {
     guint t;
@@ -1234,7 +1236,6 @@ void judotimer_log(gchar *format, ...)
     va_start(args, format);
     gchar *text = g_strdup_vprintf(format, args);
     va_end(args);
-    static gchar *logfile_name = NULL;
 
     t = time(NULL);
 

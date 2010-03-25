@@ -15,6 +15,7 @@
 #include "judotimer.h"
 
 void start_help(GtkWidget *w, gpointer data);
+void start_log_view(GtkWidget *w, gpointer data);
 
 static void about_judotimer( GtkWidget *w,
                              gpointer   data )
@@ -186,7 +187,7 @@ static void change_menu_label(GtkWidget *item, const gchar *new_text)
 }
 
 static GtkWidget *menubar, *match, *preferences, *help, *matchmenu, *preferencesmenu, *helpmenu;
-static GtkWidget *separator1, *separator2, *quit;
+static GtkWidget *separator1, *separator2, *quit, *viewlog;
 static GtkWidget *match0, *match1, *match2, *match3, *match4, *match5, *gs;
 static GtkWidget *blue_wins, *white_wins, *red_background, *full_screen, *rules_no_koka;
 static GtkWidget *rules_leave_points;
@@ -331,6 +332,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     hansokumake_white = gtk_menu_item_new_with_label(_("Hansoku-make to white"));
     clear_selection = gtk_menu_item_new_with_label(_("Clear selection"));
     separator2 = gtk_separator_menu_item_new();
+    viewlog = gtk_menu_item_new_with_label(_("View Log"));
     quit = gtk_menu_item_new_with_label(_("Quit"));
 
     gtk_menu_shell_append (GTK_MENU_SHELL (matchmenu), match0);
@@ -347,6 +349,8 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     //gtk_menu_shell_append (GTK_MENU_SHELL (matchmenu), hansokumake_white);
     gtk_menu_shell_append (GTK_MENU_SHELL (matchmenu), clear_selection);
     gtk_menu_shell_append (GTK_MENU_SHELL (matchmenu), separator2);
+    gtk_menu_shell_append (GTK_MENU_SHELL (matchmenu), viewlog);
+    gtk_menu_shell_append (GTK_MENU_SHELL (matchmenu), gtk_separator_menu_item_new());
     gtk_menu_shell_append (GTK_MENU_SHELL (matchmenu), quit);
 
     g_signal_connect(G_OBJECT(match0),      "activate", G_CALLBACK(match_auto), 0);
@@ -362,6 +366,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     g_signal_connect(G_OBJECT(hansokumake_white), "activate", G_CALLBACK(voting_result), (gpointer)HANSOKUMAKE_WHITE);
     g_signal_connect(G_OBJECT(clear_selection), "activate", G_CALLBACK(voting_result), (gpointer)CLEAR_SELECTION);
 
+    g_signal_connect(G_OBJECT(viewlog),     "activate", G_CALLBACK(start_log_view), NULL);
     g_signal_connect(G_OBJECT(quit),        "activate", G_CALLBACK(destroy/*gtk_main_quit*/), NULL);
 
     gtk_widget_add_accelerator(quit, "activate", group, GDK_Q, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
@@ -621,6 +626,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(hansokumake_white, _("Hansoku-make to white"));
     change_menu_label(clear_selection,   _("Clear selection"));
 
+    change_menu_label(viewlog,      _("View Log"));
     change_menu_label(quit,         _("Quit"));
 
     change_menu_label(red_background, _("Red background"));
@@ -811,8 +817,24 @@ void start_help(GtkWidget *w, gpointer data)
     cmd = g_strdup_printf("if which acroread ; then PDFR=acroread ; "
                           "elif which evince ; then PDFR=evince ; "
                           "else PDFR=xpdf ; fi ; $PDFR \"%s\" &", docfile);
+    system(cmd);
     g_free(cmd);
 #endif /* ! WIN32 */
     g_free(docfile);
 }
 
+extern gchar *logfile_name;
+
+void start_log_view(GtkWidget *w, gpointer data)
+{
+    if (!logfile_name)
+        return;
+#ifdef WIN32
+    ShellExecute(NULL, TEXT("open"), logfile_name, NULL, ".\\", SW_SHOWMAXIMIZED);
+#else /* ! WIN32 */
+    gchar *cmd;
+    cmd = g_strdup_printf("gedit \"%s\" &", logfile_name);
+    system(cmd);
+    g_free(cmd);
+#endif /* ! WIN32 */
+}

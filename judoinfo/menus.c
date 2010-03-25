@@ -364,6 +364,7 @@ void start_help(GtkWidget *w, gpointer data)
     cmd = g_strdup_printf("if which acroread ; then PDFR=acroread ; "
                           "elif which evince ; then PDFR=evince ; "
                           "else PDFR=xpdf ; fi ; $PDFR \"%s\" &", docfile);
+    system(cmd);
     g_free(cmd);
 #endif /* ! WIN32 */
     g_free(docfile);
