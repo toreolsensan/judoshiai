@@ -825,16 +825,52 @@ void start_help(GtkWidget *w, gpointer data)
 
 extern gchar *logfile_name;
 
+static gboolean delete_log_view(GtkWidget *widget,
+                                GdkEvent  *event,
+                                gpointer   data )
+{
+    return FALSE;
+}
+
+static void destroy_log_view(GtkWidget *widget,
+                             gpointer   data )
+{
+}
+
 void start_log_view(GtkWidget *w, gpointer data)
 {
-    if (!logfile_name)
+    gchar line[256];
+    FILE *f = fopen(logfile_name, "r");
+    if (!f)
         return;
-#ifdef WIN32
-    ShellExecute(NULL, TEXT("open"), logfile_name, NULL, ".\\", SW_SHOWMAXIMIZED);
-#else /* ! WIN32 */
-    gchar *cmd;
-    cmd = g_strdup_printf("gedit \"%s\" &", logfile_name);
-    system(cmd);
-    g_free(cmd);
-#endif /* ! WIN32 */
+    
+    GtkWindow *window = GTK_WINDOW(gtk_window_new(GTK_WINDOW_TOPLEVEL));
+    gtk_window_set_title(GTK_WINDOW(window), logfile_name);
+    gtk_widget_set_size_request(GTK_WIDGET(window), 500, 560);
+
+    GtkWidget *view = gtk_text_view_new();
+    GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(view));
+
+    while (fgets(line, sizeof(line), f)) {
+        gtk_text_buffer_insert_at_cursor(buffer, line, -1);
+    }
+
+    fclose(f);
+
+    GtkWidget *scrolled_window = gtk_scrolled_window_new(NULL, NULL);
+    gtk_container_set_border_width(GTK_CONTAINER(scrolled_window), 10);
+    gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_window), view);
+
+    gtk_container_add(GTK_CONTAINER(window), scrolled_window);
+    gtk_widget_show_all(GTK_WIDGET(window));
+
+    g_signal_connect (G_OBJECT (window), "delete_event",
+                      G_CALLBACK (delete_log_view), NULL);
+    g_signal_connect (G_OBJECT (window), "destroy",
+                      G_CALLBACK (destroy_log_view), NULL);
+
+    GtkAdjustment *adj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(scrolled_window));
+    gtk_adjustment_set_value(adj, adj->upper - adj->page_size);
+    //gtk_scrolled_window_set_vadjustment(GTK_SCROLLED_WINDOW(scrolled_window), adj);
+    //gtk_adjustment_value_changed(adj);
 }

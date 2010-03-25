@@ -1139,6 +1139,8 @@ int main( int   argc,
         GThread   *gth = NULL;         /* thread id */
         gboolean   run_flag = TRUE;   /* used as exit flag for threads */
 
+        judotimer_log("JudoTimer starts");
+
         font = pango_font_description_from_string("Sans bold 12");
 
         gdk_color_parse("#FFFF00", &color_yellow); 
