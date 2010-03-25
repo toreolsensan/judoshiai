@@ -67,10 +67,10 @@ struct msg_next_match {
     char pin_time_wazaari;
     char pin_time_yuko;
     char pin_time_koka;
-    char cat_1[10];
+    char cat_1[16];
     char blue_1[60];
     char white_1[60];
-    char cat_2[10];
+    char cat_2[16];
     char blue_2[60];
     char white_2[60];
 };

@@ -1283,8 +1283,8 @@ found:
 
 static void log_match(gint category, gint number, gint bluepts, gint whitepts)
 {
-    gint win_ix;
-    struct judoka *winner = NULL, *cat = get_data(category);
+    gint blue_ix, white_ix, win_ix;
+    struct judoka *blue = NULL, *white = NULL, *cat = get_data(category), *winner;
     gint tatami = db_find_match_tatami(category, number);
 
     if (!cat)
@@ -1298,19 +1298,25 @@ static void log_match(gint category, gint number, gint bluepts, gint whitepts)
     if (numrows < 0)
         goto error;
 
-    if (bluepts > whitepts)
-        win_ix = atoi(db_get_data(0, "blue"));
-    else
-        win_ix = atoi(db_get_data(0, "white"));
+    blue_ix = atoi(db_get_data(0, "blue"));
+    white_ix = atoi(db_get_data(0, "white"));
+    blue = get_data(blue_ix);
+    white = get_data(white_ix);
 
-    winner = get_data(win_ix);
-
-    if (!winner)
+    if (blue == NULL || white == NULL)
         goto error;
 
-    COMP_LOG_INFO(tatami, "%s: %s (%d), %s: %s, %s: %d", _("Match"),
-                  cat->last, number, _("winner"),
-                  winner->last, _("points"), bluepts > whitepts ? bluepts : whitepts);
+    if (bluepts > whitepts) {
+        winner = blue;
+        win_ix = blue_ix;
+    } else {
+        winner = white;
+        win_ix = white_ix;
+    }
+
+    COMP_LOG_INFO(tatami, "%s: %s (%d), %s-%s, %s: %d-%d", _("Match"),
+                  cat->last, number, blue->last, white->last,
+                  _("points"), bluepts, whitepts);
 
     if (tatami >= 1 && tatami <= NUM_TATAMIS) {
         g_strlcpy(next_matches_info[tatami-1][0].won_last, 
@@ -1325,7 +1331,8 @@ static void log_match(gint category, gint number, gint bluepts, gint whitepts)
     }
 
 error:
-    free_judoka(winner);
+    free_judoka(blue);
+    free_judoka(white);
     free_judoka(cat);
     db_close_table();
 }
