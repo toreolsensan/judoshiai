@@ -77,6 +77,7 @@ extern gboolean demo;
 extern GKeyFile *keyfile;
 extern gboolean rules_no_koka_dsp;
 extern gboolean rules_leave_score;
+extern gboolean golden_score;
 extern gboolean clocks_only;
 extern gboolean short_pin_times;
 extern gint language;

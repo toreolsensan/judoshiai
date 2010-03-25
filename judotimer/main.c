@@ -847,7 +847,9 @@ void reset_display(gint key)
         set_timer_run_color(FALSE);
         set_timer_osaekomi_color(OSAEKOMI_DSP_NO, 0);
         set_osaekomi_value(0, 0);
-        set_points(pts, pts);
+
+        if (golden_score == FALSE || rules_leave_score == FALSE)
+            set_points(pts, pts);
 
         set_text(MY_LABEL(comment), "");
 	//expose(darea, 0, 0);
