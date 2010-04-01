@@ -15,19 +15,21 @@
 
 #include "judoshiai.h"
 
-const guint pools[8][11][2] = {
+const guint pools[11][32][2] = {
     {{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}}, /* 0 */
     {{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}}, /* 1 */
-#ifdef ONE_MATCH
-    {{1, 2}, {0,0}}, /* 2 */
-#else
     {{1, 2}, {1, 2}, {1, 2}, {0,0}}, /* 2 */
-#endif
     {{1, 2}, {1, 3}, {2, 3}, {0,0}}, /* 3 */
     {{1, 2}, {3, 4}, {1, 3}, {2, 4}, {1, 4}, {2, 3}, {0,0}}, /* 4 */
     {{4, 5}, {1, 2}, {3, 4}, {1, 5}, {2, 3}, {1, 4}, {3, 5}, {2, 4}, {1, 3}, {2, 5}, {0,0}}, /* 5 */
     {{1, 2}, {4, 5}, {1, 3}, {4, 6}, {2, 3}, {5, 6}, {0,0}}, /* 6 */
-    {{1, 2}, {3, 4}, {5, 6}, {1, 3}, {2, 4}, {5, 7}, {1, 4}, {2, 3}, {6, 7}, {0,0}} /* 7 */
+    {{1, 2}, {3, 4}, {5, 6}, {1, 3}, {2, 4}, {5, 7}, {1, 4}, {2, 3}, {6, 7}, {0,0}}, /* 7 */
+    {{1, 2}, {5, 6}, {3, 4}, {7, 8}, {1, 3}, {5, 7}, {2, 4}, {6, 8}, {1, 4}, {5, 8}, 
+     {2, 3}, {6, 7}, {0,0}}, /* 8 */
+    {{4, 5}, {1, 2}, {6, 7}, {3, 4}, {1, 5}, {8, 9}, {2, 3}, {6, 8}, {1, 4}, {3, 5}, 
+     {7, 9}, {2, 4}, {1, 3}, {6, 9}, {2, 5}, {7, 8}, {0,0}}, /* 9 */
+    {{4, 5}, {9,10}, {1, 2}, {6, 7}, {3, 4}, {8, 9}, {1, 5}, {6,10}, {2, 3}, {7, 8}, 
+     {1, 4}, {6, 9}, {3, 5}, {8,10}, {2, 4}, {7, 9}, {1, 3}, {6, 8}, {2, 5}, {7,10}, {0,0}} /* 10 */
 };
 
 const guint french_num_matches[NUM_TABLES][NUM_FRENCH] = {
@@ -564,8 +566,8 @@ static gchar *get_system_name(gint num)
 {
     switch (num) {
     case CAT_SYSTEM_DEFAULT: return _("Default");
-    case CAT_SYSTEM_POOL: return _("Round Robin");
-    case CAT_SYSTEM_DPOOL: return _("Double Round Robin");
+    case CAT_SYSTEM_POOL: return _("Pool");
+    case CAT_SYSTEM_DPOOL: return _("Double Pool");
     case CAT_SYSTEM_REPECHAGE: return _("Double Repechage");
     case CAT_SYSTEM_DUBBELT_AATERKVAL: return _("SWE Double Repechage");
     case CAT_SYSTEM_DIREKT_AATERKVAL: return _("SWE Double Elimination");

@@ -35,7 +35,7 @@ static gint current_page = 0;
 #define THICK_LINE    (2*THIN_LINE)
 
 #define ROW_WIDTH     W(0.9)
-#define ROW_HEIGHT    NAME_H
+//#define ROW_HEIGHT    NAME_H
 
 #define OFFSET_X      W(0.05)
 #define OFFSET_Y      H(0.1)
@@ -65,6 +65,7 @@ static gint current_page = 0;
 static gchar font_face[32];
 static gint  font_slant = CAIRO_FONT_SLANT_NORMAL, font_weight = CAIRO_FONT_WEIGHT_NORMAL;
 static GtkWidget *sheet_label = NULL;
+static gdouble ROW_HEIGHT;
 
 struct table {
     double position_x, position_y;
@@ -102,6 +103,7 @@ struct table win_table = {
     0, 3,
     {0.04, 0.04, 0.04}
 };
+
 
 static void init_tables(struct paint_data *pd)
 {
@@ -648,24 +650,31 @@ static void paint_pool(struct paint_data *pd, gint category, struct judoka *ctg,
     empty_pool_struct(&pm);
 }
 
+static gdouble row_height[11] = {
+    1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.9, 0.8, 0.7
+};
+
 static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg, gint num_judokas)
 {
     struct pool_matches pm;
     gint i;
     struct judoka *j1 = NULL;
-    int num_pool_a, pos_a, pos_b, gold, silver, bronze1, bronze2;
+    int num_pool_a, num_pool_b, pos_a, pos_b, gold, silver, bronze1, bronze2;
     double pos_match_a, pos_match_b, pos_match_f, x1, x2, pos_judoka_a, pos_judoka_b;
-    gboolean yes_a[8], yes_b[8];
-    gint c_a[8], c_b[8];
+    gboolean yes_a[11], yes_b[11];
+    gint c_a[11], c_b[11];
+
+    ROW_HEIGHT *= row_height[num_judokas];
 
     fill_pool_struct(category, num_judokas, &pm);
 
-    num_pool_a = num_judokas >= 7 ? 4 : 3;
+    num_pool_a = num_judokas - num_judokas/2;
+    num_pool_b = num_judokas - num_pool_a;
 
     pos_judoka_a = POOL_JUDOKAS_Y;
     pos_match_a = pos_judoka_a + (num_pool_a + 3) * ROW_HEIGHT;
-    pos_judoka_b = pos_match_a + (num_pool_a == 4 ? 9 : 6) * ROW_HEIGHT;
-    pos_match_b = pos_judoka_b + 6 * ROW_HEIGHT;
+    pos_judoka_b = pos_match_a + (num_matches(num_pool_a) + 3) * ROW_HEIGHT;
+    pos_match_b = pos_judoka_b + (num_pool_b + 3) * ROW_HEIGHT;
 
     /* competitor table A */
     judoka_table.position_y = pos_judoka_a;
@@ -698,9 +707,9 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
     }
 
     /* competitor table B */
-    judoka_table.num_rows = 3;
-    judoka_table.num_cols = 7;
     judoka_table.position_y = pos_judoka_b;
+    judoka_table.num_rows = num_pool_b;
+    judoka_table.num_cols = num_pool_b + 4;
     create_table(pd, &judoka_table);
     write_table_title(pd, &judoka_table, _T(competitorb));
 
@@ -730,7 +739,7 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
     }
 
     /* match table A */
-    match_table.num_rows = num_pool_a == 4 ? 6 : 3;
+    match_table.num_rows = num_matches(num_pool_a);
     match_table.position_y = pos_match_a;
     create_table(pd, &match_table);
     write_table_title(pd, &match_table, _T(matchesa));
@@ -742,7 +751,7 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
     WRITE_TABLE(match_table, 0, 6, "%s", _T(time));
 
     /* match table B */
-    match_table.num_rows = 3;
+    match_table.num_rows = num_matches(num_pool_b);
     match_table.position_y = pos_match_b;
     create_table(pd, &match_table);
     write_table_title(pd, &match_table, _T(matchesb));
@@ -756,7 +765,7 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
     /* matches */
     pos_a = pos_b = 1;
 
-    for (i = 1; i <= (num_judokas <= 6 ? 6 : 9) ; i++) {
+    for (i = 1; i <= num_matches(num_judokas) ; i++) {
         gint blue = pools[num_judokas][i-1][0];
         gint white = pools[num_judokas][i-1][1];
         gint ix = blue > num_pool_a ? pos_b++ : pos_a++;
@@ -792,9 +801,9 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
             WRITE_TABLE(judoka_table, white, blue + 3, "%d", pm.m[i].white_points);
     }
 
-    pos_match_f = pos_match_b + 7 * ROW_HEIGHT;
+    pos_match_f = pos_match_b + (num_matches(num_pool_b) + 3) * ROW_HEIGHT;
 
-    i = num_judokas <= 6 ? 7 : 10;
+    i = num_matches(num_judokas) + 1;
 
     cairo_text_extents_t extents;
     cairo_text_extents(pd->c, "B2", &extents);
@@ -862,17 +871,15 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
     memset(c_a, 0, sizeof(c_a));
     memset(c_b, 0, sizeof(c_b));
 
-    if (num_judokas == 6) {
-        yes_a[1] = yes_a[2] = yes_a[3] = TRUE;
-        yes_b[4] = yes_b[5] = yes_b[6] = TRUE;
-        get_pool_winner(3, c_a, yes_a, pm.wins, pm.pts, pm.mw, pm.j, pm.all_matched);
-        get_pool_winner(3, c_b, yes_b, pm.wins, pm.pts, pm.mw, pm.j, pm.all_matched);
-    } else {
-        yes_a[1] = yes_a[2] = yes_a[3] = yes_a[4] = TRUE;
-        yes_b[5] = yes_b[6] = yes_b[7] = TRUE;
-        get_pool_winner(4, c_a, yes_a, pm.wins, pm.pts, pm.mw, pm.j, pm.all_matched);
-        get_pool_winner(3, c_b, yes_b, pm.wins, pm.pts, pm.mw, pm.j, pm.all_matched);
+    for (i = 1; i <= num_judokas; i++) {
+        if (i <= num_pool_a)
+            yes_a[i] = TRUE;
+        else
+            yes_b[i] = TRUE;
     }
+    
+    get_pool_winner(num_pool_a, c_a, yes_a, pm.wins, pm.pts, pm.mw, pm.j, pm.all_matched);
+    get_pool_winner(num_pool_b, c_b, yes_b, pm.wins, pm.pts, pm.mw, pm.j, pm.all_matched);
 
     win_table.position_y = pos_judoka_a;
     win_table.num_rows = num_pool_a;
@@ -893,8 +900,8 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
     }
 
     win_table.position_y = pos_judoka_b;
-    win_table.num_rows = 3;
-    win_table.position_x = colpos(pd, &judoka_table, 7) + judoka_table.position_x;
+    win_table.num_rows = num_pool_b;
+    win_table.position_x = colpos(pd, &judoka_table, num_pool_b + 4) + judoka_table.position_x;
     create_table(pd, &win_table);
 
     WRITE_TABLE(win_table, 0, 0, "%s", _T(win));
@@ -913,7 +920,7 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
 
     /* results */
     result_table.num_rows = 4;
-    result_table.position_y = pos_match_b + 9 * ROW_HEIGHT + 3*NAME_S;
+    result_table.position_y = pos_match_b + (num_matches(num_pool_b) + 5) * ROW_HEIGHT + 3*NAME_S;
     create_table(pd, &result_table);
     write_table_title(pd, &result_table, _T(results));
 
@@ -1210,6 +1217,8 @@ void paint_category(struct paint_data *pd)
     gint sys, category = pd->category, num_judokas;
     gchar buf[200];
     struct judoka *ctg = NULL;
+
+    ROW_HEIGHT = NAME_H;
 	
     if (font_face[0] == 0)
         strcpy(font_face, MY_FONT);

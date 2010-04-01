@@ -224,10 +224,10 @@ static void calc_place_values(gint *place_values, struct mdata *mdata)
     gint num, cnt, x, j, s;
 
     switch (mdata->mfrench_sys) {
-    case 0: num = 8; break;
-    case 1: num = 16; break;
-    case 2: num = 32; break;
-    case 3: num = 64; break;
+    case FRENCH_8:  num = 8;  break;
+    case FRENCH_16: num = 16; break;
+    case FRENCH_32: num = 32; break;
+    case FRENCH_64: num = 64; break;
     default: return;
     }        
 
@@ -533,18 +533,9 @@ static gboolean draw_one_comp(struct mdata *mdata)
                     break;
                 } else
                     getmask = 0x36;
-#if 0
-                if (mask == 0)
-                    getmask = 0x36;
-                else if ((mask & 0x30) == 0x30)
-                    getmask = 0x06;
-                else if (mask & 0x7)
-                    getmask = 0x30;
-                else
-                    getmask = 0x06;
-#endif
                 break;
             case 7:
+            case 8:
                 if (mdata->drawn == 1 || mdata->drawn == 2 ) {
                     if (mdata->seeded1 <= 4)
                         getmask = 0x60;
@@ -553,16 +544,26 @@ static gboolean draw_one_comp(struct mdata *mdata)
                     break;
                 } else
                     getmask = 0x66;
-#if 0
-                if (mask == 0)
-                    getmask = 0x66;
-                else if ((mask & 0x60) == 0x60)
-                    getmask = 0x06;
-                else if (mask & 0xf)
-                    getmask = 0x60;
-                else
-                    getmask = 0x06;
-#endif
+                break;
+            case 9:
+                if (mdata->drawn == 1 || mdata->drawn == 2 ) {
+                    if (mdata->seeded1 <= 5)
+                        getmask = 0xc0;
+                    else 
+                        getmask = 0x12;
+                    break;
+                } else
+                    getmask = 0xd2;
+                break;
+            case 10:
+                if (mdata->drawn == 1 || mdata->drawn == 2 ) {
+                    if (mdata->seeded1 <= 5)
+                        getmask = 0x240;
+                    else 
+                        getmask = 0x12;
+                    break;
+                } else
+                    getmask = 0x252;
                 break;
             }
             found = get_free_pos_by_mask((mask ^ getmask) & getmask, mdata);
@@ -606,12 +607,36 @@ static gboolean draw_one_comp(struct mdata *mdata)
                 else
                     getmask = 0x0f;
                 break;
+            case 8:
+                if (mask == 0)
+                    getmask = 0xff;
+                else if (mask & 0xf)
+                    getmask = 0xf0;
+                else
+                    getmask = 0x0f;
+                break;
+            case 9:
+                if (mask == 0)
+                    getmask = 0x1ff;
+                else if (mask & 0x1f)
+                    getmask = 0x1e0;
+                else
+                    getmask = 0x1f;
+                break;
+            case 10:
+                if (mask == 0)
+                    getmask = 0x3ff;
+                else if (mask & 0x1f)
+                    getmask = 0x3e0;
+                else
+                    getmask = 0x1f;
+                break;
             }
             found = get_free_pos_by_mask(getmask, mdata);
         }
 
         if (!found)
-            found = get_free_pos_by_mask(0x7f, mdata);
+            found = get_free_pos_by_mask(0x3ff, mdata);
     }
 
     if (found)
@@ -767,10 +792,11 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
                        COL_LAST_NAME, &catname,
                        -1);
 
+    gint wish = (get_cat_system(mdata->mcategory_ix) & SYSTEM_WISH_MASK) >> SYSTEM_WISH_SHIFT;
+
     // how many positions are needed for drawing?
     mdata->mjudokas = competitors;
     if (competitors <= 7) {
-        gint wish = (get_cat_system(mdata->mcategory_ix) & SYSTEM_WISH_MASK) >> SYSTEM_WISH_SHIFT;
 	if ((wish > CAT_SYSTEM_DPOOL) ||
             (competitors > 5 && wish == CAT_SYSTEM_DEFAULT &&
              (draw_system == DRAW_INTERNATIONAL || draw_system == DRAW_ESTONIAN))) {
@@ -780,6 +806,10 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
 	    mdata->mpositions = competitors;
 	    mdata->mfrench_sys = -1;
 	}
+    } else if (competitors <= 10 && 
+               (wish == CAT_SYSTEM_DPOOL || wish == CAT_SYSTEM_POOL)) {
+        mdata->mpositions = competitors;
+        mdata->mfrench_sys = -1;
     } else if (competitors == 8) {
         mdata->mpositions = 8;
         mdata->mfrench_sys = FRENCH_8;
@@ -896,8 +926,7 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
                          G_CALLBACK(select_number), mdata);
         g_object_set(label, "xalign", 0.0, NULL);
 
-        if ((mdata->mfrench_sys < 0 && mdata->mjudokas == 7 && i > 4) ||
-            (mdata->mfrench_sys < 0 && mdata->mjudokas == 6 && i > 3) ||
+        if ((mdata->mfrench_sys < 0 && i > (mdata->mjudokas - mdata->mjudokas/2)) ||
             (mdata->mfrench_sys == 0 && i > 2 && i <= 4) ||
             (mdata->mfrench_sys == 0 && i > 6) ||
             (mdata->mfrench_sys == 1 && i > 4 && i <= 8) ||

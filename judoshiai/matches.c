@@ -356,18 +356,18 @@ static void comment_cell_data_func (GtkTreeViewColumn *col,
 	    g_print("MISMATCH match=%d old=%d new=%d\n", _to, m[_to]._which, _from); \
     } while (0)
 
-void get_pool_winner(gint num, gint c[], gboolean yes[], 
-                     gint wins[], gint pts[], 
-                     gboolean mw[8][8], struct judoka *ju[], gboolean all[])
+void get_pool_winner(gint num, gint c[11], gboolean yes[11], 
+                     gint wins[11], gint pts[11], 
+                     gboolean mw[11][11], struct judoka *ju[11], gboolean all[11])
 {
     gint i, j;
         
-    for (i = 0; i <= 7; i++) {
+    for (i = 0; i <= 10; i++) {
         c[i] = i;
     }
         
-    for (i = 1; i < 7; i++) {
-        for (j = i+1; j <= 7; j++) {
+    for (i = 1; i < 10; i++) {
+        for (j = i+1; j <= 10; j++) {
             if ((yes[c[i]] && yes[c[j]] && 
                  (ju[c[i]]->deleted & HANSOKUMAKE) &&
                  all[c[i]] == FALSE) ||                 /* hansoku-make */ 
@@ -423,7 +423,7 @@ void get_pool_winner(gint num, gint c[], gboolean yes[],
 #endif
 }
 
-static gint num_matches_table[] = {0,0,1,3,6,10,6,9};
+static gint num_matches_table[] = {0,0,1,3,6,10,6,9,12,16,20};
 
 gint num_matches(gint num_judokas)
 {
@@ -533,7 +533,7 @@ void empty_pool_struct(struct pool_matches *pm)
 {
     gint i;
 
-    for (i = 0; i < 8; i++)
+    for (i = 0; i < 11; i++)
         free_judoka(pm->j[i]);
 }
 
@@ -553,99 +553,98 @@ static void update_pool_matches(gint category, gint num)
         goto out;
     } 
 
-    if (num >= 6 && num <= 7) {
-        gboolean yes_a[8], yes_b[8];
-        gint c_a[8], c_b[8];
-        gint last_match = (num == 6) ? 6 : 9;
+    if (num <= 5 || num > 10) 
+        goto out;
 
-        memset(yes_a, 0, sizeof(yes_a));
-        memset(yes_b, 0, sizeof(yes_b));
-        memset(c_a, 0, sizeof(c_a));
-        memset(c_b, 0, sizeof(c_b));
+    gboolean yes_a[11], yes_b[11];
+    gint c_a[11], c_b[11];
+    gint last_match = num_matches(num);
 
-        if (num == 6) {
-            yes_a[1] = yes_a[2] = yes_a[3] = TRUE;
-            yes_b[4] = yes_b[5] = yes_b[6] = TRUE;
-            get_pool_winner(3, c_a, yes_a, pm.wins, pm.pts, pm.mw, pm.j, pm.all_matched);
-            get_pool_winner(3, c_b, yes_b, pm.wins, pm.pts, pm.mw, pm.j, pm.all_matched);
-        } else {
-            yes_a[1] = yes_a[2] = yes_a[3] = yes_a[4] = TRUE;
-            yes_b[5] = yes_b[6] = yes_b[7] = TRUE;
-            get_pool_winner(4, c_a, yes_a, pm.wins, pm.pts, pm.mw, pm.j, pm.all_matched);
-            get_pool_winner(3, c_b, yes_b, pm.wins, pm.pts, pm.mw, pm.j, pm.all_matched);
-        }
+    memset(yes_a, 0, sizeof(yes_a));
+    memset(yes_b, 0, sizeof(yes_b));
+    memset(c_a, 0, sizeof(c_a));
+    memset(c_b, 0, sizeof(c_b));
 
-        if (!pm.finished /*MATCHED_POOL(last_match)*/) {
-            struct match ma;
-                
-            memset(&ma, 0, sizeof(ma));
-            ma.category = category;
-
-            for (i = 1; i <= 3; i++) {
-                ma.number = i + last_match;
-                set_match(&ma);
-                db_set_match(&ma);
-            }
-
-            goto out;
-        }
+    for (i = 1; i <= num; i++) {
+        if (i <= (num - num/2))
+            yes_a[i] = TRUE;
+        else
+            yes_b[i] = TRUE;
+    }
     
-        if ((MATCHED_POOL(last_match+1) == FALSE) ||
-            (MATCHED_POOL_P(last_match+1) == FALSE && 
-             MATCHED_POOL_P(last_match+2) == FALSE &&
-             MATCHED_POOL(last_match+3) == FALSE)) {
-            struct match ma;
-                
-            memset(&ma, 0, sizeof(ma));
-            ma.category = category;
-            ma.number = last_match+1;
-            ma.blue = (pm.j[c_a[1]]->deleted & HANSOKUMAKE) ? GHOST : pm.j[c_a[1]]->index;
-            ma.white = (pm.j[c_b[2]]->deleted & HANSOKUMAKE) ? GHOST : pm.j[c_b[2]]->index;
+    get_pool_winner(num - num/2, c_a, yes_a, pm.wins, pm.pts, pm.mw, pm.j, pm.all_matched);
+    get_pool_winner(num/2, c_b, yes_b, pm.wins, pm.pts, pm.mw, pm.j, pm.all_matched);
 
+    if (!pm.finished /*MATCHED_POOL(last_match)*/) {
+        struct match ma;
+                
+        memset(&ma, 0, sizeof(ma));
+        ma.category = category;
+
+        for (i = 1; i <= 3; i++) {
+            ma.number = i + last_match;
             set_match(&ma);
             db_set_match(&ma);
         }
 
-        if ((MATCHED_POOL(last_match+2) == FALSE) ||
-            (MATCHED_POOL_P(last_match+2) == FALSE &&
-             MATCHED_POOL(last_match+3) == FALSE)) {
-            struct match ma;
-                
-            memset(&ma, 0, sizeof(ma));
-            ma.category = category;
-            ma.number = last_match+2;
-            ma.blue = (pm.j[c_b[1]]->deleted & HANSOKUMAKE) ? GHOST : pm.j[c_b[1]]->index;
-            ma.white = (pm.j[c_a[2]]->deleted & HANSOKUMAKE) ? GHOST : pm.j[c_a[2]]->index;
-
-            set_match(&ma);
-            db_set_match(&ma);
-        }
-
+        goto out;
+    }
     
-        if (MATCHED_POOL(last_match+1) &&
-            MATCHED_POOL(last_match+2) &&
-            !MATCHED_POOL(last_match+3)) {
-            struct match ma;
+    if ((MATCHED_POOL(last_match+1) == FALSE) ||
+        (MATCHED_POOL_P(last_match+1) == FALSE && 
+         MATCHED_POOL_P(last_match+2) == FALSE &&
+         MATCHED_POOL(last_match+3) == FALSE)) {
+        struct match ma;
                 
-            memset(&ma, 0, sizeof(ma));
-            ma.category = category;
-            ma.number = last_match+3;
-            if (pm.m[last_match+1].blue_points || pm.m[last_match+1].white == GHOST)
-                ma.blue = pm.m[last_match+1].blue;
-            else
-                ma.blue = pm.m[last_match+1].white;
+        memset(&ma, 0, sizeof(ma));
+        ma.category = category;
+        ma.number = last_match+1;
+        ma.blue = (pm.j[c_a[1]]->deleted & HANSOKUMAKE) ? GHOST : pm.j[c_a[1]]->index;
+        ma.white = (pm.j[c_b[2]]->deleted & HANSOKUMAKE) ? GHOST : pm.j[c_b[2]]->index;
 
-            if (pm.m[last_match+2].blue_points || pm.m[last_match+2].white == GHOST)
-                ma.white = pm.m[last_match+2].blue;
-            else
-                ma.white = pm.m[last_match+2].white;
-
-            set_match(&ma);
-            db_set_match(&ma);
-        }
+        set_match(&ma);
+        db_set_match(&ma);
     }
 
-out:
+    if ((MATCHED_POOL(last_match+2) == FALSE) ||
+        (MATCHED_POOL_P(last_match+2) == FALSE &&
+         MATCHED_POOL(last_match+3) == FALSE)) {
+        struct match ma;
+                
+        memset(&ma, 0, sizeof(ma));
+        ma.category = category;
+        ma.number = last_match+2;
+        ma.blue = (pm.j[c_b[1]]->deleted & HANSOKUMAKE) ? GHOST : pm.j[c_b[1]]->index;
+        ma.white = (pm.j[c_a[2]]->deleted & HANSOKUMAKE) ? GHOST : pm.j[c_a[2]]->index;
+
+        set_match(&ma);
+        db_set_match(&ma);
+    }
+
+    
+    if (MATCHED_POOL(last_match+1) &&
+        MATCHED_POOL(last_match+2) &&
+        !MATCHED_POOL(last_match+3)) {
+        struct match ma;
+                
+        memset(&ma, 0, sizeof(ma));
+        ma.category = category;
+        ma.number = last_match+3;
+        if (pm.m[last_match+1].blue_points || pm.m[last_match+1].white == GHOST)
+            ma.blue = pm.m[last_match+1].blue;
+        else
+            ma.blue = pm.m[last_match+1].white;
+
+        if (pm.m[last_match+2].blue_points || pm.m[last_match+2].white == GHOST)
+            ma.white = pm.m[last_match+2].blue;
+        else
+            ma.white = pm.m[last_match+2].white;
+
+        set_match(&ma);
+        db_set_match(&ma);
+    }
+
+ out:
     empty_pool_struct(&pm);
 }
 
@@ -912,10 +911,7 @@ gint get_match_number_flag(gint category, gint number)
 	return 0;
 
     case SYSTEM_DPOOL:
-        if ((cat->system & COMPETITORS_MASK) == 6)
-            matchnum = 9;
-        else
-            matchnum = 12;
+        matchnum = num_matches(cat->system & COMPETITORS_MASK) + 3;
 
 	if (number == matchnum - 2)
 	    return MATCH_FLAG_SEMIFINAL_A;
@@ -1242,43 +1238,6 @@ void update_matches(guint category, gint sys, gint tatami)
     refresh_window();
 
     send_matches(tatami);
-
-#if 0
-#define SAME_COMPETITOR (last1[0] && last2[0] && strcmp(last1, last2) == 0 && strcmp(first1, first2) == 0)
-
-    show_note("");
-    gchar *last1, *first1, *last2, *first2;
-    gint i, j, k, l;
-
-    for (i = 0; i < NUM_TATAMIS - 1; i++) {
-        for (j = i+1; j < NUM_TATAMIS; j++) {
-            for (k = 0; k < 2; k++) {
-                for (l = 0; l < 2; l++) {
-                    last1 = next_matches_info[i][k].blue_last;
-                    first1 = next_matches_info[i][k].blue_first;
-                    last2 = next_matches_info[j][l].blue_last;
-                    first2 = next_matches_info[j][l].blue_first;
-                    if (SAME_COMPETITOR) goto found;
-                    last2 = next_matches_info[j][l].white_last;
-                    first2 = next_matches_info[j][l].white_first;
-                    if (SAME_COMPETITOR) goto found;
-                    last1 = next_matches_info[i][k].white_last;
-                    first1 = next_matches_info[i][k].white_first;
-                    if (SAME_COMPETITOR) goto found;
-                    last2 = next_matches_info[j][l].blue_last;
-                    first2 = next_matches_info[j][l].blue_first;
-                    if (SAME_COMPETITOR) goto found;
-                }
-            }
-        }
-    }  
-
-    return;
-
-found:
-    show_note("Varoitus: %s %s matoilla %d ja %d yhtäaikaa!", 
-              first1, last1, i+1, j+1);
-#endif
 }
 
 static void log_match(gint category, gint number, gint bluepts, gint whitepts)
@@ -1511,28 +1470,6 @@ static void view_match_popup_menu(GtkWidget *treeview,
                      (GCallback) collapse_all, treeview);
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
 
-#if 0
-    menuitem = gtk_menu_item_new_with_label(_("Remove Matches"));
-    g_signal_connect(menuitem, "activate",
-                     (GCallback) remove_matches, (gpointer)category);
-    gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
-
-    menuitem = gtk_menu_item_new_with_label("Arvo ottelut uudelleen");
-    g_signal_connect(menuitem, "activate",
-                     (GCallback) view_popup_menu_draw_category, (gpointer)category);
-    gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
-
-    menuitem = gtk_menu_item_new_with_label("Kirjoita PDF");
-    g_signal_connect(menuitem, "activate",
-                     (GCallback) write_png, (gpointer)category);
-    gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
-
-    menuitem = gtk_menu_item_new_with_label("Tulosta sarja");
-    g_signal_connect(menuitem, "activate",
-                     (GCallback) do_print, (gpointer)category);
-    gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
-
-#endif
     gtk_widget_show_all(menu);
 
     /* Note: event can be NULL here when called from view_onPopupMenu;

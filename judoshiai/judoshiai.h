@@ -344,12 +344,12 @@ struct match {
 };
 
 struct pool_matches {
-    gint c[8], wins[8], pts[8], mw[8][8];
-    struct match m[16];
-    struct judoka *j[8];
-    gboolean yes[8];
+    gint c[11], wins[11], pts[11], mw[11][11];
+    struct match m[32];
+    struct judoka *j[11];
+    gboolean yes[11];
     gboolean finished;
-    gboolean all_matched[8];
+    gboolean all_matched[11];
     gint num_matches;
 };
 
@@ -486,7 +486,7 @@ extern GdkCursor     *wait_cursor;
 
 extern char *belts[];
 
-extern const guint pools[8][11][2];
+extern const guint pools[11][32][2];
 //extern guint competitors_1st_match[8][8][2];
 //extern const guint french_size[NUM_FRENCH];
 extern const guint french_num_matches[NUM_TABLES][NUM_FRENCH];
@@ -712,9 +712,9 @@ extern void matches_clear(void);
 extern void set_match(struct match *m);
 extern void fill_pool_struct(gint category, gint num, struct pool_matches *pm);
 extern void empty_pool_struct(struct pool_matches *pm);
-extern void get_pool_winner(gint num, gint c[], gboolean yes[], 
-                            gint wins[], gint pts[], 
-                            gboolean mw[8][8], struct judoka *ju[], gboolean all_matched[]);
+extern void get_pool_winner(gint num, gint c[11], gboolean yes[11], 
+                            gint wins[11], gint pts[11], 
+                            gboolean mw[11][11], struct judoka *ju[11], gboolean all_matched[11]);
 extern void update_competitors_categories(gint competitor);
 extern void set_points_and_score(struct message *msg);
 extern void set_comment_from_net(struct message *msg);
