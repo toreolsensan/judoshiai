@@ -659,7 +659,7 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
     struct pool_matches pm;
     gint i;
     struct judoka *j1 = NULL;
-    int num_pool_a, num_pool_b, pos_a, pos_b, gold, silver, bronze1, bronze2;
+    int num_pool_a, num_pool_b, pos_a, pos_b, gold = 0, silver = 0, bronze1 = 0, bronze2 = 0;
     double pos_match_a, pos_match_b, pos_match_f, x1, x2, pos_judoka_a, pos_judoka_b;
     gboolean yes_a[11], yes_b[11];
     gint c_a[11], c_b[11];
@@ -853,7 +853,7 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
     if (pm.m[i].blue_points || pm.m[i].white == GHOST) {
         gold = pm.m[i].blue;
         silver = pm.m[i].white;
-    } else {
+    } else if (pm.m[i].white_points || pm.m[i].blue == GHOST) {
         gold = pm.m[i].white;
         silver = pm.m[i].blue;
     }
@@ -914,7 +914,7 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
             WRITE_TABLE(win_table, i-num_pool_a, 0, "%d", pm.wins[i]);
         if (pm.pts[i] || pm.finished)
             WRITE_TABLE(win_table, i-num_pool_a, 1, "%d", pm.pts[i]);
-        if (pm.finished && line >= 1 && line <= 3)
+        if (pm.finished && line >= 1 && line <= num_pool_b)
             WRITE_TABLE(win_table, line, 2, "%d", i-num_pool_a);
     }
 
