@@ -231,6 +231,13 @@ static void calc_place_values(gint *place_values, struct mdata *mdata)
     default: return;
     }        
 
+    for (x = 1; x <= mdata->mpositions-1; x += 2) {
+        if (mdata->mpos[x].judoka)
+            place_values[x+1]++;
+        if (mdata->mpos[x+1].judoka)
+            place_values[x]++;
+    }
+
     cnt = 2;
     while (cnt < num) {
         for (x = 1; x <= mdata->mpositions; x += cnt) {
@@ -291,8 +298,8 @@ static gint get_free_pos_by_mask(gint mask, struct mdata *mdata)
 
     for (i = 1; i <= mdata->mpositions; i++) {
         gint currmask = 1<<get_section(x, mdata);
-        if ((currmask & mask) && mdata->mpos[x].judoka == 0 &&
-            get_competitor_number(x, mdata) <= mdata->mjudokas) {
+        if ((currmask & mask) && mdata->mpos[x].judoka == 0 
+            /*XXX && get_competitor_number(x, mdata) <= mdata->mjudokas*/) {
             if (place_values[x] < best_value) {
                 best_value = place_values[x];
                 valid_place = x;

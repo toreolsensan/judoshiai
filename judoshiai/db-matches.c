@@ -16,7 +16,7 @@
 
 //#define TATAMI_DEBUG 1
 
-gboolean auto_arrange = TRUE;
+gboolean auto_arrange = FALSE;
 
 static gboolean match_row_found;
 static gboolean match_found;

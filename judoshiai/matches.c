@@ -905,7 +905,7 @@ gint get_match_number_flag(gint category, gint number)
     gint table = (cat->system & SYSTEM_TABLE_MASK) >> SYSTEM_TABLE_SHIFT;
 
     gint matchnum = 1000;
-			
+
     switch (cat->system & SYSTEM_MASK) {
     case SYSTEM_POOL:
 	return 0;
@@ -931,6 +931,10 @@ gint get_match_number_flag(gint category, gint number)
 	    return MATCH_FLAG_BRONZE_B;
 	else if (number == medal_matches[table][sys][2])
 	    return MATCH_FLAG_GOLD;
+        else if (number == french_matches[table][sys][medal_matches[table][sys][2]][0])
+	    return MATCH_FLAG_SEMIFINAL_A;
+        else if (number == french_matches[table][sys][medal_matches[table][sys][2]][1])
+	    return MATCH_FLAG_SEMIFINAL_B;
     }
 
     return 0;
