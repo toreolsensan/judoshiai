@@ -31,7 +31,7 @@ guint french_matches_blue[32] = {
 guint french_matches_white_offset[NUM_FRENCH] = {4, 8, 16, 32};
 guint french_mul[NUM_FRENCH] = {8, 4, 2, 1};
 
-#define MAX_MATES 12
+#define MAX_MATES 100
 
 struct mdata {
     struct mcomp {
@@ -979,7 +979,7 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
 
     // find club mates
     for (i = 1; i <= mdata->mjudokas; i++) {
-        gint j;
+        gint j, r;
 
         if (mdata->mcomp[i].num_mates)
             continue;
@@ -988,8 +988,12 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
             if (i == j)
                 continue;
 
-            if (cmp_clubs(&mdata->mcomp[i], &mdata->mcomp[j]))
-                mdata->mcomp[i].num_mates++;
+            if ((r = cmp_clubs(&mdata->mcomp[i], &mdata->mcomp[j]))) {
+                if (r & CLUB_TEXT_COUNTRY)
+                    mdata->mcomp[i].num_mates += 8;
+                if (r & CLUB_TEXT_CLUB)
+                    mdata->mcomp[i].num_mates++;
+            }
         }
     }
 
