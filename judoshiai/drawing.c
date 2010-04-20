@@ -575,7 +575,26 @@ static gboolean draw_one_comp(struct mdata *mdata)
             }
             found = get_free_pos_by_mask((mask ^ getmask) & getmask, mdata);
         } else {
+            gint a_pool = 0, b_pool = 0, a_mask = 0, b_mask = 0;
             mask = get_club_mask(mdata);
+
+            if (mdata->mpositions >= 6) { // double pool
+                gint i;
+                for (i = 0; i < mdata->mpositions; i++) { // count mates in a and b pool
+                    if (mask & (1<<i)) {
+                        if (i < (mdata->mpositions + 1)/2)
+                            a_pool++;
+                        else
+                            b_pool++;
+                    }
+
+                    if (i < (mdata->mpositions + 1)/2)
+                        a_mask |= 1<<i;
+                    else
+                        b_mask |= 1<<i;
+                }
+            }
+
             switch (mdata->mpositions) {
             case 2:
                 getmask = 0x3;
@@ -599,44 +618,16 @@ static gboolean draw_one_comp(struct mdata *mdata)
                     getmask = 0x1f;
                 break;
             case 6:
-                if (mask == 0)
-                    getmask = 0x3f;
-                else if (mask & 0x7)
-                    getmask = 0x38;
-                else
-                    getmask = 0x07;
-                break;
             case 7:
-                if (mask == 0)
-                    getmask = 0x7f;
-                else if (mask & 0xf)
-                    getmask = 0x70;
-                else
-                    getmask = 0x0f;
-                break;
             case 8:
-                if (mask == 0)
-                    getmask = 0xff;
-                else if (mask & 0xf)
-                    getmask = 0xf0;
-                else
-                    getmask = 0x0f;
-                break;
             case 9:
-                if (mask == 0)
-                    getmask = 0x1ff;
-                else if (mask & 0x1f)
-                    getmask = 0x1e0;
-                else
-                    getmask = 0x1f;
-                break;
             case 10:
-                if (mask == 0)
-                    getmask = 0x3ff;
-                else if (mask & 0x1f)
-                    getmask = 0x3e0;
+                if (a_pool < b_pool)
+                    getmask = a_mask;
+                else if (a_pool > b_pool)
+                    getmask = b_mask;
                 else
-                    getmask = 0x1f;
+                    getmask = a_mask | b_mask;
                 break;
             }
             found = get_free_pos_by_mask(getmask, mdata);
