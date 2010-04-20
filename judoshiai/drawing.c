@@ -367,6 +367,24 @@ static gint get_club_mask(struct mdata *mdata)
     return res;
 }
 
+static gint get_club_only_mask(struct mdata *mdata)
+{
+    gint i, res = 0;
+	
+    if (mdata->selected == 0)
+        return 0;
+
+    for (i = 1; i <= mdata->mpositions; i++) {
+        gint comp = mdata->mpos[i].judoka;
+        if (comp && 
+            (cmp_clubs(&mdata->mcomp[comp], &mdata->mcomp[mdata->selected]) & CLUB_TEXT_CLUB)) {
+            res |= 1<<get_section(i, mdata);
+        }
+    }
+
+    return res;
+}
+
 #if 0
 static gint get_competitor_group(gint comp, struct mdata *mdata)
 {
@@ -575,8 +593,10 @@ static gboolean draw_one_comp(struct mdata *mdata)
             }
             found = get_free_pos_by_mask((mask ^ getmask) & getmask, mdata);
         } else {
-            gint a_pool = 0, b_pool = 0, a_mask = 0, b_mask = 0;
+            gint a_pool = 0, b_pool = 0, a_pool_club = 0, b_pool_club = 0, 
+                a_mask = 0, b_mask = 0;
             mask = get_club_mask(mdata);
+            gint clubmask = get_club_only_mask(mdata);
 
             if (mdata->mpositions >= 6) { // double pool
                 gint i;
@@ -586,6 +606,13 @@ static gboolean draw_one_comp(struct mdata *mdata)
                             a_pool++;
                         else
                             b_pool++;
+                    }
+
+                    if (clubmask & (1<<i)) {
+                        if (i < (mdata->mpositions + 1)/2)
+                            a_pool_club++;
+                        else
+                            b_pool_club++;
                     }
 
                     if (i < (mdata->mpositions + 1)/2)
@@ -622,7 +649,11 @@ static gboolean draw_one_comp(struct mdata *mdata)
             case 8:
             case 9:
             case 10:
-                if (a_pool < b_pool)
+                if (a_pool_club < b_pool_club)
+                    getmask = a_mask;
+                else if (a_pool_club > b_pool_club)
+                    getmask = b_mask;
+                else if (a_pool < b_pool)
                     getmask = a_mask;
                 else if (a_pool > b_pool)
                     getmask = b_mask;
