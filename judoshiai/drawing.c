@@ -31,7 +31,7 @@ guint french_matches_blue[32] = {
 guint french_matches_white_offset[NUM_FRENCH] = {4, 8, 16, 32};
 guint french_mul[NUM_FRENCH] = {8, 4, 2, 1};
 
-#define MAX_MATES 100
+#define MAX_MATES 100000
 
 struct mdata {
     struct mcomp {
@@ -145,10 +145,13 @@ static void free_mdata(struct mdata *mdata)
     free(mdata);
 }
 
+static gint last_selected = 0;
+
 static gint get_next_comp(struct mdata *mdata)
 {
-    gint i, seed, mates, x = (rand()%mdata->mjudokas) + 1;
-        
+    gint i, seed, x = (rand()%mdata->mjudokas) + 1;
+    gint highest_val = 0, highest_num = 0, same_club = 0, same_country = 0;
+    
     // find seeded in order
     for (seed = 1; seed <= 4; seed++) {
         for (i = 0; i < mdata->mjudokas; i++) {
@@ -162,18 +165,34 @@ static gint get_next_comp(struct mdata *mdata)
     }
 
     // find ordinary competitors
-    for (mates = MAX_MATES; mates >= 0; mates--) {
-        for (i = 0; i < mdata->mjudokas; i++) {
-            if (mdata->mcomp[x].pos == 0 &&
-                mdata->mcomp[x].num_mates >= mates)
-                return x;
-
-            if (++x > mdata->mjudokas)
-                x = 1;
-        }
+    for (i = 0; i < mdata->mjudokas; i++) {
+	if (mdata->mcomp[x].pos == 0) {
+	    if (mdata->mcomp[x].num_mates > highest_val) {
+		highest_val = mdata->mcomp[x].num_mates;
+		highest_num = x;
+		same_club = 0;
+		same_country = 0;
+	    } else if (mdata->mcomp[x].num_mates == highest_val &&
+		       last_selected) {
+		gint c = cmp_clubs(&mdata->mcomp[x], &mdata->mcomp[last_selected]);
+		if (c & CLUB_TEXT_CLUB)
+		    same_club = x;
+		if (c & CLUB_TEXT_COUNTRY)
+		    same_country = x;
+	    }
+	}
+	if (++x > mdata->mjudokas)
+	    x = 1;
     }
 
-    return 0;
+    if (same_club)
+	last_selected = same_club;
+    else if (same_country)
+	last_selected = same_country;
+    else
+	last_selected = highest_num;
+
+    return last_selected;
 }
 
 static gint get_section(gint num, struct mdata *mdata)
@@ -1050,6 +1069,7 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
     g_signal_connect(G_OBJECT(dialog), "response",
                      G_CALLBACK(make_manual_mathes_callback), mdata);
 
+    last_selected = 0;
     g_signal_emit_by_name(mdata->mcomp[get_next_comp(mdata)].eventbox, "button_press_event");
 
     return dialog;

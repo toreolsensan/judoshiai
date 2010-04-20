@@ -1,4 +1,4 @@
-SHIAI_VER_NUM=2.0-beta3
+SHIAI_VER_NUM=2.0-beta4
 SHIAI_VERSION="\"$(SHIAI_VER_NUM)\""
 
 ifeq ($(OS),Windows_NT)
