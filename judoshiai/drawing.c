@@ -150,7 +150,7 @@ static gint last_selected = 0;
 static gint get_next_comp(struct mdata *mdata)
 {
     gint i, seed, x = (rand()%mdata->mjudokas) + 1;
-    gint highest_val = 0, highest_num = 0, same_club = 0, same_country = 0;
+    gint highest_val = -1, highest_num = 0, same_club = 0, same_country = 0;
     
     // find seeded in order
     for (seed = 1; seed <= 4; seed++) {
