@@ -148,7 +148,10 @@ void open_shiai_display(void)
     current_category_index = 10000;
     current_category = 0;
 
-    db_init(database_name);
+    if (db_init(database_name)) {
+        SHOW_MESSAGE("%s: %s", _("Cannot open"), database_name);
+        return;
+    }
 
     notebook = gtk_notebook_new();
     gtk_notebook_set_tab_pos((GtkNotebook *)notebook, GTK_POS_TOP);

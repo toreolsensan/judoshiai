@@ -190,8 +190,53 @@ static int db_callback_tables(void *data, int argc, char **argv, char **azColNam
     return 0;
 }
 
-void db_init(const char *dbname)
+gint db_init(const char *dbname)
 {
+    // try to open db
+    FILE *f = fopen(dbname, "rb");
+    if (f)
+        fclose(f);
+    else
+        return -1;
+
+    // check the number of columns
+    sqlite3 *db;
+    gchar *zErrMsg = NULL;
+    gchar **tablep = NULL;
+    gint tablerows, compcols, catcols, matchcols, infocols, catdefcols;
+    gint rc = sqlite3_open(dbname, &db);
+    if (rc)
+        return rc;
+    
+    rc = sqlite3_get_table(db, "select * from competitors limit 1", 
+                           &tablep, &tablerows, &compcols, &zErrMsg);
+    if (tablep) sqlite3_free_table(tablep);
+    rc = sqlite3_get_table(db, "select * from categories limit 1", 
+                           &tablep, &tablerows, &catcols, &zErrMsg);
+    if (tablep) sqlite3_free_table(tablep);
+    rc = sqlite3_get_table(db, "select * from matches limit 1", 
+                           &tablep, &tablerows, &matchcols, &zErrMsg);
+    if (tablep) sqlite3_free_table(tablep);
+    rc = sqlite3_get_table(db, "select * from info limit 1", 
+                           &tablep, &tablerows, &infocols, &zErrMsg);
+    if (tablep) sqlite3_free_table(tablep);
+    rc = sqlite3_get_table(db, "select * from catdef limit 1", 
+                           &tablep, &tablerows, &catdefcols, &zErrMsg);
+    if (tablep) sqlite3_free_table(tablep);
+
+    sqlite3_close(db);
+
+    if (compcols   > 13 ||
+        catcols    > 6  || 
+        matchcols  > 13 ||
+        infocols   > 2  ||
+        catdefcols > 12) {
+        SHOW_MESSAGE("%s", _("Cannot handle: Database created with newer JudoShiai version."));
+        g_print("Number of columns: %d %d %d %d %d\n", compcols, catcols, matchcols, 
+                infocols, catdefcols);
+        return -2;
+    }
+
     db_matches_init();
 	
     init_trees();
@@ -215,6 +260,7 @@ void db_init(const char *dbname)
     read_cat_definitions();
 
     tatami_exists = number_exists = country_exists = id_exists = FALSE;
+
     db_exec(db_name, 
             "SELECT sql FROM sqlite_master", 
             NULL, db_callback_tables);
@@ -236,6 +282,11 @@ void db_init(const char *dbname)
         g_print("id does not exist, add one\n");
         db_exec(db_name, "ALTER TABLE competitors ADD \"id\" TEXT", NULL, NULL);
     }
+
+    if (!tatami_exists || !number_exists || !country_exists || !id_exists)
+        SHOW_MESSAGE("%s", _("Database tables updated."));
+
+    return 0;
 }
 
 void db_new(const char *dbname, 

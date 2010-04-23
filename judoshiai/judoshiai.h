@@ -117,7 +117,7 @@ enum french_systems {
 
 #define NEXT_MATCH_NUM 10
 
-#define SHOW_MESSAGE(_a...) do {gchar b[100]; snprintf(b, sizeof(b), _a); show_message(b); } while (0)
+#define SHOW_MESSAGE(_a...) do {gchar b[256]; snprintf(b, sizeof(b), _a); show_message(b); } while (0)
 
 #define MATCHED_POOL(_a) (pm.m[_a].blue_points || pm.m[_a].white_points || \
                           pm.m[_a].blue == GHOST || pm.m[_a].white == GHOST)
@@ -592,7 +592,7 @@ extern void db_new(const char *dbname,
                    const gchar *place,
 		   const gchar *start_time,
 		   const gchar *num_tatamis);
-extern void db_init(const char *db);
+extern gint db_init(const char *db);
 extern void db_matches_init(void);
 extern void db_save_config(void);
 extern void set_configuration(void);
