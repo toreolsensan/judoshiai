@@ -1,10 +1,12 @@
 SHIAI_VER_NUM=2.0-beta5
 SHIAI_VERSION="\"$(SHIAI_VER_NUM)\""
 
+CC=gcc
+
 ifeq ($(OS),Windows_NT)
 SUFF=.exe
 # PATH TO YOUR GTK+ INSTALLATION
-DEVELDIR=c:/msys/1.0/home/hjokinen/gtk+-bundle_2.16.4-20090708_win32
+DEVELDIR=c:/msys/1.0/home/Administrator/gtk
 else
 SUFF=
 DEVELDIR=
