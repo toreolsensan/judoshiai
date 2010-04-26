@@ -335,7 +335,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     preference_club_text_country      = gtk_radio_menu_item_new_with_label(club_group, _("Country Name Only"));
     club_group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(preference_club_text_country));
     preference_club_text_both         = gtk_radio_menu_item_new_with_label(club_group, _("Both Club and Country"));
-    preference_club_text_abbr         = gtk_check_menu_item_new_with_label(_("Abbrevations in Sheets"));
+    preference_club_text_abbr         = gtk_check_menu_item_new_with_label(_("Abbreviations in Sheets"));
 
     preference_weights_to_pool_sheets = gtk_check_menu_item_new_with_label(_("Weights Visible in Pool Sheets"));
     preference_sheet_font             = gtk_menu_item_new_with_label(_("Sheet Font"));
