@@ -474,7 +474,8 @@ const gchar *get_club_text(struct judoka *j, gint flags)
     if (j->club)
 	data = club_name_get(j->club);
 
-    if (flags & CLUB_TEXT_ABBREVIATION) {
+    if (flags & CLUB_TEXT_ABBREVIATION &&
+        club_abbr) {
 	if ((club_text & CLUB_TEXT_COUNTRY) && 
 	    j->country && j->country[0])
 	    return j->country;

@@ -21,6 +21,7 @@ extern void open_shiai(GtkWidget *w, gpointer data);
 extern void font_dialog(GtkWidget *w, gpointer data);
 extern void set_lang(gpointer data, guint action, GtkWidget *w);
 extern void set_club_text(gpointer data, guint action, GtkWidget *w);
+extern void set_club_abbr(GtkWidget *menu_item, gpointer data);
 extern void set_draw_system(gpointer data, guint action, GtkWidget *w);
 extern void toggle_automatic_sheet_update(gpointer callback_data, 
 					  guint callback_action, GtkWidget *menu_item);
@@ -64,6 +65,7 @@ static GtkWidget *menubar,
     *preference_sheet_font, *preference_password, *judotimer_control[NUM_TATAMIS],
     *preference_mirror, *preference_auto_arrange, 
     *preference_club_text_club, *preference_club_text_country, *preference_club_text_both,
+    *preference_club_text_abbr,
     *help_manual, *help_about;
 
 static GSList *lang_group = NULL, *club_group = NULL, *draw_group = NULL;
@@ -333,6 +335,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     preference_club_text_country      = gtk_radio_menu_item_new_with_label(club_group, _("Country Name Only"));
     club_group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(preference_club_text_country));
     preference_club_text_both         = gtk_radio_menu_item_new_with_label(club_group, _("Both Club and Country"));
+    preference_club_text_abbr         = gtk_check_menu_item_new_with_label(_("Abbrevations in Sheets"));
 
     preference_weights_to_pool_sheets = gtk_check_menu_item_new_with_label(_("Weights Visible in Pool Sheets"));
     preference_sheet_font             = gtk_menu_item_new_with_label(_("Sheet Font"));
@@ -355,6 +358,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_club_text_club);
     gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_club_text_country);
     gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_club_text_both);
+    gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_club_text_abbr);
     gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), gtk_separator_menu_item_new());
     gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_weights_to_pool_sheets);
     gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_mirror);
@@ -378,6 +382,8 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
 		     G_CALLBACK(set_club_text), (gpointer)CLUB_TEXT_COUNTRY);
     g_signal_connect(G_OBJECT(preference_club_text_both),    "activate", 
 		     G_CALLBACK(set_club_text), (gpointer)(CLUB_TEXT_CLUB|CLUB_TEXT_COUNTRY));
+    g_signal_connect(G_OBJECT(preference_club_text_abbr),    "activate", 
+		     G_CALLBACK(set_club_abbr), (gpointer)NULL);
 
     g_signal_connect(G_OBJECT(preference_weights_to_pool_sheets), "activate", G_CALLBACK(toggle_weights_in_sheets), 0);
     g_signal_connect(G_OBJECT(preference_sheet_font),             "activate", G_CALLBACK(font_dialog), 0);
@@ -519,6 +525,11 @@ void set_preferences(void)
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(preference_club_text_both), TRUE);
 
     error = NULL;
+    if (g_key_file_get_boolean(keyfile, "preferences", "clubabbr", &error) || error) {
+        gtk_menu_item_activate(GTK_MENU_ITEM(preference_club_text_abbr));
+    }
+
+    error = NULL;
     x1 = g_key_file_get_integer(keyfile, "preferences", "drawsystem", &error);
     if (!error)
         draw_system = x1;
@@ -638,6 +649,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(preference_club_text_club        , _("Club Name Only"));
     change_menu_label(preference_club_text_country     , _("Country Name Only"));
     change_menu_label(preference_club_text_both        , _("Both Club and Country"));
+    change_menu_label(preference_club_text_abbr        , _("Abbreviations in Sheets"));
 
     change_menu_label(preference_weights_to_pool_sheets, _("Weights Visible in Pool Sheets"));
     change_menu_label(preference_sheet_font            , _("Sheet Font"));

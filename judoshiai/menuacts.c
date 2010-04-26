@@ -265,6 +265,12 @@ void set_club_text(GtkWidget *w, gpointer data)
     g_key_file_set_integer(keyfile, "preferences", "clubtext", club_text);
 }
 
+void set_club_abbr(GtkWidget *menu_item, gpointer data)
+{
+    club_abbr = GTK_CHECK_MENU_ITEM(menu_item)->active;
+    g_key_file_set_integer(keyfile, "preferences", "clubabbr", club_abbr);
+}
+
 void set_draw_system(GtkWidget *w, gpointer data)
 {
     draw_system = (gint)data;

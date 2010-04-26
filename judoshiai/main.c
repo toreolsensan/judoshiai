@@ -43,7 +43,7 @@ gchar *installation_dir = NULL;
 GKeyFile *keyfile;
 gchar *conffile, *lockfile;
 GCompletion *club_completer;
-gint print_lang = 0, club_text = 0, draw_system = 0;
+gint print_lang = 0, club_text = 0, club_abbr = 0, draw_system = 0;
 gboolean first_instance = FALSE;
 gint number_of_tatamis = 3;
 gint language = LANG_FI;

@@ -461,7 +461,7 @@ extern gchar *program_path;
 extern guint current_year;
 extern gchar *installation_dir;
 extern gulong my_ip_address, node_ip_addr;
-extern gint print_lang, club_text, draw_system;
+extern gint print_lang, club_text, club_abbr, draw_system;
 extern gint number_of_tatamis;
 extern gint language;
 

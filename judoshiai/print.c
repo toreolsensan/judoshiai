@@ -358,9 +358,13 @@ static void paint_weight_notes(struct paint_data *pd)
             gchar *cat = db_get_data(row, "regcategory");
             gchar *id = db_get_data(row, "index");
 
+            struct judoka j;
+            j.club = club;
+            j.country = country;
+
             sprintf(id_str, "%04d", atoi(id));
 
-            snprintf(buf, sizeof(buf), "%s    %s", cat, country && country[0] ? country : club);
+            snprintf(buf, sizeof(buf), "%s    %s", cat, get_club_text(&j, 0));
             cairo_move_to(pd->c, x, y);
             cairo_show_text(pd->c, buf);
 
