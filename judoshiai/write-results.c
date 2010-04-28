@@ -70,10 +70,11 @@ static void make_top_frame(FILE *f)
     fprintf(f, "<html><head>"
             "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">"
             "<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\">"
-            "<meta name=\"keywords\" content=\"JudoShiai\" />\n"
+            "<meta name=\"keywords\" content=\"JudoShiai-%s\" />\n"
             "<title>%s  %s  %s</title></head>\n"
             "<body class=\"titleframe\"><table><tr>"
             "<td colspan=\"2\" align=\"center\"><h1>%s  %s  %s</h1></td></tr><tr>\n", 
+            SHIAI_VERSION,
             utf8_to_html(info_competition), utf8_to_html(info_date), utf8_to_html(info_place),
             utf8_to_html(info_competition), utf8_to_html(info_date), utf8_to_html(info_place));
 }

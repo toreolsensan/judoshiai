@@ -513,13 +513,18 @@ void last_name_cell_data_func (GtkTreeViewColumn *col,
             g_object_set(renderer, "strikethrough", TRUE, "cell-background-set", FALSE, NULL);
         else
             g_object_set(renderer, "strikethrough", FALSE, "cell-background-set", FALSE, NULL);
+            g_object_set(renderer, 
+                         "foreground", "Black", FALSE, 
+                         NULL);
     } else {
         gint status = 0;
+        gboolean defined = TRUE;
 		
         if (user_data == NULL) {
             //status = weight;
             struct category_data *catdata = avl_get_category(index);
             status = catdata ? catdata->match_status : 0;
+            defined = catdata ? catdata->defined : TRUE;
         }
 
         if ((status & MATCH_EXISTS) && (status & MATCH_UNMATCHED) == 0)
@@ -540,6 +545,15 @@ void last_name_cell_data_func (GtkTreeViewColumn *col,
         else
             g_object_set(renderer, 
                          "cell-background-set", FALSE, 
+                         NULL);
+
+        if (defined)
+            g_object_set(renderer, 
+                         "foreground", "Black", FALSE, 
+                         NULL);
+        else
+            g_object_set(renderer, 
+                         "foreground", "Brown", FALSE, 
                          NULL);
 
         g_snprintf(buf, sizeof(buf), "%s", last);

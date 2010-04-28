@@ -568,6 +568,11 @@ gint db_category_match_status(gint category)
         catdata->match_status = res;
         catdata->match_count = match_count;
         catdata->matched_matches_count = matched_matches_count;
+
+        if (find_age_index(catdata->category) < 0)
+            catdata->defined = FALSE;
+        else
+            catdata->defined = TRUE;
     }
 
     return res;
@@ -1039,6 +1044,42 @@ struct match *db_next_match(gint category, gint tatami)
 	   GHOST, GHOST /*COMPETITOR, COMPETITOR*/);
 
     db_close();
+
+    // Distribute matches from the same category far away
+#define CANNOT_MOVE(_i)  (next_match[_i].number == INVALID_MATCH ||     \
+                          next_match[_i].comment == COMMENT_MATCH_1 ||  \
+                          next_match[_i].comment == COMMENT_MATCH_2 ||  \
+                          next_match[_i].forcednumber ||                \
+                          next_match[_i].forcedtatami)
+
+#define SAME_CAT_OR_PLAYERS(_m1, _m2)                             \
+    (next_match[_m1].category == next_match[_m2].category ||      \
+     next_match[_m1].blue == next_match[_m2].blue ||              \
+     next_match[_m1].white == next_match[_m2].white ||            \
+     next_match[_m1].blue == next_match[_m2].white ||             \
+     next_match[_m1].white == next_match[_m2].blue)
+    
+    for (i = 0; i < next_match_num-2; i++) {
+        gint j;
+
+        if (CANNOT_MOVE(i+1))
+            continue;
+        
+        if (!SAME_CAT_OR_PLAYERS(i, i+1))
+            continue;
+
+        for (j = i+2; j < next_match_num; j++) {
+            if (!SAME_CAT_OR_PLAYERS(i, j)) {
+                gint k;
+                struct match m = next_match[j];
+                for (k = j; k > i+1; k--) {
+                    next_match[k] = next_match[k-1];
+                }
+                next_match[i+1] = m;
+                break;
+            }
+        }
+    }
 
     /* check for rest times */
     if (auto_arrange &&

@@ -776,6 +776,7 @@ void set_categories_dialog(GtkWidget *w, gpointer arg)
         db_cat_def_table_done();
     }
 
+    update_category_status_info_all();
     gtk_widget_destroy(dialog);
 }
 

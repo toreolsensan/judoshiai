@@ -412,6 +412,7 @@ struct category_data {
     gint match_count;
     gint matched_matches_count;
     gint rest_time;
+    gboolean defined;
     struct category_data *prev, *next;
 };
 

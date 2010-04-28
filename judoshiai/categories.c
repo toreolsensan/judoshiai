@@ -325,12 +325,12 @@ void update_category_status_info_all(void)
 
         if (visible == 0) {
             weight = db_category_match_status(index);
-			
+#if 0			
             gtk_tree_store_set(GTK_TREE_STORE(current_model), 
                                &iter,
                                COL_WEIGHT, weight,
                                -1);
-
+#endif
             struct category_data data, *data1;
             data.index = index;
             if (avl_get_by_key(categories_tree, &data, (void *)&data1) == 0) {
