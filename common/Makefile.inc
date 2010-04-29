@@ -1,4 +1,4 @@
-SHIAI_VER_NUM=2.0-beta7
+SHIAI_VER_NUM=2.0-beta8
 SHIAI_VERSION="\"$(SHIAI_VER_NUM)\""
 
 CC=gcc

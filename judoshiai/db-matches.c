@@ -957,7 +957,6 @@ struct match *db_next_matchXXX(gint category, gint tatami)
 
 struct match *db_next_match(gint category, gint tatami)
 {
-    gchar buffer[1000];
     gint i;
 
     if (category) {
@@ -1069,7 +1068,8 @@ struct match *db_next_match(gint category, gint tatami)
             continue;
 
         for (j = i+2; j < next_match_num; j++) {
-            if (!SAME_CAT_OR_PLAYERS(i, j)) {
+            if (next_match[i+1].group == next_match[j].group &&
+                !SAME_CAT_OR_PLAYERS(i, j)) {
                 gint k;
                 struct match m = next_match[j];
                 for (k = j; k > i+1; k--) {
