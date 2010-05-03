@@ -803,7 +803,7 @@ void make_next_matches_html(void)
             xc = "";
         }
 
-        fprintf(f, "<tr><td>Edellinen voittaja:<br>");
+        fprintf(f, "<tr><td>%s:<br>", _T(prevwinner));
         fprintf(f, "</td><td>%s<br>%s %s<br>&nbsp;</td>", 
                 utf8_to_html(xc), utf8_to_html(xf), utf8_to_html(xl));
 
@@ -817,8 +817,8 @@ void make_next_matches_html(void)
             white = get_data(m[k].white);
             cat = get_data(m[k].category);
 
-            fprintf(f, "<tr %s><td><b>Ottelu %d:</b></td><td><b>%s</b></td></tr>", 
-                    bgcolor, k+1, cat ? cat->last : "?");
+            fprintf(f, "<tr %s><td><b>%s %d:</b></td><td><b>%s</b></td></tr>", 
+                    bgcolor, _T(match), k+1, cat ? cat->last : "?");
 
             fprintf(f, "<tr %s><td>%s %s<br>%s<br>&nbsp;</td><td>%s %s<br>%s<br>&nbsp;</td></tr>", 
                     bgcolor, 

@@ -302,11 +302,13 @@ static double paint_comp(struct paint_data *pd, struct pool_matches *unused1, in
             cairo_text_extents(pd->c, buf, &extents);
             py = blue_y - extents.height - extents.y_bearing - H(0.005);
             cairo_move_to(pd->c, x + TEXT_OFFSET, py);
-            cairo_show_text(pd->c, buf);
-            if (j->deleted & HANSOKUMAKE) {
-                cairo_move_to(pd->c, x + TEXT_OFFSET, blue_y - extents.height/2.0 - H(0.005));
-                cairo_rel_line_to(pd->c, extents.width, 0);
-                cairo_stroke(pd->c);
+            if ((j->deleted & HANSOKUMAKE) == 0 || blue_pts || white_pts) {
+                cairo_show_text(pd->c, buf);
+                if (j->deleted & HANSOKUMAKE) {
+                    cairo_move_to(pd->c, x + TEXT_OFFSET, blue_y - extents.height/2.0 - H(0.005));
+                    cairo_rel_line_to(pd->c, extents.width, 0);
+                    cairo_stroke(pd->c);
+                }
             }
             free_judoka(j);
 
@@ -348,11 +350,13 @@ static double paint_comp(struct paint_data *pd, struct pool_matches *unused1, in
             cairo_text_extents(pd->c, buf, &extents);
             py = white_y - extents.height - extents.y_bearing - H(0.005);
             cairo_move_to(pd->c, x + TEXT_OFFSET, py);
-            cairo_show_text(pd->c, buf);
-            if (j->deleted & HANSOKUMAKE) {
-                cairo_move_to(pd->c, x + TEXT_OFFSET, white_y - extents.height/2.0 - H(0.005));
-                cairo_rel_line_to(pd->c, extents.width, 0);
-                cairo_stroke(pd->c);
+            if ((j->deleted & HANSOKUMAKE) == 0 || blue_pts || white_pts) {
+                cairo_show_text(pd->c, buf);
+                if (j->deleted & HANSOKUMAKE) {
+                    cairo_move_to(pd->c, x + TEXT_OFFSET, white_y - extents.height/2.0 - H(0.005));
+                    cairo_rel_line_to(pd->c, extents.width, 0);
+                    cairo_stroke(pd->c);
+                }
             }
             free_judoka(j);
 

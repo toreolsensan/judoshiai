@@ -107,6 +107,11 @@ static void name_cell_data_func (GtkTreeViewColumn *col,
             g_snprintf(buf, sizeof(buf), "?");
 
         free_judoka(j);
+
+        if (db_has_hansokumake(index))
+            g_object_set(renderer, "strikethrough", TRUE, NULL);
+        else
+            g_object_set(renderer, "strikethrough", FALSE, NULL);
     }
     g_object_set(renderer, "foreground-set", FALSE, NULL); /* print this normal */
 
@@ -252,7 +257,8 @@ static void comment_cell_data_func (GtkTreeViewColumn *col,
     if (visible) {
         g_object_set(renderer, "foreground-set", FALSE, NULL); /* print this normal */
 
-        if (bpts || wpts || b == GHOST || w == GHOST)
+        if (bpts || wpts || b == GHOST || w == GHOST || 
+            db_has_hansokumake(b) || db_has_hansokumake(w))
             g_object_set(renderer, 
                          "cell-background", "Green", 
                          "cell-background-set", TRUE, 
@@ -352,8 +358,13 @@ static void comment_cell_data_func (GtkTreeViewColumn *col,
 #define COPY_PLAYER(_to, _which, _from)  do {				\
 	if (!MATCHED(_to))						\
 	    m[_to]._which = _from;					\
-	else if (m[_to]._which != _from)				\
-	    g_print("MISMATCH match=%d old=%d new=%d\n", _to, m[_to]._which, _from); \
+	else if (m[_to]._which != _from) {				\
+            SHOW_MESSAGE("%s #%d (%d-%d) %s!", _("Match"),              \
+                         _to, m[_to].blue_points, m[_to].white_points,  \
+                         _("canceled"));                                \
+	    m[_to]._which = _from;					\
+            m[_to].blue_points = m[_to].white_points = 0;               \
+        }                                                               \
     } while (0)
 
 void get_pool_winner(gint num, gint c[11], gboolean yes[11], 
@@ -827,10 +838,12 @@ static void update_french_matches(gint category, gint systm)
 
                 free_judoka(g);
             } else {
+                /*
 		if (db_has_hansokumake(m[i].blue) &&
 		    m[i].white >= COMPETITOR &&
 		    m[i].blue_points == 0 && m[i].white_points == 0)
 		    m[i].white_points = 10;
+                */
 	    }
                                 
             if (prev_match_white != 0) {
@@ -867,10 +880,12 @@ static void update_french_matches(gint category, gint systm)
 
                 free_judoka(g);
             } else {
+                /*
 		if (db_has_hansokumake(m[i].white) &&
 		    m[i].blue >= COMPETITOR &&
 		    m[i].blue_points == 0 && m[i].white_points == 0)
 		    m[i].blue_points = 10;
+                */
 	    }
 
             set_match(&m[i]);
