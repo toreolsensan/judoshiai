@@ -405,6 +405,8 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     /* Attach the new accelerator group to the window. */
     gtk_window_add_accel_group(GTK_WINDOW(window), group);
 
+    set_menu_active();
+
     return menubar;
 }
 
@@ -552,6 +554,48 @@ static void change_menu_label(GtkWidget *item, const gchar *new_text)
     gtk_label_set_text(GTK_LABEL(menu_label), new_text); 
 }
 
+#define DB_OK (db_name != NULL)
+
+#define SET_SENSITIVE(_menu, _yes) gtk_widget_set_sensitive(GTK_WIDGET(_menu), _yes)
+
+void set_menu_active(void)
+{
+    gint i;
+
+    SET_SENSITIVE(tournament_properties, DB_OK);
+    SET_SENSITIVE(tournament_backup    , DB_OK);
+    SET_SENSITIVE(sql_dialog           , DB_OK);
+
+    SET_SENSITIVE(competitor_new                 , DB_OK);
+    SET_SENSITIVE(competitor_search              , DB_OK);
+    SET_SENSITIVE(competitor_select_from_tournament, DB_OK);
+    SET_SENSITIVE(competitor_add_from_text_file  , DB_OK);
+    SET_SENSITIVE(competitor_add_all_from_shiai  , DB_OK);
+    SET_SENSITIVE(competitor_add_all_with_weights, DB_OK);
+    SET_SENSITIVE(competitor_remove_unweighted   , DB_OK);
+    SET_SENSITIVE(competitor_restore_removed     , DB_OK);
+    SET_SENSITIVE(competitor_bar_code_search     , DB_OK);
+    SET_SENSITIVE(competitor_print_weigh_notes   , DB_OK);
+
+    SET_SENSITIVE(category_new            , DB_OK);
+    SET_SENSITIVE(category_remove_empty   , DB_OK);
+    SET_SENSITIVE(category_create_official, DB_OK);
+    SET_SENSITIVE(category_print_all      , DB_OK);
+    SET_SENSITIVE(category_print_all_pdf  , DB_OK);
+    SET_SENSITIVE(category_print_matches  , DB_OK);
+    SET_SENSITIVE(category_properties     , DB_OK);
+    SET_SENSITIVE(category_best_of_three  , DB_OK);
+
+    for (i = 0; i < NUM_TATAMIS; i++)
+        SET_SENSITIVE(category_to_tatamis[i], DB_OK);
+
+    SET_SENSITIVE(draw_all_categories, DB_OK);
+
+    SET_SENSITIVE(results_print_all             , DB_OK);
+    SET_SENSITIVE(results_print_schedule_printer, DB_OK);
+    SET_SENSITIVE(results_print_schedule_pdf    , DB_OK);
+}
+
 gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param)
 {
     gint lang = (gint)param, i;
@@ -579,9 +623,10 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     bind_textdomain_codeset ("judoshiai", "UTF-8");
     textdomain ("judoshiai");
 
-    change_menu_label(tournament_menu_item    , _("Tournament"));
+    change_menu_label(tournament_menu_item , _("Tournament"));
     change_menu_label(competitors_menu_item, _("Competitors"));
     change_menu_label(categories_menu_item , _("Categories"));
+
     change_menu_label(drawing_menu_item    , _("Drawing"));
     change_menu_label(results_menu_item    , _("Results"));
     change_menu_label(judotimer_menu_item  , _("Judotimer"));

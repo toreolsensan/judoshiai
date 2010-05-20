@@ -286,6 +286,8 @@ gint db_init(const char *dbname)
     if (!tatami_exists || !number_exists || !country_exists || !id_exists)
         SHOW_MESSAGE("%s", _("Database tables updated."));
 
+    set_menu_active();
+
     return 0;
 }
 

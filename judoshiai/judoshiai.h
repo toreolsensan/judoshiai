@@ -555,6 +555,7 @@ extern void belt_cell_data_func (GtkTreeViewColumn *col, GtkCellRenderer *render
 				 GtkTreeModel *model, GtkTreeIter *iter,
 				 gpointer user_data);
 extern gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param);
+extern void set_menu_active(void);
 
 
 /* utils */

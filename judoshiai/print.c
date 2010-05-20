@@ -305,9 +305,19 @@ static void paint_weight_notes(struct paint_data *pd)
     gchar buf[100];
     cairo_text_extents_t extents;
 
-    numrows = db_get_table("select * from competitors "
-                           "where \"deleted\"&1=0 "
-                           "order by \"country\",\"club\",\"last\",\"first\" asc");
+    if (club_text == CLUB_TEXT_CLUB)
+        numrows = db_get_table("select * from competitors "
+                               "where \"deleted\"&1=0 "
+                               "order by \"club\",\"last\",\"first\" asc");
+    else if (club_text == CLUB_TEXT_COUNTRY)
+        numrows = db_get_table("select * from competitors "
+                               "where \"deleted\"&1=0 "
+                               "order by \"country\",\"last\",\"first\" asc");
+    else
+        numrows = db_get_table("select * from competitors "
+                               "where \"deleted\"&1=0 "
+                               "order by \"country\",\"club\",\"last\",\"first\" asc");
+
     if (numrows < 0)
         return;
 

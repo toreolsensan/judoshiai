@@ -4,8 +4,8 @@ ifeq ($(OS),Windows_NT)
 ODTFILE=$(shell pwd -W | tr '/' '\\')\judoshiai.odt
 ODTFILE2=$(shell pwd -W | tr '/' '\\')\judotimer.odg
 else
-ODTFILE=$(PWD)/doc/judoshiai.odt
-ODTFILE2=$(PWD)/doc/judotimer.odg
+ODTFILE=$(PWD)/judoshiai.odt
+ODTFILE2=$(PWD)/judotimer.odg
 endif
 
 all: judoshiai.pdf judotimer.pdf
