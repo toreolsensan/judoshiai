@@ -33,6 +33,8 @@
 #define LANG_FI 0
 #define LANG_SW 1
 #define LANG_EN 2
+#define LANG_ES 3
+#define NUM_LANGS 4
 
 #if GTK_CHECK_VERSION(2,10,0)
 #define PRINT_SUPPORTED
@@ -859,7 +861,7 @@ extern void print_doc(GtkWidget *menuitem, gpointer userdata);
 extern void print_matches(GtkWidget *menuitem, gpointer userdata);
 
 /* print_texts */
-extern gchar *print_texts[][3];
+extern gchar *print_texts[][NUM_LANGS];
 
 /* match-data */
 extern gchar *get_system_name_for_menu(gint num);

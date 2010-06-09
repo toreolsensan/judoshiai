@@ -1,0 +1,1176 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-04-26 15:19+0300\n"
+"PO-Revision-Date: 2010-05-04 15:00+0100\n"
+"Last-Translator: Jose Pedro Fernández Pascual <huma2000@gmail.com>\n"
+"Language-Team: Espñaol <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Blue won the voting"
+msgstr "Azul ganó la votación"
+
+msgid "White won the voting"
+msgstr "Blanco ganó la votación"
+
+msgid "Match:"
+msgstr "Combate:"
+
+msgid "Contest:"
+msgstr "Encuentro:"
+
+msgid "Next:"
+msgstr "Siguiente:"
+
+msgid "Match"
+msgstr "Combate"
+
+msgid "Contest"
+msgstr "Encuentro"
+
+msgid "Preferences"
+msgstr "Preferencias"
+
+msgid "Help"
+msgstr "Ayuda"
+
+msgid "Quit"
+msgstr "Salir"
+
+msgid "Red background"
+msgstr "Fondo rojo"
+
+msgid "Tatami not chosen"
+msgstr "Tatami no seleccionado"
+
+msgid "Communication node"
+msgstr "Nodo de comunicación"
+
+msgid "Own IP addresses"
+msgstr "IP propia"
+
+msgid "Manual"
+msgstr "Manual"
+
+msgid "About"
+msgstr "Acerca de"
+
+msgid "Address of the communication node"
+msgstr "Dirección del nodo de comunicación"
+
+msgid "IP address:"
+msgstr "Dirección IP:"
+
+msgid "(Connection OK)"
+msgstr "(Conexión OK)"
+
+msgid "(Connection broken)"
+msgstr "(Conexión perdida)"
+
+msgid ""
+"Connection established to \n"
+"%ld.%ld.%ld.%ld"
+msgstr "Conexión establecida con %ld.%ld.%ld.%ld"
+
+msgid "Connection to the node broken"
+msgstr "Conexión con el nodo perdida"
+
+msgid "Change language to Finnish"
+msgstr "Cambiar el idioma a Finlandés"
+
+msgid "Change language to Swedish"
+msgstr "Cambiar el idioma a Suizo"
+
+msgid "Change language to English"
+msgstr "Cambiar el idioma a Inglés"
+
+msgid "Match automatically from JudoShiai program"
+msgstr "Combate automático desde el programa JudoShiai"
+
+msgid "Match time automatically from JudoShiai program"
+msgstr "Tiempo de combate automático desde el programa JudoShiai"
+
+msgid "Contest duration automatically from JudoShiai program"
+msgstr "Duración del encuentro automático desde el programa JudoShiai"
+
+msgid "Fight:"
+msgstr "Lucha:"
+
+msgid "Match duration: automatic"
+msgstr "Duración del combate: Automática"
+
+msgid "Match duration: 2 min E-juniors"
+msgstr "Duración del combate: 2 min E-junior"
+
+msgid "Match duration: 2 min"
+msgstr "Duración del combate: 2 min"
+
+msgid "Match duration: 3 min"
+msgstr "Duración del combate: 3 min"
+
+msgid "Match duration: 4 min"
+msgstr "Duración del combate: 4 min"
+
+msgid "Match duration: 5 min"
+msgstr "Duración del combate: 5 min"
+
+msgid "Contest duration: automatic"
+msgstr "Duración del encuentro: Automática"
+
+msgid "Contest duration: 2 min (short pin times)"
+msgstr "Duración del encuentro: 2 min (Inmovilizaciones cortas)"
+
+msgid "Contest duration: 2 min"
+msgstr "Duración del encuentro: 2 min"
+
+msgid "Contest duration: 3 min"
+msgstr "Duración del encuentro: 3 min"
+
+msgid "Contest duration: 4 min"
+msgstr "Duración del encuentro: 4 min"
+
+msgid "Contest duration: 5 min"
+msgstr "Duración del encuentro: 5 min"
+
+msgid "Majority of three: blue wins"
+msgstr "Mayoria de tres: Azul gana"
+
+msgid "Hantei: blue wins"
+msgstr "Hantei: Azul gana"
+
+msgid "Majority of three: white wins"
+msgstr "Mayoria de tres: Blanco gana"
+
+msgid "Hantei: white wins"
+msgstr "Hantei: Blanco gana"
+
+msgid "Contest area not chosen"
+msgstr "Tatami no seleccionado"
+
+msgid "Contest area 1"
+msgstr "Tatami 1"
+
+msgid "Contest area 2"
+msgstr "Tatami 2"
+
+msgid "Contest area 3"
+msgstr "Tatami 3"
+
+msgid "Contest area 4"
+msgstr "Tatami 4"
+
+msgid "Contest area 5"
+msgstr "Tatami 5"
+
+msgid "Contest area 6"
+msgstr "Tatami 6"
+
+msgid "Contest area 7"
+msgstr "Tatami 7"
+
+msgid "Contest area 8"
+msgstr "Tatami 8"
+
+msgid "Match duration automatically from JudoShiai program"
+msgstr "Duración del combate automática desde el programa JudoShiai"
+
+msgid "installation_dir=%s\n"
+msgstr "xxx1\n"
+
+msgid "current_directory=%s\n"
+msgstr "xxx2\n"
+
+msgid "test string"
+msgstr "testi"
+
+msgid "Increment time"
+msgstr "Incrementar tiempo"
+
+msgid "Decrement time"
+msgstr "Disminuir tiempo"
+
+msgid "Increment osaekomi"
+msgstr "Incrementar osaekomi"
+
+msgid "Decrement osaekomi"
+msgstr "Disminuir osaekomi"
+
+msgid "View clocks only"
+msgstr "Ver relojes solo"
+
+msgid "Increment pin time"
+msgstr "Incrementar tiempo de inmovilización"
+
+msgid "Decrement pin time"
+msgstr "Disminuir tiempo de inmovilización"
+
+msgid "Points going to blue"
+msgstr "Los puntos va a Azul"
+
+msgid "Points going to white"
+msgstr "Los puntos va a Blanco"
+
+msgid "About Judotimer"
+msgstr "Acerca de Judotimer"
+
+msgid "Full screen"
+msgstr "Pantalla completa"
+
+msgid "Full screen mode"
+msgstr "Pantalla completa"
+
+msgid "Normal operation"
+msgstr "Operación normal"
+
+msgid "Master mode"
+msgstr "Modo maestro"
+
+msgid "Slave mode"
+msgstr "Modo esclavo"
+
+msgid "Undo!"
+msgstr "¡Desahacer!"
+
+msgid "Set clocks"
+msgstr "Configurar relojes"
+
+msgid "Clock:"
+msgstr "Reloj:"
+
+msgid "Year 2009 rules"
+msgstr "Reglas del año 2009"
+
+msgid "Short pin times"
+msgstr "Tiempos de inmovilización cortos"
+
+msgid "Hansoku-make to blue"
+msgstr "Hansoku-make para Azul"
+
+msgid "Hansoku-make to white"
+msgstr "Hansoku-make para Blanco"
+
+msgid "Clear selection"
+msgstr "Borrar selección"
+
+msgid "Display layout 1"
+msgstr "Apariencia 1"
+
+msgid "Display layout 2"
+msgstr "Apariencia 2"
+
+msgid "Display layout 3"
+msgstr "Apariencia 3"
+
+msgid "Display layout 4"
+msgstr "Apariencia 4"
+
+msgid "Display layout 5"
+msgstr "Apariencia 5"
+
+msgid "Quick guide"
+msgstr "Guía rápida"
+
+msgid "Advertise"
+msgstr "Publicidad"
+
+msgid "Run Advertisements"
+msgstr "Ejecutar publicidad"
+
+msgid "Competitors"
+msgstr "Competidores"
+
+msgid "Categories"
+msgstr "Categorias"
+
+msgid "Drawing"
+msgstr "Cuadros"
+
+msgid "Results"
+msgstr "Resultados"
+
+msgid "Judotimer"
+msgstr "Judotimer"
+
+msgid "New Tournament"
+msgstr "Nuevo torneo"
+
+msgid "Open Tournament"
+msgstr "Abrir torneo"
+
+msgid "Open Tournament from Net"
+msgstr "Abrir torneo desde red"
+
+msgid "Properties"
+msgstr "Propiedades"
+
+msgid "New Competitor"
+msgstr "Nuevo competidor"
+
+msgid "Search Competitor"
+msgstr "Buscar competidor"
+
+msgid "Select From Another Shiai"
+msgstr "Seleccionar desde otro torneo"
+
+msgid "Add From a Text File"
+msgstr "Añadir desde un archivo de texto"
+
+msgid "Add All From Another Shiai"
+msgstr "Añadir todos desde otro torneo"
+
+msgid "Add All with Weights"
+msgstr "Añadir todos con pesos"
+
+msgid "Remove Unweighted"
+msgstr "Eliminar no pesados"
+
+msgid "Restore Removed"
+msgstr "Restaurar eliminados"
+
+msgid "Bar Code Search"
+msgstr "Búsqueda por código de barras"
+
+msgid "Print Weight Notes"
+msgstr "Imprimir notas de peso"
+
+msgid "New Category"
+msgstr "Nueva categoria"
+
+msgid "Remove Empty"
+msgstr "Eliminar vacias"
+
+msgid "Create Categories"
+msgstr "Crear categorias"
+
+msgid "Print All"
+msgstr "Imprimir todas"
+
+msgid "Best of Three"
+msgstr "Al mejor de 3"
+
+msgid "Place To"
+msgstr "Enviar a"
+
+msgid "Tatamis"
+msgstr "Tatamis"
+
+msgid "Draw All Categories"
+msgstr "Sortear todas las categorias"
+
+msgid "Print All (Web And PDF)"
+msgstr "Imprimir todo (Web y PDF)"
+
+msgid "Print Schedule to Printer"
+msgstr "Imprimir agenda a la impresora"
+
+msgid "Print Schedule to PDF"
+msgstr "Imprimir agenda a PDF"
+
+msgid "Control Tatami"
+msgstr "Controlar Tatami"
+
+msgid "Communication Node"
+msgstr "Nodo de comunicación"
+
+msgid "Own IP Addresses"
+msgstr "Dirección IP propia"
+
+msgid "Show Attached Connections"
+msgstr "Mostrar conexiones entrantes"
+
+msgid "Automatic Sheet Update"
+msgstr "Actualizar hojas automáticamente"
+
+msgid "Automatic Web Page Update"
+msgstr "Actualizar web automáticamente"
+
+msgid "Results in Finnish"
+msgstr "Resultados en Finlandés"
+
+msgid "Results in Swedish"
+msgstr "Resultados en Suizo"
+
+msgid "Results in English"
+msgstr "Resultados en Inglés"
+
+msgid "Weights Visible in Pool Sheets"
+msgstr "Pesos visibles en las ligas"
+
+msgid "Sheet Font"
+msgstr "Fuente de las hojas"
+
+msgid "Password"
+msgstr "Clave"
+
+msgid "Password:"
+msgstr "Clave:"
+
+msgid "Competitor already exists!"
+msgstr "¡El competidor ya existe!"
+
+msgid "Competitor"
+msgstr "Competidor"
+
+msgid "copied"
+msgstr "Copiado"
+
+msgid "Category already exists!"
+msgstr "¡La categoria ya existe!"
+
+msgid "Category"
+msgstr "Categoria"
+
+msgid "has been copied with competitors and matches"
+msgstr "Se ha copiado con competidores y encuentros"
+
+msgid "Last Name"
+msgstr "Apellido"
+
+msgid "First Name"
+msgstr "Nopmbre"
+
+msgid "Year of Birth"
+msgstr "Año de nacimiento"
+
+msgid "Grade"
+msgstr "Kyu"
+
+msgid "Club"
+msgstr "Club"
+
+msgid "Reg. Category"
+msgstr "Reg. categoria"
+
+msgid "Weight"
+msgstr "Peso"
+
+msgid "Drawing not finished!"
+msgstr "¡Sorteo no finalizado!"
+
+msgid "Matches matched in category"
+msgstr "Combates realizados en la categoria"
+
+msgid "Clear the results first"
+msgstr "Limpia los resultados primero"
+
+msgid "Move the competitors"
+msgstr "Mover los competidores"
+
+msgid "Number"
+msgstr "Número"
+
+msgid "Select first a competitor and then a number."
+msgstr "Selecciona primero un competidor y despues un número."
+
+msgid "All the categories has been drawn"
+msgstr "Todas las categorias han sido sorteadas"
+
+msgid "Choose a directory"
+msgstr "Selecciona un directorio"
+
+msgid "Category drawn"
+msgstr "Categoria sorteada"
+
+msgid "All the categories located to the tatamis"
+msgstr "Todas las categorias asignadas a los tatamis"
+
+msgid "Unlocated"
+msgstr "Sin asignar"
+
+msgid "Connections to this node"
+msgstr "Conexiones a este nodo"
+
+msgid "already exists!"
+msgstr "¡Ya exite!"
+
+msgid "Group"
+msgstr "Grupo"
+
+msgid "Group:"
+msgstr "Grupo:"
+
+msgid "Last Name:"
+msgstr "Apellido:"
+
+msgid "First Name:"
+msgstr "Nombre:"
+
+msgid "Year of Birth:"
+msgstr "Año de nacimiento:"
+
+msgid "Grade:"
+msgstr "Kyu:"
+
+msgid "Club:"
+msgstr "Club:"
+
+msgid "Reg. Category:"
+msgstr "Reg. categoria:"
+
+msgid "Weight:"
+msgstr "Peso:"
+
+msgid "Category:"
+msgstr "Categoria:"
+
+msgid "No seeding"
+msgstr "No sirviendo"
+
+msgid "Gold medalist"
+msgstr "Medallista de oro"
+
+msgid "Silver medalist"
+msgstr "Medallista de plata"
+
+msgid "Bronze medalist"
+msgstr "Medallista de bronce"
+
+msgid "Empty categories removed"
+msgstr "Categorias vacias borradas"
+
+msgid "Unweighted competitors removed"
+msgstr "Competidores sin pesar borrados"
+
+msgid "Matches exist. Undo the drawing first."
+msgstr "Existen combates. Deshaz el sorteo primero."
+
+msgid "Competitors removed"
+msgstr "Competidores eliminados"
+
+msgid "Type the barcode:"
+msgstr "Escribe el código de barras:"
+
+msgid "Bar code search"
+msgstr "Búsqueda por código de barras"
+
+msgid "Matches"
+msgstr "Combates"
+
+msgid "Contests"
+msgstr "Encuentros"
+
+msgid "Sheet"
+msgstr "Hojas"
+
+msgid "Previous winner"
+msgstr "Ganador previo"
+
+msgid "Cancel the match"
+msgstr "Anular el combate"
+
+msgid "Select a tatami"
+msgstr "Selecciona un tatami"
+
+msgid "Password accepted.<br>"
+msgstr "Clave aceptada.<br>"
+
+msgid "User"
+msgstr "Usuario"
+
+msgid "Back"
+msgstr "Atrás"
+
+msgid "Wrong password"
+msgstr "Clave errónea"
+
+msgid "Match controlling and browsing"
+msgstr "Control y navegación de combates"
+
+msgid "Contest controlling and browsing"
+msgstr "Control y navegación del encuentro"
+
+msgid "Java applet, Java must be enabled"
+msgstr "Java-applet, Java tiene que estar activo"
+
+msgid "Password not in use"
+msgstr "No se está usando clave"
+
+msgid "Logout"
+msgstr "Salit"
+
+msgid "Login is required"
+msgstr "Se requiere logearse"
+
+msgid "if you want to report match results"
+msgstr "si quieres comunicar los resultados de los combates"
+
+msgid "User name can be anything"
+msgstr "El nombre de usuario puede ser cualquier cosa"
+
+msgid "Login"
+msgstr "Login"
+
+msgid "No rights to give results"
+msgstr "No tienes derecho a dar resultados"
+
+msgid "Not used"
+msgstr "No usado"
+
+msgid "Column"
+msgstr "Clomna"
+
+msgid "Import from file"
+msgstr "Importar desde archivo"
+
+msgid "Sex:"
+msgstr "Sexo:"
+
+msgid "Girl Text:"
+msgstr "Texto femenino:"
+
+msgid "Column Separator:"
+msgstr "Separador de columnas:"
+
+msgid "competitors added"
+msgstr "Competidores añadidos"
+
+msgid "errors"
+msgstr "Errores"
+
+msgid "competitors existed already"
+msgstr "Los competidores ya existen"
+
+msgid "Time"
+msgstr "Tiempo"
+
+msgid "Class"
+msgstr "Clase"
+
+msgid "Message"
+msgstr "Mensage"
+
+msgid "Log"
+msgstr "Log"
+
+msgid "Is there another JudoShiai program running?"
+msgstr "¿Hay otro programa JudoShiai ejecutándose?"
+
+msgid "Yes, another JudoShiai program is running"
+msgstr "Sí, otro programa JudoShiai se está ejecutando"
+
+msgid ""
+"No, this the only JudoShiai program. \n"
+"Purge erroneous lock file."
+msgstr ""
+"No, otro programa JudoShiai no se está ejecutando \n"
+"Borra los archivos de bloqueo erróneos."
+
+msgid ""
+"Communication is blocked! \n"
+"You can still use the program to create categories etc."
+msgstr ""
+"¡Comunicación bloqueada!\n"
+"Puedes serguir usando el programa para crear categorías, etc..."
+
+msgid "Pool"
+msgstr "Liga"
+
+msgid "Double pool"
+msgstr "Doble liga"
+
+msgid "Double repechage"
+msgstr "Doble repesca"
+
+msgid "Next match"
+msgstr "Siguiente combate"
+
+msgid "Next contest"
+msgstr "Siguiente encuentro"
+
+msgid "Preparing"
+msgstr "Preparados"
+
+msgid "Preparing:"
+msgstr "Preparados:"
+
+msgid "Delay the match"
+msgstr "Retrasar el combate"
+
+msgid "Delay the contest"
+msgstr "Retrasar el encuentro"
+
+msgid "Matches matched. Clear the results first."
+msgstr "Combates realizados. Limpia los resultados primero."
+
+msgid "canceled"
+msgstr "Cancelado"
+
+msgid "changed"
+msgstr "Cambiado"
+
+msgid "winner"
+msgstr "Ganador"
+
+msgid "points"
+msgstr "Puntos"
+
+msgid "Expand All"
+msgstr "Expandor todo"
+
+msgid "Collapse All"
+msgstr "Colapsar todo"
+
+msgid "Remove comment"
+msgstr "Remover comentario"
+
+msgid "Blue"
+msgstr "Azuk"
+
+msgid "White"
+msgstr "Blanco"
+
+msgid "Comment"
+msgstr "Comentario"
+
+msgid "Points"
+msgstr "Puntos"
+
+msgid "Prev. winner:"
+msgstr "Ganador ant.:"
+
+msgid "Delayed"
+msgstr "Retrasado"
+
+msgid "Remove delay"
+msgstr "Eliminar retraso"
+
+msgid "Date:"
+msgstr "Fecha:"
+
+msgid "Place:"
+msgstr "Lugar:"
+
+msgid "Start time:"
+msgstr "Hora de comiezo:"
+
+msgid "Number of tatamis"
+msgstr "Número de tatamis:"
+
+msgid "Tournament from the net"
+msgstr "Torneo desde red"
+
+msgid "Select sheet font"
+msgstr "Seleccionar fuente de las hojas"
+
+msgid "Contest properties"
+msgstr "Propiedades del encuentro"
+
+msgid "Number of competitors:"
+msgstr "Númerod de competidores:"
+
+msgid "Tournament"
+msgstr "Torneo"
+
+msgid "Tournament:"
+msgstr "Torneo:"
+
+msgid "Tournaments"
+msgstr "Torneos"
+
+msgid "Competitors:"
+msgstr "Competidores:"
+
+msgid "Weighted:"
+msgstr "Pesados:"
+
+msgid "Add competitors"
+msgstr "Añadir competidor"
+
+msgid "Clean up duplicates and update reg. categories"
+msgstr "Limpiar duplicados y actualizar categorías reg."
+
+msgid "competitors added and updated"
+msgstr "Competidores añadidos y actualizados"
+
+msgid "competitors already existed"
+msgstr "Los competidores ya existen"
+
+msgid "competitors added unchanged"
+msgstr "Competidores añadidos sin cambios"
+
+msgid "Remove drawing first"
+msgstr "Elimina los sorteos promero"
+
+msgid "already exists"
+msgstr "Ya existe"
+
+msgid "Move Competitors to Category..."
+msgstr "Mover competidores a la categoria..."
+
+msgid "Move Competitors Here"
+msgstr "Mover competidores aquí"
+
+msgid "Compose Unofficial Category"
+msgstr "Componer categoria no oficial"
+
+msgid "Draw"
+msgstr "Sortear"
+
+msgid "Draw and Print"
+msgstr "Sortear e imprimir"
+
+msgid "Draw Manually"
+msgstr "Sortear manualmente"
+
+msgid "Remove Drawing"
+msgstr "Borrar sorteo"
+
+msgid "Copy Competitors"
+msgstr "Copiar competidores"
+
+msgid "Remove Competitors"
+msgstr "Borrar competidores"
+
+msgid "Show Sheet"
+msgstr "Mostrar hoja"
+
+msgid "Print Sheet (Printer)"
+msgstr "Imprimir hoja (Impresora)"
+
+msgid "Print Sheet (PDF)"
+msgstr "Imprimir hoja (PDF)"
+
+msgid "Search"
+msgstr "Buscar"
+
+msgid "----- Men -----"
+msgstr "----- Hombres -----"
+
+msgid "----- Women -----"
+msgstr "----- Mujeres -----"
+
+msgid "Highest age:"
+msgstr "Edad máxima:"
+
+msgid "Age text:"
+msgstr "Texto de edad:"
+
+msgid "Match time:"
+msgstr "Tiempo de combate:"
+
+msgid "Contest duration:"
+msgstr "Duración del encuentro:"
+
+msgid "Rest time:"
+msgstr "Tiempo de descanso:"
+
+msgid "Pin times (IWYK):"
+msgstr "Tiempo de inmovilización.(IWYK):"
+
+msgid "Highest weight (g):"
+msgstr "Peso máximo (g):"
+
+msgid "Weight text:"
+msgstr "Texto de peso:"
+
+msgid "Save file"
+msgstr "Guardar archivo"
+
+msgid "Which one is correct?"
+msgstr "¿Cuál es corecto?"
+
+msgid "Own database"
+msgstr "Database propia"
+
+msgid "Foreign database"
+msgstr "Database exterior"
+
+msgid "Do not change"
+msgstr "No cambiar"
+
+msgid "Stop synchronization"
+msgstr "Parar sincronización"
+
+msgid "Remove Matches"
+msgstr "Eliminar combates"
+
+msgid "Number of tatamis:"
+msgstr "Número de tatamis:"
+
+msgid "Number of contest areas:"
+msgstr "Número de tatamis:"
+
+msgid "Sheets"
+msgstr "Hojas"
+
+msgid "Category starts"
+msgstr "Comienzo de categoria"
+
+msgid "Gold medal match"
+msgstr "Final"
+
+msgid "Bronze match A"
+msgstr "Bronze A"
+
+msgid "Bronze match B"
+msgstr "Bronze B"
+
+msgid "Semifinal A"
+msgstr "Semifinal A"
+
+msgid "Semifinal B"
+msgstr "Semifinal B"
+
+msgid "Show Tatami"
+msgstr "Mostrar tatami"
+
+msgid "Start New Match?"
+msgstr "¿Comenzar nuevo combate?"
+
+msgid "Start New Contest?"
+msgstr "¿Comenzar nuevo encuentro?"
+
+msgid "Hansokumake to blue"
+msgstr "Hansoku-make Azul"
+
+msgid "Hansokumake to white"
+msgstr "Hansoku-make Blanco"
+
+msgid "Golden Score"
+msgstr "Técnica de oro"
+
+msgid "Start Golden Score?"
+msgstr "¿Comenzar la técnica de oro?"
+
+msgid "Hantei"
+msgstr "Hantei"
+
+msgid "Blue wins"
+msgstr "Azul gana"
+
+msgid "White wins"
+msgstr "Blanco gana"
+
+msgid "REST TIME"
+msgstr "Tiempo de descanso"
+
+msgid "Seeding:"
+msgstr "Sirviendo:"
+
+msgid "1"
+msgstr "1"
+
+msgid "2"
+msgstr "2"
+
+msgid "3"
+msgstr "3"
+
+msgid "4"
+msgstr "4"
+
+msgid "Freeze match order"
+msgstr "Congelar orden de combates"
+
+msgid "Unfreeze exported"
+msgstr "Descongelar exportados"
+
+msgid "Unfreeze imported"
+msgstr "Descongelar importados"
+
+msgid "Unfreeze this"
+msgstr "Descongelar este"
+
+msgid "SQL Dialog"
+msgstr "Diálogo SQL"
+
+msgid "Print All (PDF)"
+msgstr "Imprimir todo (PDF)"
+
+msgid "Golden Score:"
+msgstr "Técnica de oro:"
+
+msgid "SQL"
+msgstr "SQL"
+
+msgid "About JudoInfo"
+msgstr "Acerca de JudoInfo"
+
+msgid "Next"
+msgstr "Siguiente"
+
+msgid "Rest"
+msgstr "Descanso"
+
+msgid "Do Backup"
+msgstr "Hacer copia de seguridad"
+
+msgid "CANNOT OPEN BACKUP FILE"
+msgstr "NO SE PUEDE ABRRIR LA COPIA DE SEGURIDAD"
+
+msgid "Tournament Backup"
+msgstr "Copia de seguridad de la competición"
+
+msgid "Small display"
+msgstr "Pantalla pequeña"
+
+msgid "Draw Selected"
+msgstr "Sortear seleccionado"
+
+msgid "Draw and Print Selected"
+msgstr "Sortear e imprimir seleccionado"
+
+msgid "Print Selected Sheets (Printer)"
+msgstr "Imprimir hojas seleccionadas (Impresora)"
+
+msgid "Print Selected Sheets (PDF)"
+msgstr "Imprimir hojas seleccionadas (PDF)"
+
+msgid "Advertisement"
+msgstr "Anuncio"
+
+msgid "Tournament properties"
+msgstr "Propiedades de la competición"
+
+msgid "Print Matches (CSV)"
+msgstr "Imprimir encuentros (CSV)"
+
+msgid "Match File"
+msgstr "Archivo de encuentros"
+
+msgid "Print Not Started Categories"
+msgstr "Imprimir categorias no empezadas"
+
+msgid "Print Started Categories"
+msgstr "Imprimir categorias empezadas"
+
+msgid "Print Finished Categories"
+msgstr "Imprimir categorias terminadas"
+
+msgid "Print Result"
+msgstr "Imprimir resultados"
+
+msgid "Print IWYKS"
+msgstr "Imprimir IWYKS"
+
+msgid "Print Comment"
+msgstr "Imprimir comentarios"
+
+msgid "Medals"
+msgstr "Medallas"
+
+msgid "Statistics"
+msgstr "Estadísticas"
+
+msgid "Name"
+msgstr "Nombre"
+
+msgid "Create Statistics"
+msgstr "Crear estadísticaas"
+
+msgid "Total"
+msgstr "Total"
+
+msgid "Matches:"
+msgstr "Combates:"
+
+msgid "NOTE"
+msgstr "NOTA"
+
+msgid "is not a valid ASCII string!"
+msgstr "¡no es una cadena ASCII válida!"
+
+msgid "No koka"
+msgstr "Sin koka"
+
+msgid "Leave points for GS"
+msgstr "Mantener puntos en GS"
+
+msgid "Automatic Match Delay"
+msgstr "Retraso automático de combates"
+
+msgid "Cannot move"
+msgstr "No se puede mover"
+
+msgid "Mirror Tatami Order"
+msgstr "Invertir orden de tatamis"
+
+msgid "Mirror tatami order"
+msgstr "Invertir orden de tatamis"
+
+msgid "Country"
+msgstr "País"
+
+msgid "Id"
+msgstr "Id"
+
+msgid "Country:"
+msgstr "País:"
+
+msgid "Id:"
+msgstr "Id:"
+
+msgid "System:"
+msgstr "Sistema:"
+
+msgid "Default"
+msgstr "Por defecto"
+
+msgid "Round Robin"
+msgstr "Liga"
+
+msgid "Double Round Robin"
+msgstr "2 ligas cruzadas"
+
+msgid "Double Repechage"
+msgstr "Repesca doble"
+
+msgid "SWE Double Repechage"
+msgstr "SWE Repesca doble"
+
+msgid "SWE Double Elimination"
+msgstr "SWE Eliminación doble"
+
+msgid "EST Double Elimination"
+msgstr "EST Eliminación doble"
+
+msgid "Single Elimination"
+msgstr "Eliminación simple"
+
+msgid "SWE Single Repechage"
+msgstr "SWE Repesca simple"
+
+msgid "Club Name Only"
+msgstr "Solo nombre del Club"
+
+msgid "Country Name Only"
+msgstr "Solo nombre del País"
+
+msgid "Both Club and Country"
+msgstr "Nombre del País y del Club"
+
+msgid "International System"
+msgstr "Sistema internacional"
+
+msgid "Finnish System"
+msgstr "Sistema Finlandés"
+
+msgid "Swedish System"
+msgstr "Sistema suizo"
+
+msgid "Estonian System"
+msgstr "Sistema Estonio"
+
+msgid "Reset to Defaults"
+msgstr "Resetear a valores por defecto"
+
+msgid "View Log"
+msgstr "Ver Log"
+
+msgid "Double Pool"
+msgstr "Liga doble"
+
+msgid "Cannot handle: Database created with newer JudoShiai version."
+msgstr "No se pueden manejar: Base de datos creada con una versión más moderna de JudoShiai."
+
+msgid "Database tables updated."
+msgstr "Tablas de la base de datos actualizadas."
+
+msgid "Cannot open"
+msgstr "No se puede abrir"
+
+msgid "Abbreviations in Sheets"
+msgstr "Abreviaturas en las Hojas"

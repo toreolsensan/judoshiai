@@ -181,7 +181,8 @@ static GtkWidget *rules_leave_points;
 static GtkWidget *tatami_sel_none, *tatami_sel_1,  *tatami_sel_2,  *tatami_sel_3,  *tatami_sel_4;
 static GtkWidget *tatami_sel_5,  *tatami_sel_6,  *tatami_sel_7,  *tatami_sel_8;
 static GtkWidget *node_ip, *my_ip, *manual, *about, *quick_guide;
-static GtkWidget *flag_fi, *flag_se, *flag_uk, *menu_flag_fi, *menu_flag_se, *menu_flag_uk;
+static GtkWidget *flag_fi, *flag_se, *flag_uk, *flag_es;
+static GtkWidget *menu_flag_fi, *menu_flag_se, *menu_flag_uk, *menu_flag_es;
 static GtkWidget *light, *menu_light;
 static GtkWidget *inc_time, *dec_time, *inc_osaekomi, *dec_osaekomi, *clock_only, *set_time;
 static GtkWidget *layout_sel_1, *layout_sel_2, *layout_sel_3, *layout_sel_4, *layout_sel_5, *layout_sel_6;
@@ -252,15 +253,19 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     flag_fi     = get_picture("finland.png");
     flag_se     = get_picture("sweden.png");
     flag_uk     = get_picture("uk.png");
+    flag_es     = get_picture("spain.png");
     menu_flag_fi = gtk_image_menu_item_new();
     menu_flag_se = gtk_image_menu_item_new();
     menu_flag_uk = gtk_image_menu_item_new();
+    menu_flag_es = gtk_image_menu_item_new();
     gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(menu_flag_fi), flag_fi);        
     gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(menu_flag_se), flag_se);        
     gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(menu_flag_uk), flag_uk);        
+    gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(menu_flag_es), flag_es);        
     gtk_image_menu_item_set_always_show_image(GTK_IMAGE_MENU_ITEM(menu_flag_fi), TRUE);
     gtk_image_menu_item_set_always_show_image(GTK_IMAGE_MENU_ITEM(menu_flag_se), TRUE);
     gtk_image_menu_item_set_always_show_image(GTK_IMAGE_MENU_ITEM(menu_flag_uk), TRUE);
+    gtk_image_menu_item_set_always_show_image(GTK_IMAGE_MENU_ITEM(menu_flag_es), TRUE);
 
     light      = get_picture("redlight.png");
     menu_light = gtk_image_menu_item_new();
@@ -281,12 +286,15 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_menu_shell_append (GTK_MENU_SHELL (menubar), menu_flag_fi); 
     gtk_menu_shell_append (GTK_MENU_SHELL (menubar), menu_flag_se); 
     gtk_menu_shell_append (GTK_MENU_SHELL (menubar), menu_flag_uk); 
+    gtk_menu_shell_append (GTK_MENU_SHELL (menubar), menu_flag_es); 
     g_signal_connect(G_OBJECT(menu_flag_fi), "button_press_event",
                      G_CALLBACK(change_language), (gpointer)LANG_FI);
     g_signal_connect(G_OBJECT(menu_flag_se), "button_press_event",
                      G_CALLBACK(change_language), (gpointer)LANG_SW);
     g_signal_connect(G_OBJECT(menu_flag_uk), "button_press_event",
                      G_CALLBACK(change_language), (gpointer)LANG_EN);
+    g_signal_connect(G_OBJECT(menu_flag_es), "button_press_event",
+                     G_CALLBACK(change_language), (gpointer)LANG_ES);
     //gtk_menu_shell_append (GTK_MENU_SHELL (menubar), undo); 
     g_signal_connect(G_OBJECT(undo), "button_press_event",
                      G_CALLBACK(undo_func), (gpointer)NULL);
@@ -296,12 +304,6 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     g_signal_connect(G_OBJECT(menu_light), "button_press_event",
                      G_CALLBACK(ask_node_ip_address), (gpointer)NULL);
     gtk_menu_item_set_right_justified(GTK_MENU_ITEM(menu_light), TRUE);
-#if 0
-    gtk_menu_item_set_right_justified(menu_flag_uk, TRUE);
-    gtk_menu_item_set_right_justified(menu_flag_se, TRUE);
-    gtk_menu_item_set_right_justified(menu_flag_fi, TRUE);
-    gtk_menu_item_set_right_justified(help, TRUE);
-#endif
   
     /* Create the Contest menu content. */
     match0 = gtk_menu_item_new_with_label(_("Match duration: automatic"));
@@ -586,6 +588,10 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
         putenv("LANGUAGE=en");
         r = setlocale(LC_ALL, "en");
         break;        
+    case LANG_ES:
+        putenv("LANGUAGE=es");
+        r = setlocale(LC_ALL, "es");
+        break;        
     }
 
     gchar *dirname = g_build_filename(installation_dir, "share", "locale", NULL);
@@ -665,6 +671,8 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
                           _("Change language to Swedish"), NULL);
     gtk_tooltips_set_tip (GTK_TOOLTIPS (menu_tips), menu_flag_uk,
                           _("Change language to English"), NULL);
+    gtk_tooltips_set_tip (GTK_TOOLTIPS (menu_tips), menu_flag_es,
+                          _("Change language to Spanish"), NULL);
 
     gtk_tooltips_set_tip (GTK_TOOLTIPS (menu_tips), match0,
                           _("Contest duration automatically from JudoShiai program"), NULL);

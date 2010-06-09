@@ -22,7 +22,8 @@ static GtkWidget *quit, *manual;
 static GtkWidget *full_screen, *small_display, *mirror;
 static GtkWidget *tatami_show[NUM_TATAMIS];
 static GtkWidget *node_ip, *my_ip, *about;
-static GtkWidget *flag_fi, *flag_se, *flag_uk, *menu_flag_fi, *menu_flag_se, *menu_flag_uk;
+static GtkWidget *flag_fi, *flag_se, *flag_uk, *flag_es;
+static GtkWidget *menu_flag_fi, *menu_flag_se, *menu_flag_uk, *menu_flag_es;
 static GtkWidget *light, *menu_light;
 
 gboolean show_tatami[NUM_TATAMIS];
@@ -154,15 +155,19 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     flag_fi     = get_picture("finland.png");
     flag_se     = get_picture("sweden.png");
     flag_uk     = get_picture("uk.png");
+    flag_es     = get_picture("spain.png");
     menu_flag_fi = gtk_image_menu_item_new();
     menu_flag_se = gtk_image_menu_item_new();
     menu_flag_uk = gtk_image_menu_item_new();
+    menu_flag_es = gtk_image_menu_item_new();
     gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(menu_flag_fi), flag_fi);        
     gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(menu_flag_se), flag_se);        
     gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(menu_flag_uk), flag_uk);        
+    gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(menu_flag_es), flag_es);        
     gtk_image_menu_item_set_always_show_image(GTK_IMAGE_MENU_ITEM(menu_flag_fi), TRUE);
     gtk_image_menu_item_set_always_show_image(GTK_IMAGE_MENU_ITEM(menu_flag_se), TRUE);
     gtk_image_menu_item_set_always_show_image(GTK_IMAGE_MENU_ITEM(menu_flag_uk), TRUE);
+    gtk_image_menu_item_set_always_show_image(GTK_IMAGE_MENU_ITEM(menu_flag_es), TRUE);
 
     light      = get_picture("redlight.png");
     menu_light = gtk_image_menu_item_new();
@@ -179,6 +184,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_menu_shell_append (GTK_MENU_SHELL (menubar), help);
     gtk_menu_shell_append (GTK_MENU_SHELL (menubar), menu_flag_fi); 
     gtk_menu_shell_append (GTK_MENU_SHELL (menubar), menu_flag_uk); 
+    gtk_menu_shell_append (GTK_MENU_SHELL (menubar), menu_flag_es); 
     gtk_menu_shell_append (GTK_MENU_SHELL (menubar), menu_light); 
 
     gtk_menu_item_set_right_justified(GTK_MENU_ITEM(menu_light), TRUE);
@@ -187,6 +193,8 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
                      G_CALLBACK(change_language), (gpointer)LANG_FI);
     g_signal_connect(G_OBJECT(menu_flag_uk), "button_press_event",
                      G_CALLBACK(change_language), (gpointer)LANG_EN);
+    g_signal_connect(G_OBJECT(menu_flag_es), "button_press_event",
+                     G_CALLBACK(change_language), (gpointer)LANG_ES);
     g_signal_connect(G_OBJECT(menu_light), "button_press_event",
                      G_CALLBACK(ask_node_ip_address), (gpointer)NULL);
 
@@ -304,6 +312,10 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
         putenv("LANGUAGE=en");
         r = setlocale(LC_ALL, "en");
         break;        
+    case LANG_ES:
+        putenv("LANGUAGE=es");
+        r = setlocale(LC_ALL, "es");
+        break;        
     }
 
     gchar *dirname = g_build_filename(installation_dir, "share", "locale", NULL);
@@ -340,6 +352,8 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
                           _("Change language to Swedish"), NULL);
     gtk_tooltips_set_tip (GTK_TOOLTIPS (menu_tips), menu_flag_uk,
                           _("Change language to English"), NULL);
+    gtk_tooltips_set_tip (GTK_TOOLTIPS (menu_tips), menu_flag_es,
+                          _("Change language to Spanish"), NULL);
 
     g_key_file_set_integer(keyfile, "preferences", "language", lang);
 
