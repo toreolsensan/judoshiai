@@ -25,23 +25,10 @@ static void about_judotimer( GtkWidget *w,
     gtk_show_about_dialog (NULL, 
                            "name", "Judotimer",
                            "title", _("About Judotimer"),
-                           "copyright", "Copyright 2006-2009 Hannu Jokinen",
+                           "copyright", "Copyright 2006-2010 Hannu Jokinen",
                            "version", SHIAI_VERSION,
-                           "website", "http://www.kolumbus.fi/oh2ncp/",
+                           "website", "http://sourceforge.net/projects/judoshiai/",
                            NULL);
-#if 0
-    dialog = gtk_message_dialog_new (NULL,
-                                     0 /*GTK_DIALOG_DESTROY_WITH_PARENT*/,
-                                     GTK_MESSAGE_INFO,
-                                     GTK_BUTTONS_OK,
-                                     "Judotimer versio 0.5\nCopyright 2006-2007 Hannu Jokinen");
-
-    g_signal_connect_swapped (dialog, "response",
-                              G_CALLBACK (gtk_widget_destroy),
-                              dialog);
-
-    gtk_widget_show(dialog);
-#endif
 }
 
 
