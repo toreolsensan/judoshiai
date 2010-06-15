@@ -7,7 +7,7 @@ ifeq ($(OS),Windows_NT)
 SUFF=.exe
 # PATHS TO YOUR GTK+ INSTALLATION AND SOUND LIBRARY
 DEVELDIR=c:/msys/1.0/home/Administrator/gtk
-SOUNDDIR=c:\Program\ Files/FMOD\ SoundSystem/FMOD\ Programmers\ API\ Win32
+SOUNDDIR=c:/Program\ Files/FMOD\ SoundSystem/FMOD\ Programmers\ API\ Win32/api
 else
 SUFF=
 DEVELDIR=
