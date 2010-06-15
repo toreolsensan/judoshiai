@@ -46,6 +46,7 @@
 #include <string.h>
 
 #include "judotimer.h"
+#include "fmod.h"
 
 static void gen_random_key(void);
 
@@ -135,6 +136,8 @@ void beep(char *str)
 
     display_big(str, 4);
     st[0].big_displayed = TRUE;
+
+    play_sound();
 }
 
 void update_display(void)

@@ -31,6 +31,7 @@ all: $(JUDOSHIAIFILE) $(JUDOTIMERFILE) $(JUDOINFOFILE) $(LANGUAGEFILE) $(DOCFILE
 	cp $(JUDOINFOFILE) $(RELDIR)/bin/
 ifeq ($(OS),Windows_NT)
 	cp $(RUNDIR)/bin/*.dll $(RELDIR)/bin/
+	cp $(SOUNDDIR)/fmodex.dll $(RELDIR)/bin/
 	cp -r $(RUNDIR)/lib/gtk-2.0 $(RELDIR)/lib/
 	cp -r $(RUNDIR)/share/locale/fi $(RELDIR)/share/locale/
 	cp -r $(RUNDIR)/share/locale/sv $(RELDIR)/share/locale/
@@ -38,6 +39,8 @@ ifeq ($(OS),Windows_NT)
 	cp -r $(RUNDIR)/share/locale/en_GB $(RELDIR)/share/locale/
 	cp -r $(RUNDIR)/share/themes $(RELDIR)/share/
 	cp -r $(RUNDIR)/etc $(RELDIR)/
+else
+	cp $(SOUNDDIR)/lib/libfmodex-*.so $(RELDIR)/lib/libfmodex.so
 endif
 	cp doc/judoshiai.pdf $(RELDIR)/doc/
 	cp doc/judotimer.pdf $(RELDIR)/doc/
@@ -47,6 +50,7 @@ endif
 	cp etc/*.png $(RELDIR)/etc/
 	cp etc/*.txt $(RELDIR)/etc/
 	cp etc/*.css $(RELDIR)/etc/
+	cp etc/*.mp3 $(RELDIR)/etc/
 	#cp flash/judo*.swf flash/judo*.html $(RELDIR)/etc/
 	cp licenses/* $(RELDIR)/licenses
 	@echo

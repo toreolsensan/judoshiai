@@ -5,11 +5,13 @@ CC=gcc
 
 ifeq ($(OS),Windows_NT)
 SUFF=.exe
-# PATH TO YOUR GTK+ INSTALLATION
+# PATHS TO YOUR GTK+ INSTALLATION AND SOUND LIBRARY
 DEVELDIR=c:/msys/1.0/home/Administrator/gtk
+SOUNDDIR=c:\Program\ Files/FMOD\ SoundSystem/FMOD\ Programmers\ API\ Win32
 else
 SUFF=
 DEVELDIR=
+SOUNDDIR=/opt/fmodapi43004linux/api
 endif
 
 PKGCONFIG=pkg-config

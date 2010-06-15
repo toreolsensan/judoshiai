@@ -189,7 +189,7 @@ static GtkWidget *layout_sel_1, *layout_sel_2, *layout_sel_3, *layout_sel_4, *la
 static GtkTooltips *menu_tips;
 static GtkWidget *mode_normal, *mode_master, *mode_slave;
 static GtkWidget *undo, *hansokumake_blue, *hansokumake_white, *clear_selection;
-static GtkWidget *advertise;
+static GtkWidget *advertise, *sound;
 
 static GtkWidget *get_picture(const gchar *name)
 {
@@ -399,6 +399,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     mode_master     = gtk_radio_menu_item_new_with_label_from_widget((GtkRadioMenuItem *)mode_normal, "");
     mode_slave      = gtk_radio_menu_item_new_with_label_from_widget((GtkRadioMenuItem *)mode_normal, "");
     advertise       = gtk_menu_item_new_with_label("");
+    sound           = gtk_menu_item_new_with_label("");
 
 
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), red_background);
@@ -438,6 +439,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
 
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), gtk_separator_menu_item_new());
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), advertise);
+    gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), sound);
 
     g_signal_connect(G_OBJECT(red_background),  "activate", G_CALLBACK(toggle_color),         (gpointer)1);
     g_signal_connect(G_OBJECT(full_screen),     "activate", G_CALLBACK(toggle_full_screen),   (gpointer)0);
@@ -468,7 +470,8 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     g_signal_connect(G_OBJECT(mode_normal),     "activate", G_CALLBACK(mode_selection),       (gpointer)0);
     g_signal_connect(G_OBJECT(mode_master),     "activate", G_CALLBACK(mode_selection),       (gpointer)1);
     g_signal_connect(G_OBJECT(mode_slave),      "activate", G_CALLBACK(mode_selection),       (gpointer)2);
-    g_signal_connect(G_OBJECT(advertise),       "activate", G_CALLBACK(toggle_advertise),   (gpointer)0);
+    g_signal_connect(G_OBJECT(advertise),       "activate", G_CALLBACK(toggle_advertise),     (gpointer)0);
+    g_signal_connect(G_OBJECT(sound),           "activate", G_CALLBACK(select_sound),         (gpointer)0);
 
     /* Create the Help menu content. */
     manual = gtk_menu_item_new_with_label("Manual");
@@ -659,6 +662,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(mode_slave,  _("Slave mode"));
 
     change_menu_label(advertise,    _("Advertise"));
+    change_menu_label(sound,        _("Sound"));
 
     change_menu_label(manual,       _("Manual"));
     change_menu_label(quick_guide,  _("Quick guide"));

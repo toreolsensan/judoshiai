@@ -156,6 +156,10 @@ extern void send_label_msg(struct message *msg);
 extern gpointer master_thread(gpointer args);
 extern void update_label(struct msg_update_label *msg);
 extern gboolean send_label(gint bigdsp);
+extern void open_sound(void);
+extern void close_sound(void);
+extern void play_sound(void);
+extern void select_sound(GtkWidget *menu_item, gpointer data);
 
 
 #endif

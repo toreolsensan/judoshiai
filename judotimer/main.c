@@ -23,6 +23,7 @@
 
 #include "judotimer.h"
 #include "binreloc.h"
+#include "fmod.h"
 
 static void show_big(void);
 static void expose_label(cairo_t *c, gint w);
@@ -1398,11 +1399,15 @@ int main( int   argc,
 	cursor = gdk_cursor_new(GDK_HAND2);
 	gdk_window_set_cursor(GTK_WIDGET(main_window)->window, cursor);
 
+        open_sound();
+
         /* All GTK applications must have a gtk_main(). Control ends here
          * and waits for an event to occur (like a key press or
          * mouse event). */
         gtk_main();
     
+        close_sound();
+
         gdk_threads_leave();  /* release GDK locks */
         run_flag = FALSE;     /* flag threads to stop and exit */
         //g_thread_join(gth);   /* wait for thread to exit */ 

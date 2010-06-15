@@ -1,13 +1,17 @@
 
 all: judotimer
 
-OBJS = main.o menus.o stopwatch.o comm.o ip.o protocol.o show-ad.o
+OBJS = main.o menus.o stopwatch.o comm.o ip.o protocol.o show-ad.o sound.o
 
 include ../common/Makefile.inc
 
 CFLAGS += -DAPPLICATION="\"judotimer\""
+CFLAGS += -I$(SOUNDDIR)/inc
+LIBS += -L$(SOUNDDIR)/lib -lfmodex
 
 ifeq ($(OS),Windows_NT)
+
+RPATH =
 
 judotimer: judotimer1 judotimer-icon.res
 	ResHacker.exe -add judotimer1.exe, judotimer.exe, judotimer-icon.res, ,,
@@ -20,13 +24,15 @@ judotimer-icon.rc:
 
 else
 
+RPATH = -Wl,-rpath,/usr/lib/judoshiai/lib
+
 judotimer: judotimer1
 	cp judotimer1 judotimer
 
 endif
 
 judotimer1: $(OBJS)
-	gcc -g -Wl,-rpath -Wl,bin $(OBJS) -o judotimer1 $(LIBS)
+	${CC} -g $(RPATH) $(OBJS) -o judotimer1 $(LIBS)
 
 ip.o: ../common/ip.c
 	${CC} -g $(CFLAGS) -c $< -o $@
