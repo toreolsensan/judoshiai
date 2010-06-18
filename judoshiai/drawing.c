@@ -53,6 +53,7 @@ struct mdata {
     gint selected, mfrench_sys;
     gboolean hidden;
     gint drawn, seeded1, seeded2, seeded3;
+    gint sys;
 };
 
 GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors, 
@@ -519,10 +520,14 @@ static gboolean select_competitor(GtkWidget *eventbox, GdkEventButton *event, vo
     return TRUE;
 }
 
+static gint seedposq[21] = {0, 0, 0, 0, 0, 0, 0, 0, 0xff, 0x1fe, 0x3f6, // 0 - 10
+                            0x7b6, 0xdb6, 0x1b66, 0x3666, 0x6666, 0x6666, 0xccd2, 0x19a52, 0x34a52, 0x94a52}; // 11 - 20
+
 static gboolean draw_one_comp(struct mdata *mdata)
 {
     gint comp = mdata->selected;
     gint found = 0, mask;
+    gint sys = mdata->sys & SYSTEM_MASK;
 
     if (mdata->selected == 0)
         return 0;
@@ -550,11 +555,12 @@ static gboolean draw_one_comp(struct mdata *mdata)
 
         if (!found)
             found = get_free_pos_by_mask(0xf, mdata);
-    } else {
+    } else if (sys != SYSTEM_QPOOL) {
         gint getmask;
 
         if (mdata->mcomp[comp].seeded) {
             mask = get_seeded_mask(0xf, mdata); // look for any seeded
+
             switch (mdata->mpositions) {
             case 2:
                 getmask = 0x3; // 1 and 2
@@ -685,8 +691,88 @@ static gboolean draw_one_comp(struct mdata *mdata)
 
         if (!found)
             found = get_free_pos_by_mask(0x3ff, mdata);
-    }
+    } else { // QPOOL
+        gint getmask;
 
+        if (mdata->mcomp[comp].seeded) {
+            mask = get_seeded_mask(0xfffff, mdata); // look for any seeded
+            getmask = seedposq[mdata->mpositions];
+            found = get_free_pos_by_mask((mask ^ getmask) & getmask, mdata);
+        } else {
+            gint i, j;
+            gint mates[4], clubmates[4];
+            gint clubmask = get_club_only_mask(mdata);
+            gint pool_start[0];
+            gint pool_size[4];
+            gint pool_mask[4];
+            gint size = mdata->mpositions/4;
+            gint rem = mdata->mpositions - size*4;
+
+            mask = get_club_mask(mdata);
+            
+            for (i = 0; i < 4; i++) {
+                pool_size[i] = size;
+                mates[i] = clubmates[i] = pool_mask[i] = 0;
+            }
+
+            for (i = 0; i < rem; i++)
+                pool_size[i]++;
+
+            gint start = 0;
+            for (i = 0; i < 4; i++) {
+                pool_start[i] = start;
+                start += pool_size[i];
+            }
+
+            for (i = 0; i < mdata->mpositions; i++) { // count mates in pools
+                if (mask & (1<<i)) {
+                    for (j = 3; j >= 0; j--) {
+                        if (i >= pool_start[j]) {
+                            mates[j]++;
+                            break;
+                        }
+                    }
+                }
+
+                if (clubmask & (1<<i)) {
+                    for (j = 3; j >= 0; j--) {
+                        if (i >= pool_start[j]) {
+                            clubmates[j]++;
+                            break;
+                        }
+                    }
+                }
+
+                for (j = 3; j >= 0; j--) {
+                    if (i >= pool_start[j]) {
+                        pool_mask[j] |= 1<<i;
+                        break;
+                    }
+                }
+            }
+
+            gint min_mates = 10000, min_clubmates = 10000;
+            gint min_mates_ix = 0, min_clubmates_ix = 0;
+            for (i = 0; i < 4; i++) {
+                if (mates[i] < min_mates) {
+                    min_mates = mates[i];
+                    min_mates_ix = i;
+                }
+                if (clubmates[i] < min_clubmates) {
+                    min_clubmates = clubmates[i];
+                    min_clubmates_ix = i;
+                }
+            }
+
+            getmask = pool_mask[min_mates_ix];
+
+            found = get_free_pos_by_mask(getmask, mdata);
+        } // !seeded
+
+        if (!found)
+            found = get_free_pos_by_mask(0xfffff, mdata);
+    } // QPOOL
+    
     if (found)
         select_number(mdata->mpos[found].eventbox, NULL, mdata);
 
@@ -729,14 +815,19 @@ static void make_manual_mathes_callback(GtkWidget *widget,
     }
 
     if (mdata->mfrench_sys < 0) {
-        for (i = 0; i < num_matches(mdata->mjudokas); i++) {
+        for (i = 0; i < num_matches(mdata->sys, mdata->mjudokas); i++) {
             struct match m;
                 
             memset(&m, 0, sizeof(m));
             m.category = mdata->mcategory_ix;
             m.number = i+1;
-            m.blue = mdata->mcomp[ mdata->mpos[ pools[mdata->mjudokas][i][0] ].judoka ].index;
-            m.white = mdata->mcomp[ mdata->mpos[ pools[mdata->mjudokas][i][1] ].judoka ].index;
+            if ((mdata->sys & SYSTEM_MASK) == SYSTEM_QPOOL) {
+                m.blue = mdata->mcomp[ mdata->mpos[ poolsq[mdata->mjudokas][i][0] ].judoka ].index;
+                m.white = mdata->mcomp[ mdata->mpos[ poolsq[mdata->mjudokas][i][1] ].judoka ].index;
+            } else {
+                m.blue = mdata->mcomp[ mdata->mpos[ pools[mdata->mjudokas][i][0] ].judoka ].index;
+                m.white = mdata->mcomp[ mdata->mpos[ pools[mdata->mjudokas][i][1] ].judoka ].index;
+            }
 
             set_match(&m);
             db_set_match(&m);
@@ -759,51 +850,7 @@ static void make_manual_mathes_callback(GtkWidget *widget,
         }
     }
 
-    gint wish = get_cat_system(mdata->mcategory_ix) & SYSTEM_WISH_MASK;
-    gint wishsys = wish >> SYSTEM_WISH_SHIFT;
-    struct category_data *cat = NULL;
-
-    if (mdata->mfrench_sys < 0) {
-        if (mdata->mjudokas <= 5)
-            db_set_system(mdata->mcategory_ix, wish | SYSTEM_POOL | mdata->mjudokas);
-        else
-            db_set_system(mdata->mcategory_ix, wish | SYSTEM_DPOOL | mdata->mjudokas);
-    } else {
-        if (wishsys == CAT_SYSTEM_DEFAULT) {
-            switch (draw_system) {
-            case DRAW_INTERNATIONAL:
-                break;
-            case DRAW_FINNISH:
-                break;
-            case DRAW_SWEDISH:
-                wishsys = CAT_SYSTEM_DIREKT_AATERKVAL;
-                break;
-            case DRAW_ESTONIAN:
-                /* double elimination is used for under 11 years old */
-                cat = avl_get_category(mdata->mcategory_ix);
-                if (cat) {
-                    gint aix = find_age_index(cat->category);
-                    if (aix >= 0) {
-                        if (category_definitions[aix].age <= 10)
-                            wishsys = CAT_SYSTEM_EST_D_KLASS;
-                    }
-                }
-                break;
-            }
-        }
-
-        if (wishsys >= CAT_SYSTEM_REPECHAGE)
-            wish |= (TABLE_DOUBLE_REPECHAGE + wishsys - CAT_SYSTEM_REPECHAGE) << SYSTEM_TABLE_SHIFT;
-
-        if (mdata->mjudokas <= 8)
-            db_set_system(mdata->mcategory_ix, wish | SYSTEM_FRENCH_8 | mdata->mjudokas);
-        else if (mdata->mjudokas <= 16)
-            db_set_system(mdata->mcategory_ix, wish | SYSTEM_FRENCH_16 | mdata->mjudokas);
-        else if (mdata->mjudokas <= 32)
-            db_set_system(mdata->mcategory_ix, wish | SYSTEM_FRENCH_32 | mdata->mjudokas);
-        else
-            db_set_system(mdata->mcategory_ix, wish | SYSTEM_FRENCH_64 | mdata->mjudokas);
-    }
+    db_set_system(mdata->mcategory_ix, mdata->sys);
 out:
 
     update_category_status_info(mdata->mcategory_ix);
@@ -818,6 +865,81 @@ out:
         gtk_widget_destroy(widget);
 }
 
+gint get_system_for_category(gint index, gint competitors)
+{
+    gint systm = get_cat_system(index);
+    gint wish = systm & SYSTEM_WISH_MASK;
+    gint wishsys = wish >> SYSTEM_WISH_SHIFT;
+    struct category_data *cat = NULL;
+    gint sys = 0;
+
+    if (systm & SYSTEM_MASK)
+        return systm;
+
+    if (competitors <= 5 && (wishsys == CAT_SYSTEM_POOL || wishsys == CAT_SYSTEM_DEFAULT)) {
+        sys = wish | SYSTEM_POOL | competitors;
+    } else if (competitors > 5 && competitors <= 10 && wishsys == CAT_SYSTEM_DPOOL) {
+        sys = wish | SYSTEM_DPOOL | competitors;
+    } else if (competitors >= 8 && competitors <= 20 && wishsys == CAT_SYSTEM_QPOOL) {
+        sys = wish | SYSTEM_QPOOL | competitors;
+    } else if (competitors > 5 && competitors <= 8 && wishsys == CAT_SYSTEM_DEFAULT &&
+               draw_system == DRAW_SPANISH) {
+            sys = wish | SYSTEM_DPOOL | competitors;
+    } else if (competitors > 5 && competitors <= 7 && wishsys == CAT_SYSTEM_DEFAULT) {
+	if (draw_system == DRAW_INTERNATIONAL || draw_system == DRAW_ESTONIAN) {
+            sys = wish | SYSTEM_FRENCH_8 | competitors;
+	} else {
+            sys = wish | SYSTEM_DPOOL | competitors;
+	}
+    } else {
+        if (wishsys == CAT_SYSTEM_DEFAULT) {
+            switch (draw_system) {
+            case DRAW_INTERNATIONAL:
+                break;
+            case DRAW_FINNISH:
+                break;
+            case DRAW_SWEDISH:
+                wishsys = CAT_SYSTEM_DIREKT_AATERKVAL;
+                break;
+            case DRAW_ESTONIAN:
+                /* double elimination is used for under 11 years old */
+                cat = avl_get_category(index);
+                if (cat) {
+                    gint aix = find_age_index(cat->category);
+                    if (aix >= 0) {
+                        if (category_definitions[aix].age <= 10)
+                            wishsys = CAT_SYSTEM_EST_D_KLASS;
+                    }
+                }
+                break;
+            case DRAW_SPANISH:
+                wishsys = CAT_ESP_REPESCA_DOBLE;
+                cat = avl_get_category(index);
+                if (cat) {
+                    gint aix = find_age_index(cat->category);
+                    if (aix >= 0) {
+                        if (category_definitions[aix].age <= 10)
+                            wishsys = CAT_ESP_DOBLE_PERDIDA;
+                    }
+                }
+            }
+        }
+
+        wish |= (cat_system_to_table[wishsys]) << SYSTEM_TABLE_SHIFT;
+
+        if (competitors <= 8) {
+            sys = wish | SYSTEM_FRENCH_8 | competitors;
+        } else if (competitors <= 16) {
+            sys = wish | SYSTEM_FRENCH_16 | competitors;
+        } else if (competitors <= 32) {
+            sys = wish | SYSTEM_FRENCH_32 | competitors;
+        } else {
+            sys = wish | SYSTEM_FRENCH_64 | competitors;
+        }
+    }
+    return sys;
+}
+
 GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors, 
 					struct mdata *mdata)
 {
@@ -828,6 +950,7 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
     gchar buf[200];
 
     mdata->drawn = 0;
+    mdata->mjudokas = competitors;
 
     // colours for the tables
     gdk_color_parse("#FFFFFF", &bg); 
@@ -840,36 +963,31 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
                        COL_LAST_NAME, &catname,
                        -1);
 
-    gint wish = (get_cat_system(mdata->mcategory_ix) & SYSTEM_WISH_MASK) >> SYSTEM_WISH_SHIFT;
+    mdata->sys = get_system_for_category(mdata->mcategory_ix, competitors);
 
-    // how many positions are needed for drawing?
-    mdata->mjudokas = competitors;
-    if (competitors <= 7) {
-	if ((wish > CAT_SYSTEM_DPOOL) ||
-            (competitors > 5 && wish == CAT_SYSTEM_DEFAULT &&
-             (draw_system == DRAW_INTERNATIONAL || draw_system == DRAW_ESTONIAN))) {
-	    mdata->mpositions = 8;
-	    mdata->mfrench_sys = FRENCH_8;
-	} else {
-	    mdata->mpositions = competitors;
-	    mdata->mfrench_sys = -1;
-	}
-    } else if (competitors <= 10 && 
-               (wish == CAT_SYSTEM_DPOOL || wish == CAT_SYSTEM_POOL)) {
+    switch (mdata->sys & SYSTEM_MASK) {
+    case SYSTEM_POOL:
+    case SYSTEM_DPOOL:
+    case SYSTEM_QPOOL:
         mdata->mpositions = competitors;
         mdata->mfrench_sys = -1;
-    } else if (competitors == 8) {
+        break;
+    case SYSTEM_FRENCH_8:
         mdata->mpositions = 8;
         mdata->mfrench_sys = FRENCH_8;
-    } else if (competitors <= 16) {
+        break;
+    case SYSTEM_FRENCH_16:
         mdata->mpositions = 16;
         mdata->mfrench_sys = FRENCH_16;
-    } else if (competitors <= 32) {
+        break;
+    case SYSTEM_FRENCH_32:
         mdata->mpositions = 32;
         mdata->mfrench_sys = FRENCH_32;
-    } else {
+        break;
+    case SYSTEM_FRENCH_64:
         mdata->mpositions = 64;
         mdata->mfrench_sys = FRENCH_64;
+        break;
     }
 
     if (catname && catname[0] == '?') {
@@ -939,7 +1057,7 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
     }
         
     // Create the dialog.
-    dialog = gtk_dialog_new_with_buttons (_("Move the competitors"),
+    dialog = gtk_dialog_new_with_buttons (_("Move the competitors"), //XXXX
                                           NULL,
                                           GTK_DIALOG_DESTROY_WITH_PARENT,
                                           _("Next"), BUTTON_NEXT,

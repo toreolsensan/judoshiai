@@ -156,7 +156,7 @@ static double paint_comp(struct paint_data *pd, struct pool_matches *unused1, in
     cairo_text_extents(pd->c, "Hj", &extents);
     //small = (white_y - blue_y) < 2.0*extents.height && pos == 0;
 
-    if ((pd->systm & SYSTEM_MASK) >= SYSTEM_FRENCH_32) {
+    if (system_is_french(pd->systm) && (pd->systm & SYSTEM_MASK) >= SYSTEM_FRENCH_32) {
 	if (pos == 0 && (flags & REPECHAGE) == 0)
 	    small = TRUE;
 	if (table != TABLE_DOUBLE_REPECHAGE && table != TABLE_SWE_DUBBELT_AATERKVAL) {
@@ -665,8 +665,8 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
     struct judoka *j1 = NULL;
     int num_pool_a, num_pool_b, pos_a, pos_b, gold = 0, silver = 0, bronze1 = 0, bronze2 = 0;
     double pos_match_a, pos_match_b, pos_match_f, x1, x2, pos_judoka_a, pos_judoka_b;
-    gboolean yes_a[11], yes_b[11];
-    gint c_a[11], c_b[11];
+    gboolean yes_a[21], yes_b[21];
+    gint c_a[21], c_b[21];
 
     ROW_HEIGHT *= row_height[num_judokas];
 
@@ -677,7 +677,7 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
 
     pos_judoka_a = POOL_JUDOKAS_Y;
     pos_match_a = pos_judoka_a + (num_pool_a + 3) * ROW_HEIGHT;
-    pos_judoka_b = pos_match_a + (num_matches(num_pool_a) + 3) * ROW_HEIGHT;
+    pos_judoka_b = pos_match_a + (num_matches(pd->systm, num_pool_a) + 3) * ROW_HEIGHT;
     pos_match_b = pos_judoka_b + (num_pool_b + 3) * ROW_HEIGHT;
 
     /* competitor table A */
@@ -743,7 +743,7 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
     }
 
     /* match table A */
-    match_table.num_rows = num_matches(num_pool_a);
+    match_table.num_rows = num_matches(pd->systm, num_pool_a);
     match_table.position_y = pos_match_a;
     create_table(pd, &match_table);
     write_table_title(pd, &match_table, _T(matchesa));
@@ -755,7 +755,7 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
     WRITE_TABLE(match_table, 0, 6, "%s", _T(time));
 
     /* match table B */
-    match_table.num_rows = num_matches(num_pool_b);
+    match_table.num_rows = num_matches(pd->systm, num_pool_b);
     match_table.position_y = pos_match_b;
     create_table(pd, &match_table);
     write_table_title(pd, &match_table, _T(matchesb));
@@ -769,7 +769,7 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
     /* matches */
     pos_a = pos_b = 1;
 
-    for (i = 1; i <= num_matches(num_judokas) ; i++) {
+    for (i = 1; i <= num_matches(pd->systm, num_judokas) ; i++) {
         gint blue = pools[num_judokas][i-1][0];
         gint white = pools[num_judokas][i-1][1];
         gint ix = blue > num_pool_a ? pos_b++ : pos_a++;
@@ -805,9 +805,9 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
             WRITE_TABLE(judoka_table, white, blue + 3, "%d", pm.m[i].white_points);
     }
 
-    pos_match_f = pos_match_b + (num_matches(num_pool_b) + 3) * ROW_HEIGHT;
+    pos_match_f = pos_match_b + (num_matches(pd->systm, num_pool_b) + 3) * ROW_HEIGHT;
 
-    i = num_matches(num_judokas) + 1;
+    i = num_matches(pd->systm, num_judokas) + 1;
 
     cairo_text_extents_t extents;
     cairo_text_extents(pd->c, "B2", &extents);
@@ -924,7 +924,7 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
 
     /* results */
     result_table.num_rows = 4;
-    result_table.position_y = pos_match_b + (num_matches(num_pool_b) + 5) * ROW_HEIGHT + 3*NAME_S;
+    result_table.position_y = pos_match_b + (num_matches(pd->systm, num_pool_b) + 5) * ROW_HEIGHT + 3*NAME_S;
     create_table(pd, &result_table);
     write_table_title(pd, &result_table, _T(results));
 
@@ -957,6 +957,273 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
     empty_pool_struct(&pm);
 }
 
+static void paint_qpool(struct paint_data *pd, gint category, struct judoka *ctg, gint num_judokas)
+{
+    struct pool_matches pm;
+    gint i, j, pool;
+    struct judoka *j1 = NULL;
+    gint pos[4], gold = 0, silver = 0, bronze1 = 0, bronze2 = 0;
+    double pos_match[4], pos_match_f, x1, x2, x3, x4, pos_judoka[4], y;
+    gboolean yes[4][21];
+    gint c[4][21];
+    gint pool_start[4];
+    gint pool_size[4];
+    gint size = num_judokas/4;
+    gint rem = num_judokas - size*4;
+
+    for (i = 0; i < 4; i++) {
+        pool_size[i] = size;
+        pos[i] = 1;
+    }
+
+    for (i = 0; i < rem; i++)
+        pool_size[i]++;
+
+    gint start = 0;
+    for (i = 0; i < 4; i++) {
+        pool_start[i] = start;
+        start += pool_size[i];
+    }
+
+    //ROW_HEIGHT *= row_height[num_judokas];
+
+    fill_pool_struct(category, num_judokas, &pm);
+
+    pos_judoka[0] = POOL_JUDOKAS_Y;
+    pos_match[0] = pos_judoka[0] + (pool_size[0] + 3) * ROW_HEIGHT;
+
+    pos_judoka[1] = pos_match[0] + (num_matches(SYSTEM_POOL, pool_size[0]) + 3) * ROW_HEIGHT;
+    pos_match[1] = pos_judoka[1] + (pool_size[1] + 3) * ROW_HEIGHT;
+
+    pos_judoka[2] = POOL_JUDOKAS_Y;
+    pos_match[2] = pos_judoka[2] + (pool_size[2] + 3) * ROW_HEIGHT;
+
+    pos_judoka[3] = pos_match[2] + (num_matches(SYSTEM_POOL, pool_size[2]) + 3) * ROW_HEIGHT;
+    pos_match[3] = pos_judoka[3] + (pool_size[3] + 3) * ROW_HEIGHT;
+
+    for (pool = 0; pool < 4; pool++) {
+        if ((pd->page == 0 && (pool == 0 || pool == 1)) ||
+            (pd->page == 1 && (pool == 2 || pool == 3))) {
+            /* competitor table */
+            judoka_table.position_y = pos_judoka[pool];
+            judoka_table.num_rows = pool_size[pool];
+            judoka_table.num_cols = pool_size[pool] + 4;
+            create_table(pd, &judoka_table);
+            write_table_title(pd, &judoka_table, print_texts[competitoratext+pool][print_lang]);
+
+            write_table(pd, &judoka_table, 0, 0, _T(number));
+            write_table(pd, &judoka_table, 0, 1, _T(name));
+            write_table(pd, &judoka_table, 0, 2, _T(grade));
+            write_table(pd, &judoka_table, 0, 3, _T(club));
+            for (i = 1; i <= pool_size[pool]; i++) {
+                WRITE_TABLE(judoka_table, 0, 3 + i, "%d", i + pool_start[pool]);
+            }
+
+            for (i = 1; i <= pool_size[pool]; i++) {
+                if (pm.j[i+pool_start[pool]] == NULL)
+                    continue;
+
+                WRITE_TABLE(judoka_table, i, 0, "%d", i+pool_start[pool]);
+                if (weights_in_sheets)
+                    WRITE_TABLE_H(judoka_table, i, 1, pm.j[i+pool_start[pool]]->deleted, "%s %s  (%d,%02d)", 
+                                  pm.j[i+pool_start[pool]]->first, pm.j[i+pool_start[pool]]->last,
+                                  pm.j[i+pool_start[pool]]->weight/1000, (pm.j[i+pool_start[pool]]->weight%1000)/10);
+                else
+                    WRITE_TABLE_H(judoka_table, i, 1, pm.j[i+pool_start[pool]]->deleted, "%s %s", 
+                                  pm.j[i+pool_start[pool]]->first, pm.j[i+pool_start[pool]]->last);
+                WRITE_TABLE(judoka_table, i, 2, "%s", belts[pm.j[i+pool_start[pool]]->belt]);
+                WRITE_TABLE(judoka_table, i, 3, "%s", get_club_text(pm.j[i+pool_start[pool]], 0));
+            }
+
+            /* win table */
+            gint k;
+            memset(yes, 0, sizeof(yes));
+            memset(c, 0, sizeof(c));
+
+            for (i = 1; i <= num_judokas; i++) {
+                for (k = 3; k >= 0; k--) {
+                    if (i-1 >= pool_start[k]) {
+                        yes[k][i] = TRUE;
+                        break;
+                    }
+                }
+            }
+    
+            get_pool_winner(pool_size[pool], c[pool], yes[pool], pm.wins, pm.pts, pm.mw, pm.j, pm.all_matched);
+            gboolean pool_done = pool_finished(num_judokas, num_matches(pd->systm, num_judokas), 
+                                               TRUE, yes[pool], &pm);
+
+            win_table.position_y = pos_judoka[pool];
+            win_table.num_rows = pool_size[pool];
+            win_table.position_x = colpos(pd, &judoka_table, pool_size[pool] + 4) + judoka_table.position_x;
+            create_table(pd, &win_table);
+
+            WRITE_TABLE(win_table, 0, 0, "%s", _T(win));
+            WRITE_TABLE(win_table, 0, 1, "%s", _T(points));
+            WRITE_TABLE(win_table, 0, 2, "%s", _T(position));
+
+            for (i = 1; i <= pool_size[pool]; i++) {
+                if (pm.wins[i+pool_start[pool]] || pm.finished)
+                    WRITE_TABLE(win_table, i, 0, "%d", pm.wins[i+pool_start[pool]]);
+                if (pm.pts[i+pool_start[pool]] || pm.finished)
+                    WRITE_TABLE(win_table, i, 1, "%d", pm.pts[i+pool_start[pool]]);
+                if (pm.finished || pool_done)
+                    WRITE_TABLE(win_table, c[pool][i] - pool_start[pool], 2, "%d", i);
+            }
+
+            /* matches */
+            gint ix = 0;
+
+            /* match table */
+            match_table.num_rows = num_matches(SYSTEM_POOL, pool_size[pool]);
+            match_table.position_y = pos_match[pool];
+            create_table(pd, &match_table);
+            write_table_title(pd, &match_table, print_texts[matchesatext+pool][print_lang]);
+
+            WRITE_TABLE(match_table, 0, 0, "%s", _T(match));
+            WRITE_TABLE(match_table, 0, 1, "%s", _T(blue));
+            WRITE_TABLE(match_table, 0, 4, "%s", _T(white));
+            WRITE_TABLE(match_table, 0, 5, "%s", _T(result));
+            WRITE_TABLE(match_table, 0, 6, "%s", _T(time));
+
+            for (i = 1; i <= num_matches(pd->systm, num_judokas); i++) {
+                gint blue = poolsq[num_judokas][i-1][0];
+                gint white = poolsq[num_judokas][i-1][1];
+
+                if (blue-1 < pool_start[pool] && pool == 3)
+                    continue;
+
+                if (pool < 3 && (blue-1 < pool_start[pool] || blue-1 >= pool_start[pool+1]))
+                    continue;
+
+                ix++;
+                match_table.position_y = pos_match[pool];
+                                
+                WRITE_TABLE(match_table, ix, 2, "%d", blue);
+                WRITE_TABLE(match_table, ix, 3, "%d", white);
+
+                if (pm.j[blue] && pm.j[white]) {
+                    WRITE_TABLE(match_table, ix, 0, "%d", i+1);
+                    WRITE_TABLE(match_table, ix, 1, "%s %s", pm.j[blue]->first, pm.j[blue]->last);
+                    WRITE_TABLE(match_table, ix, 4, "%s %s", pm.j[white]->first, pm.j[white]->last);
+                    if (pm.m[i].blue_points || pm.m[i].white_points)
+                        WRITE_TABLE(match_table, ix, 5, "%d - %d", pm.m[i].blue_points, pm.m[i].white_points);
+                    if (pm.m[i].blue_points || pm.m[i].white_points)
+                        WRITE_TABLE(match_table, ix, 6, "%d:%02d", pm.m[i].match_time/60, pm.m[i].match_time%60);
+                }
+
+                blue -= pool_start[pool];
+                white -= pool_start[pool];
+
+                if (pm.m[i+1].blue_points)
+                    WRITE_TABLE(judoka_table, blue, white + 3, "%d", pm.m[i+1].blue_points);
+                else if (pm.m[i+1].white_points)
+                    WRITE_TABLE(judoka_table, white, blue + 3, "%d", pm.m[i+1].white_points);
+            } // for i = 0...num_matches
+        } // if
+    } // for
+
+    if (pd->page == 2) {
+        double x[4];
+        pos_match_f = POOL_JUDOKAS_Y;
+        i = num_matches(pd->systm, num_judokas) + 1;
+        cairo_text_extents_t extents;
+        cairo_text_extents(pd->c, "B2", &extents);
+
+        static const gchar *a1[] = {"A1", "D2", "B1", "C2", "C1", "B2", "D1", "A2"};
+        for (j = 0; j < 8; j++) {
+            cairo_move_to(pd->c, OFFSET_X, pos_match_f + NAME_S*j + extents.height*1.2);
+            cairo_show_text(pd->c, a1[j]);
+        }
+
+        for (j = 0; j < 4; j++) {
+            x[j] = paint_comp(pd, &pm, 0,
+                              pos_match_f + NAME_S*j*2, pos_match_f + NAME_S*(j*2+1), 
+                              pm.m[i].blue, pm.m[i].white,
+                              pm.m[i].blue_points, pm.m[i].white_points, SYSTEM_DPOOL, 0, 0, i);
+            i++;
+        }
+
+        /* first semifinal */
+        x[0] = paint_comp(pd, &pm, 1,
+                          x[0], x[1],
+                          pm.m[i].blue, pm.m[i].white,
+                          pm.m[i].blue_points, pm.m[i].white_points, SYSTEM_DPOOL, 0, 0, i);
+
+        if (pm.m[i].blue_points)
+            bronze1 = pm.m[i].white;
+        else
+            bronze1 = pm.m[i].blue;
+
+        i++;
+
+        /* second semifinal */
+        x[1] = paint_comp(pd, &pm, 1,
+                          x[2], x[3],
+                          pm.m[i].blue, pm.m[i].white,
+                          pm.m[i].blue_points, pm.m[i].white_points, SYSTEM_DPOOL, 0, 0, i);
+
+        if (pm.m[i].blue_points)
+            bronze2 = pm.m[i].white;
+        else
+            bronze2 = pm.m[i].blue;
+
+        i++;
+
+        /* final */
+        x[2] = paint_comp(pd, &pm, 2, 
+                          x[0], x[1],
+                          pm.m[i].blue, pm.m[i].white,
+                          pm.m[i].blue_points, pm.m[i].white_points, SYSTEM_DPOOL, 0, 0, i);
+
+        if (pm.m[i].blue_points || pm.m[i].white == GHOST) {
+            gold = pm.m[i].blue;
+            silver = pm.m[i].white;
+        } else if (pm.m[i].white_points || pm.m[i].blue == GHOST) {
+            gold = pm.m[i].white;
+            silver = pm.m[i].blue;
+        }
+
+        x[2] = paint_comp(pd, &pm, 3, 
+                          x[2], 0,
+                          pm.m[i].blue, pm.m[i].white,
+                          pm.m[i].blue_points, pm.m[i].white_points, SYSTEM_DPOOL, 0, 0, i);
+
+        /* results */
+        result_table.num_rows = 4;
+        result_table.position_y = pos_match_f + NAME_S*8;
+        create_table(pd, &result_table);
+        write_table_title(pd, &result_table, _T(results));
+
+        WRITE_TABLE(result_table, 0, 0, "%s", _T(position));
+        WRITE_TABLE(result_table, 0, 1, "%s", _T(name));
+
+        WRITE_TABLE(result_table, 1, 0, "1");
+        WRITE_TABLE(result_table, 2, 0, "2");
+        WRITE_TABLE(result_table, 3, 0, "3");
+        WRITE_TABLE(result_table, 4, 0, "3");
+                
+        if (gold && (j1 = get_data(gold))) {
+            WRITE_TABLE_H(result_table, 1, 1, j1->deleted, "%s %s, %s", j1->first, j1->last, get_club_text(j1, 0));
+            free_judoka(j1);
+        }
+        if (gold && (j1 = get_data(silver))) {
+            WRITE_TABLE_H(result_table, 2, 1, j1->deleted, "%s %s, %s", j1->first, j1->last, get_club_text(j1, 0));
+            free_judoka(j1);
+        }
+        if (gold && (j1 = get_data(bronze1))) {
+            WRITE_TABLE_H(result_table, 3, 1, j1->deleted, "%s %s, %s", j1->first, j1->last, get_club_text(j1, 0));
+            free_judoka(j1);
+        }
+        if (gold && (j1 = get_data(bronze2))) {
+            WRITE_TABLE_H(result_table, 4, 1, j1->deleted, "%s %s, %s", j1->first, j1->last, get_club_text(j1, 0));
+            free_judoka(j1);
+        }
+    } // page 2
+    /* clean up */
+    empty_pool_struct(&pm);
+}
+
 static gint first_matches[NUM_FRENCH] = {4, 8, 16, 32};
 
 #define PAINT_WINNER(_w, _f)						\
@@ -970,7 +1237,7 @@ static gint first_matches[NUM_FRENCH] = {4, 8, 16, 32};
         ((m[_w].white_points || m[_w].blue==GHOST) ? m[_w].white : 0);  \
     silver = (m[_w].blue_points || m[_w].white==GHOST) ? m[_w].white :  \
         ((m[_w].white_points || m[_w].blue==GHOST) ? m[_w].blue : 0);   \
-    PAINT_WINNER(_w, 0)
+    PAINT_WINNER(_w, special_flags)
 
 #define PAINT_BRONZE1(_w)                                               \
     bronze1 = (m[_w].blue_points || m[_w].white==GHOST) ? m[_w].blue :  \
@@ -1066,10 +1333,15 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
 
     last_pos = pos_y - H(0.01);
 
+    gint special_flags = 0;
+
     for (i = first_matches[sys] + 1; i <= french_num_matches[table][sys]; i++) {
-        int blue_match = french_matches[table][sys][i][0];
-        int white_match = french_matches[table][sys][i][1];
-        double blue_pos, white_pos;
+        gint blue_match = french_matches[table][sys][i][0];
+        gint white_match = french_matches[table][sys][i][1];
+        gdouble blue_pos, white_pos;
+        gint intval;
+        gdouble doubleval, doubleval2;
+        gint special_match;
 
         if (sys == FRENCH_64 && pagenum != french_64_matches_to_page[table][i])
             continue;
@@ -1077,34 +1349,55 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
         //if (blue_match < 0) blue_match = -blue_match;
         //if (white_match < 0) white_match = -white_match;
 
-	if (repechage_start[table][sys][0] == i ||
-	    repechage_start[table][sys][1] == i) {
-	    pos_y += (sys == FRENCH_64) ? 3*space : 1.5*space;
-	}
+        special_match = is_special_match(systm, i, &intval, &doubleval, &doubleval2);
+        special_flags = 0;
 
-        if (blue_match <= 0/* || is_repecharge(sys, i, FALSE)*/) {
+        if (special_match == SPECIAL_MATCH_START) {
             blue_pos = pos_y;
-            pos_y += 3.0*space;
+            white_pos = blue_pos + space; 
+            pos_y += 2.0*space;
             level[i] = 0;
+            special_flags = REPECHAGE;
         } else {
-            blue_pos = positions[blue_match];
-            level[i] = level[blue_match] + 1;
-            if (level[i] > max_level)
-                max_level = level[i];
-        }
+            if (repechage_start[table][sys][0] == i ||
+                repechage_start[table][sys][1] == i) {
+                pos_y += (sys == FRENCH_64) ? 3*space : 1.5*space;
+            }
 
-        if (white_match <= 0 /*|| is_repecharge(sys, i, TRUE)*/) {
-            white_pos = blue_pos + 1.5*space + 
-                (level[i] >= 3 ? 2*space : 0.0);
-        } else
-            white_pos = positions[white_match];
+            if (blue_match <= 0/* || is_repecharge(sys, i, FALSE)*/) {
+                blue_pos = pos_y;
+                pos_y += 3.0*space;
+                level[i] = 0;
+            } else {
+                blue_pos = positions[blue_match];
+                level[i] = level[blue_match] + 1;
+                if (level[i] > max_level)
+                    max_level = level[i];
+            }
+
+            if (white_match <= 0 /*|| is_repecharge(sys, i, TRUE)*/) {
+                if (table == TABLE_ESP_DOBLE_PERDIDA)
+                    white_pos = blue_pos + space;
+                else
+                    white_pos = blue_pos + 1.5*space + 
+                        (level[i] >= 3 ? 2*space : 0.0);
+            } else
+                white_pos = positions[white_match];
+        }
 
         positions[i] = 
             paint_comp(pd, NULL, level[i],
                        blue_pos, white_pos, 
                        m[i].blue, m[i].white,
                        m[i].blue_points, m[i].white_points,
-                       ((last_pos < blue_pos && sys != 3) || pagenum == 2 ? REPECHAGE : 0) | sysflag, 0, 0, i);
+                       ((last_pos < blue_pos && sys != 3) || pagenum == 2 ? REPECHAGE : 0) | 
+                       sysflag | special_flags, 0, 0, i);
+
+        if (special_match == SPECIAL_MATCH_STOP) {
+            PAINT_WINNER(i, intval);
+        } else if (special_match == SPECIAL_MATCH_FLAG) {
+            special_flags = intval;
+        }
     }
 
     gint final_blue = french_matches[table][sys][medal_matches[table][sys][2]][0];
@@ -1152,7 +1445,8 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
         break;
     }
 
-    if (table == TABLE_NO_REPECHAGE) {
+    if (table == TABLE_NO_REPECHAGE ||
+        table == TABLE_ESP_DOBLE_PERDIDA) {
 	bronze1 = fifth1;
 	bronze2 = fifth2;
 	fifth1 = fifth2 = 0;
@@ -1271,6 +1565,10 @@ void paint_category(struct paint_data *pd)
 
     case SYSTEM_DPOOL:
         paint_dpool(pd, category, ctg, num_judokas);
+        break;
+
+    case SYSTEM_QPOOL:
+        paint_qpool(pd, category, ctg, num_judokas);
         break;
 
     case SYSTEM_FRENCH_8:

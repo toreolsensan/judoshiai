@@ -275,6 +275,7 @@ void set_draw_system(GtkWidget *w, gpointer data)
 {
     draw_system = (gint)data;
     g_key_file_set_integer(keyfile, "preferences", "drawsystem", draw_system);
+    refresh_window();
 }
 
 void toggle_automatic_sheet_update(GtkWidget *menu_item, gpointer data)

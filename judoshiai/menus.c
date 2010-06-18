@@ -58,7 +58,7 @@ static GtkWidget *menubar,
     *category_print_all, *category_print_all_pdf, *category_print_matches,
     *category_properties, *category_best_of_three, *category_to_tatamis[NUM_TATAMIS],
     *draw_all_categories, *draw_international, *draw_finnish, 
-    *draw_swedish, *draw_estonian, 
+    *draw_swedish, *draw_estonian, *draw_spanish,
     *results_print_all, *results_print_schedule_printer, *results_print_schedule_pdf,
     *preference_comm_node, *preference_own_ip_addr, *preference_show_connections,
     *preference_auto_sheet_update/*, *preference_auto_web_update*/, *preference_results_in_finnish, 
@@ -285,11 +285,15 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     draw_swedish = gtk_radio_menu_item_new_with_label(draw_group, "");
     draw_group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(draw_swedish));
     draw_estonian = gtk_radio_menu_item_new_with_label(draw_group, "");
+    draw_group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(draw_estonian));
+    draw_spanish = gtk_radio_menu_item_new_with_label(draw_group, "");
+
     gtk_menu_shell_append(GTK_MENU_SHELL(drawing_menu), gtk_separator_menu_item_new());
     gtk_menu_shell_append(GTK_MENU_SHELL(drawing_menu), draw_international);
     gtk_menu_shell_append(GTK_MENU_SHELL(drawing_menu), draw_finnish);
     gtk_menu_shell_append(GTK_MENU_SHELL(drawing_menu), draw_swedish);
     gtk_menu_shell_append(GTK_MENU_SHELL(drawing_menu), draw_estonian);
+    gtk_menu_shell_append(GTK_MENU_SHELL(drawing_menu), draw_spanish);
     g_signal_connect(G_OBJECT(draw_international), "activate", G_CALLBACK(set_draw_system), 
 		     (gpointer)DRAW_INTERNATIONAL);
     g_signal_connect(G_OBJECT(draw_finnish),       "activate", G_CALLBACK(set_draw_system), 
@@ -298,6 +302,8 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
 		     (gpointer)DRAW_SWEDISH);
     g_signal_connect(G_OBJECT(draw_estonian),      "activate", G_CALLBACK(set_draw_system), 
 		     (gpointer)DRAW_ESTONIAN);
+    g_signal_connect(G_OBJECT(draw_spanish),      "activate", G_CALLBACK(set_draw_system), 
+		     (gpointer)DRAW_SPANISH);
 
 
     /* Create the Results menu content. */
@@ -562,6 +568,8 @@ void set_preferences(void)
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(draw_swedish), TRUE);
     else if (draw_system == DRAW_ESTONIAN)
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(draw_estonian), TRUE);
+    else if (draw_system == DRAW_SPANISH)
+        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(draw_spanish), TRUE);
 }
 
 static void change_menu_label(GtkWidget *item, const gchar *new_text)
@@ -691,6 +699,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(draw_finnish,        _("Finnish System"));
     change_menu_label(draw_swedish,        _("Swedish System"));
     change_menu_label(draw_estonian,       _("Estonian System"));
+    change_menu_label(draw_spanish,        _("Spanish System"));
 
     change_menu_label(results_print_all             , _("Print All (Web And PDF)"));
     change_menu_label(results_print_schedule_printer, _("Print Schedule to Printer"));

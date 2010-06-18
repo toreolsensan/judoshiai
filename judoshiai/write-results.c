@@ -191,7 +191,7 @@ static void dpool_results(FILE *f, gint category, struct judoka *ctg, gint num_j
 
     fill_pool_struct(category, num_judokas, &pm);
 
-    i = num_matches(num_judokas) + 1;
+    i = num_matches(get_cat_system(category), num_judokas) + 1;
 
     /* first semifinal */
     if (pm.m[i].blue_points)

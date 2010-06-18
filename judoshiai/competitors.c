@@ -214,6 +214,7 @@ static void judoka_edited_callback(GtkWidget *widget,
     if (ix == NEW_WCLASS && ret >= 0) {
         edited.index = ret;
         db_add_category(ret, &edited);
+        db_set_system(ret, system);
     }
 
     //db_read_matches();
@@ -585,10 +586,41 @@ void first_name_cell_data_func (GtkTreeViewColumn *col,
                        COL_DELETED, &deleted, -1);
   
     if (visible) {
+        g_snprintf(buf, sizeof(buf), "%s", first);
+    } else {
+        buf[0] = 0;
+        gint n = gtk_tree_model_iter_n_children(model, iter);
+        struct category_data *data = avl_get_category(index);
+        if (data)
+            g_snprintf(buf, sizeof(buf), "%s", get_system_description(index, n));
+    }
+
+    g_object_set(renderer, "text", buf, NULL);
+    g_free(first);
+}
+
+void birthyear_cell_data_func (GtkTreeViewColumn *col,
+                               GtkCellRenderer   *renderer,
+                               GtkTreeModel      *model,
+                               GtkTreeIter       *iter,
+                               gpointer           user_data)
+{
+    gchar  buf[100];
+    gboolean visible;
+    guint  index;
+    guint  yob;
+
+    gtk_tree_model_get(model, iter, 
+                       COL_INDEX, &index,
+                       COL_VISIBLE, &visible, 
+                       COL_BIRTHYEAR, &yob,
+                       -1);
+  
+    if (visible) {
         g_object_set(renderer,
                      "weight-set", FALSE,
                      NULL);
-        g_snprintf(buf, sizeof(buf), "%s", first);
+        g_snprintf(buf, sizeof(buf), "%d", yob);
     } else {
         gchar print_stat = ' ';
         gint n = gtk_tree_model_iter_n_children(model, iter);
@@ -606,11 +638,10 @@ void first_name_cell_data_func (GtkTreeViewColumn *col,
                          "weight-set", FALSE,
                          NULL);
 
-        g_snprintf(buf, sizeof(buf), "[%d] %c", n, print_stat);
+        g_snprintf(buf, sizeof(buf), "[%d]%c", n, print_stat);
     }
 
     g_object_set(renderer, "text", buf, NULL);
-    g_free(first);
 }
 
 void weight_cell_data_func (GtkTreeViewColumn *col,
@@ -816,10 +847,11 @@ static GtkWidget *create_view_and_model(void)
                                                               -1, _("Year of Birth"),
                                                               renderer, "text",
                                                               COL_BIRTHYEAR,
-                                                              "visible",
-                                                              COL_VISIBLE,
+                                                              //"visible",
+                                                              //COL_VISIBLE,
                                                               NULL);
     col = gtk_tree_view_get_column (GTK_TREE_VIEW (view), col_offset - 1);
+    gtk_tree_view_column_set_cell_data_func(col, renderer, birthyear_cell_data_func, NULL, NULL);
     //gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (col), TRUE);
 
 

@@ -70,6 +70,9 @@
 #define SYSTEM_FRENCH_16   0x00040000
 #define SYSTEM_FRENCH_32   0x00050000
 #define SYSTEM_FRENCH_64   0x00060000
+#define SYSTEM_FRENCH_128  0x00070000
+#define SYSTEM_FRENCH_256  0x00080000
+#define SYSTEM_QPOOL       0x00090000
 #define SYSTEM_TABLE_MASK  0x00f00000
 #define SYSTEM_TABLE_SHIFT 20
 #define SYSTEM_WISH_MASK   0x0f000000
@@ -82,6 +85,10 @@ enum tables {
     TABLE_EST_D_KLASS,
     TABLE_NO_REPECHAGE,
     TABLE_SWE_ENKELT_AATERKVAL,
+    TABLE_ESP_DOBLE_PERDIDA,
+    TABLE_ESP_REPESCA_DOBLE_INICIO,
+    TABLE_ESP_REPESCA_DOBLE,
+    TABLE_ESP_REPESCA_SIMPLE,
     NUM_TABLES
 };
 
@@ -95,6 +102,11 @@ enum cat_systems {
     CAT_SYSTEM_EST_D_KLASS,
     CAT_SYSTEM_NO_REPECHAGE,
     CAT_SYSTEM_ENKELT_AATERKVAL,
+    CAT_SYSTEM_QPOOL,
+    CAT_ESP_DOBLE_PERDIDA,
+    CAT_ESP_REPESCA_DOBLE_INICIO,
+    CAT_ESP_REPESCA_DOBLE,
+    CAT_ESP_REPESCA_SIMPLE,
     NUM_SYSTEMS
 };
 
@@ -118,6 +130,12 @@ enum french_systems {
 #define HANSOKUMAKE  2
 
 #define NEXT_MATCH_NUM 10
+
+enum special_match_types {
+    SPECIAL_MATCH_START = 1,
+    SPECIAL_MATCH_STOP,
+    SPECIAL_MATCH_FLAG
+};
 
 #define SHOW_MESSAGE(_a...) do {gchar b[256]; snprintf(b, sizeof(b), _a); show_message(b); } while (0)
 
@@ -215,6 +233,8 @@ enum {
     competitortext,
     competitoratext,
     competitorbtext,
+    competitorctext,
+    competitordtext,
     numbertext,
     nametext,
     gradetext,
@@ -222,6 +242,8 @@ enum {
     matchestext,
     matchesatext,
     matchesbtext,
+    matchesctext,
+    matchesdtext,
 
     matchtext,
     bluetext,
@@ -303,6 +325,7 @@ enum default_drawing_system {
     DRAW_FINNISH,
     DRAW_SWEDISH,
     DRAW_ESTONIAN,
+    DRAW_SPANISH,
     NUM_DRAWS
 };
 
@@ -346,12 +369,12 @@ struct match {
 };
 
 struct pool_matches {
-    gint c[11], wins[11], pts[11], mw[11][11];
-    struct match m[32];
-    struct judoka *j[11];
-    gboolean yes[11];
+    gint c[21], wins[21], pts[21], mw[21][21];
+    struct match m[64];
+    struct judoka *j[21];
+    gboolean yes[21];
     gboolean finished;
-    gboolean all_matched[11];
+    gboolean all_matched[21];
     gint num_matches;
 };
 
@@ -490,6 +513,7 @@ extern GdkCursor     *wait_cursor;
 extern char *belts[];
 
 extern const guint pools[11][32][2];
+extern const guint poolsq[21][48][2];
 //extern guint competitors_1st_match[8][8][2];
 //extern const guint french_size[NUM_FRENCH];
 extern const guint french_num_matches[NUM_TABLES][NUM_FRENCH];
@@ -500,6 +524,7 @@ extern const gint result_y_position[NUM_TABLES][NUM_FRENCH];
 extern const gint repechage_start[NUM_TABLES][NUM_FRENCH][2];
 extern struct next_match_info next_matches_info[NUM_TATAMIS][2];
 extern struct cat_def category_definitions[NUM_CATEGORIES];
+extern const gint cat_system_to_table[NUM_SYSTEMS];
 
 extern FILE *result_file;
 extern GKeyFile *keyfile;
@@ -528,7 +553,7 @@ extern void set_match_graph_titles(void);
 extern void set_sheet_titles(void);
 
 extern void destroy(GtkWidget *widget, gpointer data);
-extern gint num_matches(gint num_judokas);
+extern gint num_matches(gint sys, gint num_judokas);
 extern void set_judokas_page(GtkWidget *notebook);
 extern void set_sheet_page(GtkWidget *notebook);
 extern GtkWidget *get_menubar_menu( GtkWidget  *window );
@@ -716,15 +741,17 @@ extern void matches_clear(void);
 extern void set_match(struct match *m);
 extern void fill_pool_struct(gint category, gint num, struct pool_matches *pm);
 extern void empty_pool_struct(struct pool_matches *pm);
-extern void get_pool_winner(gint num, gint c[11], gboolean yes[11], 
-                            gint wins[11], gint pts[11], 
-                            gboolean mw[11][11], struct judoka *ju[11], gboolean all_matched[11]);
+extern void get_pool_winner(gint num, gint c[21], gboolean yes[21], 
+                            gint wins[21], gint pts[21], 
+                            gboolean mw[21][21], struct judoka *ju[21], gboolean all_matched[21]);
 extern void update_competitors_categories(gint competitor);
 extern void set_points_and_score(struct message *msg);
 extern void set_comment_from_net(struct message *msg);
 extern void set_points_from_net(struct message *msg);
 extern gint find_match_time(const gchar *cat);
 extern void set_points(GtkWidget *menuitem, gpointer userdata);
+extern gboolean pool_finished(gint numcomp, gint nummatches, gint sysq, gboolean yes[], 
+                              struct pool_matches *pm);
 extern void update_matches_small(guint category, gint sys_or_tatami);
 extern void update_matches(guint category, gint sys, gint tatami);
 extern void category_refresh(gint category);
@@ -850,6 +877,7 @@ extern void draw_one_category(GtkTreeIter *parent, gint competitors);
 extern void draw_one_category_manually(GtkTreeIter *parent, gint competitors);
 extern void draw_all(GtkWidget *w, gpointer data);
 extern gint get_drawed_number(gint pos, gint sys);
+extern gint get_system_for_category(gint index, gint competitors);
 
 /* menuacts */
 extern void make_backup(void);
@@ -867,5 +895,9 @@ extern gchar *print_texts[][NUM_LANGS];
 extern gchar *get_system_name_for_menu(gint num);
 extern gint get_system_number_by_menu_pos(gint num);
 extern gint get_system_menu_selection(gint active);
+extern gboolean system_is_french(gint sys);
+extern gboolean system_wish_is_french(gint wish);
+extern gint is_special_match(gint sys, gint match, gint *intval, double *doubleval, double *doubleval2);
+extern gchar *get_system_description(gint index, gint competitors);
 
 #endif
