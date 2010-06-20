@@ -376,12 +376,14 @@ void view_popup_menu(GtkWidget *treeview,
         gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
 
         gtk_menu_shell_append(GTK_MENU_SHELL(menu), gtk_separator_menu_item_new());
+    }
 
-        menuitem = gtk_menu_item_new_with_label(_("Copy Competitors"));
-        g_signal_connect(menuitem, "activate",
-                         (GCallback) view_popup_menu_copy_judoka, userdata);
-        gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
+    menuitem = gtk_menu_item_new_with_label(_("Copy Competitors"));
+    g_signal_connect(menuitem, "activate",
+		     (GCallback) view_popup_menu_copy_judoka, userdata);
+    gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
 
+    if (matched == FALSE) {
         menuitem = gtk_menu_item_new_with_label(_("Remove Competitors"));
         g_signal_connect(menuitem, "activate",
                          (GCallback) remove_competitors, userdata);

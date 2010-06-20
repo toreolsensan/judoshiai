@@ -437,7 +437,7 @@ void get_pool_winner(gint num, gint c[21], gboolean yes[21],
 
 static gint num_matches_table[] = {0,0,1,3,6,10,6,9,12,16,20};
 static gint num_matches_table_q[] = {0,0,0,0,0,0,0,0,4,6,8, // 0 - 10
-                                     10,12,15,17,21,24,28,32,36,40}; // 11 - 20
+                                     10,12,15,18,21,24,28,32,36,40}; // 11 - 20
 
 gint num_matches(gint sys, gint num_judokas)
 {
@@ -594,7 +594,7 @@ gboolean pool_finished(gint numcomp, gint nummatches, gint sysq, gboolean yes[],
         }
         if (yes[blue] == FALSE || yes[white] == FALSE)
             continue;
-        if (pm->j[blue]->deleted & HANSOKUMAKE || pm->j[blue]->deleted & HANSOKUMAKE)
+        if ((pm->j[blue]->deleted & HANSOKUMAKE) || (pm->j[white]->deleted & HANSOKUMAKE))
             continue;
         if (pm->m[i].blue_points == 0 && pm->m[i].white_points == 0)
             return FALSE;
@@ -766,14 +766,14 @@ static void set_repechage_16(struct match m[], gint table, gint i)
 	COPY_PLAYER((15+i), blue, LOSER(p));
 	set_match(&m[15+i]); db_set_match(&m[15+i]);
     } else if (table == TABLE_ESP_REPESCA_SIMPLE) {
-	if (!MATCHED_FRENCH(15+i))
+	if (!MATCHED_FRENCH(13+i))
 	    return;
 
-	p = GET_PREV(15+i);
-	COPY_PLAYER((13+i), white, LOSER(p));
+	p = GET_PREV(13+i);
+	COPY_PLAYER((15+i), white, LOSER(p));
 	p = GET_PREV(p);
-	COPY_PLAYER((13+i), blue, LOSER(p));
-	set_match(&m[13+i]); db_set_match(&m[13+i]);
+	COPY_PLAYER((15+i), blue, LOSER(p));
+	set_match(&m[15+i]); db_set_match(&m[15+i]);
     } else {
 	if (!MATCHED_FRENCH(9+i))
 	    return;
@@ -810,14 +810,14 @@ static void set_repechage_32(struct match m[], gint table, gint i)
 	COPY_PLAYER((29+i), blue, LOSER(p));
 	set_match(&m[29+i]); db_set_match(&m[29+i]);
     } else if (table == TABLE_ESP_REPESCA_SIMPLE) {
-	if (!MATCHED_FRENCH(32+i))
+	if (!MATCHED_FRENCH(29+i))
 	    return;
 
-	p = GET_PREV(32+i);
-	COPY_PLAYER((30+i), white, LOSER(p));
+	p = GET_PREV(29+i);
+	COPY_PLAYER((31+i), white, LOSER(p));
 	p = GET_PREV(p);
-	COPY_PLAYER((30+i), blue, LOSER(p));
-	set_match(&m[30+i]); db_set_match(&m[30+i]);
+	COPY_PLAYER((31+i), blue, LOSER(p));
+	set_match(&m[31+i]); db_set_match(&m[31+i]);
     } else {
 	if (!MATCHED_FRENCH(25+i))
 	    return;
@@ -860,14 +860,14 @@ static void set_repechage_64(struct match m[], gint table, gint i)
 	COPY_PLAYER((61+i), blue, LOSER(p));
 	set_match(&m[61+i]); db_set_match(&m[61+i]);
     } else if (table == TABLE_ESP_REPESCA_SIMPLE) {
-	if (!MATCHED_FRENCH(63+i))
+	if (!MATCHED_FRENCH(61+i))
 	    return;
 
-	p = GET_PREV(63+i);
-	COPY_PLAYER((61+i), white, LOSER(p));
+	p = GET_PREV(61+i);
+	COPY_PLAYER((63+i), white, LOSER(p));
 	p = GET_PREV(p);
-	COPY_PLAYER((61+i), blue, LOSER(p));
-	set_match(&m[61+i]); db_set_match(&m[61+i]);
+	COPY_PLAYER((63+i), blue, LOSER(p));
+	set_match(&m[63+i]); db_set_match(&m[63+i]);
     } else {
 	if (!MATCHED_FRENCH(57+i))
 	    return;

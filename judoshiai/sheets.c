@@ -1103,7 +1103,7 @@ static void paint_qpool(struct paint_data *pd, gint category, struct judoka *ctg
                 WRITE_TABLE(match_table, ix, 3, "%d", white);
 
                 if (pm.j[blue] && pm.j[white]) {
-                    WRITE_TABLE(match_table, ix, 0, "%d", i+1);
+                    WRITE_TABLE(match_table, ix, 0, "%d", i);
                     WRITE_TABLE(match_table, ix, 1, "%s %s", pm.j[blue]->first, pm.j[blue]->last);
                     WRITE_TABLE(match_table, ix, 4, "%s %s", pm.j[white]->first, pm.j[white]->last);
                     if (pm.m[i].blue_points || pm.m[i].white_points)
@@ -1115,10 +1115,10 @@ static void paint_qpool(struct paint_data *pd, gint category, struct judoka *ctg
                 blue -= pool_start[pool];
                 white -= pool_start[pool];
 
-                if (pm.m[i+1].blue_points)
-                    WRITE_TABLE(judoka_table, blue, white + 3, "%d", pm.m[i+1].blue_points);
-                else if (pm.m[i+1].white_points)
-                    WRITE_TABLE(judoka_table, white, blue + 3, "%d", pm.m[i+1].white_points);
+                if (pm.m[i].blue_points)
+                    WRITE_TABLE(judoka_table, blue, white + 3, "%d", pm.m[i].blue_points);
+                else if (pm.m[i].white_points)
+                    WRITE_TABLE(judoka_table, white, blue + 3, "%d", pm.m[i].white_points);
             } // for i = 0...num_matches
         } // if
     } // for
@@ -1429,6 +1429,7 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
         gdouble pos_y1 = pos_y;
         pos_y += 3.0*space;
         gdouble pos_y2 = pos_y;
+
         positions[medal_matches[table][sys][2]] = 
 	    paint_comp(pd, NULL, 2,
 		       pos_y1, pos_y2, 

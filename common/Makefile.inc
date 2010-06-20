@@ -1,4 +1,4 @@
-SHIAI_VER_NUM=2.1-alpha1
+SHIAI_VER_NUM=2.1-alpha2
 SHIAI_VERSION="\"$(SHIAI_VER_NUM)\""
 
 CC=gcc
@@ -6,7 +6,7 @@ CC=gcc
 ifeq ($(OS),Windows_NT)
 SUFF=.exe
 # PATHS TO YOUR GTK+ INSTALLATION AND SOUND LIBRARY
-DEVELDIR=c:/msys/1.0/home/Administrator/gtk
+DEVELDIR=c:/msys/1.0/home/hjokinen/gtk+-bundle_2.20
 SOUNDDIR=c:/Program\ Files/FMOD\ SoundSystem/FMOD\ Programmers\ API\ Win32/api
 else
 SUFF=

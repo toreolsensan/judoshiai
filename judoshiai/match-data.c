@@ -74,7 +74,7 @@ const guint french_num_matches[NUM_TABLES][NUM_FRENCH] = {
     { 7, 15, 31, 63}, // no repechage
     {11, 19, 37, 71}, // enkelt aaterkval
     {13, 29, 43, 79}, // Eliminatoria doble perdida
-    {11, 23, 39, 55}, // Eliminatoria repesca doble inicio
+    {11, 23, 39, 71}, // Eliminatoria repesca doble inicio
     {11, 19, 35, 67}, // Eliminatoria repesca doble
     {11, 19, 35, 67}, // Eliminatoria repesca simple
 };
@@ -87,7 +87,7 @@ const gint medal_matches[NUM_TABLES][NUM_FRENCH][3] = {
     {{5,6,7},   {13,14,15}, {29,30,31}, {61,62,63}},    // no repechage
     {{9,10,11}, {17,18,19}, {35,36,37}, {69,70,71}},    // enkelt aaterkval
     {{11,12,13}, {27,28,29}, {41,42,43}, {77,78,79}},    // Eliminatoria doble perdida
-    {{9,10,11}, {21,22,23}, {37,38,39}, {53,54,55}},    // Eliminatoria repesca doble inicio
+    {{9,10,11}, {21,22,23}, {37,38,39}, {69,70,71}},    // Eliminatoria repesca doble inicio
     {{9,10,11}, {17,18,19}, {33,34,35}, {65,66,67}},    // Eliminatoria repesca doble
     {{9,10,11}, {17,18,19}, {33,34,35}, {65,66,67}}     // Eliminatoria repesca simple
 };	
@@ -264,7 +264,7 @@ const gchar french_64_matches_to_page[NUM_TABLES][NUM_MATCHES] = {
     /*  51,52,53,54,55,56,57,58,59,60 */
     0, 0, 1, 1, 1, 1, 0, 0, 1, 1,
     /*  61,62,63,64,65,66,67,68,69,70 */
-    2, 2, 2, 2, 0, 0, 2, 2, 2, 2,
+    2, 2, 2, 2, 0, 1, 2, 2, 2, 2,
     /*  71,72,73,74,75,76,77,78,79    */
     9
 },{ // Eliminatoria repesca doble
@@ -282,7 +282,7 @@ const gchar french_64_matches_to_page[NUM_TABLES][NUM_MATCHES] = {
     /*  51,52,53,54,55,56,57,58,59,60 */
     0, 0, 1, 1, 1, 1, 0, 0, 1, 1,
     /*  61,62,63,64,65,66,67 */
-    2, 2, 0, 1, 2, 2, 2
+    2, 2, 0, 1, 2, 2, 9
 },{ // Eliminatoria repesca simple
     0,
     /*  01,02,03,04,05,06,07,08,09,10 */
@@ -298,7 +298,7 @@ const gchar french_64_matches_to_page[NUM_TABLES][NUM_MATCHES] = {
     /*  51,52,53,54,55,56,57,58,59,60 */
     0, 0, 1, 1, 1, 1, 0, 0, 1, 1,
     /*  61,62,63,64,65,66,67 */
-    2, 2, 0, 1, 2, 2, 2
+    0, 1, 2, 2, 2, 2, 9
 },};
 
 const gint result_y_position[NUM_TABLES][NUM_FRENCH] = {
@@ -311,7 +311,7 @@ const gint result_y_position[NUM_TABLES][NUM_FRENCH] = {
     {4, 12, 28, 0},
     {4, 12, 28, 0},
     {4, 12, 28, 0},
-    {4, 12, 28, 0}
+    {4, 16, 28, 0}
 };
 
 const gint repechage_start[NUM_TABLES][NUM_FRENCH][2] = {
@@ -323,7 +323,7 @@ const gint repechage_start[NUM_TABLES][NUM_FRENCH][2] = {
     {{7,0}, {15,16}, {31,32}, {0,64}},  // enkelt aaterkval
     {{5,0}, {9,0},   {29,0},  {0,63}},  // Eliminatoria doble perdida
     {{7,0}, {0,0},   {29,0},  {0,61}},  // Eliminatoria repesca doble inicio
-    {{7,0}, {0,0},   {29,0},  {0,63}},  // Eliminatoria repesca doble
+    {{7,0}, {0,0},   {29,0},  {0,61}},  // Eliminatoria repesca doble
     {{7,0}, {0,0},   {29,0},  {0,63}},  // Eliminatoria repesca simple
 };
 
@@ -835,7 +835,7 @@ const gint french_matches[NUM_TABLES][NUM_FRENCH][NUM_MATCHES][2] = {
 	    /*  01,     02,     03,     04,     05,     06,     07,     08,     09,     10 */
 	    { 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 1, 2},{ 3, 4},
 	    /*  11,     12,     13,     14,     15,     16,     17,     18,     19  */
-	    { 5, 6},{ 7, 8},{ 0, 0},{ 0, 0},{ 9,10},{11,12},{13,-15},{14,-16},{15,16}
+	    { 5, 6},{ 7, 8},{ 9,10},{11,12},{ 0, 0},{ 0, 0},{15,-13},{16,-14},{13,14}
 	},
 	/* <= 32 competitors */
 	{
@@ -845,9 +845,9 @@ const gint french_matches[NUM_TABLES][NUM_FRENCH][NUM_MATCHES][2] = {
 	    /*  11,     12,     13,     14,     15,     16,     17,     18,     19,     20 */
 	    { 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 1, 2},{ 3, 4},{ 5, 6},{ 7, 8},
 	    /*  21,     22,     23,     24,     25,     26,     27,     28,     29,     30 */
-	    { 9,10},{11,12},{13,14},{15,16},{17,18},{19,20},{21,22},{23,24},{ 0, 0},{ 0, 0},
+	    { 9,10},{11,12},{13,14},{15,16},{17,18},{19,20},{21,22},{23,24},{25,26},{27,28},
 	    /*  31,     32,     33,     34,     35 */
-	    {25,26},{27,28},{29,-15},{30,-16},{15,16}
+	    { 0, 0},{ 0, 0},{31,-29},{32,-30},{29,30}
 	},
 	/* <= 64 competitors */
 	{
@@ -865,7 +865,7 @@ const gint french_matches[NUM_TABLES][NUM_FRENCH][NUM_MATCHES][2] = {
 	    /*  51,     52,     53,     54,     55,     56,     57,     58,     59,     60 */
 	    {37,38},{39,40},{41,42},{43,44},{45,46},{47,48},{49,50},{51,52},{53,54},{55,56},
 	    /*  61,     62,     63,     64,     65,     66,     67 */
-	    { 0, 0},{ 0, 0},{57,58},{59,60},{61,-63},{62,-64},{63,64}
+	    {57,58},{59,60},{ 0, 0},{ 0, 0},{63,-61},{64,-62},{61,62}
 	}
     }
 
