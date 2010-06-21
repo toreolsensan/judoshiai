@@ -178,13 +178,13 @@ static GtkWidget *separator1, *separator2, *quit, *viewlog;
 static GtkWidget *match0, *match1, *match2, *match3, *match4, *match5, *gs;
 static GtkWidget *blue_wins, *white_wins, *red_background, *full_screen, *rules_no_koka;
 static GtkWidget *rules_leave_points;
-static GtkWidget *tatami_sel_none, *tatami_sel_1,  *tatami_sel_2,  *tatami_sel_3,  *tatami_sel_4;
+static GtkWidget *tatami_sel, *tatami_sel_none, *tatami_sel_1,  *tatami_sel_2,  *tatami_sel_3,  *tatami_sel_4;
 static GtkWidget *tatami_sel_5,  *tatami_sel_6,  *tatami_sel_7,  *tatami_sel_8;
 static GtkWidget *node_ip, *my_ip, *manual, *about, *quick_guide;
 static GtkWidget *flag_fi, *flag_se, *flag_uk, *flag_es;
 static GtkWidget *menu_flag_fi, *menu_flag_se, *menu_flag_uk, *menu_flag_es;
-static GtkWidget *light, *menu_light;
-static GtkWidget *inc_time, *dec_time, *inc_osaekomi, *dec_osaekomi, *clock_only, *set_time;
+static GtkWidget *light, *menu_light, *timeset;
+static GtkWidget *inc_time, *dec_time, *inc_osaekomi, *dec_osaekomi, *clock_only, *set_time, *layout_sel;
 static GtkWidget *layout_sel_1, *layout_sel_2, *layout_sel_3, *layout_sel_4, *layout_sel_5, *layout_sel_6;
 static GtkTooltips *menu_tips;
 static GtkWidget *mode_normal, *mode_master, *mode_slave;
@@ -240,6 +240,7 @@ static gint light_callback(gpointer data)
 GtkWidget *get_menubar_menu(GtkWidget  *window)
 {
     GtkAccelGroup *group;
+    GtkWidget *submenu;
 
     menu_tips = gtk_tooltips_new ();
     group = gtk_accel_group_new ();
@@ -407,31 +408,48 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), rules_no_koka);
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), rules_leave_points);
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), gtk_separator_menu_item_new());
-    gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), layout_sel_1);
-    gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), layout_sel_2);
-    gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), layout_sel_3);
-    gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), layout_sel_4);
-    gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), layout_sel_6);
-    gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), layout_sel_5);
+
+    layout_sel = gtk_menu_item_new_with_label("");
+    gtk_menu_shell_append(GTK_MENU_SHELL(preferencesmenu), layout_sel);
+    submenu = gtk_menu_new();
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(layout_sel), submenu);
+    gtk_menu_shell_append (GTK_MENU_SHELL (submenu), layout_sel_1);
+    gtk_menu_shell_append (GTK_MENU_SHELL (submenu), layout_sel_2);
+    gtk_menu_shell_append (GTK_MENU_SHELL (submenu), layout_sel_3);
+    gtk_menu_shell_append (GTK_MENU_SHELL (submenu), layout_sel_4);
+    gtk_menu_shell_append (GTK_MENU_SHELL (submenu), layout_sel_6);
+    gtk_menu_shell_append (GTK_MENU_SHELL (submenu), layout_sel_5);
+
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), gtk_separator_menu_item_new());
-    gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), tatami_sel_none);
-    gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), tatami_sel_1);
-    gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), tatami_sel_2);
-    gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), tatami_sel_3);
-    gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), tatami_sel_4);
-    gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), tatami_sel_5);
-    gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), tatami_sel_6);
-    gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), tatami_sel_7);
-    gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), tatami_sel_8);
+    tatami_sel = gtk_menu_item_new_with_label("");
+    gtk_menu_shell_append(GTK_MENU_SHELL(preferencesmenu), tatami_sel);
+    submenu = gtk_menu_new();
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(tatami_sel), submenu);
+    gtk_menu_shell_append (GTK_MENU_SHELL (submenu), tatami_sel_none);
+    gtk_menu_shell_append (GTK_MENU_SHELL (submenu), tatami_sel_1);
+    gtk_menu_shell_append (GTK_MENU_SHELL (submenu), tatami_sel_2);
+    gtk_menu_shell_append (GTK_MENU_SHELL (submenu), tatami_sel_3);
+    gtk_menu_shell_append (GTK_MENU_SHELL (submenu), tatami_sel_4);
+    gtk_menu_shell_append (GTK_MENU_SHELL (submenu), tatami_sel_5);
+    gtk_menu_shell_append (GTK_MENU_SHELL (submenu), tatami_sel_6);
+    gtk_menu_shell_append (GTK_MENU_SHELL (submenu), tatami_sel_7);
+    gtk_menu_shell_append (GTK_MENU_SHELL (submenu), tatami_sel_8);
+
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), gtk_separator_menu_item_new());
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), node_ip);
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), my_ip);
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), gtk_separator_menu_item_new());
-    gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), inc_time);
-    gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), dec_time);
-    gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), inc_osaekomi);
-    gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), dec_osaekomi);
-    gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), set_time);
+
+    timeset = gtk_menu_item_new_with_label("");
+    gtk_menu_shell_append(GTK_MENU_SHELL(preferencesmenu), timeset);
+    submenu = gtk_menu_new();
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(timeset), submenu);
+    gtk_menu_shell_append (GTK_MENU_SHELL (submenu), inc_time);
+    gtk_menu_shell_append (GTK_MENU_SHELL (submenu), dec_time);
+    gtk_menu_shell_append (GTK_MENU_SHELL (submenu), inc_osaekomi);
+    gtk_menu_shell_append (GTK_MENU_SHELL (submenu), dec_osaekomi);
+    gtk_menu_shell_append (GTK_MENU_SHELL (submenu), set_time);
+
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), gtk_separator_menu_item_new());
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), mode_normal);
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), mode_master);
@@ -631,6 +649,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(rules_leave_points, _("Leave points for GS"));
     change_menu_label(clock_only, _("View clocks only"));
 
+    change_menu_label(layout_sel,   _("Display layout"));
     change_menu_label(layout_sel_1, _("Display layout 1"));
     change_menu_label(layout_sel_2, _("Display layout 2"));
     change_menu_label(layout_sel_3, _("Display layout 3"));
@@ -638,6 +657,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(layout_sel_5, _("View clocks only"));
     change_menu_label(layout_sel_6, _("Display layout 5"));
 
+    change_menu_label(tatami_sel,   _("Contest area"));
     change_menu_label(tatami_sel_none, _("Contest area not chosen"));
     change_menu_label(tatami_sel_1, _("Contest area 1"));
     change_menu_label(tatami_sel_2, _("Contest area 2"));
@@ -651,6 +671,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(node_ip,      _("Communication node"));
     change_menu_label(my_ip,        _("Own IP addresses"));
 
+    change_menu_label(timeset,      _("Set time"));
     change_menu_label(inc_time,     _("Increment time"));
     change_menu_label(dec_time,     _("Decrement time"));
     change_menu_label(inc_osaekomi, _("Increment pin time"));

@@ -22,12 +22,14 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "finnish"; MessagesFile: "compiler:Languages\Finnish.isl"
 ;Name: "swedish"; MessagesFile: "compiler:Languages\Swedish.isl"
 ;Name: "estonian"; MessagesFile: "compiler:Languages\Estonian.isl"
+Name: "spanish"; MessagesFile: "compiler:Languages\Spanish.isl"
 
 [Messages]
 english.BeveledLabel=English
 finnish.BeveledLabel=Suomi
 ;swedish.BeveledLabel=Svenska
 ;estonian.BeveledLabel=Eesti
+spanish.BeveledLabel=Español
 
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
@@ -63,3 +65,4 @@ Root: HKCU; Subkey: "Software\Classes\.shi"; ValueType: string; ValueName: ""; V
 Root: HKCU; Subkey: "Software\Classes\JudoShiaiDatabaseFile"; ValueType: string; ValueName: ""; ValueData: "JudoShiai Database File"; Flags: uninsdeletekey
 Root: HKCU; Subkey: "Software\Classes\JudoShiaiDatabaseFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\bin\judoshiai.exe,0"
 Root: HKCU; Subkey: "Software\Classes\JudoShiaiDatabaseFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\bin\judoshiai.exe"" ""%1"""
+

@@ -60,12 +60,12 @@ static GtkWidget *menubar,
     *draw_all_categories, *draw_international, *draw_finnish, 
     *draw_swedish, *draw_estonian, *draw_spanish,
     *results_print_all, *results_print_schedule_printer, *results_print_schedule_pdf,
-    *preference_comm_node, *preference_own_ip_addr, *preference_show_connections,
+    *preference_comm, *preference_comm_node, *preference_own_ip_addr, *preference_show_connections,
     *preference_auto_sheet_update/*, *preference_auto_web_update*/, *preference_results_in_finnish, 
-    *preference_results_in_swedish, *preference_results_in_english, 
+    *preference_langsel, *preference_results_in_swedish, *preference_results_in_english, 
     *preference_results_in_spanish, *preference_weights_to_pool_sheets,
     *preference_sheet_font, *preference_password, *judotimer_control[NUM_TATAMIS],
-    *preference_mirror, *preference_auto_arrange, 
+    *preference_mirror, *preference_auto_arrange, *preference_club_text,
     *preference_club_text_club, *preference_club_text_country, *preference_club_text_both,
     *preference_club_text_abbr,
     *help_manual, *help_about;
@@ -361,22 +361,38 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     preference_auto_arrange           = gtk_check_menu_item_new_with_label("");
 
     //gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_comm_node);
-    gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_own_ip_addr);
-    gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), gtk_separator_menu_item_new());
-    gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_show_connections);
+    preference_comm = gtk_menu_item_new_with_label("");
+    GtkWidget *submenu = gtk_menu_new();
+    gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_comm);
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(preference_comm), submenu);
+    gtk_menu_shell_append(GTK_MENU_SHELL(submenu), preference_own_ip_addr);
+    gtk_menu_shell_append(GTK_MENU_SHELL(submenu), preference_show_connections);
+
     gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), gtk_separator_menu_item_new());
     gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_auto_sheet_update);
     //gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_auto_web_update);
     gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), gtk_separator_menu_item_new());
-    gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_results_in_finnish);
-    gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_results_in_swedish);
-    gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_results_in_english);
-    gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_results_in_spanish);
+
+    preference_langsel = gtk_menu_item_new_with_label(_("Language Selection"));
+    submenu = gtk_menu_new();
+    gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_langsel);
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(preference_langsel), submenu);
+    gtk_menu_shell_append(GTK_MENU_SHELL(submenu), preference_results_in_finnish);
+    gtk_menu_shell_append(GTK_MENU_SHELL(submenu), preference_results_in_swedish);
+    gtk_menu_shell_append(GTK_MENU_SHELL(submenu), preference_results_in_english);
+    gtk_menu_shell_append(GTK_MENU_SHELL(submenu), preference_results_in_spanish);
+
     gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), gtk_separator_menu_item_new());
-    gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_club_text_club);
-    gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_club_text_country);
-    gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_club_text_both);
-    gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_club_text_abbr);
+
+    preference_club_text = gtk_menu_item_new_with_label("");
+    submenu = gtk_menu_new();
+    gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_club_text);
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(preference_club_text), submenu);
+    gtk_menu_shell_append(GTK_MENU_SHELL(submenu), preference_club_text_club);
+    gtk_menu_shell_append(GTK_MENU_SHELL(submenu), preference_club_text_country);
+    gtk_menu_shell_append(GTK_MENU_SHELL(submenu), preference_club_text_both);
+    gtk_menu_shell_append(GTK_MENU_SHELL(submenu), preference_club_text_abbr);
+
     gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), gtk_separator_menu_item_new());
     gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_weights_to_pool_sheets);
     gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_mirror);
@@ -710,17 +726,20 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
         change_menu_label(judotimer_control[i], buf);
     }
 
+    change_menu_label(preference_comm                  , _("Communication"));
     change_menu_label(preference_comm_node             , _("Communication Node"));
     change_menu_label(preference_own_ip_addr           , _("Own IP Addresses"));
     change_menu_label(preference_show_connections      , _("Show Attached Connections"));
     change_menu_label(preference_auto_sheet_update     , _("Automatic Sheet Update"));
     //change_menu_label(preference_auto_web_update       , _("Automatic Web Page Update"));
 
+    change_menu_label(preference_langsel               , _("Language Selection"));
     change_menu_label(preference_results_in_finnish    , _("Results in Finnish"));
     change_menu_label(preference_results_in_swedish    , _("Results in Swedish"));
     change_menu_label(preference_results_in_english    , _("Results in English"));
     change_menu_label(preference_results_in_spanish    , _("Results in Spanish"));
 
+    change_menu_label(preference_club_text             , _("Club Text Selection"));
     change_menu_label(preference_club_text_club        , _("Club Name Only"));
     change_menu_label(preference_club_text_country     , _("Country Name Only"));
     change_menu_label(preference_club_text_both        , _("Both Club and Country"));

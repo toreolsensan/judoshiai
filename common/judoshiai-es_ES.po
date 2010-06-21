@@ -20,7 +20,7 @@ msgid "Match:"
 msgstr "Combate:"
 
 msgid "Contest:"
-msgstr "Encuentro:"
+msgstr "Combate:"
 
 msgid "Next:"
 msgstr "Siguiente:"
@@ -29,7 +29,7 @@ msgid "Match"
 msgstr "Combate"
 
 msgid "Contest"
-msgstr "Encuentro"
+msgstr "Combate"
 
 msgid "Preferences"
 msgstr "Preferencias"
@@ -94,10 +94,10 @@ msgid "Match time automatically from JudoShiai program"
 msgstr "Tiempo de combate automático desde el programa JudoShiai"
 
 msgid "Contest duration automatically from JudoShiai program"
-msgstr "Duración del encuentro automático desde el programa JudoShiai"
+msgstr "Duración del Combate automático desde el programa JudoShiai"
 
 msgid "Fight:"
-msgstr "Lucha:"
+msgstr "Combate:"
 
 msgid "Match duration: automatic"
 msgstr "Duración del combate: Automática"
@@ -118,22 +118,22 @@ msgid "Match duration: 5 min"
 msgstr "Duración del combate: 5 min"
 
 msgid "Contest duration: automatic"
-msgstr "Duración del encuentro: Automática"
+msgstr "Duración del combate: Automática"
 
 msgid "Contest duration: 2 min (short pin times)"
-msgstr "Duración del encuentro: 2 min (Inmovilizaciones cortas)"
+msgstr "Duración del combate: 2 min (Inmovilizaciones cortas)"
 
 msgid "Contest duration: 2 min"
-msgstr "Duración del encuentro: 2 min"
+msgstr "Duración del combate: 2 min"
 
 msgid "Contest duration: 3 min"
-msgstr "Duración del encuentro: 3 min"
+msgstr "Duración del combate: 3 min"
 
 msgid "Contest duration: 4 min"
-msgstr "Duración del encuentro: 4 min"
+msgstr "Duración del combate: 4 min"
 
 msgid "Contest duration: 5 min"
-msgstr "Duración del encuentro: 5 min"
+msgstr "Duración del combate: 5 min"
 
 msgid "Majority of three: blue wins"
 msgstr "Mayoria de tres: Azul gana"
@@ -396,6 +396,9 @@ msgstr "Resultados en Suizo"
 msgid "Results in English"
 msgstr "Resultados en Inglés"
 
+msgid "Results in Spanish"
+msgstr "Resultados en Español"
+
 msgid "Weights Visible in Pool Sheets"
 msgstr "Pesos visibles en las ligas"
 
@@ -424,13 +427,13 @@ msgid "Category"
 msgstr "Categoria"
 
 msgid "has been copied with competitors and matches"
-msgstr "Se ha copiado con competidores y encuentros"
+msgstr "Se ha copiado con competidores y combates"
 
 msgid "Last Name"
 msgstr "Apellido"
 
 msgid "First Name"
-msgstr "Nopmbre"
+msgstr "Nombre"
 
 msgid "Year of Birth"
 msgstr "Año de nacimiento"
@@ -550,7 +553,7 @@ msgid "Matches"
 msgstr "Combates"
 
 msgid "Contests"
-msgstr "Encuentros"
+msgstr "Competiciones"
 
 msgid "Sheet"
 msgstr "Hojas"
@@ -580,7 +583,7 @@ msgid "Match controlling and browsing"
 msgstr "Control y navegación de combates"
 
 msgid "Contest controlling and browsing"
-msgstr "Control y navegación del encuentro"
+msgstr "Control y navegación de la competición"
 
 msgid "Java applet, Java must be enabled"
 msgstr "Java-applet, Java tiene que estar activo"
@@ -610,7 +613,7 @@ msgid "Not used"
 msgstr "No usado"
 
 msgid "Column"
-msgstr "Clomna"
+msgstr "Columna"
 
 msgid "Import from file"
 msgstr "Importar desde archivo"
@@ -669,7 +672,10 @@ msgid "Pool"
 msgstr "Liga"
 
 msgid "Double pool"
-msgstr "Doble liga"
+msgstr "Dos ligas cruzadas"
+
+msgid "Quad pool"
+msgstr "Cuatro ligas cruzadas"
 
 msgid "Double repechage"
 msgstr "Doble repesca"
@@ -678,7 +684,7 @@ msgid "Next match"
 msgstr "Siguiente combate"
 
 msgid "Next contest"
-msgstr "Siguiente encuentro"
+msgstr "Siguiente combate"
 
 msgid "Preparing"
 msgstr "Preparados"
@@ -690,7 +696,7 @@ msgid "Delay the match"
 msgstr "Retrasar el combate"
 
 msgid "Delay the contest"
-msgstr "Retrasar el encuentro"
+msgstr "Retrasar el combate"
 
 msgid "Matches matched. Clear the results first."
 msgstr "Combates realizados. Limpia los resultados primero."
@@ -756,7 +762,7 @@ msgid "Select sheet font"
 msgstr "Seleccionar fuente de las hojas"
 
 msgid "Contest properties"
-msgstr "Propiedades del encuentro"
+msgstr "Propiedades del combate"
 
 msgid "Number of competitors:"
 msgstr "Númerod de competidores:"
@@ -852,7 +858,7 @@ msgid "Match time:"
 msgstr "Tiempo de combate:"
 
 msgid "Contest duration:"
-msgstr "Duración del encuentro:"
+msgstr "Duración del combate:"
 
 msgid "Rest time:"
 msgstr "Tiempo de descanso:"
@@ -921,7 +927,7 @@ msgid "Start New Match?"
 msgstr "¿Comenzar nuevo combate?"
 
 msgid "Start New Contest?"
-msgstr "¿Comenzar nuevo encuentro?"
+msgstr "¿Comenzar nueva competición?"
 
 msgid "Hansokumake to blue"
 msgstr "Hansoku-make Azul"
@@ -1026,10 +1032,10 @@ msgid "Tournament properties"
 msgstr "Propiedades de la competición"
 
 msgid "Print Matches (CSV)"
-msgstr "Imprimir encuentros (CSV)"
+msgstr "Imprimir combates (CSV)"
 
 msgid "Match File"
-msgstr "Archivo de encuentros"
+msgstr "Archivo de combates"
 
 msgid "Print Not Started Categories"
 msgstr "Imprimir categorias no empezadas"
@@ -1071,7 +1077,7 @@ msgid "NOTE"
 msgstr "NOTA"
 
 msgid "is not a valid ASCII string!"
-msgstr "¡no es una cadena ASCII válida!"
+msgstr "¡No es una cadena ASCII válida!"
 
 msgid "No koka"
 msgstr "Sin koka"
@@ -1122,13 +1128,13 @@ msgid "SWE Double Repechage"
 msgstr "SWE Repesca doble"
 
 msgid "SWE Double Elimination"
-msgstr "SWE Eliminación doble"
+msgstr "SWE Eliminatoria doble"
 
 msgid "EST Double Elimination"
-msgstr "EST Eliminación doble"
+msgstr "EST Eliminatoria doble"
 
 msgid "Single Elimination"
-msgstr "Eliminación simple"
+msgstr "Eliminatoria simple"
 
 msgid "SWE Single Repechage"
 msgstr "SWE Repesca simple"
@@ -1149,10 +1155,13 @@ msgid "Finnish System"
 msgstr "Sistema Finlandés"
 
 msgid "Swedish System"
-msgstr "Sistema suizo"
+msgstr "Sistema Suizo"
 
 msgid "Estonian System"
 msgstr "Sistema Estonio"
+
+msgid "Spanish System"
+msgstr "Sistema Español"
 
 msgid "Reset to Defaults"
 msgstr "Resetear a valores por defecto"
@@ -1161,7 +1170,7 @@ msgid "View Log"
 msgstr "Ver Log"
 
 msgid "Double Pool"
-msgstr "Liga doble"
+msgstr "Dos ligas cruzadas"
 
 msgid "Cannot handle: Database created with newer JudoShiai version."
 msgstr "No se pueden manejar: Base de datos creada con una versión más moderna de JudoShiai."
@@ -1174,3 +1183,24 @@ msgstr "No se puede abrir"
 
 msgid "Abbreviations in Sheets"
 msgstr "Abreviaturas en las Hojas"
+
+msgid "One match"
+msgstr "Final directa"
+
+msgid "Dbl Repchg"
+msgstr "Rep. doble"
+
+msgid "DoublePool"
+msgstr "2 ligas"
+
+msgid "QuadPool"
+msgstr "4 ligas"
+
+msgid "Sound"
+msgstr "Sonido"
+
+msgid "Stop Sound"
+msgstr "Sonido de Stop"
+
+msgid "Sound Files"
+msgstr "Archivos de sonido"
