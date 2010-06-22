@@ -253,6 +253,54 @@ void font_dialog(GtkWidget *w, gpointer data)
     gtk_widget_destroy(dialog);
 }
 
+void select_use_logo(GtkWidget *w, gpointer data)
+{
+    GtkWidget *dialog, *phdr;
+    GtkFileFilter *filter;
+
+    dialog = gtk_file_chooser_dialog_new(_("Choose a file"),
+                                         NULL,
+                                         GTK_FILE_CHOOSER_ACTION_OPEN,
+                                         GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                                         "No Logo", 1000,
+                                         GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+                                         NULL);
+
+    filter = gtk_file_filter_new();
+    gtk_file_filter_add_pattern(filter, "*.[pP][nN][gG]");
+    gtk_file_filter_set_name(filter, _("Picture Files"));
+    gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter);
+
+    phdr = gtk_check_button_new_with_label(_("Print Headers"));
+    gtk_widget_show(phdr);
+    gtk_file_chooser_set_extra_widget(GTK_FILE_CHOOSER(dialog), phdr);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(phdr), print_headers);
+
+    gint r = gtk_dialog_run(GTK_DIALOG(dialog));
+
+    if (r == 1000) { // no logo
+        g_free(use_logo);
+        use_logo = NULL;
+        g_key_file_set_string(keyfile, "preferences", "logofile", "");
+        gtk_widget_destroy(dialog);
+        return;
+    }
+
+    if (r != GTK_RESPONSE_ACCEPT) {
+        gtk_widget_destroy(dialog);
+        return;
+    }
+               
+    g_free(use_logo);
+    use_logo = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+    print_headers = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(phdr));
+
+    g_key_file_set_string(keyfile, "preferences", "logofile", use_logo);
+    g_key_file_set_boolean(keyfile, "preferences", "printheaders", print_headers);
+
+    gtk_widget_destroy(dialog);
+}
+
 void set_lang(GtkWidget *w, gpointer data)
 {
     print_lang = (gint)data;

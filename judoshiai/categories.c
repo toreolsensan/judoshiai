@@ -73,7 +73,7 @@ void create_categories(GtkWidget *w, gpointer data)
                 struct judoka e;
                 gint r;
 
-                if (j && j->visible && j->category && j->category[0] == '?') {
+                if (j && j->visible && j->category && j->category[0] == '?'&& j->category[1] == 0) {
                     g_free((void *)j->category);
 
                     if (j->regcategory == NULL || j->regcategory[0] == 0) {

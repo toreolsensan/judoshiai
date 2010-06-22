@@ -402,7 +402,7 @@ struct next_match_info {
 
 struct cat_def {
     gint     age;
-    gchar    agetext[16];
+    gchar    agetext[22];
     gint     gender;
     gint     match_time;
     gint     pin_time_koka;
@@ -490,6 +490,8 @@ extern gulong my_ip_address, node_ip_addr;
 extern gint print_lang, club_text, club_abbr, draw_system;
 extern gint number_of_tatamis;
 extern gint language;
+extern gchar *use_logo;
+extern gboolean print_headers;
 
 extern gchar          current_directory[1024];
 extern gchar          database_name[200];

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-26 15:19+0300\n"
+"POT-Creation-Date: 2010-06-22 09:18+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1178,3 +1178,105 @@ msgstr "Ei voi avata"
 
 msgid "Abbreviations in Sheets"
 msgstr "Lyhenteet kaavioissa"
+
+msgid "Display layout"
+msgstr "Näytön asettelu"
+
+msgid "Contest area"
+msgstr "Matto"
+
+msgid "Set time"
+msgstr "Aseta aika"
+
+msgid "Sound"
+msgstr "Ääni"
+
+msgid "Change language to Spanish"
+msgstr "Vaihda kieli espanjaksi"
+
+msgid "Choose a file"
+msgstr "Valitse tiedosto"
+
+msgid "Sound Files"
+msgstr "Äänitiedostot"
+
+msgid "All Files"
+msgstr "Kaikki tiedostot"
+
+msgid "Best of 3"
+msgstr "Paras kolmesta"
+
+msgid "One match"
+msgstr "Ottelu"
+
+msgid "Quad Pool"
+msgstr "Neloispooli"
+
+msgid "Dbl Repchg"
+msgstr "Ransk."
+
+msgid "SWE Dubb återkv"
+msgstr "SWE Ransk."
+
+msgid "SWE Dir återkv"
+msgstr "SWE Suora ker."
+
+msgid "EST D klass"
+msgstr "EST Pitkä ker."
+
+msgid "No Repechg"
+msgstr "Ei keräilyjä"
+
+msgid "SWE Enkelt återkv"
+msgstr "SWE Lyhyet ker."
+
+msgid "ESP Dbl Lost"
+msgstr "ESP Pitkä ker."
+
+msgid "ESP Dbl Rep/Bgn"
+msgstr "ESP Ransk. alusta"
+
+msgid "ESP Dbl Rep"
+msgstr "ESP Ransk."
+
+msgid "ESP Simple Rep"
+msgstr "ESP Lyh. ker."
+
+msgid "ESP Double Lost"
+msgstr "ESP Pitkä keräily"
+
+msgid "ESP Double Repechage from Beginning"
+msgstr "ESP Ranskalainen alusta"
+
+msgid "ESP Double Repechage"
+msgstr "ESP Ranskalainen"
+
+msgid "ESP Simple Repechage"
+msgstr "ESP Lyhyet keräilyt"
+
+msgid "Quadruple pool"
+msgstr "Neloispooli"
+
+msgid "Picture Files"
+msgstr "Kuvatiedostot"
+
+msgid "Print Headers"
+msgstr "Tulosta otsikot"
+
+msgid "Results in Spanish"
+msgstr "Tulokset espanjaksi"
+
+msgid "Language Selection"
+msgstr "Kielivalinta"
+
+msgid "Spanish System"
+msgstr "Espanjalainen systeemi"
+
+msgid "Communication"
+msgstr "Tietoliikenne"
+
+msgid "Club Text Selection"
+msgstr "Seuratekstin valinta"
+
+msgid "Print Logo"
+msgstr "Tulosta logo"

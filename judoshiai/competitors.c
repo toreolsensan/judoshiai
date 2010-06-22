@@ -51,6 +51,7 @@ struct judoka_widget {
     GtkWidget *country;
     GtkWidget *id;
     GtkWidget *system;
+    GtkWidget *realcategory;
 };
 
 static gboolean      editing_ongoing = FALSE;
@@ -76,6 +77,7 @@ static void judoka_edited_callback(GtkWidget *widget,
     gint ix = judoka_tmp->index;
     struct category_data *catdata = avl_get_category(ix);
     gint system = catdata ? catdata->system : CAT_SYSTEM_DEFAULT << SYSTEM_WISH_SHIFT;
+    gchar *realcategory = NULL;
 
     memset(&edited, 0, sizeof(edited));
         
@@ -97,6 +99,9 @@ static void judoka_edited_callback(GtkWidget *widget,
 
     if (judoka_tmp->regcategory)
         edited.regcategory = g_strdup(gtk_entry_get_text(GTK_ENTRY(judoka_tmp->regcategory)));
+
+    if (judoka_tmp->realcategory)
+        realcategory = g_strdup(gtk_combo_box_get_active_text(GTK_COMBO_BOX(judoka_tmp->realcategory)));
 
     if (judoka_tmp->birthyear)
         edited.birthyear = atoi(gtk_entry_get_text(GTK_ENTRY(judoka_tmp->birthyear)));
@@ -123,7 +128,7 @@ static void judoka_edited_callback(GtkWidget *widget,
 	     << SYSTEM_WISH_SHIFT);
 
     if (event_id != GTK_RESPONSE_OK || edited.last == NULL || 
-        edited.last[0] == 0 || edited.last[0] == '?')
+        edited.last[0] == 0 || (edited.last[0] == '?' && edited.last[1] == 0))
         goto out;
 
     if (!edited.visible) {
@@ -217,6 +222,41 @@ static void judoka_edited_callback(GtkWidget *widget,
         db_set_system(ret, system);
     }
 
+    // check for changed category
+    if (edited.visible && strcmp(edited.category, realcategory)) {
+        GtkTreeIter iter;
+        gint index1;
+        gchar *cat1 = NULL;
+
+        gboolean ok = gtk_tree_model_get_iter_first(current_model, &iter);
+        while (ok) {
+            gtk_tree_model_get(current_model, &iter,
+                               COL_INDEX, &index1,
+                               COL_LAST_NAME, &cat1,
+                               -1);
+            if (strcmp(cat1, realcategory) == 0) {
+                g_free(cat1);
+                break;
+            }
+            g_free(cat1);
+            ok = gtk_tree_model_iter_next(current_model, &iter);
+        }
+
+        if (!ok) {
+            SHOW_MESSAGE("Error!");
+        } else if (db_category_match_status(index1) & MATCH_EXISTS) {
+            SHOW_MESSAGE("%s: %s", realcategory, _("Remove drawing first"));
+        } else if (db_competitor_match_status(edited.index) & MATCH_EXISTS) {
+            SHOW_MESSAGE("%s %s: %s.", 
+                         edited.first, edited.last, _("Remove drawing first"));
+        } else {
+            g_free((gpointer)edited.category);
+            edited.category = g_strdup(realcategory);
+            display_one_judoka(&edited);
+            db_update_judoka(edited.index, &edited);
+        }
+    }
+
     //db_read_matches();
     if (edited.visible)
         update_competitors_categories(edited.index);
@@ -237,6 +277,7 @@ out:
     g_free((gpointer)edited.regcategory);
     g_free((gpointer)edited.id);
     g_free(data);
+    g_free(realcategory);
 
     editing_ongoing = FALSE;
     gtk_widget_destroy(widget);
@@ -282,7 +323,6 @@ void view_on_row_activated(GtkTreeView        *treeview,
     guint deleted;
     char weight_s[10], birthyear_s[10];
     GtkAccelGroup *accel_group;
-    struct category_data *catdata = NULL;
     /*if (editing_ongoing)
       return;*/
 
@@ -309,8 +349,6 @@ void view_on_row_activated(GtkTreeView        *treeview,
                                -1);
             sprintf(weight_s, "%d,%02d", weight/1000, (weight%1000)/10);
             sprintf(birthyear_s, "%d", birthyear);
-
-	    catdata = avl_get_category(index);
 	}
     } else {
         visible = (gboolean) ((int)userdata == NEW_JUDOKA ? TRUE : FALSE);
@@ -321,7 +359,6 @@ void view_on_row_activated(GtkTreeView        *treeview,
         belt = 0;
         index = (guint) userdata;
     }
-	
 	
     judoka_tmp->index = index;
     judoka_tmp->visible = visible;
@@ -362,34 +399,63 @@ void view_on_row_activated(GtkTreeView        *treeview,
 
         judoka_tmp->club = set_entry(table, 4, _("Club:"), club);
         judoka_tmp->country = set_entry(table, 5, _("Country:"), country);
-        judoka_tmp->regcategory = set_entry(table, 6, _("Category:"), regcategory);
-        judoka_tmp->weight = set_entry(table, 7, _("Weight:"), weight_s);
+        judoka_tmp->regcategory = set_entry(table, 6, _("Reg. Category:"), regcategory);
+
+        tmp = gtk_label_new(_("Category:"));
+        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, 7, 8);
+        judoka_tmp->realcategory = tmp = gtk_combo_box_new_text();
+
+        gint active = 0, loop = 0;
+        gboolean ok = gtk_tree_model_get_iter_first(current_model, &iter);
+        while (ok) {
+            gint index1;
+            gchar *cat1 = NULL;
+            gtk_tree_model_get(current_model, &iter,
+                               COL_INDEX, &index1,
+                               COL_LAST_NAME, &cat1,
+                               -1);
+
+            if (strcmp(category, cat1) == 0)
+                active = loop;
+            gtk_combo_box_append_text((GtkComboBox *)tmp, cat1);
+            g_free(cat1);
+            ok = gtk_tree_model_iter_next(current_model, &iter);
+            loop++;
+        }
+
+        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, 7, 8);
+        gtk_combo_box_set_active((GtkComboBox *)tmp, active);
+
+        judoka_tmp->weight = set_entry(table, 8, _("Weight:"), weight_s);
         if (last && last[0])
             gtk_widget_grab_focus(judoka_tmp->weight);
 
         tmp = gtk_label_new(_("Seeding:"));
-        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, 8, 9);
+        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, 9, 10);
         judoka_tmp->seeding = tmp = gtk_combo_box_new_text();
         gtk_combo_box_append_text((GtkComboBox *)tmp, _("No seeding"));
         gtk_combo_box_append_text((GtkComboBox *)tmp, _("1"));
         gtk_combo_box_append_text((GtkComboBox *)tmp, _("2"));
         gtk_combo_box_append_text((GtkComboBox *)tmp, _("3"));
         gtk_combo_box_append_text((GtkComboBox *)tmp, _("4"));
-        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, 8, 9);
+        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, 9, 10);
         gtk_combo_box_set_active((GtkComboBox *)tmp, deleted >> 2);
 
         tmp = gtk_label_new("Hansoku-make:");
-        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, 9, 10);
+        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, 10, 11);
         judoka_tmp->hansokumake = gtk_check_button_new();
-        gtk_table_attach_defaults(GTK_TABLE(table), judoka_tmp->hansokumake, 1, 2, 9, 10);
+        gtk_table_attach_defaults(GTK_TABLE(table), judoka_tmp->hansokumake, 1, 2, 10, 11);
         if (deleted & HANSOKUMAKE)
             gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(judoka_tmp->hansokumake), TRUE);
 
-        judoka_tmp->id = set_entry(table, 10, _("Id:"), id);
+        judoka_tmp->id = set_entry(table, 11, _("Id:"), id);
 
         g_signal_connect(G_OBJECT(judoka_tmp->club), "key-press-event", 
                          G_CALLBACK(complete_cb), club_completer);
     } else {
+        struct category_data *catdata = NULL;
+        catdata = avl_get_category(index);
+
         judoka_tmp->last = set_entry(table, 0, _("Category:"), last ? last : "");
 
         tmp = gtk_label_new(_("System:"));

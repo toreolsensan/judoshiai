@@ -917,8 +917,8 @@ gchar *get_system_description(gint index, gint competitors)
             return _("One match");
         }
         return _("Pool");
-    case SYSTEM_DPOOL: return _("DoublePool");
-    case SYSTEM_QPOOL: return _("QuadPool");
+    case SYSTEM_DPOOL: return _("Double Pool");
+    case SYSTEM_QPOOL: return _("Quad Pool");
     }
 
     if (system_is_french(sys)) {
@@ -929,10 +929,10 @@ gchar *get_system_description(gint index, gint competitors)
         case TABLE_EST_D_KLASS: return _("EST D klass");
         case TABLE_NO_REPECHAGE: return _("No Repechg");
         case TABLE_SWE_ENKELT_AATERKVAL: return _("SWE Enkelt återkv");
-        case TABLE_ESP_DOBLE_PERDIDA: return _("ESP Dbl Perdida");
-        case TABLE_ESP_REPESCA_DOBLE_INICIO: return _("ESP Dbl Inicio");
-        case TABLE_ESP_REPESCA_DOBLE: return _("ESP Rep Dbl");
-        case TABLE_ESP_REPESCA_SIMPLE: return _("ESP Rep Simple");
+        case TABLE_ESP_DOBLE_PERDIDA: return _("ESP Dbl Lost");
+        case TABLE_ESP_REPESCA_DOBLE_INICIO: return _("ESP Dbl Rep/Bgn");
+        case TABLE_ESP_REPESCA_DOBLE: return _("ESP Dbl Rep");
+        case TABLE_ESP_REPESCA_SIMPLE: return _("ESP Simple Rep");
         }
     }
     
@@ -953,10 +953,10 @@ static gchar *get_system_name(gint num)
     case CAT_SYSTEM_EST_D_KLASS: return _("EST Double Elimination");
     case CAT_SYSTEM_NO_REPECHAGE: return _("Single Elimination");
     case CAT_SYSTEM_ENKELT_AATERKVAL: return _("SWE Single Repechage");
-    case CAT_ESP_DOBLE_PERDIDA: return _("ESP Doble Perdida");
-    case CAT_ESP_REPESCA_DOBLE_INICIO: return _("ESP Repesca Doble Inicio");
-    case CAT_ESP_REPESCA_DOBLE: return _("ESP Repesca Doble");
-    case CAT_ESP_REPESCA_SIMPLE: return _("ESP Repesca Simple");
+    case CAT_ESP_DOBLE_PERDIDA: return _("ESP Double Lost");
+    case CAT_ESP_REPESCA_DOBLE_INICIO: return _("ESP Double Repechage from Beginning");
+    case CAT_ESP_REPESCA_DOBLE: return _("ESP Double Repechage");
+    case CAT_ESP_REPESCA_SIMPLE: return _("ESP Simple Repechage");
     }
     return "";
 }

@@ -25,7 +25,7 @@ struct offial_category {
     } weights[NUM_CAT_DEF_WEIGHTS];
 };
 
-struct offial_category official_categories[NUM_DRAWS][2][8] = {
+struct offial_category official_categories[NUM_DRAWS][2][10] = {
     { // international
         { // men
             {
@@ -218,6 +218,73 @@ struct offial_category official_categories[NUM_DRAWS][2][8] = {
                 "DT", 10, 120, 60, 180, // name, max age, match gs rest times 
                 {{25000, "25"}, {28000, "28"}, {32000, "32"}, {36000, "36"}, 
                  {40000, "40"}, {44000, "44"}, {48000, "48"}, {52000, "52"}, {0, NULL}}
+            }, { NULL, 0, 0, 0, 0, {{0, NULL}}}
+        }
+    }, { // spanish
+        { // men
+            {
+                "Senior masculino", 1000, 300, 180, 600, // name, max age, match gs rest times 
+                {{60000, "60"}, {66000, "66"}, {73000, "73"}, 
+                 {81000, "81"}, {90000, "90"}, {100000, "100"}, {0, NULL}}
+            }, {
+                "Junior masculino", 18, 240, 180, 600, // name, max age, match gs rest times 
+                {{55000, "55"}, {60000, "60"}, {66000, "66"}, {73000, "73"}, 
+                 {81000, "81"}, {90000, "90"}, {100000, "100"}, {0, NULL}}
+            }, {
+                "Cadete masculino", 16, 180, 60, 600, // name, max age, match gs rest times 
+                {{50000, "50"}, {55000, "55"}, {60000, "60"}, 
+                 {66000, "66"}, {73000, "73"}, {81000, "81"}, {90000, "90"}, {0, NULL}}
+            }, {
+                "Infantil masculino", 14, 180, 60, 180, // name, max age, match gs rest times 
+                {{38000, "38"}, {42000, "42"}, {46000, "46"}, 
+                 {50000, "50"}, {55000, "55"}, {60000, "60"}, {66000, "66"}, 
+                 {0, NULL}}
+            }, {
+                "Alevín masculino", 12, 120, 60, 180, // name, max age, match gs rest times 
+                {{30000, "30"}, {34000, "34"}, {38000, "38"}, {42000, "42"}, 
+                 {47000, "47"}, {52000, "52"}, {0, NULL}}
+            }, {
+                "Benjamín masculino", 10, 120, 60, 180, // name, max age, match gs rest times 
+                {{26000, "26"}, {30000, "30"}, {34000, "34"}, {38000, "38"}, {42000, "42"}, 
+                 {47000, "47"}, {0, NULL}}
+            }, {
+                "Mini", 8, 120, 60, 180, // name, max age, match gs rest times 
+                {{100000, " "}, {0, NULL}}
+            }, {
+                "Micro", 6, 120, 60, 180, // name, max age, match gs rest times 
+                {{100000, " "}, {0, NULL}}
+            }, { NULL, 0, 0, 0, 0, {{0, NULL}}}
+        }, { // women
+            {
+                "Senior feminino", 1000, 300, 180, 600, // name, max age, match gs rest times 
+                {{48000, "48"}, {52000, "52"}, {57000, "57"}, 
+                 {63000, "63"}, {70000, "70"}, {78000, "78"}, {0, NULL}}
+            }, {
+                "Junior femenino", 18, 240, 180, 600, // name, max age, match gs rest times 
+                {{44000, "44"}, {48000, "48"}, {52000, "52"}, {57000, "57"}, 
+                 {63000, "63"}, {70000, "70"}, {78000, "78"}, {0, NULL}}
+            }, {
+                "Cadete femenino", 16, 180, 60, 600, // name, max age, match gs rest times 
+                {{40000, "40"}, {44000, "44"}, {48000, "48"}, {52000, "52"}, 
+                 {57000, "57"}, {63000, "63"}, {70000, "70"}, {0, NULL}}
+            }, {
+                "Infantil femenino", 14, 180, 60, 180, // name, max age, match gs rest times 
+                {{36000, "36"}, {40000, "40"}, {44000, "44"}, 
+                 {48000, "48"}, {52000, "52"}, {57000, "57"}, {63000, "63"}, {0, NULL}}
+            }, {
+                "Alevín  femenino", 12, 120, 60, 180, // name, max age, match gs rest times 
+                {{30000, "30"}, {34000, "34"}, {38000, "38"}, {42000, "42"}, 
+                 {47000, "47"}, {52000, "52"}, {0, NULL}}
+            }, {
+                "Benjamín femenino", 10, 120, 60, 180, // name, max age, match gs rest times 
+                {{26000, "26"}, {30000, "30"}, {34000, "34"}, {38000, "38"}, {42000, "42"}, 
+                 {47000, "47"}, {0, NULL}}
+            }, {
+                "Mini", 8, 120, 60, 180, // name, max age, match gs rest times 
+                {{100000, " "}, {0, NULL}}
+            }, {
+                "Micro", 6, 120, 60, 180, // name, max age, match gs rest times 
+                {{100000, " "}, {0, NULL}}
             }, { NULL, 0, 0, 0, 0, {{0, NULL}}}
         }
     }
@@ -609,7 +676,7 @@ void set_categories_dialog(GtkWidget *w, gpointer arg)
 
         /* age text */
         tmp = fields[i].agetext = gtk_entry_new();
-        gtk_entry_set_max_length(GTK_ENTRY(tmp), 16);
+        gtk_entry_set_max_length(GTK_ENTRY(tmp), 20);
         gtk_entry_set_width_chars(GTK_ENTRY(tmp), 10);
         gtk_table_attach_defaults(GTK_TABLE(tables[i]), tmp, 1, 2, 1, 2);
 

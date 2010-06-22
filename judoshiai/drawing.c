@@ -891,6 +891,12 @@ gint get_system_for_category(gint index, gint competitors)
 	} else {
             sys = wish | SYSTEM_DPOOL | competitors;
 	}
+    } else if (competitors > 16 && wishsys == CAT_ESP_DOBLE_PERDIDA) {
+        wish |= (cat_system_to_table[CAT_ESP_REPESCA_DOBLE]) << SYSTEM_TABLE_SHIFT;
+        if (competitors <= 32)
+            sys = wish | SYSTEM_FRENCH_32 | competitors;
+        else
+            sys = wish | SYSTEM_FRENCH_64 | competitors;
     } else {
         if (wishsys == CAT_SYSTEM_DEFAULT) {
             switch (draw_system) {
@@ -917,7 +923,7 @@ gint get_system_for_category(gint index, gint competitors)
                 cat = avl_get_category(index);
                 if (cat) {
                     gint aix = find_age_index(cat->category);
-                    if (aix >= 0) {
+                    if (aix >= 0 && competitors <= 16) {
                         if (category_definitions[aix].age <= 10)
                             wishsys = CAT_ESP_DOBLE_PERDIDA;
                     }
@@ -991,7 +997,7 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
     }
 
     if (catname && catname[0] == '?') {
-        SHOW_MESSAGE("Cannot draw %s", catname);
+        //SHOW_MESSAGE("Cannot draw %s", catname);
         g_free(catname);
         free(mdata);
         return NULL;

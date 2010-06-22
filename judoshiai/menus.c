@@ -38,6 +38,7 @@ extern void set_tatami_state(GtkWidget *menu_item, gpointer data);
 extern void backup_shiai(GtkWidget *w, gpointer data);
 extern void toggle_mirror(GtkWidget *menu_item, gpointer data);
 extern void toggle_auto_arrange(GtkWidget *menu_item, gpointer data);
+extern void select_use_logo(GtkWidget *w, gpointer data);
 
 
 static GtkWidget *menubar, 
@@ -67,7 +68,7 @@ static GtkWidget *menubar,
     *preference_sheet_font, *preference_password, *judotimer_control[NUM_TATAMIS],
     *preference_mirror, *preference_auto_arrange, *preference_club_text,
     *preference_club_text_club, *preference_club_text_country, *preference_club_text_both,
-    *preference_club_text_abbr,
+    *preference_club_text_abbr, *preference_use_logo,
     *help_manual, *help_about;
 
 static GSList *lang_group = NULL, *club_group = NULL, *draw_group = NULL;
@@ -359,6 +360,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     preference_password               = gtk_menu_item_new_with_label(_("Password"));
     preference_mirror                 = gtk_check_menu_item_new_with_label("");
     preference_auto_arrange           = gtk_check_menu_item_new_with_label("");
+    preference_use_logo               = gtk_menu_item_new_with_label("");
 
     //gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_comm_node);
     preference_comm = gtk_menu_item_new_with_label("");
@@ -397,6 +399,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_weights_to_pool_sheets);
     gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_mirror);
     gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_auto_arrange);
+    gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_use_logo);
     gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_sheet_font);
     gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_password);
 
@@ -425,6 +428,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     g_signal_connect(G_OBJECT(preference_password),               "activate", G_CALLBACK(set_webpassword_dialog), 0);
     g_signal_connect(G_OBJECT(preference_mirror),                 "activate", G_CALLBACK(toggle_mirror), 0);
     g_signal_connect(G_OBJECT(preference_auto_arrange),           "activate", G_CALLBACK(toggle_auto_arrange), 0);
+    g_signal_connect(G_OBJECT(preference_use_logo),               "activate", G_CALLBACK(select_use_logo), 0);
 
 
     /* Create the Drawing menu content. */
@@ -586,6 +590,20 @@ void set_preferences(void)
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(draw_estonian), TRUE);
     else if (draw_system == DRAW_SPANISH)
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(draw_spanish), TRUE);
+
+    error = NULL;
+    str = g_key_file_get_string(keyfile, "preferences", "logofile", &error);
+    if (!error) {
+        if (str[0])
+            use_logo = str;
+        else
+            g_free(str);
+    }
+
+    error = NULL;
+    if (g_key_file_get_boolean(keyfile, "preferences", "printheaders", &error) && !error) {
+        print_headers = TRUE;
+    }
 }
 
 static void change_menu_label(GtkWidget *item, const gchar *new_text)
@@ -750,6 +768,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(preference_password              , _("Password"));
     change_menu_label(preference_mirror                , _("Mirror Tatami Order"));
     change_menu_label(preference_auto_arrange          , _("Automatic Match Delay"));
+    change_menu_label(preference_use_logo              , _("Print Logo"));
 
     change_menu_label(help_manual, _("Manual"));
     change_menu_label(help_about , _("About"));

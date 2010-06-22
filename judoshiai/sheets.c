@@ -1544,19 +1544,45 @@ void paint_category(struct paint_data *pd)
     cairo_set_line_width(pd->c, THIN_LINE /*H(0.002f)*/);
     cairo_set_source_rgb(pd->c, 0.0, 0.0, 0.0);
 
-    snprintf(buf, sizeof(buf)-1, "%s  %s  %s   %s", 
-             info_competition,
-             info_date,
-             info_place,
-             ctg->last);
     cairo_save(pd->c);
-    cairo_select_font_face(pd->c, font_face,
-                           font_slant,
-                           CAIRO_FONT_WEIGHT_BOLD);
-    cairo_set_font_size(pd->c, NAME_H*1.2);
-    cairo_text_extents(pd->c, buf, &extents);
-    cairo_move_to(pd->c, (W(1.0)-extents.width)/2.0, H(0.05));
-    cairo_show_text(pd->c, buf);
+    if (use_logo != NULL) {
+        cairo_surface_t *image;
+        gint w, h;
+
+        cairo_save(pd->c);
+        image = cairo_image_surface_create_from_png(use_logo);
+        w = cairo_image_surface_get_width(image);
+        h = cairo_image_surface_get_height(image);
+        cairo_scale(pd->c, pd->paper_width/w, pd->paper_width/w);
+        cairo_set_source_surface(pd->c, image, 0, 0);
+        cairo_paint(pd->c);
+        cairo_surface_destroy(image);        
+        cairo_restore(pd->c);
+    }
+
+    if (use_logo != NULL && print_headers == FALSE) { 
+        snprintf(buf, sizeof(buf)-1, "%s", ctg->last);
+        cairo_select_font_face(pd->c, font_face,
+                               font_slant,
+                               CAIRO_FONT_WEIGHT_BOLD);
+        cairo_set_font_size(pd->c, NAME_H*1.2);
+        cairo_text_extents(pd->c, buf, &extents);
+        cairo_move_to(pd->c, (W(0.95)-extents.width), H(0.05));
+        cairo_show_text(pd->c, buf);
+    } else {
+        snprintf(buf, sizeof(buf)-1, "%s  %s  %s   %s", 
+                 info_competition,
+                 info_date,
+                 info_place,
+                 ctg->last);
+        cairo_select_font_face(pd->c, font_face,
+                               font_slant,
+                               CAIRO_FONT_WEIGHT_BOLD);
+        cairo_set_font_size(pd->c, NAME_H*1.2);
+        cairo_text_extents(pd->c, buf, &extents);
+        cairo_move_to(pd->c, (W(1.0)-extents.width)/2.0, H(0.05));
+        cairo_show_text(pd->c, buf);
+    }
     cairo_restore(pd->c);
 
     switch (sys & SYSTEM_MASK) {

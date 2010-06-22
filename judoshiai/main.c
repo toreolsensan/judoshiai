@@ -47,6 +47,8 @@ gint print_lang = 0, club_text = 0, club_abbr = 0, draw_system = 0;
 gboolean first_instance = FALSE;
 gint number_of_tatamis = 3;
 gint language = LANG_FI;
+gchar *use_logo = NULL;
+gboolean print_headers = FALSE;
 
 static gboolean delete_event( GtkWidget *widget,
                               GdkEvent  *event,

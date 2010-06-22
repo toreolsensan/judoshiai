@@ -57,7 +57,7 @@ static void view_popup_menu_move_judoka(GtkWidget *menuitem, gpointer userdata)
         return;
 
     if (db_category_match_status(dest_category_ix) & MATCH_EXISTS) {
-        SHOW_MESSAGE("Sarja %s arvottu. Poista arvonta ensin.", dest_category);
+        SHOW_MESSAGE("%s: %s.", dest_category, _("Remove drawing first"));
         return;
     }
 

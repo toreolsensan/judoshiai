@@ -2,10 +2,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-26 15:19+0300\n"
-"PO-Revision-Date: 2010-05-04 15:00+0100\n"
-"Last-Translator: Jose Pedro Fernández Pascual <huma2000@gmail.com>\n"
-"Language-Team: Espñaol <LL@li.org>\n"
+"POT-Creation-Date: 2010-06-22 09:18+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1173,7 +1173,9 @@ msgid "Double Pool"
 msgstr "Dos ligas cruzadas"
 
 msgid "Cannot handle: Database created with newer JudoShiai version."
-msgstr "No se pueden manejar: Base de datos creada con una versión más moderna de JudoShiai."
+msgstr ""
+"No se pueden manejar: Base de datos creada con una versión más moderna de "
+"JudoShiai."
 
 msgid "Database tables updated."
 msgstr "Tablas de la base de datos actualizadas."
@@ -1204,3 +1206,87 @@ msgstr "Sonido de Stop"
 
 msgid "Sound Files"
 msgstr "Archivos de sonido"
+
+msgid "Display layout"
+msgstr ""
+
+msgid "Contest area"
+msgstr ""
+
+msgid "Set time"
+msgstr ""
+
+msgid "Change language to Spanish"
+msgstr ""
+
+msgid "Choose a file"
+msgstr ""
+
+msgid "All Files"
+msgstr ""
+
+msgid "Best of 3"
+msgstr "Al mejor de 3"
+
+msgid "Quad Pool"
+msgstr "4 Ligas cruzadas"
+
+msgid "SWE Dubb återkv"
+msgstr ""
+
+msgid "SWE Dir återkv"
+msgstr ""
+
+msgid "EST D klass"
+msgstr ""
+
+msgid "No Repechg"
+msgstr ""
+
+msgid "SWE Enkelt återkv"
+msgstr ""
+
+msgid "ESP Dbl Lost"
+msgstr "Dbl. per."
+
+msgid "ESP Dbl Rep/Bgn"
+msgstr "ESP Rep. doble ini."
+
+msgid "ESP Dbl Rep"
+msgstr "ESP Rep. doble"
+
+msgid "ESP Simple Rep"
+msgstr "ESP Rep. simple"
+
+msgid "ESP Double Lost"
+msgstr "Doble pérdida"
+
+msgid "ESP Double Repechage from Beginning"
+msgstr "Repesca doble desde 1ª ronda"
+
+msgid "ESP Double Repechage"
+msgstr "Repesca doble"
+
+msgid "ESP Simple Repechage"
+msgstr "Repesca simple"
+
+msgid "Quadruple pool"
+msgstr "4 Ligas cruzadas"
+
+msgid "Picture Files"
+msgstr ""
+
+msgid "Print Headers"
+msgstr ""
+
+msgid "Language Selection"
+msgstr ""
+
+msgid "Communication"
+msgstr ""
+
+msgid "Club Text Selection"
+msgstr ""
+
+msgid "Print Logo"
+msgstr ""
