@@ -882,7 +882,7 @@ gint get_system_for_category(gint index, gint competitors)
         sys = wish | SYSTEM_DPOOL | competitors;
     } else if (competitors >= 8 && competitors <= 20 && wishsys == CAT_SYSTEM_QPOOL) {
         sys = wish | SYSTEM_QPOOL | competitors;
-    } else if (competitors > 5 && competitors <= 8 && wishsys == CAT_SYSTEM_DEFAULT &&
+    } else if (competitors > 5 && competitors <= 10 && wishsys == CAT_SYSTEM_DEFAULT &&
                draw_system == DRAW_SPANISH) {
             sys = wish | SYSTEM_DPOOL | competitors;
     } else if (competitors > 5 && competitors <= 7 && wishsys == CAT_SYSTEM_DEFAULT) {
