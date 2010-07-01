@@ -1,20 +1,29 @@
 include ../common/Makefile.inc
 
 ifeq ($(OS),Windows_NT)
-ODTFILE=$(shell pwd -W | tr '/' '\\')\judoshiai.odt
-ODTFILE2=$(shell pwd -W | tr '/' '\\')\judotimer.odg
+DOCPATH=$(shell pwd -W | tr '/' '\\')\\
 else
-ODTFILE=$(PWD)/judoshiai.odt
-ODTFILE2=$(PWD)/judotimer.odg
+DOCPATH=$(shell pwd)/
 endif
 
-all: judoshiai.pdf judotimer.pdf
+DOCSHIAI_FI=judoshiai-fi.pdf
+DOCSHIAI_EN=judoshiai-en.pdf
+DOCTIMER=judotimer.pdf
+DOCFILES=$(DOCSHIAI_FI) $(DOCSHIAI_EN) $(DOCTIMER)
 
-judoshiai.pdf: judoshiai.odt
-	soffice "macro:///Standard.Module1.ConvertWordToPDF($(ODTFILE))"
+all: $(DOCFILES)
 
-judotimer.pdf: judotimer.odg
-	soffice "macro:///Standard.Module1.ConvertWordToPDF($(ODTFILE2))"
+%.pdf: %.odt
+	rm $@
+	soffice "macro:///Standard.Module1.ConvertWordToPDF($(DOCPATH)$<)"
+	while test ! \( -e $@ \) ; do \
+	echo "Waiting for $@"; sleep 1; done
+
+%.pdf: %.odg
+	rm $@
+	soffice "macro:///Standard.Module1.ConvertWordToPDF($(DOCPATH)$<)"
+	while test ! \( -e $@ \) ; do \
+	echo "Waiting for $@"; sleep 1; done
 
 clean:
 	rm -f *.pdf
