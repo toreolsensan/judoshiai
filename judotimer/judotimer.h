@@ -33,6 +33,7 @@
 #define LANG_SW 1
 #define LANG_EN 2
 #define LANG_ES 3
+#define NUM_LANGS 4
 
 #define FRAME_WIDTH  600
 #define FRAME_HEIGHT 400

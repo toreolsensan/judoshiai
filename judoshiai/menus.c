@@ -656,11 +656,13 @@ void set_menu_active(void)
 
 gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param)
 {
-    gint lang = (gint)param, i;
+    gint i;
     gchar *r = NULL;
     gchar buf[32];
 
-    switch (lang) {
+    language = (gint)param;
+
+    switch (language) {
     case LANG_FI:
         putenv("LANGUAGE=fi");
         r = setlocale(LC_ALL, "fi");
@@ -780,7 +782,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     set_cat_graph_titles();
     set_match_graph_titles();
 
-    g_key_file_set_integer(keyfile, "preferences", "language", lang);
+    g_key_file_set_integer(keyfile, "preferences", "language", language);
 
     return TRUE;
 }

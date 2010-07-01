@@ -4,7 +4,7 @@ JudoShiai consists of the following programs:
 * JudoShiai: Tournament planning, drawing, and results printing.
 * JudoTimer: Clocks and scoreboard.
 * JudoInfo: Information display for the announcer and audience.
-* Flash versions of JudoTimer and JudoInfo.
+[* Flash versions of JudoTimer and JudoInfo.]
 
 Windows XP, Vista and Linux are the supported operating systems.
 
@@ -15,20 +15,25 @@ Linux (Ubuntu):
   software package.
 - Open Office to export documents to PDF format. You have to create
   some macros that are described in the doc/Makefile.
-- For Flash versions you need a haXe environment (http://haxe.org).
 - CheckInstall (http://www.asic-linux.com.mx/~izto/checkinstall/) 
   to create a Debian package.
+- FMOD sound library (http://www.fmod.org/). Edit common/Makefile.inc to set
+  the correct directory.
+[- For Flash versions you need a haXe environment (http://haxe.org). (Not yet supported)]
 
 Windows:
 - GTK+ library for Windows (http://www.gtk.org/download-windows.html).
-  Install a All-in-one bundle. Edit common/Makefile to set
+  Install the All-in-one bundle. Edit common/Makefile.inc to set
   the correct directory.
 - MinGW and MSYS (http://www.mingw.org). They provide 
   ports of the GNU software for the Windows environment.
 - Open Office to export documents to PDF format. You have to create
   some macros that are described in the doc/Makefile.
-- For Flash versions you need a haXe environment (http://haxe.org).
 - Inno Setup to create a setup binary (http://www.jrsoftware.org/isinfo.php).
+- FMOD sound library (http://www.fmod.org/). Edit common/Makefile.inc to set
+  the correct directory.
+- ResHacker.exe (http://www.angusj.com/resourcehacker/)
+[- For Flash versions you need a haXe environment (http://haxe.org). (Not yet supported)]
 
 Compilation:
 

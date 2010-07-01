@@ -549,9 +549,14 @@ static void open_url(const char *szURL) {
 }
 #endif
 
+static const gchar *help_file_names[NUM_LANGS] = {
+    "judoshiai-fi.pdf", "judoshiai-en.pdf", "judoshiai-en.pdf", "judoshiai-en.pdf"
+};
+
 void start_help(GtkWidget *w, gpointer data)
 {
-    gchar *docfile = g_build_filename(installation_dir, "doc", "judoshiai.pdf", NULL);
+    gchar *docfile = g_build_filename(installation_dir, "doc", 
+                                      help_file_names[language], NULL);
 #ifdef WIN32
     ShellExecute(NULL, TEXT("open"), docfile, NULL, ".\\", SW_SHOWMAXIMIZED);
 #else /* ! WIN32 */

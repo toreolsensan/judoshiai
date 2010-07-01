@@ -8,19 +8,20 @@ endif
 
 DOCSHIAI_FI=judoshiai-fi.pdf
 DOCSHIAI_EN=judoshiai-en.pdf
-DOCTIMER=judotimer.pdf
-DOCFILES=$(DOCSHIAI_FI) $(DOCSHIAI_EN) $(DOCTIMER)
+DOCTIMER_FI=judotimer-fi.pdf
+DOCTIMER_EN=judotimer-en.pdf
+DOCFILES=$(DOCSHIAI_FI) $(DOCSHIAI_EN) $(DOCTIMER_FI) $(DOCTIMER_EN)
 
 all: $(DOCFILES)
 
 %.pdf: %.odt
-	rm $@
+	rm -f $@
 	soffice "macro:///Standard.Module1.ConvertWordToPDF($(DOCPATH)$<)"
 	while test ! \( -e $@ \) ; do \
 	echo "Waiting for $@"; sleep 1; done
 
 %.pdf: %.odg
-	rm $@
+	rm -f $@
 	soffice "macro:///Standard.Module1.ConvertWordToPDF($(DOCPATH)$<)"
 	while test ! \( -e $@ \) ; do \
 	echo "Waiting for $@"; sleep 1; done

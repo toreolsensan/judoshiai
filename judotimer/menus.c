@@ -593,10 +593,10 @@ void set_preferences(void)
 
 gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param)
 {
-    gint lang = (gint)param;
+    language = (gint)param;
     gchar *r = NULL;
 
-    switch (lang) {
+    switch (language) {
     case LANG_FI:
         putenv("LANGUAGE=fi");
         r = setlocale(LC_ALL, "fi");
@@ -704,7 +704,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
 
     change_language_1();
 
-    g_key_file_set_integer(keyfile, "preferences", "language", lang);
+    g_key_file_set_integer(keyfile, "preferences", "language", language);
 
     return TRUE;
 }
@@ -826,10 +826,20 @@ GtkWidget *get_option_menu( void )
 #include "shellapi.h"
 #endif /* WIN32 */
 
+static const gchar *help_file_names[NUM_LANGS] = {
+    "judoshiai-fi.pdf", "judoshiai-en.pdf", "judoshiai-en.pdf", "judoshiai-en.pdf"
+};
+
+static const gchar *timer_help_file_names[NUM_LANGS] = {
+    "judotimer-fi.pdf", "judotimer-en.pdf", "judotimer-en.pdf", "judotimer-en.pdf"
+};
+
 void start_help(GtkWidget *w, gpointer data)
 {
     gchar *docfile = g_build_filename(installation_dir, "doc", 
-                                      data ? "judotimer.pdf" : "judoshiai.pdf", NULL);
+                                      data ? 
+                                      timer_help_file_names[language] : 
+                                      help_file_names[language], NULL);
 #ifdef WIN32
     ShellExecute(NULL, TEXT("open"), docfile, NULL, ".\\", SW_SHOWMAXIMIZED);
 #else /* ! WIN32 */

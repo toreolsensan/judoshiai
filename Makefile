@@ -3,18 +3,18 @@ include common/Makefile.inc
 JUDOSHIAIFILE=judoshiai/judoshiai$(SUFF)
 JUDOTIMERFILE=judotimer/judotimer$(SUFF)
 JUDOINFOFILE=judoinfo/judoinfo$(SUFF)
-LANGUAGEFILE=common/judoshiai-fi_FI.mo
-FLASHFILE=flash/judotimer.swf
-DOCFILE=doc/judoshiai.pdf
-DOCFILE2=doc/judotimer.pdf
+
 RELEASEDIR=release
 RELDIR=$(RELEASEDIR)/judoshiai
 RELFILE=$(RELDIR)/bin/judoshiai$(SUFF)
 RUNDIR=$(DEVELDIR)
 
-# To do: Add $(FLASHFILE) to targets
-
-all: $(JUDOSHIAIFILE) $(JUDOTIMERFILE) $(JUDOINFOFILE) $(LANGUAGEFILE) $(DOCFILE) $(DOCFILE2)
+all:
+	make -C common
+	make -C judoshiai
+	make -C judotimer
+	make -C judoinfo
+	make -C doc
 	rm -rf $(RELDIR)
 	mkdir -p $(RELDIR)/bin
 	mkdir -p $(RELDIR)/share/locale/
@@ -42,8 +42,7 @@ ifeq ($(OS),Windows_NT)
 else
 	cp $(SOUNDDIR)/lib/libfmodex-*.so $(RELDIR)/lib/libfmodex.so
 endif
-	cp doc/judoshiai.pdf $(RELDIR)/doc/
-	cp doc/judotimer.pdf $(RELDIR)/doc/
+	cp doc/*.pdf $(RELDIR)/doc/
 	cp common/judoshiai-fi_FI.mo $(RELDIR)/share/locale/fi/LC_MESSAGES/judoshiai.mo
 	cp common/judoshiai-sv_SE.mo $(RELDIR)/share/locale/sv/LC_MESSAGES/judoshiai.mo
 	cp common/judoshiai-es_ES.mo $(RELDIR)/share/locale/es/LC_MESSAGES/judoshiai.mo
@@ -61,24 +60,6 @@ endif
 	@echo "  sudo make debian" 
 
 #echo 'gtk-theme-name = "MS-Windows"' >$(RELDIR)/etc/gtk-2.0/gtkrc
-
-$(JUDOSHIAIFILE): judoshiai/*.c common/*.c
-	make -C judoshiai
-
-$(JUDOTIMERFILE): judotimer/*.c common/*.c
-	make -C judotimer
-
-$(JUDOINFOFILE): judoinfo/*.c common/*.c
-	make -C judoinfo
-
-$(LANGUAGEFILE): common/*.po
-	make -C common
-
-$(DOCFILE) $(DOCFILE2): doc/judoshiai.odt doc/judotimer.odg
-	make -C doc
-
-$(FLASHFILE): flash/judoshiai/*.hx
-	make -C flash
 
 setup:
 ifeq ($(OS),Windows_NT)
