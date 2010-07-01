@@ -68,14 +68,21 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
     gint          max_group;
     struct tm    *tm;
     time_t        secs;
+    cairo_surface_t *cs = userdata;
 
     if (!anchor)
         anchor = get_image("anchor.png");
 
-    num_rectangles = 0;
-
     cairo_set_font_size(c, 12);
     cairo_text_extents(c, "Hj:000", &extents);
+
+    if (cs) {
+        cairo_set_source_surface(c, cs, 0, 0);
+        cairo_paint(c);
+        goto drag;
+    }
+
+    num_rectangles = 0;
 
     cairo_set_source_rgb(c, 1.0, 1.0, 1.0);
     cairo_rectangle(c, 0.0, 0.0, paper_width, paper_height);
@@ -262,7 +269,6 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
         }
     }
 
-	
     cairo_save(c);
     cairo_set_line_width(c, THICK_LINE);
     cairo_set_source_rgb(c, 0.0, 0.0, 0.0);
@@ -271,6 +277,7 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
     cairo_stroke(c);
     cairo_restore(c);
 
+ drag:	
     if (button_drag) {
         cairo_set_line_width(c, THIN_LINE);
         cairo_text_extents(c, dragged_text, &extents);
@@ -291,12 +298,26 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
 /* This is called when we need to draw the windows contents */
 static gboolean expose(GtkWidget *widget, GdkEventExpose *event, gpointer userdata)
 {
+    static cairo_surface_t *cs = NULL;
     cairo_t *c = gdk_cairo_create(widget->window);
 
-    paint(c, widget->allocation.width, widget->allocation.height, userdata);
+    if (!cs)
+        cs = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 
+                                        widget->allocation.width, widget->allocation.height);
+    if (button_drag) {
+        paint(c, widget->allocation.width, widget->allocation.height, cs);
+    } else {
+        cairo_t *c1 = cairo_create(cs);
+        paint(c1, widget->allocation.width, widget->allocation.height, NULL);
+
+        cairo_set_source_surface(c, cs, 0, 0);
+        cairo_paint(c);
+        cairo_destroy(c1);
+    }
 
     cairo_show_page(c);
     cairo_destroy(c);
+    //cairo_surface_destroy(cs);
 
     return FALSE;
 }
@@ -410,11 +431,9 @@ static gboolean mouse_click(GtkWidget *sheet_page,
             return FALSE;
 
         button_drag = TRUE;
-
         dragged_cat = point_click_areas[t].index;
         if (dragged_cat < 10000)
             button_drag = FALSE;
-
         start_box = t;
 
         struct category_data *catdata = avl_get_category(dragged_cat);
@@ -453,13 +472,13 @@ static gboolean motion_notify(GtkWidget *sheet_page,
 
     dragged_x = x;
     dragged_y = y;
-	
+
     t = find_box(x, y);
     if (t < 0)
         return FALSE;
 
     struct category_data *catdata = avl_get_category(dragged_cat);
-    if (catdata)
+    if (catdata && t >= 0)
         snprintf(dragged_text, sizeof(dragged_text), "%s -> T%d:%d",
                  catdata->category, point_click_areas[t].tatami, 
                  point_click_areas[t].group);

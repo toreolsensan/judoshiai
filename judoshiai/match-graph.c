@@ -55,6 +55,7 @@ static gboolean button_drag = FALSE;
 static gchar    dragged_text[32];
 static gint     start_box = 0;
 static gdouble  dragged_x, dragged_y;
+static gint     dragged_t;
 
 #define NO_SCROLL   0
 #define SCROLL_DOWN 1
@@ -93,11 +94,18 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
     cairo_text_extents_t extents;
     gdouble y_pos = 0.0, colwidth = W(1.0/(number_of_tatamis + 1));
     gboolean update_later = FALSE;
-
-    num_rectangles = 0;
+    cairo_surface_t *cs = userdata;
 
     cairo_set_font_size(c, 12);
     cairo_text_extents(c, "Hj", &extents);
+
+    if (cs) {
+        cairo_set_source_surface(c, cs, 0, 0);
+        cairo_paint(c);
+        goto drag;
+    }
+
+    num_rectangles = 0;
 
     cairo_set_source_rgb(c, 1.0, 1.0, 1.0);
     cairo_rectangle(c, 0.0, 0.0, paper_width, paper_height);
@@ -365,6 +373,7 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
     cairo_stroke(c);
     cairo_restore(c);
 
+ drag:
     if (button_drag) {
         cairo_set_line_width(c, THIN_LINE);
         cairo_text_extents(c, dragged_text, &extents);
@@ -379,7 +388,7 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
         cairo_move_to(c, dragged_x - extents.width/2.0, dragged_y);
         cairo_show_text(c, dragged_text);
 
-        gint t = find_box(dragged_x, dragged_y);
+        gint t = dragged_t; //find_box(dragged_x, dragged_y);
         if (t >= 0) {
             gdouble snap_y;
             if (point_click_areas[t].y2 - dragged_y < 
@@ -408,9 +417,22 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
 /* This is called when we need to draw the windows contents */
 static gboolean expose(GtkWidget *widget, GdkEventExpose *event, gpointer userdata)
 {
+    static cairo_surface_t *cs = NULL;
     cairo_t *c = gdk_cairo_create(widget->window);
 
-    paint(c, widget->allocation.width, widget->allocation.height, userdata);
+    if (!cs)
+        cs = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 
+                                        widget->allocation.width, widget->allocation.height);
+    if (button_drag) {
+        paint(c, widget->allocation.width, widget->allocation.height, cs);
+    } else {
+        cairo_t *c1 = cairo_create(cs);
+        paint(c1, widget->allocation.width, widget->allocation.height, NULL);
+
+        cairo_set_source_surface(c, cs, 0, 0);
+        cairo_paint(c);
+        cairo_destroy(c1);
+    }
 
     cairo_show_page(c);
     cairo_destroy(c);
@@ -553,8 +575,6 @@ static gboolean mouse_click(GtkWidget *sheet_page,
         if (t < 0)
             return FALSE;
 
-        button_drag = TRUE;
-
         dragged_match = point_click_areas[t];
         start_box = t;
 
@@ -571,6 +591,8 @@ static gboolean mouse_click(GtkWidget *sheet_page,
                          catdata->category, dragged_match.number);
         }
         refresh_window();
+
+        button_drag = TRUE;
 
         return TRUE;
 		    
@@ -652,14 +674,13 @@ static gboolean motion_notify(GtkWidget *sheet_page,
                               GdkEventMotion *event, 
                               gpointer userdata)
 {
-    static GTimeVal next_time, now;
+    //static GTimeVal next_time, now;
     struct win_collection *w = userdata;
 
     if (button_drag == FALSE)
         return FALSE;
 
     gdouble x = event->x, y = event->y;
-    gint t;
     GtkAdjustment *adj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(w->scrolled_window));
     gdouble adjnow = gtk_adjustment_get_value(adj);
 	
@@ -673,23 +694,23 @@ static gboolean motion_notify(GtkWidget *sheet_page,
     dragged_x = x;
     dragged_y = y;
 	
-    t = find_box(x, y);
-    if (t < 0)
+    dragged_t = find_box(x, y);
+    if (dragged_t < 0)
         return FALSE;
 
     struct category_data *catdata = avl_get_category(dragged_match.category);
     if (catdata)
         snprintf(dragged_text, sizeof(dragged_text), "%s:%d (%d)",
                  catdata->category, dragged_match.number, 
-                 point_click_areas[t].position);
-
+                 point_click_areas[dragged_t].position);
+#if 0
     g_get_current_time(&now);
     if (timeval_subtract(NULL, &now, &next_time))
         return FALSE;
 
     g_time_val_add(&now, 500000);
     next_time = now;
-
+#endif
     refresh_window();
 
     return FALSE;
