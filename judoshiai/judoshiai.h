@@ -474,6 +474,7 @@ struct paint_data {
     gdouble  paper_height;
     gdouble  total_width;
     gboolean write_results;
+    GtkWidget *scroll;
 };
 
 extern avl_tree *categories_tree;

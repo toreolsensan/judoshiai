@@ -1815,6 +1815,19 @@ static gboolean expose_cat(GtkWidget *widget, GdkEventExpose *event, gpointer us
         g_free(file);
     }
 
+    pd->paper_height = SIZEY*widget->allocation.width/SIZEX;
+    pd->paper_width = widget->allocation.width;
+    pd->total_width = widget->allocation.width;
+
+    if (pd->scroll) {
+        GtkAdjustment *adj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(pd->scroll));
+        gdouble lower = gtk_adjustment_get_lower(GTK_ADJUSTMENT(adj));
+        gdouble upper = gtk_adjustment_get_upper(GTK_ADJUSTMENT(adj));
+        gdouble value = gtk_adjustment_get_value(GTK_ADJUSTMENT(adj));
+        gtk_adjustment_set_upper(GTK_ADJUSTMENT(adj), pd->paper_width*SIZEY/SIZEX);
+        gtk_scrolled_window_set_vadjustment(GTK_SCROLLED_WINDOW(pd->scroll), adj);
+    }
+
     pd->c = gdk_cairo_create(widget->window);
     paint_category(pd);
 
@@ -1877,24 +1890,31 @@ void category_window(gint cat)
     GdkScreen *scr = gdk_screen_get_default();
     gint scr_height = gdk_screen_get_height(scr);
     gint height_req = 800;
-        
+
     if (height_req > scr_height && scr_height > 100)
         height_req = scr_height - 20;
 
     GtkWindow *window = GTK_WINDOW(gtk_window_new(GTK_WINDOW_TOPLEVEL));
     gtk_window_set_title(GTK_WINDOW(window), _("Category"));
-    gtk_widget_set_size_request(GTK_WIDGET(window), SIZEX*height_req/SIZEY, height_req);
+    gtk_widget_set_size_request(GTK_WIDGET(window), SIZEX, height_req);
     gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 
     GtkWidget *darea = gtk_drawing_area_new();
-    gtk_container_add (GTK_CONTAINER (window), darea);
+    gtk_widget_set_size_request(GTK_WIDGET(darea), SIZEX, 4*SIZEY);
+
+    GtkWidget *scrolled_window = gtk_scrolled_window_new(NULL, NULL);
+    gtk_container_set_border_width(GTK_CONTAINER(scrolled_window), 10);
+    gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_window), darea);
+
+    gtk_container_add(GTK_CONTAINER(window), scrolled_window);
     gtk_widget_show_all(GTK_WIDGET(window));
 
     struct paint_data *pd = g_malloc(sizeof(*pd));
     memset(pd, 0, sizeof(*pd));
+    pd->scroll = scrolled_window;
     pd->category = cat;
-    pd->paper_height = darea->allocation.height;
-    pd->paper_width = SIZEX*pd->paper_height/SIZEY;
+    pd->paper_height = SIZEY*darea->allocation.width/SIZEX;
+    pd->paper_width = darea->allocation.width;
     pd->total_width = darea->allocation.width;
 
     gtk_widget_add_events(darea, 
