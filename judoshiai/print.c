@@ -142,7 +142,8 @@ void write_png(GtkWidget *menuitem, gpointer userdata)
 
     paint_surfaces(&pd, c_pdf, c_png, cs_pdf, cs_png, buf);
 
-    if ((sys & SYSTEM_MASK) == SYSTEM_FRENCH_64) {
+    if ((sys & SYSTEM_MASK) == SYSTEM_FRENCH_64 ||
+        (sys & SYSTEM_MASK) == SYSTEM_QPOOL) {
         pd.page = 1;
         paint_surfaces(&pd, c_pdf, c_png, cs_pdf, cs_png, buf);
         pd.page = 2;
@@ -557,7 +558,8 @@ static gint fill_in_pages(gint category, gint all)
             gtk_tree_selection_iter_is_selected(selection, &iter)) {
             sys = db_get_system(index);
                         
-            if ((sys & SYSTEM_MASK) == SYSTEM_FRENCH_64 &&
+            if (((sys & SYSTEM_MASK) == SYSTEM_FRENCH_64 ||
+                 (sys & SYSTEM_MASK) == SYSTEM_QPOOL) &&
                 numpages < NUM_PAGES - 2) {
                 pages_to_print[numpages].cat = index;
                 pages_to_print[numpages++].pagenum = 0;
@@ -586,7 +588,8 @@ static gint fill_in_pages(gint category, gint all)
         gint sys = db_get_system(category);
         pages_to_print[numpages].cat = category;
         pages_to_print[numpages++].pagenum = 0;
-        if ((sys & SYSTEM_MASK) == SYSTEM_FRENCH_64) {
+        if ((sys & SYSTEM_MASK) == SYSTEM_FRENCH_64 ||
+            (sys & SYSTEM_MASK) == SYSTEM_QPOOL) {
             pages_to_print[numpages].cat = category;
             pages_to_print[numpages++].pagenum = 1;
             pages_to_print[numpages].cat = category;
