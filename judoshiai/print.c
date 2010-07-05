@@ -300,11 +300,115 @@ static void draw_code_39_pattern (char key, struct paint_data *pd, double bar_he
     return;
 }
 
+#define NUM_WN_TEXTS 32
+
+struct wn_data_s {
+    gdouble x, y, size;
+    gint slant, weight;
+    gchar *font, *text;
+};
+
+static struct wn_data_s wn_texts_default[] = {
+    {22.0, 15.0, 12.0, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD, "Arial", "%REGCATEGORY%"},
+    {36.0, 15.0, 12.0, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD, "Arial", "%CLUBCOUNTRY%"},
+    {22.0, 23.0, 12.0, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD, "Arial", "%LAST%, %FIRST%"},
+    {60.0, 44.0, 12.0, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD, "Arial", "%INDEX%"},
+    {55.0, 34.0, 12.0, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD, "Arial", "%BARCODE%"},
+    {22.0, 30.0, 12.0, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD, "Arial", "%WEIGHTTEXT%"},
+    {0.0, 0.0, 0.0, 0, 0, NULL, NULL}
+};
+static struct wn_data_s wn_texts[NUM_WN_TEXTS] = {{0}};
+static gint num_wn_texts = 0;
+
+#define X_MM(_a) (_a*SIZEX/209.0)
+#define Y_MM(_a) (_a*SIZEY/297.0)
+#define IS_STR(_a) (strncmp(&(wn_texts[t].text[k]), _a, (len=strlen(_a)))==0)
+
 static void paint_weight_notes(struct paint_data *pd)
 {
-    gint i, page, row, numrows, numpages;
+    gint i, page, row, numrows, numpages, t = 0;
     gchar buf[100];
     cairo_text_extents_t extents;
+    gchar *background = NULL;
+
+    // initialize text table
+    while (wn_texts_default[t].font) {
+        wn_texts[t].x = wn_texts_default[t].x;
+        wn_texts[t].y = wn_texts_default[t].y;
+        wn_texts[t].size = wn_texts_default[t].size;
+        wn_texts[t].slant = wn_texts_default[t].slant;
+        wn_texts[t].weight = wn_texts_default[t].weight;
+        g_free(wn_texts[t].font);
+        wn_texts[t].font = strdup(wn_texts_default[t].font);
+        g_free(wn_texts[t].text);
+        wn_texts[t].text = strdup(wn_texts_default[t].text);
+        t++;
+    }
+    num_wn_texts = t;
+
+    // look if there exists a template file
+    gchar *templatefile = g_build_filename(installation_dir, "etc", 
+                                      "weightnotes.tpl", NULL);
+    FILE *f = fopen(templatefile, "r");
+    if (f) {
+        gint slant = CAIRO_FONT_SLANT_NORMAL;
+        gint weight = CAIRO_FONT_WEIGHT_NORMAL;
+        gdouble x = 0.0, y = 0.0, size = 12.0;
+        gchar line[128], *font = strdup("Arial");
+        num_wn_texts = 0;
+        while (fgets(line, sizeof(line), f)) {
+            gchar *p1 = strchr(line, '\r');
+            if (p1)	*p1 = 0;
+            p1 = strchr(line, '\n');
+            if (p1)	*p1 = 0;
+
+            if (strncmp(line, "text ", 5) == 0) {
+                gchar *p = strchr(line, ' ');
+                if (!p)
+                    continue;
+                x = atof(p+1);
+                p = strchr(p+1, ' ');
+                if (!p)
+                    continue;
+                y = atof(p+1);
+                p = strchr(p+1, ' ');
+                if (!p)
+                    continue;
+                wn_texts[num_wn_texts].x = x;
+                wn_texts[num_wn_texts].y = y;
+                wn_texts[num_wn_texts].size = size;
+                wn_texts[num_wn_texts].slant = slant;
+                wn_texts[num_wn_texts].weight = weight;
+                g_free(wn_texts[num_wn_texts].font);
+                wn_texts[num_wn_texts].font = strdup(font);
+                g_free(wn_texts[num_wn_texts].text);
+                wn_texts[num_wn_texts].text = strdup(p+1);
+                if (num_wn_texts < NUM_WN_TEXTS - 1) 
+                    num_wn_texts++;
+            } else if (strncmp(line, "font ", 5) == 0) {
+                g_free(font);
+                font = strdup(line + 5);
+            } else if (strncmp(line, "fontsize ", 9) == 0) {
+                size = atof(line + 9);
+            } else if (strncmp(line, "fontslant ", 10) == 0) {
+                if (strstr(line + 10, "italic"))
+                    slant = CAIRO_FONT_SLANT_ITALIC;
+                else
+                    slant = CAIRO_FONT_SLANT_NORMAL;
+            } else if (strncmp(line, "fontweight ", 11) == 0) {
+                if (strstr(line + 11, "bold"))
+                    weight = CAIRO_FONT_WEIGHT_BOLD;
+                else
+                    weight = CAIRO_FONT_WEIGHT_NORMAL;
+            } else if (strncmp(line, "background", 10) == 0) {
+                g_free(background);
+                background = strdup(line + 11);
+            }
+        }
+        g_free(font);
+        fclose(f);
+    }
+    g_free(templatefile);
 
     if (club_text == CLUB_TEXT_CLUB)
         numrows = db_get_table("select * from competitors "
@@ -340,76 +444,135 @@ static void paint_weight_notes(struct paint_data *pd)
     numpages = numrows/10 + 1;
         
     for (page = 0, row = 0; page < numpages; page++) {
+        // background picture
+        if (background) {
+            cairo_surface_t *image;
+            gint w, h;
+            cairo_save(pd->c);
+            image = cairo_image_surface_create_from_png(background);
+            w = cairo_image_surface_get_width(image);
+            h = cairo_image_surface_get_height(image);
+            gdouble sx = pd->paper_width/2.0/w;
+            gdouble sy = pd->paper_height/5.0/h;
+            cairo_scale(pd->c, sx, sy);
+
+            for (i = 0; i < 10; i++) {
+                cairo_set_source_surface(pd->c, image, ((i&1) ? W(0.5) : 0.0)/sx, 
+                                         (H((i >> 1)/5.0))/sy);
+                cairo_paint(pd->c);
+            }
+
+            cairo_surface_destroy(image);        
+            cairo_restore(pd->c);
+        }
+
         cairo_move_to(pd->c, W(0.5), H(0.01));
         cairo_rel_line_to(pd->c, W(0), H(0.98));
         cairo_stroke(pd->c);
                 
         for (i = 1; i < 5; i++) {
-            cairo_move_to(pd->c, W(0.01), H(0.01 + i/5.0));
+            cairo_move_to(pd->c, W(0.01), H(i/5.0));
             cairo_rel_line_to(pd->c, W(0.98), H(0));
             cairo_stroke(pd->c);
         }
 
         for (i = 0; i < 10 && row < numrows; i++, row++) {
-            int x, y, k;
+            int x, y;
             double bar_height = H(0.02);
             gchar id_str[10];
 
-            y = H(0.06 + (i >> 1)/5.0);
+            y = H(/*0.06 +*/ (i >> 1)/5.0);
 
             if (i&1)
-                x = W(0.6);
+                x = W(0.5);//W(0.6);
             else
-                x = W(0.1);
+                x = W(0.0);//W(0.1);
 
             gchar *last = db_get_data(row, "last");
             gchar *first = db_get_data(row, "first");
             gchar *club = db_get_data(row, "club");
             gchar *country = db_get_data(row, "country");
             gchar *cat = db_get_data(row, "regcategory");
-            gchar *id = db_get_data(row, "index");
+            gchar *realcat = db_get_data(row, "category");
+            gchar *ix = db_get_data(row, "index");
+            gchar *id = db_get_data(row, "id");
+            gchar *weight = db_get_data(row, "weight");
+            gchar *yob = db_get_data(row, "birthyear");
+            gchar *grade = db_get_data(row, "belt");
 
             struct judoka j;
             j.club = club;
             j.country = country;
 
-            sprintf(id_str, "%04d", atoi(id));
+            sprintf(id_str, "%04d", atoi(ix));
 
-            snprintf(buf, sizeof(buf), "%s    %s", cat, get_club_text(&j, 0));
-            cairo_move_to(pd->c, x, y);
-            cairo_show_text(pd->c, buf);
+            for (t = 0; t < num_wn_texts; t++) {
+                cairo_move_to(pd->c, x + X_MM(wn_texts[t].x), y + Y_MM(wn_texts[t].y));
+                cairo_select_font_face(pd->c, wn_texts[t].font,
+                                       wn_texts[t].slant,
+                                       wn_texts[t].weight);
+                cairo_set_font_size(pd->c, wn_texts[t].size);
+                gint k = 0, d = 0;
+                gchar ch;
+                while ((ch = wn_texts[t].text[k])) {
+                    if (ch != '%') {
+                        buf[d++] = ch;
+                        k++;
+                    } else {
+                        gint len = 1;
+                        if (IS_STR("%REGCATEGORY%"))
+                            d += sprintf(buf + d, "%s", cat);
+                        else if (IS_STR("%REALCATEGORY%"))
+                            d += sprintf(buf + d, "%s", realcat);
+                        else if (IS_STR("%LAST%"))
+                            d += sprintf(buf + d, "%s", last);
+                        else if (IS_STR("%FIRST%"))
+                            d += sprintf(buf + d, "%s", first);
+                        else if (IS_STR("%CLUB%"))
+                            d += sprintf(buf + d, "%s", club);
+                        else if (IS_STR("%COUNTRY%"))
+                            d += sprintf(buf + d, "%s", country);
+                        else if (IS_STR("%CLUBCOUNTRY%"))
+                            d += sprintf(buf + d, "%s", get_club_text(&j, 0));
+                        else if (IS_STR("%INDEX%"))
+                            d += sprintf(buf + d, "%s", id_str);
+                        else if (IS_STR("%WEIGHT%")) {
+                            gint w = atoi(weight);
+                            d += sprintf(buf + d, "%d.%d", w/1000, (w%1000)/100);
+                        } else if (IS_STR("%YOB%"))
+                            d += sprintf(buf + d, "%s", yob);
+                        else if (IS_STR("%GRADE%")) {
+                            gint belt = atoi(grade);
+                            if (belt < 0 || belt > 13)
+                                belt = 0;
+                            d += sprintf(buf + d, "%s", belts[belt]);
+                        } else if (IS_STR("%ID%"))
+                            d += sprintf(buf + d, "%s", id);
+                        else if (IS_STR("%BARCODE%")) {
+                            cairo_save(pd->c);
+                            /* write start char */
+                            draw_code_39_pattern('*', pd, bar_height); 
+                            /* draw */
+                            gint n;
+                            for (n = 0; id_str[n]; n++) 
+                                draw_code_39_pattern(id_str[n], pd, bar_height);
+                            /* write stop char */
+                            draw_code_39_pattern ('*', pd, bar_height); 
+                            cairo_restore(pd->c);
+                        } else if (IS_STR("%WEIGHTTEXT%"))
+                            d += sprintf(buf + d, "%s", _T(weight));
 
-            snprintf(buf, sizeof(buf), "%s, %s", last, first);
-            cairo_move_to(pd->c, x, y + 2*extents.height);
-            cairo_show_text(pd->c, buf);
-
-            cairo_move_to(pd->c, x, y + 4*extents.height);
-            cairo_show_text(pd->c, _T(weight));
-
-            /* save cairo state */
-            cairo_save (pd->c);
-
-            /* move the init codebar */
-            cairo_move_to(pd->c, x + W(0.15), y + 5*extents.height);
-
-            /* write start char */
-            draw_code_39_pattern('*', pd, bar_height); 
-
-            /* draw */
-            for (k = 0; id_str[k]; k++) 
-                draw_code_39_pattern(id_str[k], pd, bar_height);
-
-            /* write stop char */
-            draw_code_39_pattern ('*', pd, bar_height); 
-
-            cairo_restore (pd->c);
-
-            cairo_move_to(pd->c, x + W(0.17), y + 6*extents.height + bar_height);
-            cairo_show_text(pd->c, id_str);
+                        k += len;
+                    }
+                }
+                buf[d] = 0;
+                cairo_show_text(pd->c, buf);
+            }
         }
         cairo_show_page(pd->c);
     }
 
+    g_free(background);
     db_close_table();
 }
 
