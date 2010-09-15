@@ -887,6 +887,8 @@ gint get_system_for_category(gint index, gint competitors)
             sys = wish | SYSTEM_DPOOL | competitors;
     } else if (competitors > 5 && competitors <= 7 && wishsys == CAT_SYSTEM_DEFAULT) {
 	if (draw_system == DRAW_INTERNATIONAL || draw_system == DRAW_ESTONIAN) {
+            if (draw_system == DRAW_INTERNATIONAL)
+                wish |= (cat_system_to_table[CAT_IJF_DOUBLE_REPECHAGE]) << SYSTEM_TABLE_SHIFT;
             sys = wish | SYSTEM_FRENCH_8 | competitors;
 	} else {
             sys = wish | SYSTEM_DPOOL | competitors;
@@ -901,6 +903,7 @@ gint get_system_for_category(gint index, gint competitors)
         if (wishsys == CAT_SYSTEM_DEFAULT) {
             switch (draw_system) {
             case DRAW_INTERNATIONAL:
+                wishsys = CAT_IJF_DOUBLE_REPECHAGE;
                 break;
             case DRAW_FINNISH:
                 break;

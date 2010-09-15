@@ -922,8 +922,11 @@ gchar *get_system_description(gint index, gint competitors)
     }
 
     if (system_is_french(sys)) {
+        if (((sys & SYSTEM_TABLE_MASK) >> SYSTEM_TABLE_SHIFT) == TABLE_IJF_DOUBLE_REPECHAGE)
+            return _("IJF Dbl Rep");
+
         switch ((sys & SYSTEM_TABLE_MASK) >> SYSTEM_TABLE_SHIFT) {
-        case TABLE_DOUBLE_REPECHAGE: return _("Dbl Repchg");
+        case TABLE_DOUBLE_REPECHAGE: return _("FIN Dbl Repchg");
         case TABLE_SWE_DUBBELT_AATERKVAL: return _("SWE Dubb återkv");
         case TABLE_SWE_DIREKT_AATERKVAL: return _("SWE Dir återkv");
         case TABLE_EST_D_KLASS: return _("EST D klass");
@@ -942,12 +945,15 @@ gchar *get_system_description(gint index, gint competitors)
 // Return name of the system
 static gchar *get_system_name(gint num)
 {
+    if (num == CAT_IJF_DOUBLE_REPECHAGE)
+        return _("IJF Double Repechage");
+
     switch (num) {
     case CAT_SYSTEM_DEFAULT: return _("Default");
     case CAT_SYSTEM_POOL: return _("Pool");
     case CAT_SYSTEM_DPOOL: return _("Double Pool");
     case CAT_SYSTEM_QPOOL: return _("Quad Pool");
-    case CAT_SYSTEM_REPECHAGE: return _("Double Repechage");
+    case CAT_SYSTEM_REPECHAGE: return _("FIN Double Repechage");
     case CAT_SYSTEM_DUBBELT_AATERKVAL: return _("SWE Double Repechage");
     case CAT_SYSTEM_DIREKT_AATERKVAL: return _("SWE Double Elimination");
     case CAT_SYSTEM_EST_D_KLASS: return _("EST Double Elimination");

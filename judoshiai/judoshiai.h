@@ -91,6 +91,7 @@ enum tables {
     TABLE_ESP_REPESCA_SIMPLE,
     NUM_TABLES
 };
+#define TABLE_IJF_DOUBLE_REPECHAGE TABLE_ESP_REPESCA_DOBLE
 
 enum cat_systems {
     CAT_SYSTEM_DEFAULT = 0,
@@ -109,6 +110,7 @@ enum cat_systems {
     CAT_ESP_REPESCA_SIMPLE,
     NUM_SYSTEMS
 };
+#define CAT_IJF_DOUBLE_REPECHAGE CAT_ESP_REPESCA_DOBLE
 
 enum french_systems {
     FRENCH_8 = 0,

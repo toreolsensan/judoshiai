@@ -1122,6 +1122,9 @@ msgstr "Tuplapooli"
 msgid "Double Repechage"
 msgstr "Ranskalainen"
 
+msgid "FIN Double Repechage"
+msgstr "FIN Ranskalainen"
+
 msgid "SWE Double Repechage"
 msgstr "SWE Ranskalainen"
 
@@ -1212,8 +1215,14 @@ msgstr "Ottelu"
 msgid "Quad Pool"
 msgstr "Neloispooli"
 
+msgid "IJF Dbl Rep"
+msgstr "IJF Ransk."
+
 msgid "Dbl Repchg"
 msgstr "Ransk."
+
+msgid "FIN Dbl Repchg"
+msgstr "FIN Ransk."
 
 msgid "SWE Dubb återkv"
 msgstr "SWE Ransk."
@@ -1256,6 +1265,9 @@ msgstr "ESP Lyhyet keräilyt"
 
 msgid "Quadruple pool"
 msgstr "Neloispooli"
+
+msgid "IJF Double Repechage"
+msgstr "IJF Ranskalainen"
 
 msgid "Picture Files"
 msgstr "Kuvatiedostot"

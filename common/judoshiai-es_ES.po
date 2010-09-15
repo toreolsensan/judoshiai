@@ -1125,6 +1125,9 @@ msgstr "2 ligas cruzadas"
 msgid "Double Repechage"
 msgstr "Repesca doble"
 
+msgid "FIN Double Repechage"
+msgstr "FIN Repesca doble"
+
 msgid "SWE Double Repechage"
 msgstr "SWE Repesca doble"
 
@@ -1193,6 +1196,9 @@ msgstr "Final directa"
 msgid "Dbl Repchg"
 msgstr "Rep. doble"
 
+msgid "FIN Dbl Repchg"
+msgstr "FIN Rep. doble"
+
 msgid "DoublePool"
 msgstr "2 ligas"
 
@@ -1232,6 +1238,9 @@ msgstr "Al mejor de 3"
 msgid "Quad Pool"
 msgstr "4 Ligas cruzadas"
 
+msgid "IJF Dbl Rep"
+msgstr "IJF Rep. doble"
+
 msgid "SWE Dubb återkv"
 msgstr "SWE Rep doble"
 
@@ -1266,6 +1275,9 @@ msgid "ESP Double Repechage from Beginning"
 msgstr "Repesca doble desde 1ª ronda"
 
 msgid "ESP Double Repechage"
+msgstr "Repesca doble"
+
+msgid "IJF Double Repechage"
 msgstr "Repesca doble"
 
 msgid "ESP Simple Repechage"
