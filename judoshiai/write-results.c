@@ -182,7 +182,7 @@ static void pool_results(FILE *f, gint category, struct judoka *ctg, gint num_ju
     empty_pool_struct(&pm);
 }
 
-static void dpool_results(FILE *f, gint category, struct judoka *ctg, gint num_judokas)
+static void dqpool_results(FILE *f, gint category, struct judoka *ctg, gint num_judokas, gint sys)
 {
     struct pool_matches pm;
     struct judoka *j1 = NULL;
@@ -191,7 +191,8 @@ static void dpool_results(FILE *f, gint category, struct judoka *ctg, gint num_j
 
     fill_pool_struct(category, num_judokas, &pm);
 
-    i = num_matches(get_cat_system(category), num_judokas) + 1;
+    i = num_matches(get_cat_system(category), num_judokas) + 
+        (sys == SYSTEM_DPOOL ? 1 : 5);
 
     /* first semifinal */
     if (pm.m[i].blue_points)
@@ -273,6 +274,13 @@ static void french_results(FILE *f, gint category, struct judoka *ctg,
     GET_BRONZE1(medal_matches[table][sys][0]);
     GET_BRONZE2(medal_matches[table][sys][1]);
 
+    if (table == TABLE_NO_REPECHAGE ||
+        table == TABLE_ESP_DOBLE_PERDIDA) {
+	bronze1 = fifth1;
+	bronze2 = fifth2;
+	fifth1 = fifth2 = 0;
+    }
+
     if (gold && (j1 = get_data(gold))) {
         write_result(f, 1, j1->first, j1->last, j1->club, j1->country);
         free_judoka(j1);
@@ -322,7 +330,8 @@ static void write_cat_result(FILE *f, gint category)
         break;
 
     case SYSTEM_DPOOL:
-        dpool_results(f, category, ctg, num_judokas);
+    case SYSTEM_QPOOL:
+        dqpool_results(f, category, ctg, num_judokas, sys);
         break;
 
     case SYSTEM_FRENCH_8:

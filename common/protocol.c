@@ -159,13 +159,12 @@ gint decode_msg(struct message *m, guchar *buf, gint buflen)
     gint len, ver;
 
     get8(ver);
-
+    
     if (ver != COMM_VERSION) {
 	g_print("%s:%d: Wrong message version %d (%d expected)\n",
 		__FUNCTION__, __LINE__, ver, COMM_VERSION);
 	return -1;
     }
-
     get8(m->type);
     get16(len);
 
@@ -290,8 +289,8 @@ gint decode_msg(struct message *m, guchar *buf, gint buflen)
     return len;
 
  out:
-    g_print("%s:%d: Too short buffer %d\n",
-	    __FUNCTION__, __LINE__, buflen);
+    g_print("%s:%d: Too short buflen=%d len=%d type=%d buf=%p p=%p end=%p\n",
+	    __FUNCTION__, __LINE__, buflen, len, m->type, buf, p, end);
     return -1;
 }
 

@@ -766,6 +766,7 @@ void get_file(http_parser_t *parser)
         else if (!strcmp(p2, "pdf")) mime = "application/pdf";
         else if (!strcmp(p2, "swf")) mime = "application/x-shockwave-flash";
         else if (!strcmp(p2, "ico")) mime = "image/vnd.microsoft.icon";
+        else if (!strcmp(p2, "js")) mime = "text/javascript";
     }
     gchar *docfile = g_build_filename(installation_dir, "etc", p, NULL);
     //g_print("GET %s\n", docfile);

@@ -35,7 +35,7 @@ judoshiai: judoshiai1
 endif
 
 judoshiai1: $(OBJS)
-	gcc $(PROF) -g -Wl,-rpath -Wl,bin $(OBJS) -o judoshiai1 $(LIBS)
+	$(LD) $(PROF) -g -Wl,-rpath -Wl,bin $(OBJS) -o judoshiai1 $(LIBS)
 
 avl.o: ../common/avl.c
 	${CC} $(PROF) -g $(CFLAGS) -c $< -o $@

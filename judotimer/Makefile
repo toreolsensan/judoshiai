@@ -32,7 +32,7 @@ judotimer: judotimer1
 endif
 
 judotimer1: $(OBJS)
-	${CC} -g $(RPATH) $(OBJS) -o judotimer1 $(LIBS)
+	${LD} -g $(RPATH) $(OBJS) -o judotimer1 $(LIBS)
 
 ip.o: ../common/ip.c
 	${CC} -g $(CFLAGS) -c $< -o $@

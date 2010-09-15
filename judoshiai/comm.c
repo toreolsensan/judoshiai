@@ -346,6 +346,7 @@ gpointer node_thread(gpointer args)
     struct sockaddr_in my_addr, caller;
     gint reuse = 1;
     fd_set read_fd, fds;
+    gint xmllen = strlen(xml);
 
 #ifndef WIN32
     signal(SIGPIPE, SIG_IGN);
@@ -471,7 +472,7 @@ gpointer node_thread(gpointer args)
 		struct message msg;
 
                 if (strncmp(inbuf, "<policy-file-request/>", 10) == 0) {
-                    send(connections[i].fd, xml, strlen(xml)+1, 0);
+                    send(connections[i].fd, xml, xmllen+1, 0);
                     g_print("policy file sent to %d\n", i);
                 }
 

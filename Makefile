@@ -50,6 +50,7 @@ endif
 	cp etc/*.txt $(RELDIR)/etc/
 	cp etc/*.css $(RELDIR)/etc/
 	cp etc/*.mp3 $(RELDIR)/etc/
+	cp etc/*.shi $(RELDIR)/etc/
 	#cp flash/judo*.swf flash/judo*.html $(RELDIR)/etc/
 	cp licenses/* $(RELDIR)/licenses
 	@echo

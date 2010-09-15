@@ -26,7 +26,7 @@ judoinfo: judoinfo1
 endif
 
 judoinfo1: $(OBJS)
-	gcc -g -Wl,-rpath -Wl,bin $(OBJS) -o judoinfo1 $(LIBS)
+	$(LD) -g -Wl,-rpath -Wl,bin $(OBJS) -o judoinfo1 $(LIBS)
 
 avl.o: ../common/avl.c
 	${CC} -g $(CFLAGS) -c $< -o $@
