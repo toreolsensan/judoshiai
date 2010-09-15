@@ -2,9 +2,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-22 09:18+0300\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Español <LL@li.org>\n"
+"POT-Creation-Date: 2010-04-26 15:19+0300\n"
+"PO-Revision-Date: 2010-05-04 15:00+0100\n"
+"Last-Translator: Jose Pedro Fernández Pascual <huma2000@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -520,7 +521,7 @@ msgid "Category:"
 msgstr "Categoria:"
 
 msgid "No seeding"
-msgstr "No sirviendo"
+msgstr "No cabeza"
 
 msgid "Gold medalist"
 msgstr "Medallista de oro"
@@ -687,10 +688,10 @@ msgid "Next contest"
 msgstr "Siguiente combate"
 
 msgid "Preparing"
-msgstr "Preparados"
+msgstr "Preparado"
 
 msgid "Preparing:"
-msgstr "Preparados:"
+msgstr "Preparado:"
 
 msgid "Delay the match"
 msgstr "Retrasar el combate"
@@ -954,7 +955,7 @@ msgid "REST TIME"
 msgstr "Tiempo de descanso"
 
 msgid "Seeding:"
-msgstr "Sirviendo:"
+msgstr "Cabeza de serie:"
 
 msgid "1"
 msgstr "1"
@@ -999,7 +1000,7 @@ msgid "Next"
 msgstr "Siguiente"
 
 msgid "Rest"
-msgstr "Descanso"
+msgstr "Resto"
 
 msgid "Do Backup"
 msgstr "Hacer copia de seguridad"
@@ -1008,7 +1009,7 @@ msgid "CANNOT OPEN BACKUP FILE"
 msgstr "NO SE PUEDE ABRRIR LA COPIA DE SEGURIDAD"
 
 msgid "Tournament Backup"
-msgstr "Copia de seguridad de la competición"
+msgstr "Copia de seguridad"
 
 msgid "Small display"
 msgstr "Pantalla pequeña"
@@ -1208,22 +1209,22 @@ msgid "Sound Files"
 msgstr "Archivos de sonido"
 
 msgid "Display layout"
-msgstr ""
+msgstr "Distribución de pantalla"
 
 msgid "Contest area"
-msgstr ""
+msgstr "Área de combate"
 
 msgid "Set time"
-msgstr ""
+msgstr "Configurar tiempo"
 
 msgid "Change language to Spanish"
-msgstr ""
+msgstr "Cambiar idioma al Español"
 
 msgid "Choose a file"
-msgstr ""
+msgstr "Selecciona un archivo"
 
 msgid "All Files"
-msgstr ""
+msgstr "Todos los archivos"
 
 msgid "Best of 3"
 msgstr "Al mejor de 3"
@@ -1232,19 +1233,19 @@ msgid "Quad Pool"
 msgstr "4 Ligas cruzadas"
 
 msgid "SWE Dubb återkv"
-msgstr ""
+msgstr "SWE Rep doble"
 
 msgid "SWE Dir återkv"
-msgstr ""
+msgstr "SWE Doble pérdida"
 
 msgid "EST D klass"
-msgstr ""
+msgstr "EST Doble pérdida"
 
 msgid "No Repechg"
-msgstr ""
+msgstr "Sin repesca"
 
 msgid "SWE Enkelt återkv"
-msgstr ""
+msgstr "SWE. Rep simple"
 
 msgid "ESP Dbl Lost"
 msgstr "Dbl. per."
@@ -1274,19 +1275,19 @@ msgid "Quadruple pool"
 msgstr "4 Ligas cruzadas"
 
 msgid "Picture Files"
-msgstr ""
+msgstr "Archivos de imágenes"
 
 msgid "Print Headers"
-msgstr ""
+msgstr "Encabezados de impresión"
 
 msgid "Language Selection"
-msgstr ""
+msgstr "Selección de idioma"
 
 msgid "Communication"
-msgstr ""
+msgstr "Comunicación"
 
 msgid "Club Text Selection"
-msgstr ""
+msgstr "Selección del texto de Club"
 
 msgid "Print Logo"
-msgstr ""
+msgstr "Imprimir logo"

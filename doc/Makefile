@@ -8,9 +8,11 @@ endif
 
 DOCSHIAI_FI=judoshiai-fi.pdf
 DOCSHIAI_EN=judoshiai-en.pdf
+DOCSHIAI_ES=judoshiai-es.pdf
 DOCTIMER_FI=judotimer-fi.pdf
 DOCTIMER_EN=judotimer-en.pdf
-DOCFILES=$(DOCSHIAI_FI) $(DOCSHIAI_EN) $(DOCTIMER_FI) $(DOCTIMER_EN)
+DOCTIMER_ES=judotimer-es.pdf
+DOCFILES=$(DOCSHIAI_FI) $(DOCSHIAI_EN) $(DOCSHIAI_ES) $(DOCTIMER_FI) $(DOCTIMER_EN) $(DOCTIMER_ES)
 
 all: $(DOCFILES)
 

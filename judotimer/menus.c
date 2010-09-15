@@ -827,11 +827,11 @@ GtkWidget *get_option_menu( void )
 #endif /* WIN32 */
 
 static const gchar *help_file_names[NUM_LANGS] = {
-    "judoshiai-fi.pdf", "judoshiai-en.pdf", "judoshiai-en.pdf", "judoshiai-en.pdf"
+    "judoshiai-fi.pdf", "judoshiai-en.pdf", "judoshiai-en.pdf", "judoshiai-es.pdf"
 };
 
 static const gchar *timer_help_file_names[NUM_LANGS] = {
-    "judotimer-fi.pdf", "judotimer-en.pdf", "judotimer-en.pdf", "judotimer-en.pdf"
+    "judotimer-fi.pdf", "judotimer-en.pdf", "judotimer-en.pdf", "judotimer-es.pdf"
 };
 
 void start_help(GtkWidget *w, gpointer data)

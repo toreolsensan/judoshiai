@@ -550,7 +550,7 @@ static void open_url(const char *szURL) {
 #endif
 
 static const gchar *help_file_names[NUM_LANGS] = {
-    "judoshiai-fi.pdf", "judoshiai-en.pdf", "judoshiai-en.pdf", "judoshiai-en.pdf"
+    "judoshiai-fi.pdf", "judoshiai-en.pdf", "judoshiai-en.pdf", "judoshiai-es.pdf"
 };
 
 void start_help(GtkWidget *w, gpointer data)

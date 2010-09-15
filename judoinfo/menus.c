@@ -369,7 +369,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
 #endif /* WIN32 */
 
 static const gchar *help_file_names[NUM_LANGS] = {
-    "judoshiai-fi.pdf", "judoshiai-en.pdf", "judoshiai-en.pdf", "judoshiai-en.pdf"
+    "judoshiai-fi.pdf", "judoshiai-en.pdf", "judoshiai-en.pdf", "judoshiai-es.pdf"
 };
 
 void start_help(GtkWidget *w, gpointer data)
