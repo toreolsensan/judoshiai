@@ -29,7 +29,8 @@ all:
 	cp $(JUDOSHIAIFILE) $(RELDIR)/bin/
 	cp $(JUDOTIMERFILE) $(RELDIR)/bin/
 	cp $(JUDOINFOFILE) $(RELDIR)/bin/
-ifeq ($(OS),Windows_NT)
+### Windows executable ###
+ifeq ($(TGT),WIN32)
 	cp $(RUNDIR)/bin/*.dll $(RELDIR)/bin/
 	cp $(SOUNDDIR)/fmodex.dll $(RELDIR)/bin/
 	cp -r $(RUNDIR)/lib/gtk-2.0 $(RELDIR)/lib/
@@ -39,6 +40,7 @@ ifeq ($(OS),Windows_NT)
 	cp -r $(RUNDIR)/share/locale/en_GB $(RELDIR)/share/locale/
 	cp -r $(RUNDIR)/share/themes $(RELDIR)/share/
 	cp -r $(RUNDIR)/etc $(RELDIR)/
+### Linux executable ###
 else
 	cp $(SOUNDDIR)/lib/libfmodex-*.so $(RELDIR)/lib/libfmodex.so
 endif
@@ -63,10 +65,10 @@ endif
 #echo 'gtk-theme-name = "MS-Windows"' >$(RELDIR)/etc/gtk-2.0/gtkrc
 
 setup:
-ifeq ($(OS),Windows_NT)
+ifeq ($(TGT),WIN32)
 	sed "s/AppVerName=.*/AppVerName=Shiai $(SHIAI_VER_NUM)/" etc/judoshiai.iss >judoshiai1.iss
 	sed "s/OutputBaseFilename=.*/OutputBaseFilename=judoshiai-setup-$(SHIAI_VER_NUM)/" judoshiai1.iss >judoshiai2.iss
-	/c/Program\ Files/Inno\ Setup\ 5/ISCC.exe judoshiai2.iss
+	$(INNOSETUP) judoshiai2.iss
 	rm -f judoshiai*.iss
 else
 	tar -C $(RELEASEDIR) -cf judoshiai.tar judoshiai

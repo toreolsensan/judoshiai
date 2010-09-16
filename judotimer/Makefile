@@ -1,29 +1,28 @@
-
-all: judotimer
-
-OBJS = main.o menus.o stopwatch.o comm.o ip.o protocol.o show-ad.o sound.o
-
 include ../common/Makefile.inc
+
+all: judotimer$(SUFF)
+
+OBJS += main.o menus.o stopwatch.o comm.o ip.o protocol.o show-ad.o sound.o
 
 CFLAGS += -DAPPLICATION="\"judotimer\""
 CFLAGS += -I$(SOUNDDIR)/inc
 LIBS += -L$(SOUNDDIR)/lib -lfmodex
 
-ifeq ($(OS),Windows_NT)
-
+### Windows executable ###
+ifeq ($(TGT),WIN32)
 RPATH =
 
-judotimer: judotimer1 judotimer-icon.res
-	ResHacker.exe -add judotimer1.exe, judotimer.exe, judotimer-icon.res, ,,
+judotimer.exe: judotimer1.exe judotimer-icon.res
+	$(RESHACKER) -add judotimer1.exe, judotimer.exe, judotimer-icon.res, ,,
 
 judotimer-icon.res: judotimer-icon.rc
-	windres.exe judotimer-icon.rc judotimer-icon.res
+	$(WINDRES) judotimer-icon.rc judotimer-icon.res
 
 judotimer-icon.rc:
 	echo "APPICONS ICON \"../etc/judotimer.ico\"" >judotimer-icon.rc
 
+### Linux executable ###
 else
-
 RPATH = -Wl,-rpath,/usr/lib/judoshiai/lib
 
 judotimer: judotimer1
@@ -31,8 +30,8 @@ judotimer: judotimer1
 
 endif
 
-judotimer1: $(OBJS)
-	${LD} -g $(RPATH) $(OBJS) -o judotimer1 $(LIBS)
+judotimer1$(SUFF): $(OBJS)
+	${LD} -g $(RPATH) $(OBJS) -o judotimer1$(SUFF) $(LIBS)
 
 ip.o: ../common/ip.c
 	${CC} -g $(CFLAGS) -c $< -o $@

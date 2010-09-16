@@ -1,32 +1,31 @@
-
-all: judoinfo
-
-OBJS = main.o menus.o comm.o ip.o protocol.o trees.o avl.o
-
 include ../common/Makefile.inc
+
+all: judoinfo$(SUFF)
+
+OBJS += main.o menus.o comm.o ip.o protocol.o trees.o avl.o
 
 CFLAGS += -DAPPLICATION="\"judoinfo\""
 
-ifeq ($(OS),Windows_NT)
-
-judoinfo: judoinfo1 judoinfo-icon.res
-	ResHacker.exe -add judoinfo1.exe, judoinfo.exe, judoinfo-icon.res, ,,
+### Windows executable ###
+ifeq ($(TGT),WIN32)
+judoinfo.exe: judoinfo1.exe judoinfo-icon.res
+	$(RESHACKER) -add judoinfo1.exe, judoinfo.exe, judoinfo-icon.res, ,,
 
 judoinfo-icon.res: judoinfo-icon.rc
-	windres.exe judoinfo-icon.rc judoinfo-icon.res
+	$(WINDRES) judoinfo-icon.rc judoinfo-icon.res
 
 judoinfo-icon.rc:
 	echo "APPICONS ICON \"../etc/judoinfo.ico\"" >judoinfo-icon.rc
 
+### Linux executable ###
 else
-
 judoinfo: judoinfo1
 	cp judoinfo1 judoinfo
 
 endif
 
-judoinfo1: $(OBJS)
-	$(LD) -g -Wl,-rpath -Wl,bin $(OBJS) -o judoinfo1 $(LIBS)
+judoinfo1$(SUFF): $(OBJS)
+	$(LD) -g -Wl,-rpath -Wl,bin $(OBJS) -o judoinfo1$(SUFF) $(LIBS)
 
 avl.o: ../common/avl.c
 	${CC} -g $(CFLAGS) -c $< -o $@

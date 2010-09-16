@@ -1,7 +1,11 @@
+#PROF=-pg
+PROF=
 
-all: judoshiai
+include ../common/Makefile.inc
 
-OBJS = main.o competitors.o sheets.o set-one-judoka.o sqlite3.o \
+all: judoshiai$(SUFF)
+
+OBJS += main.o competitors.o sheets.o set-one-judoka.o sqlite3.o \
        popup-menu.o util.o db.o categories.o log.o matches.o \
        names.o comm.o ip.o protocol.o set-categories.o category-graph.o \
        completion.o another-shiai.o avl.o httpp.o httpd.o import.o set-password.o \
@@ -9,33 +13,28 @@ OBJS = main.o competitors.o sheets.o set-one-judoka.o sqlite3.o \
        sql-dialog.o drawing.o print.o print-texts.o db-competitors.o db-categories.o \
        db-matches.o db-table.o write-results.o match-data.o
 
-#PROF=-pg
-PROF=
-
-include ../common/Makefile.inc
-
 CFLAGS += -DAPPLICATION="\"judoshiai\""
 
-ifeq ($(OS),Windows_NT)
-
-judoshiai: judoshiai1 judoshiai-icon.res
-	ResHacker.exe -add judoshiai1.exe, judoshiai.exe, judoshiai-icon.res, ,,
+### Windows executable ###
+ifeq ($(TGT),WIN32)
+judoshiai.exe: judoshiai1.exe judoshiai-icon.res
+	$(RESHACKER) -add judoshiai1.exe, judoshiai.exe, judoshiai-icon.res, ,,
 
 judoshiai-icon.res: judoshiai-icon.rc
-	windres.exe judoshiai-icon.rc judoshiai-icon.res
+	$(WINDRES) judoshiai-icon.rc judoshiai-icon.res
 
 judoshiai-icon.rc: ../etc/judoshiai.ico
 	echo "APPICONS ICON \"../etc/judoshiai.ico\"" >judoshiai-icon.rc
 
+### Linux executable ###
 else
-
 judoshiai: judoshiai1
 	cp judoshiai1 judoshiai
 
 endif
 
-judoshiai1: $(OBJS)
-	$(LD) $(PROF) -g -Wl,-rpath -Wl,bin $(OBJS) -o judoshiai1 $(LIBS)
+judoshiai1$(SUFF): $(OBJS)
+	$(LD) $(PROF) -g -Wl,-rpath -Wl,bin $(OBJS) -o judoshiai1$(SUFF) $(LIBS)
 
 avl.o: ../common/avl.c
 	${CC} $(PROF) -g $(CFLAGS) -c $< -o $@
