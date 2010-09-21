@@ -300,10 +300,21 @@ static gboolean expose(GtkWidget *widget, GdkEventExpose *event, gpointer userda
 {
     static cairo_surface_t *cs = NULL;
     cairo_t *c = gdk_cairo_create(widget->window);
+    static gint oldw = 0, oldh = 0;
 
-    if (!cs)
+    if (cs && (oldw != widget->allocation.width || oldh != widget->allocation.height)) {
+        g_print("%d:%d %d:%d\n", oldw, widget->allocation.width, oldh, widget->allocation.height);
+        cairo_surface_destroy(cs);
+        cs = NULL;
+    }
+
+    if (!cs) {
         cs = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 
                                         widget->allocation.width, widget->allocation.height);
+        oldw = widget->allocation.width;
+        oldh = widget->allocation.height;
+    }
+
     if (button_drag) {
         paint(c, widget->allocation.width, widget->allocation.height, cs);
     } else {
