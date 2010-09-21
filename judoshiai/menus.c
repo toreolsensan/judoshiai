@@ -29,6 +29,8 @@ extern void toggle_automatic_web_page_update(gpointer callback_data,
                                              guint callback_action, GtkWidget *menu_item);
 extern void toggle_weights_in_sheets(gpointer callback_data, 
                                      guint callback_action, GtkWidget *menu_item);
+extern void toggle_grade_visible(gpointer callback_data, 
+                                 guint callback_action, GtkWidget *menu_item);
 extern void properties(GtkWidget *w, gpointer data);
 extern void get_from_old_competition(GtkWidget *w, gpointer data);
 extern void get_from_old_competition_with_weight(GtkWidget *w, gpointer data);
@@ -64,7 +66,8 @@ static GtkWidget *menubar,
     *preference_comm, *preference_comm_node, *preference_own_ip_addr, *preference_show_connections,
     *preference_auto_sheet_update/*, *preference_auto_web_update*/, *preference_results_in_finnish, 
     *preference_langsel, *preference_results_in_swedish, *preference_results_in_english, 
-    *preference_results_in_spanish, *preference_weights_to_pool_sheets,
+    *preference_results_in_spanish, *preference_weights_to_pool_sheets, 
+    *preference_grade_visible, *preference_layout,
     *preference_sheet_font, *preference_password, *judotimer_control[NUM_TATAMIS],
     *preference_mirror, *preference_auto_arrange, *preference_club_text,
     *preference_club_text_club, *preference_club_text_country, *preference_club_text_both,
@@ -356,6 +359,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     preference_club_text_abbr         = gtk_check_menu_item_new_with_label(_("Abbreviations in Sheets"));
 
     preference_weights_to_pool_sheets = gtk_check_menu_item_new_with_label(_("Weights Visible in Pool Sheets"));
+    preference_grade_visible          = gtk_check_menu_item_new_with_label("");
     preference_sheet_font             = gtk_menu_item_new_with_label(_("Sheet Font"));
     preference_password               = gtk_menu_item_new_with_label(_("Password"));
     preference_mirror                 = gtk_check_menu_item_new_with_label("");
@@ -396,11 +400,18 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_menu_shell_append(GTK_MENU_SHELL(submenu), preference_club_text_abbr);
 
     gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), gtk_separator_menu_item_new());
-    gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_weights_to_pool_sheets);
+
+    preference_layout = gtk_menu_item_new_with_label("");
+    submenu = gtk_menu_new();
+    gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_layout);
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(preference_layout), submenu);
+    gtk_menu_shell_append(GTK_MENU_SHELL(submenu), preference_weights_to_pool_sheets);
+    gtk_menu_shell_append(GTK_MENU_SHELL(submenu), preference_grade_visible);
+    gtk_menu_shell_append(GTK_MENU_SHELL(submenu), preference_use_logo);
+    gtk_menu_shell_append(GTK_MENU_SHELL(submenu), preference_sheet_font);
+
     gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_mirror);
     gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_auto_arrange);
-    gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_use_logo);
-    gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_sheet_font);
     gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_password);
 
     g_signal_connect(G_OBJECT(preference_comm_node),              "activate", G_CALLBACK(ask_node_ip_address), 0);
@@ -424,6 +435,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
 		     G_CALLBACK(set_club_abbr), (gpointer)NULL);
 
     g_signal_connect(G_OBJECT(preference_weights_to_pool_sheets), "activate", G_CALLBACK(toggle_weights_in_sheets), 0);
+    g_signal_connect(G_OBJECT(preference_grade_visible),          "activate", G_CALLBACK(toggle_grade_visible), 0);
     g_signal_connect(G_OBJECT(preference_sheet_font),             "activate", G_CALLBACK(font_dialog), 0);
     g_signal_connect(G_OBJECT(preference_password),               "activate", G_CALLBACK(set_webpassword_dialog), 0);
     g_signal_connect(G_OBJECT(preference_mirror),                 "activate", G_CALLBACK(toggle_mirror), 0);
@@ -484,6 +496,16 @@ void set_preferences(void)
     error = NULL;
     if (g_key_file_get_boolean(keyfile, "preferences", "automatic_sheet_update", &error)) {
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(preference_auto_sheet_update), TRUE);
+    }
+
+    error = NULL;
+    if (g_key_file_get_boolean(keyfile, "preferences", "weightvisible", &error)) {
+        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(preference_weights_to_pool_sheets), TRUE);
+    }
+
+    error = NULL;
+    if (g_key_file_get_boolean(keyfile, "preferences", "gradevisible", &error) || error) {
+        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(preference_grade_visible), TRUE);
     }
 
     error = NULL;
@@ -765,7 +787,9 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(preference_club_text_both        , _("Both Club and Country"));
     change_menu_label(preference_club_text_abbr        , _("Abbreviations in Sheets"));
 
-    change_menu_label(preference_weights_to_pool_sheets, _("Weights Visible in Pool Sheets"));
+    change_menu_label(preference_layout                , _("Sheet Layout"));
+    change_menu_label(preference_weights_to_pool_sheets, _("Weights Visible"));
+    change_menu_label(preference_grade_visible         , _("Grade Visible"));
     change_menu_label(preference_sheet_font            , _("Sheet Font"));
     change_menu_label(preference_password              , _("Password"));
     change_menu_label(preference_mirror                , _("Mirror Tatami Order"));

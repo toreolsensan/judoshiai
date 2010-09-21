@@ -121,6 +121,7 @@ GtkWidget     *notes = NULL;
 gboolean       automatic_sheet_update = FALSE;
 gboolean       automatic_web_page_update = FALSE;
 gboolean       weights_in_sheets = FALSE;
+gboolean       grade_visible = FALSE;
 gboolean       cleanup_import = FALSE;
 
 GdkCursor     *wait_cursor = NULL;

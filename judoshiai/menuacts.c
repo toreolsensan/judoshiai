@@ -342,6 +342,13 @@ void toggle_automatic_web_page_update(GtkWidget *menu_item, gpointer data)
 void toggle_weights_in_sheets(GtkWidget *menu_item, gpointer data)
 {
     weights_in_sheets = GTK_CHECK_MENU_ITEM(menu_item)->active;
+    g_key_file_set_boolean(keyfile, "preferences", "weightvisible", weights_in_sheets);
+}
+
+void toggle_grade_visible(GtkWidget *menu_item, gpointer data)
+{
+    grade_visible = GTK_CHECK_MENU_ITEM(menu_item)->active;
+    g_key_file_set_boolean(keyfile, "preferences", "gradevisible", grade_visible);
 }
 
 void toggle_mirror(GtkWidget *menu_item, gpointer data)

@@ -541,6 +541,7 @@ extern struct message hello_message;
 extern gboolean automatic_sheet_update;
 extern gboolean automatic_web_page_update;
 extern gboolean weights_in_sheets;
+extern gboolean grade_visible;
 extern gboolean cleanup_import;
 
 extern gint webpwcrc32;
