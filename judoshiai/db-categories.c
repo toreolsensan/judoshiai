@@ -114,6 +114,7 @@ void db_update_category(int num, struct judoka *j)
         strncpy(data1->category, j->last, sizeof(data1->category)-1);
         data1->tatami = j->belt;
         data1->group = j->birthyear;
+        data1->deleted = j->deleted;
         set_category_to_queue(data1);
     } else
         g_print("Error %s %d (cat %d)\n", __FUNCTION__, __LINE__, num);

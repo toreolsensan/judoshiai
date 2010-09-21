@@ -155,6 +155,11 @@ void set_category_to_queue(struct category_data *data)
         }
     }
 
+    if (data->deleted) {
+        data->next = data->prev = NULL;
+        return;
+    }
+
     queue = &category_queue[data->tatami];
 
     while (queue) {

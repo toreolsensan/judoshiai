@@ -422,7 +422,6 @@ static gboolean expose(GtkWidget *widget, GdkEventExpose *event, gpointer userda
     static gint oldw = 0, oldh = 0;
 
     if (cs && (oldw != widget->allocation.width || oldh != widget->allocation.height)) {
-        g_print("%d:%d %d:%d\n", oldw, widget->allocation.width, oldh, widget->allocation.height);
         cairo_surface_destroy(cs);
         cs = NULL;
     }
