@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-22 09:18+0300\n"
+"POT-Creation-Date: 2010-09-23 10:45+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1292,3 +1292,24 @@ msgstr "Seuratekstin valinta"
 
 msgid "Print Logo"
 msgstr "Tulosta logo"
+
+msgid "Sheet Layout"
+msgstr "Kaavion ulkoasu"
+
+msgid "Weights Visible"
+msgstr "Painot näkyvissä"
+
+msgid "Grade Visible"
+msgstr "Vyö näkyvissä"
+
+msgid "Print Competitors With Template"
+msgstr "Tulosta kilpailijat mallineella"
+
+msgid "Select template"
+msgstr "Valitse malline"
+
+msgid "Line"
+msgstr "Rivi"
+
+msgid "Syntax error"
+msgstr "Syntaksivirhe"
