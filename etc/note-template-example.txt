@@ -1,0 +1,107 @@
+# A template has instructions how to print a competitor list.
+# The list can be used for many purposes:
+# - print weigh-in notes where the competitor's weight is written down
+# - print ID cards
+#
+# Template file is composed of lines. A line starting with a hash mark is a comment,
+# otherwise it is a data line. Data belongs to one of the following categories:
+# - general settings
+# - attributes
+# - texts and pictures
+#
+# General settings:
+# - Note size is the size of the printed competitor ID/weigh-in note in mm.
+#   As many as possible notes are fitted on one A4 page.
+#   The following line is the default and can be left out (10 notes/A4 page).
+#     notesize 105 59.4
+# - Background picture can be used. Only PNG files are supported.
+#   Picture is resized to the notesize. Example:
+#     background C:\Pictures\MyBackground.png
+# 
+# Attribute lines describe how the text should look like. Their values are valid
+# until replaced by another attribute line:
+# - Font should be something that is supported by your system. The deafult is Arial.
+#     font Arial
+# - Default font size is 12:
+#     fontsize 12
+# - Text can be bold and/or italic:
+#     fontweight normal
+#     fontweight bold
+#     fontslant normal
+#     fontslant italic
+# - Font color is described by three numbers from 0.0 to 1.0. Numbers indicate the amount
+#   of red, green and blue. The default is black. Examples:
+#   White:
+#     color 1.0 1.0 1.0
+#   Black:
+#     color 0 0 0
+#   Blue:
+#     color 0 0 1.0
+#   Grey:
+#     color 0.5 0.5 0.5
+# 
+# Text uses the current attribute values. A text line contains also text's 
+# position (mm) and angle (degrees). Position is expressed by two numbers telling the
+# text's distance from the note's left and top sides. The distance is measured to the left
+# bottom corner of the first letter. Example text starting 15 mm from the left and 
+# 30 mm from the top:
+#     text 15.0 30.0 0.0 This is sample text
+# Vertical text from bottom up:
+#     text 55 77 90.0 This text is rotated 90 degrees counter-clockwise.
+# Text going down in 45 degree angle:
+#     text 10 20 -45 Going downhill...
+# All the text after the angle is printed to the end of line.
+#
+# A picture can be inserted anywhere inside the note sheet. The picture line contains
+# the position, size, angle, and path to a PNG file.
+#     picture 10 20 10 6 0 C:\Pictures\MyFlag.png
+# The position (10 20) is the place for the top left corner of the picture (mm). 
+# Picture will be resized to 10x6 mm. Angle is 0. In the end of the line is 
+# the file name of the picture.
+#
+# Both text and picture file name can contain special strings that are substituted
+# by their real values. For example the following line would write competitors name:
+#     text 10 20 0 Competitor: %LAST%, %FIRST%
+# The note would have text "Competitor: Smith, John" and the next note could read
+# "Competitor: Jones, Sarah", etc.
+#
+# The special strings are:
+#
+# %REGCATEGORY%       Name of the category the competitor registered.
+# %REALCATEGORY%      Name of the category the competitor really participates.
+# %LAST%              Last name.
+# %FIRST%             First name.
+# %CLUB%              Name of the club.
+# %COUNTRY%           Name of the country.
+# %CLUBCOUNTRY%       Club and country combined (result depends on the settings).
+# %INDEX%             Internal database index.
+# %WEIGHT%            Competitor's weight.
+# %YOB%               Competitor's year of birth.
+# %GRADE%             Competitor's grade.
+# %ID%                Competitor's ID number.
+# %BARCODE%           This is not text but a barcode presentation of the INDEX.
+# %WEIGHTTEXT%        Text "Weight" in selected language.
+#
+# Picture file name can also contain the special strings. The following line inserts
+# the flag of the competitor's country rotated 45 degrees:
+#     picture 10 30 10 6 45 C:\Pictures\Flags\%COUNTRY%.png
+# (The flags are not included in the JudoShiai software)
+# 
+# Next is the default template for the weigh-in notes (so there is
+# no real use for it):
+
+notesize 105 59.4
+
+fontslant normal
+fontweight bold
+font Arial
+fontsize 12
+notesize 105 59.4
+color 0.0 0.0 0.0
+
+text 22.0 15.0 0 %REGCATEGORY%
+text 36.0 15.0 0 %CLUBCOUNTRY%
+text 22.0 23.0 0 %LAST%, %FIRST%
+text 60.0 44.0 0 %INDEX%
+text 55.0 34.0 0 %BARCODE%
+text 22.0 30.0 0 %WEIGHTTEXT%
