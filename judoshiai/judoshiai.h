@@ -157,6 +157,7 @@ enum special_match_types {
 #define PRINT_WEIGHING_NOTES 0x10000000
 #define PRINT_SCHEDULE       0x20000000
 #define PRINT_ALL_CATEGORIES 0x30000000
+#define PRINT_WITH_TEMPLATE  0x40000000
 
 #define IS(x) (!strcmp(azColName[i], #x))
 #define VARVAL(_var, _val) "\"" #_var "\"=\"" #_val "\""

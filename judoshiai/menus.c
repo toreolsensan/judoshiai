@@ -56,7 +56,7 @@ static GtkWidget *menubar,
     *tournament_quit, *tournament_backup,
     *competitor_new, *competitor_search, *competitor_select_from_tournament, *competitor_add_from_text_file,
     *competitor_add_all_from_shiai, *competitor_add_all_with_weights, *competitor_remove_unweighted,
-    *competitor_restore_removed, *competitor_bar_code_search, *competitor_print_weigh_notes,
+    *competitor_restore_removed, *competitor_bar_code_search, *competitor_print_weigh_notes, *competitor_print_with_template,
     *category_new, *category_remove_empty, *category_create_official, 
     *category_print_all, *category_print_all_pdf, *category_print_matches,
     *category_properties, *category_best_of_three, *category_to_tatamis[NUM_TATAMIS],
@@ -203,6 +203,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     competitor_restore_removed      = gtk_menu_item_new_with_label(_("Restore Removed"));
     competitor_bar_code_search      = gtk_menu_item_new_with_label(_("Bar Code Search"));
     competitor_print_weigh_notes    = gtk_menu_item_new_with_label(_("Print Weight Notes"));
+    competitor_print_with_template  = gtk_menu_item_new_with_label("");
 
     gtk_menu_shell_append(GTK_MENU_SHELL(competitors_menu), competitor_new);
     gtk_menu_shell_append(GTK_MENU_SHELL(competitors_menu), competitor_search);
@@ -216,7 +217,9 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_menu_shell_append(GTK_MENU_SHELL(competitors_menu), competitor_restore_removed);
     gtk_menu_shell_append(GTK_MENU_SHELL(competitors_menu), gtk_separator_menu_item_new());
     gtk_menu_shell_append(GTK_MENU_SHELL(competitors_menu), competitor_bar_code_search);
+    gtk_menu_shell_append(GTK_MENU_SHELL(competitors_menu), gtk_separator_menu_item_new());
     gtk_menu_shell_append(GTK_MENU_SHELL(competitors_menu), competitor_print_weigh_notes);
+    gtk_menu_shell_append(GTK_MENU_SHELL(competitors_menu), competitor_print_with_template);
 
     g_signal_connect(G_OBJECT(competitor_new),                 "activate", G_CALLBACK(new_judoka), 0);
     g_signal_connect(G_OBJECT(competitor_search),              "activate", G_CALLBACK(search_competitor), 0);
@@ -229,6 +232,8 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     g_signal_connect(G_OBJECT(competitor_bar_code_search),     "activate", G_CALLBACK(barcode_search), 0);
     g_signal_connect(G_OBJECT(competitor_print_weigh_notes),   "activate", G_CALLBACK(print_doc), 
                      (gpointer)(PRINT_WEIGHING_NOTES | PRINT_TO_PDF));
+    g_signal_connect(G_OBJECT(competitor_print_with_template), "activate", G_CALLBACK(print_doc), 
+                     (gpointer)(PRINT_WITH_TEMPLATE | PRINT_TO_PDF));
 
     gtk_widget_add_accelerator(competitor_new, "activate", group, GDK_N, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
     gtk_widget_add_accelerator(competitor_search, "activate", group, GDK_F, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
@@ -656,6 +661,7 @@ void set_menu_active(void)
     SET_SENSITIVE(competitor_restore_removed     , DB_OK);
     SET_SENSITIVE(competitor_bar_code_search     , DB_OK);
     SET_SENSITIVE(competitor_print_weigh_notes   , DB_OK);
+    SET_SENSITIVE(competitor_print_with_template , DB_OK);
 
     SET_SENSITIVE(category_new            , DB_OK);
     SET_SENSITIVE(category_remove_empty   , DB_OK);
@@ -737,6 +743,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(competitor_restore_removed     , _("Restore Removed"));
     change_menu_label(competitor_bar_code_search     , _("Bar Code Search"));
     change_menu_label(competitor_print_weigh_notes   , _("Print Weight Notes"));
+    change_menu_label(competitor_print_with_template , _("Print Competitors With Template"));
 
     change_menu_label(category_new            , _("New Category"));
     change_menu_label(category_remove_empty   , _("Remove Empty"));
