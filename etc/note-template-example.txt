@@ -17,6 +17,9 @@
 # - Background picture can be used. Only PNG files are supported.
 #   Picture is resized to the notesize. Example:
 #     background C:\Pictures\MyBackground.png
+# - Note is surrounded by a border. You can set the border line width.
+#   Line width 0 means no border.
+#     border 1
 # 
 # Attribute lines describe how the text should look like. Their values are valid
 # until replaced by another attribute line:

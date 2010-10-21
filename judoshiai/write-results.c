@@ -51,13 +51,13 @@ void write_competitor(FILE *f, const gchar *first, const gchar *last, const gcha
         fprintf(f, 
                 "<tr><td><a href=\"%d.html\">%s, %s</a></td><td>%s</td><td>%s</td>"
                 "<td><a href=\"%s.html\">%s</a></td></tr>\n", 
-                index, utf8_to_html(last), utf8_to_html(first), belt, 
+                index, utf8_to_html(last), utf8_to_html(first), grade_visible ? belt : "", 
                 utf8_to_html(club), category, category);
     else
         fprintf(f, 
                 "<tr><td>%s, %s</td><td>%s</td><td>%s</td>"
                 "<td><a href=\"%s.html\">%s</a></td></tr>\n", 
-                utf8_to_html(last), utf8_to_html(first), belt, utf8_to_html(club), 
+                utf8_to_html(last), utf8_to_html(first), grade_visible ? belt : "", utf8_to_html(club), 
                 category, category);
 
     saved_competitors[saved_competitor_cnt] = index;

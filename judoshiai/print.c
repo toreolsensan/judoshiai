@@ -370,6 +370,7 @@ static void paint_weight_notes(struct paint_data *pd, gchar *templatefile)
     gchar *background = NULL;
     gdouble note_w = 210.0/2.0, note_h = 297.0/5.0;
     gdouble sx = 1.0, sy = 1.0;
+    gdouble border = 1.0;
     cairo_surface_t *image = NULL;
 
     // initialize text table
@@ -501,6 +502,10 @@ static void paint_weight_notes(struct paint_data *pd, gchar *templatefile)
                 g = atof(p);
                 NEXT_TOKEN;
                 b = atof(p);
+            } else if (strncmp(p1, "border ", 7) == 0) {
+                p = p1;
+                NEXT_TOKEN;
+                border = atof(p);
             } else { // error
                 ok = FALSE;
                 break;
@@ -587,8 +592,11 @@ static void paint_weight_notes(struct paint_data *pd, gchar *templatefile)
             cairo_restore(pd->c);
         }
 
-        cairo_rectangle(pd->c, x, y, X_MM(note_w), Y_MM(note_h));
-        cairo_stroke(pd->c);
+        if (border > 0.0) {
+            cairo_set_line_width(pd->c, border);
+            cairo_rectangle(pd->c, x, y, X_MM(note_w), Y_MM(note_h));
+            cairo_stroke(pd->c);
+        }
 
         sprintf(id_str, "%04d", atoi(ix));
 

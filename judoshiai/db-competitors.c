@@ -206,7 +206,7 @@ void db_print_competitors(FILE *f)
             "<td><table class=\"competitors\">"
             "<tr><td colspan=\"4\" align=\"center\"><h2>%s</h2></td></tr>\n", _T(competitor));
     fprintf(print_file, "<tr><th>%s</th><th>%s</th><th>%s</th><th>%s</th></tr>\n", 
-            _T(name), _T(grade), _T(club), _T(category));
+            _T(name), grade_visible ? _T(grade) : "", _T(club), _T(category));
 
     db_exec(db_name, "SELECT * FROM competitors ORDER BY \"last\" ASC", 
             (void *)PRINT_COMPETITORS, 
