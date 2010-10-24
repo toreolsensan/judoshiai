@@ -1,4 +1,4 @@
-SHIAI_VER_NUM=2.1-alpha7
+SHIAI_VER_NUM=2.1-alpha7a
 SHIAI_VERSION="\"$(SHIAI_VER_NUM)\""
 
 OBJS=
@@ -6,10 +6,12 @@ OBJS=
 ### Target executable type ###
 ifeq ($(TARGETOS),WIN32)
 TGT=WIN32
-else ifeq ($(OS),Windows_NT)
+else 
+ifeq ($(OS),Windows_NT)
 TGT=WIN32
 else
 TGT=LINUX
+endif
 endif
 
 ####################################
@@ -28,7 +30,8 @@ WINDRES=wine "C:\\MinGW\\bin\\windres.exe"
 INNOSETUP=wine "C:\\Program Files\\Inno Setup 5\\ISCC.exe"
 
 ### Windows ###
-else ifeq ($(OS),Windows_NT)
+else 
+ifeq ($(OS),Windows_NT)
 CC=gcc
 LD=gcc
 SUFF=.exe
@@ -49,6 +52,7 @@ RESHACKER=
 WINDRES=
 INNOSETUP=
 
+endif
 endif
 
 ###################
