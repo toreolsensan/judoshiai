@@ -1098,6 +1098,7 @@ void set_judokas_page(GtkWidget *notebook)
     GtkWidget *judokas_scrolled_window;
     GtkWidget *view;
     GtkTreeViewColumn *col;
+    gboolean retval = FALSE;
 
     /* 
      * list of judokas
@@ -1116,7 +1117,7 @@ void set_judokas_page(GtkWidget *notebook)
     update_category_status_info_all();
 
     col = gtk_tree_view_get_column(GTK_TREE_VIEW(current_view), 0);
-    g_signal_emit_by_name(col, "clicked");
+    g_signal_emit_by_name(col, "clicked", NULL, &retval);
 
 #if 0
     old_search_compare_func = gtk_tree_view_get_search_equal_func(current_view);

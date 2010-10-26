@@ -484,7 +484,7 @@ static gboolean select_number(GtkWidget *eventbox, GdkEventButton *event, void *
     nxt = get_next_comp(mdata);
     if (nxt)
         select_competitor(mdata->mcomp[nxt].eventbox, NULL, mdata);
-    //g_signal_emit_by_name(mdata->mcomp[nxt].eventbox, "button_press_event");
+    //g_signal_emit_by_name(mdata->mcomp[nxt].eventbox, "button_press_event", NULL, &retval);
     else
         mdata->selected = 0;
 
@@ -1197,7 +1197,9 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
                      G_CALLBACK(make_manual_mathes_callback), mdata);
 
     last_selected = 0;
-    g_signal_emit_by_name(mdata->mcomp[get_next_comp(mdata)].eventbox, "button_press_event");
+    gboolean retval = FALSE;
+    g_signal_emit_by_name(mdata->mcomp[get_next_comp(mdata)].eventbox, "button_press_event", 
+                          NULL, &retval);
 
     return dialog;
 }
@@ -1211,11 +1213,12 @@ void draw_all(GtkWidget *w, gpointer data)
 
     gint num_cats = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(current_model), NULL);
     gint cnt = 0;
+    gboolean retval = FALSE;
 
     gdk_window_set_cursor(GTK_WIDGET(main_window)->window, wait_cursor);
 
     col = gtk_tree_view_get_column(GTK_TREE_VIEW(current_view), 0);
-    g_signal_emit_by_name(col, "clicked");
+    g_signal_emit_by_name(col, "clicked", NULL, &retval);
 
     ok = gtk_tree_model_get_iter_first(current_model, &iter);
     while (ok) {
