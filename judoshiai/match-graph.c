@@ -225,7 +225,10 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
             cairo_save(c);
             cairo_select_font_face(c, MY_FONT, 0, CAIRO_FONT_WEIGHT_BOLD);
             cairo_move_to(c, left+5, y_pos+extents.height);
-            cairo_show_text(c, catdata ? catdata->category : "?");
+
+            snprintf(buf, sizeof(buf), "%s #%d", catdata ? catdata->category : "?", m->number);
+            cairo_show_text(c, buf);
+            //cairo_show_text(c, catdata ? catdata->category : "?");
 
             gchar *txt = get_match_number_text(m->category, m->number);
             if (txt || m->forcedtatami) {

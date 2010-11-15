@@ -220,7 +220,10 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
                 cairo_move_to(c, left+5, y_pos+extents.height+BOX_HEIGHT);
             else
                 cairo_move_to(c, left+5, y_pos+extents.height);
-            cairo_show_text(c, catdata ? catdata->last : "?");
+
+            snprintf(buf, sizeof(buf), "%s #%d", catdata ? catdata->last : "?", m->number);
+            cairo_show_text(c, buf);
+            //cairo_show_text(c, catdata ? catdata->last : "?");
             cairo_restore(c);
 
             struct name_data *j = avl_get_data(m->blue);

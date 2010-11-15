@@ -192,7 +192,7 @@ static void dqpool_results(FILE *f, gint category, struct judoka *ctg, gint num_
     fill_pool_struct(category, num_judokas, &pm);
 
     i = num_matches(get_cat_system(category), num_judokas) + 
-        (sys == SYSTEM_DPOOL ? 1 : 5);
+        ((sys & SYSTEM_MASK) == SYSTEM_DPOOL ? 1 : 5);
 
     /* first semifinal */
     if (pm.m[i].blue_points)
@@ -405,7 +405,8 @@ void write_html(gint cat)
     make_top_frame(f);
     make_left_frame(f);
 
-    if ((sys & SYSTEM_MASK) == SYSTEM_FRENCH_64) {
+    if ((sys & SYSTEM_MASK) == SYSTEM_FRENCH_64 ||
+        (sys & SYSTEM_MASK) == SYSTEM_QPOOL) {
         fprintf(f,
                 "<td valign=\"top\"><img src=\"%s.png\"><br>"
                 "<img src=\"%s-1.png\"><br>"
