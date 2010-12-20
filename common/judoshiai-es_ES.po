@@ -2,10 +2,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-09-23 10:45+0300\n"
+"POT-Creation-Date: 2010-11-24 09:06+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1304,22 +1305,28 @@ msgid "Print Logo"
 msgstr "Imprimir logo"
 
 msgid "Sheet Layout"
-msgstr ""
+msgstr "Distribución de la hoja"
 
 msgid "Weights Visible"
-msgstr ""
+msgstr "Pesos visibles"
 
 msgid "Grade Visible"
-msgstr ""
+msgstr "Grado visible"
 
 msgid "Print Competitors With Template"
-msgstr ""
+msgstr "Imprimir competidores con plantilla"
 
 msgid "Select template"
-msgstr ""
+msgstr "Seleccionar plantilla"
 
 msgid "Line"
-msgstr ""
+msgstr "Linea"
 
 msgid "Syntax error"
-msgstr ""
+msgstr "Error de sintaxis"
+
+msgid "Skip last second"
+msgstr "Omitir último segundo"
+
+msgid "Print Unmatched"
+msgstr "Imprimir desenparejados"

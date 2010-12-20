@@ -223,67 +223,67 @@ struct offial_category official_categories[NUM_DRAWS][2][10] = {
     }, { // spanish
         { // men
             {
-                "Senior masculino", 1000, 300, 180, 600, // name, max age, match gs rest times 
+                "Sen-M ", 1000, 300, 180, 600, // name, max age, match gs rest times 
                 {{60000, "60"}, {66000, "66"}, {73000, "73"}, 
                  {81000, "81"}, {90000, "90"}, {100000, "100"}, {0, NULL}}
             }, {
-                "Junior masculino", 18, 240, 180, 600, // name, max age, match gs rest times 
+                "Jun-M ", 18, 240, 120, 600, // name, max age, match gs rest times 
                 {{55000, "55"}, {60000, "60"}, {66000, "66"}, {73000, "73"}, 
                  {81000, "81"}, {90000, "90"}, {100000, "100"}, {0, NULL}}
             }, {
-                "Cadete masculino", 16, 180, 60, 600, // name, max age, match gs rest times 
+                "Cad-M ", 16, 240, 120, 600, // name, max age, match gs rest times 
                 {{50000, "50"}, {55000, "55"}, {60000, "60"}, 
                  {66000, "66"}, {73000, "73"}, {81000, "81"}, {90000, "90"}, {0, NULL}}
             }, {
-                "Infantil masculino", 14, 180, 60, 180, // name, max age, match gs rest times 
+                "Inf-M ", 14, 180, 120, 180, // name, max age, match gs rest times 
                 {{38000, "38"}, {42000, "42"}, {46000, "46"}, 
                  {50000, "50"}, {55000, "55"}, {60000, "60"}, {66000, "66"}, 
                  {0, NULL}}
             }, {
-                "Alevín masculino", 12, 120, 60, 180, // name, max age, match gs rest times 
+                "Ale-M ", 12, 120, 60, 180, // name, max age, match gs rest times 
                 {{30000, "30"}, {34000, "34"}, {38000, "38"}, {42000, "42"}, 
                  {47000, "47"}, {52000, "52"}, {0, NULL}}
             }, {
-                "Benjamín masculino", 10, 120, 60, 180, // name, max age, match gs rest times 
+                "Ben-M ", 10, 120, 60, 180, // name, max age, match gs rest times 
                 {{26000, "26"}, {30000, "30"}, {34000, "34"}, {38000, "38"}, {42000, "42"}, 
                  {47000, "47"}, {0, NULL}}
             }, {
-                "Mini", 8, 120, 60, 180, // name, max age, match gs rest times 
+                "Mini ", 8, 120, 60, 180, // name, max age, match gs rest times 
                 {{100000, " "}, {0, NULL}}
             }, {
-                "Micro", 6, 120, 60, 180, // name, max age, match gs rest times 
+                "Micro ", 6, 120, 60, 180, // name, max age, match gs rest times 
                 {{100000, " "}, {0, NULL}}
             }, { NULL, 0, 0, 0, 0, {{0, NULL}}}
         }, { // women
             {
-                "Senior feminino", 1000, 300, 180, 600, // name, max age, match gs rest times 
+                "Sen-F ", 1000, 300, 180, 600, // name, max age, match gs rest times 
                 {{48000, "48"}, {52000, "52"}, {57000, "57"}, 
                  {63000, "63"}, {70000, "70"}, {78000, "78"}, {0, NULL}}
             }, {
-                "Junior femenino", 18, 240, 180, 600, // name, max age, match gs rest times 
+                "Jun-F ", 18, 240, 120, 600, // name, max age, match gs rest times 
                 {{44000, "44"}, {48000, "48"}, {52000, "52"}, {57000, "57"}, 
                  {63000, "63"}, {70000, "70"}, {78000, "78"}, {0, NULL}}
             }, {
-                "Cadete femenino", 16, 180, 60, 600, // name, max age, match gs rest times 
+                "Cad-F ", 16, 240, 120, 600, // name, max age, match gs rest times 
                 {{40000, "40"}, {44000, "44"}, {48000, "48"}, {52000, "52"}, 
                  {57000, "57"}, {63000, "63"}, {70000, "70"}, {0, NULL}}
             }, {
-                "Infantil femenino", 14, 180, 60, 180, // name, max age, match gs rest times 
+                "Inf-F ", 14, 180, 120, 180, // name, max age, match gs rest times 
                 {{36000, "36"}, {40000, "40"}, {44000, "44"}, 
                  {48000, "48"}, {52000, "52"}, {57000, "57"}, {63000, "63"}, {0, NULL}}
             }, {
-                "Alevín  femenino", 12, 120, 60, 180, // name, max age, match gs rest times 
+                "Ale-F ", 12, 120, 60, 180, // name, max age, match gs rest times 
                 {{30000, "30"}, {34000, "34"}, {38000, "38"}, {42000, "42"}, 
                  {47000, "47"}, {52000, "52"}, {0, NULL}}
             }, {
-                "Benjamín femenino", 10, 120, 60, 180, // name, max age, match gs rest times 
+                "Ben-F ", 10, 120, 60, 180, // name, max age, match gs rest times 
                 {{26000, "26"}, {30000, "30"}, {34000, "34"}, {38000, "38"}, {42000, "42"}, 
                  {47000, "47"}, {0, NULL}}
             }, {
-                "Mini", 8, 120, 60, 180, // name, max age, match gs rest times 
+                "Mini ", 8, 120, 60, 180, // name, max age, match gs rest times 
                 {{100000, " "}, {0, NULL}}
             }, {
-                "Micro", 6, 120, 60, 180, // name, max age, match gs rest times 
+                "Micro ", 6, 120, 60, 180, // name, max age, match gs rest times 
                 {{100000, " "}, {0, NULL}}
             }, { NULL, 0, 0, 0, 0, {{0, NULL}}}
         }
@@ -627,7 +627,7 @@ void set_categories_dialog(GtkWidget *w, gpointer arg)
     } fields[NUM_CATEGORIES];
     gint i, j, m = 0, f = NUM_CATEGORIES/2;
 
-    dialog = gtk_dialog_new_with_buttons ("Sarjat",
+    dialog = gtk_dialog_new_with_buttons (_("Categories"),
                                           NULL,
                                           GTK_DIALOG_MODAL,
                                           _("Reset to Defaults"), Q_RESET,
