@@ -302,9 +302,9 @@ gint find_age_index(const gchar *category)
         return -1;
 
     g_strlcpy(catbuf, category, sizeof(catbuf));
-    gchar *p = strchr(catbuf, '-');
+    gchar *p = strrchr(catbuf, '-');
     if (!p)
-        p = strchr(catbuf, '+');
+        p = strrchr(catbuf, '+');
     if (p)
         *p = 0;
 
