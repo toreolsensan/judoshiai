@@ -223,8 +223,10 @@ static gint club_mate_in_range(gint start, gint len, struct mdata *mdata)
         gint other = mdata->mpos[i].judoka;
         if (other == 0)
             continue;
+
         if ((cmp = cmp_clubs(&mdata->mcomp[mdata->selected], &mdata->mcomp[other]))) {
-	    gint val = 0;
+            gint val = 0;
+
 	    if (cmp & CLUB_TEXT_CLUB)
 		val++;
 	    if (cmp & CLUB_TEXT_COUNTRY)
@@ -232,8 +234,8 @@ static gint club_mate_in_range(gint start, gint len, struct mdata *mdata)
             if (mdata->mcomp[other].seeded)
                 val++;
 
-	    if (val > result)
-		result = val;
+            if (val > result)
+                result = val;
         }
     }
     return result;
@@ -242,6 +244,7 @@ static gint club_mate_in_range(gint start, gint len, struct mdata *mdata)
 static void calc_place_values(gint *place_values, struct mdata *mdata)
 {
     gint num, cnt, x, j, s;
+    gint q1 = 0, q2 = 0, q3 = 0, q4 = 0;
 
     switch (mdata->mfrench_sys) {
     case FRENCH_8:  num = 8;  break;
@@ -252,9 +255,53 @@ static void calc_place_values(gint *place_values, struct mdata *mdata)
     }        
 
     for (x = 1; x <= mdata->mpositions-1; x += 2) {
-        if (mdata->mpos[x].judoka)
+        if (mdata->mpos[x].judoka) {
             place_values[x+1]++;
-        if (mdata->mpos[x+1].judoka)
+            if (mdata->mcomp[mdata->mpos[x].judoka].seeded)
+                place_values[x+1] += 5 - mdata->mcomp[mdata->mpos[x].judoka].seeded;
+        }
+        if (mdata->mpos[x+1].judoka) {
+            place_values[x]++;
+            if (mdata->mcomp[mdata->mpos[x+1].judoka].seeded)
+                place_values[x] += 5 - mdata->mcomp[mdata->mpos[x+1].judoka].seeded;
+        }
+    }
+
+    for (x = 1; x <= mdata->mpositions; x++) {
+        if (mdata->mpos[x].judoka == 0)
+            continue;
+
+        if (x <= mdata->mpositions/4)
+            q1++;
+        else if (x <= mdata->mpositions/2)
+            q2++;
+        else if (x <= mdata->mpositions*3/4)
+            q3++;
+        else
+            q4++;
+    }
+
+    if (q1 + q2 > q3 + q4) {
+        for (x = 1; x <= mdata->mpositions/2; x++)
+            place_values[x] += 2;
+    } else if (q1 + q2 < q3 + q4) {
+        for (x = mdata->mpositions/2 + 1; x <= mdata->mpositions; x++)
+            place_values[x] += 2;
+    }
+
+    if (q1 > q2) {
+        for (x = 1; x <= mdata->mpositions/4; x++)
+            place_values[x]++;
+    } else if (q1 < q2) {
+        for (x = mdata->mpositions/4 + 1; x <= mdata->mpositions/2; x++)
+            place_values[x]++;
+    }
+
+    if (q3 > q4) {
+        for (x = mdata->mpositions/2 + 1; x <= mdata->mpositions*3/4; x++)
+            place_values[x]++;
+    } else if (q3 < q4) {
+        for (x = mdata->mpositions*3/4 + 1; x <= mdata->mpositions; x++)
             place_values[x]++;
     }
 
@@ -263,11 +310,18 @@ static void calc_place_values(gint *place_values, struct mdata *mdata)
         for (x = 1; x <= mdata->mpositions; x += cnt) {
             if ((s = club_mate_in_range(x, cnt, mdata))) {
                 for (j = x; j < x+cnt; j++)
-                    place_values[j] += 4 + s;
+                    place_values[j] += 4*s;
             }
         }
         cnt *= 2;
     }
+
+    /***
+    g_print("\nplace values: ");
+    for (x = 1; x <= mdata->mpositions; x++)
+        g_print("%d=%d ", x, place_values[x]);
+    g_print("\n");
+    ***/
 }
 
 static gint get_free_pos_by_mask(gint mask, struct mdata *mdata)
@@ -533,26 +587,42 @@ static gboolean draw_one_comp(struct mdata *mdata)
         return 0;
 
     if (mdata->mfrench_sys >= 0) {
-        if (mdata->mcomp[comp].seeded == 2) {
-            mask = get_seeded_mask(1, mdata); // look for 1. seeded
-            if (mask & 0x3)
-                found = get_free_pos_by_mask((mask ^ 0xc) & 0xc, mdata);
-            else
-                found = get_free_pos_by_mask(0x3, mdata);
-        } else if (mdata->mcomp[comp].seeded == 3) {
-            mask = get_seeded_mask(2, mdata); // look for 2. seeded
-            if (mask & 0x3)
-                found = get_free_pos_by_mask(mask ^ 0x3, mdata);
-            else 
-                found = get_free_pos_by_mask(mask ^ 0xc, mdata);
-        } else if (mdata->mcomp[comp].seeded == 4) {
-            mask = get_seeded_mask(1, mdata); // look for 3. seeded
-            if (mask & 0x3)
-                found = get_free_pos_by_mask(mask ^ 0x3, mdata);
-            else 
-                found = get_free_pos_by_mask(mask ^ 0xc, mdata);
+        if (draw_system == DRAW_SPANISH &&
+            mdata->mcomp[comp].seeded > 0 && mdata->mcomp[comp].seeded <= 4) {
+            gint x;
+            switch (mdata->mcomp[comp].seeded) {
+            case 1: x = 0; break;
+            case 2: x = 2; break;
+            case 3: x = 1; break;
+            case 4: x = 3; break;
+            }
+            found = mdata->mpositions*(x)/4 + 1;
+
+            if (mdata->mpos[found].judoka)
+                found = 0;
         }
 
+        if (!found) {
+            if (mdata->mcomp[comp].seeded == 2) {
+                mask = get_seeded_mask(1, mdata); // look for 1. seeded
+                if (mask & 0x3)
+                    found = get_free_pos_by_mask((mask ^ 0xc) & 0xc, mdata);
+                else
+                    found = get_free_pos_by_mask(0x3, mdata);
+            } else if (mdata->mcomp[comp].seeded == 3) {
+                mask = get_seeded_mask(2, mdata); // look for 2. seeded
+                if (mask & 0x3)
+                    found = get_free_pos_by_mask(mask ^ 0x3, mdata);
+                else 
+                    found = get_free_pos_by_mask(mask ^ 0xc, mdata);
+            } else if (mdata->mcomp[comp].seeded == 4) {
+                mask = get_seeded_mask(1, mdata); // look for 3. seeded
+                if (mask & 0x3)
+                    found = get_free_pos_by_mask(mask ^ 0x3, mdata);
+                else 
+                    found = get_free_pos_by_mask(mask ^ 0xc, mdata);
+            }
+        }
         if (!found)
             found = get_free_pos_by_mask(0xf, mdata);
     } else if (sys != SYSTEM_QPOOL) {
