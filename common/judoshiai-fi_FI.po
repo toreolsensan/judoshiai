@@ -1282,7 +1282,7 @@ msgid "Language Selection"
 msgstr "Kielivalinta"
 
 msgid "Spanish System"
-msgstr "Espanjalainen systeemi"
+msgstr "Espanjalainen järjestelmä"
 
 msgid "Communication"
 msgstr "Tietoliikenne"
