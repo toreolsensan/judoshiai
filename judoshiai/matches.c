@@ -802,14 +802,15 @@ static void set_repechage_32(struct match m[], gint table, gint i)
 	COPY_PLAYER((31+i), blue, LOSER(p));
 	set_match(&m[33+i]); db_set_match(&m[33+i]);
 	set_match(&m[31+i]); db_set_match(&m[29+i]);
-    } else if (table == TABLE_ESP_REPESCA_DOBLE_INICIO) {
+    } /* else if (table == TABLE_ESP_REPESCA_DOBLE_INICIO) {
 	if (!MATCHED_FRENCH(25+i))
 	    return;
 	COPY_PLAYER((29+i), white, LOSER(25+i));
 	p = GET_PREV(25+i);
 	COPY_PLAYER((29+i), blue, LOSER(p));
 	set_match(&m[29+i]); db_set_match(&m[29+i]);
-    } else if (table == TABLE_ESP_REPESCA_SIMPLE) {
+        } */ 
+    else if (table == TABLE_ESP_REPESCA_SIMPLE) {
 	if (!MATCHED_FRENCH(29+i))
 	    return;
 
@@ -852,14 +853,15 @@ static void set_repechage_64(struct match m[], gint table, gint i)
 	set_match(&m[67+i]); db_set_match(&m[69+i]);
 	set_match(&m[65+i]); db_set_match(&m[65+i]);
 	set_match(&m[63+i]); db_set_match(&m[61+i]);
-    } else if (table == TABLE_ESP_REPESCA_DOBLE_INICIO) {
+    } /* else if (table == TABLE_ESP_REPESCA_DOBLE_INICIO) {
 	if (!MATCHED_FRENCH(57+i))
 	    return;
 	COPY_PLAYER((61+i), white, LOSER(57+i));
 	p = GET_PREV(57+i);
 	COPY_PLAYER((61+i), blue, LOSER(p));
 	set_match(&m[61+i]); db_set_match(&m[61+i]);
-    } else if (table == TABLE_ESP_REPESCA_SIMPLE) {
+        } */
+    else if (table == TABLE_ESP_REPESCA_SIMPLE) {
 	if (!MATCHED_FRENCH(61+i))
 	    return;
 
@@ -902,7 +904,7 @@ static void update_french_matches(gint category, gint systm)
     if (table == TABLE_DOUBLE_REPECHAGE || 
 	table == TABLE_SWE_DUBBELT_AATERKVAL ||
 	table == TABLE_SWE_ENKELT_AATERKVAL ||
-        table == TABLE_ESP_REPESCA_DOBLE_INICIO ||
+        /*table == TABLE_ESP_REPESCA_DOBLE_INICIO ||*/
         table == TABLE_ESP_REPESCA_SIMPLE) {
 	/* Repechage */
 	if (sys == FRENCH_16) {
