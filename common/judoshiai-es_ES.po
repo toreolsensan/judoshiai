@@ -1126,7 +1126,7 @@ msgid "Double Repechage"
 msgstr "Repesca doble"
 
 msgid "FIN Double Repechage"
-msgstr "FIN Repesca doble"
+msgstr "Repesca doble desde 1ª ronda"
 
 msgid "SWE Double Repechage"
 msgstr "SWE Repesca doble"
@@ -1197,7 +1197,7 @@ msgid "Dbl Repchg"
 msgstr "Rep. doble"
 
 msgid "FIN Dbl Repchg"
-msgstr "FIN Rep. doble"
+msgstr "ESP Rep. doble ini."
 
 msgid "DoublePool"
 msgstr "2 ligas"
