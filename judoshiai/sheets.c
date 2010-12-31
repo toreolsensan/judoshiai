@@ -637,7 +637,7 @@ static void paint_pool(struct paint_data *pd, gint category, struct judoka *ctg,
         if (pm.pts[i] || pm.finished)
             WRITE_TABLE(win_table, i, 1, "%d", pm.pts[i]);
         if (pm.finished)
-            WRITE_TABLE(win_table, pm.c[i], 2, "%d", i);
+            WRITE_TABLE(win_table, pm.c[i], 2, "%d", draw_system == DRAW_SPANISH && i == 4 ? 3 : i);
     }
 
 
@@ -652,7 +652,7 @@ static void paint_pool(struct paint_data *pd, gint category, struct judoka *ctg,
     WRITE_TABLE(result_table, 0, 1, "%s", _T(name));
 
     for (i = 1; i <= num_judokas; i++) {
-        WRITE_TABLE(result_table, i, 0, "%d", i);
+        WRITE_TABLE(result_table, i, 0, "%d", draw_system == DRAW_SPANISH && i == 4 ? 3 : i);
         if (pm.finished == FALSE || pm.j[pm.c[i]] == NULL)
             continue;
         WRITE_TABLE_H(result_table, i, 1, pm.j[pm.c[i]]->deleted, "%s %s, %s", 

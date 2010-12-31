@@ -171,7 +171,12 @@ static void pool_results(FILE *f, gint category, struct judoka *ctg, gint num_ju
         if (pm.finished == FALSE || pm.j[pm.c[i]] == NULL)
             continue;
 
-        if (i <= 3 && 
+        // Spanish have two bronzes in pool system
+        if (i <= 4 && draw_system == DRAW_SPANISH &&
+            (pm.j[pm.c[i]]->deleted & HANSOKUMAKE) == 0) {
+            write_result(f, i == 4 ? 3 : i, pm.j[pm.c[i]]->first, 
+                         pm.j[pm.c[i]]->last, pm.j[pm.c[i]]->club, pm.j[pm.c[i]]->country);
+        } else if (i <= 3 && 
             (pm.j[pm.c[i]]->deleted & HANSOKUMAKE) == 0) {
             write_result(f, i, pm.j[pm.c[i]]->first, 
                          pm.j[pm.c[i]]->last, pm.j[pm.c[i]]->club, pm.j[pm.c[i]]->country);
