@@ -74,7 +74,7 @@ const guint french_num_matches[NUM_TABLES][NUM_FRENCH] = {
     { 7, 15, 31, 63}, // no repechage
     {11, 19, 37, 71}, // enkelt aaterkval
     {13, 29, 43, 79}, // Eliminatoria doble perdida
-    {11, 23, 39, 71}, // Eliminatoria repesca doble inicio
+    /*{11, 23, 39, 71},*/ // Eliminatoria repesca doble inicio
     {11, 19, 35, 67}, // Eliminatoria repesca doble
     {11, 19, 35, 67}, // Eliminatoria repesca simple
 };
@@ -87,7 +87,7 @@ const gint medal_matches[NUM_TABLES][NUM_FRENCH][3] = {
     {{5,6,7},   {13,14,15}, {29,30,31}, {61,62,63}},    // no repechage
     {{9,10,11}, {17,18,19}, {35,36,37}, {69,70,71}},    // enkelt aaterkval
     {{11,12,13}, {27,28,29}, {41,42,43}, {77,78,79}},    // Eliminatoria doble perdida
-    {{9,10,11}, {21,22,23}, {37,38,39}, {69,70,71}},    // Eliminatoria repesca doble inicio
+    /*{{9,10,11}, {21,22,23}, {37,38,39}, {69,70,71}},*/    // Eliminatoria repesca doble inicio
     {{9,10,11}, {17,18,19}, {33,34,35}, {65,66,67}},    // Eliminatoria repesca doble
     {{9,10,11}, {17,18,19}, {33,34,35}, {65,66,67}}     // Eliminatoria repesca simple
 };	
@@ -249,7 +249,9 @@ const gchar french_64_matches_to_page[NUM_TABLES][NUM_MATCHES] = {
     2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
     /*  71,72,73,74,75,76,77,78,79    */
     2, 2, 0, 1, 2, 2, 2, 2, 9 // don't draw match 79
-},{ // Eliminatoria repesca doble inicio
+},
+#if 0 // same as finnish repechage
+{ // Eliminatoria repesca doble inicio
     0,
     /*  01,02,03,04,05,06,07,08,09,10 */
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -267,7 +269,9 @@ const gchar french_64_matches_to_page[NUM_TABLES][NUM_MATCHES] = {
     2, 2, 2, 2, 0, 1, 2, 2, 2, 2,
     /*  71,72,73,74,75,76,77,78,79    */
     9
-},{ // Eliminatoria repesca doble
+},
+#endif
+{ // Eliminatoria repesca doble
     0,
     /*  01,02,03,04,05,06,07,08,09,10 */
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -309,7 +313,7 @@ const gint result_y_position[NUM_TABLES][NUM_FRENCH] = {
     {0, 0, 0, 0},
     {4, 12, 30, 0},
     {4, 12, 28, 0},
-    {4, 12, 28, 0},
+    /*{4, 12, 28, 0},*/
     {4, 12, 28, 0},
     {4, 16, 28, 0}
 };
@@ -322,7 +326,7 @@ const gint repechage_start[NUM_TABLES][NUM_FRENCH][2] = {
     {{0,0}, {0,0},   {0,0},   {0,0}},   // no repechage
     {{7,0}, {15,16}, {31,32}, {0,64}},  // enkelt aaterkval
     {{5,0}, {9,0},   {29,0},  {0,63}},  // Eliminatoria doble perdida
-    {{7,0}, {0,0},   {29,0},  {0,61}},  // Eliminatoria repesca doble inicio
+    /*{{7,0}, {0,0},   {29,0},  {0,61}},*/  // Eliminatoria repesca doble inicio
     {{7,0}, {0,0},   {29,0},  {0,61}},  // Eliminatoria repesca doble
     {{7,0}, {0,0},   {29,0},  {0,63}},  // Eliminatoria repesca simple
 };
@@ -720,6 +724,7 @@ const gint french_matches[NUM_TABLES][NUM_FRENCH][NUM_MATCHES][2] = {
 	    {67,-59},{68,-60},{57,58},{59,60},{69,70},{71,72},{75,-74},{76,-73},{73,74}
 	}
     },
+#if 0
     /* Eliminatoria repesca doble inicio */
     {
 	/* 8 competitors */
@@ -772,6 +777,7 @@ const gint french_matches[NUM_TABLES][NUM_FRENCH][NUM_MATCHES][2] = {
 	    {65,66}
 	}
     },
+#endif
     /* Eliminatoria repesca doble */
     {
 	/* 8 competitors */
@@ -882,7 +888,7 @@ static const gint system_menu_order[NUM_SYSTEMS] = {
     CAT_SYSTEM_DIREKT_AATERKVAL,
     CAT_SYSTEM_EST_D_KLASS,
     CAT_ESP_DOBLE_PERDIDA,
-    CAT_ESP_REPESCA_DOBLE_INICIO,
+    /*CAT_ESP_REPESCA_DOBLE_INICIO,*/
     CAT_ESP_REPESCA_DOBLE,
     CAT_ESP_REPESCA_SIMPLE,
     CAT_SYSTEM_NO_REPECHAGE
@@ -898,7 +904,7 @@ const gint cat_system_to_table[NUM_SYSTEMS] = {
     TABLE_SWE_ENKELT_AATERKVAL, 
     0,
     TABLE_ESP_DOBLE_PERDIDA,
-    TABLE_ESP_REPESCA_DOBLE_INICIO,
+    /*TABLE_ESP_REPESCA_DOBLE_INICIO,*/
     TABLE_ESP_REPESCA_DOBLE,
     TABLE_ESP_REPESCA_SIMPLE
 };
@@ -933,7 +939,7 @@ gchar *get_system_description(gint index, gint competitors)
         case TABLE_NO_REPECHAGE: return _("No Repechg");
         case TABLE_SWE_ENKELT_AATERKVAL: return _("SWE Enkelt återkv");
         case TABLE_ESP_DOBLE_PERDIDA: return _("ESP Dbl Lost");
-        case TABLE_ESP_REPESCA_DOBLE_INICIO: return _("ESP Dbl Rep/Bgn");
+            /*case TABLE_ESP_REPESCA_DOBLE_INICIO: return _("ESP Dbl Rep/Bgn");*/
         case TABLE_ESP_REPESCA_DOBLE: return _("ESP Dbl Rep");
         case TABLE_ESP_REPESCA_SIMPLE: return _("ESP Simple Rep");
         }
@@ -960,7 +966,7 @@ static gchar *get_system_name(gint num)
     case CAT_SYSTEM_NO_REPECHAGE: return _("Single Elimination");
     case CAT_SYSTEM_ENKELT_AATERKVAL: return _("SWE Single Repechage");
     case CAT_ESP_DOBLE_PERDIDA: return _("ESP Double Lost");
-    case CAT_ESP_REPESCA_DOBLE_INICIO: return _("ESP Double Repechage from Beginning");
+        /*case CAT_ESP_REPESCA_DOBLE_INICIO: return _("ESP Double Repechage from Beginning");*/
     case CAT_ESP_REPESCA_DOBLE: return _("ESP Double Repechage");
     case CAT_ESP_REPESCA_SIMPLE: return _("ESP Simple Repechage");
     }
@@ -1068,7 +1074,7 @@ gint is_special_match(gint sys, gint match, gint *intval, double *doubleval, dou
             }
         }
         break;
-    case TABLE_ESP_REPESCA_DOBLE_INICIO:
+        /*case TABLE_ESP_REPESCA_DOBLE_INICIO:*/
     case TABLE_ESP_REPESCA_DOBLE:
     case TABLE_ESP_REPESCA_SIMPLE:
         break;
