@@ -3,7 +3,7 @@
 /*
  * Copyright (C) 2006-2010 by Hannu Jokinen
  * Full copyright text is included in the software package.
- */ 
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -21,8 +21,8 @@ static void about_judotimer( GtkWidget *w,
                              gpointer   data )
 {
     //GtkWidget *dialog;
-        
-    gtk_show_about_dialog (NULL, 
+
+    gtk_show_about_dialog (NULL,
                            "name", "Judotimer",
                            "title", _("About Judotimer"),
                            "copyright", "Copyright 2006-2010 Hannu Jokinen",
@@ -90,7 +90,7 @@ static void mode_selection(GtkWidget *w,
 
 static GtkWidget *clock_min, *clock_sec, *osaekomi;
 
-static void set_timers(GtkWidget *widget, 
+static void set_timers(GtkWidget *widget,
 		       GdkEvent *event,
 		       GtkWidget *data)
 {
@@ -170,14 +170,14 @@ static void manipulate_time(GtkWidget *w,
 static void change_menu_label(GtkWidget *item, const gchar *new_text)
 {
     GtkWidget *menu_label = gtk_bin_get_child(GTK_BIN(item));
-    gtk_label_set_text(GTK_LABEL(menu_label), new_text); 
+    gtk_label_set_text(GTK_LABEL(menu_label), new_text);
 }
 
 static GtkWidget *menubar, *match, *preferences, *help, *matchmenu, *preferencesmenu, *helpmenu;
 static GtkWidget *separator1, *separator2, *quit, *viewlog;
 static GtkWidget *match0, *match1, *match2, *match3, *match4, *match5, *gs;
 static GtkWidget *blue_wins, *white_wins, *red_background, *full_screen, *rules_no_koka;
-static GtkWidget *rules_leave_points;
+static GtkWidget *rules_leave_points, *rules_stop_ippon;
 static GtkWidget *tatami_sel, *tatami_sel_none, *tatami_sel_1,  *tatami_sel_2,  *tatami_sel_3,  *tatami_sel_4;
 static GtkWidget *tatami_sel_5,  *tatami_sel_6,  *tatami_sel_7,  *tatami_sel_8;
 static GtkWidget *node_ip, *my_ip, *manual, *about, *quick_guide;
@@ -213,7 +213,7 @@ static gint light_callback(gpointer data)
     extern time_t traffic_last_rec_time;
     static gboolean last_ok = FALSE;
     static gboolean yellow_set = FALSE;
-        
+
     if (yellow_set == FALSE && connection_ok && time(NULL) > traffic_last_rec_time + 6) {
         set_menu_item_picture(GTK_IMAGE_MENU_ITEM(menu_light), "yellowlight.png");
         yellow_set = TRUE;
@@ -230,7 +230,7 @@ static gint light_callback(gpointer data)
 
     if (connection_ok)
         set_menu_item_picture(GTK_IMAGE_MENU_ITEM(menu_light), "greenlight.png");
-    else		
+    else
         set_menu_item_picture(GTK_IMAGE_MENU_ITEM(menu_light), "redlight.png");
 
     return TRUE;
@@ -259,10 +259,10 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     menu_flag_se = gtk_image_menu_item_new();
     menu_flag_uk = gtk_image_menu_item_new();
     menu_flag_es = gtk_image_menu_item_new();
-    gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(menu_flag_fi), flag_fi);        
-    gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(menu_flag_se), flag_se);        
-    gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(menu_flag_uk), flag_uk);        
-    gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(menu_flag_es), flag_es);        
+    gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(menu_flag_fi), flag_fi);
+    gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(menu_flag_se), flag_se);
+    gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(menu_flag_uk), flag_uk);
+    gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(menu_flag_es), flag_es);
     gtk_image_menu_item_set_always_show_image(GTK_IMAGE_MENU_ITEM(menu_flag_fi), TRUE);
     gtk_image_menu_item_set_always_show_image(GTK_IMAGE_MENU_ITEM(menu_flag_se), TRUE);
     gtk_image_menu_item_set_always_show_image(GTK_IMAGE_MENU_ITEM(menu_flag_uk), TRUE);
@@ -276,18 +276,18 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     matchmenu        = gtk_menu_new ();
     preferencesmenu  = gtk_menu_new ();
     helpmenu         = gtk_menu_new ();
-        
-    gtk_menu_item_set_submenu (GTK_MENU_ITEM (match), matchmenu); 
-    gtk_menu_item_set_submenu (GTK_MENU_ITEM (preferences), preferencesmenu); 
+
+    gtk_menu_item_set_submenu (GTK_MENU_ITEM (match), matchmenu);
+    gtk_menu_item_set_submenu (GTK_MENU_ITEM (preferences), preferencesmenu);
     gtk_menu_item_set_submenu (GTK_MENU_ITEM (help), helpmenu);
-  
-    gtk_menu_shell_append (GTK_MENU_SHELL (menubar), match); 
-    gtk_menu_shell_append (GTK_MENU_SHELL (menubar), preferences); 
+
+    gtk_menu_shell_append (GTK_MENU_SHELL (menubar), match);
+    gtk_menu_shell_append (GTK_MENU_SHELL (menubar), preferences);
     gtk_menu_shell_append (GTK_MENU_SHELL (menubar), help);
-    gtk_menu_shell_append (GTK_MENU_SHELL (menubar), menu_flag_fi); 
-    gtk_menu_shell_append (GTK_MENU_SHELL (menubar), menu_flag_se); 
-    gtk_menu_shell_append (GTK_MENU_SHELL (menubar), menu_flag_uk); 
-    gtk_menu_shell_append (GTK_MENU_SHELL (menubar), menu_flag_es); 
+    gtk_menu_shell_append (GTK_MENU_SHELL (menubar), menu_flag_fi);
+    gtk_menu_shell_append (GTK_MENU_SHELL (menubar), menu_flag_se);
+    gtk_menu_shell_append (GTK_MENU_SHELL (menubar), menu_flag_uk);
+    gtk_menu_shell_append (GTK_MENU_SHELL (menubar), menu_flag_es);
     g_signal_connect(G_OBJECT(menu_flag_fi), "button_press_event",
                      G_CALLBACK(change_language), (gpointer)LANG_FI);
     g_signal_connect(G_OBJECT(menu_flag_se), "button_press_event",
@@ -296,16 +296,16 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
                      G_CALLBACK(change_language), (gpointer)LANG_EN);
     g_signal_connect(G_OBJECT(menu_flag_es), "button_press_event",
                      G_CALLBACK(change_language), (gpointer)LANG_ES);
-    //gtk_menu_shell_append (GTK_MENU_SHELL (menubar), undo); 
+    //gtk_menu_shell_append (GTK_MENU_SHELL (menubar), undo);
     g_signal_connect(G_OBJECT(undo), "button_press_event",
                      G_CALLBACK(undo_func), (gpointer)NULL);
 
 
-    gtk_menu_shell_append (GTK_MENU_SHELL (menubar), menu_light); 
+    gtk_menu_shell_append (GTK_MENU_SHELL (menubar), menu_light);
     g_signal_connect(G_OBJECT(menu_light), "button_press_event",
                      G_CALLBACK(ask_node_ip_address), (gpointer)NULL);
     gtk_menu_item_set_right_justified(GTK_MENU_ITEM(menu_light), TRUE);
-  
+
     /* Create the Contest menu content. */
     match0 = gtk_menu_item_new_with_label(_("Match duration: automatic"));
     //match1 = gtk_check_menu_item_new_with_label(_("Short pin times"));
@@ -380,6 +380,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     full_screen     = gtk_check_menu_item_new_with_label("Full screen mode");
     rules_no_koka   = gtk_check_menu_item_new_with_label("");
     rules_leave_points = gtk_check_menu_item_new_with_label("");
+    rules_stop_ippon = gtk_check_menu_item_new_with_label("");
     tatami_sel_none = gtk_radio_menu_item_new_with_label(NULL, "");
     tatami_sel_1    = gtk_radio_menu_item_new_with_label_from_widget((GtkRadioMenuItem *)tatami_sel_none, "");
     tatami_sel_2    = gtk_radio_menu_item_new_with_label_from_widget((GtkRadioMenuItem *)tatami_sel_none, "");
@@ -407,6 +408,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), full_screen);
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), rules_no_koka);
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), rules_leave_points);
+    gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), rules_stop_ippon);
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), gtk_separator_menu_item_new());
 
     layout_sel = gtk_menu_item_new_with_label("");
@@ -463,6 +465,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     g_signal_connect(G_OBJECT(full_screen),     "activate", G_CALLBACK(toggle_full_screen),   (gpointer)0);
     g_signal_connect(G_OBJECT(rules_no_koka),      "activate", G_CALLBACK(toggle_rules_no_koka),    (gpointer)0);
     g_signal_connect(G_OBJECT(rules_leave_points), "activate", G_CALLBACK(toggle_rules_leave_points), (gpointer)0);
+    g_signal_connect(G_OBJECT(rules_stop_ippon), "activate", G_CALLBACK(toggle_rules_stop_ippon), (gpointer)0);
     g_signal_connect(G_OBJECT(layout_sel_1),    "activate", G_CALLBACK(select_display_layout), (gpointer)1);
     g_signal_connect(G_OBJECT(layout_sel_2),    "activate", G_CALLBACK(select_display_layout), (gpointer)2);
     g_signal_connect(G_OBJECT(layout_sel_3),    "activate", G_CALLBACK(select_display_layout), (gpointer)3);
@@ -544,6 +547,11 @@ void set_preferences(void)
     }
 
     error = NULL;
+    if (g_key_file_get_boolean(keyfile, "preferences", "stopippon", &error) || error) {
+        gtk_menu_item_activate(GTK_MENU_ITEM(rules_stop_ippon));
+    }
+
+    error = NULL;
     i = g_key_file_get_integer(keyfile, "preferences", "tatami", &error);
     if (!error) {
         switch (i) {
@@ -600,19 +608,19 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     case LANG_FI:
         putenv("LANGUAGE=fi");
         r = setlocale(LC_ALL, "fi");
-        break;        
+        break;
     case LANG_SW:
         putenv("LANGUAGE=sv");
         r = setlocale(LC_ALL, "sv");
-        break;        
+        break;
     case LANG_EN:
         putenv("LANGUAGE=en");
         r = setlocale(LC_ALL, "en");
-        break;        
+        break;
     case LANG_ES:
         putenv("LANGUAGE=es");
         r = setlocale(LC_ALL, "es");
-        break;        
+        break;
     }
 
     gchar *dirname = g_build_filename(installation_dir, "share", "locale", NULL);
@@ -647,6 +655,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(full_screen, _("Full screen mode"));
     change_menu_label(rules_no_koka, _("No koka"));
     change_menu_label(rules_leave_points, _("Leave points for GS"));
+    change_menu_label(rules_stop_ippon, _("Stop clock on Ippon"));
     change_menu_label(clock_only, _("View clocks only"));
 
     change_menu_label(layout_sel,   _("Display layout"));
@@ -768,15 +777,15 @@ static gboolean popup_cb( GtkWidget *widget,
                           GtkWidget *menu )
 {
     GdkEventButton *bevent = (GdkEventButton *)event;
-  
+
     /* Only take button presses */
     if (event->type != GDK_BUTTON_PRESS)
         return FALSE;
-  
+
     /* Show the menu */
     gtk_menu_popup (GTK_MENU(menu), NULL, NULL,
                     NULL, NULL, bevent->button, bevent->time);
-  
+
     return TRUE;
 }
 
@@ -786,13 +795,13 @@ GtkWidget *get_popup_menu( void )
 {
     GtkItemFactory *item_factory;
     GtkWidget *button, *menu;
-  
+
     /* Same as before but don't bother with the accelerators */
     item_factory = gtk_item_factory_new (GTK_TYPE_MENU, "<main>",
                                          NULL);
     gtk_item_factory_create_items (item_factory, nmenu_items, menu_items_en, NULL);
     menu = gtk_item_factory_get_widget (item_factory, "<main>");
-  
+
     /* Make a button to activate the popup menu */
     button = gtk_button_new_with_label ("Popup");
     /* Make the menu popup when clicked */
@@ -809,7 +818,7 @@ GtkWidget *get_option_menu( void )
 {
     GtkItemFactory *item_factory;
     GtkWidget *option_menu;
-  
+
     /* Same again, not bothering with the accelerators */
     item_factory = gtk_item_factory_new (GTK_TYPE_OPTION_MENU, "<main>",
                                          NULL);
@@ -836,9 +845,9 @@ static const gchar *timer_help_file_names[NUM_LANGS] = {
 
 void start_help(GtkWidget *w, gpointer data)
 {
-    gchar *docfile = g_build_filename(installation_dir, "doc", 
-                                      data ? 
-                                      timer_help_file_names[language] : 
+    gchar *docfile = g_build_filename(installation_dir, "doc",
+                                      data ?
+                                      timer_help_file_names[language] :
                                       help_file_names[language], NULL);
 #ifdef WIN32
     ShellExecute(NULL, TEXT("open"), docfile, NULL, ".\\", SW_SHOWMAXIMIZED);
@@ -873,7 +882,7 @@ void start_log_view(GtkWidget *w, gpointer data)
     FILE *f = fopen(logfile_name, "r");
     if (!f)
         return;
-    
+
     GtkWindow *window = GTK_WINDOW(gtk_window_new(GTK_WINDOW_TOPLEVEL));
     gtk_window_set_title(GTK_WINDOW(window), logfile_name);
     gtk_widget_set_size_request(GTK_WIDGET(window), 500, 560);

@@ -348,3 +348,6 @@ msgstr ""
 
 msgid "All Files"
 msgstr ""
+
+msgid "Stop clock on Ippon"
+msgstr "Ippon stoppar clockan"

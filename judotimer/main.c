@@ -3,7 +3,7 @@
 /*
  * Copyright (C) 2006-2010 by Hannu Jokinen
  * Full copyright text is included in the software package.
- */ 
+ */
 
 #include <string.h>
 #include <time.h>
@@ -53,6 +53,7 @@ static time_t big_end;
 
 gboolean rules_no_koka_dsp = FALSE;
 gboolean rules_leave_score = FALSE;
+gboolean rules_stop_ippon_2 = FALSE;
 GdkCursor *cursor = NULL;
 
 static const gchar *num_to_str(guint num)
@@ -400,7 +401,7 @@ static gint num_labels = 0;
 		_w = num_labels;			\
 		num_labels++;				\
 	} while (0)
-	  
+
 static void set_fg_color(gint w, gint s, GdkColor *c)
 {
 	labels[w].fg_r = ((gdouble)c->red)/65536.0;
@@ -481,7 +482,7 @@ static void set_fonts()
         gtk_widget_modify_font(wk,   font);
 
         gtk_widget_modify_font(sonomama, font);
-        
+
         pango_font_description_set_absolute_size(font, height/10.0*PANGO_SCALE);
 
         gtk_widget_modify_font(bs,   font);
@@ -515,7 +516,7 @@ void set_timer_run_color(gboolean running)
 void set_timer_osaekomi_color(gint osaekomi_state, gint pts)
 {
         GdkColor *fg = &color_white, *bg = &color_black, *color = &color_green;
-	
+
 	if (pts) {
 		if (osaekomi_state == OSAEKOMI_DSP_BLUE ||
 		    osaekomi_state == OSAEKOMI_DSP_WHITE ||
@@ -587,7 +588,7 @@ void set_timer_osaekomi_color(gint osaekomi_state, gint pts)
 
         set_fg_color(points, GTK_STATE_NORMAL, fg);
         set_bg_color(points, GTK_STATE_NORMAL, bg);
-	
+
         if (osaekomi_state == OSAEKOMI_DSP_YES) {
                 color = &color_green;
 		set_fg_color(pts_to_blue, GTK_STATE_NORMAL, &color_white);
@@ -615,8 +616,8 @@ void set_timer_osaekomi_color(gint osaekomi_state, gint pts)
 void set_timer_value(guint min, guint tsec, guint sec)
 {
         if (min < 10) {
-                set_text(MY_LABEL(t_min), num_to_str(min));        
-                set_text(MY_LABEL(t_tsec), num_to_str(tsec));        
+                set_text(MY_LABEL(t_min), num_to_str(min));
+                set_text(MY_LABEL(t_tsec), num_to_str(tsec));
                 set_text(MY_LABEL(t_sec), num_to_str(sec));
         } else {
                 set_text(MY_LABEL(t_min), "-");
@@ -631,8 +632,8 @@ void set_timer_value(guint min, guint tsec, guint sec)
 
 void set_osaekomi_value(guint tsec, guint sec)
 {
-        set_text(MY_LABEL(o_tsec), num_to_str(tsec));        
-        set_text(MY_LABEL(o_sec), num_to_str(sec));        
+        set_text(MY_LABEL(o_tsec), num_to_str(tsec));
+        set_text(MY_LABEL(o_sec), num_to_str(sec));
 	expose_label(NULL, o_tsec);
 	expose_label(NULL, o_sec);
 }
@@ -657,11 +658,11 @@ void set_points(gint blue[], gint white[])
 			set_number(bw, 0);
 
 		if (blue[0] & 1)
-			set_number(by, 1);        
+			set_number(by, 1);
 		else
 			set_number(by, 0);
 
-		set_number(bk, blue[1]);        
+		set_number(bk, blue[1]);
 		set_number(bs, blue[3]);
 
 		if (white[0] >= 2)
@@ -674,31 +675,31 @@ void set_points(gint blue[], gint white[])
 		else
 			set_number(wy, 0);
 
-		set_number(wk, white[1]); 
-		set_number(ws, white[3]);        
+		set_number(wk, white[1]);
+		set_number(ws, white[3]);
 	} else {
 		set_number(bw, blue[0]);
-		set_number(by, blue[1]);        
-		set_number(bk, blue[2]);        
+		set_number(by, blue[1]);
+		set_number(bk, blue[2]);
 		set_number(bs, blue[3]);
-		set_number(ww, white[0]);        
-		set_number(wy, white[1]);        
-		set_number(wk, white[2]); 
-		set_number(ws, white[3]);        
+		set_number(ww, white[0]);
+		set_number(wy, white[1]);
+		set_number(wk, white[2]);
+		set_number(ws, white[3]);
 	}
 }
 
 void set_score(guint score)
 {
-        set_text(MY_LABEL(points), pts_to_str(score));        
+        set_text(MY_LABEL(points), pts_to_str(score));
 	expose_label(NULL, points);
 }
 
-void show_message(gchar *cat_1, 
-                  gchar *blue_1, 
-                  gchar *white_1, 
-                  gchar *cat_2, 
-                  gchar *blue_2, 
+void show_message(gchar *cat_1,
+                  gchar *blue_1,
+                  gchar *white_1,
+                  gchar *cat_2,
+                  gchar *blue_2,
                   gchar *white_2)
 {
         gchar bbuf[64], wbuf[64];
@@ -724,12 +725,12 @@ void show_message(gchar *cat_1,
                 }
         }
 
-        set_text(MY_LABEL(cat1),         cat_1);        
-        set_text(MY_LABEL(blue_name_1),  blue_1);        
-        set_text(MY_LABEL(white_name_1), white_1);        
-        set_text(MY_LABEL(cat2),         cat_2);        
-        set_text(MY_LABEL(blue_name_2),  blue_2);        
-        set_text(MY_LABEL(white_name_2), white_2);        
+        set_text(MY_LABEL(cat1),         cat_1);
+        set_text(MY_LABEL(blue_name_1),  blue_1);
+        set_text(MY_LABEL(white_name_1), white_1);
+        set_text(MY_LABEL(cat2),         cat_2);
+        set_text(MY_LABEL(blue_name_2),  blue_2);
+        set_text(MY_LABEL(white_name_2), white_2);
 
 	expose_label(NULL, cat1);
 	expose_label(NULL, blue_name_1);
@@ -737,7 +738,7 @@ void show_message(gchar *cat_1,
 	expose_label(NULL, cat2);
 	expose_label(NULL, blue_name_2);
 	expose_label(NULL, white_name_2);
-	
+
 	if (big_dialog)
 		show_big();
 }
@@ -812,7 +813,7 @@ static void show_big(void)
 	cairo_t *c = gdk_cairo_create(darea->window);
 
 	cairo_set_source_rgb(c, 1.0, 1.0, 1.0);
-	cairo_rectangle(c, 0, 0, 
+	cairo_rectangle(c, 0, 0,
 			W(1.0), H(0.2));
 	cairo_fill(c);
 
@@ -823,8 +824,8 @@ static void show_big(void)
         cairo_text_extents(c, big_text, &extents);
 
 	cairo_set_source_rgb(c, 0.0, 0.0, 0.0);
-	cairo_move_to(c, W(0.5)-extents.width/2.0, 
-		      (H(0.2)- extents.height)/2.0 - 
+	cairo_move_to(c, W(0.5)-extents.width/2.0,
+		      (H(0.2)- extents.height)/2.0 -
 		      extents.y_bearing);
         cairo_show_text(c, big_text);
 	cairo_show_page(c);
@@ -889,7 +890,7 @@ static void expose_label(cairo_t *c, gint w)
 		cairo_set_font_size(c, H(labels[w].size * labels[w].h));
 	else
 		cairo_set_font_size(c, H(labels[w].h*0.8));
-		
+
         cairo_text_extents(c, labels[w].text, &extents);
 
 	cairo_set_source_rgb(c, labels[w].fg_r,
@@ -951,11 +952,11 @@ static gboolean expose(GtkWidget *widget, GdkEventExpose *event, gpointer userda
 }
 
 static gboolean button_pressed(GtkWidget *widget,
-			       GdkEventButton *event, 
+			       GdkEventButton *event,
 			       gpointer userdata)
 {
         /* single click with the right mouse button? */
-        if (event->type == GDK_BUTTON_PRESS  &&  
+        if (event->type == GDK_BUTTON_PRESS  &&
             (event->button == 1 || event->button == 3)) {
 		gint x = event->x, y = event->y, i;
 
@@ -977,7 +978,7 @@ static gboolean key_press(GtkWidget *widget, GdkEventKey *event, gpointer userda
 {
         if (event->type != GDK_KEY_PRESS)
                 return FALSE;
-        
+
         if (event->keyval == GDK_D && (event->state & 5) == 5)
                 demo = TRUE;
         else
@@ -1022,7 +1023,7 @@ gboolean send_label(gint bigdsp)
 
                 if (bigdsp) {
                         msg.u.update_label.label_num = bigdsp;
-                        strncpy(msg.u.update_label.text, big_text, 
+                        strncpy(msg.u.update_label.text, big_text,
                                 sizeof(msg.u.update_label.text)-1);
                         continue;
                 }
@@ -1034,11 +1035,11 @@ gboolean send_label(gint bigdsp)
                         msg.u.update_label.y = labels[update_next].y;
                         msg.u.update_label.w = labels[update_next].w;
                         msg.u.update_label.h = labels[update_next].h;
-                        strncpy(msg.u.update_label.text, labels[update_next].text, 
+                        strncpy(msg.u.update_label.text, labels[update_next].text,
                                 sizeof(msg.u.update_label.text)-1);
                         msg.u.update_label.size = labels[update_next].size;
                         msg.u.update_label.xalign = labels[update_next].xalign;
-                        msg.u.update_label.fg_r = labels[update_next].fg_r; 
+                        msg.u.update_label.fg_r = labels[update_next].fg_r;
                         msg.u.update_label.fg_g = labels[update_next].fg_g;
                         msg.u.update_label.fg_b = labels[update_next].fg_b;
                         msg.u.update_label.bg_r = labels[update_next].bg_r;
@@ -1051,7 +1052,7 @@ gboolean send_label(gint bigdsp)
                 if (++update_next >= num_labels)
                         update_next = 0;
         }
-        
+
         if (dosend) {
                 send_label_msg(&msg);
         }
@@ -1095,7 +1096,7 @@ void update_label(struct msg_update_label *msg)
                 set_text(w, msg->text);
                 //labels[w].size = msg->size;
                 //labels[w].xalign = msg->xalign;
-                labels[w].fg_r = msg->fg_r; 
+                labels[w].fg_r = msg->fg_r;
                 labels[w].fg_g = msg->fg_g;
                 labels[w].fg_b = msg->fg_b;
                 labels[w].bg_r = msg->bg_r;
@@ -1144,9 +1145,9 @@ int main( int   argc,
 
         font = pango_font_description_from_string("Sans bold 12");
 
-        gdk_color_parse("#FFFF00", &color_yellow); 
+        gdk_color_parse("#FFFF00", &color_yellow);
         gdk_color_parse("#FFFFFF", &color_white);
-        gdk_color_parse("#404040", &color_grey); 
+        gdk_color_parse("#404040", &color_grey);
         gdk_color_parse("#00FF00", &color_green);
         gdk_color_parse("#0000FF", &color_blue);
         gdk_color_parse("#FF0000", &color_red);
@@ -1178,15 +1179,15 @@ int main( int   argc,
         srand(now); //srandom(now);
         my_address = now + getpid()*10000;
 
-        g_print("LOCALE = %s homedir=%s configdir=%s instdir=%s\n", 
-                setlocale(LC_ALL, 0), 
-		g_get_home_dir(), 
+        g_print("LOCALE = %s homedir=%s configdir=%s instdir=%s\n",
+                setlocale(LC_ALL, 0),
+		g_get_home_dir(),
 		g_get_user_config_dir(),
 		installation_dir);
 
         g_thread_init(NULL);    /* Initialize GLIB thread support */
         gdk_threads_init();     /* Initialize GDK locks */
-        gdk_threads_enter();    /* Acquire GDK locks */ 
+        gdk_threads_enter();    /* Acquire GDK locks */
 
         gtk_init (&argc, &argv);
 
@@ -1200,10 +1201,10 @@ int main( int   argc,
 
         g_signal_connect (G_OBJECT (window), "delete_event",
                           G_CALLBACK (delete_event), NULL);
-    
+
         g_signal_connect (G_OBJECT (window), "destroy",
                           G_CALLBACK (destroy), NULL);
-    
+
         gtk_container_set_border_width (GTK_CONTAINER (window), 10);
 
 	main_vbox = gtk_vbox_new(FALSE, 0);
@@ -1225,18 +1226,18 @@ int main( int   argc,
 
 	gtk_box_pack_start_defaults(GTK_BOX(main_vbox), darea);
 
- 	g_signal_connect(G_OBJECT(darea), 
+ 	g_signal_connect(G_OBJECT(darea),
 			 "expose-event", G_CALLBACK(expose), NULL);
-        g_signal_connect(G_OBJECT(darea), 
+        g_signal_connect(G_OBJECT(darea),
 			 "button-press-event", G_CALLBACK(button_pressed), NULL);
 
         /* labels */
-	
+
 	/*0.0          0.2            0.5          0.7
 	 * | Match:     | Nimi sin     | Next:      | Nimi2 sin
 	 * | Cat: xx    | Nimi valk    | Cat: yy    | Nimi2 valk
 	 * | Comment
-	 * | 
+	 * |
 	 */
 
 #define SMALL_H 0.032
@@ -1310,7 +1311,7 @@ int main( int   argc,
 	labels[sonomama].text2 = g_strdup("MAMA");
 
         /* colors */
-	
+
         fg = color_white;
         gdk_color_parse("#000000", &bg);
         SET_COLOR(match1);
@@ -1339,7 +1340,7 @@ int main( int   argc,
         SET_COLOR(points);
 	SET_COLOR(pts_to_blue);
 	SET_COLOR(pts_to_white);
-        
+
         fg = color_white;
         gdk_color_parse("#0000FF", &bg);
         SET_COLOR(bw);
@@ -1348,7 +1349,7 @@ int main( int   argc,
 
         gdk_color_parse("#DDD89A", &fg);
         SET_COLOR(bs);
-        
+
         gdk_color_parse("#000000", &fg);
         gdk_color_parse("#FFFFFF", &bg);
         SET_COLOR(ww);
@@ -1357,7 +1358,7 @@ int main( int   argc,
 
         gdk_color_parse("#DD6C00", &fg);
         SET_COLOR(ws);
-        
+
         gdk_color_parse("#AF0000", &fg);
         gdk_color_parse("#000000", &bg);
         SET_COLOR(sonomama);
@@ -1369,14 +1370,14 @@ int main( int   argc,
         /* signals */
 
 #if 0
-	g_signal_connect(G_OBJECT(main_window), 
+	g_signal_connect(G_OBJECT(main_window),
 			 "expose-event", G_CALLBACK(expose), NULL);
 #endif
-	g_signal_connect(G_OBJECT(main_window), 
+	g_signal_connect(G_OBJECT(main_window),
 			 "key-press-event", G_CALLBACK(key_press), NULL);
 
         /* timers */
-        
+
         timer = g_timer_new();
 
         g_timeout_add(100, timeout, NULL);
@@ -1387,15 +1388,15 @@ int main( int   argc,
         change_language(NULL, NULL, (gpointer)language);
 
         open_comm_socket();
-	
+
         /* Create a bg thread using glib */
         gth = g_thread_create((GThreadFunc)client_thread,
-                              (gpointer)&run_flag, FALSE, NULL); 
+                              (gpointer)&run_flag, FALSE, NULL);
 	gth = g_thread_create((GThreadFunc)master_thread,
-			      (gpointer)&run_flag, FALSE, NULL); 
+			      (gpointer)&run_flag, FALSE, NULL);
 
         gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER_ALWAYS);
-	
+
 	cursor = gdk_cursor_new(GDK_HAND2);
 	gdk_window_set_cursor(GTK_WIDGET(main_window)->window, cursor);
 
@@ -1405,12 +1406,12 @@ int main( int   argc,
          * and waits for an event to occur (like a key press or
          * mouse event). */
         gtk_main();
-    
+
         close_sound();
 
         gdk_threads_leave();  /* release GDK locks */
         run_flag = FALSE;     /* flag threads to stop and exit */
-        //g_thread_join(gth);   /* wait for thread to exit */ 
+        //g_thread_join(gth);   /* wait for thread to exit */
 
         return 0;
 }
@@ -1470,6 +1471,17 @@ void toggle_rules_leave_points(GtkWidget *menu_item, gpointer data)
         } else {
 		rules_leave_score = FALSE;
 		g_key_file_set_boolean(keyfile, "preferences", "rulesleavepoints", FALSE);
+	}
+}
+
+void toggle_rules_stop_ippon(GtkWidget *menu_item, gpointer data)
+{
+        if (GTK_CHECK_MENU_ITEM(menu_item)->active) {
+		rules_stop_ippon_2 = TRUE;
+		g_key_file_set_boolean(keyfile, "preferences", "stopippon", TRUE);
+        } else {
+		rules_stop_ippon_2 = FALSE;
+		g_key_file_set_boolean(keyfile, "preferences", "stopippon", FALSE);
 	}
 }
 
@@ -1743,7 +1755,7 @@ void select_display_layout(GtkWidget *menu_item, gpointer data)
                 gint i;
                 for (i = 0; i < num_labels; i++)
                         labels[i].status = LABEL_STATUS_CHANGED | LABEL_STATUS_EXPOSE;
-                
+
                 display_big(" ", 4);
         }
 ****/

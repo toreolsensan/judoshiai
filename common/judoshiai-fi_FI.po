@@ -1314,3 +1314,6 @@ msgstr "Rivi"
 
 msgid "Syntax error"
 msgstr "Syntaksivirhe"
+
+msgid "Stop clock on Ippon"
+msgstr "Ippon pysäyttää kellon"

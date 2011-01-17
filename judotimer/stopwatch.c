@@ -3,7 +3,7 @@
 /*
  * Copyright (C) 2006-2010 by Hannu Jokinen
  * Full copyright text is included in the software package.
- */ 
+ */
 
 /* Include system network headers */
 #if defined(__WIN32__) || defined(WIN32)
@@ -199,7 +199,7 @@ void update_display(void)
     }
 }
 
-void update_clock(void) 
+void update_clock(void)
 {
     gint i;
     gboolean show_soremade = FALSE;
@@ -214,7 +214,7 @@ void update_clock(void)
                 st[i].elap = total;
                 if (!st[i].oRunning) {
                     st[i].running = FALSE;
-                    if (i == 0 && rest_time == FALSE) 
+                    if (i == 0 && rest_time == FALSE)
                         show_soremade = TRUE;
                     if (rest_time) {
                         st[0].elap = 0;
@@ -267,7 +267,7 @@ void update_clock(void)
     if (show_soremade) {
         beep("SOREMADE");
 #if 0
-        if (golden_score && 
+        if (golden_score &&
             (array2int(st[0].bluepts) & 0xfffffff0) == (array2int(st[0].whitepts) & 0xfffffff0))
             ask_for_hantei();
 #endif
@@ -339,7 +339,7 @@ void set_clocks(gint clock, gint osaekomi)
 }
 
 
-static void toggle(void) 
+static void toggle(void)
 {
     if (st[0].running /*&& !oRunning*/) {
         judotimer_log("Shiai clock stop");
@@ -381,7 +381,7 @@ static void toggle(void)
 
 int get_match_time(void)
 {
-    return st[0].elap + st[0].match_time; 
+    return st[0].elap + st[0].match_time;
 }
 
 static void oToggle() {
@@ -434,7 +434,7 @@ gboolean ask_for_golden_score(void)
 {
     GtkWidget *dialog;
     gint response;
-		
+
     golden_score = FALSE;
     dialog = gtk_dialog_new_with_buttons (_("Start Golden Score?"),
                                           NULL,
@@ -481,7 +481,7 @@ static void ask_for_hantei(void)
 {
     GtkWidget *dialog;
     gint response;
-		
+
     golden_score = FALSE;
     dialog = gtk_dialog_new_with_buttons (_("Hantei"),
                                           NULL,
@@ -504,7 +504,7 @@ static void ask_for_hantei(void)
 
 static gboolean asking = FALSE;
 
-void reset(guint key, struct msg_next_match *msg) 
+void reset(guint key, struct msg_next_match *msg)
 {
     gint i;
 
@@ -512,7 +512,7 @@ void reset(guint key, struct msg_next_match *msg)
         return;
 
     if (msg && (current_category != msg->category || current_match != msg->match))
-        judotimer_log("Automatic next match %d:%d (%s - %s)", 
+        judotimer_log("Automatic next match %d:%d (%s - %s)",
                       msg->category, msg->match,
                       msg->blue_1, msg->white_1);
 
@@ -523,8 +523,8 @@ void reset(guint key, struct msg_next_match *msg)
     gint bp = array2int(st[0].bluepts) & 0xfffffff0;
     gint wp = array2int(st[0].whitepts) & 0xfffffff0;
 
-    if (key == GDK_9 || 
-        (demo == 0 && bp == wp && 
+    if (key == GDK_9 ||
+        (demo == 0 && bp == wp &&
          blue_wins_voting == white_wins_voting &&
          total > 1.0 && st[0].elap >= total && key != GDK_0)) {
         asking = TRUE;
@@ -535,14 +535,14 @@ void reset(guint key, struct msg_next_match *msg)
         key = GDK_9;
         st[0].match_time = st[0].elap;
         judotimer_log("Golden score starts");
-    } else if (demo == 0 && 
+    } else if (demo == 0 &&
                (((st[0].bluepts[0] & 2) == 0 && (st[0].whitepts[0] & 2) == 0 &&
-                 st[0].elap > 0.01 && st[0].elap < total - 0.01) || 
-                (st[0].running && rest_time)) && 
+                 st[0].elap > 0.01 && st[0].elap < total - 0.01) ||
+                (st[0].running && rest_time)) &&
                key != GDK_0) {
         GtkWidget *dialog;
         gint response;
-		
+
         asking = TRUE;
 
         dialog = gtk_dialog_new_with_buttons (_("Start New Match?"),
@@ -571,8 +571,8 @@ void reset(guint key, struct msg_next_match *msg)
     rest_time = FALSE;
 
     if (key != GDK_0 && golden_score == FALSE) {
-        send_result(st[0].bluepts, st[0].whitepts, 
-                    blue_wins_voting, white_wins_voting, 
+        send_result(st[0].bluepts, st[0].whitepts,
+                    blue_wins_voting, white_wins_voting,
                     hansokumake_to_blue, hansokumake_to_white);
         st[0].match_time = 0;
     }
@@ -610,10 +610,10 @@ void reset(guint key, struct msg_next_match *msg)
             ippon   = msg->pin_time_ippon;
             if (msg->rest_time) {
                 gchar buf[128];
-                snprintf(buf, sizeof(buf), "%s: %s", _("REST TIME"), 
-                         msg->minutes & MATCH_FLAG_BLUE_REST ? 
+                snprintf(buf, sizeof(buf), "%s: %s", _("REST TIME"),
+                         msg->minutes & MATCH_FLAG_BLUE_REST ?
                          get_name(BLUE) :
-                         get_name(WHITE)); 
+                         get_name(WHITE));
                 rest_time = TRUE;
                 rest_flags = msg->minutes;
                 total = msg->rest_time;
@@ -716,7 +716,7 @@ static void incdecpts(gint *p, gboolean decrement)
     } else if (*p < 99)
         (*p)++;
 }
-    
+
 #define INC FALSE
 #define DEC TRUE
 
@@ -730,12 +730,12 @@ void check_ippon(void)
     set_points(st[0].bluepts, st[0].whitepts);
 
     if (st[0].whitepts[0] >= 2 || st[0].bluepts[0] >= 2) {
-        /**** according to Erkki's wish ****
+        if (rules_stop_ippon_2 == TRUE) {
               if (st[0].oRunning)
               oToggle();
               if (st[0].running)
               toggle();
-        ***/
+        }
         beep("IPPON");
 
         gchar *name = get_name(st[0].whitepts[0] >= 2 ? WHITE : BLUE);
@@ -757,7 +757,7 @@ gboolean set_osaekomi_winner(gint who)
         return FALSE;
 
     st[0].osaekomi_winner = who;
-                
+
     if (who == BLUE)
         set_comment_text(_("Points going to blue"));
     else if (who == WHITE)
@@ -847,9 +847,9 @@ void give_osaekomi_score()
     }
 #endif
     if (st[0].score) {
-        st[0].stackval[st[0].stackdepth].who = 
+        st[0].stackval[st[0].stackdepth].who =
             st[0].osaekomi_winner;
-        st[0].stackval[st[0].stackdepth].points = 
+        st[0].stackval[st[0].stackdepth].points =
             st[0].score;
         if (st[0].stackdepth < (STACK_DEPTH - 1))
             st[0].stackdepth++;
@@ -973,7 +973,7 @@ void clock_key(guint key, guint event_state)
             }
             update_display();
         }
-        break;		
+        break;
     case GDK_Up:
         set_osaekomi_winner(BLUE);
         break;
@@ -1019,20 +1019,20 @@ void clock_key(guint key, guint event_state)
             switch (st[0].whitepts[3]) {
             case 0: break;
             case 1: if (!rules_no_koka_dsp) incdecpts(&st[0].bluepts[2], DEC); break;
-            case 2: if (!rules_no_koka_dsp) incdecpts(&st[0].bluepts[2], INC); 
-                incdecpts(&st[0].bluepts[1], DEC); 
+            case 2: if (!rules_no_koka_dsp) incdecpts(&st[0].bluepts[2], INC);
+                incdecpts(&st[0].bluepts[1], DEC);
                 break;
             case 3: incdecpts(&st[0].bluepts[1], INC); incdecpts(&st[0].bluepts[0], DEC); break;
             case 4: incdecpts(&st[0].bluepts[0], DEC);
-            } 
+            }
             incdecpts(&st[0].whitepts[3], DEC);
             log_scores("Cancel waza-ari to white");
         } else {
             incdecpts(&st[0].whitepts[3], INC);
             switch (st[0].whitepts[3]) {
             case 1: if (!rules_no_koka_dsp) incdecpts(&st[0].bluepts[2], INC); break;
-            case 2: if (!rules_no_koka_dsp) incdecpts(&st[0].bluepts[2], DEC); 
-                incdecpts(&st[0].bluepts[1], INC); 
+            case 2: if (!rules_no_koka_dsp) incdecpts(&st[0].bluepts[2], DEC);
+                incdecpts(&st[0].bluepts[1], INC);
                 break;
             case 3: incdecpts(&st[0].bluepts[1], DEC); incdecpts(&st[0].bluepts[0], INC); break;
             case 4: incdecpts(&st[0].bluepts[0], INC);
@@ -1072,8 +1072,8 @@ void clock_key(guint key, guint event_state)
             switch (st[0].bluepts[3]) {
             case 0: break;
             case 1: if (!rules_no_koka_dsp) incdecpts(&st[0].whitepts[2], DEC); break;
-            case 2: if (!rules_no_koka_dsp) incdecpts(&st[0].whitepts[2], INC); 
-                incdecpts(&st[0].whitepts[1], DEC); 
+            case 2: if (!rules_no_koka_dsp) incdecpts(&st[0].whitepts[2], INC);
+                incdecpts(&st[0].whitepts[1], DEC);
                 break;
             case 3: incdecpts(&st[0].whitepts[1], INC); incdecpts(&st[0].whitepts[0], DEC); break;
             case 4: incdecpts(&st[0].whitepts[0], DEC);
@@ -1084,8 +1084,8 @@ void clock_key(guint key, guint event_state)
             incdecpts(&st[0].bluepts[3], INC);
             switch (st[0].bluepts[3]) {
             case 1: if (!rules_no_koka_dsp) incdecpts(&st[0].whitepts[2], INC); break;
-            case 2: if (!rules_no_koka_dsp) incdecpts(&st[0].whitepts[2], DEC); 
-                incdecpts(&st[0].whitepts[1], INC); 
+            case 2: if (!rules_no_koka_dsp) incdecpts(&st[0].whitepts[2], DEC);
+                incdecpts(&st[0].whitepts[1], INC);
                 break;
             case 3: incdecpts(&st[0].whitepts[1], DEC); incdecpts(&st[0].whitepts[0], INC); break;
             case 4: incdecpts(&st[0].whitepts[0], INC);
@@ -1098,26 +1098,26 @@ void clock_key(guint key, guint event_state)
     }
 
     /* check for shido amount of points */
-    if (st[0].bluepts[3] > 4) 
+    if (st[0].bluepts[3] > 4)
         st[0].bluepts[3] = 4;
-    if (st[0].bluepts[3] == 4 && (st[0].whitepts[0] & 2) == 0) 
+    if (st[0].bluepts[3] == 4 && (st[0].whitepts[0] & 2) == 0)
         st[0].whitepts[0] |= 2;
-    else if (st[0].bluepts[3] == 3 && (st[0].whitepts[0] & 1) == 0) 
+    else if (st[0].bluepts[3] == 3 && (st[0].whitepts[0] & 1) == 0)
         st[0].whitepts[0] |= 1;
-    else if (st[0].bluepts[3] == 2 && st[0].whitepts[1] == 0) 
+    else if (st[0].bluepts[3] == 2 && st[0].whitepts[1] == 0)
         st[0].whitepts[1] = 1;
-    else if (st[0].bluepts[3] == 1 && st[0].whitepts[2] == 0 && !rules_no_koka_dsp) 
+    else if (st[0].bluepts[3] == 1 && st[0].whitepts[2] == 0 && !rules_no_koka_dsp)
         st[0].whitepts[2] = 1;
 
-    if (st[0].whitepts[3] > 4) 
+    if (st[0].whitepts[3] > 4)
         st[0].whitepts[3] = 4;
-    if (st[0].whitepts[3] == 4 && (st[0].bluepts[0] & 2) == 0) 
+    if (st[0].whitepts[3] == 4 && (st[0].bluepts[0] & 2) == 0)
         st[0].bluepts[0] |= 2;
-    else if (st[0].whitepts[3] == 3 && (st[0].bluepts[0] & 1) == 0) 
+    else if (st[0].whitepts[3] == 3 && (st[0].bluepts[0] & 1) == 0)
         st[0].bluepts[0] |= 1;
-    else if (st[0].whitepts[3] == 2 && st[0].bluepts[1] == 0) 
+    else if (st[0].whitepts[3] == 2 && st[0].bluepts[1] == 0)
         st[0].bluepts[1] = 1;
-    else if (st[0].whitepts[3] == 1 && st[0].bluepts[2] == 0 && !rules_no_koka_dsp) 
+    else if (st[0].whitepts[3] == 1 && st[0].bluepts[2] == 0 && !rules_no_koka_dsp)
         st[0].bluepts[2] = 1;
 
     check_ippon();
@@ -1133,10 +1133,10 @@ static void gen_random_key(void)
     /*static gboolean wait_for_new_match = FALSE;*/
     static guint last_time = 0, now = 0, /*wait_set_time = 0,*/ next_time = 0;
     /*
-      static guint keys[NUM_KEYS] = 
-      {GDK_F1, GDK_F2, GDK_F3, 
-      GDK_F5, GDK_F6, GDK_F7, 
-      GDK_2,  GDK_space, GDK_Return}; 
+      static guint keys[NUM_KEYS] =
+      {GDK_F1, GDK_F2, GDK_F3,
+      GDK_F5, GDK_F6, GDK_F7,
+      GDK_2,  GDK_space, GDK_Return};
       guint key = 0;*/
     static gint /*test_state = 0,*/ last_cat = 0, last_num = 0;
     static gboolean last_win = FALSE;
@@ -1193,7 +1193,7 @@ static void gen_random_key(void)
         test_state = 0;
     return;
 
-    if (wait_for_new_match && st[0].running == 0 && 
+    if (wait_for_new_match && st[0].running == 0 &&
         last_category == current_category &&
         last_match == current_match &&
         now < wait_set_time + 100)
@@ -1245,7 +1245,7 @@ void judotimer_log(gchar *format, ...)
     if (logfile_name == NULL) {
         struct tm *tm = localtime((time_t *)&t);
         sprintf(buf, "judotimer_%04d%02d%02d_%02d%02d%02d.log",
-                tm->tm_year+1900, 
+                tm->tm_year+1900,
                 tm->tm_mon+1,
                 tm->tm_mday,
                 tm->tm_hour,
@@ -1259,12 +1259,12 @@ void judotimer_log(gchar *format, ...)
     if (f) {
         struct tm *tm = localtime((time_t *)&t);
         gsize x;
-		
+
         guint t = total - st[0].elap;
         guint min = t / 60;
         guint sec =  t - min*60;
-		
-        gchar *text_ISO_8859_1 = 
+
+        gchar *text_ISO_8859_1 =
             g_convert(text, -1, "ISO-8859-1", "UTF-8", NULL, &x, NULL);
 
         if (t > 610)

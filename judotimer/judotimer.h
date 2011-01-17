@@ -3,7 +3,7 @@
 /*
  * Copyright (C) 2006-2010 by Hannu Jokinen
  * Full copyright text is included in the software package.
- */ 
+ */
 
 #ifndef _JUDOTIMER_H_
 #define _JUDOTIMER_H_
@@ -25,8 +25,8 @@
 #define gettext(String) (String)
 #define dgettext(Domain,String) (String)
 #define dcgettext(Domain,String,Type) (String)
-#define bindtextdomain(Domain,Directory) (Domain) 
-#define bind_textdomain_codeset(Domain,Codeset) (Codeset) 
+#define bindtextdomain(Domain,Directory) (Domain)
+#define bind_textdomain_codeset(Domain,Codeset) (Codeset)
 #endif /* ENABLE_NLS */
 
 #define LANG_FI 0
@@ -79,6 +79,7 @@ extern gboolean demo;
 extern GKeyFile *keyfile;
 extern gboolean rules_no_koka_dsp;
 extern gboolean rules_leave_score;
+extern gboolean rules_stop_ippon_2;
 extern gboolean golden_score;
 extern gboolean clocks_only;
 extern gboolean short_pin_times;
@@ -96,7 +97,7 @@ extern int clock_running(void);
 //extern int lz_uncompress(unsigned char *in, unsigned char *out, unsigned int insize);
 extern void show_message(char *cat1, char *blue1, char *white1,
                          char *cat2, char *blue2, char *white2);
-extern void send_result(int bluepts[4], int whitepts[4], char blue_vote, char white_vote, 
+extern void send_result(int bluepts[4], int whitepts[4], char blue_vote, char white_vote,
 			char blue_hansokumake, char white_hansokumake);
 extern void update_status(void);
 extern void reset(guint key, struct msg_next_match *msg);
@@ -117,9 +118,10 @@ extern void toggle_color(GtkWidget *menu_item, gpointer data);
 extern void toggle_full_screen(GtkWidget *menu_item, gpointer data);
 extern void toggle_rules_no_koka(GtkWidget *menu_item, gpointer data);
 extern void toggle_rules_leave_points(GtkWidget *menu_item, gpointer data);
+extern void toggle_rules_stop_ippon(GtkWidget *menu_item, gpointer data);
 extern void select_display_layout(GtkWidget *menu_item, gpointer data);
 extern gpointer client_thread(gpointer args);
-extern void show_message(gchar *cat_1, gchar *blue_1, gchar *white_1, 
+extern void show_message(gchar *cat_1, gchar *blue_1, gchar *white_1,
                          gchar *cat_2, gchar *blue_2, gchar *white_2);
 extern void voting_result(GtkWidget *w, gpointer data);
 extern void reset_display(gint key);

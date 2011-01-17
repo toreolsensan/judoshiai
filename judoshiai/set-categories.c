@@ -223,28 +223,28 @@ struct offial_category official_categories[NUM_DRAWS][2][10] = {
     }, { // spanish
         { // men
             {
-                "Sen-M ", 1000, 300, 180, 600, // name, max age, match gs rest times 
+                "Sen M ", 1000, 300, 180, 600, // name, max age, match gs rest times 
                 {{60000, "60"}, {66000, "66"}, {73000, "73"}, 
                  {81000, "81"}, {90000, "90"}, {100000, "100"}, {0, NULL}}
             }, {
-                "Jun-M ", 18, 240, 120, 600, // name, max age, match gs rest times 
+                "Jun M ", 18, 240, 120, 600, // name, max age, match gs rest times 
                 {{55000, "55"}, {60000, "60"}, {66000, "66"}, {73000, "73"}, 
                  {81000, "81"}, {90000, "90"}, {100000, "100"}, {0, NULL}}
             }, {
-                "Cad-M ", 16, 240, 120, 600, // name, max age, match gs rest times 
+                "Cad M ", 16, 240, 120, 600, // name, max age, match gs rest times 
                 {{50000, "50"}, {55000, "55"}, {60000, "60"}, 
                  {66000, "66"}, {73000, "73"}, {81000, "81"}, {90000, "90"}, {0, NULL}}
             }, {
-                "Inf-M ", 14, 180, 120, 180, // name, max age, match gs rest times 
+                "Inf M ", 14, 180, 120, 180, // name, max age, match gs rest times 
                 {{38000, "38"}, {42000, "42"}, {46000, "46"}, 
                  {50000, "50"}, {55000, "55"}, {60000, "60"}, {66000, "66"}, 
                  {0, NULL}}
             }, {
-                "Ale-M ", 12, 120, 60, 180, // name, max age, match gs rest times 
+                "Ale M ", 12, 120, 60, 180, // name, max age, match gs rest times 
                 {{30000, "30"}, {34000, "34"}, {38000, "38"}, {42000, "42"}, 
                  {47000, "47"}, {52000, "52"}, {0, NULL}}
             }, {
-                "Ben-M ", 10, 120, 60, 180, // name, max age, match gs rest times 
+                "Ben M ", 10, 120, 60, 180, // name, max age, match gs rest times 
                 {{26000, "26"}, {30000, "30"}, {34000, "34"}, {38000, "38"}, {42000, "42"}, 
                  {47000, "47"}, {0, NULL}}
             }, {
@@ -256,27 +256,27 @@ struct offial_category official_categories[NUM_DRAWS][2][10] = {
             }, { NULL, 0, 0, 0, 0, {{0, NULL}}}
         }, { // women
             {
-                "Sen-F ", 1000, 300, 180, 600, // name, max age, match gs rest times 
+                "Sen F ", 1000, 300, 180, 600, // name, max age, match gs rest times 
                 {{48000, "48"}, {52000, "52"}, {57000, "57"}, 
                  {63000, "63"}, {70000, "70"}, {78000, "78"}, {0, NULL}}
             }, {
-                "Jun-F ", 18, 240, 120, 600, // name, max age, match gs rest times 
+                "Jun F ", 18, 240, 120, 600, // name, max age, match gs rest times 
                 {{44000, "44"}, {48000, "48"}, {52000, "52"}, {57000, "57"}, 
                  {63000, "63"}, {70000, "70"}, {78000, "78"}, {0, NULL}}
             }, {
-                "Cad-F ", 16, 240, 120, 600, // name, max age, match gs rest times 
+                "Cad F ", 16, 240, 120, 600, // name, max age, match gs rest times 
                 {{40000, "40"}, {44000, "44"}, {48000, "48"}, {52000, "52"}, 
                  {57000, "57"}, {63000, "63"}, {70000, "70"}, {0, NULL}}
             }, {
-                "Inf-F ", 14, 180, 120, 180, // name, max age, match gs rest times 
+                "Inf F ", 14, 180, 120, 180, // name, max age, match gs rest times 
                 {{36000, "36"}, {40000, "40"}, {44000, "44"}, 
                  {48000, "48"}, {52000, "52"}, {57000, "57"}, {63000, "63"}, {0, NULL}}
             }, {
-                "Ale-F ", 12, 120, 60, 180, // name, max age, match gs rest times 
+                "Ale F ", 12, 120, 60, 180, // name, max age, match gs rest times 
                 {{30000, "30"}, {34000, "34"}, {38000, "38"}, {42000, "42"}, 
                  {47000, "47"}, {52000, "52"}, {0, NULL}}
             }, {
-                "Ben-F ", 10, 120, 60, 180, // name, max age, match gs rest times 
+                "Ben F ", 10, 120, 60, 180, // name, max age, match gs rest times 
                 {{26000, "26"}, {30000, "30"}, {34000, "34"}, {38000, "38"}, {42000, "42"}, 
                  {47000, "47"}, {0, NULL}}
             }, {

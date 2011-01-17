@@ -1330,3 +1330,6 @@ msgstr "Omitir último segundo"
 
 msgid "Print Unmatched"
 msgstr "Imprimir desenparejados"
+
+msgid "Stop clock on Ippon"
+msgstr "Parar reloj en Ippon"
