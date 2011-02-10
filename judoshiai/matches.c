@@ -344,9 +344,11 @@ static void comment_cell_data_func (GtkTreeViewColumn *col,
 #define PREV_BLUE(_x) french_matches[table][sys][_x][0]
 #define PREV_WHITE(_x) french_matches[table][sys][_x][1]
 
-#define GET_PREV(_x) (_x < 0 ?                                          \
-                      (m[-_x].blue_points ? PREV_WHITE(-_x) : PREV_BLUE(-_x)) : \
-                      (m[_x].blue_points || m[_x].white == GHOST || db_has_hansokumake(m[_x].white) ? PREV_BLUE(_x) : PREV_WHITE(_x)))
+#define GET_PREV1(_x) ((m[_x].blue_points || m[_x].white == GHOST) ? PREV_BLUE(_x) : \
+                       ((m[_x].white_points || m[_x].blue == GHOST) ? PREV_WHITE(_x) : \
+                        (db_has_hansokumake(m[_x].white) ? PREV_BLUE(_x) : PREV_WHITE(_x))))
+
+#define GET_PREV(_x) (_x < 0 ? (m[-_x].blue_points ? PREV_WHITE(-_x) : PREV_BLUE(-_x)) : GET_PREV1(_x))
 
 #define CAN_WIN_H (yes[c[j]] && (ju[c[j]]->deleted & HANSOKUMAKE) == 0)
 #define CAN_WIN (yes[c[j]])
