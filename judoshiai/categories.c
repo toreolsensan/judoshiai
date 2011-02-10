@@ -174,7 +174,7 @@ void view_popup_menu_draw_category(GtkWidget *menuitem, gpointer userdata)
     if (n >= 1 && n <= 64)
         draw_one_category(&iter, n);
 
-    update_matches(index, 0, 0);
+    //update_matches(index, 0, 0);
     //matches_refresh();
 
     SYS_LOG_INFO(_("Category drawn"));

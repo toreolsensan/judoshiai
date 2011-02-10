@@ -924,7 +924,7 @@ static void make_manual_mathes_callback(GtkWidget *widget,
 out:
 
     update_category_status_info(mdata->mcategory_ix);
-    update_matches_small(mdata->mcategory_ix, 0);
+    update_matches(mdata->mcategory_ix, 0, 0);
 
     if (mdata->hidden == FALSE && (gulong)event == GTK_RESPONSE_OK)
         category_window(mdata->mcategory_ix);
