@@ -245,6 +245,12 @@ static void dqpool_results(FILE *f, gint category, struct judoka *ctg, gint num_
     empty_pool_struct(&pm);
 }
 
+#define GET_WINNER_AND_LOSER(_w)                                        \
+    winner = (m[_w].blue_points || m[_w].white==GHOST) ? m[_w].blue :   \
+        ((m[_w].white_points || m[_w].blue==GHOST) ? m[_w].white : 0);  \
+    loser = (m[_w].blue_points || m[_w].white==GHOST) ? m[_w].white :   \
+        ((m[_w].white_points || m[_w].blue==GHOST) ? m[_w].blue : 0)
+
 #define GET_GOLD(_w)                                                    \
     gold = (m[_w].blue_points || m[_w].white==GHOST) ? m[_w].blue :     \
         ((m[_w].white_points || m[_w].blue==GHOST) ? m[_w].white : 0);  \
@@ -268,16 +274,37 @@ static void french_results(FILE *f, gint category, struct judoka *ctg,
 {
     struct match m[NUM_MATCHES];
     struct judoka *j1;
-    gint gold = 0, silver = 0, bronze1 = 0, bronze2 = 0, fifth1 = 0, fifth2 = 0;
+    gint gold = 0, silver = 0, bronze1 = 0, bronze2 = 0, fourth = 0, fifth1 = 0, fifth2 = 0;
+    gint winner= 0, loser = 0;
     gint sys = ((systm & SYSTEM_MASK) - SYSTEM_FRENCH_8)>>16;
     gint table = (systm & SYSTEM_TABLE_MASK) >> SYSTEM_TABLE_SHIFT;
 
     memset(m, 0, sizeof(m));
     db_read_category_matches(category, m);
 
-    GET_GOLD(medal_matches[table][sys][2]);
-    GET_BRONZE1(medal_matches[table][sys][0]);
-    GET_BRONZE2(medal_matches[table][sys][1]);
+    GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(table, sys, 1, 1));
+    gold = winner;
+    silver = loser;
+    if (table == TABLE_MODIFIED_DOUBLE_ELIMINATION) {
+        GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(table, sys, 2, 1));
+        silver = winner;
+        bronze1 = loser;
+    } else if (one_bronze(table, sys)) {
+        GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(table, sys, 3, 1));
+        bronze1 = winner;
+        fourth = loser;
+        GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(table, sys, 5, 1));
+        fifth1 = loser;
+        GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(table, sys, 5, 2));
+        fifth2 = loser;
+    } else {
+        GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(table, sys, 3, 1));
+        bronze1 = winner;
+        fifth1 = loser;
+        GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(table, sys, 3, 2));
+        bronze2 = winner;
+        fifth2 = loser;
+    }
 
     if (table == TABLE_NO_REPECHAGE ||
         table == TABLE_ESP_DOBLE_PERDIDA) {

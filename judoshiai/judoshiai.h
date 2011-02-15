@@ -89,6 +89,7 @@ enum tables {
     /*TABLE_ESP_REPESCA_DOBLE_INICIO,*/
     TABLE_ESP_REPESCA_DOBLE,
     TABLE_ESP_REPESCA_SIMPLE,
+    TABLE_MODIFIED_DOUBLE_ELIMINATION,
     NUM_TABLES
 };
 #define TABLE_IJF_DOUBLE_REPECHAGE TABLE_ESP_REPESCA_DOBLE
@@ -108,6 +109,7 @@ enum cat_systems {
     /*CAT_ESP_REPESCA_DOBLE_INICIO,*/
     CAT_ESP_REPESCA_DOBLE,
     CAT_ESP_REPESCA_SIMPLE,
+    CAT_MODIFIED_DOUBLE_ELIMINATION,
     NUM_SYSTEMS
 };
 #define CAT_IJF_DOUBLE_REPECHAGE CAT_ESP_REPESCA_DOBLE
@@ -136,7 +138,8 @@ enum french_systems {
 enum special_match_types {
     SPECIAL_MATCH_START = 1,
     SPECIAL_MATCH_STOP,
-    SPECIAL_MATCH_FLAG
+    SPECIAL_MATCH_FLAG,
+    SPECIAL_MATCH_X_Y
 };
 
 #define SHOW_MESSAGE(_a...) do {gchar b[256]; snprintf(b, sizeof(b), _a); show_message(b); } while (0)
@@ -532,6 +535,8 @@ extern const gint repechage_start[NUM_TABLES][NUM_FRENCH][2];
 extern struct next_match_info next_matches_info[NUM_TATAMIS][2];
 extern struct cat_def category_definitions[NUM_CATEGORIES];
 extern const gint cat_system_to_table[NUM_SYSTEMS];
+extern gint get_abs_matchnum_by_pos(gint table, gint sys, gint pos, gint num);
+extern gboolean one_bronze(gint table, gint sys);
 
 extern FILE *result_file;
 extern GKeyFile *keyfile;
