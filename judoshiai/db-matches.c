@@ -600,12 +600,27 @@ gint db_competitor_match_status(gint competitor)
 }
 
 
-void db_set_match(struct match *m)
+void db_set_match(struct match *m1)
 {
-    if (db_match_exists(m->category, m->number, DB_MATCH_ROW))
-        db_update_match(m);
-    else
-        db_add_match(m);
+    memset(&m, 0, sizeof(m));
+
+    if (db_match_exists(m1->category, m1->number, DB_MATCH_ROW)) {
+        if (m.blue != m1->blue ||
+            m.white != m1->white ||
+            m.blue_score != m1->blue_score ||
+            m.white_score != m1->white_score ||
+            m.blue_points != m1->blue_points ||
+            m.white_points != m1->white_points ||
+            m.deleted != m1->deleted ||
+            m.category != m1->category ||
+            m.number != m1->number ||
+            m.match_time != m1->match_time ||
+            m.comment != m1->comment ||
+            m.forcedtatami != m1->forcedtatami ||
+            m.forcednumber != m1->forcednumber)
+            db_update_match(m1);
+    } else
+        db_add_match(m1);
 }
 
 void db_read_category_matches(gint category, struct match *m)
