@@ -273,8 +273,29 @@ void update_clock(void)
 #endif
     }
 
-    if (demo)
+    if (demo) {
         gen_random_key();
+        /*        
+        static gint last_cat = 0, last_num = 0;
+        static gint res[8][2][4] = {
+            {{2,1,0,0},{0,2,0,2}},
+            {{0,0,3,0},{1,0,0,0}},
+            {{0,1,0,0},{0,2,0,0}},
+            {{3,0,0,0},{0,1,0,0}},
+            {{0,0,0,2},{1,1,0,0}},
+            {{2,2,0,0},{0,0,0,1}},
+            {{0,4,0,0},{0,1,0,0}},
+            {{3,0,0,0},{1,2,0,0}},
+        };
+
+        if (last_cat != current_category || last_num != current_match) {
+            gint ix = (current_category + current_match) & 7;
+            send_result(res[ix][0], res[ix][1], 0, 0, 0, 0);
+            last_cat = current_category;
+            last_num = current_match;
+        }
+        */
+    }
 }
 
 void hajime_inc_func(void)

@@ -53,6 +53,7 @@ enum message_types {
 #define MATCH_FLAG_BRONZE_A    128
 #define MATCH_FLAG_BRONZE_B    256
 #define MATCH_FLAG_GOLD        512
+#define MATCH_FLAG_SILVER     1024
 
 
 struct msg_next_match {

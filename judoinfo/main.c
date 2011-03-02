@@ -213,6 +213,8 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
                     cairo_show_text(c, _("Semifinal A"));
                 else if (m->flags & MATCH_FLAG_SEMIFINAL_B)
                     cairo_show_text(c, _("Semifinal B"));
+                else if (m->flags & MATCH_FLAG_SILVER)
+                    cairo_show_text(c, _("Silver medal match"));
                 cairo_restore(c);
             }
             cairo_select_font_face(c, MY_FONT, 0, CAIRO_FONT_WEIGHT_BOLD);

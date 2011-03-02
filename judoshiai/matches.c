@@ -1085,7 +1085,12 @@ gint get_match_number_flag(gint category, gint number)
     case SYSTEM_FRENCH_16:
     case SYSTEM_FRENCH_32:
     case SYSTEM_FRENCH_64:
-	if (number == medal_matches[table][sys][0])
+        if (table == TABLE_MODIFIED_DOUBLE_ELIMINATION) {
+            if (number == medal_matches[table][sys][1])
+                return MATCH_FLAG_SILVER;
+            else if (number == medal_matches[table][sys][2])
+                return MATCH_FLAG_GOLD;
+	} else if (number == medal_matches[table][sys][0])
 	    return MATCH_FLAG_BRONZE_A;
 	else if (number == medal_matches[table][sys][1])
 	    return MATCH_FLAG_BRONZE_B;
@@ -1114,6 +1119,8 @@ gchar *get_match_number_text(gint category, gint number)
         return _("Semifinal A");
     else if (flags & MATCH_FLAG_SEMIFINAL_B)
         return _("Semifinal B");
+    else if (flags & MATCH_FLAG_SILVER)
+        return _("Silver medal match");
 
     return NULL;
 }
