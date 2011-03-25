@@ -109,6 +109,7 @@ gboolean msg_accepted(struct message *m)
     case MSG_NAME_REQ:
     case MSG_ALL_REQ:
     case MSG_CANCEL_REST_TIME:
+    case MSG_EDIT_COMPETITOR:
         return TRUE;
     }
     return FALSE;
@@ -120,7 +121,7 @@ void msg_received(struct message *input_msg)
     guint now, i;
     gboolean newentry = FALSE;
     gulong addr = input_msg->src_ip_addr;
-    struct judoka *j;
+    struct judoka *j, j2;
 
 #if 0
     if (input_msg->type != MSG_HELLO)
@@ -202,6 +203,57 @@ void msg_received(struct message *input_msg)
                                   input_msg->u.cancel_rest_time.blue,
                                   input_msg->u.cancel_rest_time.white);
         update_matches(input_msg->u.cancel_rest_time.category, 0, 0);
+        break;
+
+    case MSG_EDIT_COMPETITOR:
+#define SET_J(_x) j2._x = input_msg->u.edit_competitor._x
+        memset(&j2, 0, sizeof(j2));
+        SET_J(index);
+        SET_J(last);
+        SET_J(first);
+        SET_J(birthyear);
+        SET_J(belt);
+        SET_J(club);
+        SET_J(regcategory);
+        SET_J(weight);
+        SET_J(visible);
+        SET_J(category);
+        SET_J(deleted);
+        SET_J(country);
+        SET_J(id);
+        if (j2.index) { // edit old competitor 
+            j = get_data(j2.index);
+            if (j) {
+                j2.category = j->category;
+                db_update_judoka(j2.index, &j2);
+                if ((j->deleted & 1) == 0 && (j2.deleted & 1)) {
+                    GtkTreeIter iter;
+                    if (find_iter(&iter, j2.index))
+                        gtk_tree_store_remove((GtkTreeStore *)current_model, &iter);
+                } else {
+                    display_one_judoka(&j2);
+                    update_competitors_categories(j2.index);
+                }
+                free_judoka(j);
+            } else if ((j2.deleted & 1) == 0) {
+                j2.category = "?";
+                db_update_judoka(j2.index, &j2);
+
+                if (j2.index >= current_index)
+                    current_index = j2.index + 1;
+
+                display_one_judoka(&j2);
+                
+                avl_set_competitor(j2.index, j2.first, j2.last);
+                avl_set_competitor_status(j2.index, j2.deleted);
+            }
+        } else { // add new competitor
+            j2.index = current_index++;
+            j2.category = "?";
+            db_add_judoka(j2.index, &j2);
+            display_one_judoka(&j2);
+            update_competitors_categories(j2.index);
+        }
         break;
     }
 }

@@ -40,6 +40,7 @@ enum message_types {
     MSG_ALL_REQ,
     MSG_CANCEL_REST_TIME,
     MSG_UPDATE_LABEL,
+    MSG_EDIT_COMPETITOR,
     NUM_MESSAGES
 };
 
@@ -171,6 +172,22 @@ struct msg_update_label {
     gint xalign;
 };
 
+struct msg_edit_competitor {
+    gint index; // == 0 -> new competitor
+    gchar last[32];
+    gchar first[32];
+    gint birthyear;
+    gchar club[32];
+    gchar regcategory[20];
+    gint belt;
+    gint weight;
+    gint visible;
+    gchar category[20];
+    gint deleted;
+    gchar country[20];
+    gchar id[20];
+};
+
 struct message {
     long  src_ip_addr; // Source address of the packet. Added by the comm node (network byte order).
     char  type;
@@ -187,6 +204,7 @@ struct message {
         struct msg_name_req    name_req;
         struct msg_cancel_rest_time cancel_rest_time;
         struct msg_update_label update_label;
+        struct msg_edit_competitor edit_competitor;
         struct msg_dummy       dummy;
     } u;
 };

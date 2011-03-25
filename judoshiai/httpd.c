@@ -551,8 +551,7 @@ void index_html(http_parser_t *parser, gchar *txt)
     sendf(s, "<html><head><title>JudoShiai</title></head><body>\r\n");
     sendf(s, "%s", txt);
     sendf(s, "<a href=\"categories\">%s</a><br>", _("Match controlling and browsing"));
-    sendf(s, "<a href=\"judotimer.html\">Judotimer</a> (%s)<br>",
-          _("Java applet, Java must be enabled"));
+    sendf(s, "<a href=\"competitors\">%s</a><br>", _("Competitors"));
 
     if (webpwcrc32 == 0)
         sendf(s, "<hr>%s<br>", _("Password not in use"));
@@ -562,7 +561,7 @@ void index_html(http_parser_t *parser, gchar *txt)
         sendf(s, "<hr><p>%s, %s. %s.",
               _("Login is required"), _("if you want to report match results"),
               _("User name can be anything"));
-        sendf(s, "<a href=\"login\">%s</a><br>", _("Login"));
+        sendf(s, "<br><a href=\"login\">%s</a><br>", _("Login"));
     }
 
     sendf(s, "</body></html>\r\n\r\n");
@@ -711,29 +710,314 @@ void run_judotimer(http_parser_t *parser)
     sendf(s, "\r\n");
 }
 
-void get_competitors(http_parser_t *parser)
+static gint my_atoi(gchar *s) { return (s ? atoi(s) : 0); }
+
+#define GET_INT(_x) gint _x = new_comp ? 0 : my_atoi(db_get_data(row, #_x))
+#define GET_STR(_x) gchar *_x = new_comp ? "" : db_get_data(row, #_x)
+
+#define SEARCH_FIELD "<form method=\"get\" action=\"getcompetitor\" name=\"search\">Search (bar code):<input type=\"text\" name=\"index\"></form>\r\n"
+
+void get_competitor(http_parser_t *parser)
+{
+    SOCKET s = parser->sock;
+    gchar buf[1024];
+    gint row;
+    gint i;
+    gboolean new_comp = FALSE;
+    gchar *ix = NULL;
+
+    avl_node *node;
+    http_var_t *var;
+    node = avl_get_first(parser->queryvars);
+    while (node) {
+        var = (http_var_t *)node->key;
+        if (var) {
+            //printf("Query variable: '%s'='%s'\n", var->name, var->value);
+            if (!strcmp(var->name, "index")) {
+                ix = var->value;
+                if (!strcmp(ix, "0"))
+                    new_comp = TRUE;
+            }
+        }
+        node = avl_get_next(node);
+    }
+
+    sendf(s, "HTTP/1.0 200 OK\r\n");
+    sendf(s, "Content-Type: text/html; charset=utf-8\r\n");
+    sendf(s, "\r\n");
+    sendf(s, "<html><head><title>JudoShiai</title></head><body onLoad=\"document.valtable.weight.focus()\">\r\n");
+
+    sprintf(buf, "select * from competitors where \"index\"=%s", ix);
+    gint numrows = db_get_table(buf);
+
+    if (numrows < 0) {
+        sendf(s, "<h1>%s</h1></body></html>\r\n\r\n", _("No competitor found!"));
+        return;
+    } else if (numrows == 0)
+        new_comp = TRUE;
+
+    row = 0;
+
+    GET_INT(index);
+    GET_STR(last);
+    GET_STR(first);
+    GET_INT(birthyear);
+    GET_STR(club);
+    GET_STR(regcategory);
+    GET_INT(belt);
+    GET_INT(weight);
+    GET_INT(visible);
+    GET_STR(category);
+    GET_INT(deleted);
+    GET_STR(country);
+    GET_STR(id);
+    gint seeding = (deleted >> 2) & 7;
+
+#define HTML_ROW_STR(_h, _x)                                            \
+    sendf(s, "<tr><td>%s:</td><td><input type=\"text\" name=\"%s\" value=\"%s\"/></td></tr>\r\n", \
+          _h, #_x, _x)
+#define HTML_ROW_INT(_h, _x)                                            \
+    sendf(s, "<tr><td>%s:</td><td><input type=\"text\" name=\"%s\" value=\"%d\"/></td></tr>\r\n", \
+          _h, #_x, _x)
+
+    sendf(s, "<form method=\"get\" action=\"setcompetitor\" name=\"valtable\">"
+          "<input type=\"hidden\" name=\"index\" value=\"%d\">"
+          "<input type=\"hidden\" name=\"category\" value=\"%s\">"
+          "<table>\r\n", index, category);
+
+    HTML_ROW_STR("Last Name", last);
+    HTML_ROW_STR("First Name", first);
+    HTML_ROW_INT("Year of Birth", birthyear);
+
+    sendf(s, "<tr><td>%s:</td><td><select name=\"belt\" value=\"\">", "Grade");
+    for (i = 0; belts[i]; i++)
+        sendf(s, "<option %s>%s</option>", belt == i ? "selected" : "", belts[i]);
+    sendf(s, "</select></td></tr>\r\n");
+
+    HTML_ROW_STR("Club", club);
+    HTML_ROW_STR("Country", country);
+    HTML_ROW_STR("Reg.Category", regcategory);
+
+    sendf(s, "<tr><td>%s:</td><td>%s</td></tr>\r\n", "Category", category);
+
+    sendf(s, "<tr><td>%s:</td><td><input type=\"text\" name=\"weight\" value=\"%d.%02d\"/></td></tr>\r\n", \
+          "Weight", weight/1000, (weight%1000)/10);
+
+    sendf(s, "<tr><td>%s:</td><td><select name=\"seeding\" value=\"\">", "Seeding");
+    for (i = 0; i <= 4; i++)
+        sendf(s, "<option %s>%d</option>", seeding == i ? "selected" : "", i);
+    sendf(s, "</select></td></tr>\r\n");
+
+    sendf(s, "<tr><td>%s:</td><td><input type=\"checkbox\" name=\"hansokumake\" "
+          "value=\"yes\" %s/></td></tr>\r\n", "Hansoku-make", deleted&2 ? "checked" : "");
+
+    HTML_ROW_STR("ID", id);
+
+    if (category[0] == '?')
+        sendf(s, "<tr><td>%s:</td><td><input type=\"checkbox\" name=\"delete\" "
+              "value=\"yes\" %s/></td></tr>\r\n", "Delete", deleted&1 ? "checked" : "");
+
+    sendf(s, "</table>\r\n");
+
+    if (is_accepted(parser->address))
+        sendf(s, "<input type=\"submit\" value=\"%s\">", "OK");
+
+    sendf(s, "</form><br><a href=\"competitors\">Competitors</a>"
+          SEARCH_FIELD
+          "</body></html>\r\n\r\n");
+
+    db_close_table();
+}
+
+#define GET_HTML_STR(_x) \
+    else if (!strcmp(var->name, #_x)) _x = var->value
+#define GET_HTML_INT(_x) \
+    else if (!strcmp(var->name, #_x)) _x = my_atoi(var->value)
+#define DEF_STR(_x) gchar *_x = ""
+#define DEF_INT(_x) gint _x = 0
+
+void set_competitor(http_parser_t *parser)
+{
+    SOCKET s = parser->sock;
+    gchar buf[1024];
+    gint row;
+
+    DEF_INT(index);
+    DEF_STR(last);
+    DEF_STR(first);
+    DEF_INT(birthyear);
+    DEF_STR(club);
+    DEF_STR(regcategory);
+    DEF_STR(belt);
+    DEF_STR(weight);
+    DEF_INT(visible);
+    DEF_STR(category);
+    DEF_INT(deleted);
+    DEF_INT(seeding);
+    DEF_STR(country);
+    DEF_STR(hansokumake);
+    DEF_STR(id);
+    DEF_STR(delete);
+
+    avl_node *node;
+    http_var_t *var;
+    node = avl_get_first(parser->queryvars);
+    while (node) {
+        var = (http_var_t *)node->key;
+        if (var) {
+            //printf("Query variable: '%s'='%s'\n", var->name, var->value);
+            if (0) { }
+            GET_HTML_INT(index);
+            GET_HTML_STR(last);
+            GET_HTML_STR(first);
+            GET_HTML_INT(birthyear);
+            GET_HTML_STR(club);
+            GET_HTML_STR(regcategory);
+            GET_HTML_STR(belt);
+            GET_HTML_STR(weight);
+            GET_HTML_INT(visible);
+            GET_HTML_STR(category);
+            //GET_HTML_INT(deleted);
+            GET_HTML_INT(seeding);
+            GET_HTML_STR(country);
+            GET_HTML_STR(hansokumake);
+            GET_HTML_STR(id);
+            GET_HTML_STR(delete);
+        }
+        node = avl_get_next(node);
+    }
+
+    if (!strcmp(delete, "yes"))
+        deleted = 1;
+
+    if (!strcmp(hansokumake, "yes"))
+        deleted |= 2;
+
+    deleted |= seeding << 2;
+
+    gint beltval;
+    gchar *b = belt;
+    gboolean kyu = strchr(b, 'k') != NULL || strchr(b, 'K') != NULL;
+    while (*b && (*b < '0' || *b > '9')) b++;
+    gint grade = atoi(b);
+    if (grade) beltval = kyu ? 7 - grade : 6 + grade;
+    if (beltval < 0 || beltval > 13) beltval = 0;
+
+#define STRCPY(_x)                                                      \
+    strncpy(msg.u.edit_competitor._x, _x, sizeof(msg.u.edit_competitor._x)-1)
+
+#define STRCPY_UTF8(_x)                                                      \
+    do { gsize _sz;                                                       \
+        gchar *_s = g_convert(_x, -1, "UTF-8", "ISO-8859-1", NULL, &_sz, NULL); \
+        strncpy(msg.u.edit_competitor._x, _s, sizeof(msg.u.edit_competitor._x)-1); \
+        g_free(_s);                                                      \
+    } while (0)
+
+    struct message msg;
+    memset(&msg, 0, sizeof(msg));
+
+    msg.type = MSG_EDIT_COMPETITOR;
+    msg.u.edit_competitor.index = index;
+    STRCPY(last);
+    STRCPY(first);
+    msg.u.edit_competitor.birthyear = birthyear;
+    STRCPY(club);
+    STRCPY(regcategory);
+    msg.u.edit_competitor.belt = beltval;
+    msg.u.edit_competitor.weight = weight_grams(weight);
+    msg.u.edit_competitor.visible = TRUE;
+    STRCPY(category);
+    msg.u.edit_competitor.deleted = deleted;
+    STRCPY(country);
+    STRCPY(id);
+
+    struct message *msg2 = put_to_rec_queue(&msg);
+    time_t start = time(NULL);
+    while ((time(NULL) < start + 5) && (msg2->type != 0))
+        g_usleep(10000);
+
+    sendf(s, "HTTP/1.0 200 OK\r\n");
+    sendf(s, "Content-Type: text/html; charset=utf-8\r\n");
+    sendf(s, "\r\n");
+    sendf(s, "<html><head><title>JudoShiai</title></head>"
+          "<body onLoad=\"document.search.index.focus()\"><h1>OK</h1>"
+          "%s %s saved.<br>"
+          "<a href=\"competitors\">Show competitors</a>\r\n"
+          SEARCH_FIELD
+          "</body></html>\r\n\r\n", first, last);
+}
+
+void get_competitors(http_parser_t *parser, gboolean show_deleted)
 {
     SOCKET s = parser->sock;
     gint row;
+    gchar *order = "country";
+    avl_node *node;
+    http_var_t *var;
+    node = avl_get_first(parser->queryvars);
+    while (node) {
+        var = (http_var_t *)node->key;
+        if (var) {
+            //printf("Query variable: '%s'='%s'\n", var->name, var->value);
+            if (!strcmp(var->name, "order"))
+                order = var->value;
+        }
+        node = avl_get_next(node);
+    }
 
-    gint numrows = db_get_table("select * from competitors order by \"club\",\"last\",\"first\" asc");
+    gint numrows;
+    if (!strcmp(order, "club"))
+        numrows = db_get_table("select * from competitors order by \"club\",\"last\",\"first\" asc");
+    else if (!strcmp(order, "last"))
+        numrows = db_get_table("select * from competitors order by \"last\",\"first\" asc");
+    else if (!strcmp(order, "regcat"))
+        numrows = db_get_table("select * from competitors order by \"regcategory\",\"last\",\"first\" asc");
+    else
+        numrows = db_get_table("select * from competitors order by \"country\",\"club\",\"last\",\"first\" asc");
+
     if (numrows < 0)
         return;
 
     sendf(s, "HTTP/1.0 200 OK\r\n");
-    sendf(s, "Content-Type: text/html\r\n");
+    sendf(s, "Content-Type: text/html; charset=utf-8\r\n");
     sendf(s, "\r\n");
-    sendf(s, "<html><head><title>JudoShiai</title></head><body><h1>%s</h1>\r\n", _("Competitors"));
+    sendf(s, "<html><head><title>JudoShiai</title></head>"
+          "<body onLoad=\"document.search.index.focus()\"><h1>%s</h1>\r\n", 
+          show_deleted ? _("Deleted Competitors") : _("Competitors"));
+
+    if (show_deleted)
+        sendf(s, "<a href=\"competitors\"><b>Show competitors</b></a><br>\r\n");
+    else {
+        sendf(s, "<a href=\"delcompetitors\">Show deleted</a><br>\r\n");
+        sendf(s, "<a href=\"getcompetitor?index=0\"><b>Add new competitor</b></a><br>\r\n");
+    }
+    sendf(s, SEARCH_FIELD);
+
     sendf(s, "<table>\r\n");
+    sendf(s, "<tr><td><a href=\"?order=country\"><b>%s</b></a></td>"
+          "<td><a href=\"?order=club\"><b>%s</b></a></td>"
+          "<td><a href=\"?order=last\"><b>%s</b></a></td>"
+          "<td><b>%s</b></td>"
+          "<td><a href=\"?order=regcat\"><b>%s</b></a></td>"
+          "<td></td></tr>\r\n",
+          "Country", "Club", "Last Name", "First Name", "Reg.Category");
 
     for (row = 0; row < numrows; row++) {
         gchar *last = db_get_data(row, "last");
         gchar *first = db_get_data(row, "first");
         gchar *club = db_get_data(row, "club");
+        gchar *country = db_get_data(row, "country");
         gchar *cat = db_get_data(row, "regcategory");
         gchar *id = db_get_data(row, "index");
-        sendf(s, "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>\r\n",
-              last, first, club, cat, id);
+        gint   deleted = my_atoi(db_get_data(row, "deleted"));
+
+        if (((deleted&1) && show_deleted) ||
+            ((deleted&1) == 0 && show_deleted == FALSE)) {
+            sendf(s, "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td>"
+                  "<td>%s</td>"
+                  "<td><a href=\"getcompetitor?index=%s\">%s</a></td></tr>\r\n",
+                  country, club, last, first, cat, id, "Edit");
+        }
     }	
 
     sendf(s, "</table></body></html>\r\n\r\n");
@@ -797,7 +1081,13 @@ gpointer analyze_http(gpointer param)
         //g_print("GET %s\n", parser->uri);
 					
         if (!strcmp(parser->uri, "/competitors"))
-            get_competitors(parser);
+            get_competitors(parser, FALSE);
+        else if (!strcmp(parser->uri, "/delcompetitors"))
+            get_competitors(parser, TRUE);
+        else if (!strcmp(parser->uri, "/getcompetitor"))
+            get_competitor(parser);
+        else if (!strcmp(parser->uri, "/setcompetitor"))
+            set_competitor(parser);
         else if (!strcmp(parser->uri, "/categories"))
             get_categories(parser);
         else if (!strcmp(parser->uri, "/judotimer"))
