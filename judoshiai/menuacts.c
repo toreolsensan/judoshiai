@@ -30,7 +30,7 @@ void about_shiai( GtkWidget *w, gpointer data)
     gtk_show_about_dialog (NULL, 
                            "name", "JudoShiai",
                            "title", "About JudoShiai",
-                           "copyright", "Copyright 2006-2010 Hannu Jokinen",
+                           "copyright", "Copyright 2006-2011 Hannu Jokinen",
                            "version", SHIAI_VERSION,
                            "website", "http://sourceforge.net/projects/judoshiai/",
                            NULL);
