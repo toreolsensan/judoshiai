@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2010 by Hannu Jokinen
+ * Copyright (C) 2006-2011 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */
 
@@ -33,7 +33,9 @@
 #define LANG_SW 1
 #define LANG_EN 2
 #define LANG_ES 3
-#define NUM_LANGS 4
+#define LANG_EE 4
+#define LANG_UK 5
+#define NUM_LANGS 6
 
 #define FRAME_WIDTH  600
 #define FRAME_HEIGHT 400
@@ -75,7 +77,7 @@ extern gint osaekomi_winner;
 extern gchar *installation_dir;
 extern gulong my_ip_address, node_ip_addr;
 extern gboolean automatic;
-extern gboolean demo;
+extern gint demo;
 extern GKeyFile *keyfile;
 extern gboolean rules_no_koka_dsp;
 extern gboolean rules_leave_score;
@@ -86,6 +88,7 @@ extern gboolean short_pin_times;
 extern gint language;
 extern gboolean rest_time;
 extern gint current_category, current_match;
+extern gboolean sides_switched;
 
 extern gboolean this_is_shiai(void);
 extern void copy_packet(struct message *msg); // not used
@@ -163,6 +166,10 @@ extern void open_sound(void);
 extern void close_sound(void);
 extern void play_sound(void);
 extern void select_sound(GtkWidget *menu_item, gpointer data);
+extern void set_gs_text(gchar *txt);
+extern void clear_switch_sides(void);
+extern void toggle_switch_sides(GtkWidget *menu_item, gpointer data);
+extern void light_switch_sides(gboolean yes);
 
 
 #endif

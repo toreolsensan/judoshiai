@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2010 by Hannu Jokinen
+ * Copyright (C) 2006-2011 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */ 
 
@@ -138,7 +138,11 @@ static void view_popup_menu_remove_draw(GtkWidget *menuitem, gpointer userdata)
         return;
     }
 
-    db_set_system((gint)userdata, get_cat_system((gint)userdata)&SYSTEM_WISH_MASK);
+    struct compsys cs;
+    cs = get_cat_system((gint)userdata);
+    cs.system = cs.numcomp = cs.table = 0; // leave wishsys as is
+
+    db_set_system((gint)userdata, cs);
     db_remove_matches((gint)userdata);
     update_category_status_info((gint)userdata);
     matches_refresh();

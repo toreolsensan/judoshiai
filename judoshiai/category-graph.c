@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2010 by Hannu Jokinen
+ * Copyright (C) 2006-2011 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */ 
 
@@ -12,6 +12,8 @@
 #include <gdk/gdkkeysyms.h>
 
 #include "judoshiai.h"
+
+extern gboolean mirror_display;
 
 static gboolean mouse_click(GtkWidget *sheet_page, 
 			    GdkEventButton *event, 
@@ -99,6 +101,11 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
         gchar buf[30];
         gint old_group = 0;
         struct category_data *catdata = category_queue[i].next;
+
+        if (mirror_display && i) {
+            left = (number_of_tatamis - i + 1)*colwidth;
+            right = (number_of_tatamis - i + 2)*colwidth;
+        }
 		
         matches_left = 0;
         max_group = 0;

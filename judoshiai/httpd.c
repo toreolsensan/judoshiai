@@ -28,6 +28,7 @@
 #include <sys/stat.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <netinet/tcp.h>
 #include <arpa/inet.h>
 #include <net/if.h>
 #include <fcntl.h>
@@ -66,6 +67,13 @@ struct judoka unknown_judoka = {
     .category = "?",
     .id = ""
 };
+
+#define NUM_CONNECTIONS 16
+static struct {
+    guint fd;
+    gulong addr;
+    gboolean closed;
+} connections[NUM_CONNECTIONS];
 
 void sighandler(int sig)
 {
@@ -766,7 +774,7 @@ void get_competitor(http_parser_t *parser)
     GET_STR(regcategory);
     GET_INT(belt);
     GET_INT(weight);
-    GET_INT(visible);
+    //GET_INT(visible); xxx not used
     GET_STR(category);
     GET_INT(deleted);
     GET_STR(country);
@@ -839,8 +847,6 @@ void get_competitor(http_parser_t *parser)
 void set_competitor(http_parser_t *parser)
 {
     SOCKET s = parser->sock;
-    gchar buf[1024];
-    gint row;
 
     DEF_INT(index);
     DEF_STR(last);
@@ -1076,9 +1082,10 @@ void get_file(http_parser_t *parser)
 gpointer analyze_http(gpointer param)
 {
     http_parser_t *parser = param;
+    gint i;
 
     if (parser->req_type == httpp_req_get) {
-        //g_print("GET %s\n", parser->uri);
+        //g_print("GET %s (fd=%d)\n", parser->uri, parser->sock);
 					
         if (!strcmp(parser->uri, "/competitors"))
             get_competitors(parser, FALSE);
@@ -1110,10 +1117,18 @@ gpointer analyze_http(gpointer param)
         g_print("POST %s\n", parser->uri);
 
     }
+    
+    for (i = 0; i < NUM_CONNECTIONS; i++)
+        if (connections[i].fd == parser->sock) {
+#if defined(__WIN32__) || defined(WIN32)
+            shutdown(parser->sock, SD_SEND);
+#endif
+            connections[i].closed = TRUE;
+            break;
+        }
 
-    g_usleep(1000000);
     httpp_destroy(parser);
-    g_thread_exit(NULL);    /* not required just good pratice */
+
     return NULL;
 }
 
@@ -1122,6 +1137,7 @@ gpointer httpd_thread(gpointer args)
     SOCKET serv_fd, tmp_fd;
     unsigned int alen;
     struct sockaddr_in my_addr, caller;
+    fd_set read_fd, fds;
     int reuse = 1;
 
     g_print("HTTP thread started\n");
@@ -1152,45 +1168,102 @@ gpointer httpd_thread(gpointer args)
 
     listen(serv_fd, 1);
 
+    FD_ZERO(&read_fd);
+    FD_SET(serv_fd, &read_fd);
+
     g_print("Listening http socket\n");
 
     for ( ; *((gboolean *)args); )   /* exit loop when flag is cleared */
     {
-        int r;
+        int r, i;
         static char buf[1024];
+        struct timeval timeout;
 
-        alen = sizeof(caller);
-        if ((tmp_fd = accept(serv_fd, (struct sockaddr *)&caller, &alen)) < 0) {
-            g_print("ERR: serv accept");
-            continue;
+        fds = read_fd;
+        timeout.tv_sec = 0;
+        timeout.tv_usec = 100000;
+
+        r = select(32, &fds, NULL, NULL, &timeout);
+
+        for (i = 0; i < NUM_CONNECTIONS; i++) {
+            if (connections[i].fd && connections[i].closed) {
+                //g_print("Closed: connection %d fd=%d closed\n", i, connections[i].fd);
+                FD_CLR(connections[i].fd, &read_fd);
+                closesocket(connections[i].fd);
+                connections[i].fd = 0;
+            }
         }
 
-        r = recv(tmp_fd, (void *)&buf, sizeof(buf), 0);
-        if (r > 0) {
-            http_parser_t *parser;
-			
-            buf[r] = 0;
-            //g_print("DATA='%s'\n", buf);
+        if (r <= 0)
+            continue;
 
-            parser = httpp_create_parser();
-            httpp_initialize(parser, NULL);
-            parser->sock = tmp_fd;
-            parser->address = caller.sin_addr.s_addr;
-
-            if (httpp_parse(parser, buf, r)) {
-                g_thread_create((GThreadFunc)analyze_http,
-                                (gpointer)parser, FALSE, NULL); 
-            } else {
-                httpp_destroy(parser);
+        if (FD_ISSET(serv_fd, &fds)) {
+            alen = sizeof(caller);
+            if ((tmp_fd = accept(serv_fd, (struct sockaddr *)&caller, &alen)) < 0) {
+                perror("serv accept");
+                continue;
             }
-        } else {
-            //shutdown(tmp_fd, SD_SEND);
-            //r = recv(tmp_fd, (void *)&buf, sizeof(buf), 0);
-            //g_print("r=%d\n", r);
-            closesocket(tmp_fd);
+
+            for (i = 0; i < NUM_CONNECTIONS; i++)
+                if (connections[i].fd == 0)
+                    break;
+
+            if (i >= NUM_CONNECTIONS) {
+                g_print("Node cannot accept new connections!\n");
+                closesocket(tmp_fd);
+                continue;
+            }
+
+            connections[i].fd = tmp_fd;
+            connections[i].addr = caller.sin_addr.s_addr;
+            connections[i].closed = FALSE;
+#if 0
+            const int nodelayflag = 1;
+            if (setsockopt(tmp_fd, IPPROTO_TCP, TCP_NODELAY, 
+                           (const void *)&nodelayflag, sizeof(nodelayflag))) {
+                g_print("CANNOT SET TCP_NODELAY (2)\n");
+            }
+#endif
+            /*g_print("Node: new connection[%d]: fd=%d addr=%lx\n", 
+              i, tmp_fd, caller.sin_addr.s_addr);*/
+            FD_SET(tmp_fd, &read_fd);
+        }
+
+        for (i = 0; i < NUM_CONNECTIONS; i++) {
+            if (connections[i].fd == 0)
+                continue;
+
+            if (!(FD_ISSET(connections[i].fd, &fds)))
+                continue;
+
+            r = recv(connections[i].fd, buf, sizeof(buf)-1, 0);
+            if (r > 0) {
+                http_parser_t *parser;
+			
+                buf[r] = 0;
+                //g_print("DATA='%s'\n", buf);
+
+                parser = httpp_create_parser();
+                httpp_initialize(parser, NULL);
+                parser->sock = connections[i].fd;
+                parser->address = connections[i].addr;
+
+                if (httpp_parse(parser, buf, r)) {
+                    analyze_http(parser);
+                } else {
+                    g_print("http req error\n");
+                    httpp_destroy(parser);
+                }
+            } else {
+                //g_print("Received 0: connection %d fd=%d closed\n", i, connections[i].fd);
+                closesocket(connections[i].fd);
+                FD_CLR(connections[i].fd, &read_fd);
+                connections[i].fd = 0;
+            }
         }
     }
-			
+
+    g_print("httpd exit\n");
     g_thread_exit(NULL);    /* not required just good pratice */
     return NULL;
 }

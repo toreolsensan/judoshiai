@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2010 by Hannu Jokinen
+ * Copyright (C) 2006-2011 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */ 
 
@@ -159,7 +159,7 @@ void view_popup_menu_draw_category(GtkWidget *menuitem, gpointer userdata)
             n = gtk_tree_model_iter_n_children(current_model, &iter);
             if (n >= 1 && n <= 64)
                 draw_one_category(&iter, n);
-            update_matches(index2, 0, 0);
+            update_matches(index2, (struct compsys){0, 0, 0,0}, 0);
         }
         ok = gtk_tree_model_iter_next(current_model, &iter);
     }
@@ -174,7 +174,7 @@ void view_popup_menu_draw_category(GtkWidget *menuitem, gpointer userdata)
     if (n >= 1 && n <= 64)
         draw_one_category(&iter, n);
 
-    //update_matches(index, 0, 0);
+    //update_matches(index, (struct compsys){0, 0, 0,0}, 0);
     //matches_refresh();
 
     SYS_LOG_INFO(_("Category drawn"));
@@ -347,11 +347,37 @@ void update_category_status_info_all(void)
     refresh_window();
 }
 
-gint get_cat_system(gint index)
+struct compsys get_cat_system(gint index)
 {
     struct category_data *catdata = avl_get_category(index);
     if (catdata)
-	return catdata->system;
+        return catdata->system;
 
     return db_get_system(index);
+}
+
+#define COMPETITORS_MASK   0x0000ffff
+#define SYSTEM_MASK        0x000f0000
+#define SYSTEM_MASK_SHIFT  16
+#define SYSTEM_TABLE_MASK  0x00f00000
+#define SYSTEM_TABLE_SHIFT 20
+#define SYSTEM_WISH_MASK   0x0f000000
+#define SYSTEM_WISH_SHIFT  24
+
+gint compress_system(struct compsys d)
+{
+    return ((d.system << SYSTEM_MASK_SHIFT) |
+            d.numcomp |
+            (d.table << SYSTEM_TABLE_SHIFT) |
+            (d.wishsys << SYSTEM_WISH_SHIFT));
+}
+
+struct compsys uncompress_system(gint system)
+{
+    struct compsys d;
+    d.system = (system & SYSTEM_MASK) >> SYSTEM_MASK_SHIFT;
+    d.numcomp = system & COMPETITORS_MASK;
+    d.table = (system & SYSTEM_TABLE_MASK) >> SYSTEM_TABLE_SHIFT;
+    d.wishsys = (system & SYSTEM_WISH_MASK) >> SYSTEM_WISH_SHIFT;
+    return d;
 }

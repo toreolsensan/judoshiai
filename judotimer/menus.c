@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2010 by Hannu Jokinen
+ * Copyright (C) 2006-2011 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */
 
@@ -181,15 +181,31 @@ static GtkWidget *rules_leave_points, *rules_stop_ippon;
 static GtkWidget *tatami_sel, *tatami_sel_none, *tatami_sel_1,  *tatami_sel_2,  *tatami_sel_3,  *tatami_sel_4;
 static GtkWidget *tatami_sel_5,  *tatami_sel_6,  *tatami_sel_7,  *tatami_sel_8;
 static GtkWidget *node_ip, *my_ip, *manual, *about, *quick_guide;
-static GtkWidget *flag_fi, *flag_se, *flag_uk, *flag_es;
-static GtkWidget *menu_flag_fi, *menu_flag_se, *menu_flag_uk, *menu_flag_es;
-static GtkWidget *light, *menu_light, *timeset;
+static GtkWidget *light, *menu_light, *menu_switched, *timeset;
 static GtkWidget *inc_time, *dec_time, *inc_osaekomi, *dec_osaekomi, *clock_only, *set_time, *layout_sel;
-static GtkWidget *layout_sel_1, *layout_sel_2, *layout_sel_3, *layout_sel_4, *layout_sel_5, *layout_sel_6;
+static GtkWidget *layout_sel_1, *layout_sel_2, *layout_sel_3, *layout_sel_4, *layout_sel_5, *layout_sel_6, *layout_sel_7;
 static GtkTooltips *menu_tips;
 static GtkWidget *mode_normal, *mode_master, *mode_slave;
-static GtkWidget *undo, *hansokumake_blue, *hansokumake_white, *clear_selection;
-static GtkWidget *advertise, *sound;
+static GtkWidget *undo, *hansokumake_blue, *hansokumake_white, *clear_selection, *switch_sides;
+static GtkWidget *advertise, *sound, *flags[NUM_LANGS], *menu_flags[NUM_LANGS];
+
+static const gchar *flags_files[NUM_LANGS] = {
+    "finland.png", "sweden.png", "uk.png", "spain.png", "estonia.png", "ukraine.png"
+};
+
+static const gchar *lang_names[NUM_LANGS] = {
+    "fi", "sv", "en", "es", "et", "uk"
+};
+
+static const gchar *help_file_names[NUM_LANGS] = {
+    "judoshiai-fi.pdf", "judoshiai-en.pdf", "judoshiai-en.pdf", "judoshiai-es.pdf", "judoshiai-en.pdf",
+    "judoshiai-en.pdf"
+};
+
+static const gchar *timer_help_file_names[NUM_LANGS] = {
+    "judotimer-fi.pdf", "judotimer-en.pdf", "judotimer-en.pdf", "judotimer-es.pdf", "judotimer-en.pdf",
+    "judotimer-en.pdf"
+};
 
 static GtkWidget *get_picture(const gchar *name)
 {
@@ -236,9 +252,24 @@ static gint light_callback(gpointer data)
     return TRUE;
 }
 
+void clear_switch_sides(void)
+{
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(switch_sides), FALSE);
+    toggle_switch_sides(switch_sides, NULL);
+}
+
+void light_switch_sides(gboolean yes)
+{
+    if (yes)
+        set_menu_item_picture(GTK_IMAGE_MENU_ITEM(menu_switched), "switched.png");
+    else
+        set_menu_item_picture(GTK_IMAGE_MENU_ITEM(menu_switched), "notswitched.png");
+}
+
 /* Returns a menubar widget made from the above menu */
 GtkWidget *get_menubar_menu(GtkWidget  *window)
 {
+    gint i;
     GtkAccelGroup *group;
     GtkWidget *submenu;
 
@@ -251,27 +282,22 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     help        = gtk_menu_item_new_with_label (_("Help"));
     undo        = gtk_menu_item_new_with_label (_("Undo!"));
 
-    flag_fi     = get_picture("finland.png");
-    flag_se     = get_picture("sweden.png");
-    flag_uk     = get_picture("uk.png");
-    flag_es     = get_picture("spain.png");
-    menu_flag_fi = gtk_image_menu_item_new();
-    menu_flag_se = gtk_image_menu_item_new();
-    menu_flag_uk = gtk_image_menu_item_new();
-    menu_flag_es = gtk_image_menu_item_new();
-    gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(menu_flag_fi), flag_fi);
-    gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(menu_flag_se), flag_se);
-    gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(menu_flag_uk), flag_uk);
-    gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(menu_flag_es), flag_es);
-    gtk_image_menu_item_set_always_show_image(GTK_IMAGE_MENU_ITEM(menu_flag_fi), TRUE);
-    gtk_image_menu_item_set_always_show_image(GTK_IMAGE_MENU_ITEM(menu_flag_se), TRUE);
-    gtk_image_menu_item_set_always_show_image(GTK_IMAGE_MENU_ITEM(menu_flag_uk), TRUE);
-    gtk_image_menu_item_set_always_show_image(GTK_IMAGE_MENU_ITEM(menu_flag_es), TRUE);
+    for (i = 0; i < NUM_LANGS; i++) {
+        flags[i] = get_picture(flags_files[i]);
+        menu_flags[i] = gtk_image_menu_item_new();
+        gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(menu_flags[i]), flags[i]);        
+        gtk_image_menu_item_set_always_show_image(GTK_IMAGE_MENU_ITEM(menu_flags[i]), TRUE);
+    }
 
     light      = get_picture("redlight.png");
     menu_light = gtk_image_menu_item_new();
     gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(menu_light), light);
     gtk_image_menu_item_set_always_show_image(GTK_IMAGE_MENU_ITEM(menu_light), TRUE);
+
+    menu_switched = gtk_image_menu_item_new();
+    light      = get_picture("notswitched.png");
+    gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(menu_switched), light);
+    gtk_image_menu_item_set_always_show_image(GTK_IMAGE_MENU_ITEM(menu_switched), TRUE);
 
     matchmenu        = gtk_menu_new ();
     preferencesmenu  = gtk_menu_new ();
@@ -284,22 +310,20 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_menu_shell_append (GTK_MENU_SHELL (menubar), match);
     gtk_menu_shell_append (GTK_MENU_SHELL (menubar), preferences);
     gtk_menu_shell_append (GTK_MENU_SHELL (menubar), help);
-    gtk_menu_shell_append (GTK_MENU_SHELL (menubar), menu_flag_fi);
-    gtk_menu_shell_append (GTK_MENU_SHELL (menubar), menu_flag_se);
-    gtk_menu_shell_append (GTK_MENU_SHELL (menubar), menu_flag_uk);
-    gtk_menu_shell_append (GTK_MENU_SHELL (menubar), menu_flag_es);
-    g_signal_connect(G_OBJECT(menu_flag_fi), "button_press_event",
-                     G_CALLBACK(change_language), (gpointer)LANG_FI);
-    g_signal_connect(G_OBJECT(menu_flag_se), "button_press_event",
-                     G_CALLBACK(change_language), (gpointer)LANG_SW);
-    g_signal_connect(G_OBJECT(menu_flag_uk), "button_press_event",
-                     G_CALLBACK(change_language), (gpointer)LANG_EN);
-    g_signal_connect(G_OBJECT(menu_flag_es), "button_press_event",
-                     G_CALLBACK(change_language), (gpointer)LANG_ES);
+
+    for (i = 0; i < NUM_LANGS; i++) {
+        gtk_menu_shell_append(GTK_MENU_SHELL(menubar), menu_flags[i]); 
+        g_signal_connect(G_OBJECT(menu_flags[i]), "button_press_event",
+                         G_CALLBACK(change_language), (gpointer)i);
+    }
+
     //gtk_menu_shell_append (GTK_MENU_SHELL (menubar), undo);
     g_signal_connect(G_OBJECT(undo), "button_press_event",
                      G_CALLBACK(undo_func), (gpointer)NULL);
 
+
+    gtk_menu_shell_append (GTK_MENU_SHELL (menubar), menu_switched);
+    gtk_menu_item_set_right_justified(GTK_MENU_ITEM(menu_switched), TRUE);
 
     gtk_menu_shell_append (GTK_MENU_SHELL (menubar), menu_light);
     g_signal_connect(G_OBJECT(menu_light), "button_press_event",
@@ -321,6 +345,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     hansokumake_blue = gtk_menu_item_new_with_label(_("Hansoku-make to blue"));
     hansokumake_white = gtk_menu_item_new_with_label(_("Hansoku-make to white"));
     clear_selection = gtk_menu_item_new_with_label(_("Clear selection"));
+    switch_sides  = gtk_check_menu_item_new_with_label("Switch sides");
     separator2 = gtk_separator_menu_item_new();
     viewlog = gtk_menu_item_new_with_label(_("View Log"));
     quit = gtk_menu_item_new_with_label(_("Quit"));
@@ -338,6 +363,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     //gtk_menu_shell_append (GTK_MENU_SHELL (matchmenu), hansokumake_blue);
     //gtk_menu_shell_append (GTK_MENU_SHELL (matchmenu), hansokumake_white);
     gtk_menu_shell_append (GTK_MENU_SHELL (matchmenu), clear_selection);
+    gtk_menu_shell_append (GTK_MENU_SHELL (matchmenu), switch_sides);
     gtk_menu_shell_append (GTK_MENU_SHELL (matchmenu), separator2);
     gtk_menu_shell_append (GTK_MENU_SHELL (matchmenu), viewlog);
     gtk_menu_shell_append (GTK_MENU_SHELL (matchmenu), gtk_separator_menu_item_new());
@@ -355,6 +381,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     g_signal_connect(G_OBJECT(hansokumake_blue), "activate", G_CALLBACK(voting_result), (gpointer)HANSOKUMAKE_BLUE);
     g_signal_connect(G_OBJECT(hansokumake_white), "activate", G_CALLBACK(voting_result), (gpointer)HANSOKUMAKE_WHITE);
     g_signal_connect(G_OBJECT(clear_selection), "activate", G_CALLBACK(voting_result), (gpointer)CLEAR_SELECTION);
+    g_signal_connect(G_OBJECT(switch_sides), "activate", G_CALLBACK(toggle_switch_sides), (gpointer)0);
 
     g_signal_connect(G_OBJECT(viewlog),     "activate", G_CALLBACK(start_log_view), NULL);
     g_signal_connect(G_OBJECT(quit),        "activate", G_CALLBACK(destroy/*gtk_main_quit*/), NULL);
@@ -377,6 +404,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     layout_sel_4    = gtk_radio_menu_item_new_with_label_from_widget((GtkRadioMenuItem *)layout_sel_1, "");
     layout_sel_5    = gtk_radio_menu_item_new_with_label_from_widget((GtkRadioMenuItem *)layout_sel_1, "");
     layout_sel_6    = gtk_radio_menu_item_new_with_label_from_widget((GtkRadioMenuItem *)layout_sel_1, "");
+    layout_sel_7    = gtk_radio_menu_item_new_with_label_from_widget((GtkRadioMenuItem *)layout_sel_1, "");
     full_screen     = gtk_check_menu_item_new_with_label("Full screen mode");
     rules_no_koka   = gtk_check_menu_item_new_with_label("");
     rules_leave_points = gtk_check_menu_item_new_with_label("");
@@ -420,6 +448,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_menu_shell_append (GTK_MENU_SHELL (submenu), layout_sel_3);
     gtk_menu_shell_append (GTK_MENU_SHELL (submenu), layout_sel_4);
     gtk_menu_shell_append (GTK_MENU_SHELL (submenu), layout_sel_6);
+    gtk_menu_shell_append (GTK_MENU_SHELL (submenu), layout_sel_7);
     gtk_menu_shell_append (GTK_MENU_SHELL (submenu), layout_sel_5);
 
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), gtk_separator_menu_item_new());
@@ -472,6 +501,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     g_signal_connect(G_OBJECT(layout_sel_4),    "activate", G_CALLBACK(select_display_layout), (gpointer)4);
     g_signal_connect(G_OBJECT(layout_sel_5),    "activate", G_CALLBACK(select_display_layout), (gpointer)5);
     g_signal_connect(G_OBJECT(layout_sel_6),    "activate", G_CALLBACK(select_display_layout), (gpointer)6);
+    g_signal_connect(G_OBJECT(layout_sel_7),    "activate", G_CALLBACK(select_display_layout), (gpointer)7);
     g_signal_connect(G_OBJECT(tatami_sel_none), "activate", G_CALLBACK(tatami_selection),     (gpointer)0);
     g_signal_connect(G_OBJECT(tatami_sel_1),    "activate", G_CALLBACK(tatami_selection),     (gpointer)1);
     g_signal_connect(G_OBJECT(tatami_sel_2),    "activate", G_CALLBACK(tatami_selection),     (gpointer)2);
@@ -577,6 +607,7 @@ void set_preferences(void)
         case 4: gtk_menu_item_activate(GTK_MENU_ITEM(layout_sel_4)); break;
         case 5: gtk_menu_item_activate(GTK_MENU_ITEM(layout_sel_5)); break;
         case 6: gtk_menu_item_activate(GTK_MENU_ITEM(layout_sel_6)); break;
+        case 7: gtk_menu_item_activate(GTK_MENU_ITEM(layout_sel_7)); break;
         }
     } else {
         select_display_layout(NULL, (gpointer)1);
@@ -601,27 +632,13 @@ void set_preferences(void)
 
 gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param)
 {
-    language = (gint)param;
     gchar *r = NULL;
+    static gchar envbuf[32]; // this must be static for the putenv() function
 
-    switch (language) {
-    case LANG_FI:
-        putenv("LANGUAGE=fi");
-        r = setlocale(LC_ALL, "fi");
-        break;
-    case LANG_SW:
-        putenv("LANGUAGE=sv");
-        r = setlocale(LC_ALL, "sv");
-        break;
-    case LANG_EN:
-        putenv("LANGUAGE=en");
-        r = setlocale(LC_ALL, "en");
-        break;
-    case LANG_ES:
-        putenv("LANGUAGE=es");
-        r = setlocale(LC_ALL, "es");
-        break;
-    }
+    language = (gint)param;
+    sprintf(envbuf, "LANGUAGE=%s", lang_names[language]);
+    putenv(envbuf);
+    r = setlocale(LC_ALL, lang_names[language]);
 
     gchar *dirname = g_build_filename(installation_dir, "share", "locale", NULL);
     bindtextdomain ("judoshiai", dirname);
@@ -647,6 +664,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(hansokumake_blue,  _("Hansoku-make to blue"));
     change_menu_label(hansokumake_white, _("Hansoku-make to white"));
     change_menu_label(clear_selection,   _("Clear selection"));
+    change_menu_label(switch_sides,      _("Switch sides"));
 
     change_menu_label(viewlog,      _("View Log"));
     change_menu_label(quit,         _("Quit"));
@@ -665,6 +683,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(layout_sel_4, _("Display layout 4"));
     change_menu_label(layout_sel_5, _("View clocks only"));
     change_menu_label(layout_sel_6, _("Display layout 5"));
+    change_menu_label(layout_sel_7, _("Display customized layout"));
 
     change_menu_label(tatami_sel,   _("Contest area"));
     change_menu_label(tatami_sel_none, _("Contest area not chosen"));
@@ -699,14 +718,18 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(about,        _("About"));
 
     /* tooltips */
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (menu_tips), menu_flag_fi,
+    gtk_tooltips_set_tip (GTK_TOOLTIPS (menu_tips), menu_flags[LANG_FI],
                           _("Change language to Finnish"), NULL);
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (menu_tips), menu_flag_se,
+    gtk_tooltips_set_tip (GTK_TOOLTIPS (menu_tips), menu_flags[LANG_SW],
                           _("Change language to Swedish"), NULL);
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (menu_tips), menu_flag_uk,
+    gtk_tooltips_set_tip (GTK_TOOLTIPS (menu_tips), menu_flags[LANG_EN],
                           _("Change language to English"), NULL);
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (menu_tips), menu_flag_es,
+    gtk_tooltips_set_tip (GTK_TOOLTIPS (menu_tips), menu_flags[LANG_ES],
                           _("Change language to Spanish"), NULL);
+    gtk_tooltips_set_tip (GTK_TOOLTIPS (menu_tips), menu_flags[LANG_EE],
+                          _("Change language to Estonian"), NULL);
+    gtk_tooltips_set_tip (GTK_TOOLTIPS (menu_tips), menu_flags[LANG_UK],
+                          _("Change language to Ukrainan"), NULL);
 
     gtk_tooltips_set_tip (GTK_TOOLTIPS (menu_tips), match0,
                           _("Contest duration automatically from JudoShiai program"), NULL);
@@ -834,14 +857,6 @@ GtkWidget *get_option_menu( void )
 #include "windows.h"
 #include "shellapi.h"
 #endif /* WIN32 */
-
-static const gchar *help_file_names[NUM_LANGS] = {
-    "judoshiai-fi.pdf", "judoshiai-en.pdf", "judoshiai-en.pdf", "judoshiai-es.pdf"
-};
-
-static const gchar *timer_help_file_names[NUM_LANGS] = {
-    "judotimer-fi.pdf", "judotimer-en.pdf", "judotimer-en.pdf", "judotimer-es.pdf"
-};
 
 void start_help(GtkWidget *w, gpointer data)
 {

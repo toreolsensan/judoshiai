@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2010 by Hannu Jokinen
+ * Copyright (C) 2006-2011 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */ 
 
@@ -193,7 +193,7 @@ void msg_received(struct message *input_msg)
             mode == MODE_SLAVE)
             return;
 
-        if (clock_running())
+        if (clock_running() && demo < 2)
             return;
 
         traffic_last_rec_time = time(NULL);
@@ -348,7 +348,7 @@ gpointer master_thread(gpointer args)
                 if (connections[i].fd == 0)
                     continue;
 
-                if (send_msg(connections[i].fd, &message_queue[msg_get]) < 0) {
+                if (send_msg(connections[i].fd, (struct message *)&message_queue[msg_get]) < 0) {
                     perror("sendto");
                     g_print("Node cannot send: conn=%d fd=%d\n", i, connections[i].fd);
                 }
@@ -389,7 +389,7 @@ gpointer master_thread(gpointer args)
 
             connections[i].fd = tmp_fd;
             connections[i].addr = caller.sin_addr.s_addr;
-            g_print("Master: new connection[%d]: fd=%d addr=%lx\n", 
+            g_print("Master: new connection[%d]: fd=%d addr=%x\n", 
                     i, tmp_fd, caller.sin_addr.s_addr);
             FD_SET(tmp_fd, &read_fd);
         }

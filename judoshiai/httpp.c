@@ -520,17 +520,6 @@ void httpp_clear(http_parser_t *parser)
     avl_tree_free(parser->vars, _free_vars);
     avl_tree_free(parser->queryvars, _free_vars);
     parser->vars = NULL;
-#if defined(__WIN32__) || defined(WIN32)
-    if (parser->sock) {
-      char buf[128];
-      shutdown(parser->sock, SD_SEND);
-      recv(parser->sock, (void *)buf, sizeof(buf), 0);
-      closesocket(parser->sock);
-    }
-#else
-    if (parser->sock)
-      close(parser->sock);
-#endif
 }
 
 void httpp_destroy(http_parser_t *parser)

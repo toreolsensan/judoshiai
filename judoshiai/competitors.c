@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2010 by Hannu Jokinen
+ * Copyright (C) 2006-2011 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */ 
 
@@ -28,6 +28,8 @@ struct model_iter {
 #define NUM_WCLASSES 100
 #define NEW_JUDOKA 0x7ffffff1
 #define NEW_WCLASS 0x7ffffff2
+
+GtkWidget *competitor_dialog = NULL;
 
 char *belts[] = {
     "?", "6.kyu", "5.kyu", "4.kyu", "3.kyu", "2.kyu", "1.kyu",
@@ -76,8 +78,11 @@ static void judoka_edited_callback(GtkWidget *widget,
     struct judoka_widget *judoka_tmp = data;
     gint ix = judoka_tmp->index;
     struct category_data *catdata = avl_get_category(ix);
-    gint system = catdata ? catdata->system : CAT_SYSTEM_DEFAULT << SYSTEM_WISH_SHIFT;
+    struct compsys system = {0};
     gchar *realcategory = NULL;
+
+    if (catdata)
+        system = catdata->system;
 
     memset(&edited, 0, sizeof(edited));
         
@@ -123,9 +128,8 @@ static void judoka_edited_callback(GtkWidget *widget,
         edited.id = g_strdup(gtk_entry_get_text(GTK_ENTRY(judoka_tmp->id)));
 
     if (judoka_tmp->system)
-	system = (system & ~SYSTEM_WISH_MASK) | 
-	    (get_system_number_by_menu_pos(gtk_combo_box_get_active(GTK_COMBO_BOX(judoka_tmp->system)))
-	     << SYSTEM_WISH_SHIFT);
+        system.wishsys = get_system_number_by_menu_pos(gtk_combo_box_get_active
+                                                       (GTK_COMBO_BOX(judoka_tmp->system)));
 
     if (event_id != GTK_RESPONSE_OK || edited.last == NULL || 
         edited.last[0] == 0 || (edited.last[0] == '?' && edited.last[1] == 0))
@@ -206,10 +210,10 @@ static void judoka_edited_callback(GtkWidget *widget,
                 }
 				
             }
-			
+                        
             /* update database */
             db_update_category(edited.index, &edited);
-	    db_set_system(edited.index, system);
+            db_set_system(edited.index, system);
             //XXX???? db_read_categories();
             //XXX???? db_read_judokas();
         }
@@ -279,6 +283,7 @@ out:
     g_free(data);
     g_free(realcategory);
 
+    competitor_dialog = NULL;
     editing_ongoing = FALSE;
     gtk_widget_destroy(widget);
 }
@@ -294,6 +299,8 @@ static GtkWidget *set_entry(GtkWidget *table, int row,
     gtk_entry_set_max_length(GTK_ENTRY(tmp), 20);
     gtk_entry_set_text(GTK_ENTRY(tmp), deftxt ? deftxt : "");
     gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, row, row+1);
+    SET_ACCESS_NAME(tmp, text);
+
     return tmp;
 }
 
@@ -364,11 +371,12 @@ void view_on_row_activated(GtkTreeView        *treeview,
     judoka_tmp->visible = visible;
     judoka_tmp->category = g_strdup(category);
 
-    dialog = gtk_dialog_new_with_buttons (visible ? _("Competitor") : _("Category"),
-                                          NULL,
-                                          GTK_DIALOG_DESTROY_WITH_PARENT,
-                                          GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-                                          NULL);
+    competitor_dialog =
+        dialog = gtk_dialog_new_with_buttons (visible ? _("Competitor") : _("Category"),
+                                              GTK_WINDOW(main_window),
+                                              GTK_DIALOG_DESTROY_WITH_PARENT,
+                                              GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                                              NULL);
 
     GtkWidget *ok_button = gtk_dialog_add_button (GTK_DIALOG (dialog),
                                                   GTK_STOCK_OK,
@@ -466,10 +474,10 @@ void view_on_row_activated(GtkTreeView        *treeview,
 	    gtk_combo_box_append_text(GTK_COMBO_BOX(tmp), get_system_name_for_menu(i));
 
         gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, 1, 2);
-	gtk_combo_box_set_active(GTK_COMBO_BOX(tmp), 
-				 catdata ? 
-				 get_system_menu_selection((catdata->system & SYSTEM_WISH_MASK) >> SYSTEM_WISH_SHIFT) :
-				 CAT_SYSTEM_DEFAULT);
+        gtk_combo_box_set_active(GTK_COMBO_BOX(tmp), 
+                                 catdata ? 
+                                 get_system_menu_selection(catdata->system.wishsys) :
+                                 CAT_SYSTEM_DEFAULT);
 
         tmp = gtk_label_new("Tatami:");
         gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, 2, 3);

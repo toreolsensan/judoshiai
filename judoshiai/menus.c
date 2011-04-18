@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2010 by Hannu Jokinen
+ * Copyright (C) 2006-2011 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */ 
 
@@ -31,6 +31,10 @@ extern void toggle_weights_in_sheets(gpointer callback_data,
                                      guint callback_action, GtkWidget *menu_item);
 extern void toggle_grade_visible(gpointer callback_data, 
                                  guint callback_action, GtkWidget *menu_item);
+extern void toggle_pool_style(gpointer callback_data, 
+                              guint callback_action, GtkWidget *menu_item);
+extern void toggle_belt_colors(gpointer callback_data, 
+                               guint callback_action, GtkWidget *menu_item);
 extern void properties(GtkWidget *w, gpointer data);
 extern void get_from_old_competition(GtkWidget *w, gpointer data);
 extern void get_from_old_competition_with_weight(GtkWidget *w, gpointer data);
@@ -50,8 +54,6 @@ static GtkWidget *menubar,
     *tournament_menu, *competitors_menu, 
     *categories_menu, *drawing_menu, *results_menu, 
     *judotimer_menu, *preferences_menu, *help_menu, *sql_dialog,
-    *flag_fi, *flag_se, *flag_uk, *flag_es, 
-    *menu_flag_fi, *menu_flag_se, *menu_flag_uk, *menu_flag_es,
     *tournament_new, *tournament_choose, *tournament_choose_net, *tournament_properties, 
     *tournament_quit, *tournament_backup,
     *competitor_new, *competitor_search, *competitor_select_from_tournament, *competitor_add_from_text_file,
@@ -67,16 +69,23 @@ static GtkWidget *menubar,
     *preference_auto_sheet_update/*, *preference_auto_web_update*/, *preference_results_in_finnish, 
     *preference_langsel, *preference_results_in_swedish, *preference_results_in_english, 
     *preference_results_in_spanish, *preference_weights_to_pool_sheets, 
-    *preference_grade_visible, *preference_layout,
+    *preference_grade_visible, *preference_layout, *preference_pool_style, *preference_belt_colors,
     *preference_sheet_font, *preference_password, *judotimer_control[NUM_TATAMIS],
     *preference_mirror, *preference_auto_arrange, *preference_club_text,
     *preference_club_text_club, *preference_club_text_country, *preference_club_text_both,
     *preference_club_text_abbr, *preference_use_logo,
-    *help_manual, *help_about;
+    *help_manual, *help_about, *flags[NUM_LANGS], *menu_flags[NUM_LANGS];
 
 static GSList *lang_group = NULL, *club_group = NULL, *draw_group = NULL;
 
 static GtkTooltips *menu_tips;
+
+static const gchar *flags_files[NUM_LANGS] = {
+    "finland.png", "sweden.png", "uk.png", "spain.png", "estonia.png", "ukraine.png"
+};
+static const gchar *lang_names[NUM_LANGS] = {
+    "fi", "sv", "en", "es", "et", "uk"
+};
 
 static GtkWidget *get_picture(const gchar *name)
 {
@@ -105,22 +114,12 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     preferences_menu_item = gtk_menu_item_new_with_label (_("Preferences"));
     help_menu_item        = gtk_menu_item_new_with_label (_("Help"));
 
-    flag_fi     = get_picture("finland.png");
-    flag_se     = get_picture("sweden.png");
-    flag_uk     = get_picture("uk.png");
-    flag_es     = get_picture("spain.png");
-    menu_flag_fi = gtk_image_menu_item_new();
-    menu_flag_se = gtk_image_menu_item_new();
-    menu_flag_uk = gtk_image_menu_item_new();
-    menu_flag_es = gtk_image_menu_item_new();
-    gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(menu_flag_fi), flag_fi);        
-    gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(menu_flag_se), flag_se);        
-    gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(menu_flag_uk), flag_uk);      
-    gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(menu_flag_es), flag_es);        
-    gtk_image_menu_item_set_always_show_image(GTK_IMAGE_MENU_ITEM(menu_flag_fi), TRUE);
-    gtk_image_menu_item_set_always_show_image(GTK_IMAGE_MENU_ITEM(menu_flag_se), TRUE);
-    gtk_image_menu_item_set_always_show_image(GTK_IMAGE_MENU_ITEM(menu_flag_uk), TRUE);
-    gtk_image_menu_item_set_always_show_image(GTK_IMAGE_MENU_ITEM(menu_flag_es), TRUE);
+    for (i = 0; i < NUM_LANGS; i++) {
+        flags[i] = get_picture(flags_files[i]);
+        menu_flags[i] = gtk_image_menu_item_new();
+        gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(menu_flags[i]), flags[i]);        
+        gtk_image_menu_item_set_always_show_image(GTK_IMAGE_MENU_ITEM(menu_flags[i]), TRUE);
+    }
 
     tournament_menu  = gtk_menu_new();
     competitors_menu = gtk_menu_new();
@@ -148,20 +147,14 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     //gtk_menu_shell_append(GTK_MENU_SHELL(menubar), judotimer_menu_item); 
     gtk_menu_shell_append(GTK_MENU_SHELL(menubar), preferences_menu_item); 
     gtk_menu_shell_append(GTK_MENU_SHELL(menubar), help_menu_item); 
-    gtk_menu_shell_append(GTK_MENU_SHELL(menubar), menu_flag_fi); 
-    //gtk_menu_shell_append(GTK_MENU_SHELL(menubar), menu_flag_se); 
-    gtk_menu_shell_append(GTK_MENU_SHELL(menubar), menu_flag_uk); 
-    gtk_menu_shell_append(GTK_MENU_SHELL(menubar), menu_flag_es); 
 
-    /* Language selection */
-    g_signal_connect(G_OBJECT(menu_flag_fi), "button_press_event",
-                     G_CALLBACK(change_language), (gpointer)LANG_FI);
-    g_signal_connect(G_OBJECT(menu_flag_se), "button_press_event",
-                     G_CALLBACK(change_language), (gpointer)LANG_SW);
-    g_signal_connect(G_OBJECT(menu_flag_uk), "button_press_event",
-                     G_CALLBACK(change_language), (gpointer)LANG_EN);
-    g_signal_connect(G_OBJECT(menu_flag_es), "button_press_event",
-                     G_CALLBACK(change_language), (gpointer)LANG_ES);
+    for (i = 0; i < NUM_LANGS; i++) {
+        if (i == LANG_SW)
+            continue;
+        gtk_menu_shell_append(GTK_MENU_SHELL(menubar), menu_flags[i]); 
+        g_signal_connect(G_OBJECT(menu_flags[i]), "button_press_event",
+                         G_CALLBACK(change_language), (gpointer)i);
+    }
 
     /* Create the Tournament menu content. */
     tournament_new        = gtk_menu_item_new_with_label(_("New Tournament"));
@@ -365,6 +358,8 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
 
     preference_weights_to_pool_sheets = gtk_check_menu_item_new_with_label(_("Weights Visible in Pool Sheets"));
     preference_grade_visible          = gtk_check_menu_item_new_with_label("");
+    preference_pool_style             = gtk_check_menu_item_new_with_label("");
+    preference_belt_colors            = gtk_check_menu_item_new_with_label("");
     preference_sheet_font             = gtk_menu_item_new_with_label(_("Sheet Font"));
     preference_password               = gtk_menu_item_new_with_label(_("Password"));
     preference_mirror                 = gtk_check_menu_item_new_with_label("");
@@ -412,6 +407,8 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(preference_layout), submenu);
     gtk_menu_shell_append(GTK_MENU_SHELL(submenu), preference_weights_to_pool_sheets);
     gtk_menu_shell_append(GTK_MENU_SHELL(submenu), preference_grade_visible);
+    gtk_menu_shell_append(GTK_MENU_SHELL(submenu), preference_pool_style);
+    gtk_menu_shell_append(GTK_MENU_SHELL(submenu), preference_belt_colors);
     gtk_menu_shell_append(GTK_MENU_SHELL(submenu), preference_use_logo);
     gtk_menu_shell_append(GTK_MENU_SHELL(submenu), preference_sheet_font);
 
@@ -441,6 +438,8 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
 
     g_signal_connect(G_OBJECT(preference_weights_to_pool_sheets), "activate", G_CALLBACK(toggle_weights_in_sheets), 0);
     g_signal_connect(G_OBJECT(preference_grade_visible),          "activate", G_CALLBACK(toggle_grade_visible), 0);
+    g_signal_connect(G_OBJECT(preference_pool_style),             "activate", G_CALLBACK(toggle_pool_style), 0);
+    g_signal_connect(G_OBJECT(preference_belt_colors),            "activate", G_CALLBACK(toggle_belt_colors), 0);
     g_signal_connect(G_OBJECT(preference_sheet_font),             "activate", G_CALLBACK(font_dialog), 0);
     g_signal_connect(G_OBJECT(preference_password),               "activate", G_CALLBACK(set_webpassword_dialog), 0);
     g_signal_connect(G_OBJECT(preference_mirror),                 "activate", G_CALLBACK(toggle_mirror), 0);
@@ -511,6 +510,16 @@ void set_preferences(void)
     error = NULL;
     if (g_key_file_get_boolean(keyfile, "preferences", "gradevisible", &error) || error) {
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(preference_grade_visible), TRUE);
+    }
+
+    error = NULL;
+    if (g_key_file_get_boolean(keyfile, "preferences", "poolstyle", &error)) {
+        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(preference_pool_style), TRUE);
+    }
+
+    error = NULL;
+    if (g_key_file_get_boolean(keyfile, "preferences", "beltcolors", &error)) {
+        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(preference_belt_colors), TRUE);
     }
 
     error = NULL;
@@ -686,28 +695,13 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
 {
     gint i;
     gchar *r = NULL;
-    gchar buf[32];
+    gchar buf[64];
+    static gchar envbuf[32]; // this must be static for the putenv() function
 
     language = (gint)param;
-
-    switch (language) {
-    case LANG_FI:
-        putenv("LANGUAGE=fi");
-        r = setlocale(LC_ALL, "fi");
-        break;        
-    case LANG_SW:
-        putenv("LANGUAGE=sv");
-        r = setlocale(LC_ALL, "sv");
-        break;        
-    case LANG_EN:
-        putenv("LANGUAGE=en");
-        r = setlocale(LC_ALL, "en");
-        break;        
-    case LANG_ES:
-        putenv("LANGUAGE=es");
-        r = setlocale(LC_ALL, "es");
-        break;        
-    }
+    sprintf(envbuf, "LANGUAGE=%s", lang_names[language]);
+    putenv(envbuf);
+    r = setlocale(LC_ALL, lang_names[language]);
 
     gchar *dirname = g_build_filename(installation_dir, "share", "locale", NULL);
     bindtextdomain ("judoshiai", dirname);
@@ -759,6 +753,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
         change_menu_label(category_to_tatamis[i], buf);
     }
 
+    g_print("Finnish system = %s, New category = %s\n", _("Finnish System"), _("New Category"));
     change_menu_label(draw_all_categories, _("Draw All Categories"));
     change_menu_label(draw_international,  _("International System"));
     change_menu_label(draw_finnish,        _("Finnish System"));
@@ -797,6 +792,8 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(preference_layout                , _("Sheet Layout"));
     change_menu_label(preference_weights_to_pool_sheets, _("Weights Visible"));
     change_menu_label(preference_grade_visible         , _("Grade Visible"));
+    change_menu_label(preference_pool_style            , _("Pool Style 2"));
+    change_menu_label(preference_belt_colors           , _("Use Belt Colors"));
     change_menu_label(preference_sheet_font            , _("Sheet Font"));
     change_menu_label(preference_password              , _("Password"));
     change_menu_label(preference_mirror                , _("Mirror Tatami Order"));
@@ -814,6 +811,9 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     set_match_graph_titles();
 
     g_key_file_set_integer(keyfile, "preferences", "language", language);
+
+    g_print("Finnish system = %s, New category = %s\n", _("Finnish System"), _("New Category"));
+
 
     return TRUE;
 }

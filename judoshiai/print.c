@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2010 by Hannu Jokinen
+ * Copyright (C) 2006-2011 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */ 
 
@@ -112,7 +112,7 @@ void write_png(GtkWidget *menuitem, gpointer userdata)
     cairo_surface_t *cs_pdf, *cs_png;
     cairo_t *c_pdf, *c_png;
     struct judoka *ctgdata = NULL;
-    gint sys;
+    struct compsys sys;
 
     if (strlen(current_directory) <= 1) {
         return;
@@ -122,14 +122,23 @@ void write_png(GtkWidget *menuitem, gpointer userdata)
     if (!ctgdata)
         return;
 
+    sys = db_get_system(ctg);
+
     struct paint_data pd;
     memset(&pd, 0, sizeof(pd));
-    pd.paper_height = SIZEY;
-    pd.paper_width = SIZEX;
+
+    //XXXpd.row_height = 1;
+    if (print_landscape(ctg)) {
+        pd.paper_height = SIZEX;
+        pd.paper_width = SIZEY;
+        //XXXpd.row_height = 2;
+        pd.landscape = TRUE;
+    } else {
+        pd.paper_height = SIZEY;
+        pd.paper_width = SIZEX;
+    }
     pd.total_width = 0;
     pd.category = ctg;
-
-    sys = db_get_system(ctg);
 
     snprintf(buf, sizeof(buf)-10, "%s/%s.pdf", current_directory, ctgdata->last);
 
@@ -142,8 +151,8 @@ void write_png(GtkWidget *menuitem, gpointer userdata)
 
     paint_surfaces(&pd, c_pdf, c_png, cs_pdf, cs_png, buf);
 
-    if ((sys & SYSTEM_MASK) == SYSTEM_FRENCH_64 ||
-        (sys & SYSTEM_MASK) == SYSTEM_QPOOL) {
+    if (sys.system == SYSTEM_FRENCH_64 ||
+        sys.system == SYSTEM_QPOOL) {
         pd.page = 1;
         paint_surfaces(&pd, c_pdf, c_png, cs_pdf, cs_png, buf);
         pd.page = 2;
@@ -364,7 +373,7 @@ static gchar *get_token(gchar *text)
 
 static void paint_weight_notes(struct paint_data *pd, gchar *templatefile)
 {
-    gint i, page, row, numrows, numpages, t = 0;
+    gint row, numrows, numpages, t = 0;
     gchar buf[100];
     cairo_text_extents_t extents;
     gchar *background = NULL;
@@ -844,7 +853,8 @@ static gint fill_in_pages(gint category, gint all)
 
     ok = gtk_tree_model_get_iter_first(current_model, &iter);
     while (ok) {
-        gint index, sys;
+        gint index; 
+        struct compsys sys;
 
         gtk_tree_model_get(current_model, &iter,
                            COL_INDEX, &index,
@@ -854,8 +864,8 @@ static gint fill_in_pages(gint category, gint all)
             gtk_tree_selection_iter_is_selected(selection, &iter)) {
             sys = db_get_system(index);
                         
-            if (((sys & SYSTEM_MASK) == SYSTEM_FRENCH_64 ||
-                 (sys & SYSTEM_MASK) == SYSTEM_QPOOL) &&
+            if ((sys.system == SYSTEM_FRENCH_64 ||
+                 sys.system == SYSTEM_QPOOL) &&
                 numpages < NUM_PAGES - 2) {
                 pages_to_print[numpages].cat = index;
                 pages_to_print[numpages++].pagenum = 0;
@@ -881,11 +891,11 @@ static gint fill_in_pages(gint category, gint all)
     }
 
     if (numpages == 0) {
-        gint sys = db_get_system(category);
+        struct compsys sys = db_get_system(category);
         pages_to_print[numpages].cat = category;
         pages_to_print[numpages++].pagenum = 0;
-        if ((sys & SYSTEM_MASK) == SYSTEM_FRENCH_64 ||
-            (sys & SYSTEM_MASK) == SYSTEM_QPOOL) {
+        if (sys.system == SYSTEM_FRENCH_64 ||
+            sys.system == SYSTEM_QPOOL) {
             pages_to_print[numpages].cat = category;
             pages_to_print[numpages++].pagenum = 1;
             pages_to_print[numpages].cat = category;
@@ -938,9 +948,14 @@ static void draw_page(GtkPrintOperation *operation,
 
     pd.category = ctg & PRINT_DATA_MASK;
     pd.c = gtk_print_context_get_cairo_context(context);
-
     pd.paper_width = gtk_print_context_get_width(context);
     pd.paper_height = gtk_print_context_get_height(context);
+    //XXXpd.row_height = 1;
+
+    if (print_landscape(pd.category)) {
+        //XXXpd.row_height = 2;
+        pd.rotate = TRUE;
+    }
 
     switch (ctg & PRINT_ITEM_MASK) {
 #if 0
@@ -958,6 +973,8 @@ static void draw_page(GtkPrintOperation *operation,
     case PRINT_ALL_CATEGORIES:
         pd.category = pages_to_print[page_nr].cat;
         pd.page = pages_to_print[page_nr].pagenum;
+        if (print_landscape(pd.category))
+            pd.rotate = TRUE;
         paint_category(&pd);
         break;
     }
@@ -999,6 +1016,7 @@ void print_doc(GtkWidget *menuitem, gpointer userdata)
 
     struct paint_data pd;
     memset(&pd, 0, sizeof(pd));
+    //XXXpd.row_height = 1;
     pd.paper_width = SIZEX;
     pd.paper_height = SIZEY;
 #if 0
@@ -1057,6 +1075,10 @@ void print_doc(GtkWidget *menuitem, gpointer userdata)
         case PRINT_SHEET:
             for (i = 0; i < numpages; i++) {
                 pd.category = pages_to_print[i].cat;
+                if (print_landscape(pd.category))
+                    pd.rotate = TRUE;
+                else
+                    pd.rotate = FALSE;
                 pd.page = pages_to_print[i].pagenum;
                 paint_category(&pd);
                 cairo_show_page(pd.c);
@@ -1085,7 +1107,7 @@ void print_doc(GtkWidget *menuitem, gpointer userdata)
 void print_matches(GtkWidget *menuitem, gpointer userdata)
 {
     GtkWidget *dialog, *vbox, *not_started, *started, *finished;
-    GtkWidget *p_result, *p_iwyks, *p_comment;
+    GtkWidget *p_result, *p_iwyks, *p_comment, *unmatched;
     GtkFileFilter *filter = gtk_file_filter_new();
 
     gtk_file_filter_add_pattern(filter, "*.csv");
@@ -1115,6 +1137,10 @@ void print_matches(GtkWidget *menuitem, gpointer userdata)
     gtk_widget_show(finished);
     gtk_box_pack_start(GTK_BOX(vbox), finished, FALSE, TRUE, 0);
 
+    unmatched = gtk_check_button_new_with_label(_("Print Unmatched"));
+    gtk_widget_show(unmatched);
+    gtk_box_pack_start(GTK_BOX(vbox), unmatched, FALSE, TRUE, 0);
+
     p_result = gtk_check_button_new_with_label(_("Print Result"));
     gtk_widget_show(p_result);
     gtk_box_pack_start(GTK_BOX(vbox), p_result, FALSE, TRUE, 0);
@@ -1143,11 +1169,12 @@ void print_matches(GtkWidget *menuitem, gpointer userdata)
     if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT) {
         gchar *name, *name1;
         gint k;
-        gboolean nst, st, fi, pr, pi, pc;
+        gboolean nst, st, fi, pr, pi, pc, um;
 
         nst = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(not_started));
         st = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(started));
         fi = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(finished));
+        um = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(unmatched));
         pr = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(p_result));
         pi = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(p_iwyks));
         pc = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(p_comment));
@@ -1212,6 +1239,9 @@ void print_matches(GtkWidget *menuitem, gpointer userdata)
             gint score_w = atoi(db_get_data(k, "white_score"));
 
             if (blue == GHOST || white == GHOST)
+                continue;
+
+            if (um && (points_b || points_w))
                 continue;
 
             c = get_data(cat);

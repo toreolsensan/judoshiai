@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2010 by Hannu Jokinen
+ * Copyright (C) 2006-2011 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */ 
 
@@ -15,13 +15,14 @@
 #include "judoshiai.h"
 
 extern void write_competitor(FILE *f, const gchar *first, const gchar *last, const gchar *belt, 
-                             const gchar *club, const gchar *category, const gint index);
+                             const gchar *club, const gchar *category, const gint index, const gboolean by_club);
 
 #define ADD_COMPETITORS               1
 #define ADD_COMPETITORS_WITH_WEIGHTS  2
 #define ADD_DELETED_COMPETITORS       4
 #define PRINT_COMPETITORS             8
 #define COMPETITOR_STATISTICS        16
+#define PRINT_COMPETITORS_BY_CLUB    32
 
 static FILE *print_file = NULL;
 static gint num_competitors;
@@ -84,15 +85,15 @@ static int db_callback(void *data, int argc, char **argv, char **azColName)
         return 0;
     }
 
-    if (flags & PRINT_COMPETITORS) {
+    if (flags & (PRINT_COMPETITORS | PRINT_COMPETITORS_BY_CLUB)) {
         if (print_file == NULL)
             return 1;
         const gchar *b = "?";
         if (j.belt >= 0 && j.belt < 14)
             b = belts[j.belt];
         write_competitor(print_file, j.first, j.last, b, 
-			 get_club_text(&j, CLUB_TEXT_ADDRESS), 
-			 j.category, j.index);
+                         get_club_text(&j, CLUB_TEXT_ADDRESS), 
+                         j.category, j.index, flags & PRINT_COMPETITORS_BY_CLUB);
         return 0;
     }
 
@@ -162,20 +163,28 @@ void db_add_judoka(int num, struct judoka *j)
 
 void db_update_judoka(int num, struct judoka *j)
 {
-    char buffer[1000];
-
-    sprintf(buffer, 
-            "UPDATE competitors SET "
-            "last=\"%s\", first=\"%s\", birthyear=\"%d\", "
-            "belt=\"%d\", club=\"%s\", regcategory=\"%s\", "
-            "weight=\"%d\", visible=\"%d\", "
-            "category=\"%s\", deleted=\"%d\", country=\"%s\", id=\"%s\" "
-	    "WHERE \"index\"=%d",
-            j->last, j->first, j->birthyear,
-            j->belt, j->club, j->regcategory,
-            j->weight, j->visible, j->category, j->deleted, j->country, j->id, num);
-
-    db_exec(db_name, buffer, NULL, db_callback);
+    if (j->category)
+        db_exec_str(NULL, db_callback,
+                    "UPDATE competitors SET "
+                    "last=\"%s\", first=\"%s\", birthyear=\"%d\", "
+                    "belt=\"%d\", club=\"%s\", regcategory=\"%s\", "
+                    "weight=\"%d\", visible=\"%d\", "
+                    "category=\"%s\", deleted=\"%d\", country=\"%s\", id=\"%s\" "
+                    "WHERE \"index\"=%d",
+                    j->last, j->first, j->birthyear,
+                    j->belt, j->club, j->regcategory,
+                    j->weight, j->visible, j->category, j->deleted, j->country, j->id, num);
+    else
+        db_exec_str(NULL, db_callback,
+                    "UPDATE competitors SET "
+                    "last=\"%s\", first=\"%s\", birthyear=\"%d\", "
+                    "belt=\"%d\", club=\"%s\", regcategory=\"%s\", "
+                    "weight=\"%d\", visible=\"%d\", "
+                    "deleted=\"%d\", country=\"%s\", id=\"%s\" "
+                    "WHERE \"index\"=%d",
+                    j->last, j->first, j->birthyear,
+                    j->belt, j->club, j->regcategory,
+                    j->weight, j->visible, j->deleted, j->country, j->id, num);
 
     avl_set_competitor(num, j->first, j->last);
     avl_set_competitor_status(num, j->deleted);
@@ -204,12 +213,31 @@ void db_print_competitors(FILE *f)
 
     fprintf(print_file,
             "<td><table class=\"competitors\">"
-            "<tr><td colspan=\"4\" align=\"center\"><h2>%s</h2></td></tr>\n", _T(competitor));
-    fprintf(print_file, "<tr><th>%s</th><th>%s</th><th>%s</th><th>%s</th></tr>\n", 
-            _T(name), grade_visible ? _T(grade) : "", _T(club), _T(category));
+            "<tr><td colspan=\"5\" align=\"center\"><h2>%s</h2></td></tr>\n", _T(competitor));
+    fprintf(print_file, "<tr><th>%s</th><th>%s</th><th><a href=\"competitors2.html\">%s</a></th><th>%s</th><th>&nbsp;%s&nbsp;</th></tr>\n", 
+            _T(name), grade_visible ? _T(grade) : "", _T(club), _T(category), create_statistics ? _T(position) : "");
 
-    db_exec(db_name, "SELECT * FROM competitors ORDER BY \"last\" ASC", 
+    db_exec(db_name, "SELECT * FROM competitors ORDER BY \"last\" ASC, \"first\" ASC", 
             (void *)PRINT_COMPETITORS, 
+            db_callback);
+
+    fprintf(print_file, "</table></td>\n");
+}
+
+void db_print_competitors_by_club(FILE *f)
+{
+    print_file = f;
+    if (print_file == NULL)
+        return;
+
+    fprintf(print_file,
+            "<td><table class=\"competitors\">"
+            "<tr><td colspan=\"5\" align=\"center\"><h2>%s</h2></td></tr>\n", _T(competitor));
+    fprintf(print_file, "<tr><th>%s</th><th><a href=\"competitors.html\">%s</a></th><th>%s</th><th>%s</th><th>&nbsp;%s&nbsp;</th></tr>\n", 
+            _T(club), _T(name), grade_visible ? _T(grade) : "", _T(category), create_statistics ? _T(position) : "");
+
+    db_exec(db_name, "SELECT * FROM competitors ORDER BY \"club\" ASC, \"last\" ASC, \"first\" ASC", 
+            (void *)PRINT_COMPETITORS_BY_CLUB, 
             db_callback);
 
     fprintf(print_file, "</table></td>\n");

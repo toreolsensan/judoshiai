@@ -22,6 +22,7 @@ all:
 	mkdir -p $(RELDIR)/share/locale/sv/LC_MESSAGES
 	mkdir -p $(RELDIR)/share/locale/es/LC_MESSAGES
 	mkdir -p $(RELDIR)/share/locale/et/LC_MESSAGES
+	mkdir -p $(RELDIR)/share/locale/uk/LC_MESSAGES
 	mkdir -p $(RELDIR)/share/locale/en_GB/LC_MESSAGES
 	mkdir -p $(RELDIR)/lib
 	mkdir -p $(RELDIR)/doc
@@ -39,6 +40,7 @@ ifeq ($(TGT),WIN32)
 	cp -r $(RUNDIR)/share/locale/sv $(RELDIR)/share/locale/
 	cp -r $(RUNDIR)/share/locale/es $(RELDIR)/share/locale/
 	cp -r $(RUNDIR)/share/locale/et $(RELDIR)/share/locale/
+	cp -r $(RUNDIR)/share/locale/uk $(RELDIR)/share/locale/
 	cp -r $(RUNDIR)/share/locale/en_GB $(RELDIR)/share/locale/
 	cp -r $(RUNDIR)/share/themes $(RELDIR)/share/
 	cp -r $(RUNDIR)/etc $(RELDIR)/
@@ -51,11 +53,13 @@ endif
 	cp common/judoshiai-sv_SE.mo $(RELDIR)/share/locale/sv/LC_MESSAGES/judoshiai.mo
 	cp common/judoshiai-es_ES.mo $(RELDIR)/share/locale/es/LC_MESSAGES/judoshiai.mo
 	cp common/judoshiai-et_EE.mo $(RELDIR)/share/locale/et/LC_MESSAGES/judoshiai.mo
+	cp common/judoshiai-uk_UA.mo $(RELDIR)/share/locale/uk/LC_MESSAGES/judoshiai.mo
 	cp etc/*.png $(RELDIR)/etc/
 	cp etc/*.txt $(RELDIR)/etc/
 	cp etc/*.css $(RELDIR)/etc/
 	cp etc/*.mp3 $(RELDIR)/etc/
 	cp etc/*.shi $(RELDIR)/etc/
+	cp -r etc/flags-ioc $(RELDIR)/etc/
 	#cp flash/judo*.swf flash/judo*.html $(RELDIR)/etc/
 	cp licenses/* $(RELDIR)/licenses
 	@echo

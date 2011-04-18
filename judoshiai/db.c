@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2010 by Hannu Jokinen
+ * Copyright (C) 2006-2011 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */ 
 
@@ -168,7 +168,7 @@ static int db_info_cb(void *data, int argc, char **argv, char **azColName)
     return 0;
 }
 
-static gboolean tatami_exists, number_exists, country_exists, id_exists;
+static gboolean tatami_exists, number_exists, country_exists, id_exists, numcomp_exists;
 
 static int db_callback_tables(void *data, int argc, char **argv, char **azColName)
 {
@@ -184,6 +184,8 @@ static int db_callback_tables(void *data, int argc, char **argv, char **azColNam
                 country_exists = TRUE;
             if (strstr(argv[i], "competitors") && strstr(argv[i], "\"id\""))
                 id_exists = TRUE;
+            if (strstr(argv[i], "categories") && strstr(argv[i], "numcomp"))
+                numcomp_exists = TRUE;
         }
     }
 
@@ -227,7 +229,7 @@ gint db_init(const char *dbname)
     sqlite3_close(db);
 
     if (compcols   > 13 ||
-        catcols    > 6  || 
+        catcols    > 17 || 
         matchcols  > 13 ||
         infocols   > 2  ||
         catdefcols > 12) {
@@ -259,7 +261,7 @@ gint db_init(const char *dbname)
 
     read_cat_definitions();
 
-    tatami_exists = number_exists = country_exists = id_exists = FALSE;
+    tatami_exists = number_exists = country_exists = id_exists = numcomp_exists = FALSE;
 
     db_exec(db_name, 
             "SELECT sql FROM sqlite_master", 
@@ -283,7 +285,26 @@ gint db_init(const char *dbname)
         db_exec(db_name, "ALTER TABLE competitors ADD \"id\" TEXT", NULL, NULL);
     }
 
-    if (!tatami_exists || !number_exists || !country_exists || !id_exists)
+    if (!numcomp_exists) {
+        g_print("numcomp does not exist, add one\n");
+        db_exec(db_name, "ALTER TABLE categories ADD \"numcomp\" INTEGER", NULL, NULL);
+        db_exec(db_name, "ALTER TABLE categories ADD \"table\" INTEGER", NULL, NULL);
+        db_exec(db_name, "ALTER TABLE categories ADD \"wishsys\" INTEGER", NULL, NULL);
+        db_exec(db_name, "UPDATE categories SET 'table'=(\"system\">>20)&15 ", NULL, NULL);
+        db_exec(db_name, "UPDATE categories SET 'numcomp'=\"system\"&255 ", NULL, NULL);
+        db_exec(db_name, "UPDATE categories SET 'wishsys'=(\"system\">>24)&15 ", NULL, NULL);
+        db_exec(db_name, "UPDATE categories SET 'system'=(\"system\">>16)&15 ", NULL, NULL);
+        db_exec(db_name, "ALTER TABLE categories ADD \"pos1\" INTEGER", NULL, NULL);
+        db_exec(db_name, "ALTER TABLE categories ADD \"pos2\" INTEGER", NULL, NULL);
+        db_exec(db_name, "ALTER TABLE categories ADD \"pos3\" INTEGER", NULL, NULL);
+        db_exec(db_name, "ALTER TABLE categories ADD \"pos4\" INTEGER", NULL, NULL);
+        db_exec(db_name, "ALTER TABLE categories ADD \"pos5\" INTEGER", NULL, NULL);
+        db_exec(db_name, "ALTER TABLE categories ADD \"pos6\" INTEGER", NULL, NULL);
+        db_exec(db_name, "ALTER TABLE categories ADD \"pos7\" INTEGER", NULL, NULL);
+        db_exec(db_name, "ALTER TABLE categories ADD \"pos8\" INTEGER", NULL, NULL);
+    }
+
+    if (!tatami_exists || !number_exists || !country_exists || !id_exists || !numcomp_exists)
         SHOW_MESSAGE("%s", _("Database tables updated."));
 
     set_menu_active();
@@ -309,7 +330,10 @@ void db_new(const char *dbname,
         "\"country\" TEXT, \"id\" TEXT )";
     char *cmd3 = "CREATE TABLE categories ("
         "\"index\" INTEGER, \"category\" TEXT, \"tatami\" INTEGER, "
-        "\"deleted\" INTEGER, \"group\" INTEGER, \"system\" INTEGER "
+        "\"deleted\" INTEGER, \"group\" INTEGER, \"system\" INTEGER, "
+        "\"numcomp\" INTEGER, \"table\" INTEGER, \"wishsys\" INTEGER, "
+        "\"pos1\" INTEGER, \"pos2\" INTEGER, \"pos3\" INTEGER, \"pos4\" INTEGER, "
+        "\"pos5\" INTEGER, \"pos6\" INTEGER, \"pos7\" INTEGER, \"pos8\" INTEGER"
         ")";
     char *cmd4 = "CREATE TABLE matches ("
         "\"category\" INTEGER, \"number\" INTEGER,"
@@ -329,9 +353,10 @@ void db_new(const char *dbname,
     strcpy(info_time, start_time);
     strcpy(info_num_tatamis, num_tatamis);
 
-    if (FALSE && (f = fopen(db_name, "rb"))) {
+    if ((f = fopen(db_name, "rb"))) {
         /* exists */
         fclose(f);
+        return;
 
         sprintf(buf, "UPDATE \"info\" SET "
                 "\"value\"=\"%s\" WHERE \"item\"=\"Competition\"",

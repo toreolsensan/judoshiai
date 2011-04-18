@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2010 by Hannu Jokinen
+ * Copyright (C) 2006-2011 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */ 
 
@@ -34,13 +34,16 @@
 #define LANG_SW 1
 #define LANG_EN 2
 #define LANG_ES 3
-#define NUM_LANGS 4
+#define LANG_EE 4
+#define LANG_UK 5
+#define NUM_LANGS 6
 
 #if GTK_CHECK_VERSION(2,10,0)
 #define PRINT_SUPPORTED
 #endif
 
 #define PRINT_TIME print_time(__FUNCTION__, __LINE__)
+#define BZERO(x) memset(&x, 0, sizeof(x))
 
 #define FRAME_WIDTH  600
 #define FRAME_HEIGHT 400
@@ -61,22 +64,25 @@
 
 #define NUM_TATAMIS 8
 
-#define COMPETITORS_MASK   0x0000ffff
-#define SYSTEM_MASK        0x000f0000
-#define SYSTEM_MASK_SHIFT  16
-#define SYSTEM_POOL        0x00010000
-#define SYSTEM_DPOOL       0x00020000
-#define SYSTEM_FRENCH_8    0x00030000
-#define SYSTEM_FRENCH_16   0x00040000
-#define SYSTEM_FRENCH_32   0x00050000
-#define SYSTEM_FRENCH_64   0x00060000
-#define SYSTEM_FRENCH_128  0x00070000
-#define SYSTEM_FRENCH_256  0x00080000
-#define SYSTEM_QPOOL       0x00090000
-#define SYSTEM_TABLE_MASK  0x00f00000
-#define SYSTEM_TABLE_SHIFT 20
-#define SYSTEM_WISH_MASK   0x0f000000
-#define SYSTEM_WISH_SHIFT  24
+#define SYSTEM_POOL        1
+#define SYSTEM_DPOOL       2
+#define SYSTEM_FRENCH_8    3
+#define SYSTEM_FRENCH_16   4
+#define SYSTEM_FRENCH_32   5
+#define SYSTEM_FRENCH_64   6
+#define SYSTEM_FRENCH_128  7
+#define SYSTEM_FRENCH_256  8
+#define SYSTEM_QPOOL       9
+
+#define SYSTEM_POOL_Z         (SYSTEM_POOL<<SYSTEM_MASK_SHIFT)
+#define SYSTEM_DPOOL_Z        (SYSTEM_DPOOL<<SYSTEM_MASK_SHIFT)
+#define SYSTEM_FRENCH_8_Z     (SYSTEM_FRENCH_8<<SYSTEM_MASK_SHIFT)
+#define SYSTEM_FRENCH_16_Z    (SYSTEM_FRENCH_16<<SYSTEM_MASK_SHIFT)
+#define SYSTEM_FRENCH_32_Z    (SYSTEM_FRENCH_32<<SYSTEM_MASK_SHIFT)
+#define SYSTEM_FRENCH_64_Z    (SYSTEM_FRENCH_64<<SYSTEM_MASK_SHIFT)
+#define SYSTEM_FRENCH_128_Z   (SYSTEM_FRENCH_128<<SYSTEM_MASK_SHIFT)
+#define SYSTEM_FRENCH_256Z_Z  (SYSTEM_FRENCH_256<<SYSTEM_MASK_SHIFT)
+#define SYSTEM_QPOOL_Z        (SYSTEM_QPOOL<<SYSTEM_MASK_SHIFT)
 
 enum tables {
     TABLE_DOUBLE_REPECHAGE = 0,
@@ -90,6 +96,7 @@ enum tables {
     TABLE_ESP_REPESCA_DOBLE,
     TABLE_ESP_REPESCA_SIMPLE,
     TABLE_MODIFIED_DOUBLE_ELIMINATION,
+    TABLE_DOUBLE_REPECHAGE_ONE_BRONZE,
     NUM_TABLES
 };
 #define TABLE_IJF_DOUBLE_REPECHAGE TABLE_ESP_REPESCA_DOBLE
@@ -110,6 +117,7 @@ enum cat_systems {
     CAT_ESP_REPESCA_DOBLE,
     CAT_ESP_REPESCA_SIMPLE,
     CAT_MODIFIED_DOUBLE_ELIMINATION,
+    CAT_SYSTEM_REPECHAGE_ONE_BRONZE,
     NUM_SYSTEMS
 };
 #define CAT_IJF_DOUBLE_REPECHAGE CAT_ESP_REPESCA_DOBLE
@@ -128,7 +136,8 @@ enum french_systems {
 #define GHOST          1
 #define COMPETITOR     9
 
-#define REPECHAGE      1
+#define F_REPECHAGE      0x0100
+#define F_SYSTEM_MASK    0x00ff
 
 #define DELETED      1
 #define HANSOKUMAKE  2
@@ -141,6 +150,11 @@ enum special_match_types {
     SPECIAL_MATCH_FLAG,
     SPECIAL_MATCH_X_Y
 };
+
+#define SET_ACCESS_NAME(_widget, _name)                 \
+    do { AtkObject *_obj;                               \
+        _obj = gtk_widget_get_accessible(_widget);      \
+        atk_object_set_name(_obj, _name); } while (0)
 
 #define SHOW_MESSAGE(_a...) do {gchar b[256]; snprintf(b, sizeof(b), _a); show_message(b); } while (0)
 
@@ -433,12 +447,19 @@ struct cat_def {
     } weights[NUM_CAT_DEF_WEIGHTS];
 };
 
+struct compsys {
+    gint system;
+    gint numcomp;
+    gint table;
+    gint wishsys;
+};
+
 struct category_data {
     gint index;
     gchar category[32];
     gint tatami;
     gint group;
-    gint system;
+    struct compsys system;
     gint match_status;
     gint match_count;
     gint matched_matches_count;
@@ -452,6 +473,7 @@ struct competitor_data {
     gint index;
     gint hash;
     gint status;
+    gint position;
 };
 
 struct club_data {
@@ -476,12 +498,15 @@ struct paint_data {
     cairo_t *c;
     gint     category;
     gint     page;
-    gint     systm;
+    struct compsys systm;
     gdouble  paper_width;
     gdouble  paper_height;
     gdouble  total_width;
     gboolean write_results;
     GtkWidget *scroll;
+    gboolean landscape;
+    gboolean rotate;
+    gint     row_height;
 };
 
 extern avl_tree *categories_tree;
@@ -523,6 +548,7 @@ extern GdkCursor     *wait_cursor;
 extern char *belts[];
 
 extern const guint pools[11][32][2];
+extern const guint poolsd[11][32][2];
 extern const guint poolsq[21][48][2];
 //extern guint competitors_1st_match[8][8][2];
 //extern const guint french_size[NUM_FRENCH];
@@ -549,8 +575,10 @@ extern gboolean automatic_sheet_update;
 extern gboolean automatic_web_page_update;
 extern gboolean weights_in_sheets;
 extern gboolean grade_visible;
+extern gboolean pool_style;
+extern gboolean belt_colors;
 extern gboolean cleanup_import;
-
+extern gboolean create_statistics;
 extern gint webpwcrc32;
 
 const char *db_name;
@@ -653,9 +681,10 @@ extern void db_restore_removed_competitors(void);
 extern void db_add_category(int num, struct judoka *j);
 extern void db_update_category(int num, struct judoka *j);
 extern void db_read_categories(void);
-extern void db_set_system(int num, int sys);
-extern gint db_get_system(gint num);
+extern void db_set_system(int num, struct compsys sys);
+extern struct compsys db_get_system(gint num);
 extern gint db_get_tatami(gint num);
+extern void db_set_category_positions(gint category, gint competitor, gint position);
 
 extern void db_read_competitor_statistics(gint *numcomp, gint *numweighted);
 extern void db_add_competitors(const gchar *competition, gboolean with_weight, 
@@ -686,6 +715,7 @@ extern gint db_find_match_tatami(gint category, gint number);
 extern void db_set_comment(gint category, gint number, gint comment);
 extern void db_synchronize(char *name_2);
 extern void db_print_competitors(FILE *f);
+extern void db_print_competitors_by_club(FILE *f);
 extern int db_get_table(char *command);
 extern void db_close_table(void);
 extern char *db_get_data(int row, char *name);
@@ -725,7 +755,9 @@ extern int get_output_directory(void);
 extern void make_next_matches_html(void);
 extern void update_category_status_info(gint category);
 extern void update_category_status_info_all(void);
-extern gint get_cat_system(gint index);
+extern struct compsys get_cat_system(gint index);
+extern gint compress_system(struct compsys d);
+extern struct compsys uncompress_system(gint system);
 
 /* set_one_judoka */
 extern gint set_category(GtkTreeIter *iter, guint index, 
@@ -763,10 +795,10 @@ extern void set_comment_from_net(struct message *msg);
 extern void set_points_from_net(struct message *msg);
 extern gint find_match_time(const gchar *cat);
 extern void set_points(GtkWidget *menuitem, gpointer userdata);
-extern gboolean pool_finished(gint numcomp, gint nummatches, gint sysq, gboolean yes[], 
+extern gboolean pool_finished(gint numcomp, gint nummatches, gint sys, gboolean yes[], 
                               struct pool_matches *pm);
-extern void update_matches_small(guint category, gint sys_or_tatami);
-extern void update_matches(guint category, gint sys, gint tatami);
+extern void update_matches_small(guint category, struct compsys sys_or_tatami);
+extern void update_matches(guint category, struct compsys sys, gint tatami);
 extern void category_refresh(gint category);
 extern void gategories_refresh(void);
 extern void update_match_pages_visibility(void);
@@ -854,7 +886,7 @@ extern void set_category_graph_page(GtkWidget *notebook);
 extern void init_trees(void);
 extern struct category_data *avl_get_category(gint index);
 extern void avl_set_category(gint index, const gchar *category, gint tatami, 
-			     gint group, gint system);
+                             gint group, struct compsys system);
 extern void avl_set_category_rest_times(void);
 extern gint avl_get_category_status_by_name(const gchar *name);
 extern void set_category_to_queue(struct category_data *data);
@@ -865,6 +897,9 @@ extern void avl_reset_competitor_last_match_time(gint index);
 extern time_t avl_get_competitor_last_match_time(gint index);
 extern void avl_set_competitor_status(gint index, gint status);
 extern gint avl_get_competitor_status(gint index);
+extern void avl_set_competitor_position(gint index, gint position);
+extern gint avl_get_competitor_position(gint index);
+extern void avl_init_competitor_position(void);
 extern void init_club_tree(void);
 extern void club_stat_add(const gchar *club, const gchar *country, gint num);
 extern void club_stat_print(FILE *f);
@@ -890,7 +925,7 @@ extern void draw_one_category(GtkTreeIter *parent, gint competitors);
 extern void draw_one_category_manually(GtkTreeIter *parent, gint competitors);
 extern void draw_all(GtkWidget *w, gpointer data);
 extern gint get_drawed_number(gint pos, gint sys);
-extern gint get_system_for_category(gint index, gint competitors);
+extern struct compsys get_system_for_category(gint index, gint competitors);
 
 /* menuacts */
 extern void make_backup(void);
@@ -910,7 +945,9 @@ extern gint get_system_number_by_menu_pos(gint num);
 extern gint get_system_menu_selection(gint active);
 extern gboolean system_is_french(gint sys);
 extern gboolean system_wish_is_french(gint wish);
-extern gint is_special_match(gint sys, gint match, gint *intval, double *doubleval, double *doubleval2);
+extern gint is_special_match(struct compsys sys, gint match, gint *intval, double *doubleval, double *doubleval2);
 extern gchar *get_system_description(gint index, gint competitors);
+extern gboolean print_landscape(gint cat);
+extern gboolean paint_pool_style_2(gint cat);
 
 #endif

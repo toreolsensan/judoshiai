@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2010 by Hannu Jokinen
+ * Copyright (C) 2006-2011 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */ 
 
@@ -33,7 +33,9 @@
 #define LANG_SW 1
 #define LANG_EN 2
 #define LANG_ES 3
-#define NUM_LANGS 4
+#define LANG_EE 4
+#define LANG_UK 5
+#define NUM_LANGS 6
 
 #define FRAME_WIDTH  600
 #define FRAME_HEIGHT 400

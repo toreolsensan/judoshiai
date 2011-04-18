@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2010 by Hannu Jokinen
+ * Copyright (C) 2006-2011 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */ 
 
@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <gtk/gtk.h>
+#include <math.h>
 
 #include <cairo.h>
 #include <cairo-pdf.h>
@@ -133,7 +134,7 @@ static double paint_comp(struct paint_data *pd, struct pool_matches *unused1, in
                          int blue, int white, int blue_pts, int white_pts, 
                          gint flags, gint number_b, gint number_w, gint comp_num)
 {
-    double extra = (pos == 0) && (flags & REPECHAGE) == 0 ? CLUB_WIDTH : 0.0;
+    double extra = (pos == 0) && (flags & F_REPECHAGE) == 0 ? CLUB_WIDTH : 0.0;
     double txtwidth = NAME_W + NAME_E;
     double x;
     double y = (white_y + blue_y)/2.0;
@@ -143,8 +144,8 @@ static double paint_comp(struct paint_data *pd, struct pool_matches *unused1, in
     struct judoka *j;
     cairo_text_extents_t extents;
     gboolean small = FALSE, only_last;
-    gint sys = ((pd->systm & SYSTEM_MASK) - SYSTEM_FRENCH_8) >> SYSTEM_MASK_SHIFT;
-    gint table = (pd->systm & SYSTEM_TABLE_MASK) >> SYSTEM_TABLE_SHIFT;
+    gint sys = pd->systm.system - SYSTEM_FRENCH_8;
+    gint table = pd->systm.table;
     double x1, y1, w1, r1, r2;
     gchar numbuf[4];
     cairo_text_extents_t extents1;
@@ -158,15 +159,17 @@ static double paint_comp(struct paint_data *pd, struct pool_matches *unused1, in
     /*if (flags & REPECHAGE)
       pos++;*/
 
-    only_last = pos || (flags & SYSTEM_MASK) == SYSTEM_DPOOL || (flags & REPECHAGE);
+    only_last = pos || (flags & F_SYSTEM_MASK) == SYSTEM_DPOOL || (flags & F_REPECHAGE);
 
     cairo_text_extents(pd->c, "Hj", &extents);
     //small = (white_y - blue_y) < 2.0*extents.height && pos == 0;
 
-    if (system_is_french(pd->systm) && (pd->systm & SYSTEM_MASK) >= SYSTEM_FRENCH_32) {
-	if (pos == 0 && (flags & REPECHAGE) == 0)
+    if (system_is_french(pd->systm.system) && pd->systm.system >= SYSTEM_FRENCH_32) {
+	if (pos == 0 && (flags & F_REPECHAGE) == 0)
 	    small = TRUE;
-	if (table != TABLE_DOUBLE_REPECHAGE && table != TABLE_SWE_DUBBELT_AATERKVAL) {
+	if (table != TABLE_DOUBLE_REPECHAGE && 
+            table != TABLE_SWE_DUBBELT_AATERKVAL &&
+            table != TABLE_DOUBLE_REPECHAGE_ONE_BRONZE) {
 	    txtwidth *= 0.75;
 	    //extra = NAME_W + NAME_E + CLUB_WIDTH - txtwidth;
 	    crowded = TRUE;
@@ -174,7 +177,7 @@ static double paint_comp(struct paint_data *pd, struct pool_matches *unused1, in
     }
 
     txtwidth *= 0.98;
-    x = OFFSET_X + pos*txtwidth + (pos == 0  || (flags & REPECHAGE) ? 0.0 : CLUB_WIDTH);
+    x = OFFSET_X + pos*txtwidth + (pos == 0  || (flags & F_REPECHAGE) ? 0.0 : CLUB_WIDTH);
 
     if (white_y < 0.0001) {
         gboolean back = FALSE;
@@ -258,7 +261,7 @@ static double paint_comp(struct paint_data *pd, struct pool_matches *unused1, in
 	*/
         cairo_stroke(pd->c);
 
-	if ((pd->systm & SYSTEM_MASK) >= SYSTEM_FRENCH_8) {
+	if (pd->systm.system >= SYSTEM_FRENCH_8) {
 	    gint looser = french_matches[table][sys][comp_num][0];
 	    if (looser < 0) {
 		cairo_save(pd->c);
@@ -403,22 +406,27 @@ static void create_table(struct paint_data *pd, struct table *t)
 {
     int i;
 
+    if (pd->row_height == 0) {
+        g_print("ROW HEIGHT == 0!\n");
+        pd->row_height = 1;
+    }
+
     cairo_set_line_width(pd->c, THICK_LINE);
     cairo_rectangle(pd->c, t->position_x, t->position_y, 
                     colpos(pd, t, t->num_cols), 
-                    (t->num_rows + 1) * ROW_HEIGHT);
+                    (t->num_rows*pd->row_height + 1) * ROW_HEIGHT);
     cairo_stroke(pd->c);
 
     cairo_set_line_width(pd->c, THIN_LINE);
         
     for (i = 1; i <= t->num_rows; i++) {
-        cairo_move_to(pd->c, t->position_x, t->position_y + i*ROW_HEIGHT);
+        cairo_move_to(pd->c, t->position_x, t->position_y + ROW_HEIGHT*(pd->row_height*(i - 1) + 1));
         cairo_rel_line_to(pd->c, colpos(pd, t, t->num_cols), 0);
     }
 
     for (i = 1; i < t->num_cols; i++) {
         cairo_move_to(pd->c, t->position_x + colpos(pd, t, i), t->position_y + ROW_HEIGHT);
-        cairo_rel_line_to(pd->c, 0, t->num_rows * ROW_HEIGHT);
+        cairo_rel_line_to(pd->c, 0, t->num_rows*ROW_HEIGHT*pd->row_height);
     }
 
     cairo_stroke(pd->c);
@@ -507,10 +515,28 @@ static void write_table_title(struct paint_data *pd, struct table *t, char *txt)
     cairo_restore(pd->c);
 }
 
+static void paint_table_cell(struct paint_data *pd, struct table *t, int row, int col, 
+                            gdouble red, gdouble green, gdouble blue)
+{
+    double x = t->position_x + colpos(pd, t, col);
+    double y = t->position_y + row*ROW_HEIGHT;
+
+    cairo_move_to(pd->c, x, y);
+
+    cairo_save(pd->c);
+    cairo_set_source_rgb(pd->c, red, green, blue);
+    cairo_rectangle(pd->c, x, y, W(t->columns[col]), ROW_HEIGHT);
+    cairo_fill(pd->c);
+
+    cairo_restore(pd->c);
+}
+
 static void paint_pool(struct paint_data *pd, gint category, struct judoka *ctg, gint num_judokas)
 {
     struct pool_matches pm;
     gint i;
+
+    pd->row_height = 1;
 
     fill_pool_struct(category, num_judokas, &pm);
 
@@ -672,6 +698,134 @@ static void paint_pool(struct paint_data *pd, gint category, struct judoka *ctg,
     empty_pool_struct(&pm);
 }
 
+static struct table pool_table_2 = {
+    0, 0, 0, 0, 
+    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
+};
+static double col_width_2[] = {0.02, 0.12, 0.02, 0.02, 0.02};
+
+static void paint_pool_2(struct paint_data *pd, gint category, struct judoka *ctg, gint num_judokas)
+{
+    struct pool_matches pm;
+    gint i;
+    gdouble tot_width = 0, match_col_width;
+
+    pd->row_height = 2;
+
+    fill_pool_struct(category, num_judokas, &pm);
+
+    if (pm.finished)
+        get_pool_winner(num_judokas, pm.c, pm.yes, pm.wins, pm.pts, pm.mw, pm.j, pm.all_matched);
+
+    pool_table_2.position_x = POOL_JUDOKAS_X;
+    pool_table_2.position_y = POOL_JUDOKAS_Y;
+    pool_table_2.num_rows = num_judokas;
+    pool_table_2.num_cols = pm.num_matches + 5;
+    pool_table_2.columns[0] = col_width_2[0];
+    pool_table_2.columns[1] = col_width_2[1];
+    pool_table_2.columns[pm.num_matches + 2] = col_width_2[2];
+    pool_table_2.columns[pm.num_matches + 3] = col_width_2[3];
+    pool_table_2.columns[pm.num_matches + 4] = col_width_2[4];
+
+    for (i = 0; i < 5; i++)
+        tot_width += col_width_2[i];
+    match_col_width = (0.90 - tot_width)/21.0;
+
+    for (i = 0; i < pm.num_matches; i++)
+        pool_table_2.columns[2 + i] = match_col_width;
+
+    create_table(pd, &pool_table_2);
+
+    write_table(pd, &pool_table_2, 0, 0, _T(number));
+    write_table(pd, &pool_table_2, 0, 1, _T(name));
+    WRITE_TABLE(pool_table_2, 0, pm.num_matches + 2, "%s", _T(win));
+    WRITE_TABLE(pool_table_2, 0, pm.num_matches + 3, "%s", _T(points));
+    WRITE_TABLE(pool_table_2, 0, pm.num_matches + 4, "%s", _T(position));
+
+    for (i = 0; i < pm.num_matches; i++) {
+        gint j;
+        WRITE_TABLE(pool_table_2, 0, i + 2, "%d", i+1);
+
+        for (j = 1; j <= num_judokas; j++) {
+            if (pools[num_judokas][i][0] != j &&
+                pools[num_judokas][i][1] != j) {
+                paint_table_cell(pd, &pool_table_2, j*2 - 1, i + 2, 0.4, 0.4, 0.4);
+                paint_table_cell(pd, &pool_table_2, j*2, i + 2, 0.4, 0.4, 0.4);
+            }
+        }
+    }
+    
+    for (i = 1; i <= num_judokas; i++) {
+        char num[5], name[60];
+
+        if (pm.j[i] == NULL)
+            continue;
+
+        sprintf(num, "%d", i);
+        if (weights_in_sheets)
+            sprintf(name, "%s %s  (%d,%02d)", 
+                    pm.j[i]->first, pm.j[i]->last,
+                    pm.j[i]->weight/1000, (pm.j[i]->weight%1000)/10);
+        else
+            sprintf(name, "%s %s", pm.j[i]->first, pm.j[i]->last);
+        write_table(pd, &pool_table_2, 2*i-1, 0, num);
+        write_table_h(pd, &pool_table_2, 2*i-1, 1, pm.j[i]->deleted, name);
+        sprintf(name, "%s", get_club_text(pm.j[i], 0));
+        write_table(pd, &pool_table_2, 2*i, 1, name);
+        /*if (grade_visible)
+          write_table(pd, &pool_table_2, i, 2, belts[pm.j[i]->belt]);
+          write_table(pd, &pool_table_2, i, 3, (char *)get_club_text(pm.j[i], 0));*/
+    }
+
+    for (i = 1; i <= pm.num_matches ; i++) {
+        gint blue = pools[num_judokas][i-1][0];
+        gint white = pools[num_judokas][i-1][1];
+
+        if (pm.j[blue] == NULL || pm.j[white] == NULL)
+            continue;
+
+        if (pm.m[i].blue_points)
+            WRITE_TABLE(pool_table_2, blue*2-1, i+1, "%d", pm.m[i].blue_points);
+        if (pm.m[i].white_points)
+            WRITE_TABLE(pool_table_2, white*2-1, i+1, "%d", pm.m[i].white_points);
+        /*if (pm.m[i].blue_points || pm.m[i].white_points)
+          WRITE_TABLE(match_table, i, 6, "%d:%02d", pm.m[i].match_time/60, pm.m[i].match_time%60);*/
+    }
+
+    for (i = 1; i <= num_judokas; i++) {
+        if (pm.wins[i] || pm.finished)
+            WRITE_TABLE(pool_table_2, 2*i-1, 2+pm.num_matches, "%d", pm.wins[i]);
+        if (pm.pts[i] || pm.finished)
+            WRITE_TABLE(pool_table_2, 2*i-1, 3+pm.num_matches, "%d", pm.pts[i]);
+        if (pm.finished)
+            WRITE_TABLE(pool_table_2, 2*pm.c[i]-1, 4+pm.num_matches, "%d", draw_system == DRAW_SPANISH && i == 4 ? 3 : i);
+    }
+
+    pd->row_height = 1;
+    
+    /* results */
+    result_table.position_y = H(0.6);
+    result_table.num_rows = num_judokas;
+    create_table(pd, &result_table);
+    write_table_title(pd, &result_table, _T(results));
+
+    WRITE_TABLE(result_table, 0, 0, "%s", _T(position));
+    WRITE_TABLE(result_table, 0, 1, "%s", _T(name));
+
+    for (i = 1; i <= num_judokas; i++) {
+        WRITE_TABLE(result_table, i, 0, "%d", draw_system == DRAW_SPANISH && i == 4 ? 3 : i);
+        if (pm.finished == FALSE || pm.j[pm.c[i]] == NULL)
+            continue;
+        WRITE_TABLE_H(result_table, i, 1, pm.j[pm.c[i]]->deleted, "%s %s, %s", 
+                      pm.j[pm.c[i]]->first, pm.j[pm.c[i]]->last, 
+		      get_club_text(pm.j[pm.c[i]], 0));
+    }
+
+    /* clean up */
+    empty_pool_struct(&pm);
+}
+
+
 static gdouble row_height[11] = {
     1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.9, 0.8, 0.7
 };
@@ -695,7 +849,7 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
 
     pos_judoka_a = POOL_JUDOKAS_Y;
     pos_match_a = pos_judoka_a + (num_pool_a + 3) * ROW_HEIGHT;
-    pos_judoka_b = pos_match_a + (num_matches(pd->systm, num_pool_a) + 3) * ROW_HEIGHT;
+    pos_judoka_b = pos_match_a + (num_matches(SYSTEM_POOL, num_pool_a) + 3) * ROW_HEIGHT;
     pos_match_b = pos_judoka_b + (num_pool_b + 3) * ROW_HEIGHT;
 
     /* competitor table A */
@@ -773,7 +927,7 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
     }
 
     /* match table A */
-    match_table.num_rows = num_matches(pd->systm, num_pool_a);
+    match_table.num_rows = num_matches(SYSTEM_POOL, num_pool_a);
     match_table.position_y = pos_match_a;
     create_table(pd, &match_table);
     write_table_title(pd, &match_table, _T(matchesa));
@@ -785,7 +939,7 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
     WRITE_TABLE(match_table, 0, 6, "%s", _T(time));
 
     /* match table B */
-    match_table.num_rows = num_matches(pd->systm, num_pool_b);
+    match_table.num_rows = num_matches(SYSTEM_POOL, num_pool_b);
     match_table.position_y = pos_match_b;
     create_table(pd, &match_table);
     write_table_title(pd, &match_table, _T(matchesb));
@@ -799,9 +953,9 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
     /* matches */
     pos_a = pos_b = 1;
 
-    for (i = 1; i <= num_matches(pd->systm, num_judokas) ; i++) {
-        gint blue = pools[num_judokas][i-1][0];
-        gint white = pools[num_judokas][i-1][1];
+    for (i = 1; i <= num_matches(pd->systm.system, num_judokas) ; i++) {
+        gint blue = poolsd[num_judokas][i-1][0];
+        gint white = poolsd[num_judokas][i-1][1];
         gint ix = blue > num_pool_a ? pos_b++ : pos_a++;
 
         if (blue > num_pool_a) {
@@ -835,9 +989,9 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
             WRITE_TABLE(judoka_table, white, blue + 3, "%d", pm.m[i].white_points);
     }
 
-    pos_match_f = pos_match_b + (num_matches(pd->systm, num_pool_b) + 3) * ROW_HEIGHT;
+    pos_match_f = pos_match_b + (num_matches(SYSTEM_POOL, num_pool_b) + 3) * ROW_HEIGHT;
 
-    i = num_matches(pd->systm, num_judokas) + 1;
+    i = num_matches(pd->systm.system, num_judokas) + 1;
 
     cairo_text_extents_t extents;
     cairo_text_extents(pd->c, "B2", &extents);
@@ -954,7 +1108,7 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
 
     /* results */
     result_table.num_rows = 4;
-    result_table.position_y = pos_match_b + (num_matches(pd->systm, num_pool_b) + 5) * ROW_HEIGHT + 3*NAME_S;
+    result_table.position_y = pos_match_b + (num_matches(SYSTEM_POOL, num_pool_b) + 5) * ROW_HEIGHT + 3*NAME_S;
     create_table(pd, &result_table);
     write_table_title(pd, &result_table, _T(results));
 
@@ -1086,8 +1240,8 @@ static void paint_qpool(struct paint_data *pd, gint category, struct judoka *ctg
             }
     
             get_pool_winner(pool_size[pool], c[pool], yes[pool], pm.wins, pm.pts, pm.mw, pm.j, pm.all_matched);
-            gboolean pool_done = pool_finished(num_judokas, num_matches(pd->systm, num_judokas), 
-                                               TRUE, yes[pool], &pm);
+            gboolean pool_done = pool_finished(num_judokas, num_matches(pd->systm.system, num_judokas), 
+                                               SYSTEM_QPOOL, yes[pool], &pm);
 
             win_table.position_y = pos_judoka[pool];
             win_table.num_rows = pool_size[pool];
@@ -1122,7 +1276,7 @@ static void paint_qpool(struct paint_data *pd, gint category, struct judoka *ctg
             WRITE_TABLE(match_table, 0, 5, "%s", _T(result));
             WRITE_TABLE(match_table, 0, 6, "%s", _T(time));
 
-            for (i = 1; i <= num_matches(pd->systm, num_judokas); i++) {
+            for (i = 1; i <= num_matches(pd->systm.system, num_judokas); i++) {
                 gint blue = poolsq[num_judokas][i-1][0];
                 gint white = poolsq[num_judokas][i-1][1];
 
@@ -1162,7 +1316,7 @@ static void paint_qpool(struct paint_data *pd, gint category, struct judoka *ctg
     if (pd->page == 2) {
         double x[4];
         pos_match_f = POOL_JUDOKAS_Y;
-        i = num_matches(pd->systm, num_judokas) + 1;
+        i = num_matches(pd->systm.system, num_judokas) + 1;
         cairo_text_extents_t extents;
         cairo_text_extents(pd->c, "B2", &extents);
 
@@ -1278,12 +1432,16 @@ static gint first_matches[NUM_FRENCH] = {4, 8, 16, 32};
 #define PAINT_BRONZE1(_w)                                               \
     bronze1 = (m[_w].blue_points || m[_w].white==GHOST) ? m[_w].blue :  \
         ((m[_w].white_points || m[_w].blue==GHOST) ? m[_w].white : 0);  \
-    PAINT_WINNER(_w, table!=TABLE_NO_REPECHAGE ? REPECHAGE : 0)
+    PAINT_WINNER(_w, table!=TABLE_NO_REPECHAGE ? F_REPECHAGE : 0)
 
 #define PAINT_BRONZE2(_w)                                               \
     bronze2 = (m[_w].blue_points || m[_w].white==GHOST) ? m[_w].blue :  \
         ((m[_w].white_points || m[_w].blue==GHOST) ? m[_w].white : 0);  \
-    PAINT_WINNER(_w, table!=TABLE_NO_REPECHAGE ? REPECHAGE : 0)
+    PAINT_WINNER(_w, table!=TABLE_NO_REPECHAGE ? F_REPECHAGE : 0)
+
+#define GET_FOURTH(_w)                                                  \
+    fourth = (m[_w].blue_points && m[_w].white > GHOST) ? m[_w].white : \
+        ((m[_w].white_points && m[_w].blue > GHOST) ? m[_w].blue : 0);
 
 #define GET_FIFTH1(_w)                                                  \
     fifth1 = (m[_w].blue_points && m[_w].white > GHOST) ? m[_w].white : \
@@ -1293,15 +1451,15 @@ static gint first_matches[NUM_FRENCH] = {4, 8, 16, 32};
     fifth2 = (m[_w].blue_points && m[_w].white > GHOST) ? m[_w].white : \
         ((m[_w].white_points && m[_w].blue > GHOST) ? m[_w].blue : 0);
 
-#define GET_WINNER_AND_LOSER(_w)                                        \
-    winner = (m[_w].blue_points || m[_w].white==GHOST) ? m[_w].blue :   \
+#define GET_WINNER_AND_LOSER(_w)							\
+    winner = (m[_w].blue_points || m[_w].white==GHOST) ? m[_w].blue :     \
         ((m[_w].white_points || m[_w].blue==GHOST) ? m[_w].white : 0);  \
-    loser = (m[_w].blue_points || m[_w].white==GHOST) ? m[_w].white :   \
+    loser = (m[_w].blue_points || m[_w].white==GHOST) ? m[_w].white :  \
         ((m[_w].white_points || m[_w].blue==GHOST) ? m[_w].blue : 0);   \
 
 
 static void paint_french(struct paint_data *pd, gint category, struct judoka *ctg, 
-                         gint num_judokas, gint systm, gint pagenum)
+                         gint num_judokas, struct compsys systm, gint pagenum)
 {
     struct match m[NUM_MATCHES];
     gint i, level[NUM_MATCHES], max_level = 0;
@@ -1312,8 +1470,8 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
     gint gold = 0, silver = 0, bronze1 = 0, bronze2 = 0, fourth = 0, fifth1 = 0, fifth2 = 0;
     gint winner, loser;
     gint sysflag = 0;
-    gint sys = ((systm & SYSTEM_MASK) - SYSTEM_FRENCH_8) >> SYSTEM_MASK_SHIFT;
-    gint table = (systm & SYSTEM_TABLE_MASK) >> SYSTEM_TABLE_SHIFT;
+    gint sys = systm.system - SYSTEM_FRENCH_8;
+    gint table = systm.table;
     gint first_match = 1, last_match = first_matches[sys];
 
     /* read mathecs */
@@ -1325,14 +1483,19 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
     case FRENCH_8:
         break;
     case FRENCH_16:
-	if (table == TABLE_DOUBLE_REPECHAGE || table == TABLE_SWE_DUBBELT_AATERKVAL) {
+	if (table == TABLE_DOUBLE_REPECHAGE || 
+            table == TABLE_SWE_DUBBELT_AATERKVAL ||
+            table == TABLE_DOUBLE_REPECHAGE_ONE_BRONZE) {
 	    space = NAME_S*0.59;
 	} else {
 	    space = NAME_S*0.55;
 	}
         break;
     case FRENCH_32:
-	if (table == TABLE_DOUBLE_REPECHAGE || table == TABLE_SWE_DUBBELT_AATERKVAL) {
+	if (table == TABLE_DOUBLE_REPECHAGE || 
+            table == TABLE_SWE_DUBBELT_AATERKVAL ||
+            table == TABLE_MODIFIED_DOUBLE_ELIMINATION ||
+            table == TABLE_DOUBLE_REPECHAGE_ONE_BRONZE) {
 	    space = NAME_S*0.35;
 	    text_h = 0.9*TEXT_HEIGHT;
 	} else {
@@ -1341,9 +1504,7 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
 	}
         break;
     case FRENCH_64:
-	if ((table == TABLE_EST_D_KLASS || 
-             table == TABLE_SWE_DIREKT_AATERKVAL ||
-             table == TABLE_MODIFIED_DOUBLE_ELIMINATION) && 
+	if ((table == TABLE_EST_D_KLASS || table == TABLE_SWE_DIREKT_AATERKVAL) && 
 	    pagenum == 2)
 	    space = NAME_S*0.25;
 	else
@@ -1402,13 +1563,13 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
             white_pos = H(doubleval2); 
             pos_y = white_pos + space;
             level[i] = intval;
-            special_flags = REPECHAGE;
+            special_flags = F_REPECHAGE;
         } else if (special_match == SPECIAL_MATCH_START) {
             blue_pos = pos_y;
             white_pos = blue_pos + space; 
             pos_y += 2.0*space;
             level[i] = 0;
-            special_flags = REPECHAGE;
+            special_flags = F_REPECHAGE;
         } else {
             if (repechage_start[table][sys][0] == i ||
                 repechage_start[table][sys][1] == i) {
@@ -1441,9 +1602,9 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
                        blue_pos, white_pos, 
                        m[i].blue, m[i].white,
                        m[i].blue_points, m[i].white_points,
-                       ((last_pos < blue_pos && sys != 3) || pagenum == 2 ? REPECHAGE : 0) | 
+                       ((last_pos < blue_pos && sys != 3) || pagenum == 2 ? F_REPECHAGE : 0) | 
                        sysflag | special_flags, 0, 0, i);
-        //g_print("match %d: level=%d blue=%f white=%f pos=%f\n", i, level[i], blue_pos, white_pos, positions[i]);
+
         if (special_match == SPECIAL_MATCH_STOP) {
             PAINT_WINNER(i, intval);
         } else if (special_match == SPECIAL_MATCH_FLAG) {
@@ -1453,6 +1614,7 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
 
     gint final_blue = french_matches[table][sys][medal_matches[table][sys][2]][0];
     gint final_white = french_matches[table][sys][medal_matches[table][sys][2]][1];
+    gint gold_match = get_abs_matchnum_by_pos(table, sys, 1, 1);
 
     if (sys == FRENCH_64 && pagenum == 0)
         PAINT_WINNER(final_blue, 0);
@@ -1470,13 +1632,19 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
             silver = winner;
             bronze1 = loser;
             PAINT_WINNER(get_abs_matchnum_by_pos(table, sys, 1, 1), 0);
-            PAINT_WINNER(get_abs_matchnum_by_pos(table, sys, 2, 1), REPECHAGE);
+            PAINT_WINNER(get_abs_matchnum_by_pos(table, sys, 2, 1), F_REPECHAGE);
         } else {
-            PAINT_BRONZE1(medal_matches[table][sys][0]);
-            PAINT_BRONZE2(medal_matches[table][sys][1]);
-            PAINT_GOLD(medal_matches[table][sys][2]);
-            GET_FIFTH1(medal_matches[table][sys][0]);
-            GET_FIFTH2(medal_matches[table][sys][1]);
+            PAINT_BRONZE1(get_abs_matchnum_by_pos(table, sys, 3, 1));
+
+            if (one_bronze(table, sys)) {
+                GET_FOURTH(get_abs_matchnum_by_pos(table, sys, 4, 1));
+            } else {
+                PAINT_BRONZE2(get_abs_matchnum_by_pos(table, sys, 3, 2));
+            }
+
+            PAINT_GOLD(gold_match);
+            GET_FIFTH1(get_abs_matchnum_by_pos(table, sys, 5, 1));
+            GET_FIFTH2(get_abs_matchnum_by_pos(table, sys, 5, 2));
         }
         break;
     case FRENCH_64:
@@ -1489,30 +1657,35 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
             GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(table, sys, 2, 1));
             silver = winner;
             bronze1 = loser;
-            PAINT_WINNER(get_abs_matchnum_by_pos(table, sys, 1, 1), REPECHAGE);
-            PAINT_WINNER(get_abs_matchnum_by_pos(table, sys, 2, 1), REPECHAGE);
+            PAINT_WINNER(get_abs_matchnum_by_pos(table, sys, 1, 1), F_REPECHAGE);
+            PAINT_WINNER(get_abs_matchnum_by_pos(table, sys, 2, 1), F_REPECHAGE);
         } else {
-            PAINT_BRONZE1(medal_matches[table][sys][0]);
-            PAINT_BRONZE2(medal_matches[table][sys][1]);
+            PAINT_BRONZE1(get_abs_matchnum_by_pos(table, sys, 3, 1));
+
+            if (one_bronze(table, sys)) {
+                GET_FOURTH(get_abs_matchnum_by_pos(table, sys, 4, 1));
+            } else {
+                PAINT_BRONZE2(get_abs_matchnum_by_pos(table, sys, 3, 2));
+            }
 
             pos_y += 6.0*space;
             gdouble pos_y1 = pos_y;
             pos_y += 3.0*space;
             gdouble pos_y2 = pos_y;
 
-            positions[medal_matches[table][sys][2]] = 
+            positions[gold_match] = 
                 paint_comp(pd, NULL, 2,
                            pos_y1, pos_y2, 
-                           m[medal_matches[table][sys][2]].blue, 
-                           m[medal_matches[table][sys][2]].white,
-                           m[medal_matches[table][sys][2]].blue_points, 
-                           m[medal_matches[table][sys][2]].white_points, 0, 0, 0, 
-                           medal_matches[table][sys][2]);
-            level[medal_matches[table][sys][2]] = 2;
+                           m[gold_match].blue, 
+                           m[gold_match].white,
+                           m[gold_match].blue_points, 
+                           m[gold_match].white_points, 0, 0, 0, 
+                           gold_match);
+            level[gold_match] = 2;
 
-            PAINT_GOLD(medal_matches[table][sys][2]);
-            GET_FIFTH1(medal_matches[table][sys][0]);
-            GET_FIFTH2(medal_matches[table][sys][1]);
+            PAINT_GOLD(gold_match);
+            GET_FIFTH1(get_abs_matchnum_by_pos(table, sys, 5, 1));
+            GET_FIFTH2(get_abs_matchnum_by_pos(table, sys, 5, 2));
         }
         break;
     }
@@ -1545,7 +1718,7 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
         WRITE_TABLE(result_table_2, 5, 0, "5");
         WRITE_TABLE(result_table_2, 6, 0, "5");
     }
-                
+
     if (gold && (j1 = get_data(gold))) {
         WRITE_TABLE_H(result_table_2, 1, 1, j1->deleted, "%s %s, %s", j1->first, j1->last, get_club_text(j1, 0));
         free_judoka(j1);
@@ -1558,7 +1731,7 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
         WRITE_TABLE_H(result_table_2, 3, 1, j1->deleted, "%s %s, %s", j1->first, j1->last, get_club_text(j1, 0));
         free_judoka(j1);
     }
-    if (gold && (j1 = get_data(bronze2))) {
+    if (gold && one_bronze(table, sys) == FALSE && (j1 = get_data(bronze2))) {
         WRITE_TABLE_H(result_table_2, 4, 1, j1->deleted, "%s %s, %s", j1->first, j1->last, get_club_text(j1, 0));
         free_judoka(j1);
     }
@@ -1590,9 +1763,19 @@ static struct {
 void paint_category(struct paint_data *pd)
 {
     cairo_text_extents_t extents;
-    gint sys, category = pd->category, num_judokas;
+    struct compsys sys; 
+    gint category = pd->category, num_judokas;
     gchar buf[200];
     struct judoka *ctg = NULL;
+    gdouble  paper_width_saved;
+    gdouble  paper_height_saved;
+    gdouble  total_width_saved;
+    gboolean landscape_saved;
+
+    /* find system */
+    sys = db_get_system(category);
+    pd->systm = sys;
+    num_judokas = sys.numcomp;
 
     ROW_HEIGHT = NAME_H;
 	
@@ -1605,10 +1788,20 @@ void paint_category(struct paint_data *pd)
     if (ctg == NULL)
         return;
 
-    /* find system */
-    sys = db_get_system(category);
-    pd->systm = sys;
-    num_judokas = (sys&COMPETITORS_MASK);
+    if (pd->rotate) {
+        //c_saved = pd->c;
+        paper_width_saved = pd->paper_width;
+        paper_height_saved = pd->paper_height;
+        total_width_saved = pd->total_width;
+        pd->paper_width = paper_height_saved;
+        pd->paper_height = paper_width_saved;
+        pd->total_width = pd->paper_width;
+        landscape_saved = pd->landscape;
+        pd->landscape = TRUE;
+        cairo_translate(pd->c, paper_width_saved*0.5, paper_height_saved*0.5);
+        cairo_rotate(pd->c, -0.5*M_PI);
+        cairo_translate(pd->c, -paper_height_saved*0.5, -paper_width_saved*0.5);
+    }
 
     cairo_set_source_rgb(pd->c, 1.0, 1.0, 1.0);
     cairo_rectangle(pd->c, 0.0, 0.0, pd->paper_width, pd->paper_height);
@@ -1662,9 +1855,12 @@ void paint_category(struct paint_data *pd)
     }
     cairo_restore(pd->c);
 
-    switch (sys & SYSTEM_MASK) {
+    switch (sys.system) {
     case SYSTEM_POOL:
-        paint_pool(pd, category, ctg, num_judokas);
+        if (paint_pool_style_2(category))
+            paint_pool_2(pd, category, ctg, num_judokas);
+        else
+            paint_pool(pd, category, ctg, num_judokas);
         break;
 
     case SYSTEM_DPOOL:
@@ -1688,6 +1884,16 @@ void paint_category(struct paint_data *pd)
 
     /* clean up */
     free_judoka(ctg);
+
+    if (pd->rotate) {
+        pd->paper_width = paper_width_saved;
+        pd->paper_height = paper_height_saved;
+        pd->total_width = total_width_saved;
+        pd->landscape = landscape_saved;
+        cairo_translate(pd->c, paper_height_saved*0.5, paper_width_saved*0.5);
+        cairo_rotate(pd->c, 0.5*M_PI);
+        cairo_translate(pd->c, -paper_width_saved*0.5, -paper_height_saved*0.5);
+    }
 }
 
 
@@ -1892,7 +2098,10 @@ static gboolean expose_cat(GtkWidget *widget, GdkEventExpose *event, gpointer us
         g_free(file);
     }
 
-    pd->paper_height = SIZEY*widget->allocation.width/SIZEX;
+    if (pd->landscape)
+        pd->paper_height = SIZEX*widget->allocation.width/SIZEY;
+    else
+        pd->paper_height = SIZEY*widget->allocation.width/SIZEX;
     pd->paper_width = widget->allocation.width;
     pd->total_width = widget->allocation.width;
 
@@ -1990,9 +2199,16 @@ void category_window(gint cat)
     memset(pd, 0, sizeof(*pd));
     pd->scroll = scrolled_window;
     pd->category = cat;
-    pd->paper_height = SIZEY*darea->allocation.width/SIZEX;
+
+    if (print_landscape(cat)) {
+        pd->paper_height = SIZEX*darea->allocation.width/SIZEY;
+        pd->landscape = TRUE;
+    } else {    
+        pd->paper_height = SIZEY*darea->allocation.width/SIZEX;
+    }
     pd->paper_width = darea->allocation.width;
     pd->total_width = darea->allocation.width;
+    //XXXpd->row_height = 1;
 
     gtk_widget_add_events(darea, 
                           GDK_BUTTON_PRESS_MASK);
@@ -2016,6 +2232,7 @@ static gboolean expose(GtkWidget *widget, GdkEventExpose *event, gpointer userda
     pd.category = current_category;
     pd.page = current_page;
     pd.c = gdk_cairo_create(widget->window);
+    //XXX pd.row_height = 1;
 
     gdouble orig_paper_height = pd.paper_height = widget->allocation.height;
     gdouble orig_paper_width = pd.paper_width = SIZEX*pd.paper_height/SIZEY;
@@ -2075,8 +2292,16 @@ void write_sheet_to_stream(gint cat, cairo_write_func_t write_func, void *closur
     cairo_surface_t *cs;
 
     memset(&pd, 0, sizeof(pd));
-    pd.paper_height = SIZEY;
-    pd.paper_width = SIZEX;
+    //XXXpd.row_height = 1;
+    if (print_landscape(cat)) {
+        pd.paper_height = SIZEX;
+        pd.paper_width = SIZEY;
+        //XXXpd.row_height = 2;
+        pd.landscape = TRUE;
+    } else {
+        pd.paper_height = SIZEY;
+        pd.paper_width = SIZEX;
+    }
     pd.total_width = 0;
     pd.category = cat;
 
@@ -2200,7 +2425,7 @@ gboolean change_current_page(GtkWidget *sheet_page,
                                            next_matches_info[t][0].matchnum,
                                            COMMENT_MATCH_2);
                             db_set_comment(wcat, wnum, COMMENT_MATCH_1);
-                            gint sys = db_get_system(wcat);
+                            struct compsys sys = db_get_system(wcat);
                             update_matches(wcat, sys, db_find_match_tatami(wcat, wnum));
                             next_matches_info[t][0].won_catnum = 0;
                         }

@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2010 by Hannu Jokinen
+ * Copyright (C) 2006-2011 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */ 
 
@@ -109,7 +109,6 @@ gboolean msg_accepted(struct message *m)
     case MSG_NAME_REQ:
     case MSG_ALL_REQ:
     case MSG_CANCEL_REST_TIME:
-    case MSG_EDIT_COMPETITOR:
         return TRUE;
     }
     return FALSE;
@@ -202,7 +201,7 @@ void msg_received(struct message *input_msg)
                                   input_msg->u.cancel_rest_time.number,
                                   input_msg->u.cancel_rest_time.blue,
                                   input_msg->u.cancel_rest_time.white);
-        update_matches(input_msg->u.cancel_rest_time.category, 0, 0);
+        update_matches(input_msg->u.cancel_rest_time.category, (struct compsys){0,0,0,0}, 0);
         break;
 
     case MSG_EDIT_COMPETITOR:
@@ -523,7 +522,7 @@ gpointer node_thread(gpointer args)
                 gint j, blen = sizeof(connections[i].buf);
 		struct message msg;
 
-                if (strncmp(inbuf, "<policy-file-request/>", 10) == 0) {
+                if (strncmp((gchar *)inbuf, "<policy-file-request/>", 10) == 0) {
                     send(connections[i].fd, xml, xmllen+1, 0);
                     g_print("policy file sent to %d\n", i);
                 }

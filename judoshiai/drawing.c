@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2010 by Hannu Jokinen
+ * Copyright (C) 2006-2011 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */ 
 
@@ -53,7 +53,7 @@ struct mdata {
     gint selected, mfrench_sys;
     gboolean hidden;
     gint drawn, seeded1, seeded2, seeded3;
-    gint sys;
+    struct compsys sys;
 };
 
 GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors, 
@@ -581,7 +581,7 @@ static gboolean draw_one_comp(struct mdata *mdata)
 {
     gint comp = mdata->selected;
     gint found = 0, mask;
-    gint sys = mdata->sys & SYSTEM_MASK;
+    gint sys = mdata->sys.system;
 
     if (mdata->selected == 0)
         return 0;
@@ -885,15 +885,18 @@ static void make_manual_mathes_callback(GtkWidget *widget,
     }
 
     if (mdata->mfrench_sys < 0) {
-        for (i = 0; i < num_matches(mdata->sys, mdata->mjudokas); i++) {
+        for (i = 0; i < num_matches(mdata->sys.system, mdata->mjudokas); i++) {
             struct match m;
                 
             memset(&m, 0, sizeof(m));
             m.category = mdata->mcategory_ix;
             m.number = i+1;
-            if ((mdata->sys & SYSTEM_MASK) == SYSTEM_QPOOL) {
+            if (mdata->sys.system == SYSTEM_QPOOL) {
                 m.blue = mdata->mcomp[ mdata->mpos[ poolsq[mdata->mjudokas][i][0] ].judoka ].index;
                 m.white = mdata->mcomp[ mdata->mpos[ poolsq[mdata->mjudokas][i][1] ].judoka ].index;
+            } else if (mdata->sys.system == SYSTEM_DPOOL) {
+                m.blue = mdata->mcomp[ mdata->mpos[ poolsd[mdata->mjudokas][i][0] ].judoka ].index;
+                m.white = mdata->mcomp[ mdata->mpos[ poolsd[mdata->mjudokas][i][1] ].judoka ].index;
             } else {
                 m.blue = mdata->mcomp[ mdata->mpos[ pools[mdata->mjudokas][i][0] ].judoka ].index;
                 m.white = mdata->mcomp[ mdata->mpos[ pools[mdata->mjudokas][i][1] ].judoka ].index;
@@ -924,7 +927,7 @@ static void make_manual_mathes_callback(GtkWidget *widget,
 out:
 
     update_category_status_info(mdata->mcategory_ix);
-    update_matches(mdata->mcategory_ix, 0, 0);
+    update_matches(mdata->mcategory_ix, (struct compsys){0,0,0,0}, 0);
 
     if (mdata->hidden == FALSE && (gulong)event == GTK_RESPONSE_OK)
         category_window(mdata->mcategory_ix);
@@ -935,40 +938,42 @@ out:
         gtk_widget_destroy(widget);
 }
 
-gint get_system_for_category(gint index, gint competitors)
+struct compsys get_system_for_category(gint index, gint competitors)
 {
-    gint systm = get_cat_system(index);
-    gint wish = systm & SYSTEM_WISH_MASK;
-    gint wishsys = wish >> SYSTEM_WISH_SHIFT;
+    struct compsys systm = get_cat_system(index);
+    gint wishsys = systm.wishsys;
+    gint table = systm.table;
     struct category_data *cat = NULL;
     gint sys = 0;
 
-    if (systm & SYSTEM_MASK)
+    if (systm.system)
         return systm;
 
     if (competitors <= 5 && (wishsys == CAT_SYSTEM_POOL || wishsys == CAT_SYSTEM_DEFAULT)) {
-        sys = wish | SYSTEM_POOL | competitors;
+        sys = SYSTEM_POOL;
+    } else if (competitors <= 7 && wishsys == CAT_SYSTEM_POOL) {
+        sys = SYSTEM_POOL;
     } else if (competitors > 5 && competitors <= 10 && wishsys == CAT_SYSTEM_DPOOL) {
-        sys = wish | SYSTEM_DPOOL | competitors;
+        sys = SYSTEM_DPOOL;
     } else if (competitors >= 8 && competitors <= 20 && wishsys == CAT_SYSTEM_QPOOL) {
-        sys = wish | SYSTEM_QPOOL | competitors;
+        sys = SYSTEM_QPOOL;
     } else if (competitors > 5 && competitors <= 10 && wishsys == CAT_SYSTEM_DEFAULT &&
                draw_system == DRAW_SPANISH) {
-            sys = wish | SYSTEM_DPOOL | competitors;
+            sys = SYSTEM_DPOOL;
     } else if (competitors > 5 && competitors <= 7 && wishsys == CAT_SYSTEM_DEFAULT) {
-	if (draw_system == DRAW_INTERNATIONAL || draw_system == DRAW_ESTONIAN) {
+        if (draw_system == DRAW_INTERNATIONAL || draw_system == DRAW_ESTONIAN) {
             if (draw_system == DRAW_INTERNATIONAL)
-                wish |= (cat_system_to_table[CAT_IJF_DOUBLE_REPECHAGE]) << SYSTEM_TABLE_SHIFT;
-            sys = wish | SYSTEM_FRENCH_8 | competitors;
-	} else {
-            sys = wish | SYSTEM_DPOOL | competitors;
-	}
+                table = cat_system_to_table[CAT_IJF_DOUBLE_REPECHAGE];
+            sys = SYSTEM_FRENCH_8;
+        } else {
+            sys = SYSTEM_DPOOL;
+        }
     } else if (competitors > 16 && wishsys == CAT_ESP_DOBLE_PERDIDA) {
-        wish |= (cat_system_to_table[CAT_ESP_REPESCA_DOBLE]) << SYSTEM_TABLE_SHIFT;
+        table = cat_system_to_table[CAT_ESP_REPESCA_DOBLE];
         if (competitors <= 32)
-            sys = wish | SYSTEM_FRENCH_32 | competitors;
+            sys = SYSTEM_FRENCH_32;
         else
-            sys = wish | SYSTEM_FRENCH_64 | competitors;
+            sys = SYSTEM_FRENCH_64;
     } else {
         if (wishsys == CAT_SYSTEM_DEFAULT) {
             switch (draw_system) {
@@ -1004,19 +1009,25 @@ gint get_system_for_category(gint index, gint competitors)
             }
         }
 
-        wish |= (cat_system_to_table[wishsys]) << SYSTEM_TABLE_SHIFT;
+        table = cat_system_to_table[wishsys];
 
         if (competitors <= 8) {
-            sys = wish | SYSTEM_FRENCH_8 | competitors;
+            sys = SYSTEM_FRENCH_8;
         } else if (competitors <= 16) {
-            sys = wish | SYSTEM_FRENCH_16 | competitors;
+            sys = SYSTEM_FRENCH_16;
         } else if (competitors <= 32) {
-            sys = wish | SYSTEM_FRENCH_32 | competitors;
+            sys = SYSTEM_FRENCH_32;
         } else {
-            sys = wish | SYSTEM_FRENCH_64 | competitors;
+            sys = SYSTEM_FRENCH_64;
         }
     }
-    return sys;
+    
+    systm.system  = sys;
+    systm.numcomp = competitors;
+    systm.table   = table;
+    systm.wishsys = wishsys;
+
+    return systm;
 }
 
 GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors, 
@@ -1044,7 +1055,7 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
 
     mdata->sys = get_system_for_category(mdata->mcategory_ix, competitors);
 
-    switch (mdata->sys & SYSTEM_MASK) {
+    switch (mdata->sys.system) {
     case SYSTEM_POOL:
     case SYSTEM_DPOOL:
     case SYSTEM_QPOOL:
@@ -1092,7 +1103,11 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
     }
 
     // Clean up the database.
-    db_set_system(mdata->mcategory_ix, get_cat_system(mdata->mcategory_ix)&SYSTEM_WISH_MASK);
+    struct compsys cs;
+    cs = get_cat_system(mdata->mcategory_ix);
+    cs.system = cs.numcomp = cs.table = 0; // leave wishsys as is
+
+    db_set_system(mdata->mcategory_ix, cs);
     db_remove_matches(mdata->mcategory_ix);
 
     // Get data of all the competitors.
@@ -1308,7 +1323,7 @@ void draw_all(GtkWidget *w, gpointer data)
 
     for (i = 1; i <= NUM_TATAMIS; i++) {
         progress_show(1.0*i/NUM_TATAMIS, "");
-        update_matches(0, 0, i);
+        update_matches(0, (struct compsys){0,0,0,0}, i);
     }
 
     progress_show(0.0, "");

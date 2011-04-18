@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2010 by Hannu Jokinen
+ * Copyright (C) 2006-2011 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */ 
 
@@ -183,7 +183,7 @@ void set_category_to_queue(struct category_data *data)
 }
 
 void avl_set_category(gint index, const gchar *category, gint tatami, 
-		      gint group, gint system)
+                      gint group, struct compsys system)
 {
     struct category_data *data;
     void *data1;
@@ -193,7 +193,7 @@ void avl_set_category(gint index, const gchar *category, gint tatami,
 
     data = g_malloc(sizeof(*data));
     memset(data, 0, sizeof(*data));
-	
+        
     data->index = index;
     strncpy(data->category, category, sizeof(data->category)-1);
     data->tatami = tatami;
@@ -411,6 +411,49 @@ gint avl_get_competitor_status(gint index)
     }
 
     return 0;
+}
+
+void avl_set_competitor_position(gint index, gint position)
+{
+    struct competitor_data data, *data1;
+
+    if (!competitors_tree)
+        return;
+
+    data.index = index;
+    if (avl_get_by_key(competitors_tree, &data, (void **)&data1) == 0) {
+        data1->position = position;
+    }
+}
+
+gint avl_get_competitor_position(gint index)
+{
+    struct competitor_data data, *data1;
+
+    if (!competitors_tree)
+        return 0;
+
+    data.index = index;
+    if (avl_get_by_key(competitors_tree, &data, (void **)&data1) == 0) {
+        return data1->position;
+    }
+
+    return 0;
+}
+
+static int iter_competitors(void *key, void *iter_arg)
+{
+    struct competitor_data *data = key;
+    data->position = 0;
+    return 0;
+}
+
+void avl_init_competitor_position(void)
+{
+    if (!competitors_tree)
+        return;
+
+    avl_iterate_inorder(competitors_tree, iter_competitors, NULL);
 }
 
 time_t avl_get_competitor_last_match_time(gint index)

@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2010 by Hannu Jokinen
+ * Copyright (C) 2006-2011 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */ 
 
@@ -539,10 +539,10 @@ static void change_comment(GtkWidget *menuitem, gpointer userdata)
 {
     gint t = ((gint)userdata) >> 4;
     gint cmd = ((gint)userdata) & 0x0f;
-    gint sys = db_get_system(point_click_areas[t].category);
+    struct compsys sys = db_get_system(point_click_areas[t].category);
 
     db_set_comment(point_click_areas[t].category, point_click_areas[t].number, cmd);
-    update_matches(0, 0, db_find_match_tatami(point_click_areas[t].category, point_click_areas[t].number));
+    update_matches(0, (struct compsys){0,0,0,0}, db_find_match_tatami(point_click_areas[t].category, point_click_areas[t].number));
 
     /* send comment to net */
     struct message msg;
@@ -552,7 +552,7 @@ static void change_comment(GtkWidget *menuitem, gpointer userdata)
     msg.u.set_comment.category = point_click_areas[t].category;
     msg.u.set_comment.number = point_click_areas[t].number;
     msg.u.set_comment.cmd = cmd;
-    msg.u.set_comment.sys = sys;
+    msg.u.set_comment.sys = sys.system;
     send_packet(&msg);
 }
 

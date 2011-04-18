@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2010 by Hannu Jokinen
+ * Copyright (C) 2006-2011 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */
 
@@ -107,7 +107,7 @@ static gdouble   ippon = 25.0;
 static gdouble   total;
 static gdouble   gs_time = 0.0;
 gint             tatami;
-gboolean         demo = FALSE;
+gint             demo = 0;
 gboolean         automatic;
 gboolean         short_pin_times = FALSE;
 gboolean         golden_score = FALSE;
@@ -274,27 +274,28 @@ void update_clock(void)
     }
 
     if (demo) {
-        gen_random_key();
-        /*        
-        static gint last_cat = 0, last_num = 0;
-        static gint res[8][2][4] = {
-            {{2,1,0,0},{0,2,0,2}},
-            {{0,0,3,0},{1,0,0,0}},
-            {{0,1,0,0},{0,2,0,0}},
-            {{3,0,0,0},{0,1,0,0}},
-            {{0,0,0,2},{1,1,0,0}},
-            {{2,2,0,0},{0,0,0,1}},
-            {{0,4,0,0},{0,1,0,0}},
-            {{3,0,0,0},{1,2,0,0}},
-        };
+        if (demo == 1)
+            gen_random_key();
+        else {
+            static gint last_cat = 0, last_num = 0;
+            static gint res[8][2][4] = {
+                {{2,1,0,0},{0,2,0,2}},
+                {{0,0,3,0},{1,0,0,0}},
+                {{0,1,0,0},{0,2,0,0}},
+                {{3,0,0,0},{0,1,0,0}},
+                {{0,0,0,2},{1,1,0,0}},
+                {{2,2,0,0},{0,0,0,1}},
+                {{0,4,0,0},{0,1,0,0}},
+                {{3,0,0,0},{1,2,0,0}},
+            };
 
-        if (last_cat != current_category || last_num != current_match) {
-            gint ix = (current_category + current_match) & 7;
-            send_result(res[ix][0], res[ix][1], 0, 0, 0, 0);
-            last_cat = current_category;
-            last_num = current_match;
+            if (last_cat != current_category || last_num != current_match) {
+                gint ix = (current_category + current_match) & 7;
+                send_result(res[ix][0], res[ix][1], 0, 0, 0, 0);
+                last_cat = current_category;
+                last_num = current_match;
+            }
         }
-        */
     }
 }
 
@@ -532,6 +533,8 @@ void reset(guint key, struct msg_next_match *msg)
     if ((st[0].running && rest_time == FALSE) || st[0].oRunning || asking)
         return;
 
+    set_gs_text("");
+
     if (msg && (current_category != msg->category || current_match != msg->match))
         judotimer_log("Automatic next match %d:%d (%s - %s)",
                       msg->category, msg->match,
@@ -556,6 +559,7 @@ void reset(guint key, struct msg_next_match *msg)
         key = GDK_9;
         st[0].match_time = st[0].elap;
         judotimer_log("Golden score starts");
+        set_gs_text("GOLDEN SCORE");
     } else if (demo == 0 &&
                (((st[0].bluepts[0] & 2) == 0 && (st[0].whitepts[0] & 2) == 0 &&
                  st[0].elap > 0.01 && st[0].elap < total - 0.01) ||
@@ -592,9 +596,14 @@ void reset(guint key, struct msg_next_match *msg)
     rest_time = FALSE;
 
     if (key != GDK_0 && golden_score == FALSE) {
-        send_result(st[0].bluepts, st[0].whitepts,
-                    blue_wins_voting, white_wins_voting,
-                    hansokumake_to_blue, hansokumake_to_white);
+        if (sides_switched)
+            send_result(st[0].whitepts, st[0].bluepts,
+                        white_wins_voting, blue_wins_voting,
+                        hansokumake_to_white, hansokumake_to_blue);
+        else
+            send_result(st[0].bluepts, st[0].whitepts,
+                        blue_wins_voting, white_wins_voting,
+                        hansokumake_to_blue, hansokumake_to_white);
         st[0].match_time = 0;
     }
 
@@ -618,6 +627,10 @@ void reset(guint key, struct msg_next_match *msg)
 
         memset(&(st[i].stackval), 0, sizeof(st[i].stackval));
         st[i].stackdepth = 0;
+    }
+
+    if (golden_score == FALSE) {
+        clear_switch_sides();
     }
 
     switch (key) {

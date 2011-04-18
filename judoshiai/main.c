@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2010 by Hannu Jokinen
+ * Copyright (C) 2006-2011 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */ 
 
@@ -122,6 +122,8 @@ gboolean       automatic_sheet_update = FALSE;
 gboolean       automatic_web_page_update = FALSE;
 gboolean       weights_in_sheets = FALSE;
 gboolean       grade_visible = FALSE;
+gboolean       pool_style = FALSE;
+gboolean       belt_colors = FALSE;
 gboolean       cleanup_import = FALSE;
 
 GdkCursor     *wait_cursor = NULL;

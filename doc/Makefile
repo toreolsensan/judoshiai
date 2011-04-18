@@ -17,19 +17,22 @@ DOCFILES=$(DOCSHIAI_FI) $(DOCSHIAI_EN) $(DOCSHIAI_ES) $(DOCTIMER_FI) $(DOCTIMER_
 all: $(DOCFILES)
 
 %.pdf: %.odt
-	rm -f $@
-	soffice "macro:///Standard.Module1.ConvertWordToPDF($(DOCPATH)$<)"
-	while test ! \( -e $@ \) ; do \
-	echo "Waiting for $@"; sleep 1; done
+	echo "Please create $@ manually using OpenOffice."
+	#rm -f $@
+	#soffice "macro:///Standard.Module1.ConvertWordToPDF($(DOCPATH)$<)"
+	#while test ! \( -e $@ \) ; do \
+	#echo "Waiting for $@"; sleep 1; done
 
 %.pdf: %.odg
-	rm -f $@
-	soffice "macro:///Standard.Module1.ConvertWordToPDF($(DOCPATH)$<)"
-	while test ! \( -e $@ \) ; do \
-	echo "Waiting for $@"; sleep 1; done
+	echo "Please create $@ manually using OpenOffice."
+	#rm -f $@
+	#soffice "macro:///Standard.Module1.ConvertWordToPDF($(DOCPATH)$<)"
+	#while test ! \( -e $@ \) ; do \
+	#echo "Waiting for $@"; sleep 1; done
 
 clean:
-	rm -f *.pdf
+	echo "Please remove PDF files manually if necessary."
+	#rm -f *.pdf
 
 #####################################################################
 # OpenOffice writer needs the macro                                 #

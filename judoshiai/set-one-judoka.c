@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2010 by Hannu Jokinen
+ * Copyright (C) 2006-2011 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */ 
 
@@ -73,14 +73,15 @@ gint display_one_judoka(struct judoka *j)
         if (gtk_tree_model_iter_parent((GtkTreeModel *)current_model, &parent, &iter) == FALSE) {
             /* illegal situation */
             g_print("ILLEGAL\n");
-            ret = set_category(&parent, 0, 
-                               (gchar *)j->category, 
-                               0, 0);
+            if (j->category)
+                ret = set_category(&parent, 0, 
+                                   (gchar *)j->category, 
+                                   0, 0);
         } 
 
         parent_data = get_data_by_iter(&parent);
 
-        if (strcmp(parent_data->last, j->category)) {
+        if (j->category && strcmp(parent_data->last, j->category)) {
             /* category has changed */
             gtk_tree_store_remove((GtkTreeStore *)current_model, &iter);
             ret = set_category(&parent, 0, (gchar *)j->category, 0, 0);

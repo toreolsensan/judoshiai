@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2010 by Hannu Jokinen
+ * Copyright (C) 2006-2011 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */ 
 
@@ -62,7 +62,7 @@ static void destroy_event( GtkWidget *widget,
 }
 
 static gint set_one_category(GtkTreeModel *model, GtkTreeIter *iter, guint index, 
-			     const gchar *category, guint tatami, guint group, gint sys)
+			     const gchar *category, guint tatami, guint group, struct compsys sys)
 {
     struct judoka j;
 
@@ -83,7 +83,7 @@ static gint set_one_category(GtkTreeModel *model, GtkTreeIter *iter, guint index
     j.country = "";
     j.regcategory = "";
     j.belt = tatami;
-    j.weight = sys;
+    j.weight = compress_system(sys);
     j.visible = FALSE;
     j.category = "";
     j.deleted = 0;
@@ -110,7 +110,7 @@ static gint display_one_competitor(GtkTreeModel *model, struct judoka *j)
         }
 
         return set_one_category(model, &parent, j->index, (gchar *)j->last, 
-                                j->belt, j->birthyear, j->weight);
+                                j->belt, j->birthyear, uncompress_system(j->weight));
     }
 
     if (find_iter_model(&iter, j->index, model)) {
@@ -121,7 +121,7 @@ static gint display_one_competitor(GtkTreeModel *model, struct judoka *j)
             g_print("ILLEGAL %s:%d\n", __FILE__, __LINE__);
             ret = set_one_category(model, &parent, 0, 
                                    (gchar *)j->category, 
-                                   0, 0, 0);
+                                   0, 0, (struct compsys){0,0,0,0});
         } 
 
         parent_data = get_data_by_iter_model(&parent, model);
@@ -129,7 +129,7 @@ static gint display_one_competitor(GtkTreeModel *model, struct judoka *j)
         if (strcmp(parent_data->last, j->category)) {
             /* category has changed */
             gtk_tree_store_remove((GtkTreeStore *)model, &iter);
-            ret = set_one_category(model, &parent, 0, (gchar *)j->category, 0, 0, 0);
+            ret = set_one_category(model, &parent, 0, (gchar *)j->category, 0, 0, (struct compsys){0,0,0,0});
             gtk_tree_store_append((GtkTreeStore *)model, &iter, &parent);
             put_data_by_iter_model(j, &iter, model);
         } else {
@@ -140,7 +140,7 @@ static gint display_one_competitor(GtkTreeModel *model, struct judoka *j)
         free_judoka(parent_data);
     } else {
         /* new judoka */
-        ret = set_one_category(model, &parent, 0, (gchar *)j->category, 0, 0, 0);
+        ret = set_one_category(model, &parent, 0, (gchar *)j->category, 0, 0, (struct compsys){0,0,0,0});
 
         gtk_tree_store_append((GtkTreeStore *)model, &child, &parent);
         put_data_by_iter_model(j, &child, model);
@@ -201,6 +201,8 @@ static int db_category_callback(void *data, int argc, char **argv, char **azColN
     int i;
     struct judoka j;
     GtkTreeModel *model = data;
+    struct compsys cs;
+    BZERO(cs);
 
     memset(&j, 0, sizeof(j));
 
@@ -217,8 +219,16 @@ static int db_category_callback(void *data, int argc, char **argv, char **azColN
         else if (IS(group))
             j.birthyear = atoi(argv[i]);
         else if (IS(system))
-            j.weight = atoi(argv[i]);
+            cs.system = atoi(argv[i]);
+        else if (IS(numcomp))
+            cs.numcomp = atoi(argv[i]);
+        else if (IS(table))
+            cs.table = atoi(argv[i]);
+        else if (IS(wishsys))
+            cs.wishsys = atoi(argv[i]);
     }
+
+    j.weight = compress_system(cs);
 
     if ((j.deleted & DELETED))
         return 0;
@@ -402,7 +412,7 @@ void row_activated(GtkTreeView        *treeview,
     } else
         return;
 
-    if (j->visible) {
+    if (j->visible) { // competitor
         gint ret;
 
         if (find_iter_name_2(&iter2, j->last, j->first, j->club, j->regcategory)) {
@@ -436,7 +446,7 @@ void row_activated(GtkTreeView        *treeview,
             view_on_row_activated(GTK_TREE_VIEW(current_view), path, NULL, NULL);
             gtk_tree_path_free(path);
         }
-    } else {
+    } else { // category
         gboolean ok;
         GtkTreeIter tmp_iter;
         gint ret;
@@ -458,7 +468,7 @@ void row_activated(GtkTreeView        *treeview,
             j->index = ret;
             mapped->our_cat = j->index;
             db_add_category(j->index, j);
-            db_set_system(j->index, j->weight);
+            db_set_system(j->index, uncompress_system(j->weight));
         } else
             g_print("ERROR %s:%d\n", __FILE__,__LINE__);
 

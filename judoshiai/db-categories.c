@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2010 by Hannu Jokinen
+ * Copyright (C) 2006-2011 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */ 
 
@@ -14,7 +14,7 @@
 #include "sqlite3.h"
 #include "judoshiai.h"
 
-static gint category_system;
+static struct compsys category_system;
 static struct judoka j;
 
 static int db_callback_categories(void *data, int argc, char **argv, char **azColName)
@@ -34,7 +34,13 @@ static int db_callback_categories(void *data, int argc, char **argv, char **azCo
         else if (IS(group))
             j.birthyear = atoi(argv[i]);
         else if (IS(system))
-            category_system = atoi(argv[i]);
+            category_system.system = atoi(argv[i]);
+        else if (IS(numcomp))
+            category_system.numcomp = atoi(argv[i]);
+        else if (IS(table))
+            category_system.table = atoi(argv[i]);
+        else if (IS(wishsys))
+            category_system.wishsys = atoi(argv[i]);
     }
     //g_print("\n");
 
@@ -58,22 +64,21 @@ static int db_callback_categories(void *data, int argc, char **argv, char **azCo
 
 void db_add_category(int num, struct judoka *j)
 {
-    char buffer[200];
+    struct compsys cs;
+    BZERO(cs);
 
     if (num < 10000) {
         g_print("%s: ERROR, num = %d\n", __FUNCTION__, num);
         return;
     }
 
-    sprintf(buffer, 
+    db_exec_str(NULL, db_callback_categories, 
             "INSERT INTO categories VALUES ("
-            "%d, \"%s\", %d, %d, %d, %d "
-            ")", 
-            num, j->last, j->belt, j->deleted, j->birthyear, 0/* system */);
+            "%d, \"%s\", %d, %d, %d, 0, 0, 0, 0, "
+            "0, 0, 0, 0, 0, 0, 0, 0)", 
+                num, j->last, j->belt, j->deleted, j->birthyear);
 
-    db_exec(db_name, buffer, NULL, db_callback_categories);
-
-    avl_set_category(num, j->last, j->belt, j->birthyear, 0);
+    avl_set_category(num, j->last, j->belt, j->birthyear, cs);
 }
 
 void db_update_category(int num, struct judoka *j)
@@ -120,16 +125,12 @@ void db_update_category(int num, struct judoka *j)
         g_print("Error %s %d (cat %d)\n", __FUNCTION__, __LINE__, num);
 }
 
-void db_set_system(int num, int sys)
+void db_set_system(int num, struct compsys sys)
 {
-    char buffer[1000];
-
-    sprintf(buffer, 
-            "UPDATE categories SET "
-            "\"system\"=%d WHERE \"index\"=%d",
-            sys, num);
-
-    db_exec(db_name, buffer, NULL, db_callback_categories);
+    db_exec_str(NULL, db_callback_categories,
+                "UPDATE categories SET "
+                "\"system\"=%d, \"numcomp\"=%d, \"table\"=%d, \"wishsys\"=%d WHERE \"index\"=%d",
+                sys.system, sys.numcomp, sys.table, sys.wishsys, num);
 
     struct category_data data, *data1;
     data.index = num;
@@ -138,14 +139,14 @@ void db_set_system(int num, int sys)
         set_category_to_queue(data1);
     } else
         g_print("Error %s %d (num=%d sys=%d)\n", __FUNCTION__, __LINE__,
-                num, sys);
+                num, sys.system);
 }
 
-gint db_get_system(gint num)
+struct compsys db_get_system(gint num)
 {
     char buffer[1000];
 
-    category_system = 0;
+    BZERO(category_system);
     sprintf(buffer, "SELECT * FROM categories WHERE \"index\"=%d", num);
 
     db_exec(db_name, buffer, (gpointer)DB_GET_SYSTEM, db_callback_categories);
@@ -168,8 +169,14 @@ void db_read_categories(void)
 {
     char buffer[100];
 
-    sprintf(buffer, 
-            "SELECT * FROM categories");
+    sprintf(buffer, "SELECT * FROM categories");
     db_exec(db_name, buffer, NULL, db_callback_categories);
 }
 
+void db_set_category_positions(gint category, gint competitor, gint position)
+{
+    db_exec_str(NULL, NULL,
+                "UPDATE categories SET "
+                "\"pos%d\"=%d WHERE \"index\"=%d",
+                position, competitor, category);
+}

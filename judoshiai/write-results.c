@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2010 by Hannu Jokinen
+ * Copyright (C) 2006-2011 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */ 
 
@@ -15,7 +15,7 @@
 
 void write_results(FILE *f);
 
-static gboolean create_statistics = FALSE;
+gboolean create_statistics = FALSE;
 
 #define SAVED_COMP_SIZE 2000
 static gint saved_competitors[SAVED_COMP_SIZE];
@@ -45,24 +45,72 @@ static void write_result(FILE *f, gint num, const gchar *first, const gchar *las
 }
 
 void write_competitor(FILE *f, const gchar *first, const gchar *last, const gchar *belt, 
-                      const gchar *club, const gchar *category, const gint index)
+                      const gchar *club, const gchar *category, const gint index, const gboolean by_club)
 {
-    if (create_statistics)
-        fprintf(f, 
-                "<tr><td><a href=\"%d.html\">%s, %s</a></td><td>%s</td><td>%s</td>"
-                "<td><a href=\"%s.html\">%s</a></td></tr>\n", 
-                index, utf8_to_html(last), utf8_to_html(first), grade_visible ? belt : "", 
-                utf8_to_html(club), category, category);
-    else
-        fprintf(f, 
-                "<tr><td>%s, %s</td><td>%s</td><td>%s</td>"
-                "<td><a href=\"%s.html\">%s</a></td></tr>\n", 
-                utf8_to_html(last), utf8_to_html(first), grade_visible ? belt : "", utf8_to_html(club), 
-                category, category);
+    // save last club as a hash
+    static gint last_crc = 0;
+    static gint member_count = 0;
 
-    saved_competitors[saved_competitor_cnt] = index;
-    if (saved_competitor_cnt < SAVED_COMP_SIZE)
-        saved_competitor_cnt++;
+    if (by_club) {
+        gchar buf[16], buf2[16];
+        gint crc = pwcrc32((guchar *)club, strlen(club));
+        
+        if (crc != last_crc)
+            member_count = 0;
+        member_count++;
+        snprintf(buf2, sizeof(buf2), "&nbsp;#%d", member_count);
+
+        if (create_statistics) {
+            gint pos = avl_get_competitor_position(index);
+        
+            if (pos > 0)
+                snprintf(buf, sizeof(buf), "%d.", pos);
+            else
+                snprintf(buf, sizeof(buf), "-");
+
+            fprintf(f, 
+                    "<tr><td>%s</td><td><a href=\"%d.html\">%s, %s</a></td><td>%s</td>"
+                    "<td><a href=\"%s.html\">%s</a></td><td align=\"center\">%s</td></tr>\n", 
+                    crc != last_crc ? utf8_to_html(club) : buf2, 
+                    index, utf8_to_html(last), utf8_to_html(first), grade_visible ? belt : "", 
+                    category, category, buf);
+        } else
+            fprintf(f, 
+                    "<tr><td>%s</td><td>%s, %s</td><td>%s</td>"
+                    "<td><a href=\"%s.html\">%s</a></td><td>&nbsp;</td></tr>\n", 
+                    crc != last_crc ? utf8_to_html(club) : buf2, 
+                    utf8_to_html(last), utf8_to_html(first), grade_visible ? belt : "",  
+                    category, category);
+
+        last_crc = crc;
+    } else {
+        if (create_statistics) {
+            gchar buf[16];
+            gint pos = avl_get_competitor_position(index);
+        
+            if (pos > 0)
+                snprintf(buf, sizeof(buf), "%d.", pos);
+            else
+                snprintf(buf, sizeof(buf), "-");
+
+            fprintf(f, 
+                    "<tr><td><a href=\"%d.html\">%s, %s</a></td><td>%s</td><td>%s</td>"
+                    "<td><a href=\"%s.html\">%s</a></td><td align=\"center\">%s</td></tr>\n", 
+                    index, utf8_to_html(last), utf8_to_html(first), grade_visible ? belt : "", 
+                    utf8_to_html(club), category, category, buf);
+        } else
+            fprintf(f, 
+                    "<tr><td>%s, %s</td><td>%s</td><td>%s</td>"
+                    "<td><a href=\"%s.html\">%s</a></td><td>&nbsp;</td></tr>\n", 
+                    utf8_to_html(last), utf8_to_html(first), grade_visible ? belt : "", utf8_to_html(club), 
+                    category, category);
+
+        saved_competitors[saved_competitor_cnt] = index;
+        if (saved_competitor_cnt < SAVED_COMP_SIZE)
+            saved_competitor_cnt++;
+
+        last_crc = 0; // this branch is called first and thus last_crc is initialised (many times)
+    }
 }
 
 static void make_top_frame(FILE *f)
@@ -176,10 +224,14 @@ static void pool_results(FILE *f, gint category, struct judoka *ctg, gint num_ju
             (pm.j[pm.c[i]]->deleted & HANSOKUMAKE) == 0) {
             write_result(f, i == 4 ? 3 : i, pm.j[pm.c[i]]->first, 
                          pm.j[pm.c[i]]->last, pm.j[pm.c[i]]->club, pm.j[pm.c[i]]->country);
+            avl_set_competitor_position(pm.j[pm.c[i]]->index, i == 4 ? 3 : i);
+            db_set_category_positions(category, pm.j[pm.c[i]]->index, i == 4 ? 3 : i);
         } else if (i <= 3 && 
             (pm.j[pm.c[i]]->deleted & HANSOKUMAKE) == 0) {
             write_result(f, i, pm.j[pm.c[i]]->first, 
                          pm.j[pm.c[i]]->last, pm.j[pm.c[i]]->club, pm.j[pm.c[i]]->country);
+            avl_set_competitor_position(pm.j[pm.c[i]]->index, i);
+            db_set_category_positions(category, pm.j[pm.c[i]]->index, i);
         }
     }
 
@@ -187,7 +239,7 @@ static void pool_results(FILE *f, gint category, struct judoka *ctg, gint num_ju
     empty_pool_struct(&pm);
 }
 
-static void dqpool_results(FILE *f, gint category, struct judoka *ctg, gint num_judokas, gint sys)
+static void dqpool_results(FILE *f, gint category, struct judoka *ctg, gint num_judokas, struct compsys sys)
 {
     struct pool_matches pm;
     struct judoka *j1 = NULL;
@@ -196,8 +248,8 @@ static void dqpool_results(FILE *f, gint category, struct judoka *ctg, gint num_
 
     fill_pool_struct(category, num_judokas, &pm);
 
-    i = num_matches(get_cat_system(category), num_judokas) + 
-        ((sys & SYSTEM_MASK) == SYSTEM_DPOOL ? 1 : 5);
+    i = num_matches(sys.system, num_judokas) + 
+        (sys.system == SYSTEM_DPOOL ? 1 : 5);
 
     /* first semifinal */
     if (pm.m[i].blue_points)
@@ -226,18 +278,26 @@ static void dqpool_results(FILE *f, gint category, struct judoka *ctg, gint num_
 
     if (gold && (j1 = get_data(gold))) {
         write_result(f, 1, j1->first, j1->last, j1->club, j1->country);
+        avl_set_competitor_position(gold, 1);
+        db_set_category_positions(category, gold, 1);
         free_judoka(j1);
     }
     if (gold && (j1 = get_data(silver))) {
         write_result(f, 2, j1->first, j1->last, j1->club, j1->country);
+        avl_set_competitor_position(silver, 2);
+        db_set_category_positions(category, silver, 2);
         free_judoka(j1);
     }
     if (gold && (j1 = get_data(bronze1))) {
         write_result(f, 3, j1->first, j1->last, j1->club, j1->country);
+        avl_set_competitor_position(bronze1, 3);
+        db_set_category_positions(category, bronze1, 3);
         free_judoka(j1);
     }
     if (gold && (j1 = get_data(bronze2))) {
         write_result(f, 3, j1->first, j1->last, j1->club, j1->country);
+        avl_set_competitor_position(bronze2, 3);
+        db_set_category_positions(category, bronze2, 4);
         free_judoka(j1);
     }
 
@@ -270,14 +330,14 @@ static void dqpool_results(FILE *f, gint category, struct judoka *ctg, gint num_
         ((m[_w].white_points && m[_w].blue > GHOST) ? m[_w].blue : 0)
 
 static void french_results(FILE *f, gint category, struct judoka *ctg,
-                           gint num_judokas, gint systm, gint pagenum)
+                           gint num_judokas, struct compsys systm, gint pagenum)
 {
     struct match m[NUM_MATCHES];
     struct judoka *j1;
     gint gold = 0, silver = 0, bronze1 = 0, bronze2 = 0, fourth = 0, fifth1 = 0, fifth2 = 0;
     gint winner= 0, loser = 0;
-    gint sys = ((systm & SYSTEM_MASK) - SYSTEM_FRENCH_8)>>16;
-    gint table = (systm & SYSTEM_TABLE_MASK) >> SYSTEM_TABLE_SHIFT;
+    gint sys = systm.system - SYSTEM_FRENCH_8;
+    gint table = systm.table;
 
     memset(m, 0, sizeof(m));
     db_read_category_matches(category, m);
@@ -315,35 +375,54 @@ static void french_results(FILE *f, gint category, struct judoka *ctg,
 
     if (gold && (j1 = get_data(gold))) {
         write_result(f, 1, j1->first, j1->last, j1->club, j1->country);
+        avl_set_competitor_position(gold, 1);
+        db_set_category_positions(category, gold, 1);
         free_judoka(j1);
     }
     if (gold && (j1 = get_data(silver))) {
         write_result(f, 2, j1->first, j1->last, j1->club, j1->country);
+        avl_set_competitor_position(silver, 2);
+        db_set_category_positions(category, silver, 2);
         free_judoka(j1);
     }
     if (gold && (j1 = get_data(bronze1))) {
         write_result(f, 3, j1->first, j1->last, j1->club, j1->country);
+        avl_set_competitor_position(bronze1, 3);
+        db_set_category_positions(category, bronze1, 3);
         free_judoka(j1);
     }
     if (gold && (j1 = get_data(bronze2))) {
         write_result(f, 3, j1->first, j1->last, j1->club, j1->country);
+        avl_set_competitor_position(bronze2, 3);
+        db_set_category_positions(category, bronze2, 4);
+        free_judoka(j1);
+    }
+    if (gold && (j1 = get_data(fourth))) {
+        write_result(f, 4, j1->first, j1->last, j1->club, j1->country);
+        avl_set_competitor_position(fourth, 4);
+        db_set_category_positions(category, fourth, 4);
         free_judoka(j1);
     }
     if (gold && (j1 = get_data(fifth1))) {
         write_result(f, 5, j1->first, j1->last, j1->club, j1->country);
+        avl_set_competitor_position(fifth1, 5);
+        db_set_category_positions(category, fifth1, 5);
         free_judoka(j1);
     }
     if (gold && (j1 = get_data(fifth2))) {
         write_result(f, 5, j1->first, j1->last, j1->club, j1->country);
+        avl_set_competitor_position(fifth2, 5);
+        db_set_category_positions(category, fifth2, 6);
         free_judoka(j1);
     }
 }
 
 static void write_cat_result(FILE *f, gint category)
 {
-    gint sys, num_judokas;
+    gint num_judokas;
     struct judoka *ctg = NULL;
-	
+    struct compsys sys;
+
     ctg = get_data(category);
 
     if (ctg == NULL)
@@ -354,9 +433,9 @@ static void write_cat_result(FILE *f, gint category)
 
     /* find system */
     sys = db_get_system(category);
-    num_judokas = (sys&COMPETITORS_MASK);
+    num_judokas = sys.numcomp;
 
-    switch (sys & SYSTEM_MASK) {
+    switch (sys.system) {
     case SYSTEM_POOL:
         pool_results(f, category, ctg, num_judokas);
         break;
@@ -426,7 +505,7 @@ void write_html(gint cat)
 
     progress_show(-1.0, j->last);
 
-    gint sys = db_get_system(cat);
+    struct compsys sys = db_get_system(cat);
         
     snprintf(buf, sizeof(buf), "%s.html", j->last);
 
@@ -437,8 +516,8 @@ void write_html(gint cat)
     make_top_frame(f);
     make_left_frame(f);
 
-    if ((sys & SYSTEM_MASK) == SYSTEM_FRENCH_64 ||
-        (sys & SYSTEM_MASK) == SYSTEM_QPOOL) {
+    if (sys.system == SYSTEM_FRENCH_64 ||
+        sys.system == SYSTEM_QPOOL) {
         fprintf(f,
                 "<td valign=\"top\"><img src=\"%s.png\"><br>"
                 "<img src=\"%s-1.png\"><br>"
@@ -728,6 +807,9 @@ void make_png_all(GtkWidget *w, gpointer data)
     if (get_output_directory() < 0)
         return;
 
+    /* make competitor positions = 0. write_results() will recalculate them. */
+    avl_init_competitor_position();
+
     /* copy style.css */
     f = open_write("style.css");
     if (f) {
@@ -762,6 +844,9 @@ void make_png_all(GtkWidget *w, gpointer data)
         make_next_matches_html();
     }
 
+    /* sheets */
+    write_htmls(num_cats);
+
     /* competitors */
     f = open_write("competitors.html");
     if (f) {
@@ -777,32 +862,31 @@ void make_png_all(GtkWidget *w, gpointer data)
     write_htmls(num_cats);
 
     /* statistics */
-    if (create_statistics == FALSE)
-        return;
+    if (create_statistics) {
+        /* medal list */
+        f = open_write("medals.html");
+        if (f) {
+            make_top_frame(f);
+            make_left_frame(f);
+            club_stat_print(f);
+            make_bottom_frame(f);
+            fclose(f);
+        }
 
-    /* medal list */
-    f = open_write("medals.html");
-    if (f) {
-        make_top_frame(f);
-        make_left_frame(f);
-        club_stat_print(f);
-        make_bottom_frame(f);
-        fclose(f);
-    }
+        /* competitor stat */
+        for (i = 0; i < saved_competitor_cnt; i++) {
+            write_comp_stat(saved_competitors[i]);
+        }
 
-    /* competitor stat */
-    for (i = 0; i < saved_competitor_cnt; i++) {
-        write_comp_stat(saved_competitors[i]);
-    }
-
-    /* statistics */
-    f = open_write("statistics.html");
-    if (f) {
-        make_top_frame(f);
-        make_left_frame(f);
-        match_statistics(f);
-        make_bottom_frame(f);
-        fclose(f);
+        /* statistics */
+        f = open_write("statistics.html");
+        if (f) {
+            make_top_frame(f);
+            make_left_frame(f);
+            match_statistics(f);
+            make_bottom_frame(f);
+            fclose(f);
+        }
     }
 }
 

@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2010 by Hannu Jokinen
+ * Copyright (C) 2006-2011 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */ 
 
@@ -275,7 +275,7 @@ void db_freeze_matches(gint tatami, gint category, gint number, gint arg)
                         next_matches[tatami][i].number);
         }
         db_read_matches();
-        update_matches(0, 0, tatami);
+        update_matches(0, (struct compsys){0,0,0,0}, tatami);
         break;                
     case UNFREEZE_EXPORTED:
         db_exec_str(NULL, NULL,
@@ -286,7 +286,7 @@ void db_freeze_matches(gint tatami, gint category, gint number, gint arg)
                     tatami);
         db_read_matches();
         for (i = 1; i <= number_of_tatamis; i++)
-            update_matches(0, 0, i);
+            update_matches(0, (struct compsys){0,0,0,0}, i);
         break;
     case UNFREEZE_IMPORTED:
         db_exec_str(NULL, NULL,
@@ -295,7 +295,7 @@ void db_freeze_matches(gint tatami, gint category, gint number, gint arg)
                     COMMENT_EMPTY, tatami);
         db_read_matches();
         for (i = 1; i <= number_of_tatamis; i++)
-            update_matches(0, 0, i);
+            update_matches(0, (struct compsys){0,0,0,0}, i);
         break;
     case UNFREEZE_THIS:
         db_exec_str(NULL, NULL,
@@ -303,8 +303,8 @@ void db_freeze_matches(gint tatami, gint category, gint number, gint arg)
                     "\"comment\"=%d WHERE \"category\"=%d AND \"number\"=%d",
                     COMMENT_EMPTY, category, number);
         db_read_match(category, number);
-        update_matches(category, 0, 0);
-        update_matches(0, 0, tatami);
+        update_matches(category, (struct compsys){0,0,0,0}, 0);
+        update_matches(0, (struct compsys){0,0,0,0}, tatami);
         break;
     }
 }
@@ -439,9 +439,9 @@ void db_change_freezed(gint category, gint number,
     db_set_comment(category, number, comment);
     //db_set_comm(comment, category, number);
 
-    update_matches(0, 0, current_tatami);
+    update_matches(0, (struct compsys){0,0,0,0}, current_tatami);
     if (tatami && tatami != current_tatami)
-        update_matches(0, 0, tatami);
+        update_matches(0, (struct compsys){0,0,0,0}, tatami);
 }
 
 void db_add_match(struct match *m)

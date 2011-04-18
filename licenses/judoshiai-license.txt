@@ -1,4 +1,4 @@
-Copyright (c) 2006-2010 Hannu Jokinen
+Copyright (c) 2006-2011 Hannu Jokinen
 
 Permission to use and copy this software free of charge is hereby granted, 
 provided that the above copyright notice, this permission notice, 

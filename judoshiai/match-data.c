@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2010 by Hannu Jokinen
+ * Copyright (C) 2006-2011 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */ 
 
@@ -15,7 +15,7 @@
 
 #include "judoshiai.h"
 
-// pool and double pool matches
+// pool matches
 const guint pools[11][32][2] = {
     {{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}}, /* 0 */
     {{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}}, /* 1 */
@@ -23,6 +23,19 @@ const guint pools[11][32][2] = {
     {{1, 2}, {1, 3}, {2, 3}, {0,0}}, /* 3 */
     {{1, 2}, {3, 4}, {1, 3}, {2, 4}, {1, 4}, {2, 3}, {0,0}}, /* 4 */
     {{4, 5}, {1, 2}, {3, 4}, {1, 5}, {2, 3}, {1, 4}, {3, 5}, {2, 4}, {1, 3}, {2, 5}, {0,0}}, /* 5 */
+    {{1,2},{3,5},{2,4},{1,6},{4,5},{2,3},{4,6},{2,5},{3,4},{1,5},{3,6},{1,4},{5,6},{2,6},{1,3}, {0,0}}, /* 6 */
+    {{1,2},{3,5},{2,4},{1,6},{3,7},{4,5},{2,3},{4,6},{1,7},{2,5},{6,7},{3,4},{1,5},{3,6},{2,7},
+     {1,4},{5,6},{4,7},{2,6},{1,3},{5,7}, {0,0}} /* 7 */
+};
+
+// double pool matches
+const guint poolsd[11][32][2] = {
+    {{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}}, /* 0 */
+    {{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}}, /* 1 */
+    {{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}}, /* 2 */
+    {{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}}, /* 3 */
+    {{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}}, /* 4 */
+    {{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}}, /* 5 */
     {{1, 2}, {4, 5}, {1, 3}, {4, 6}, {2, 3}, {5, 6}, {0,0}}, /* 6 */
     {{1, 2}, {3, 4}, {5, 6}, {1, 3}, {2, 4}, {5, 7}, {1, 4}, {2, 3}, {6, 7}, {0,0}}, /* 7 */
     {{1, 2}, {5, 6}, {3, 4}, {7, 8}, {1, 3}, {5, 7}, {2, 4}, {6, 8}, {1, 4}, {5, 8}, 
@@ -78,6 +91,7 @@ const guint french_num_matches[NUM_TABLES][NUM_FRENCH] = {
     {11, 19, 35, 67}, // Eliminatoria repesca doble
     {11, 19, 35, 67}, // Eliminatoria repesca simple
     {13, 29, 61, 125}, // modified double elimination
+    {12, 24, 44, 80}, // double repechage one bronze
 };
 
 const gint medal_matches[NUM_TABLES][NUM_FRENCH][3] = {
@@ -87,11 +101,12 @@ const gint medal_matches[NUM_TABLES][NUM_FRENCH][3] = {
     {{9,10,11}, {25,26,27}, {57,58,59}, {121,122,123}}, // estonian D klass
     {{5,6,7},   {13,14,15}, {29,30,31}, {61,62,63}},    // no repechage
     {{9,10,11}, {17,18,19}, {35,36,37}, {69,70,71}},    // enkelt aaterkval
-    {{11,12,13}, {27,28,29}, {41,42,43}, {77,78,79}},   // Eliminatoria doble perdida
+    {{11,12,13}, {27,28,29}, {41,42,43}, {77,78,79}},    // Eliminatoria doble perdida
     /*{{9,10,11}, {21,22,23}, {37,38,39}, {69,70,71}},*/    // Eliminatoria repesca doble inicio
     {{9,10,11}, {17,18,19}, {33,34,35}, {65,66,67}},    // Eliminatoria repesca doble
     {{9,10,11}, {17,18,19}, {33,34,35}, {65,66,67}},    // Eliminatoria repesca simple
     {{0,13,12}, {0,29,28}, {0,61,60}, {0,125,124}},       // modified double elimination
+    {{11,0,12}, {23,0,24}, {43,0,44}, {79,0,80}},       // double repechage one bronze
 };	
 
 gboolean one_bronze(gint table, gint sys)
@@ -393,6 +408,24 @@ const gchar french_64_matches_to_page[NUM_TABLES][NUM_MATCHES] = {
     1, 1, 2, 2, 2, 2, 2, 2, 0, 1,
     /*  121,122,123,124,125 */
     2, 2, 2, 2, 2
+},{ // double repechage one bronze
+    0,
+    /*  01,02,03,04,05,06,07,08,09,10 */
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    /*  11,12,13,14,15,16,17,18,19,20 */
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    /*  21,22,23,24,25,26,27,28,29,30 */
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    /*  31,32,33,34,35,36,37,38,39,40 */
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    /*  41,42,43,44,45,46,47,48,49,50 */
+    1, 1, 1, 1, 1, 1, 1, 1, 0, 0,
+    /*  51,52,53,54,55,56,57,58,59,60 */
+    0, 0, 1, 1, 1, 1, 0, 0, 1, 1,
+    /*  61,62,63,64,65,66,67,68,69,70 */
+    2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+    /*  71,72,73,74,75,76,77,78,79,80    */
+    2, 2, 0, 1, 2, 2, 2, 2, 2, 9 // don't draw match 80
 }
 };
 
@@ -408,6 +441,7 @@ const gint result_y_position[NUM_TABLES][NUM_FRENCH] = {
     {4, 12, 28, 0},
     {4, 16, 28, 0},
     {4, 16, 48, 0},
+    {4, 12, 28, 0},
 };
 
 const gint repechage_start[NUM_TABLES][NUM_FRENCH][2] = {
@@ -422,6 +456,7 @@ const gint repechage_start[NUM_TABLES][NUM_FRENCH][2] = {
     {{7,0}, {0,0},   {29,0},  {0,61}},  // Eliminatoria repesca doble
     {{7,0}, {0,0},   {29,0},  {0,63}},  // Eliminatoria repesca simple
     {{7,0}, {0,0},   {29,0},  {0,0}},   // modified double elimination
+    {{7,0}, {0,0},   {29,0},  {0,63}},  // double repechage one bronze
 };
 
 const gint french_matches[NUM_TABLES][NUM_FRENCH][NUM_MATCHES][2] = {
@@ -1035,6 +1070,60 @@ const gint french_matches[NUM_TABLES][NUM_FRENCH][NUM_MATCHES][2] = {
 	    {117,-120},{118,-119},{121,122}, {119,120}, {123,-124}
 	}
     },
+    /* Double repechage one bronze */
+    {
+	/* 8 competitors */
+	{
+	    {0,0},
+	    /*  01,     02,     03,     04,     05,     06,     07,     08,     09,     10 */
+	    { 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 1, 2},{ 3, 4},{-1,-2},{-3,-4},{ 7,-6},{ 8,-5},
+	    { 9,10}, { 5, 6}
+	},
+	/* <= 16 competitors */
+	{
+	    {0,0},
+	    /*  01,     02,     03,     04,     05,     06,     07,     08,     09,     10 */
+	    { 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 1, 2},{ 3, 4},
+	    /*  11,     12,     13,     14,     15,     16,     17,     18,     19,     20 */
+	    { 5, 6},{ 7, 8},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 9,10},{11,12},{13,14},{15,16},
+	    /*  21,     22,     23,     24 */
+	    {19,-18},{20,-17},{21,22},{17,18}
+	},
+	/* <= 32 competitors */
+	{
+	    {0,0},
+	    /*  01,     02,     03,     04,     05,     06,     07,     08,     09,     10 */
+	    { 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},
+	    /*  11,     12,     13,     14,     15,     16,     17,     18,     19,     20 */
+	    { 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 1, 2},{ 3, 4},{ 5, 6},{ 7, 8},
+	    /*  21,     22,     23,     24,     25,     26,     27,     28,     29,     30 */
+	    { 9,10},{11,12},{13,14},{15,16},{17,18},{19,20},{21,22},{23,24},{ 0, 0},{ 0, 0},
+	    /*  31,     32,     33,     34,     35,     36,     37,     38,     39,     40 */
+	    { 0, 0},{ 0, 0},{29, 0},{30, 0},{31, 0},{32, 0},{25,26},{27,28},{33,34},{35,36},
+	    /*  41,     42,     43      44 */
+	    {39,-38},{40,-37},{41,42},{37,38}
+	},
+	/* <= 64 competitors */
+	{
+	    {0,0},
+	    /*  01,     02,     03,     04,     05,     06,     07,     08,     09,     10 */
+	    { 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},
+	    /*  11,     12,     13,     14,     15,     16,     17,     18,     19,     20 */
+	    { 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},
+	    /*  21,     22,     23,     24,     25,     26,     27,     28,     29,     30 */
+	    { 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},
+	    /*  31,     32,     33,     34,     35,     36,     37,     38,     39,     40 */
+	    { 0, 0},{ 0, 0},{ 1, 2},{ 3, 4},{ 5, 6},{ 7, 8},{ 9,10},{11,12},{13,14},{15,16},
+	    /*  41,     42,     43,     44,     45,     46,     47,     48,     49,     50 */
+	    {17,18},{19,20},{21,22},{23,24},{25,26},{27,28},{29,30},{31,32},{33,34},{35,36},
+	    /*  51,     52,     53,     54,     55,     56,     57,     58,     59,     60 */
+	    {37,38},{39,40},{41,42},{43,44},{45,46},{47,48},{49,50},{51,52},{53,54},{55,56},
+	    /*  61,     62,     63,     64,     65,     66,     67,     68,     69,     70 */
+	    { 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{61, 0},{62, 0},{63, 0},{64, 0},{65,-57},{66,-58},
+	    /*  71,     72,     73,     74,     75,     76,     77,     78,     79      80 */
+	    {67,-59},{68,-60},{57,58},{59,60},{69,70},{71,72},{75,-74},{76,-73},{77,78},{73,74}
+	}
+    },
 };
 
 static const gint system_menu_order[NUM_SYSTEMS] = {
@@ -1053,6 +1142,7 @@ static const gint system_menu_order[NUM_SYSTEMS] = {
     CAT_ESP_REPESCA_SIMPLE,
     CAT_SYSTEM_NO_REPECHAGE,
     CAT_MODIFIED_DOUBLE_ELIMINATION,
+    CAT_SYSTEM_REPECHAGE_ONE_BRONZE,
 };
 
 const gint cat_system_to_table[NUM_SYSTEMS] = {
@@ -1069,13 +1159,14 @@ const gint cat_system_to_table[NUM_SYSTEMS] = {
     TABLE_ESP_REPESCA_DOBLE,
     TABLE_ESP_REPESCA_SIMPLE,
     TABLE_MODIFIED_DOUBLE_ELIMINATION,
+    TABLE_DOUBLE_REPECHAGE_ONE_BRONZE,
 };
 
 gchar *get_system_description(gint index, gint competitors)
 {
-    gint sys = get_system_for_category(index, competitors);
+    struct compsys sys = get_system_for_category(index, competitors);
 
-    switch (sys & SYSTEM_MASK) {
+    switch (sys.system) {
     case SYSTEM_POOL: 
         if (competitors == 1)
             return "";
@@ -1089,11 +1180,11 @@ gchar *get_system_description(gint index, gint competitors)
     case SYSTEM_QPOOL: return _("Quad Pool");
     }
 
-    if (system_is_french(sys)) {
-        if (((sys & SYSTEM_TABLE_MASK) >> SYSTEM_TABLE_SHIFT) == TABLE_IJF_DOUBLE_REPECHAGE)
+    if (system_is_french(sys.system)) {
+        if (sys.table == TABLE_IJF_DOUBLE_REPECHAGE)
             return _("IJF Dbl Rep");
 
-        switch ((sys & SYSTEM_TABLE_MASK) >> SYSTEM_TABLE_SHIFT) {
+        switch (sys.table) {
         case TABLE_DOUBLE_REPECHAGE: return _("FIN Dbl Repchg");
         case TABLE_SWE_DUBBELT_AATERKVAL: return _("SWE Dubb återkv");
         case TABLE_SWE_DIREKT_AATERKVAL: return _("SWE Dir återkv");
@@ -1105,6 +1196,7 @@ gchar *get_system_description(gint index, gint competitors)
         case TABLE_ESP_REPESCA_DOBLE: return _("ESP Dbl Rep");
         case TABLE_ESP_REPESCA_SIMPLE: return _("ESP Simple Rep");
         case TABLE_MODIFIED_DOUBLE_ELIMINATION: return _("Modified Dbl Elim");
+        case TABLE_DOUBLE_REPECHAGE_ONE_BRONZE: return _("FIN Dbl Repchg One Bronze");
         }
     }
     
@@ -1133,6 +1225,7 @@ static gchar *get_system_name(gint num)
     case CAT_ESP_REPESCA_DOBLE: return _("ESP Double Repechage");
     case CAT_ESP_REPESCA_SIMPLE: return _("ESP Simple Repechage");
     case CAT_MODIFIED_DOUBLE_ELIMINATION: return _("Modified Double Elimination");
+    case CAT_SYSTEM_REPECHAGE_ONE_BRONZE: return _("FIN Double Repechage One Bronze");
     }
     return "";
 }
@@ -1159,7 +1252,7 @@ gint get_system_menu_selection(gint active)
 
 gboolean system_is_french(gint sys)
 {
-    switch (sys & SYSTEM_MASK) {
+    switch (sys) {
     case SYSTEM_POOL:
     case SYSTEM_DPOOL:
     case SYSTEM_QPOOL:
@@ -1181,12 +1274,12 @@ gboolean system_wish_is_french(gint wish)
     return TRUE;
 }
 
-gint is_special_match(gint sys, gint match, gint *intval, double *doubleval, double *doubleval2)
+gint is_special_match(struct compsys sys, gint match, gint *intval, double *doubleval, double *doubleval2)
 {
     *intval = 0;
     *doubleval = *doubleval2 = 0.0;
 
-    switch ((sys & SYSTEM_TABLE_MASK) >> SYSTEM_TABLE_SHIFT) {
+    switch (sys.table) {
     case TABLE_DOUBLE_REPECHAGE:
     case TABLE_SWE_DUBBELT_AATERKVAL:
     case TABLE_SWE_DIREKT_AATERKVAL:
@@ -1195,7 +1288,7 @@ gint is_special_match(gint sys, gint match, gint *intval, double *doubleval, dou
     case TABLE_SWE_ENKELT_AATERKVAL:
         break;
     case TABLE_ESP_DOBLE_PERDIDA:
-        switch (sys & SYSTEM_MASK) {
+        switch (sys.system) {
         case  SYSTEM_FRENCH_8:
             switch (match) {
             case 7:
@@ -1203,7 +1296,7 @@ gint is_special_match(gint sys, gint match, gint *intval, double *doubleval, dou
                 return SPECIAL_MATCH_STOP;
             case 9:
             case 10:
-                *intval = REPECHAGE;
+                *intval = F_REPECHAGE;
                 return SPECIAL_MATCH_STOP;
             case 5:
             case 6:
@@ -1212,7 +1305,7 @@ gint is_special_match(gint sys, gint match, gint *intval, double *doubleval, dou
             case 12:
                 return SPECIAL_MATCH_START;
             case 13:
-                *intval = REPECHAGE;
+                *intval = F_REPECHAGE;
                 return SPECIAL_MATCH_FLAG;
             }
         case  SYSTEM_FRENCH_16:
@@ -1222,7 +1315,7 @@ gint is_special_match(gint sys, gint match, gint *intval, double *doubleval, dou
                 return SPECIAL_MATCH_STOP;
             case 25:
             case 26:
-                *intval = REPECHAGE;
+                *intval = F_REPECHAGE;
                 return SPECIAL_MATCH_STOP;
             case 9:
             case 10:
@@ -1233,7 +1326,7 @@ gint is_special_match(gint sys, gint match, gint *intval, double *doubleval, dou
             case 28:
                 return SPECIAL_MATCH_START;
             case 29:
-                *intval = REPECHAGE;
+                *intval = F_REPECHAGE;
                 return SPECIAL_MATCH_FLAG;
             }
         }
@@ -1243,12 +1336,12 @@ gint is_special_match(gint sys, gint match, gint *intval, double *doubleval, dou
     case TABLE_ESP_REPESCA_SIMPLE:
         break;
     case TABLE_MODIFIED_DOUBLE_ELIMINATION:
-        switch (sys & SYSTEM_MASK) {
+        switch (sys.system) {
         case  SYSTEM_FRENCH_64:
             switch (match) {
             case 117:
             case 118:
-                *intval = REPECHAGE;
+                *intval = F_REPECHAGE;
                 return SPECIAL_MATCH_STOP;
             case 121:
                 *intval = 0;
@@ -1271,4 +1364,19 @@ gint is_special_match(gint sys, gint match, gint *intval, double *doubleval, dou
     }
 
     return 0;
+}
+
+gboolean print_landscape(gint cat)
+{
+    return paint_pool_style_2(cat);
+}
+
+gboolean paint_pool_style_2(gint cat)
+{
+    struct compsys sys = get_cat_system(cat);
+
+    if (sys.system == SYSTEM_POOL && 
+        (sys.numcomp > 5 || pool_style))
+        return TRUE;
+    return FALSE;
 }

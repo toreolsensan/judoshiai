@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2010 by Hannu Jokinen
+ * Copyright (C) 2006-2011 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */ 
 
@@ -16,6 +16,8 @@
 #include "sqlite3.h"
 #include "judoshiai.h"
 
+//extern void test_judoshiai(void);
+
 extern gboolean mirror_display;
 extern gboolean auto_arrange;
 
@@ -27,6 +29,8 @@ static gchar *backup_directory = NULL;
 
 void about_shiai( GtkWidget *w, gpointer data)
 {
+    //test_judoshiai();
+    //return;
     gtk_show_about_dialog (NULL, 
                            "name", "JudoShiai",
                            "title", "About JudoShiai",
@@ -45,6 +49,12 @@ void new_shiai(GtkWidget *w, gpointer data)
     GtkWidget *cont_num_tatamis = gtk_entry_new();
     GtkWidget *dialog;
     GtkWidget *table = gtk_table_new(2, 5, FALSE);
+
+    SET_ACCESS_NAME(cont_name,        "ContestName");
+    SET_ACCESS_NAME(cont_place,       "ContestPlace");
+    SET_ACCESS_NAME(cont_date,        "ContestDate");
+    SET_ACCESS_NAME(cont_time,        "ContestTime");
+    SET_ACCESS_NAME(cont_num_tatamis, "ContestNumTatamis");
 
     dialog = gtk_file_chooser_dialog_new (_("Tournament"),
                                           NULL,
@@ -351,6 +361,18 @@ void toggle_grade_visible(GtkWidget *menu_item, gpointer data)
     g_key_file_set_boolean(keyfile, "preferences", "gradevisible", grade_visible);
 }
 
+void toggle_pool_style(GtkWidget *menu_item, gpointer data)
+{
+    pool_style = GTK_CHECK_MENU_ITEM(menu_item)->active;
+    g_key_file_set_boolean(keyfile, "preferences", "poolstyle", pool_style);
+}
+
+void toggle_belt_colors(GtkWidget *menu_item, gpointer data)
+{
+    belt_colors = GTK_CHECK_MENU_ITEM(menu_item)->active;
+    g_key_file_set_boolean(keyfile, "preferences", "beltcolors", pool_style);
+}
+
 void toggle_mirror(GtkWidget *menu_item, gpointer data)
 {
     if (GTK_CHECK_MENU_ITEM(menu_item)->active) {
@@ -557,7 +579,7 @@ static void open_url(const char *szURL) {
 #endif
 
 static const gchar *help_file_names[NUM_LANGS] = {
-    "judoshiai-fi.pdf", "judoshiai-en.pdf", "judoshiai-en.pdf", "judoshiai-es.pdf"
+    "judoshiai-fi.pdf", "judoshiai-en.pdf", "judoshiai-en.pdf", "judoshiai-es.pdf", "judoshiai-en.pdf"
 };
 
 void start_help(GtkWidget *w, gpointer data)

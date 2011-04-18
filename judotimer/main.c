@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2010 by Hannu Jokinen
+ * Copyright (C) 2006-2011 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */
 
@@ -55,6 +55,7 @@ gboolean rules_no_koka_dsp = FALSE;
 gboolean rules_leave_score = FALSE;
 gboolean rules_stop_ippon_2 = FALSE;
 GdkCursor *cursor = NULL;
+gboolean sides_switched = FALSE;
 
 static const gchar *num_to_str(guint num)
 {
@@ -140,6 +141,16 @@ CBFUNC(blue_name_2)
 }
 
 CBFUNC(white_name_2)
+{
+        return FALSE;
+}
+
+CBFUNC(blue_club)
+{
+        return FALSE;
+}
+
+CBFUNC(white_club)
 {
         return FALSE;
 }
@@ -329,6 +340,21 @@ CBFUNC(cat2)
         return FALSE;
 }
 
+CBFUNC(gs)
+{
+        return FALSE;
+}
+
+CBFUNC(flag_blue)
+{
+        return FALSE;
+}
+
+CBFUNC(flag_white)
+{
+        return FALSE;
+}
+
 
 /* globals */
 gchar *program_path;
@@ -343,13 +369,14 @@ static GtkWidget *darea = NULL;
 static gint match1, match2, colon;
 static gint blue_name_1, white_name_1;
 static gint blue_name_2, white_name_2;
+static gint blue_club, white_club;
 static gint wazaari, yuko, koka, shido;
 static gint bw, by, bk, bs;
 static gint ww, wy, wk, ws;
 static gint t_min, t_tsec, t_sec;
 static gint o_tsec, o_sec, padding, sonomama;
-static gint points, comment, cat1, cat2;
-static gint pts_to_blue, pts_to_white;
+static gint points, comment, cat1, cat2, gs;
+static gint pts_to_blue, pts_to_white, flag_blue, flag_white;
 
 static GdkColor color_yellow, color_white, color_grey, color_green, color_blue, color_red, color_black;
 static GdkColor *bgcolor = &color_blue;
@@ -364,17 +391,18 @@ static double paper_width, paper_height;
 #define LABEL_STATUS_CHANGED 2
 #define NUM_LABELS 40
 struct label {
-	gdouble x, y;
-	gdouble w, h;
-	gchar *text;
-	gchar *text2;
-	gdouble size;
-	gint xalign;
-	gdouble fg_r, fg_g, fg_b;
-	gdouble bg_r, bg_g, bg_b;
-	gboolean (*cb)(GtkWidget *, GdkEventButton *, void *);
-        gchar status;
-} labels[NUM_LABELS];
+    gdouble x, y;
+    gdouble w, h;
+    gchar *text;
+    gchar *text2;
+    gdouble size;
+    gint xalign;
+    gdouble fg_r, fg_g, fg_b;
+    gdouble bg_r, bg_g, bg_b;
+    gboolean (*cb)(GtkWidget *, GdkEventButton *, void *);
+    gchar status;
+    gboolean wrap;
+} labels[NUM_LABELS], defaults_for_labels[NUM_LABELS];
 static gint num_labels = 0;
 
 #define SET_COLOR(_w) do {			\
@@ -398,9 +426,10 @@ static gint num_labels = 0;
 		labels[num_labels].bg_g = 0.0;		\
 		labels[num_labels].bg_b = 0.0;		\
                 labels[num_labels].status = 0;          \
+                labels[num_labels].wrap = 0;            \
 		_w = num_labels;			\
 		num_labels++;				\
-	} while (0)
+                printf("%d = %s\n", _w, #_w); } while (0)
 
 static void set_fg_color(gint w, gint s, GdkColor *c)
 {
@@ -413,9 +442,9 @@ static void set_fg_color(gint w, gint s, GdkColor *c)
 
 static void set_bg_color(gint w, gint s, GdkColor *c)
 {
-	labels[w].bg_r = c->red;
-	labels[w].bg_g = c->green;
-	labels[w].bg_b = c->blue;
+	labels[w].bg_r = ((gdouble)c->red)/65536.0;
+	labels[w].bg_g = ((gdouble)c->green)/65536.0;
+	labels[w].bg_b = ((gdouble)c->blue)/65536.0;
 
         labels[w].status |= LABEL_STATUS_CHANGED;
 }
@@ -428,67 +457,18 @@ static void set_text(gint w, const gchar *text)
         labels[w].status |= LABEL_STATUS_CHANGED;
 }
 
+static void set_text2(gint w, const gchar *text)
+{
+	g_free(labels[w].text2);
+	labels[w].text2 = g_strdup(text);
+
+        labels[w].status |= LABEL_STATUS_CHANGED;
+}
+
 static gchar *get_text(gint w)
 {
 	return labels[w].text;
 }
-
-#if 0
-static void set_fonts()
-{
-        gdouble height = main_window->allocation.height-20;
-
-        pango_font_description_set_absolute_size(font, height/42.0*PANGO_SCALE);
-        gtk_widget_modify_font(match1, font);
-        gtk_widget_modify_font(match2, font);
-        gtk_widget_modify_font(comment, font);
-
-        pango_font_description_set_absolute_size(font, height/42.0*PANGO_SCALE);
-        gtk_widget_modify_font(blue_name_1, font);
-        gtk_widget_modify_font(blue_name_2, font);
-        gtk_widget_modify_font(white_name_1, font);
-        gtk_widget_modify_font(white_name_2, font);
-        gtk_widget_modify_font(cat1, font);
-        gtk_widget_modify_font(cat2, font);
-        g_object_set(match1, "xalign", 0.0, NULL);
-        g_object_set(match2, "xalign", 0.0, NULL);
-        g_object_set(blue_name_1, "xalign", 0.0, NULL);
-        g_object_set(blue_name_2, "xalign", 0.0, NULL);
-        g_object_set(white_name_1, "xalign", 0.0, NULL);
-        g_object_set(white_name_2, "xalign", 0.0, NULL);
-        g_object_set(cat1, "xalign", 0.0, NULL);
-        g_object_set(cat2, "xalign", 0.0, NULL);
-
-        pango_font_description_set_absolute_size(font, height/6.0*PANGO_SCALE);
-
-        gtk_widget_modify_font(wazaari, font);
-        gtk_widget_modify_font(yuko,    font);
-        gtk_widget_modify_font(koka,    font);
-        gtk_widget_modify_font(shido,   font);
-
-        gtk_widget_modify_font(t_min,   font);
-        gtk_widget_modify_font(t_tsec,   font);
-        gtk_widget_modify_font(t_sec,   font);
-        gtk_widget_modify_font(colon,   font);
-        gtk_widget_modify_font(o_tsec,   font);
-        gtk_widget_modify_font(o_sec,   font);
-        gtk_widget_modify_font(points,   font);
-
-        gtk_widget_modify_font(bw,   font);
-        gtk_widget_modify_font(by,   font);
-        gtk_widget_modify_font(bk,   font);
-        gtk_widget_modify_font(ww,   font);
-        gtk_widget_modify_font(wy,   font);
-        gtk_widget_modify_font(wk,   font);
-
-        gtk_widget_modify_font(sonomama, font);
-
-        pango_font_description_set_absolute_size(font, height/10.0*PANGO_SCALE);
-
-        gtk_widget_modify_font(bs,   font);
-        gtk_widget_modify_font(ws,   font);
-}
-#endif
 
 void set_timer_run_color(gboolean running)
 {
@@ -704,6 +684,12 @@ void show_message(gchar *cat_1,
 {
         gchar bbuf[64], wbuf[64];
         gint len;
+        gchar *b_tmp = blue_1, *w_tmp = white_1;
+
+        if (sides_switched) {
+            blue_1 = w_tmp;
+            white_1 = b_tmp;
+        }
 
         if (dsp_layout == 6) {
                 memset(bbuf, 0, sizeof(bbuf));
@@ -725,9 +711,58 @@ void show_message(gchar *cat_1,
                 }
         }
 
-        set_text(MY_LABEL(cat1),         cat_1);
-        set_text(MY_LABEL(blue_name_1),  blue_1);
-        set_text(MY_LABEL(white_name_1), white_1);
+        set_text(MY_LABEL(cat1), cat_1);
+        set_text2(MY_LABEL(cat1), "");
+
+        if (dsp_layout == 7) {
+            // divide category on two lines
+            snprintf(bbuf, sizeof(bbuf), "%s", cat_1);
+            gchar *p = strrchr(bbuf, '-');
+            if (!p)
+                p = strrchr(bbuf, '+');
+            if (!p)
+                p = strrchr(bbuf, ' ');
+            if (p) {
+                snprintf(wbuf, sizeof(wbuf), "%s", p);
+                *p = 0;
+                set_text(cat1, bbuf);
+                set_text2(cat1, wbuf);
+            }
+
+            // Show flags. Country must be in IOC format in the end of the name.
+            gint len = strlen(blue_1);
+            if (len >= 3)
+                set_text(flag_blue, &blue_1[len - 3]);
+            
+            len = strlen(white_1);
+            if (len >= 3)
+                set_text(flag_white, &white_1[len - 3]);
+        }
+
+        if (labels[blue_club].w > 0.01) {
+            snprintf(bbuf, sizeof(bbuf), "%s", blue_1);
+            gchar *p = strchr(bbuf, ',');
+            if (p) {
+                *p = 0;
+                set_text(MY_LABEL(blue_club), p + 2);
+            } else
+                set_text(MY_LABEL(blue_club), "");
+            set_text(MY_LABEL(blue_name_1),  bbuf);
+        } else
+            set_text(MY_LABEL(blue_name_1),  blue_1);
+
+        if (labels[white_club].w > 0.01) {
+            snprintf(bbuf, sizeof(bbuf), "%s", white_1);
+            gchar *p = strchr(bbuf, ',');
+            if (p) {
+                *p = 0;
+                set_text(MY_LABEL(white_club), p + 2);
+            } else
+                set_text(MY_LABEL(white_club), "");
+            set_text(MY_LABEL(white_name_1),  bbuf);
+        } else
+            set_text(MY_LABEL(white_name_1), white_1);
+
         set_text(MY_LABEL(cat2),         cat_2);
         set_text(MY_LABEL(blue_name_2),  blue_2);
         set_text(MY_LABEL(white_name_2), white_2);
@@ -738,6 +773,10 @@ void show_message(gchar *cat_1,
 	expose_label(NULL, cat2);
 	expose_label(NULL, blue_name_2);
 	expose_label(NULL, white_name_2);
+	expose_label(NULL, blue_club);
+	expose_label(NULL, white_club);
+	expose_label(NULL, flag_blue);
+	expose_label(NULL, flag_white);
 
 	if (big_dialog)
 		show_big();
@@ -859,64 +898,126 @@ void reset_display(gint key)
 
 static void expose_label(cairo_t *c, gint w)
 {
-        cairo_text_extents_t extents;
-	gdouble x, y, x1, y1, wi, he;
-	gboolean delc = FALSE;
+    cairo_text_extents_t extents;
+    gdouble x, y, x1, y1, wi, he;
+    gboolean delc = FALSE;
+    gboolean two_lines = labels[w].text2 && labels[w].text2[0];
+    gchar buf1[32], buf2[32];
+    gchar *txt1 = labels[w].text, *txt2 = labels[w].text2;
+    gdouble fsize;
 
-	if (labels[w].w == 0.0)
-		return;
+    if (labels[w].w == 0.0)
+        return;
 
-        labels[w].status |= LABEL_STATUS_EXPOSE;
+    labels[w].status |= LABEL_STATUS_EXPOSE;
 
-	if (!c) {
-		delc = TRUE;
-		c = gdk_cairo_create(darea->window);
-	}
+    if (!c) {
+        delc = TRUE;
+        c = gdk_cairo_create(darea->window);
+    }
 
-	cairo_save(c);
+    cairo_save(c);
 
-	x1 = W(labels[w].x);
-	y1 = H(labels[w].y);
-	wi = W(labels[w].w);
-	he = H(labels[w].h);
-	cairo_set_source_rgb(c, labels[w].bg_r,
-			     labels[w].bg_g, labels[w].bg_b);
-	cairo_rectangle(c, x1, y1, wi, he);
-	cairo_clip(c);
-	cairo_rectangle(c, x1, y1, wi, he);
-	cairo_fill(c);
+    x1 = W(labels[w].x);
+    y1 = H(labels[w].y);
+    wi = W(labels[w].w);
+    he = H(labels[w].h);
 
-	if (labels[w].size)
-		cairo_set_font_size(c, H(labels[w].size * labels[w].h));
-	else
-		cairo_set_font_size(c, H(labels[w].h*0.8));
+    if (labels[w].bg_r > -0.001) {
+        cairo_set_source_rgb(c, labels[w].bg_r,
+                             labels[w].bg_g, labels[w].bg_b);
+        cairo_rectangle(c, x1, y1, wi, he);
+        cairo_clip(c);
+        cairo_rectangle(c, x1, y1, wi, he);
+        cairo_fill(c);
+    }
 
-        cairo_text_extents(c, labels[w].text, &extents);
+    if (labels[w].size)
+        fsize = H(labels[w].size * labels[w].h);
+    else if (two_lines)
+        fsize =  H(labels[w].h*0.4);
+    else
+        fsize = H(labels[w].h*0.8);
 
-	cairo_set_source_rgb(c, labels[w].fg_r,
-			     labels[w].fg_g, labels[w].fg_b);
-	if (labels[w].xalign < 0)
-		x = W(labels[w].x);
-	else if (labels[w].xalign > 0)
-		x = W(labels[w].x + labels[w].w) - extents.width;
-	else
-		x = W(labels[w].x+labels[w].w/2.0)-extents.width/2.0-1;
+    cairo_set_font_size(c, fsize);
+    cairo_text_extents(c, txt1, &extents);
 
-	y = H(labels[w].y) + (H(labels[w].h)- extents.height)/2.0 - extents.y_bearing;
+    if (two_lines == FALSE && 
+        labels[w].wrap && 
+        extents.width > W(labels[w].w)) {
+        // needs two lines
+        snprintf(buf1, sizeof(buf1), "%s", labels[w].text);
+        gchar *p = strrchr(buf1, '-');
+        if (!p)
+            p = strrchr(buf1, '+');
+        if (!p)
+            p = strrchr(buf1, ' ');
+        if (p) {
+            snprintf(buf2, sizeof(buf2), "%s", p);
+            *p = 0;
+            txt1 = buf1;
+            txt2 = buf2;
+
+            fsize /= 2.0;
+            cairo_set_font_size(c, fsize);
+
+            cairo_text_extents(c, txt1, &extents);
+            two_lines = TRUE;
+        } 
+    }
+
+    cairo_set_source_rgb(c, labels[w].fg_r,
+                         labels[w].fg_g, labels[w].fg_b);
+    if (labels[w].xalign < 0)
+        x = W(labels[w].x);
+    else if (labels[w].xalign > 0)
+        x = W(labels[w].x + labels[w].w) - extents.width;
+    else
+        x = W(labels[w].x+labels[w].w/2.0)-extents.width/2.0-1;
+
+    if (two_lines) {
+        y = H(labels[w].y) + (H(labels[w].h/2.0)- extents.height)/2.0 - extents.y_bearing;
         cairo_move_to(c, x, y);
-        cairo_show_text(c, labels[w].text);
+        cairo_show_text(c, txt1);
+        cairo_text_extents(c, txt2, &extents);
+        y = H(labels[w].y + labels[w].h/2.0) + (H(labels[w].h/2.0)- extents.height)/2.0 - extents.y_bearing;
+        cairo_move_to(c, x, y);
+        cairo_show_text(c, txt2);
+    } else {
+        y = H(labels[w].y) + (H(labels[w].h)- extents.height)/2.0 - extents.y_bearing;
+        cairo_move_to(c, x, y);
+        cairo_show_text(c, txt1);
+    }
 
-	if (labels[w].text2) {
-		cairo_move_to(c, x, y + 1.2*extents.height);
-		cairo_show_text(c, labels[w].text2);
-	}
+    if (w == flag_blue || w == flag_white) {
+        gchar buf[32];
+        snprintf(buf, sizeof(buf), "%s.png", txt1);
+        gchar *file = g_build_filename(installation_dir, "etc", "flags-ioc", buf, NULL);
+        cairo_surface_t *image = cairo_image_surface_create_from_png(file);
+        if (image && cairo_surface_status(image) == CAIRO_STATUS_SUCCESS) {
+            gdouble icon_w = cairo_image_surface_get_width(image);
+            gdouble icon_h = cairo_image_surface_get_height(image);
+            cairo_scale(c, he/icon_h, he/icon_h);
 
-	cairo_restore(c);
+            if (labels[w].xalign > 0)
+                cairo_set_source_surface(c, image, (x1+wi)*icon_h/he - icon_w, y1*icon_h/he);
+            else
+                cairo_set_source_surface(c, image, x1*icon_h/he, y1*icon_h/he);
 
-	if (delc) {
-		cairo_show_page(c);
-		cairo_destroy(c);
-	}
+            cairo_paint(c);
+        }
+
+        cairo_surface_destroy(image);
+        g_free(file);
+        
+    }
+
+    cairo_restore(c);
+
+    if (delc) {
+        cairo_show_page(c);
+        cairo_destroy(c);
+    }
 }
 
 /* This is called when we need to draw the windows contents */
@@ -980,9 +1081,11 @@ static gboolean key_press(GtkWidget *widget, GdkEventKey *event, gpointer userda
                 return FALSE;
 
         if (event->keyval == GDK_D && (event->state & 5) == 5)
-                demo = TRUE;
+                demo = 1;
+        else if (event->keyval == GDK_F && (event->state & 5) == 5)
+                demo = 2;
         else
-                demo = FALSE;
+                demo = 0;
 
         //g_print("key=%x stat=%x\n", event->keyval, event->state);
 	if (event->keyval < GDK_0 || event->keyval > GDK_9 || event->keyval == GDK_6)
@@ -1129,6 +1232,19 @@ static GtkWidget *get_picture(const gchar *name)
 }
 #endif
 
+void dump_screen(void)
+{
+    gint i;
+
+    printf("# num x y width height size xalign fg-red fg-green fg-blue bg-red bg-green bg-blue wrap");
+    for (i = 0; i < num_labels; i++) {
+        printf("%d %1.3f %1.3f %1.3f %1.3f ", i, labels[i].x, labels[i].y, labels[i].w, labels[i].h);
+        printf("%1.3f %d %1.3f %1.3f %1.3f %1.3f %1.3f %1.3f %d\n", labels[i].size, labels[i].xalign, 
+               labels[i].fg_r, labels[i].fg_g, labels[i].fg_b, 
+               labels[i].bg_r, labels[i].bg_g, labels[i].bg_b, labels[i].wrap);
+    }
+}
+
 int main( int   argc,
           char *argv[] )
 {
@@ -1140,6 +1256,7 @@ int main( int   argc,
         struct tm *tm;
         GThread   *gth = NULL;         /* thread id */
         gboolean   run_flag = TRUE;   /* used as exit flag for threads */
+        gint i;
 
         judotimer_log("JudoTimer starts");
 
@@ -1252,6 +1369,8 @@ int main( int   argc,
         GET_LABEL(white_name_1, "", TXTW,     SMALL_H, 0.5-TXTW, SMALL_H);
         GET_LABEL(blue_name_2, "",  0.5+TXTW, 0.0,     0.5-TXTW, SMALL_H);
         GET_LABEL(white_name_2, "", 0.5+TXTW, SMALL_H, 0.5-TXTW, SMALL_H);
+        GET_LABEL(blue_club, "", 0,0,0,0);
+        GET_LABEL(white_club, "", 0,0,0,0);
 
         GET_LABEL(match1, _("Match:"), 0.0, 0.0, TXTW, SMALL_H);
         GET_LABEL(match2, _("Next:"),  0.5, 0.0, TXTW, SMALL_H);
@@ -1286,6 +1405,9 @@ int main( int   argc,
 
         GET_LABEL(cat1, "-", 0.0, SMALL_H, TXTW, SMALL_H);
         GET_LABEL(cat2, "-", 0.5, SMALL_H, TXTW, SMALL_H);
+        GET_LABEL(gs, "", 0.0, 0.0, 0.0, 0.0);
+        GET_LABEL(flag_blue, "", 0.0, 0.0, 0.0, 0.0);
+        GET_LABEL(flag_white, "", 0.0, 0.0, 0.0, 0.0);
 
 	labels[match1].xalign = -1;
 	labels[match2].xalign = -1;
@@ -1295,6 +1417,9 @@ int main( int   argc,
 	labels[white_name_2].xalign = -1;
 	labels[cat1].xalign = -1;
 	labels[cat2].xalign = -1;
+	labels[gs].xalign = -1;
+	labels[blue_club].xalign = -1;
+	labels[white_club].xalign = -1;
 
 	labels[wazaari].size = 0.6;
 	labels[yuko].size = 0.6;
@@ -1320,6 +1445,8 @@ int main( int   argc,
         SET_COLOR(white_name_1);
         SET_COLOR(blue_name_2);
         SET_COLOR(white_name_2);
+        SET_COLOR(blue_club);
+        SET_COLOR(white_club);
         SET_COLOR(comment);
         SET_COLOR(wazaari);
         SET_COLOR(yuko);
@@ -1327,6 +1454,7 @@ int main( int   argc,
         SET_COLOR(shido);
         SET_COLOR(cat1);
         SET_COLOR(cat2);
+        SET_COLOR(gs);
 
         fg = color_yellow;
         SET_COLOR(t_min);
@@ -1366,6 +1494,9 @@ int main( int   argc,
 
         gdk_color_parse("#000000", &fg);
         gdk_color_parse("#000000", &bg);
+
+        for (i = 0; i < num_labels; i++)
+            defaults_for_labels[i] = labels[i];
 
         /* signals */
 
@@ -1413,6 +1544,7 @@ int main( int   argc,
         run_flag = FALSE;     /* flag threads to stop and exit */
         //g_thread_join(gth);   /* wait for thread to exit */
 
+        //dump_screen();
         return 0;
 }
 
@@ -1430,6 +1562,12 @@ void toggle_color(GtkWidget *menu_item, gpointer data)
         set_bg_color(by, GTK_STATE_NORMAL, bgcolor);
         set_bg_color(bk, GTK_STATE_NORMAL, bgcolor);
         set_bg_color(bs, GTK_STATE_NORMAL, bgcolor);
+
+        if (dsp_layout == 7) {
+            set_bg_color(blue_name_1, GTK_STATE_NORMAL, bgcolor);
+            set_bg_color(blue_club, GTK_STATE_NORMAL, bgcolor);
+        }
+
 	expose(darea, 0, 0);
 }
 
@@ -1485,6 +1623,32 @@ void toggle_rules_stop_ippon(GtkWidget *menu_item, gpointer data)
 	}
 }
 
+void toggle_switch_sides(GtkWidget *menu_item, gpointer data)
+{
+    gchar *tmp;
+
+    sides_switched = GTK_CHECK_MENU_ITEM(menu_item)->active;
+
+    tmp = labels[blue_name_1].text;
+    labels[blue_name_1].text = labels[white_name_1].text;
+    labels[white_name_1].text = tmp;
+    labels[blue_name_1].status |= LABEL_STATUS_CHANGED;
+    labels[white_name_1].status |= LABEL_STATUS_CHANGED;
+
+    tmp = labels[flag_blue].text;
+    labels[flag_blue].text = labels[flag_white].text;
+    labels[flag_white].text = tmp;
+    labels[flag_blue].status |= LABEL_STATUS_CHANGED;
+    labels[flag_white].status |= LABEL_STATUS_CHANGED;
+
+    expose_label(NULL, blue_name_1);
+    expose_label(NULL, white_name_1);
+    expose_label(NULL, flag_blue);
+    expose_label(NULL, flag_white);
+
+    light_switch_sides(sides_switched);
+}
+
 static void set_position(gint lbl, gdouble x, gdouble y, gdouble w, gdouble h)
 {
 	labels[lbl].x = x;
@@ -1493,272 +1657,429 @@ static void set_position(gint lbl, gdouble x, gdouble y, gdouble w, gdouble h)
 	labels[lbl].h = h;
 }
 
+void set_gs_text(gchar *txt)
+{
+    set_text(gs, txt);
+}
+
 void select_display_layout(GtkWidget *menu_item, gpointer data)
 {
-	clocks_only = FALSE;
-        dsp_layout = (gint)data;
+#define NO_SHOW(x) set_position(x, 0.0, 0.0, 0.0, 0.0)
+    gchar *filename;
+    FILE *f;
+    gint i;
 
-	switch(dsp_layout) {
-		/*if (GTK_CHECK_MENU_ITEM(menu_item)->active) {*/
-	case 1:
-		set_position(match1, 0.0, 0.0, TXTW, SMALL_H);
-		set_position(match2, 0.5, 0.0, TXTW, SMALL_H);
+    // restore default values
+    for (i = 0; i < num_labels; i++) {
+        labels[i].x = defaults_for_labels[i].x;
+        labels[i].y = defaults_for_labels[i].y;
+        labels[i].w = defaults_for_labels[i].w;
+        labels[i].h = defaults_for_labels[i].h;
+        labels[i].size = defaults_for_labels[i].size;
+        labels[i].xalign = defaults_for_labels[i].xalign;
+        labels[i].fg_r = defaults_for_labels[i].fg_r;
+        labels[i].fg_g = defaults_for_labels[i].fg_g;
+        labels[i].fg_b = defaults_for_labels[i].fg_b;
+        labels[i].bg_r = defaults_for_labels[i].bg_r;
+        labels[i].bg_g = defaults_for_labels[i].bg_g;
+        labels[i].bg_b = defaults_for_labels[i].bg_b;
+        labels[i].wrap = defaults_for_labels[i].wrap;
+    }
 
-		set_position(blue_name_1,  TXTW,     0.0,     0.5-TXTW, SMALL_H);
-		set_position(white_name_1, TXTW,     SMALL_H, 0.5-TXTW, SMALL_H);
-		set_position(blue_name_2,  0.5+TXTW, 0.0,     0.5-TXTW, SMALL_H);
-		set_position(white_name_2, 0.5+TXTW, SMALL_H, 0.5-TXTW, SMALL_H);
-		set_position(cat1,         0.0, SMALL_H, TXTW, SMALL_H);
-		set_position(cat2,         0.5, SMALL_H, TXTW, SMALL_H);
+    clocks_only = FALSE;
+    dsp_layout = (gint)data;
 
-		set_position(comment,  0.0, 2.0*SMALL_H, 1.0, SMALL_H);
+    switch(dsp_layout) {
+        /*if (GTK_CHECK_MENU_ITEM(menu_item)->active) {*/
+    case 1:
+        set_position(match1, 0.0, 0.0, TXTW, SMALL_H);
+        set_position(match2, 0.5, 0.0, TXTW, SMALL_H);
 
-		set_position(wazaari,  0.0,       BIG_START, BIG_W, BIG_H);
-		set_position(yuko,     1.0*BIG_W, BIG_START, BIG_W, BIG_H);
-		set_position(koka,     2.0*BIG_W, BIG_START, BIG_W, BIG_H);
-		set_position(shido,    3.0*BIG_W, BIG_START, BIG_W, BIG_H);
-		set_position(padding,  4.0*BIG_W, BIG_START, 3.0*BIG_W, BIG_H);
-		set_position(sonomama, 7.0*BIG_W, BIG_START, BIG_W, BIG_H);
+        set_position(blue_name_1,  TXTW,     0.0,     0.5-TXTW, SMALL_H);
+        set_position(white_name_1, TXTW,     SMALL_H, 0.5-TXTW, SMALL_H);
+        set_position(blue_name_2,  0.5+TXTW, 0.0,     0.5-TXTW, SMALL_H);
+        set_position(white_name_2, 0.5+TXTW, SMALL_H, 0.5-TXTW, SMALL_H);
+        set_position(cat1,         0.0, SMALL_H, TXTW, SMALL_H);
+        set_position(cat2,         0.5, SMALL_H, TXTW, SMALL_H);
 
-		set_position(bw, 0.0,       BIG_START+BIG_H, BIG_W, BIG_H);
-		set_position(by, 1.0*BIG_W, BIG_START+BIG_H, BIG_W, BIG_H);
-		set_position(bk, 2.0*BIG_W, BIG_START+BIG_H, BIG_W, BIG_H);
-		set_position(bs, 3.0*BIG_W, BIG_START+BIG_H, BIG_W, BIG_H);
-		set_position(ww, 0.0,       BIG_START+2*BIG_H, BIG_W, BIG_H);
-		set_position(wy, 1.0*BIG_W, BIG_START+2*BIG_H, BIG_W, BIG_H);
-		set_position(wk, 2.0*BIG_W, BIG_START+2*BIG_H, BIG_W, BIG_H);
-		set_position(ws, 3.0*BIG_W, BIG_START+2*BIG_H, BIG_W, BIG_H);
+        set_position(comment,  0.0, 2.0*SMALL_H, 1.0, SMALL_H);
 
-		set_position(t_min,  4.0*BIG_W, BIG_START+BIG_H,   BIG_W, BIG_H);
-		set_position(colon,  5.0*BIG_W, BIG_START+BIG_H,   BIG_W, BIG_H);
-		set_position(t_tsec, 6.0*BIG_W, BIG_START+BIG_H,   BIG_W, BIG_H);
-		set_position(t_sec,  7.0*BIG_W, BIG_START+BIG_H,   BIG_W, BIG_H);
+        set_position(wazaari,  0.0,       BIG_START, BIG_W, BIG_H);
+        set_position(yuko,     1.0*BIG_W, BIG_START, BIG_W, BIG_H);
+        set_position(koka,     2.0*BIG_W, BIG_START, BIG_W, BIG_H);
+        set_position(shido,    3.0*BIG_W, BIG_START, BIG_W, BIG_H);
+        set_position(padding,  4.0*BIG_W, BIG_START, 3.0*BIG_W, BIG_H);
+        set_position(sonomama, 7.0*BIG_W, BIG_START, BIG_W, BIG_H);
 
-		set_position(o_tsec, 4.0*BIG_W, BIG_START+2*BIG_H, BIG_W, BIG_H);
-		set_position(o_sec,  5.0*BIG_W, BIG_START+2*BIG_H, BIG_W, BIG_H);
+        set_position(bw, 0.0,       BIG_START+BIG_H, BIG_W, BIG_H);
+        set_position(by, 1.0*BIG_W, BIG_START+BIG_H, BIG_W, BIG_H);
+        set_position(bk, 2.0*BIG_W, BIG_START+BIG_H, BIG_W, BIG_H);
+        set_position(bs, 3.0*BIG_W, BIG_START+BIG_H, BIG_W, BIG_H);
+        set_position(ww, 0.0,       BIG_START+2*BIG_H, BIG_W, BIG_H);
+        set_position(wy, 1.0*BIG_W, BIG_START+2*BIG_H, BIG_W, BIG_H);
+        set_position(wk, 2.0*BIG_W, BIG_START+2*BIG_H, BIG_W, BIG_H);
+        set_position(ws, 3.0*BIG_W, BIG_START+2*BIG_H, BIG_W, BIG_H);
 
-		set_position(points, 6.5*BIG_W, BIG_START+2*BIG_H, 1.5*BIG_W, BIG_H);
-		set_position(pts_to_blue,  6.0*BIG_W, BIG_START+2*BIG_H, 0.5*BIG_W, BIG_H/2.0);
-		set_position(pts_to_white, 6.0*BIG_W, BIG_START+2.5*BIG_H, 0.5*BIG_W, BIG_H/2.0);
-		break;
+        set_position(t_min,  4.0*BIG_W, BIG_START+BIG_H,   BIG_W, BIG_H);
+        set_position(colon,  5.0*BIG_W, BIG_START+BIG_H,   BIG_W, BIG_H);
+        set_position(t_tsec, 6.0*BIG_W, BIG_START+BIG_H,   BIG_W, BIG_H);
+        set_position(t_sec,  7.0*BIG_W, BIG_START+BIG_H,   BIG_W, BIG_H);
 
-	case 2:
-		set_position(match1, 0.0, 0.0, 0.0, SMALL_H);
-		set_position(match2, 0.5, 0.0, TXTW, SMALL_H);
+        set_position(o_tsec, 4.0*BIG_W, BIG_START+2*BIG_H, BIG_W, BIG_H);
+        set_position(o_sec,  5.0*BIG_W, BIG_START+2*BIG_H, BIG_W, BIG_H);
 
-		set_position(blue_name_1,  0,     BIG_START+0.3*BIG_H, 0.5, 0.2*BIG_H);
-		set_position(white_name_1, 0,     BIG_START+2.5*BIG_H, 0.5, 0.2*BIG_H);
-		set_position(blue_name_2,  0.5+TXTW, 0.0,     0.5-TXTW, SMALL_H);
-		set_position(white_name_2, 0.5+TXTW, SMALL_H, 0.5-TXTW, SMALL_H);
-		set_position(cat1,         0.0, 0.0, 0.5, 4*SMALL_H);
-		set_position(cat2,         0.5, SMALL_H, TXTW, SMALL_H);
+        set_position(points, 6.5*BIG_W, BIG_START+2*BIG_H, 1.5*BIG_W, BIG_H);
+        set_position(pts_to_blue,  6.0*BIG_W, BIG_START+2*BIG_H, 0.5*BIG_W, BIG_H/2.0);
+        set_position(pts_to_white, 6.0*BIG_W, BIG_START+2.5*BIG_H, 0.5*BIG_W, BIG_H/2.0);
+        break;
 
-		set_position(comment,  0.0, 4.0*SMALL_H, 1.0, SMALL_H);
+    case 2:
+        set_position(match1, 0.0, 0.0, 0.0, SMALL_H);
+        set_position(match2, 0.5, 0.0, TXTW, SMALL_H);
 
-		set_position(wazaari,  0.0,       BIG_START+1.4*BIG_H, BIG_W, 0.2*BIG_H);
-		set_position(yuko,     1.0*BIG_W, BIG_START+1.4*BIG_H, BIG_W, 0.2*BIG_H);
-		set_position(koka,     2.0*BIG_W, BIG_START+1.4*BIG_H, BIG_W, 0.2*BIG_H);
-		set_position(shido,    3.0*BIG_W, BIG_START+1.4*BIG_H, BIG_W, 0.2*BIG_H);
-		set_position(padding,  4.0*BIG_W, BIG_START, 0, BIG_H);
-		set_position(sonomama, 7.0*BIG_W, BIG_START, BIG_W, BIG_H);
+        set_position(blue_name_1,  0,     BIG_START+0.3*BIG_H, 0.5, 0.2*BIG_H);
+        set_position(white_name_1, 0,     BIG_START+2.5*BIG_H, 0.5, 0.2*BIG_H);
+        set_position(blue_name_2,  0.5+TXTW, 0.0,     0.5-TXTW, SMALL_H);
+        set_position(white_name_2, 0.5+TXTW, SMALL_H, 0.5-TXTW, SMALL_H);
+        set_position(cat1,         0.0, 0.0, 0.5, 4*SMALL_H);
+        set_position(cat2,         0.5, SMALL_H, TXTW, SMALL_H);
 
-		set_position(bw, 0.0,       BIG_START+0.5*BIG_H, BIG_W, 0.9*BIG_H);
-		set_position(by, 1.0*BIG_W, BIG_START+0.5*BIG_H, BIG_W, 0.9*BIG_H);
-		set_position(bk, 2.0*BIG_W, BIG_START+0.5*BIG_H, BIG_W, 0.9*BIG_H);
-		set_position(bs, 3.0*BIG_W, BIG_START+0.5*BIG_H, BIG_W, 0.9*BIG_H);
-		set_position(ww, 0.0,       BIG_START+1.6*BIG_H, BIG_W, 0.9*BIG_H);
-		set_position(wy, 1.0*BIG_W, BIG_START+1.6*BIG_H, BIG_W, 0.9*BIG_H);
-		set_position(wk, 2.0*BIG_W, BIG_START+1.6*BIG_H, BIG_W, 0.9*BIG_H);
-		set_position(ws, 3.0*BIG_W, BIG_START+1.6*BIG_H, BIG_W, 0.9*BIG_H);
+        set_position(comment,  0.0, 4.0*SMALL_H, 1.0, SMALL_H);
 
-		set_position(t_min,  4.0*BIG_W, BIG_START+BIG_H,   BIG_W, BIG_H);
-		set_position(colon,  5.0*BIG_W, BIG_START+BIG_H,   BIG_W, BIG_H);
-		set_position(t_tsec, 6.0*BIG_W, BIG_START+BIG_H,   BIG_W, BIG_H);
-		set_position(t_sec,  7.0*BIG_W, BIG_START+BIG_H,   BIG_W, BIG_H);
+        set_position(wazaari,  0.0,       BIG_START+1.4*BIG_H, BIG_W, 0.2*BIG_H);
+        set_position(yuko,     1.0*BIG_W, BIG_START+1.4*BIG_H, BIG_W, 0.2*BIG_H);
+        set_position(koka,     2.0*BIG_W, BIG_START+1.4*BIG_H, BIG_W, 0.2*BIG_H);
+        set_position(shido,    3.0*BIG_W, BIG_START+1.4*BIG_H, BIG_W, 0.2*BIG_H);
+        set_position(padding,  4.0*BIG_W, BIG_START, 0, BIG_H);
+        set_position(sonomama, 7.0*BIG_W, BIG_START, BIG_W, BIG_H);
 
-		set_position(o_tsec, 4.0*BIG_W, BIG_START+2*BIG_H, BIG_W, BIG_H);
-		set_position(o_sec,  5.0*BIG_W, BIG_START+2*BIG_H, BIG_W, BIG_H);
+        set_position(bw, 0.0,       BIG_START+0.5*BIG_H, BIG_W, 0.9*BIG_H);
+        set_position(by, 1.0*BIG_W, BIG_START+0.5*BIG_H, BIG_W, 0.9*BIG_H);
+        set_position(bk, 2.0*BIG_W, BIG_START+0.5*BIG_H, BIG_W, 0.9*BIG_H);
+        set_position(bs, 3.0*BIG_W, BIG_START+0.5*BIG_H, BIG_W, 0.9*BIG_H);
+        set_position(ww, 0.0,       BIG_START+1.6*BIG_H, BIG_W, 0.9*BIG_H);
+        set_position(wy, 1.0*BIG_W, BIG_START+1.6*BIG_H, BIG_W, 0.9*BIG_H);
+        set_position(wk, 2.0*BIG_W, BIG_START+1.6*BIG_H, BIG_W, 0.9*BIG_H);
+        set_position(ws, 3.0*BIG_W, BIG_START+1.6*BIG_H, BIG_W, 0.9*BIG_H);
 
-		set_position(points, 6.5*BIG_W, BIG_START+2*BIG_H, 1.5*BIG_W, BIG_H);
-		set_position(pts_to_blue,  6.0*BIG_W, BIG_START+2*BIG_H, 0.5*BIG_W, BIG_H/2.0);
-		set_position(pts_to_white, 6.0*BIG_W, BIG_START+2.5*BIG_H, 0.5*BIG_W, BIG_H/2.0);
-		break;
+        set_position(t_min,  4.0*BIG_W, BIG_START+BIG_H,   BIG_W, BIG_H);
+        set_position(colon,  5.0*BIG_W, BIG_START+BIG_H,   BIG_W, BIG_H);
+        set_position(t_tsec, 6.0*BIG_W, BIG_START+BIG_H,   BIG_W, BIG_H);
+        set_position(t_sec,  7.0*BIG_W, BIG_START+BIG_H,   BIG_W, BIG_H);
 
-	case 3:
-		set_position(match1, 0.0, 0.0, TXTW, 0);
-		set_position(match2, 0.5, 0.0, TXTW, SMALL_H);
+        set_position(o_tsec, 4.0*BIG_W, BIG_START+2*BIG_H, BIG_W, BIG_H);
+        set_position(o_sec,  5.0*BIG_W, BIG_START+2*BIG_H, BIG_W, BIG_H);
 
-		set_position(blue_name_1,  0.5,  4*SMALL_H+0.3*BIG_H, 0.5, 0.2*BIG_H);
-		set_position(white_name_1, 0.0,  4*SMALL_H+0.3*BIG_H, 0.5, 0.2*BIG_H);
-		set_position(blue_name_2,  0.5+TXTW, 0.0,     0.5-TXTW, SMALL_H);
-		set_position(white_name_2, 0.5+TXTW, SMALL_H, 0.5-TXTW, SMALL_H);
-		set_position(cat1,         0.0, 0.0, 0.5, 4.0*SMALL_H);
-		set_position(cat2,         0.5, SMALL_H, TXTW, SMALL_H);
+        set_position(points, 6.5*BIG_W, BIG_START+2*BIG_H, 1.5*BIG_W, BIG_H);
+        set_position(pts_to_blue,  6.0*BIG_W, BIG_START+2*BIG_H, 0.5*BIG_W, BIG_H/2.0);
+        set_position(pts_to_white, 6.0*BIG_W, BIG_START+2.5*BIG_H, 0.5*BIG_W, BIG_H/2.0);
+        break;
 
-		set_position(comment,  0.0, 4.0*SMALL_H+1.5*BIG_H, 1.0, SMALL_H);
+    case 3:
+        set_position(match1, 0.0, 0.0, TXTW, 0);
+        set_position(match2, 0.5, 0.0, TXTW, SMALL_H);
 
-		set_position(wazaari,  0.0,       BIG_START, 0, BIG_H);
-		set_position(yuko,     1.0*BIG_W, BIG_START, 0, BIG_H);
-		set_position(koka,     2.0*BIG_W, BIG_START, 0, BIG_H);
-		set_position(shido,    3.0*BIG_W, BIG_START, 0, BIG_H);
-		set_position(padding,  4.0*BIG_W, BIG_START, 0, BIG_H);
-		set_position(sonomama, 7.0*BIG_W, BIG_START+1.5*BIG_H, BIG_W, 0.5*BIG_H);
+        set_position(blue_name_1,  0.5,  4*SMALL_H+0.3*BIG_H, 0.5, 0.2*BIG_H);
+        set_position(white_name_1, 0.0,  4*SMALL_H+0.3*BIG_H, 0.5, 0.2*BIG_H);
+        set_position(blue_name_2,  0.5+TXTW, 0.0,     0.5-TXTW, SMALL_H);
+        set_position(white_name_2, 0.5+TXTW, SMALL_H, 0.5-TXTW, SMALL_H);
+        set_position(cat1,         0.0, 0.0, 0.5, 4.0*SMALL_H);
+        set_position(cat2,         0.5, SMALL_H, TXTW, SMALL_H);
 
-		set_position(bw, 4.0*BIG_W, BIG_START+0.5*BIG_H, BIG_W, BIG_H);
-		set_position(by, 5.0*BIG_W, BIG_START+0.5*BIG_H, BIG_W, BIG_H);
-		set_position(bk, 6.0*BIG_W, BIG_START+0.5*BIG_H, BIG_W, BIG_H);
-		set_position(bs, 7.0*BIG_W, BIG_START+0.5*BIG_H, BIG_W, BIG_H);
-		set_position(ww, 0.0,       BIG_START+0.5*BIG_H, BIG_W, BIG_H);
-		set_position(wy, 1.0*BIG_W, BIG_START+0.5*BIG_H, BIG_W, BIG_H);
-		set_position(wk, 2.0*BIG_W, BIG_START+0.5*BIG_H, BIG_W, BIG_H);
-		set_position(ws, 3.0*BIG_W, BIG_START+0.5*BIG_H, BIG_W, BIG_H);
+        set_position(comment,  0.0, 4.0*SMALL_H+1.5*BIG_H, 1.0, SMALL_H);
 
-		set_position(t_min,  0.0*BIG_W, BIG_START+2.0*BIG_H,   BIG_W, BIG_H);
-		set_position(colon,  1.0*BIG_W, BIG_START+2.0*BIG_H,   BIG_W, BIG_H);
-		set_position(t_tsec, 2.0*BIG_W, BIG_START+2.0*BIG_H,   BIG_W, BIG_H);
-		set_position(t_sec,  3.0*BIG_W, BIG_START+2.0*BIG_H,   BIG_W, BIG_H);
+        set_position(wazaari,  0.0,       BIG_START, 0, BIG_H);
+        set_position(yuko,     1.0*BIG_W, BIG_START, 0, BIG_H);
+        set_position(koka,     2.0*BIG_W, BIG_START, 0, BIG_H);
+        set_position(shido,    3.0*BIG_W, BIG_START, 0, BIG_H);
+        set_position(padding,  4.0*BIG_W, BIG_START, 0, BIG_H);
+        set_position(sonomama, 7.0*BIG_W, BIG_START+1.5*BIG_H, BIG_W, 0.5*BIG_H);
 
-		set_position(o_tsec, 4.5*BIG_W, BIG_START+2*BIG_H, BIG_W, BIG_H);
-		set_position(o_sec,  5.5*BIG_W, BIG_START+2*BIG_H, BIG_W, BIG_H);
+        set_position(bw, 4.0*BIG_W, BIG_START+0.5*BIG_H, BIG_W, BIG_H);
+        set_position(by, 5.0*BIG_W, BIG_START+0.5*BIG_H, BIG_W, BIG_H);
+        set_position(bk, 6.0*BIG_W, BIG_START+0.5*BIG_H, BIG_W, BIG_H);
+        set_position(bs, 7.0*BIG_W, BIG_START+0.5*BIG_H, BIG_W, BIG_H);
+        set_position(ww, 0.0,       BIG_START+0.5*BIG_H, BIG_W, BIG_H);
+        set_position(wy, 1.0*BIG_W, BIG_START+0.5*BIG_H, BIG_W, BIG_H);
+        set_position(wk, 2.0*BIG_W, BIG_START+0.5*BIG_H, BIG_W, BIG_H);
+        set_position(ws, 3.0*BIG_W, BIG_START+0.5*BIG_H, BIG_W, BIG_H);
 
-		set_position(points, 6.5*BIG_W, BIG_START+2*BIG_H, 1.5*BIG_W, BIG_H);
-		set_position(pts_to_blue,  4.0*BIG_W, BIG_START+2*BIG_H, 0.5*BIG_W, BIG_H/2.0);
-		set_position(pts_to_white, 4.0*BIG_W, BIG_START+2.5*BIG_H, 0.5*BIG_W, BIG_H/2.0);
-		break;
+        set_position(t_min,  0.0*BIG_W, BIG_START+2.0*BIG_H,   BIG_W, BIG_H);
+        set_position(colon,  1.0*BIG_W, BIG_START+2.0*BIG_H,   BIG_W, BIG_H);
+        set_position(t_tsec, 2.0*BIG_W, BIG_START+2.0*BIG_H,   BIG_W, BIG_H);
+        set_position(t_sec,  3.0*BIG_W, BIG_START+2.0*BIG_H,   BIG_W, BIG_H);
 
-	case 4:
-		set_position(match1, 0.0, 0.0, TXTW, 0);
-		set_position(match2, 0.5, 0.0, TXTW, SMALL_H);
+        set_position(o_tsec, 4.5*BIG_W, BIG_START+2*BIG_H, BIG_W, BIG_H);
+        set_position(o_sec,  5.5*BIG_W, BIG_START+2*BIG_H, BIG_W, BIG_H);
 
-		set_position(blue_name_1,  0.0,  4*SMALL_H+0.3*BIG_H, 0.5, 0.2*BIG_H);
-		set_position(white_name_1, 0.5,  4*SMALL_H+0.3*BIG_H, 0.5, 0.2*BIG_H);
-		set_position(blue_name_2,  0.5+TXTW, 0.0,     0.5-TXTW, SMALL_H);
-		set_position(white_name_2, 0.5+TXTW, SMALL_H, 0.5-TXTW, SMALL_H);
-		set_position(cat1,         0.0, 0.0, 0.5, 4.0*SMALL_H);
-		set_position(cat2,         0.5, SMALL_H, TXTW, SMALL_H);
+        set_position(points, 6.5*BIG_W, BIG_START+2*BIG_H, 1.5*BIG_W, BIG_H);
+        set_position(pts_to_blue,  4.0*BIG_W, BIG_START+2*BIG_H, 0.5*BIG_W, BIG_H/2.0);
+        set_position(pts_to_white, 4.0*BIG_W, BIG_START+2.5*BIG_H, 0.5*BIG_W, BIG_H/2.0);
+        break;
 
-		set_position(comment,  0.0, 4.0*SMALL_H+1.5*BIG_H, 1.0, SMALL_H);
+    case 4:
+        set_position(match1, 0.0, 0.0, TXTW, 0);
+        set_position(match2, 0.5, 0.0, TXTW, SMALL_H);
 
-		set_position(wazaari,  0.0,       BIG_START, 0, BIG_H);
-		set_position(yuko,     1.0*BIG_W, BIG_START, 0, BIG_H);
-		set_position(koka,     2.0*BIG_W, BIG_START, 0, BIG_H);
-		set_position(shido,    3.0*BIG_W, BIG_START, 0, BIG_H);
-		set_position(padding,  4.0*BIG_W, BIG_START, 0, BIG_H);
-		set_position(sonomama, 7.0*BIG_W, BIG_START+1.5*BIG_H, BIG_W, 0.5*BIG_H);
+        set_position(blue_name_1,  0.0,  4*SMALL_H+0.3*BIG_H, 0.5, 0.2*BIG_H);
+        set_position(white_name_1, 0.5,  4*SMALL_H+0.3*BIG_H, 0.5, 0.2*BIG_H);
+        set_position(blue_name_2,  0.5+TXTW, 0.0,     0.5-TXTW, SMALL_H);
+        set_position(white_name_2, 0.5+TXTW, SMALL_H, 0.5-TXTW, SMALL_H);
+        set_position(cat1,         0.0, 0.0, 0.5, 4.0*SMALL_H);
+        set_position(cat2,         0.5, SMALL_H, TXTW, SMALL_H);
 
-		set_position(bw, 0.0*BIG_W, BIG_START+0.5*BIG_H, BIG_W, BIG_H);
-		set_position(by, 1.0*BIG_W, BIG_START+0.5*BIG_H, BIG_W, BIG_H);
-		set_position(bk, 2.0*BIG_W, BIG_START+0.5*BIG_H, BIG_W, BIG_H);
-		set_position(bs, 3.0*BIG_W, BIG_START+0.5*BIG_H, BIG_W, BIG_H);
-		set_position(ww, 4.0*BIG_W, BIG_START+0.5*BIG_H, BIG_W, BIG_H);
-		set_position(wy, 5.0*BIG_W, BIG_START+0.5*BIG_H, BIG_W, BIG_H);
-		set_position(wk, 6.0*BIG_W, BIG_START+0.5*BIG_H, BIG_W, BIG_H);
-		set_position(ws, 7.0*BIG_W, BIG_START+0.5*BIG_H, BIG_W, BIG_H);
+        set_position(comment,  0.0, 4.0*SMALL_H+1.5*BIG_H, 1.0, SMALL_H);
 
-		set_position(t_min,  0.0*BIG_W, BIG_START+2.0*BIG_H,   BIG_W, BIG_H);
-		set_position(colon,  1.0*BIG_W, BIG_START+2.0*BIG_H,   BIG_W, BIG_H);
-		set_position(t_tsec, 2.0*BIG_W, BIG_START+2.0*BIG_H,   BIG_W, BIG_H);
-		set_position(t_sec,  3.0*BIG_W, BIG_START+2.0*BIG_H,   BIG_W, BIG_H);
+        set_position(wazaari,  0.0,       BIG_START, 0, BIG_H);
+        set_position(yuko,     1.0*BIG_W, BIG_START, 0, BIG_H);
+        set_position(koka,     2.0*BIG_W, BIG_START, 0, BIG_H);
+        set_position(shido,    3.0*BIG_W, BIG_START, 0, BIG_H);
+        set_position(padding,  4.0*BIG_W, BIG_START, 0, BIG_H);
+        set_position(sonomama, 7.0*BIG_W, BIG_START+1.5*BIG_H, BIG_W, 0.5*BIG_H);
 
-		set_position(o_tsec, 4.5*BIG_W, BIG_START+2*BIG_H, BIG_W, BIG_H);
-		set_position(o_sec,  5.5*BIG_W, BIG_START+2*BIG_H, BIG_W, BIG_H);
+        set_position(bw, 0.0*BIG_W, BIG_START+0.5*BIG_H, BIG_W, BIG_H);
+        set_position(by, 1.0*BIG_W, BIG_START+0.5*BIG_H, BIG_W, BIG_H);
+        set_position(bk, 2.0*BIG_W, BIG_START+0.5*BIG_H, BIG_W, BIG_H);
+        set_position(bs, 3.0*BIG_W, BIG_START+0.5*BIG_H, BIG_W, BIG_H);
+        set_position(ww, 4.0*BIG_W, BIG_START+0.5*BIG_H, BIG_W, BIG_H);
+        set_position(wy, 5.0*BIG_W, BIG_START+0.5*BIG_H, BIG_W, BIG_H);
+        set_position(wk, 6.0*BIG_W, BIG_START+0.5*BIG_H, BIG_W, BIG_H);
+        set_position(ws, 7.0*BIG_W, BIG_START+0.5*BIG_H, BIG_W, BIG_H);
 
-		set_position(points, 6.5*BIG_W, BIG_START+2*BIG_H, 1.5*BIG_W, BIG_H);
-		set_position(pts_to_blue,  4.0*BIG_W, BIG_START+2*BIG_H, 0.5*BIG_W, BIG_H/2.0);
-		set_position(pts_to_white, 4.0*BIG_W, BIG_START+2.5*BIG_H, 0.5*BIG_W, BIG_H/2.0);
-		break;
+        set_position(t_min,  0.0*BIG_W, BIG_START+2.0*BIG_H,   BIG_W, BIG_H);
+        set_position(colon,  1.0*BIG_W, BIG_START+2.0*BIG_H,   BIG_W, BIG_H);
+        set_position(t_tsec, 2.0*BIG_W, BIG_START+2.0*BIG_H,   BIG_W, BIG_H);
+        set_position(t_sec,  3.0*BIG_W, BIG_START+2.0*BIG_H,   BIG_W, BIG_H);
 
-	case 5:
-		clocks_only = TRUE;
-		labels[wazaari].w = 0.0;
-		labels[yuko].w = 0.0;
-		labels[koka].w = 0.0;
-		labels[shido].w = 0.0;
-		labels[padding].w = 0.0;
-		labels[bw].w = 0.0;
-		labels[by].w = 0.0;
-		labels[bk].w = 0.0;
-		labels[bs].w = 0.0;
-		labels[ww].w = 0.0;
-		labels[wy].w = 0.0;
-		labels[wk].w = 0.0;
-		labels[ws].w = 0.0;
-		labels[pts_to_blue].w = 0.0;
-		labels[pts_to_white].w = 0.0;
+        set_position(o_tsec, 4.5*BIG_W, BIG_START+2*BIG_H, BIG_W, BIG_H);
+        set_position(o_sec,  5.5*BIG_W, BIG_START+2*BIG_H, BIG_W, BIG_H);
 
-		set_position(match1, 0, 0, 0, 0);
-		set_position(match2, 0, 0, 0, 0);
-		set_position(blue_name_1,  0, 0, 0, 0);
-		set_position(white_name_1, 0, 0, 0, 0);
-		set_position(blue_name_2,  0, 0, 0, 0);
-		set_position(white_name_2, 0, 0, 0, 0);
-		set_position(cat1,         0, 0, 0, 0);
-		set_position(cat2,         0, 0, 0, 0);
-		set_position(t_min,         0.0, BIG_START,        BIG_W2, BIG_H2);
-		set_position(colon,      BIG_W2, BIG_START,        BIG_W2, BIG_H2);
-		set_position(t_tsec, 2.0*BIG_W2, BIG_START,        BIG_W2, BIG_H2);
-		set_position(t_sec,  3.0*BIG_W2, BIG_START,        BIG_W2, BIG_H2);
-		set_position(o_tsec,        0.0, BIG_START+BIG_H2, BIG_W2, BIG_H2);
-		set_position(o_sec,      BIG_W2, BIG_START+BIG_H2, BIG_W2, BIG_H2);
-		set_position(points, 3.0*BIG_W2, BIG_START+BIG_H2, BIG_W2, BIG_H2);
-		break;
+        set_position(points, 6.5*BIG_W, BIG_START+2*BIG_H, 1.5*BIG_W, BIG_H);
+        set_position(pts_to_blue,  4.0*BIG_W, BIG_START+2*BIG_H, 0.5*BIG_W, BIG_H/2.0);
+        set_position(pts_to_white, 4.0*BIG_W, BIG_START+2.5*BIG_H, 0.5*BIG_W, BIG_H/2.0);
+        break;
 
-	case 6:
-		set_position(match1, 0.0, 0.0, 0.0, SMALL_H);
-		set_position(match2, 0.5, 0.0, TXTW, SMALL_H);
+    case 5:
+        clocks_only = TRUE;
+        labels[wazaari].w = 0.0;
+        labels[yuko].w = 0.0;
+        labels[koka].w = 0.0;
+        labels[shido].w = 0.0;
+        labels[padding].w = 0.0;
+        labels[bw].w = 0.0;
+        labels[by].w = 0.0;
+        labels[bk].w = 0.0;
+        labels[bs].w = 0.0;
+        labels[ww].w = 0.0;
+        labels[wy].w = 0.0;
+        labels[wk].w = 0.0;
+        labels[ws].w = 0.0;
+        labels[pts_to_blue].w = 0.0;
+        labels[pts_to_white].w = 0.0;
 
-		set_position(blue_name_1,  0.01,     BIG_START+0.1*BIG_H, 0.49, 0.3*BIG_H);
-		set_position(white_name_1, 0.01,     BIG_START+2.5*BIG_H, 0.49, 0.3*BIG_H);
-		set_position(blue_name_2,  0.5+TXTW, 0.0,     0.5-TXTW, SMALL_H);
-		set_position(white_name_2, 0.5+TXTW, SMALL_H, 0.5-TXTW, SMALL_H);
-		set_position(cat1,         0.55, 4*SMALL_H, 0.325, 6*SMALL_H);
-		set_position(cat2,         0.5, SMALL_H, TXTW, SMALL_H);
+        set_position(match1, 0, 0, 0, 0);
+        set_position(match2, 0, 0, 0, 0);
+        set_position(blue_name_1,  0, 0, 0, 0);
+        set_position(white_name_1, 0, 0, 0, 0);
+        set_position(blue_name_2,  0, 0, 0, 0);
+        set_position(white_name_2, 0, 0, 0, 0);
+        set_position(cat1,         0, 0, 0, 0);
+        set_position(cat2,         0, 0, 0, 0);
+        set_position(t_min,         0.0, BIG_START,        BIG_W2, BIG_H2);
+        set_position(colon,      BIG_W2, BIG_START,        BIG_W2, BIG_H2);
+        set_position(t_tsec, 2.0*BIG_W2, BIG_START,        BIG_W2, BIG_H2);
+        set_position(t_sec,  3.0*BIG_W2, BIG_START,        BIG_W2, BIG_H2);
+        set_position(o_tsec,        0.0, BIG_START+BIG_H2, BIG_W2, BIG_H2);
+        set_position(o_sec,      BIG_W2, BIG_START+BIG_H2, BIG_W2, BIG_H2);
+        set_position(points, 3.0*BIG_W2, BIG_START+BIG_H2, BIG_W2, BIG_H2);
+        break;
 
-		set_position(comment,  0.0, 3.0*SMALL_H, 1.0, SMALL_H);
+    case 6:
+        set_position(match1, 0.0, 0.0, 0.0, SMALL_H);
+        set_position(match2, 0.5, 0.0, TXTW, SMALL_H);
 
-		set_position(wazaari,  0.0,       BIG_START+1.3*BIG_H, BIG_W, 0.3*BIG_H);
-		set_position(yuko,     1.0*BIG_W, BIG_START+1.3*BIG_H, BIG_W, 0.3*BIG_H);
-		set_position(koka,     2.0*BIG_W, BIG_START+1.3*BIG_H, BIG_W, 0.3*BIG_H);
-		set_position(shido,    3.0*BIG_W, BIG_START+1.3*BIG_H, BIG_W, 0.3*BIG_H);
-		set_position(padding,  4.0*BIG_W, BIG_START, 0, BIG_H);
-		set_position(sonomama, 7.0*BIG_W, BIG_START, BIG_W, BIG_H);
+        set_position(blue_name_1,  0.01,     BIG_START+0.1*BIG_H, 0.49, 0.3*BIG_H);
+        set_position(white_name_1, 0.01,     BIG_START+2.5*BIG_H, 0.49, 0.3*BIG_H);
+        set_position(blue_name_2,  0.5+TXTW, 0.0,     0.5-TXTW, SMALL_H);
+        set_position(white_name_2, 0.5+TXTW, SMALL_H, 0.5-TXTW, SMALL_H);
+        set_position(cat1,         0.55, 4*SMALL_H, 0.325, 6*SMALL_H);
+        set_position(cat2,         0.5, SMALL_H, TXTW, SMALL_H);
 
-		set_position(bw, 0.0,       BIG_START+0.4*BIG_H, BIG_W, 0.9*BIG_H);
-		set_position(by, 1.0*BIG_W, BIG_START+0.4*BIG_H, BIG_W, 0.9*BIG_H);
-		set_position(bk, 2.0*BIG_W, BIG_START+0.4*BIG_H, BIG_W, 0.9*BIG_H);
-		set_position(bs, 3.0*BIG_W, BIG_START+0.4*BIG_H, BIG_W, 0.9*BIG_H);
-		set_position(ww, 0.0,       BIG_START+1.6*BIG_H, BIG_W, 0.9*BIG_H);
-		set_position(wy, 1.0*BIG_W, BIG_START+1.6*BIG_H, BIG_W, 0.9*BIG_H);
-		set_position(wk, 2.0*BIG_W, BIG_START+1.6*BIG_H, BIG_W, 0.9*BIG_H);
-		set_position(ws, 3.0*BIG_W, BIG_START+1.6*BIG_H, BIG_W, 0.9*BIG_H);
+        set_position(comment,  0.0, 3.0*SMALL_H, 1.0, SMALL_H);
 
-		set_position(t_min,  4.0*BIG_W, BIG_START+BIG_H,   BIG_W, BIG_H);
-		set_position(colon,  5.0*BIG_W, BIG_START+BIG_H,   BIG_W, BIG_H);
-		set_position(t_tsec, 6.0*BIG_W, BIG_START+BIG_H,   BIG_W, BIG_H);
-		set_position(t_sec,  7.0*BIG_W, BIG_START+BIG_H,   BIG_W, BIG_H);
+        set_position(wazaari,  0.0,       BIG_START+1.3*BIG_H, BIG_W, 0.3*BIG_H);
+        set_position(yuko,     1.0*BIG_W, BIG_START+1.3*BIG_H, BIG_W, 0.3*BIG_H);
+        set_position(koka,     2.0*BIG_W, BIG_START+1.3*BIG_H, BIG_W, 0.3*BIG_H);
+        set_position(shido,    3.0*BIG_W, BIG_START+1.3*BIG_H, BIG_W, 0.3*BIG_H);
+        set_position(padding,  4.0*BIG_W, BIG_START, 0, BIG_H);
+        set_position(sonomama, 7.0*BIG_W, BIG_START, BIG_W, BIG_H);
 
-		set_position(o_tsec, 4.0*BIG_W, BIG_START+2*BIG_H, BIG_W, BIG_H);
-		set_position(o_sec,  5.0*BIG_W, BIG_START+2*BIG_H, BIG_W, BIG_H);
+        set_position(bw, 0.0,       BIG_START+0.4*BIG_H, BIG_W, 0.9*BIG_H);
+        set_position(by, 1.0*BIG_W, BIG_START+0.4*BIG_H, BIG_W, 0.9*BIG_H);
+        set_position(bk, 2.0*BIG_W, BIG_START+0.4*BIG_H, BIG_W, 0.9*BIG_H);
+        set_position(bs, 3.0*BIG_W, BIG_START+0.4*BIG_H, BIG_W, 0.9*BIG_H);
+        set_position(ww, 0.0,       BIG_START+1.6*BIG_H, BIG_W, 0.9*BIG_H);
+        set_position(wy, 1.0*BIG_W, BIG_START+1.6*BIG_H, BIG_W, 0.9*BIG_H);
+        set_position(wk, 2.0*BIG_W, BIG_START+1.6*BIG_H, BIG_W, 0.9*BIG_H);
+        set_position(ws, 3.0*BIG_W, BIG_START+1.6*BIG_H, BIG_W, 0.9*BIG_H);
 
-		set_position(points, 6.5*BIG_W, BIG_START+2*BIG_H, 1.5*BIG_W, BIG_H);
-		set_position(pts_to_blue,  6.0*BIG_W, BIG_START+2*BIG_H, 0.5*BIG_W, BIG_H/2.0);
-		set_position(pts_to_white, 6.0*BIG_W, BIG_START+2.5*BIG_H, 0.5*BIG_W, BIG_H/2.0);
-		break;
+        set_position(t_min,  4.0*BIG_W, BIG_START+BIG_H,   BIG_W, BIG_H);
+        set_position(colon,  5.0*BIG_W, BIG_START+BIG_H,   BIG_W, BIG_H);
+        set_position(t_tsec, 6.0*BIG_W, BIG_START+BIG_H,   BIG_W, BIG_H);
+        set_position(t_sec,  7.0*BIG_W, BIG_START+BIG_H,   BIG_W, BIG_H);
+
+        set_position(o_tsec, 4.0*BIG_W, BIG_START+2*BIG_H, BIG_W, BIG_H);
+        set_position(o_sec,  5.0*BIG_W, BIG_START+2*BIG_H, BIG_W, BIG_H);
+
+        set_position(points, 6.5*BIG_W, BIG_START+2*BIG_H, 1.5*BIG_W, BIG_H);
+        set_position(pts_to_blue,  6.0*BIG_W, BIG_START+2*BIG_H, 0.5*BIG_W, BIG_H/2.0);
+        set_position(pts_to_white, 6.0*BIG_W, BIG_START+2.5*BIG_H, 0.5*BIG_W, BIG_H/2.0);
+        break;
+
+    case 7:
+        filename = g_build_filename(installation_dir, "etc", "timer-custom.txt", NULL);
+        f = fopen(filename, "r");
+        if (f) {
+            struct label lbl;
+            gint num;
+            gchar line[128];
+            while (fgets(line, sizeof(line), f)) {
+                if (line[0] == '#' || strlen(line) < 4)
+                    continue;
+                if (sscanf(line, "%d %lf %lf %lf %lf %lf %d %lf %lf %lf %lf %lf %lf %d",
+                           &num, &lbl.x, &lbl.y, &lbl.w, &lbl.h,
+                           &lbl.size, &lbl.xalign, 
+                           &lbl.fg_r, &lbl.fg_g, &lbl.fg_b, 
+                           &lbl.bg_r, &lbl.bg_g, &lbl.bg_b, &lbl.wrap) == 14) {
+                    if (num >= 0 && num < num_labels) {
+                        labels[num].x = lbl.x; 
+                        labels[num].y = lbl.y; 
+                        labels[num].w = lbl.w; 
+                        labels[num].h = lbl.h; 
+                        labels[num].size = lbl.size; 
+                        labels[num].xalign = lbl.xalign; 
+                        labels[num].fg_r = lbl.fg_r;
+                        labels[num].fg_g = lbl.fg_g;
+                        labels[num].fg_b = lbl.fg_b;
+                        labels[num].bg_r = lbl.bg_r;
+                        labels[num].bg_g = lbl.bg_g;
+                        labels[num].bg_b = lbl.bg_b;
+                        labels[num].wrap = lbl.wrap;
+                    } else
+                        printf("Read error in file %s, num = %d\n", filename, num);
+                } else
+                    printf("Read error in file %s\n", filename);
+            }
+            fclose(f);
+        } else {
+
+#define H1 0.25
+#define H2 0.25
+#define H3 (1.0 - H1 - H2)
+#define H_NAME (0.6*H1)
+#define H_CLUB (H1 - H_NAME)
+#define H_TIME 0.25
+#define H_IWYS 0.10
+#define H_SCORE (H1 - 0.5*H_IWYS)
+#define H_COMMENT (0.2*(H3 - H_TIME))
+#define W1 0.5
+#define W_TIME 0.09
+#define W_COLON (0.6*W_TIME)
+#define W_SEL (0.7*W_TIME)
+#define W_CAT 0.28
+#define W_SCORE 0.07
+#define W_NAME (1 - 4.0*W_SCORE)
+#define Y_IWYS (H1 - 0.5*H_IWYS)
+#define Y_SCORE (H1 + 0.5*H_IWYS)
+#define X_TSEC (W_CAT + W_TIME + W_SCORE)
+
+            //labels[sonomama].size = 0.0;
+            labels[gs].size = 0.4;
+            labels[gs].xalign = 0;
+            labels[cat1].wrap = TRUE;
+            labels[cat1].size = 0.35;
+            set_bg_color(blue_name_1, GTK_STATE_NORMAL, bgcolor);
+            set_bg_color(blue_club, GTK_STATE_NORMAL, bgcolor);
+            set_bg_color(white_name_1, GTK_STATE_NORMAL, &color_white);
+            set_bg_color(white_club, GTK_STATE_NORMAL, &color_white);
+            set_fg_color(white_name_1, GTK_STATE_NORMAL, &color_black);
+            set_fg_color(white_club, GTK_STATE_NORMAL, &color_black);
+
+            set_fg_color(wazaari, GTK_STATE_NORMAL, &color_black);
+            set_bg_color(wazaari, GTK_STATE_NORMAL, &color_yellow);
+            set_fg_color(yuko, GTK_STATE_NORMAL, &color_black);
+            set_bg_color(yuko, GTK_STATE_NORMAL, &color_yellow);
+            set_fg_color(koka, GTK_STATE_NORMAL, &color_black);
+            set_bg_color(koka, GTK_STATE_NORMAL, &color_yellow);
+            set_fg_color(shido, GTK_STATE_NORMAL, &color_black);
+            set_bg_color(shido, GTK_STATE_NORMAL, &color_yellow);
+
+            set_fg_color(cat1, GTK_STATE_NORMAL, &color_black);
+            set_bg_color(cat1, GTK_STATE_NORMAL, &color_yellow);
+
+            NO_SHOW(match1);
+            NO_SHOW(match2);
+
+            set_position(blue_name_1,  0.0, 0.0,  W_NAME, H_NAME);
+            set_position(white_name_1, 0.0, H1,   W_NAME, H_NAME);
+            set_position(blue_club,  0.0, H_NAME,      W_NAME, H_CLUB);
+            set_position(white_club, 0.0, H1 + H_NAME, W_NAME, H_CLUB);
+
+            NO_SHOW(blue_name_2);
+            NO_SHOW(white_name_2);
+            set_position(cat1, 0.0, H1+H2, W_CAT, H3);
+            NO_SHOW(cat2);
+
+            set_position(comment, W_CAT, H1 + H2, 1 - W_CAT - W_TIME, H_COMMENT);
+            set_position(gs, W_CAT, H1 + H2 + H_COMMENT, 1 - W_CAT - W_TIME, H3 - H_TIME - H_COMMENT);
+            set_position(sonomama, 1 - W_TIME, H1 + H2, W_TIME, H3 - H_TIME);
+
+            set_position(wazaari, 1 - 4*W_SCORE, Y_IWYS, W_SCORE, H_IWYS);
+            set_position(yuko,    1 - 3*W_SCORE, Y_IWYS, W_SCORE, H_IWYS);
+            set_position(koka,    1 - 2*W_SCORE, Y_IWYS, W_SCORE, H_IWYS);
+            set_position(shido,   1 - W_SCORE,   Y_IWYS, W_SCORE, H_IWYS);
+
+            NO_SHOW(padding);
+
+            set_position(bw, 1 - 4*W_SCORE, 0.0, W_SCORE, H_SCORE);
+            set_position(by, 1 - 3*W_SCORE, 0.0, W_SCORE, H_SCORE);
+            set_position(bk, 1 - 2*W_SCORE, 0.0, W_SCORE, H_SCORE);
+            set_position(bs, 1 - W_SCORE,   0.0, W_SCORE, H_SCORE);
+
+            set_position(ww, 1 - 4*W_SCORE, Y_SCORE, W_SCORE, H_SCORE);
+            set_position(wy, 1 - 3*W_SCORE, Y_SCORE, W_SCORE, H_SCORE);
+            set_position(wk, 1 - 2*W_SCORE, Y_SCORE, W_SCORE, H_SCORE);
+            set_position(ws, 1 - W_SCORE,   Y_SCORE, W_SCORE, H_SCORE);
+
+            set_position(t_min,  W_CAT,   1.0 - H_TIME, W_TIME, H_TIME);
+            set_position(colon,  W_CAT + W_TIME, 1.0 - H_TIME, W_COLON, H_TIME);
+            set_position(t_tsec, X_TSEC, 1.0 - H_TIME, W_TIME, H_TIME);
+            set_position(t_sec,  X_TSEC + W_TIME, 1.0 - H_TIME, W_TIME, H_TIME);
+
+            set_position(o_tsec, 1 - W_SEL - 3*W_TIME, 1.0 - H_TIME, W_TIME, H_TIME);
+            set_position(o_sec,  1 - W_SEL - 2*W_TIME, 1.0 - H_TIME, W_TIME, H_TIME);
+
+            set_position(pts_to_blue,  1 - W_SEL - W_TIME, 1.0 - H_TIME,     W_SEL, 0.5*H_TIME);
+            set_position(pts_to_white, 1 - W_SEL - W_TIME, 1.0 - 0.5*H_TIME, W_SEL, 0.5*H_TIME);
+
+            set_position(points,  1 - W_TIME, 1.0 - H_TIME, W_TIME, H_TIME);
         }
+        break;
+    }
 
-	expose(darea, 0, 0);
+    expose(darea, 0, 0);
 
-	g_key_file_set_integer(keyfile, "preferences", "displaylayout", (gint)data);
+    g_key_file_set_integer(keyfile, "preferences", "displaylayout", (gint)data);
 
-/****
-        if (mode == MODE_MASTER) {
-                gint i;
-                for (i = 0; i < num_labels; i++)
-                        labels[i].status = LABEL_STATUS_CHANGED | LABEL_STATUS_EXPOSE;
+    /****
+         if (mode == MODE_MASTER) {
+         gint i;
+         for (i = 0; i < num_labels; i++)
+         labels[i].status = LABEL_STATUS_CHANGED | LABEL_STATUS_EXPOSE;
 
-                display_big(" ", 4);
-        }
-****/
+         display_big(" ", 4);
+         }
+    ****/
 }
 
 void change_language_1(void)
@@ -1777,3 +2098,4 @@ gint application_type(void)
 {
         return APPLICATION_TYPE_TIMER;
 }
+
