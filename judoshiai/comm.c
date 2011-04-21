@@ -109,6 +109,7 @@ gboolean msg_accepted(struct message *m)
     case MSG_NAME_REQ:
     case MSG_ALL_REQ:
     case MSG_CANCEL_REST_TIME:
+    case MSG_EDIT_COMPETITOR:
         return TRUE;
     }
     return FALSE;

@@ -43,6 +43,8 @@
 #include "httpp.h"
 
 void index_html(http_parser_t *parser, gchar *txt);
+void send_html_top(http_parser_t *parser, gchar *bodyattr);
+void send_html_bottom(http_parser_t *parser);
 
 /* System-dependent definitions */
 #ifndef WIN32
@@ -257,10 +259,8 @@ void get_categories(http_parser_t *parser)
         h_id = httpp_get_query_param(parser, "h_id");
     }
 
-    sendf(s, "HTTP/1.0 200 OK\r\n");
-    sendf(s, "Content-Type: text/html\r\n");
-    sendf(s, "\r\n");
-    sendf(s, "<html><head><title>JudoShiai</title></head><body>\r\n");
+    send_html_top(parser, "");
+
     sendf(s, "<form name=\"catform\" action=\"categories\" method=\"get\">");
 
     HIDDEN(id);
@@ -274,11 +274,19 @@ void get_categories(http_parser_t *parser)
           "<td><input type=\"submit\" name=\"tatami2\" value=\"Tatami 2\" %s></td>\r\n"
           "<td><input type=\"submit\" name=\"tatami3\" value=\"Tatami 3\" %s></td>\r\n"
           "<td><input type=\"submit\" name=\"tatami4\" value=\"Tatami 4\" %s></td>\r\n"
+          "<td><input type=\"submit\" name=\"tatami5\" value=\"Tatami 5\" %s></td>\r\n"
+          "<td><input type=\"submit\" name=\"tatami6\" value=\"Tatami 6\" %s></td>\r\n"
+          "<td><input type=\"submit\" name=\"tatami7\" value=\"Tatami 7\" %s></td>\r\n"
+          "<td><input type=\"submit\" name=\"tatami8\" value=\"Tatami 8\" %s></td>\r\n"
           "</tr></table>\r\n",
           (h_tatami && h_tatami[0]=='1') ? style1 : style0,
           (h_tatami && h_tatami[0]=='2') ? style1 : style0,
           (h_tatami && h_tatami[0]=='3') ? style1 : style0,
-          (h_tatami && h_tatami[0]=='4') ? style1 : style0);
+          (h_tatami && h_tatami[0]=='4') ? style1 : style0,
+          (h_tatami && h_tatami[0]=='5') ? style1 : style0,
+          (h_tatami && h_tatami[0]=='6') ? style1 : style0,
+          (h_tatami && h_tatami[0]=='7') ? style1 : style0,
+          (h_tatami && h_tatami[0]=='8') ? style1 : style0);
 
     gint numrows = 0;
 
@@ -289,8 +297,6 @@ void get_categories(http_parser_t *parser)
     /* next matches */
     if (h_tatami) {
         gint i = atoi(h_tatami) - 1, k;
-        gsize x;
-        gchar *first = NULL, *last = NULL;
         gchar *xf, *xl, *xc;
 
         sendf(s, "<table border=\"0\">");
@@ -305,16 +311,12 @@ void get_categories(http_parser_t *parser)
             xc = "";
         }
 
-        first = g_convert(xf, -1, "ISO-8859-1", "UTF-8", NULL, &x, NULL);
-        last = g_convert(xl, -1, "ISO-8859-1", "UTF-8", NULL, &x, NULL);
         sendf(s, "<tr><td>%s:<br>", _("Previous winner"));
         if (is_accepted(parser->address))
             sendf(s, "<input type=\"submit\" name=\"MR-%d-%d-0\" value=\"%s\">",
                   next_matches_info[i][0].won_catnum, next_matches_info[i][0].won_matchnum,
                   _("Cancel the match"));
-        sendf(s, "</td><td>%s<br>%s %s<br>&nbsp;</td>", xc, first, last);
-        g_free(first); first = NULL;
-        g_free(last);  last  = NULL;
+        sendf(s, "</td><td>%s<br>%s %s<br>&nbsp;</td>", xc, xf, xl);
 
         g_static_mutex_lock(&next_match_mutex);
         struct match *m = get_cached_next_matches(i+1);
@@ -335,13 +337,6 @@ void get_categories(http_parser_t *parser)
             if (!cat)
                 cat = &unknown_judoka;
 
-            gchar *b_first = g_convert(blue->first, -1, "ISO-8859-1", "UTF-8", NULL, &x, NULL);
-            gchar *b_last = g_convert(blue->last, -1, "ISO-8859-1", "UTF-8", NULL, &x, NULL);
-            gchar *b_club = g_convert(get_club_text(blue, 0), -1, "ISO-8859-1", "UTF-8", NULL, &x, NULL);
-            gchar *w_first = g_convert(white->first, -1, "ISO-8859-1", "UTF-8", NULL, &x, NULL);
-            gchar *w_last = g_convert(white->last, -1, "ISO-8859-1", "UTF-8", NULL, &x, NULL);
-            gchar *w_club = g_convert(get_club_text(white, 0), -1, "ISO-8859-1", "UTF-8", NULL, &x, NULL);
-
             sendf(s, "<tr %s><td><b>%s %d:</b></td><td><b>%s</b></td></tr>", 
                   bgcolor, _("Match"), k+1, cat->last);
 
@@ -354,15 +349,9 @@ void get_categories(http_parser_t *parser)
             }
 
             sendf(s, "<tr %s><td>%s %s<br>%s<br>&nbsp;</td><td>%s %s<br>%s<br>&nbsp;</td></tr>", 
-                  bgcolor, b_first, b_last, get_club_text(blue, 0), 
-		  w_first, w_last, get_club_text(white, 0));
+                  bgcolor, blue->first, blue->last, get_club_text(blue, 0), 
+		  white->first, white->last, get_club_text(white, 0));
 			
-            g_free(b_first);
-            g_free(b_last);
-            g_free(w_first);
-            g_free(w_last);
-            g_free(b_club);
-            g_free(w_club);
             if (blue != &unknown_judoka)
                 free_judoka(blue);
             if (white != &unknown_judoka)
@@ -405,7 +394,9 @@ void get_categories(http_parser_t *parser)
 
     /* picture */
     sendf(s, "<img src=\"sheet%s\">", h_id ? h_id : "0");
-    sendf(s, "</td></tr></table></form></body></html>\r\n\r\n", "?");
+    sendf(s, "</td></tr></table></form>\r\n");
+
+    send_html_bottom(parser);
 }
 
 static cairo_status_t write_to_http(void *closure, const unsigned char *data, unsigned int length)
@@ -538,6 +529,50 @@ verdict:
     }
 }
 
+void send_html_top(http_parser_t *parser, gchar *bodyattr)
+{
+    SOCKET s = parser->sock;
+
+    sendf(s, "HTTP/1.0 200 OK\r\n");
+    sendf(s, "Content-Type: text/html; charset=utf-8\r\n\r\n");
+    sendf(s, "<html><head>"
+          "<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\">"
+          "<link rel=\"stylesheet\" type=\"text/css\" href=\"menu.css\">"
+          "<title>JudoShiai</title></head><body %s>\r\n", bodyattr);
+    /*
+    sendf(s, "<table class=\"topbuttons\">"
+          "<tr><td><a href=\"categories\">%s</a></td>\r\n", _("Match controlling and browsing"));
+    sendf(s, "<td><a href=\"competitors\">%s</a></td>\r\n", _("Competitors"));
+    sendf(s, "</tr></table>\r\n");*/
+
+    sendf(s, "<p id=\"navb\"><ul id=\"nav\">"); 
+
+    sendf(s, "<li>%s<ul>\r\n", _("Competitors"));
+    sendf(s, "<li><a href=\"competitors\">%s</a></li>\r\n", _("Show"));
+    sendf(s, "<li><a href=\"delcompetitors\">%s</a></li>\r\n", _("Show Deleted"));
+    sendf(s, "<li><a href=\"getcompetitor?index=0\">%s</a></li>\r\n", _("Add"));
+    sendf(s, "\r\n");
+    sendf(s, "</ul></li>\r\n");
+
+    sendf(s, "<li><a href=\"categories\">%s</a></li>\r\n", _("Matches"));
+
+    if (webpwcrc32) {
+        if (is_accepted(parser->address))
+            sendf(s, "<li><a href=\"logout\">%s</a></li>\r\n", _("Logout"));
+        else
+            sendf(s, "<li><a href=\"login\">%s</a></li>\r\n", _("Login"));
+    }
+
+    sendf(s, "</ul></p><hr>");
+}
+
+void send_html_bottom(http_parser_t *parser)
+{
+    SOCKET s = parser->sock;
+
+    sendf(s, "</body></html>\r\n\r\n");
+}
+
 void logout(http_parser_t *parser)
 {
     SOCKET s = parser->sock;
@@ -554,13 +589,16 @@ void index_html(http_parser_t *parser, gchar *txt)
 {
     SOCKET s = parser->sock;
 
+    send_html_top(parser, "");
+#if 0
     sendf(s, "HTTP/1.0 200 OK\r\n");
     sendf(s, "Content-Type: text/html\r\n\r\n");
     sendf(s, "<html><head><title>JudoShiai</title></head><body>\r\n");
-    sendf(s, "%s", txt);
     sendf(s, "<a href=\"categories\">%s</a><br>", _("Match controlling and browsing"));
     sendf(s, "<a href=\"competitors\">%s</a><br>", _("Competitors"));
-
+#endif
+    sendf(s, "%s", txt);
+#if 0
     if (webpwcrc32 == 0)
         sendf(s, "<hr>%s<br>", _("Password not in use"));
     else if (is_accepted(parser->address))
@@ -571,8 +609,10 @@ void index_html(http_parser_t *parser, gchar *txt)
               _("User name can be anything"));
         sendf(s, "<br><a href=\"login\">%s</a><br>", _("Login"));
     }
-
     sendf(s, "</body></html>\r\n\r\n");
+#endif
+
+    send_html_bottom(parser);
 }
 
 void run_judotimer(http_parser_t *parser)
@@ -662,7 +702,6 @@ void run_judotimer(http_parser_t *parser)
     sendf(s, "%d %d\r\n", m[0].category, m[0].number);
 
     for (k = 0; m[k].number != 1000 && k < 2; k++) {
-        gsize x;
         struct judoka *blue, *white, *cat;
         blue = get_data(m[k].blue);
         white = get_data(m[k].white);
@@ -682,30 +721,14 @@ void run_judotimer(http_parser_t *parser)
             g_print("NEXT MATCH ERR: %s %s\n", 
                     next_matches_info[tatami-1][0].blue_first, blue->first);
 
-        gchar *b_first = g_convert(blue->first, -1, "ISO-8859-1", "UTF-8", NULL, &x, NULL);
-        gchar *b_last = g_convert(blue->last, -1, "ISO-8859-1", "UTF-8", NULL, &x, NULL);
-        gchar *w_first = g_convert(white->first, -1, "ISO-8859-1", "UTF-8", NULL, &x, NULL);
-        gchar *w_last = g_convert(white->last, -1, "ISO-8859-1", "UTF-8", NULL, &x, NULL);
-        gchar *b_club = g_convert(get_club_text(blue, 0), -1, "ISO-8859-1", "UTF-8", NULL, &x, NULL);
-        gchar *w_club = g_convert(get_club_text(white, 0), -1, "ISO-8859-1", "UTF-8", NULL, &x, NULL);
-
         sendf(s, "%s\r\n", cat->last);
         if (k == 0 && !is_accepted(parser->address)) {
             sendf(s, "%s!\r\n", _("No rights to give results"));
             sendf(s, "%s.\r\n", _("Login"));
         } else {
-            sendf(s, "%s %s %s\r\n", b_first, b_last, b_club);
-            sendf(s, "%s %s %s\r\n", w_first, w_last, w_club);
-            //sendf(s, "%s %s %s\r\n", blue->first, blue->last, blue->club);
-            //sendf(s, "%s %s %s\r\n", white->first, white->last, white->club);
+            sendf(s, "%s %s %s\r\n", blue->first, blue->last, blue->club);
+            sendf(s, "%s %s %s\r\n", white->first, white->last, white->club);
         }
-
-        g_free(b_first);
-        g_free(b_last);
-        g_free(w_first);
-        g_free(w_last);
-        g_free(b_club);
-        g_free(w_club);
 
         if (blue != &unknown_judoka)
             free_judoka(blue);
@@ -750,16 +773,14 @@ void get_competitor(http_parser_t *parser)
         node = avl_get_next(node);
     }
 
-    sendf(s, "HTTP/1.0 200 OK\r\n");
-    sendf(s, "Content-Type: text/html; charset=utf-8\r\n");
-    sendf(s, "\r\n");
-    sendf(s, "<html><head><title>JudoShiai</title></head><body onLoad=\"document.valtable.weight.focus()\">\r\n");
+    send_html_top(parser, "onLoad=\"document.valtable.weight.focus()\"");
 
     sprintf(buf, "select * from competitors where \"index\"=%s", ix);
     gint numrows = db_get_table(buf);
 
     if (numrows < 0) {
-        sendf(s, "<h1>%s</h1></body></html>\r\n\r\n", _("No competitor found!"));
+        sendf(s, "<h1>%s</h1>", _("No competitor found!"));
+        send_html_bottom(parser);
         return;
     } else if (numrows == 0)
         new_comp = TRUE;
@@ -831,8 +852,9 @@ void get_competitor(http_parser_t *parser)
         sendf(s, "<input type=\"submit\" value=\"%s\">", "OK");
 
     sendf(s, "</form><br><a href=\"competitors\">Competitors</a>"
-          SEARCH_FIELD
-          "</body></html>\r\n\r\n");
+          SEARCH_FIELD);
+
+    send_html_bottom(parser);
 
     db_close_table();
 }
@@ -942,15 +964,14 @@ void set_competitor(http_parser_t *parser)
     while ((time(NULL) < start + 5) && (msg2->type != 0))
         g_usleep(10000);
 
-    sendf(s, "HTTP/1.0 200 OK\r\n");
-    sendf(s, "Content-Type: text/html; charset=utf-8\r\n");
-    sendf(s, "\r\n");
-    sendf(s, "<html><head><title>JudoShiai</title></head>"
-          "<body onLoad=\"document.search.index.focus()\"><h1>OK</h1>"
+    send_html_top(parser, "");
+
+    sendf(s, "<h1>OK</h1>"
           "%s %s saved.<br>"
           "<a href=\"competitors\">Show competitors</a>\r\n"
-          SEARCH_FIELD
-          "</body></html>\r\n\r\n", first, last);
+          SEARCH_FIELD, first, last);
+
+    send_html_bottom(parser);
 }
 
 void get_competitors(http_parser_t *parser, gboolean show_deleted)
@@ -984,19 +1005,8 @@ void get_competitors(http_parser_t *parser, gboolean show_deleted)
     if (numrows < 0)
         return;
 
-    sendf(s, "HTTP/1.0 200 OK\r\n");
-    sendf(s, "Content-Type: text/html; charset=utf-8\r\n");
-    sendf(s, "\r\n");
-    sendf(s, "<html><head><title>JudoShiai</title></head>"
-          "<body onLoad=\"document.search.index.focus()\"><h1>%s</h1>\r\n", 
-          show_deleted ? _("Deleted Competitors") : _("Competitors"));
+    send_html_top(parser, "onLoad=\"document.search.index.focus()\"");
 
-    if (show_deleted)
-        sendf(s, "<a href=\"competitors\"><b>Show competitors</b></a><br>\r\n");
-    else {
-        sendf(s, "<a href=\"delcompetitors\">Show deleted</a><br>\r\n");
-        sendf(s, "<a href=\"getcompetitor?index=0\"><b>Add new competitor</b></a><br>\r\n");
-    }
     sendf(s, SEARCH_FIELD);
 
     sendf(s, "<table>\r\n");
@@ -1026,7 +1036,8 @@ void get_competitors(http_parser_t *parser, gboolean show_deleted)
         }
     }	
 
-    sendf(s, "</table></body></html>\r\n\r\n");
+    sendf(s, "</table>\r\n");
+    send_html_bottom(parser);
 
     db_close_table();
 }
@@ -1113,9 +1124,8 @@ gpointer analyze_http(gpointer param)
             index_html(parser, "");
         else
             get_file(parser);
-    } else 	if (parser->req_type == httpp_req_post) {
+    } else if (parser->req_type == httpp_req_post) {
         g_print("POST %s\n", parser->uri);
-
     }
     
     for (i = 0; i < NUM_CONNECTIONS; i++)
