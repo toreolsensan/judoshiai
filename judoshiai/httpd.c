@@ -550,7 +550,7 @@ void send_html_top(http_parser_t *parser, gchar *bodyattr)
     sendf(s, "<li>%s<ul>\r\n", _("Competitors"));
     sendf(s, "<li><a href=\"competitors\">%s</a></li>\r\n", _("Show"));
     sendf(s, "<li><a href=\"delcompetitors\">%s</a></li>\r\n", _("Show Deleted"));
-    sendf(s, "<li><a href=\"getcompetitor?index=0\">%s</a></li>\r\n", _("Add"));
+    sendf(s, "<li><a href=\"getcompetitor?index=0\">%s</a></li>\r\n", _("New Competitor"));
     sendf(s, "\r\n");
     sendf(s, "</ul></li>\r\n");
 
@@ -590,28 +590,7 @@ void index_html(http_parser_t *parser, gchar *txt)
     SOCKET s = parser->sock;
 
     send_html_top(parser, "");
-#if 0
-    sendf(s, "HTTP/1.0 200 OK\r\n");
-    sendf(s, "Content-Type: text/html\r\n\r\n");
-    sendf(s, "<html><head><title>JudoShiai</title></head><body>\r\n");
-    sendf(s, "<a href=\"categories\">%s</a><br>", _("Match controlling and browsing"));
-    sendf(s, "<a href=\"competitors\">%s</a><br>", _("Competitors"));
-#endif
     sendf(s, "%s", txt);
-#if 0
-    if (webpwcrc32 == 0)
-        sendf(s, "<hr>%s<br>", _("Password not in use"));
-    else if (is_accepted(parser->address))
-        sendf(s, "<hr><a href=\"logout\">%s</a><br>", _("Logout"));
-    else {
-        sendf(s, "<hr><p>%s, %s. %s.",
-              _("Login is required"), _("if you want to report match results"),
-              _("User name can be anything"));
-        sendf(s, "<br><a href=\"login\">%s</a><br>", _("Login"));
-    }
-    sendf(s, "</body></html>\r\n\r\n");
-#endif
-
     send_html_bottom(parser);
 }
 
@@ -849,7 +828,7 @@ void get_competitor(http_parser_t *parser)
     sendf(s, "</table>\r\n");
 
     if (is_accepted(parser->address))
-        sendf(s, "<input type=\"submit\" value=\"%s\">", "OK");
+        sendf(s, "<input type=\"submit\" value=\"%s\">", new_comp ? _("Add") : _("OK"));
 
     sendf(s, "</form><br><a href=\"competitors\">Competitors</a>"
           SEARCH_FIELD);
