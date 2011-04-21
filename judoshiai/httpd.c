@@ -791,7 +791,7 @@ void get_competitor(http_parser_t *parser)
     sendf(s, "<form method=\"get\" action=\"setcompetitor\" name=\"valtable\">"
           "<input type=\"hidden\" name=\"index\" value=\"%d\">"
           "<input type=\"hidden\" name=\"category\" value=\"%s\">"
-          "<table>\r\n", index, category);
+          "<table class=\"competitor\">\r\n", index, category);
 
     HTML_ROW_STR("Last Name", last);
     HTML_ROW_STR("First Name", first);

@@ -188,3 +188,12 @@ table.statistics th.stat1 {
     text-align: left;
 }
 
+table.competitor td {
+    font-family: Verdana;
+    font-size: 14px;
+    font-weight: normal;
+    text-decoration: none;
+    color: black;
+    border-spacing: 8px 0px;
+    border-top: 1px solid grey;
+}
