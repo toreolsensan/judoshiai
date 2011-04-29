@@ -299,7 +299,7 @@ void get_categories(http_parser_t *parser)
         gint i = atoi(h_tatami) - 1, k;
         gchar *xf, *xl, *xc;
 
-        sendf(s, "<table border=\"0\">");
+        sendf(s, "<table class=\"nextmatches\">");
 
         if (next_matches_info[i][0].won_catnum) {
             xf = next_matches_info[i][0].won_first;
@@ -311,18 +311,23 @@ void get_categories(http_parser_t *parser)
             xc = "";
         }
 
-        sendf(s, "<tr><td>%s:<br>", _("Previous winner"));
+        sendf(s, "<tr><td class=\"cpl\">%s:<br>", _("Previous winner"));
         if (is_accepted(parser->address))
             sendf(s, "<input type=\"submit\" name=\"MR-%d-%d-0\" value=\"%s\">",
                   next_matches_info[i][0].won_catnum, next_matches_info[i][0].won_matchnum,
                   _("Cancel the match"));
-        sendf(s, "</td><td>%s<br>%s %s<br>&nbsp;</td>", xc, xf, xl);
+        sendf(s, "</td><td class=\"cpr\">%s<br>%s %s<br>&nbsp;</td>", xc, xf, xl);
 
         g_static_mutex_lock(&next_match_mutex);
         struct match *m = get_cached_next_matches(i+1);
 
         for (k = 0; m[k].number != 1000 && k < NEXT_MATCH_NUM; k++) {
-            gchar *bgcolor = (k & 1) ? "bgcolor=\"#a0a0a0\"" : "bgcolor=\"#f0f0f0\"";
+            gchar *class_ul = (k & 1) ? "class=\"cul1\"" : "class=\"cul2\"";
+            gchar *class_ur = (k & 1) ? "class=\"cur1\"" : "class=\"cur2\"";
+            gchar *class_dl = (k & 1) ? "class=\"cdl1\"" : "class=\"cdl2\"";
+            gchar *class_dr = (k & 1) ? "class=\"cdr1\"" : "class=\"cdr2\"";
+            gchar *class_cl = (k & 1) ? "class=\"ccl1\"" : "class=\"ccl2\"";
+            gchar *class_cr = (k & 1) ? "class=\"ccr1\"" : "class=\"ccr2\"";
             struct judoka *blue, *white, *cat;
             blue = get_data(m[k].blue);
             white = get_data(m[k].white);
@@ -337,20 +342,20 @@ void get_categories(http_parser_t *parser)
             if (!cat)
                 cat = &unknown_judoka;
 
-            sendf(s, "<tr %s><td><b>%s %d:</b></td><td><b>%s</b></td></tr>", 
-                  bgcolor, _("Match"), k+1, cat->last);
+            sendf(s, "<tr><td %s><b>%s %d:</b></td><td %s><b>%s</b></td></tr>", 
+                  class_ul, _("Match"), k+1, class_ur, cat->last);
 
             if (k == 0 && is_accepted(parser->address)) {
-                sendf(s, "<tr %s><td>", bgcolor);
+                sendf(s, "<tr><td %s>", class_cl);
                 send_point_buttons(s, m[k].category, m[k].number, TRUE);
-                sendf(s, "</td><td>");
+                sendf(s, "</td><td %s>", class_cr);
                 send_point_buttons(s, m[k].category, m[k].number, FALSE);
                 sendf(s, "</td></tr>");
             }
 
-            sendf(s, "<tr %s><td>%s %s<br>%s<br>&nbsp;</td><td>%s %s<br>%s<br>&nbsp;</td></tr>", 
-                  bgcolor, blue->first, blue->last, get_club_text(blue, 0), 
-		  white->first, white->last, get_club_text(white, 0));
+            sendf(s, "<tr><td %s>%s %s<br>%s<br>&nbsp;</td><td %s>%s %s<br>%s<br>&nbsp;</td></tr>", 
+                  class_dl, blue->first, blue->last, get_club_text(blue, 0), 
+		  class_dr, white->first, white->last, get_club_text(white, 0));
 			
             if (blue != &unknown_judoka)
                 free_judoka(blue);
@@ -791,7 +796,10 @@ void get_competitor(http_parser_t *parser)
     sendf(s, "<form method=\"get\" action=\"setcompetitor\" name=\"valtable\">"
           "<input type=\"hidden\" name=\"index\" value=\"%d\">"
           "<input type=\"hidden\" name=\"category\" value=\"%s\">"
-          "<table class=\"competitor\">\r\n", index, category);
+          "<table class=\"competitor\">\r\n", 
+          index, category);
+
+    //          "<table class=\"competitor\" border=\"1\" frame=\"hsides\" rules=\"rows\">\r\n", 
 
     HTML_ROW_STR("Last Name", last);
     HTML_ROW_STR("First Name", first);

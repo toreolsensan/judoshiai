@@ -23,11 +23,13 @@ extern void write_competitor(FILE *f, const gchar *first, const gchar *last, con
 #define PRINT_COMPETITORS             8
 #define COMPETITOR_STATISTICS        16
 #define PRINT_COMPETITORS_BY_CLUB    32
+#define FIND_COMPETITOR_BY_ID        64
 
 static FILE *print_file = NULL;
 static gint num_competitors;
 static gint num_weighted_competitors;
 static gint competitors_not_added, competitors_added;
+static gint competitor_by_id;
 
 static int db_callback(void *data, int argc, char **argv, char **azColName)
 {
@@ -95,6 +97,11 @@ static int db_callback(void *data, int argc, char **argv, char **azColName)
                          get_club_text(&j, CLUB_TEXT_ADDRESS), 
                          j.category, j.index, flags & PRINT_COMPETITORS_BY_CLUB);
         return 0;
+    }
+
+    if (flags & FIND_COMPETITOR_BY_ID) {
+        competitor_by_id = j.index;
+        return 1;
     }
 
     if (flags & COMPETITOR_STATISTICS) {
@@ -338,4 +345,10 @@ void db_set_match_hansokumake(gint category, gint number, gint blue, gint white)
     }
 }
 
-
+gint db_get_index_by_id(const gchar *id)
+{
+    competitor_by_id = 0;
+    db_exec_str((gpointer)FIND_COMPETITOR_BY_ID, db_callback,
+                "SELECT * FROM competitors WHERE \"id\"=\"%s\"", id);
+    return competitor_by_id;
+}

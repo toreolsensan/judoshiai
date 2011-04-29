@@ -188,12 +188,99 @@ table.statistics th.stat1 {
     text-align: left;
 }
 
+table.competitor {
+    border-collapse: collapse;
+}
+
 table.competitor td {
     font-family: Verdana;
     font-size: 14px;
     font-weight: normal;
     text-decoration: none;
     color: black;
-    border-spacing: 8px 0px;
+    border-spacing: 0px 0px;
     border-top: 1px solid grey;
+    border-bottom: 1px solid grey;
+}
+
+table.nextmatches {
+    font-family: Verdana;
+    font-size: 14px;
+    font-weight: normal;
+    text-decoration: none;
+    color: black;
+    border-spacing: 0px 0px;
+    border: 1px solid #000;
+    border-collapse: collapse;
+}
+table.nextmatches td {
+    font-family: Verdana;
+    font-size: 14px;
+    font-weight: normal;
+    text-decoration: none;
+    color: black;
+/*
+    border-spacing: 0px 0px;
+    border: 1px solid #000;
+    border-collapse: collapse;
+*/
+}
+
+table.nextmatches td.cpl {
+    border-top: 1px solid #000;
+    border-left: 1px solid #000;
+    background: #DFC;
+}
+table.nextmatches td.cpr {
+    border-top: 1px solid #000;
+    border-right: 1px solid #000;
+    background: #DFC;
+}
+table.nextmatches td.cul1 {
+    border-top: 1px solid #000;
+    border-left: 1px solid #000;
+    background: #DDD;
+}
+table.nextmatches td.cur1 {
+    border-top: 1px solid #000;
+    border-right: 1px solid #000;
+    background: #DDD;
+}
+table.nextmatches td.cdl1 {
+    border-bottom: 1px solid #000;
+    border-left: 1px solid #000;
+    background: #DDD;
+}
+table.nextmatches td.cdr1 {
+    border-bottom: 1px solid #000;
+    border-right: 1px solid #000;
+    background: #DDD;
+}
+table.nextmatches td.cul2 {
+    border-top: 1px solid #000;
+    border-left: 1px solid #000;
+    background: #EEE;
+}
+table.nextmatches td.cur2 {
+    border-top: 1px solid #000;
+    border-right: 1px solid #000;
+    background: #EEE;
+}
+table.nextmatches td.cdl2 {
+    border-bottom: 1px solid #000;
+    border-left: 1px solid #000;
+    background: #EEE;
+}
+table.nextmatches td.cdr2 {
+    border-bottom: 1px solid #000;
+    border-right: 1px solid #000;
+    background: #EEE;
+}
+table.nextmatches td.ccl2 {
+    border-left: 1px solid #000;
+    background: #EEE;
+}
+table.nextmatches td.ccr2 {
+    border-right: 1px solid #000;
+    background: #EEE;
 }

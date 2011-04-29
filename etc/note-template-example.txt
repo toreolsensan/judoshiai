@@ -78,11 +78,17 @@
 # %COUNTRY%           Name of the country.
 # %CLUBCOUNTRY%       Club and country combined (result depends on the settings).
 # %INDEX%             Internal database index.
+# %BARCODE%           This is not text but a barcode presentation of the INDEX.
 # %WEIGHT%            Competitor's weight.
 # %YOB%               Competitor's year of birth.
-# %GRADE%             Competitor's grade.
-# %ID%                Competitor's ID number.
-# %BARCODE%           This is not text but a barcode presentation of the INDEX.
+# %GRADE%             Competitor's grade (belt).
+# %ID%                Competitor's ID.
+# %ID-BARCODE%        Competitor's ID printed as barcode 39. Supported characters are
+#                     numbers, uppercase characters A-Z, and special characters 
+#                     '-', '.', '$', '/', '+', '%', and space. 
+# %ID-BARCODE-EXT%    Competitor's ID printed as extended barcode 39. All 
+#                     the 7-bit ASCII characters are supported. Barcode reader must be set
+#                     for the extended mode. UTF-8 is not supported.
 # %WEIGHTTEXT%        Text "Weight" in selected language.
 #
 # Picture file name can also contain the special strings. The following line inserts

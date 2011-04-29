@@ -53,11 +53,6 @@ typedef enum {
     BARCODE_PNG
 } target_t;
 
-static int nums[11] = {
-    0x064, 0x114, 0x094, 0x184, 0x054, 
-    0x164, 0x0c4, 0x034, 0x124, 0x0a4, 0x068
-};
-
 static void paint_surfaces(struct paint_data *pd, 
                            cairo_t *c_pdf, cairo_t *c_png, 
                            cairo_surface_t *cs_pdf, cairo_surface_t *cs_png,
@@ -234,15 +229,88 @@ static gchar *get_open_name(void)
     return name;
 }
 
-static void draw_code_39_pattern (char key, struct paint_data *pd, double bar_height)
+/* Code encoding:
+   bits 8-4: 1 = wide bar, 0 = narrow bar
+   bits 3-0: 1 = wide space, 0 = narrow space
+ */
+static gint get_code_39(gchar key)
+{
+    switch (key) {
+    case ' ': return 0x0a8;
+    case '$': return 0x00e;
+    case '%': return 0x007;
+    case '*': return 0x068;
+    case '+': return 0x00b;
+    case '-': return 0x038;
+    case '.': return 0x128;
+    case '/': return 0x00d;
+    case '0': return 0x064;
+    case '1': return 0x114;
+    case '2': return 0x094;
+    case '3': return 0x184;
+    case '4': return 0x054;
+    case '5': return 0x144; // 0x164 ?
+    case '6': return 0x0c4;
+    case '7': return 0x034;
+    case '8': return 0x124;
+    case '9': return 0x0a4;
+    case 'A': return 0x112;
+    case 'B': return 0x092;
+    case 'C': return 0x182;
+    case 'D': return 0x052;
+    case 'E': return 0x142;
+    case 'F': return 0x0c2;
+    case 'G': return 0x032;
+    case 'H': return 0x122;
+    case 'I': return 0x0a2;
+    case 'J': return 0x062;
+    case 'K': return 0x111;
+    case 'L': return 0x091;
+    case 'M': return 0x181;
+    case 'N': return 0x051;
+    case 'O': return 0x141;
+    case 'P': return 0x0c1;
+    case 'Q': return 0x031;
+    case 'R': return 0x121;
+    case 'S': return 0x0a1;
+    case 'T': return 0x061;
+    case 'U': return 0x118;
+    case 'V': return 0x098;
+    case 'W': return 0x188;
+    case 'X': return 0x058;
+    case 'Y': return 0x148;
+    case 'Z': return 0x0c8;
+    }
+    return 0;
+}
+
+static void get_code_39_extended(gchar key, gchar *c1, gchar *c2)
+{
+    if (key == 0) {*c1 = '%'; *c2 = 'U'; }
+    else if (key >= 1 && key <= 26) { *c1 = '$'; *c2 = key - 1 + 'A'; }
+    else if (key >= 27 && key <= 31) { *c1 = '%'; *c2 = key - 27 + 'A'; }
+    else if (key == 32 || (key >= '0' && key <= '9') || key == '-' || key == '.' || 
+             (key >= 'A' && key <= 'Z')) { *c1 = 0; *c2 = key; }
+    else if ((key >= 33 && key <= 44) || key == 47 || key == 58) { *c1 = '/'; *c2 = key - 33 + 'A'; }
+    else if (key >= 59 && key <= 63) { *c1 = '%'; *c2 = key - 59 + 'F'; }
+    else if (key == 64) { *c1 = '%'; *c2 = 'V'; }
+    else if (key >= 91 && key <= 95) { *c1 = '%'; *c2 = key - 91 + 'K'; }
+    else if (key == 96) { *c1 = '%'; *c2 = 'W'; }
+    else if (key >= 97 && key <= 122) { *c1 = '+'; *c2 = key - 97 + 'A'; }
+    else if (key >= 123 && key <= 127) { *c1 = '%'; *c2 = key - 123 + 'P'; }
+    else {
+        g_print("Error %s:%d: key=%d\n", __FUNCTION__, __LINE__, key);
+        *c1 = 0;
+        *c2 = 0;
+    }
+}
+
+static void draw_code_39_pattern(char key, struct paint_data *pd, double bar_height)
 {
     int          iterator;
     double       x, y;
     int          bars = TRUE;
-    int          num;
-
-    if (key == '*') num = 10;
-    else num = key - '0';
+    int          code39 = get_code_39(key);
 
     /* set color */
     cairo_set_operator (pd->c, CAIRO_OPERATOR_OVER);
@@ -264,7 +332,7 @@ static void draw_code_39_pattern (char key, struct paint_data *pd, double bar_he
         /* write a bar or an space */
         if (bars) {
             /* write a bar */
-            if (nums[num] & (0x100 >> iterator)) {
+            if (code39 & (0x100 >> iterator)) {
                 //if (unit->bars[iterator] == '1') {
 
                 /* write a flat bar */
@@ -289,7 +357,7 @@ static void draw_code_39_pattern (char key, struct paint_data *pd, double bar_he
             cairo_stroke (pd->c);
 
             /* write a bar */
-            if (nums[num] & (0x100 >> iterator)) {
+            if (code39 & (0x100 >> iterator)) {
                 //if (unit->bars[iterator] == '1') {
                 /* written a flat line move 2.0 */
                 cairo_move_to (pd->c, x + 3.0, y);
@@ -300,7 +368,7 @@ static void draw_code_39_pattern (char key, struct paint_data *pd, double bar_he
 
         }else {
             /* write a space */
-            if (nums[num] & (0x8 >> iterator)) {
+            if (code39 & (0x8 >> iterator)) {
                 //if (unit->spaces[iterator] == '1') {
                 /* written a flat space move 2.0 */
                 cairo_move_to (pd->c, x + 3.0, y);
@@ -327,6 +395,29 @@ static void draw_code_39_pattern (char key, struct paint_data *pd, double bar_he
     } /* end while */
 	
     return;
+}
+
+static void draw_code_39_string(gchar *s, struct paint_data *pd, double bar_height, gboolean extended)
+{
+    if (!s)
+        return;
+
+    cairo_save(pd->c);
+    draw_code_39_pattern('*', pd, bar_height); 
+
+    for (; *s; s++) {
+        if (extended) {
+            gchar c1, c2;
+            get_code_39_extended(*s, &c1, &c2);
+            if (c1)
+                draw_code_39_pattern(c1, pd, bar_height);
+            draw_code_39_pattern(c2, pd, bar_height);
+        } else
+            draw_code_39_pattern(*s, pd, bar_height);
+    }
+
+    draw_code_39_pattern ('*', pd, bar_height); 
+    cairo_restore(pd->c);
 }
 
 #define NUM_WN_TEXTS 32
@@ -655,19 +746,17 @@ static void paint_weight_notes(struct paint_data *pd, gchar *templatefile)
                         if (belt < 0 || belt > 13)
                             belt = 0;
                         d += sprintf(buf + d, "%s", belts[belt]);
-                    } else if (IS_STR("%ID%"))
+                    } else if (IS_STR("%ID%")) {
                         d += sprintf(buf + d, "%s", id);
-                    else if (IS_STR("%BARCODE%")) {
-                        cairo_save(pd->c);
-                        /* write start char */
-                        draw_code_39_pattern('*', pd, bar_height); 
-                        /* draw */
-                        gint n;
-                        for (n = 0; id_str[n]; n++) 
-                            draw_code_39_pattern(id_str[n], pd, bar_height);
-                        /* write stop char */
-                        draw_code_39_pattern ('*', pd, bar_height); 
-                        cairo_restore(pd->c);
+                    } else if (IS_STR("%ID-BARCODE%")) {
+                        g_print("id-barcode found, len=%d\n", len);
+                        draw_code_39_string(id, pd, bar_height, FALSE);
+                    } else if (IS_STR("%ID-BARCODE-EXT%")) {
+                        g_print("id-barcode-ext found, len=%d\n", len);
+                        draw_code_39_string(id, pd, bar_height, TRUE);
+                    } else if (IS_STR("%BARCODE%")) {
+                        g_print("barcode found, len=%d\n", len);
+                        draw_code_39_string(id_str, pd, bar_height, FALSE);
                     } else if (IS_STR("%WEIGHTTEXT%"))
                         d += sprintf(buf + d, "%s", _T(weight));
 

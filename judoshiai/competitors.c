@@ -29,7 +29,7 @@ struct model_iter {
 #define NEW_JUDOKA 0x7ffffff1
 #define NEW_WCLASS 0x7ffffff2
 
-GtkWidget *competitor_dialog = NULL;
+GtkWidget *competitor_dialog = NULL, *bcdialog = NULL;
 
 char *belts[] = {
     "?", "6.kyu", "5.kyu", "4.kyu", "3.kyu", "2.kyu", "1.kyu",
@@ -286,6 +286,10 @@ out:
     competitor_dialog = NULL;
     editing_ongoing = FALSE;
     gtk_widget_destroy(widget);
+
+    if (bcdialog) {
+        gtk_window_present(bcdialog);
+    }
 }
 
 static GtkWidget *set_entry(GtkWidget *table, int row, 
@@ -1544,9 +1548,36 @@ static gboolean key_press(GtkWidget *widget, GdkEventKey *event, gpointer userda
     return FALSE;
 }
 
+static void on_enter(GtkEntry *entry, gpointer user_data)  { 
+    const gchar *the_text;
+    gint indx;
+    the_text = gtk_entry_get_text(GTK_ENTRY(entry)); 
+    indx = db_get_index_by_id(the_text);
+    g_print("text=%s indx=%d\n", the_text, indx);
+    if (indx)
+        display_competitor(indx);
+    else
+        display_competitor(atoi(the_text));
+    gtk_entry_set_text(GTK_ENTRY(entry), "");
+    //gtk_widget_grab_focus(GTK_WIDGET(entry));
+}
+
+static void on_expose(GtkEntry *dialog, gpointer user_data)  { 
+    //g_print("expose\n");
+    //gtk_window_present(GTK_WINDOW(dialog));
+    //gtk_widget_grab_focus(GTK_WIDGET(dialog));
+}
+
+static void barcode_delete_callback(GtkWidget *widget, 
+                                    GdkEvent *event,
+                                    gpointer data)
+{
+    bcdialog = NULL;
+}
+
 void barcode_search(GtkWidget *w, gpointer data)
 {
-    GtkWidget *dialog, *label, *hbox;
+    GtkWidget *dialog, *label, *hbox, *bcentry;
 
     /* Create a non-modal dialog with one OK button. */
     dialog = gtk_dialog_new_with_buttons (_("Bar code search"), GTK_WINDOW(main_window),
@@ -1556,20 +1587,30 @@ void barcode_search(GtkWidget *w, gpointer data)
     gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 
     label = gtk_label_new (_("Type the barcode:"));
-    barcode = gtk_label_new ("000000");
+    //barcode = gtk_label_new ("000000");
+    bcentry = gtk_entry_new();
+    gtk_widget_set_can_focus(GTK_WIDGET(bcentry), TRUE);
 
     hbox = gtk_hbox_new (FALSE, 5);
     gtk_container_set_border_width (GTK_CONTAINER (hbox), 10);
     gtk_box_pack_start_defaults (GTK_BOX (hbox), label);
-    gtk_box_pack_start_defaults (GTK_BOX (hbox), barcode);
+    //gtk_box_pack_start_defaults (GTK_BOX (hbox), barcode);
+    gtk_box_pack_start_defaults (GTK_BOX (hbox), bcentry);
 
     gtk_box_pack_start_defaults (GTK_BOX (GTK_DIALOG (dialog)->vbox), hbox);
     gtk_widget_show_all (dialog);
 
-    /* Call gtk_widget_destroy() when the dialog emits the response signal. */
+    bcdialog = dialog;
 
+    /* Call gtk_widget_destroy() when the dialog emits the response signal. */
+    g_signal_connect(G_OBJECT(bcentry), 
+                     "activate", G_CALLBACK(on_enter), dialog);
+    g_signal_connect(G_OBJECT(dialog), "response",
+                     G_CALLBACK(barcode_delete_callback), NULL);
+#if 0
     g_signal_connect(G_OBJECT(dialog), 
                      "key-press-event", G_CALLBACK(key_press), NULL);
+#endif
 }
 
 void set_competitors_col_titles(void)

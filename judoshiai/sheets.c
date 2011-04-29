@@ -1474,6 +1474,8 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
     gint table = systm.table;
     gint first_match = 1, last_match = first_matches[sys];
 
+    pd->row_height = 1;
+
     /* read mathecs */
     memset(level, 0, sizeof(level));
     memset(m, 0, sizeof(m));

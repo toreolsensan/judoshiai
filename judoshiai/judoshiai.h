@@ -716,6 +716,7 @@ extern void db_set_comment(gint category, gint number, gint comment);
 extern void db_synchronize(char *name_2);
 extern void db_print_competitors(FILE *f);
 extern void db_print_competitors_by_club(FILE *f);
+extern gint db_get_index_by_id(const gchar *id);
 extern int db_get_table(char *command);
 extern void db_close_table(void);
 extern char *db_get_data(int row, char *name);

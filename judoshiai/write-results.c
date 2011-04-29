@@ -113,18 +113,30 @@ void write_competitor(FILE *f, const gchar *first, const gchar *last, const gcha
     }
 }
 
-static void make_top_frame(FILE *f)
+static void make_top_frame_1(FILE *f, gchar *meta)
 {
     fprintf(f, "<html><head>"
-            "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">"
-            "<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\">"
-            "<meta name=\"keywords\" content=\"JudoShiai-%s\" />\n"
-            "<title>%s  %s  %s</title></head>\n"
-            "<body class=\"titleframe\"><table><tr>"
-            "<td colspan=\"2\" align=\"center\"><h1>%s  %s  %s</h1></td></tr><tr>\n", 
+            "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\r\n"
+            "%s"
+            "<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\">\r\n"
+            "<meta name=\"keywords\" content=\"JudoShiai-%s\" />\r\n"
+            "<title>%s  %s  %s</title></head>\r\n"
+            "<body class=\"titleframe\"><table><tr>\r\n"
+            "<td colspan=\"2\" align=\"center\"><h1>%s  %s  %s</h1></td></tr><tr>\r\n", 
+            meta,
             SHIAI_VERSION,
             utf8_to_html(info_competition), utf8_to_html(info_date), utf8_to_html(info_place),
             utf8_to_html(info_competition), utf8_to_html(info_date), utf8_to_html(info_place));
+}
+
+static void make_top_frame(FILE *f)
+{
+    make_top_frame_1(f, "");
+}
+
+static void make_top_frame_refresh(FILE *f)
+{
+    make_top_frame_1(f, "<meta http-equiv=\"refresh\" content=\"30\"/>\r\n");
 }
 
 static void make_bottom_frame(FILE *f)
@@ -893,7 +905,7 @@ void make_png_all(GtkWidget *w, gpointer data)
 void make_next_matches_html(void)
 {
     FILE *f;
-    gint i;
+    gint i, k;
 
     if (strlen(current_directory) <= 1) {
         if (get_output_directory() < 0)
@@ -904,20 +916,21 @@ void make_next_matches_html(void)
     if (!f)
         return;
 
-    make_top_frame(f);
+    make_top_frame_refresh(f);
     make_left_frame(f);
 
-    fprintf(f, "<td><table class=\"nextmatches\" valign=\"top\"><tr>");
+    // header row
+    fprintf(f, "<td><table class=\"nextmatches\"><tr>");
     for (i = 0; i < number_of_tatamis; i++) {
-        fprintf(f, "<th>Tatami %d</th>\n", i+1);
+        fprintf(f, "<th align=\"center\" colspan=\"2\">Tatami %d</th>", i+1);
     }
-    fprintf(f, "</tr><tr>\n");
+    fprintf(f, "</tr><tr>\r\n");
 
+    // last winners
     for (i = 0; i < number_of_tatamis; i++) {
         gchar *xf, *xl, *xc;
-        gint k;
 
-        fprintf(f, "<td valign=\"top\"><table border=\"0\">");
+        //fprintf(f, "<td><table class=\"tatamimatches\">");
 
         if (next_matches_info[i][0].won_catnum) {
             xf = next_matches_info[i][0].won_first;
@@ -929,41 +942,73 @@ void make_next_matches_html(void)
             xc = "";
         }
 
-        fprintf(f, "<tr><td>%s:<br>", _T(prevwinner));
-        fprintf(f, "</td><td>%s<br>%s %s<br>&nbsp;</td>", 
+        fprintf(f, "<td class=\"cpl\">%s:<br>", _T(prevwinner));
+        fprintf(f, "</td>\r\n<td class=\"cpr\">%s<br>%s %s<br>&nbsp;</td>", 
                 utf8_to_html(xc), utf8_to_html(xf), utf8_to_html(xl));
+    }
+    fprintf(f, "</tr>\r\n");
 
-        g_static_mutex_lock(&next_match_mutex);
-        struct match *m = get_cached_next_matches(i+1);
+    // next matches
+    g_static_mutex_lock(&next_match_mutex);
+    for (k = 0; k < NEXT_MATCH_NUM; k++) {
+        gchar *bgcolor = (k & 1) ? "bgcolor=\"#a0a0a0\"" : "bgcolor=\"#f0f0f0\"";
+        gchar *class_ul = (k & 1) ? "class=\"cul1\"" : "class=\"cul2\"";
+        gchar *class_ur = (k & 1) ? "class=\"cur1\"" : "class=\"cur2\"";
+        gchar *class_dl = (k & 1) ? "class=\"cdl1\"" : "class=\"cdl2\"";
+        gchar *class_dr = (k & 1) ? "class=\"cdr1\"" : "class=\"cdr2\"";
+        struct judoka *blue, *white, *cat;
 
-        for (k = 0; m[k].number != 1000 && k < NEXT_MATCH_NUM; k++) {
-            gchar *bgcolor = (k & 1) ? "bgcolor=\"#a0a0a0\"" : "bgcolor=\"#f0f0f0\"";
-            struct judoka *blue, *white, *cat;
-            blue = get_data(m[k].blue);
-            white = get_data(m[k].white);
+        fprintf(f, "<tr>");
+
+        // match number and category
+        for (i = 0; i < number_of_tatamis; i++) {
+            struct match *m = get_cached_next_matches(i+1);
+
+            if (m[k].number >= 1000) {
+                fprintf(f, "<td %s>&nbsp;</td><td %s>&nbsp;</td>", class_ul, class_ur);
+                continue;
+            }
+
             cat = get_data(m[k].category);
 
-            fprintf(f, "<tr %s><td><b>%s %d:</b></td><td><b>%s</b></td></tr>", 
-                    bgcolor, _T(match), k+1, cat ? cat->last : "?");
+            fprintf(f, "<td %s><b>%s %d:</b></td><td %s><b>%s</b></td>",
+                    class_ul, _T(match), k+1, class_ur, cat ? cat->last : "?");
 
-            fprintf(f, "<tr %s><td>%s %s<br>%s<br>&nbsp;</td><td>%s %s<br>%s<br>&nbsp;</td></tr>", 
-                    bgcolor, 
+            free_judoka(cat);
+        }
+
+        fprintf(f, "</tr>\r\n<tr>");
+
+        for (i = 0; i < number_of_tatamis; i++) {
+            struct match *m = get_cached_next_matches(i+1);
+
+            if (m[k].number >= 1000) {
+                fprintf(f, "<td %s>&nbsp;</td><td %s>&nbsp;</td>", class_dl, class_dr);
+                continue;
+            }
+
+            blue = get_data(m[k].blue);
+            white = get_data(m[k].white);
+
+            fprintf(f, "<td %s>%s %s<br>%s<br>&nbsp;</td><td %s>%s %s<br>%s<br>&nbsp;</td>", 
+                    class_dl,
                     blue ? utf8_to_html(blue->first) : "?", 
                     blue ? utf8_to_html(blue->last) : "?", 
                     blue ? utf8_to_html(blue->club) : "?", 
+                    class_dr,
                     white ? utf8_to_html(white->first) : "?", 
                     white ? utf8_to_html(white->last) : "?", 
                     white ? utf8_to_html(white->club) : "?");
 			
             free_judoka(blue);
             free_judoka(white);
-            free_judoka(cat);
         }
-        g_static_mutex_unlock(&next_match_mutex);
-        fprintf(f, "</table></td>\r\n");
-    }
 
-    fprintf(f, "</tr></table></td>\n");
+        fprintf(f, "</tr>\r\n");
+    }
+    g_static_mutex_unlock(&next_match_mutex);
+
+    fprintf(f, "</table></td>\n");
     make_bottom_frame(f);
     fclose(f);
 }
