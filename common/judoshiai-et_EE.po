@@ -388,14 +388,23 @@ msgstr "Autom. kava uuendus"
 msgid "Automatic Web Page Update"
 msgstr "Autom. webi-lehe uuendus"
 
-msgid "Results in Estonian"
-msgstr "Printimine Eesti keeles"
+msgid "Results in Finnish"
+msgstr "Printimine Soomi keeles"
 
 msgid "Results in Swedish"
 msgstr "Printimine Rootsi keeles"
 
 msgid "Results in English"
 msgstr "Printimine Inglise keeles"
+
+msgid "Results in Spanish"
+msgstr "Printimine Hispaania keeles"
+
+msgid "Results in Estonian"
+msgstr "Printimine Eesti keeles"
+
+msgid "Results in Ukrainian"
+msgstr "Printimine Ukraina keeles"
 
 msgid "Weights Visible in Pool Sheets"
 msgstr "Kaalud Pool lehel"
@@ -1276,9 +1285,6 @@ msgstr "Kuvatiedostot"
 msgid "Print Headers"
 msgstr "Tulosta otsikot"
 
-msgid "Results in Spanish"
-msgstr "Tulokset espanjaksi"
-
 msgid "Language Selection"
 msgstr "Kielivalinta"
 
@@ -1316,9 +1322,6 @@ msgid "Syntax error"
 msgstr "Syntaksiviga"
 
 msgid "Change language to Swedish"
-msgstr ""
-
-msgid "Results in Finnish"
 msgstr ""
 
 msgid "Switch sides"

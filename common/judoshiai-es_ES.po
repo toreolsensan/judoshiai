@@ -400,6 +400,12 @@ msgstr "Resultados en Inglés"
 msgid "Results in Spanish"
 msgstr "Resultados en Español"
 
+msgid "Results in Estonian"
+msgstr "Resultados en Estonio"
+
+msgid "Results in Ukrainian"
+msgstr "Resultados en Ucrania"
+
 msgid "Weights Visible in Pool Sheets"
 msgstr "Pesos visibles en las ligas"
 

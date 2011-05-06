@@ -1004,17 +1004,23 @@ msgstr "Відновити видалене"
 msgid "Results"
 msgstr "Результати"
 
-msgid "Results in English"
-msgstr "Results in English"
-
 msgid "Results in Finnish"
 msgstr "Results in Finnish"
+
+msgid "Results in Swedish"
+msgstr "Results in Swedish"
+
+msgid "Results in English"
+msgstr "Results in English"
 
 msgid "Results in Spanish"
 msgstr "Results in Spanish"
 
-msgid "Results in Swedish"
-msgstr "Results in Swedish"
+msgid "Results in Estonian"
+msgstr "Results in Estonian"
+
+msgid "Results in Ukrainian"
+msgstr "Results in Ukrainian"
 
 msgid "Round Robin"
 msgstr "Кругова система"

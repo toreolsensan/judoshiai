@@ -397,6 +397,15 @@ msgstr "Tulostus ruotsiksi"
 msgid "Results in English"
 msgstr "Tulostus englanniksi"
 
+msgid "Results in Spanish"
+msgstr "Tulostus espanjaksi"
+
+msgid "Results in Estonian"
+msgstr "Tulostus viroksi"
+
+msgid "Results in Ukrainian"
+msgstr "Tulostus ukrainaksi"
+
 msgid "Weights Visible in Pool Sheets"
 msgstr "Poolikaavioihin painot"
 
@@ -1275,9 +1284,6 @@ msgstr "Kuvatiedostot"
 
 msgid "Print Headers"
 msgstr "Tulosta otsikot"
-
-msgid "Results in Spanish"
-msgstr "Tulokset espanjaksi"
 
 msgid "Language Selection"
 msgstr "Kielivalinta"
