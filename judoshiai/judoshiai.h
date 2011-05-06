@@ -399,16 +399,16 @@ struct pool_matches {
 };
 
 struct next_match_info {
-    gchar category[10];
-    gchar blue_first[20];
-    gchar blue_last[30];
-    gchar blue_club[30];
-    gchar white_first[20];
-    gchar white_last[30];
-    gchar white_club[30];
-    gchar won_last[30];
-    gchar won_first[20];
-    gchar won_cat[10];
+    gchar category[32];
+    gchar blue_first[32];
+    gchar blue_last[32];
+    gchar blue_club[32];
+    gchar white_first[32];
+    gchar white_last[32];
+    gchar white_club[32];
+    gchar won_last[32];
+    gchar won_first[32];
+    gchar won_cat[32];
     gint  catnum;
     gint  matchnum;
     gint  blue;
@@ -753,6 +753,7 @@ extern void locate_3(GtkWidget *w, gpointer data);
 extern void locate_4(GtkWidget *w, gpointer data);
 extern void make_png_all(GtkWidget *w, gpointer data);
 extern int get_output_directory(void);
+extern gchar *txt2hex(const gchar *txt);
 extern void make_next_matches_html(void);
 extern void update_category_status_info(gint category);
 extern void update_category_status_info_all(void);

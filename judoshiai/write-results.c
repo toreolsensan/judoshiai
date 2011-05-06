@@ -73,14 +73,14 @@ void write_competitor(FILE *f, const gchar *first, const gchar *last, const gcha
                     "<td><a href=\"%s.html\">%s</a></td><td align=\"center\">%s</td></tr>\n", 
                     crc != last_crc ? utf8_to_html(club) : buf2, 
                     index, utf8_to_html(last), utf8_to_html(first), grade_visible ? belt : "", 
-                    category, category, buf);
+                    txt2hex(category), category, buf);
         } else
             fprintf(f, 
                     "<tr><td>%s</td><td>%s, %s</td><td>%s</td>"
                     "<td><a href=\"%s.html\">%s</a></td><td>&nbsp;</td></tr>\n", 
                     crc != last_crc ? utf8_to_html(club) : buf2, 
                     utf8_to_html(last), utf8_to_html(first), grade_visible ? belt : "",  
-                    category, category);
+                    txt2hex(category), category);
 
         last_crc = crc;
     } else {
@@ -97,13 +97,13 @@ void write_competitor(FILE *f, const gchar *first, const gchar *last, const gcha
                     "<tr><td><a href=\"%d.html\">%s, %s</a></td><td>%s</td><td>%s</td>"
                     "<td><a href=\"%s.html\">%s</a></td><td align=\"center\">%s</td></tr>\n", 
                     index, utf8_to_html(last), utf8_to_html(first), grade_visible ? belt : "", 
-                    utf8_to_html(club), category, category, buf);
+                    utf8_to_html(club), txt2hex(category), category, buf);
         } else
             fprintf(f, 
                     "<tr><td>%s, %s</td><td>%s</td><td>%s</td>"
                     "<td><a href=\"%s.html\">%s</a></td><td>&nbsp;</td></tr>\n", 
                     utf8_to_html(last), utf8_to_html(first), grade_visible ? belt : "", utf8_to_html(club), 
-                    category, category);
+                    txt2hex(category), category);
 
         saved_competitors[saved_competitor_cnt] = index;
         if (saved_competitor_cnt < SAVED_COMP_SIZE)
@@ -198,11 +198,11 @@ static gint make_left_frame(FILE *f)
                             "<td class=\"categorylinksright\">"
                             "<a href=\"%s.pdf\" target=\"_blank\"> "
                             "(PDF)</a></td></tr>", 
-                            j->last, utf8_to_html(j->last), 
-                            j->last);
+                            txt2hex(j->last), utf8_to_html(j->last), 
+                            txt2hex(j->last));
                 } else {
                     fprintf(f, "<tr><td class=\"categorylinksonly\"><a href=\"%s.html\">%s</a></td></tr>", 
-                            j->last, utf8_to_html(j->last));
+                            txt2hex(j->last), utf8_to_html(j->last));
                 }
 
                 free_judoka(j);
@@ -441,7 +441,7 @@ static void write_cat_result(FILE *f, gint category)
         return;
 
     fprintf(f, "<tr><td colspan=\"3\"><b><a href=\"%s.html\">%s</a></b></td></tr>\n", 
-            ctg->last, utf8_to_html(ctg->last));
+            txt2hex(ctg->last), utf8_to_html(ctg->last));
 
     /* find system */
     sys = db_get_system(category);
@@ -519,7 +519,7 @@ void write_html(gint cat)
 
     struct compsys sys = db_get_system(cat);
         
-    snprintf(buf, sizeof(buf), "%s.html", j->last);
+    snprintf(buf, sizeof(buf), "%s.html", txt2hex(j->last));
 
     FILE *f = open_write(buf);
     if (!f)
@@ -1067,3 +1067,21 @@ int get_output_directory(void)
     return 0;
 }
 
+gchar *txt2hex(const gchar *txt)
+{
+    static gchar buffers[4][64];
+    static gint sel = 0;
+    guchar *p = (guchar *)txt;
+    buffers[sel][0] = 0;
+    gchar *ret;
+    gint n = 0;
+
+    while (*p && n < 62)
+        n += snprintf(&buffers[sel][n], 64 - n, "%02x", *p++);
+
+    ret = buffers[sel];
+    sel++;
+    if (sel >= 4)
+        sel = 0;
+    return ret;
+}

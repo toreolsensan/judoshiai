@@ -135,7 +135,7 @@ void write_png(GtkWidget *menuitem, gpointer userdata)
     pd.total_width = 0;
     pd.category = ctg;
 
-    snprintf(buf, sizeof(buf)-10, "%s/%s.pdf", current_directory, ctgdata->last);
+    snprintf(buf, sizeof(buf)-10, "%s/%s.pdf", current_directory, txt2hex(ctgdata->last));
 
     cs_pdf = cairo_pdf_surface_create(buf, pd.paper_width, pd.paper_height);
     cs_png = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 
