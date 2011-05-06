@@ -38,7 +38,7 @@ static const gchar *lang_names[NUM_LANGS] = {
 
 static const gchar *help_file_names[NUM_LANGS] = {
     "judoshiai-fi.pdf", "judoshiai-en.pdf", "judoshiai-en.pdf", "judoshiai-es.pdf", "judoshiai-en.pdf",
-    "judoshiai-en.pdf"
+    "judoshiai-uk.pdf"
 };
 
 
