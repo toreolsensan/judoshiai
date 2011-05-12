@@ -428,6 +428,9 @@ ok:
         gth = g_thread_create((GThreadFunc)httpd_thread,
                               (gpointer)&run_flag, FALSE, NULL); 
 #endif
+        gth = g_thread_create((GThreadFunc)serial_thread,
+                              (gpointer)&run_flag, FALSE, NULL); 
+
         g_printf("Comm threads started\n");
     }
 

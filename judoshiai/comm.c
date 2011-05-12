@@ -110,6 +110,7 @@ gboolean msg_accepted(struct message *m)
     case MSG_ALL_REQ:
     case MSG_CANCEL_REST_TIME:
     case MSG_EDIT_COMPETITOR:
+    case MSG_SCALE:
         return TRUE;
     }
     return FALSE;
@@ -122,6 +123,7 @@ void msg_received(struct message *input_msg)
     gboolean newentry = FALSE;
     gulong addr = input_msg->src_ip_addr;
     struct judoka *j, j2;
+    gchar  buf[16];
 
 #if 0
     if (input_msg->type != MSG_HELLO)
@@ -254,6 +256,12 @@ void msg_received(struct message *input_msg)
             display_one_judoka(&j2);
             update_competitors_categories(j2.index);
         }
+        break;
+
+    case MSG_SCALE:
+            g_snprintf(buf, sizeof(buf), "%d.%02d", input_msg->u.scale.weight/1000, (input_msg->u.scale.weight%1000)/10);
+            if (weight_entry)
+                gtk_button_set_label(GTK_BUTTON(weight_entry), buf);
         break;
     }
 }

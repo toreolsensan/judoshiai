@@ -41,6 +41,7 @@ enum message_types {
     MSG_CANCEL_REST_TIME,
     MSG_UPDATE_LABEL,
     MSG_EDIT_COMPETITOR,
+    MSG_SCALE,
     NUM_MESSAGES
 };
 
@@ -188,6 +189,10 @@ struct msg_edit_competitor {
     gchar id[20];
 };
 
+struct msg_scale {
+    gint weight;
+};
+
 struct message {
     long  src_ip_addr; // Source address of the packet. Added by the comm node (network byte order).
     char  type;
@@ -205,6 +210,7 @@ struct message {
         struct msg_cancel_rest_time cancel_rest_time;
         struct msg_update_label update_label;
         struct msg_edit_competitor edit_competitor;
+        struct msg_scale       scale;
         struct msg_dummy       dummy;
     } u;
 };

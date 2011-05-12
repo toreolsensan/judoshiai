@@ -509,6 +509,12 @@ struct paint_data {
     gint     row_height;
 };
 
+#define NUM_BAUDRATES 5
+struct baudrates {
+    gint value;
+    gchar *text;
+};
+
 extern avl_tree *categories_tree;
 extern struct category_data category_queue[NUM_TATAMIS+1];
 
@@ -535,6 +541,8 @@ extern gchar          info_time[];
 extern gchar          info_place[];
 extern gchar          info_num_tatamis[];
 extern gboolean       three_matches_for_two;
+extern gboolean       serial_used;
+extern GtkWidget     *weight_entry;
 
 extern guint          current_index;
 extern guint          current_category_index;
@@ -842,6 +850,7 @@ extern gpointer server_thread(gpointer args);
 extern gpointer node_thread(gpointer args);
 extern gpointer client_thread(gpointer args);
 extern gpointer httpd_thread(gpointer args);
+extern gpointer serial_thread(gpointer args);
 extern gchar *other_info(gint num);
 extern gint read_file_from_net(gchar *filename, gint num);
 extern gulong get_my_address();

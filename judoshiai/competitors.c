@@ -29,7 +29,8 @@ struct model_iter {
 #define NEW_JUDOKA 0x7ffffff1
 #define NEW_WCLASS 0x7ffffff2
 
-GtkWidget *competitor_dialog = NULL, *bcdialog = NULL;
+GtkWidget *competitor_dialog = NULL; 
+GtkWindow *bcdialog = NULL;
 
 char *belts[] = {
     "?", "6.kyu", "5.kyu", "4.kyu", "3.kyu", "2.kyu", "1.kyu",
@@ -56,6 +57,8 @@ struct judoka_widget {
     GtkWidget *realcategory;
 };
 
+GtkWidget *weight_entry = NULL;
+
 static gboolean      editing_ongoing = FALSE;
 static GtkWidget     *competitor_label = NULL;
 
@@ -66,6 +69,9 @@ gint sort_iter_compare_func(GtkTreeModel *model,
                             GtkTreeIter  *b,
                             gpointer      userdata);
 void toolbar_sort(void);
+static gboolean set_weight_on_button_pressed(GtkWidget *treeview, 
+                                             GdkEventButton *event, 
+                                             gpointer userdata);
 
 
 static void judoka_edited_callback(GtkWidget *widget, 
@@ -80,6 +86,8 @@ static void judoka_edited_callback(GtkWidget *widget,
     struct category_data *catdata = avl_get_category(ix);
     struct compsys system = {0};
     gchar *realcategory = NULL;
+
+    weight_entry = NULL;
 
     if (catdata)
         system = catdata->system;
@@ -438,9 +446,28 @@ void view_on_row_activated(GtkTreeView        *treeview,
         gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, 7, 8);
         gtk_combo_box_set_active((GtkComboBox *)tmp, active);
 
-        judoka_tmp->weight = set_entry(table, 8, _("Weight:"), weight_s);
-        if (last && last[0])
-            gtk_widget_grab_focus(judoka_tmp->weight);
+        if (serial_used) {
+            gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new(_("Weight:")), 0, 1, 8, 9);
+            judoka_tmp->weight = gtk_entry_new();
+            gtk_entry_set_max_length(GTK_ENTRY(judoka_tmp->weight), 7);
+            gtk_entry_set_width_chars(GTK_ENTRY(judoka_tmp->weight), 7);
+            gtk_entry_set_text(GTK_ENTRY(judoka_tmp->weight), weight_s);
+            GtkWidget *whbox = gtk_hbox_new(FALSE, 5);
+            GtkWidget *wbutton = gtk_button_new_with_label("---");
+            gtk_box_pack_start_defaults(GTK_BOX(whbox), judoka_tmp->weight);
+            gtk_box_pack_start_defaults(GTK_BOX(whbox), wbutton);
+            gtk_table_attach_defaults(GTK_TABLE(table), whbox, 1, 2, 8, 9);
+            weight_entry = wbutton;
+            gtk_widget_grab_focus(wbutton);
+            g_signal_connect(G_OBJECT(wbutton), "button-press-event", 
+                             (GCallback) set_weight_on_button_pressed, judoka_tmp->weight);
+            g_signal_connect(G_OBJECT(wbutton), "key-press-event", 
+                             (GCallback) set_weight_on_button_pressed, judoka_tmp->weight);
+        } else {
+            judoka_tmp->weight = set_entry(table, 8, _("Weight:"), weight_s);
+            if (last && last[0])
+                gtk_widget_grab_focus(judoka_tmp->weight);
+        }
 
         tmp = gtk_label_new(_("Seeding:"));
         gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, 9, 10);
@@ -841,6 +868,18 @@ static gboolean view_on_button_pressed(GtkWidget *treeview,
     }
 
     return handled; /* we did not handle this */
+}
+
+static gboolean set_weight_on_button_pressed(GtkWidget *treeview, 
+                                             GdkEventButton *event, 
+                                             gpointer userdata)
+{
+    GtkEntry *weight = userdata;
+
+    if (weight_entry)
+        gtk_entry_set_text(GTK_ENTRY(weight), gtk_button_get_label(GTK_BUTTON(weight_entry)));
+
+    return TRUE;
 }
 
 #if 0
@@ -1597,8 +1636,8 @@ void barcode_search(GtkWidget *w, gpointer data)
     //gtk_box_pack_start_defaults (GTK_BOX (hbox), barcode);
     gtk_box_pack_start_defaults (GTK_BOX (hbox), bcentry);
 
-    gtk_box_pack_start_defaults (GTK_BOX (GTK_DIALOG (dialog)->vbox), hbox);
-    gtk_widget_show_all (dialog);
+    gtk_box_pack_start_defaults(GTK_BOX (GTK_DIALOG (dialog)->vbox), hbox);
+    gtk_widget_show_all(dialog);
 
     bcdialog = dialog;
 
