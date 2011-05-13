@@ -232,7 +232,7 @@ void set_serial_dialog(GtkWidget *w, gpointer data)
     GtkWidget *dialog, *used, *device, *baudrate, *table;
 
     dialog = gtk_dialog_new_with_buttons (_("Serial Communication"),
-                                          NULL,
+                                          main_window,
                                           GTK_DIALOG_MODAL,
                                           GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
                                           GTK_STOCK_OK, GTK_RESPONSE_OK,

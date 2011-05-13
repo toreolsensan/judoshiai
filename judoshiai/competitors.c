@@ -458,7 +458,8 @@ void view_on_row_activated(GtkTreeView        *treeview,
             gtk_box_pack_start_defaults(GTK_BOX(whbox), wbutton);
             gtk_table_attach_defaults(GTK_TABLE(table), whbox, 1, 2, 8, 9);
             weight_entry = wbutton;
-            gtk_widget_grab_focus(wbutton);
+            if (last && last[0])
+                gtk_widget_grab_focus(wbutton);
             g_signal_connect(G_OBJECT(wbutton), "button-press-event", 
                              (GCallback) set_weight_on_button_pressed, judoka_tmp->weight);
             g_signal_connect(G_OBJECT(wbutton), "key-press-event", 
@@ -875,6 +876,10 @@ static gboolean set_weight_on_button_pressed(GtkWidget *treeview,
                                              gpointer userdata)
 {
     GtkEntry *weight = userdata;
+    GdkEventKey *key = (GdkEventKey *)event;
+
+    if (event->type == GDK_KEY_PRESS && key->keyval != ' ')
+        return FALSE;
 
     if (weight_entry)
         gtk_entry_set_text(GTK_ENTRY(weight), gtk_button_get_label(GTK_BUTTON(weight_entry)));
