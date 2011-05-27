@@ -11,7 +11,8 @@ OBJS += main.o competitors.o sheets.o set-one-judoka.o sqlite3.o \
        completion.o another-shiai.o avl.o httpp.o httpd.o import.o set-password.o \
        trees.o match-graph.o search.o menus.o menuacts.o \
        sql-dialog.o drawing.o print.o print-texts.o db-competitors.o db-categories.o \
-       db-matches.o db-table.o write-results.o match-data.o serial.o
+       db-matches.o db-table.o write-results.o match-data.o serial.o \
+       basic.tab.o lex.yy.o 
 
 CFLAGS += -DAPPLICATION="\"judoshiai\""
 
@@ -51,6 +52,12 @@ binreloc.o: ../common/binreloc.c
 %.o: %.c
 	${CC} $(PROF) -g $(CFLAGS) -c $< -o $@
 
+lex.yy.c: basic.l basic.tab.h
+	flex basic.l
+
+basic.tab.c basic.tab.h: basic.y
+	bison -d basic.y
+
 clean:
-	rm -f *.o *.exe judoshiai judoshiai1 *.res *.rc *~
+	rm -f *.o *.exe judoshiai judoshiai1 *.res *.rc *~ lex.yy.c basic.tab.c basic.tab.h
 

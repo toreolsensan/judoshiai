@@ -21,9 +21,11 @@
 #define SIZEY 400
 #define HISTORY_LEN 8
 
+extern int run_basic_script(char *file, GtkTextBuffer *buffer);
+
 static gchar *history[HISTORY_LEN];
 static gint history_line;
-static GtkTextBuffer *buffer;
+static gchar *filename = NULL;
 
 static gboolean delete_event_sql( GtkWidget *widget,
                                   GdkEvent  *event,
@@ -47,6 +49,7 @@ static void char_typed(GtkWidget *w, gpointer arg)
 
 static void enter_typed(GtkWidget *w, gpointer arg) 
 {
+    GtkTextBuffer *buffer = GTK_TEXT_BUFFER(arg);
     gint i;
     gchar *ret;
     const gchar *txt = gtk_entry_get_text(GTK_ENTRY(w));
@@ -91,35 +94,102 @@ static gboolean key_press(GtkWidget *widget, GdkEventKey *event, gpointer userda
     return FALSE;
 }
 
+static void run_script(GtkWidget *w, GdkEventButton *event, gpointer *arg) 
+{
+    GtkTextBuffer *buffer = GTK_TEXT_BUFFER(arg);
+    GtkWidget *dialog;
+    GtkFileFilter *filter = gtk_file_filter_new();
+    gboolean run = FALSE;
+
+    gtk_file_filter_add_pattern(filter, "*.bas");
+    gtk_file_filter_set_name(filter, _("Basic Scripts"));
+
+    dialog = gtk_file_chooser_dialog_new (_("Select Script"),
+                                          NULL,
+                                          GTK_FILE_CHOOSER_ACTION_OPEN,
+                                          GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                                          GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+                                          NULL);
+
+    gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter);
+
+    if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT) {
+        g_free(filename);
+        filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+        gtk_text_buffer_set_text(buffer, "", -1);
+        run = TRUE;
+        //gtk_widget_set_sensitive(GTK_WIDGET(repeat), filename != NULL)
+    }
+
+    gtk_widget_destroy (dialog);
+
+    if (run)
+        run_basic_script(filename, buffer);
+}
+
+static void repeat_script(GtkWidget *w, GdkEventButton *event, gpointer *arg) 
+{
+    GtkTextBuffer *buffer = GTK_TEXT_BUFFER(arg);
+
+    if (filename) {
+        gtk_text_buffer_set_text(buffer, "", -1);
+        run_basic_script(filename, buffer);
+    } else
+        gtk_text_buffer_set_text(buffer, _("No script available"), -1);
+}
+
 void sql_window(GtkWidget *w, gpointer data)
 {
-    GtkWidget *vbox, *line, *result;
+    GtkTextBuffer *buffer;
+    GtkWidget *vbox, *hbox, *line, *result, *script, *repeat;
     GtkWindow *window = GTK_WINDOW(gtk_window_new(GTK_WINDOW_TOPLEVEL));
     gtk_window_set_title(GTK_WINDOW(window), _("SQL"));
     gtk_widget_set_size_request(GTK_WIDGET(window), SIZEX, SIZEY);
+    gtk_window_set_transient_for(GTK_WINDOW(window), GTK_WINDOW(main_window));
+    gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER_ON_PARENT);
+    gtk_window_set_destroy_with_parent(GTK_WINDOW(window), TRUE);
 
     vbox = gtk_vbox_new(FALSE, 1);
+    hbox = gtk_hbox_new(FALSE, 1);
     gtk_container_set_border_width (GTK_CONTAINER (vbox), 1);
     gtk_container_add (GTK_CONTAINER (window), vbox);
 
     result = gtk_text_view_new();
     line = gtk_entry_new();
-    gtk_box_pack_start(GTK_BOX(vbox), result, TRUE, TRUE, 0);
+    script = gtk_button_new_with_label(_("Run Script"));
+    repeat = gtk_button_new_with_label(_("Repeat Script"));
+
+    GtkWidget *scrolled_window = gtk_scrolled_window_new(NULL, NULL);
+    gtk_container_set_border_width(GTK_CONTAINER(scrolled_window), 10);
+    gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_window), result);
+
+    gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), line, FALSE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox), script, FALSE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox), repeat, FALSE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 0);
 
     gtk_widget_show_all(GTK_WIDGET(window));
+    buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(result));
+
+    PangoFontDescription *font_desc = pango_font_description_from_string("Courier 10");
+    gtk_widget_modify_font(GTK_WIDGET(result), font_desc);
+    pango_font_description_free (font_desc);
 
     g_signal_connect (G_OBJECT (window), "delete_event",
                       G_CALLBACK (delete_event_sql), NULL);
     g_signal_connect (G_OBJECT (window), "destroy",
                       G_CALLBACK (destroy_sql), NULL);
 
-    g_signal_connect(G_OBJECT(line), "activate", G_CALLBACK(enter_typed), data);
-    g_signal_connect(G_OBJECT(line), "key-press-event", G_CALLBACK(key_press), data);
+    g_signal_connect(G_OBJECT(line), "activate", G_CALLBACK(enter_typed), buffer);
+    g_signal_connect(G_OBJECT(line), "key-press-event", G_CALLBACK(key_press), buffer); 
+    g_signal_connect(G_OBJECT(script), "button-press-event", G_CALLBACK(run_script), buffer);
+    g_signal_connect(G_OBJECT(repeat), "button-press-event", G_CALLBACK(repeat_script), buffer);
 
     gtk_entry_set_text(GTK_ENTRY(line), "SELECT * FROM sqlite_master");
     gtk_widget_grab_focus(GTK_WIDGET(line));
-    buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(result));
     gtk_text_view_set_editable(GTK_TEXT_VIEW(result), FALSE);
+
+    //gtk_widget_set_sensitive(GTK_WIDGET(repeat), filename != NULL);
 }
 
