@@ -75,6 +75,7 @@ void create_categories(GtkWidget *w, gpointer data)
 
                 if (j && j->visible && j->category && j->category[0] == '?'&& j->category[1] == 0) {
                     g_free((void *)j->category);
+                    j->category = NULL;
 
                     if (j->regcategory == NULL || j->regcategory[0] == 0) {
                         j->category = find_correct_category(current_year - j->birthyear, 
@@ -85,8 +86,8 @@ void create_categories(GtkWidget *w, gpointer data)
                         j->category = find_correct_category(0, j->weight, 0, j->regcategory, FALSE);
                     }
 
-                    if (j->category == NULL) {
-                        if (j->regcategory)
+                    if (j->category == NULL || j->category[0] == 0) {
+                        if (j->regcategory && j->regcategory[0])
                             j->category = g_strdup(j->regcategory);
                         else 
                             j->category = g_strdup("?");
