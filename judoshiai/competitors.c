@@ -115,6 +115,8 @@ static void judoka_edited_callback(GtkWidget *widget,
 
     if (judoka_tmp->realcategory)
         realcategory = g_strdup(gtk_combo_box_get_active_text(GTK_COMBO_BOX(judoka_tmp->realcategory)));
+    if (!realcategory)
+        realcategory = g_strdup("?");
 
     if (judoka_tmp->birthyear)
         edited.birthyear = atoi(gtk_entry_get_text(GTK_ENTRY(judoka_tmp->birthyear)));
@@ -235,7 +237,7 @@ static void judoka_edited_callback(GtkWidget *widget,
     }
 
     // check for changed category
-    if (edited.visible && strcmp(edited.category, realcategory)) {
+    if (edited.visible && realcategory && strcmp(edited.category, realcategory)) {
         GtkTreeIter iter;
         gint index1;
         gchar *cat1 = NULL;
