@@ -634,6 +634,7 @@ static void update_pool_matches(gint category, gint num)
     struct compsys sys = get_cat_system(category);
     gint num_pools = 1, num_knockouts = 0;
 
+    /* Number of pools and matches after the pools are finished.  */
     switch (sys.system) {
     case SYSTEM_POOL: num_pools = 1; num_knockouts = 0; break;
     case SYSTEM_DPOOL: num_pools = 2; num_knockouts = 3; break;
@@ -644,6 +645,7 @@ static void update_pool_matches(gint category, gint num)
         current_category = category;
     //g_print("current_category = %d\n", category);
 
+    /* Read mathes in. */
     fill_pool_struct(category, num, &pm);
 
     if (num_pools == 1) {
