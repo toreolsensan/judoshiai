@@ -492,10 +492,10 @@ int dim_str_val2idx(char *val,int x)
         mul*=dim_str_vars[x].dim[c];
     }
     if (dim_str_vars[x].values[pos]==NULL) {
-    dim_str_vars[x].values[pos]=strdup(val);
+        dim_str_vars[x].values[pos]=strdup(val);
     } else {
-    free(dim_str_vars[x].values[pos]);
-    dim_str_vars[x].values[pos]=strdup(val);
+        free(dim_str_vars[x].values[pos]);
+        dim_str_vars[x].values[pos]=strdup(val);
     }
 
     return pos;
@@ -540,6 +540,7 @@ void dostrdim(char *name)
     }
     dim_str_vars[dim_str_vp].dim[++c]=0;
     dim_str_vars[dim_str_vp].values=(char **)malloc((sizeof(char *))*size);
+    memset(dim_str_vars[dim_str_vp].values, 0, (sizeof(char *))*size);
     dim_str_vars[dim_str_vp].size=size;
     strncpy(dim_str_vars[dim_str_vp++].name,name,VARNAME_SIZE);
 }
@@ -549,9 +550,19 @@ void dostrdim(char *name)
 double fetchvar() 
 {
     if (use_stream) {
-        if ((use_stream>0)&&(use_stream<MAX_FILES))
-            if (fnum[use_stream].fp!=NULL)
-                fgets(buf,sizeof(buf)-3,fnum[use_stream].fp);
+        if ((use_stream > 0) && 
+            (use_stream < MAX_FILES) &&
+            (fnum[use_stream].fp != NULL)) {
+                if (buf[0]) {
+                    char *p = strchr(buf, '\t');
+                    if (p)
+                        strcpy(buf, p+1);
+                    else
+                        buf[0] = 0;
+                }
+                if (buf[0] == 0)
+                    fgets(buf,sizeof(buf)-3,fnum[use_stream].fp);
+            }
     } else {
         print_text_buffer("? ");
         fgets(buf,sizeof(buf)-3,stdin);
@@ -887,7 +898,7 @@ void dojumpidx(int idx)
     fseek(yyin,((struct jumpstruct *)(l->val))->pos,SEEK_SET);
     yyrestart(yyin);
     pushback('\n');/* prevent yacc from going nuts after jump */
-    cmdcnt=idx-1;
+    cmdcnt=idx-2;
 }
 
 void dojump(int line_to_go)
@@ -1079,9 +1090,17 @@ void dowend()
 
 /* END */
 
+extern void quit_flex(void);
+
 void doend() 
 {
     if (checkignore()) return;
+    ignore_end=1;
+    quit_flex();
+}
+void doend1() 
+{
+        g_print("\n---DOEND1---\n\n");
     ignore_end=1;
 }
 
@@ -1376,7 +1395,7 @@ void dogetstr(int fno,int rec,int idx)
 
 %token LINENUMBER NUMBER VAR DIMVAR DIMSTR STRING PASSEDTEXT
 
-%token NL SEMICOLON 
+%token NL SEMICOLON
 %token AND OR XOR NOT MOD
 
 %token SQL
@@ -2045,7 +2064,9 @@ int preparse() {
 
 void yyerror(char *s) 
 {
-    SHOW_MESSAGE("Error line %d: %s\n",cmdcnt+1,s);
+    extern char *yytext;
+    print_text_buffer("\n*** Error on line %d: %s (0x%x)\n",cmdcnt+1,s, *yytext);
+    //SHOW_MESSAGE("Error line %d: %s (0x%x)\n",cmdcnt+1,s, *yytext);
     //HJo fprintf(stderr,"Error line %d: %s\n",cmdcnt,s);
     fseek(yyin,0,SEEK_END); /* place seek on end, so lex could clean it up */
 }
@@ -2056,7 +2077,7 @@ int run_basic_script(char *file, GtkTextBuffer *buffer)
 {
     int count,count2;
 
-    init_flex();
+    yydebug = 1;
 
     bcount=0;                 /* buffer pointer for various operations */
     indexcnt=0;               /* used to index jump tables             */
@@ -2078,8 +2099,25 @@ int run_basic_script(char *file, GtkTextBuffer *buffer)
     ignore_after_jump=0;      /* ignore everything, till jump is done  */
     use_stream=0;             /* if set, use value as io stream        */
     ignore_till_wend=0;       /* flag set if we have to look for wend  */
+    jumplist=NULL;  /* this will store the readed data       */
+    readdata=NULL;  /* this will store the readed data       */
+    rd_p=NULL;      /* pointer to dataread                   */
+
+    memset(fnum, 0, sizeof(fnum));
+    memset(d_vars, 0, sizeof(d_vars));
+    memset(str_vars, 0, sizeof(str_vars));
+    memset(dim_d_vars, 0, sizeof(dim_d_vars));
+    memset(dim_str_vars, 0, sizeof(dim_str_vars));
+    memset(gosub_stack, 0, sizeof(gosub_stack));
+    memset(while_stack, 0, sizeof(while_stack));
+    memset(do_stack, 0, sizeof(do_stack));
+    memset(for_stack, 0, sizeof(for_stack));
+    memset(dimensions, 0, sizeof(dimensions));
+    memset(onlines, 0, sizeof(onlines));
 
     gtkbuf = buffer;
+
+    init_flex();
 
     memset(d_vars,0,sizeof(d_vars));
     memset(str_vars,0,sizeof(str_vars));
@@ -2095,6 +2133,7 @@ int run_basic_script(char *file, GtkTextBuffer *buffer)
     }
     yyin=fopen(file,"r"); 
     if (yyin!=NULL) {
+        yyrestart(yyin);
         if (preparse()>=0) yyparse();
     } else { 
         fprintf(stderr,"Can't open file\n");
@@ -2152,4 +2191,9 @@ static int sql(char *cmd)
     g_free(ret);
 
     return 0;
+}
+
+void basic_input_starts(void)
+{
+    buf[0] = 0;
 }

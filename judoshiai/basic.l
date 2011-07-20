@@ -233,19 +233,30 @@ WEND      [Ww][Ee][Nn][Dd]
 WHILE     [Ww][Hh][Ii][Ll][Ee]
 XOR       [Xx][Oo][Rr]
 
+%x QUITFLEX
 %%
 
-^"#".*{NL} { cmdcnt++; return NL; }
+<QUITFLEX>.|\n  {   //fprintf(stderr,"\n***** CHARACTER 0x%x ign=%d *****\n", yytext[0], ignore_end);
+                    if (yytext[0] == 0x0a) return NL;
+		    else yyterminate(); 
+                }
+
+"!".*{NL} { cmdcnt++;             
+            chstate(LNUM_STATE);
+            return NL; }
+
+"\\"{NL} { cmdcnt++; }
 
 {NL} {
 #ifdef RULE_DEBUG
-    fprintf(stderr,"checking rule NL\n");
+    fprintf(stderr," ***** checking rule NL cmdcnt=%d->%d *****\n", cmdcnt, cmdcnt+1);
 #endif
     chstate(LNUM_STATE);
 #ifdef YACC_DEBUG
-    fprintf(stderr,"sending yacc NL\n");
+    fprintf(stderr,"sending yacc NL\n\n");
 #endif
-    if (ignore_end) yyterminate(); /* set by yacc to notify we are done */
+    if (ignore_end)
+        yyterminate(); /* set by yacc to notify we are done */
 
     thenstart=0;
 
@@ -292,7 +303,6 @@ XOR       [Xx][Oo][Rr]
 
 {END} {
     /* DON't just stop, yacc could be upset about it */
-
     if ((result=do_cmd(END,LNUM_STATE|COMMAND_STATE,NOTHING))<0) {
         yyerror("END command on wrong place");
         yyterminate();
@@ -319,6 +329,9 @@ XOR       [Xx][Oo][Rr]
 }
 
 {INPUT} { 
+    extern void basic_input_starts(void);
+    basic_input_starts();
+
     /* input can be used as command or as keyword in OPEN ... */
     if ((result=do_cmd(INPUT,LNUM_STATE|COMMAND_STATE|EXPRESSION_STATE,
         EXPRESSION_STATE))<0) {
@@ -1314,6 +1327,9 @@ XOR       [Xx][Oo][Rr]
 #ifdef RULE_DEBUG
     fprintf(stderr,"checking rule '.'\n");
 #endif
+    if (ignore_end)
+        yyterminate(); /* set by yacc to notify we are done */
+
     if (yytext[0]!=' ') {
         if (statef(EXPRESSION_STATE)) {
 #ifdef YACC_DEBUG
@@ -1321,7 +1337,7 @@ XOR       [Xx][Oo][Rr]
 #endif
             return yytext[0];
         }
-        yyerror("Syntax error");
+        yyerror("Syntax error 1");
         yyterminate();
     }
 }
@@ -1344,4 +1360,10 @@ void init_flex(void)
     cmdcnt=0;
     did_jump=0;
     state=LNUM_STATE;
+    BEGIN(INITIAL);
+}
+
+void quit_flex(void)
+{
+    BEGIN(QUITFLEX);
 }
