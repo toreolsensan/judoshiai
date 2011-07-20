@@ -56,7 +56,7 @@ lex.yy.c: basic.l basic.tab.h
 	flex basic.l
 
 basic.tab.c basic.tab.h: basic.y
-	bison -d basic.y
+	bison -t -v -d basic.y
 
 clean:
 	rm -f *.o *.exe judoshiai judoshiai1 *.res *.rc *~ lex.yy.c basic.tab.c basic.tab.h

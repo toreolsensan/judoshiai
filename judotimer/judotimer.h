@@ -122,6 +122,7 @@ extern void toggle_full_screen(GtkWidget *menu_item, gpointer data);
 extern void toggle_rules_no_koka(GtkWidget *menu_item, gpointer data);
 extern void toggle_rules_leave_points(GtkWidget *menu_item, gpointer data);
 extern void toggle_rules_stop_ippon(GtkWidget *menu_item, gpointer data);
+extern void toggle_whitefirst(GtkWidget *menu_item, gpointer data);
 extern void select_display_layout(GtkWidget *menu_item, gpointer data);
 extern gpointer client_thread(gpointer args);
 extern void show_message(gchar *cat_1, gchar *blue_1, gchar *white_1,

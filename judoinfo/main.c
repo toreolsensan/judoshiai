@@ -44,6 +44,8 @@ static GtkWidget *darea = NULL;
 gint           language = LANG_FI;
 gint           num_lines = NUM_LINES;
 gboolean       mirror_display = FALSE;
+gboolean       white_first = FALSE;
+gboolean       red_background = FALSE;
 
 #define MY_FONT "Arial"
 
@@ -171,7 +173,7 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
                     cairo_set_source_rgb(c, 0.7, 1.0, 0.7);
                 else
                     cairo_set_source_rgb(c, 1.0, 1.0, 0.0);
-            } else 			
+            } else
                 cairo_set_source_rgb(c, 1.0, 1.0, 1.0);
 
             cairo_rectangle(c, left, y_pos, colwidth, 4*BOX_HEIGHT);
@@ -232,12 +234,22 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
             if (j) {
                 cairo_save(c);
 
+#if 0 // new white first rule disables this
                 if (k == 1 && m->flags & MATCH_FLAG_BLUE_DELAYED) {
                     if (m->flags & MATCH_FLAG_BLUE_REST)
                         cairo_set_source_rgb(c, 0.5, 0.5, 1.0);
                     else
                         cairo_set_source_rgb(c, 1.0, 0.5, 0.5);
-                } else
+                }
+#else
+                if (!white_first) {
+                    if (red_background)
+                        cairo_set_source_rgb(c, 1.0, 0.0, 0.0);
+                    else
+                        cairo_set_source_rgb(c, 0.0, 0.0, 1.0);
+                }
+#endif
+                else
                     cairo_set_source_rgb(c, 1.0, 1.0, 1.0);
 
                 if (k)
@@ -246,18 +258,23 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
                                     3*BOX_HEIGHT);
                 cairo_fill(c);
 
-                cairo_set_source_rgb(c, 0, 0, 0);
+                if (k && !white_first)
+                    cairo_set_source_rgb(c, 1.0, 1.0, 1.0);
+                else
+                    cairo_set_source_rgb(c, 0, 0, 0);
 
                 cairo_select_font_face(c, MY_FONT, 0, CAIRO_FONT_WEIGHT_BOLD);
                 cairo_move_to(c, left+5+e, y_pos+2*BOX_HEIGHT+extents.height);
                 cairo_show_text(c, j->last);
-                cairo_restore(c);
+                cairo_select_font_face(c, MY_FONT, 0, CAIRO_FONT_WEIGHT_NORMAL);
 
                 cairo_move_to(c, left+5+e, y_pos+BOX_HEIGHT+extents.height);
                 cairo_show_text(c, j->first);
 
                 cairo_move_to(c, left+5+e, y_pos+3*BOX_HEIGHT+extents.height);
                 cairo_show_text(c, j->club);
+
+                cairo_restore(c);
             }
             j = avl_get_data(m->white);
             if (j && k > 0) {
@@ -269,28 +286,45 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
                         cairo_set_source_rgb(c, 0.7, 1.0, 0.7);
                     else
                         cairo_set_source_rgb(c, 1.0, 1.0, 0.0);
-                } else if (k == 1 && m->flags & MATCH_FLAG_WHITE_DELAYED) {
+                } 
+#if 0
+                else if (k == 1 && m->flags & MATCH_FLAG_WHITE_DELAYED) {
                     if (m->flags & MATCH_FLAG_WHITE_REST)
                         cairo_set_source_rgb(c, 0.5, 0.5, 1.0);
                     else
                         cairo_set_source_rgb(c, 1.0, 0.5, 0.5);
-                } else
+                } 
+#else
+                else if (white_first) {
+                    if (red_background)
+                        cairo_set_source_rgb(c, 1.0, 0.0, 0.0);
+                    else
+                        cairo_set_source_rgb(c, 0.0, 0.0, 1.0);
+                }
+#endif
+                else
                     cairo_set_source_rgb(c, 1.0, 1.0, 1.0);
+
                 cairo_rectangle(c, left+colwidth/2, y_pos+BOX_HEIGHT, colwidth/2, 3*BOX_HEIGHT);
                 cairo_fill(c);
 
-                cairo_set_source_rgb(c, 0, 0, 0);
+                if (k && white_first)
+                    cairo_set_source_rgb(c, 1.0, 1.0, 1.0);
+                else
+                    cairo_set_source_rgb(c, 0, 0, 0);
 
                 cairo_select_font_face(c, MY_FONT, 0, CAIRO_FONT_WEIGHT_BOLD);
                 cairo_move_to(c, left+5+colwidth/2, y_pos+2*BOX_HEIGHT+extents.height);
                 cairo_show_text(c, j->last);
-                cairo_restore(c);
 
+                cairo_select_font_face(c, MY_FONT, 0, CAIRO_FONT_WEIGHT_NORMAL);
                 cairo_move_to(c, left+5+colwidth/2, y_pos+BOX_HEIGHT+extents.height);
                 cairo_show_text(c, j->first);
 
                 cairo_move_to(c, left+5+colwidth/2, y_pos+3*BOX_HEIGHT+extents.height);
                 cairo_show_text(c, j->club);
+
+                cairo_restore(c);
             }
 
             point_click_areas[num_rectangles].category = m->category;
@@ -423,6 +457,25 @@ void toggle_mirror(GtkWidget *menu_item, gpointer data)
         mirror_display = FALSE;
         g_key_file_set_boolean(keyfile, "preferences", "mirror", FALSE);
     }
+    expose(darea, 0, 0);
+}
+
+void toggle_whitefirst(GtkWidget *menu_item, gpointer data)
+{
+    if (GTK_CHECK_MENU_ITEM(menu_item)->active) {
+        white_first = TRUE;
+        g_key_file_set_boolean(keyfile, "preferences", "whitefirst", TRUE);
+    } else {
+        white_first = FALSE;
+        g_key_file_set_boolean(keyfile, "preferences", "whitefirst", FALSE);
+    }
+    expose(darea, 0, 0);
+}
+
+void toggle_redbackground(GtkWidget *menu_item, gpointer data)
+{
+    red_background = GTK_CHECK_MENU_ITEM(menu_item)->active;
+    g_key_file_set_boolean(keyfile, "preferences", "redbackground", red_background);
     expose(darea, 0, 0);
 }
 

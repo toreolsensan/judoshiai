@@ -540,6 +540,7 @@ extern gchar          info_date[];
 extern gchar          info_time[];
 extern gchar          info_place[];
 extern gchar          info_num_tatamis[];
+extern gboolean       info_white_first;
 extern gboolean       three_matches_for_two;
 extern gboolean       serial_used;
 extern GtkWidget     *weight_entry;
@@ -669,7 +670,8 @@ extern void db_new(const char *dbname,
                    const gchar *date,
                    const gchar *place,
 		   const gchar *start_time,
-		   const gchar *num_tatamis);
+		   const gchar *num_tatamis,
+                   const gboolean whitefirst);
 extern gint db_init(const char *db);
 extern void db_matches_init(void);
 extern void db_save_config(void);
@@ -733,7 +735,8 @@ extern void db_set_info(const gchar *competition,
 			const gchar *date, 
 			const gchar *place,
 			const gchar *start_time,
-			const gchar *num_tatamis);
+			const gchar *num_tatamis,
+                        const gboolean whitefirst);
 extern void db_create_cat_def_table(void);
 extern void db_delete_cat_def_table_data(void);
 extern void db_insert_cat_def_table_data(struct cat_def *line);

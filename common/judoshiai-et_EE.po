@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-04-15 14:51+0300\n"
+"POT-Creation-Date: 2011-07-20 10:45+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1364,4 +1364,52 @@ msgid "Use Belt Colors"
 msgstr ""
 
 msgid "Print Unmatched"
+msgstr ""
+
+msgid "White first"
+msgstr ""
+
+msgid "Show"
+msgstr ""
+
+msgid "Show Deleted"
+msgstr ""
+
+msgid "Add"
+msgstr ""
+
+msgid "OK"
+msgstr ""
+
+msgid "White first:"
+msgstr ""
+
+msgid "Scale Serial Interface"
+msgstr ""
+
+msgid "Serial Communication"
+msgstr ""
+
+msgid "In Use"
+msgstr ""
+
+msgid "Device"
+msgstr ""
+
+msgid "Baudrate"
+msgstr ""
+
+msgid "Basic Scripts"
+msgstr ""
+
+msgid "Select Script"
+msgstr ""
+
+msgid "No script available"
+msgstr ""
+
+msgid "Run Script"
+msgstr ""
+
+msgid "Repeat Script"
 msgstr ""

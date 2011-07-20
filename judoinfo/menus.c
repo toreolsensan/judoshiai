@@ -19,7 +19,7 @@ void start_help(GtkWidget *w, gpointer data);
 
 static GtkWidget *menubar, *preferences, *help, *preferencesmenu, *helpmenu;
 static GtkWidget *quit, *manual;
-static GtkWidget *full_screen, *small_display, *mirror;
+static GtkWidget *full_screen, *small_display, *mirror, *whitefirst, *redbackground;
 static GtkWidget *tatami_show[NUM_TATAMIS];
 static GtkWidget *node_ip, *my_ip, *about;
 static GtkWidget *light, *menu_light;
@@ -45,6 +45,8 @@ static const gchar *help_file_names[NUM_LANGS] = {
 extern void toggle_full_screen(GtkWidget *menu_item, gpointer data);
 extern void toggle_small_display(GtkWidget *menu_item, gpointer data);
 extern void toggle_mirror(GtkWidget *menu_item, gpointer data);
+extern void toggle_whitefirst(GtkWidget *menu_item, gpointer data);
+extern void toggle_redbackground(GtkWidget *menu_item, gpointer data);
 
 static void about_judoinfo( GtkWidget *w,
 			    gpointer   data )
@@ -214,6 +216,16 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     g_signal_connect(G_OBJECT(mirror), "activate", 
                      G_CALLBACK(toggle_mirror), 0);
 
+    whitefirst = gtk_check_menu_item_new_with_label("");
+    gtk_menu_shell_append(GTK_MENU_SHELL(preferencesmenu), whitefirst);
+    g_signal_connect(G_OBJECT(whitefirst), "activate", 
+                     G_CALLBACK(toggle_whitefirst), 0);
+
+    redbackground = gtk_check_menu_item_new_with_label("");
+    gtk_menu_shell_append(GTK_MENU_SHELL(preferencesmenu), redbackground);
+    g_signal_connect(G_OBJECT(redbackground), "activate", 
+                     G_CALLBACK(toggle_redbackground), 0);
+
     node_ip = create_menu_item(preferencesmenu, ask_node_ip_address, 0);
     my_ip   = create_menu_item(preferencesmenu, show_my_ip_addresses, 0);
     create_separator(preferencesmenu);
@@ -263,6 +275,16 @@ void set_preferences(void)
     error = NULL;
     if (g_key_file_get_boolean(keyfile, "preferences", "mirror", &error)) {
         gtk_menu_item_activate(GTK_MENU_ITEM(mirror));
+    }
+
+    error = NULL;
+    if (g_key_file_get_boolean(keyfile, "preferences", "whitefirst", &error)) {
+        gtk_menu_item_activate(GTK_MENU_ITEM(whitefirst));
+    }
+
+    error = NULL;
+    if (g_key_file_get_boolean(keyfile, "preferences", "redbackground", &error)) {
+        gtk_menu_item_activate(GTK_MENU_ITEM(redbackground));
     }
 
     for (i = 1; i <= NUM_TATAMIS; i++) {
@@ -318,6 +340,8 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(full_screen, _("Full screen mode"));
     change_menu_label(small_display, _("Small display"));
     change_menu_label(mirror, _("Mirror tatami order"));
+    change_menu_label(whitefirst, _("White first"));
+    change_menu_label(redbackground, _("Red background"));
 
     for (i = 0; i < NUM_TATAMIS; i++) {
         gchar buf[32];

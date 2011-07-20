@@ -22,6 +22,8 @@ gchar info_place[100];
 gboolean three_matches_for_two = 0;
 gchar info_time[100];
 gchar info_num_tatamis[20];
+gboolean info_white_first = FALSE;
+static gboolean info_white_first_exists = FALSE;
 
 gchar database_name[200] = {0};
 
@@ -153,7 +155,7 @@ static int db_info_cb(void *data, int argc, char **argv, char **azColName)
     else if (strcmp(argv[0], "Place") == 0)
         strcpy(info_place, argv[1]);
     else if (strcmp(argv[0], "three_matches_for_two") == 0)
-        three_matches_for_two = atoi(argv[1]);
+        three_matches_for_two = atoi(argv[1]) != 0;
     else if (strcmp(argv[0], "Time") == 0)
         strcpy(info_time, argv[1]);
     else if (strcmp(argv[0], "NumTatamis") == 0) {
@@ -163,8 +165,11 @@ static int db_info_cb(void *data, int argc, char **argv, char **azColName)
             number_of_tatamis = 1;
         if (number_of_tatamis > NUM_TATAMIS)
             number_of_tatamis = NUM_TATAMIS;
+    } else if (strcmp(argv[0], "WhiteFirst") == 0) {
+        info_white_first = atoi(argv[1]) != 0;
+        info_white_first_exists = TRUE;
     }
-
+    
     return 0;
 }
 
@@ -245,6 +250,7 @@ gint db_init(const char *dbname)
 
     db_name = dbname;
 
+    info_white_first_exists = FALSE;
     db_exec(db_name, "SELECT * FROM \"info\"", NULL, db_info_cb);
 
     set_configuration();
@@ -317,7 +323,8 @@ void db_new(const char *dbname,
             const gchar *date,
             const gchar *place,
 	    const gchar *start_time,
-	    const gchar *num_tatamis)
+	    const gchar *num_tatamis,
+            const gboolean whitefirst)
 {
     gchar buf[100];
     FILE *f;
@@ -352,6 +359,7 @@ void db_new(const char *dbname,
     strcpy(info_place, place);
     strcpy(info_time, start_time);
     strcpy(info_num_tatamis, num_tatamis);
+    info_white_first = whitefirst;
 
     if ((f = fopen(db_name, "rb"))) {
         /* exists */
@@ -381,6 +389,11 @@ void db_new(const char *dbname,
         sprintf(buf, "UPDATE \"info\" SET "
                 "\"value\"=\"%s\" WHERE \"item\"=\"NumTatamis\"",
                 num_tatamis);
+        db_exec(db_name, buf, NULL, NULL);
+
+        sprintf(buf, "UPDATE \"info\" SET "
+                "\"value\"=\"%d\" WHERE \"item\"=\"WhiteFirst\"",
+                whitefirst ? 1 : 0);
         db_exec(db_name, buf, NULL, NULL);
 
         return;
@@ -416,6 +429,10 @@ void db_new(const char *dbname,
             " \"NumTatamis\", \"%s\" )", num_tatamis);
     db_exec(db_name, buf, NULL, NULL);
 
+    sprintf(buf, "INSERT INTO \"info\" VALUES ("
+            " \"WhiteFirst\", \"%d\" )", whitefirst ? 1 : 0);
+    db_exec(db_name, buf, NULL, NULL);
+
     number_of_tatamis = atoi(num_tatamis);
     if (number_of_tatamis < 1)
         number_of_tatamis = 1;
@@ -427,7 +444,8 @@ void db_set_info(const gchar *competition,
 		 const gchar *date,
 		 const gchar *place,
 		 const gchar *start_time,
-		 const gchar *num_tatamis)
+		 const gchar *num_tatamis,
+                 const gboolean whitefirst)
 {
     char buffer[300];
 
@@ -470,11 +488,24 @@ void db_set_info(const gchar *competition,
 
     db_exec(db_name, buffer, NULL, NULL);
 
+    if (info_white_first_exists)
+        g_snprintf(buffer, sizeof(buffer), 
+                   "UPDATE \"info\" SET "
+                   "\"value\"=\"%d\" WHERE \"item\"=\"WhiteFirst\"", 
+                   whitefirst ? 1 : 0);
+    else
+        g_snprintf(buffer, sizeof(buffer), 
+                   "INSERT INTO \"info\" VALUES ("
+                   " \"WhiteFirst\", \"%d\" )", whitefirst ? 1 : 0);
+
+    db_exec(db_name, buffer, NULL, NULL);
+
     strcpy(info_competition, competition);
     strcpy(info_date, date);
     strcpy(info_place, place);
     strcpy(info_time, start_time);
     strcpy(info_num_tatamis, num_tatamis);
+    info_white_first = whitefirst;
 
     number_of_tatamis = atoi(num_tatamis);
     if (number_of_tatamis < 1)

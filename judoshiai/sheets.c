@@ -604,8 +604,8 @@ static void paint_pool(struct paint_data *pd, gint category, struct judoka *ctg,
     write_table_title(pd, &match_table, _T(matches));
 
     WRITE_TABLE(match_table, 0, 0, "%s", _T(match));
-    WRITE_TABLE(match_table, 0, 1, "%s", _T(blue));
-    WRITE_TABLE(match_table, 0, 4, "%s", _T(white));
+    WRITE_TABLE(match_table, 0, 1, "%s", info_white_first ? _T(white) : _T(blue));
+    WRITE_TABLE(match_table, 0, 4, "%s", info_white_first ? _T(blue) : _T(white));
     WRITE_TABLE(match_table, 0, 5, "%s", _T(result));
     WRITE_TABLE(match_table, 0, 6, "%s", _T(time));
 
@@ -933,8 +933,8 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
     write_table_title(pd, &match_table, _T(matchesa));
 
     WRITE_TABLE(match_table, 0, 0, "%s", _T(match));
-    WRITE_TABLE(match_table, 0, 1, "%s", _T(blue));
-    WRITE_TABLE(match_table, 0, 4, "%s", _T(white));
+    WRITE_TABLE(match_table, 0, 1, "%s", info_white_first ? _T(white) : _T(blue));
+    WRITE_TABLE(match_table, 0, 4, "%s", info_white_first ? _T(blue) : _T(white));
     WRITE_TABLE(match_table, 0, 5, "%s", _T(result));
     WRITE_TABLE(match_table, 0, 6, "%s", _T(time));
 
@@ -945,8 +945,8 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
     write_table_title(pd, &match_table, _T(matchesb));
 
     WRITE_TABLE(match_table, 0, 0, "%s", _T(match));
-    WRITE_TABLE(match_table, 0, 1, "%s", _T(blue));
-    WRITE_TABLE(match_table, 0, 4, "%s", _T(white));
+    WRITE_TABLE(match_table, 0, 1, "%s", info_white_first ? _T(white) : _T(blue));
+    WRITE_TABLE(match_table, 0, 4, "%s", info_white_first ? _T(blue) : _T(white));
     WRITE_TABLE(match_table, 0, 5, "%s", _T(result));
     WRITE_TABLE(match_table, 0, 6, "%s", _T(time));
 
@@ -1271,8 +1271,8 @@ static void paint_qpool(struct paint_data *pd, gint category, struct judoka *ctg
             write_table_title(pd, &match_table, print_texts[matchesatext+pool][print_lang]);
 
             WRITE_TABLE(match_table, 0, 0, "%s", _T(match));
-            WRITE_TABLE(match_table, 0, 1, "%s", _T(blue));
-            WRITE_TABLE(match_table, 0, 4, "%s", _T(white));
+            WRITE_TABLE(match_table, 0, 1, "%s", info_white_first ? _T(white) : _T(blue));
+            WRITE_TABLE(match_table, 0, 4, "%s", info_white_first ? _T(blue) : _T(white));
             WRITE_TABLE(match_table, 0, 5, "%s", _T(result));
             WRITE_TABLE(match_table, 0, 6, "%s", _T(time));
 

@@ -56,6 +56,7 @@ gboolean rules_leave_score = FALSE;
 gboolean rules_stop_ippon_2 = FALSE;
 GdkCursor *cursor = NULL;
 gboolean sides_switched = FALSE;
+gboolean white_first = FALSE;
 
 static const gchar *num_to_str(guint num)
 {
@@ -1548,6 +1549,76 @@ int main( int   argc,
         return 0;
 }
 
+static void set_colors(void)
+{
+    GdkColor s_blue, s_white;
+
+    gdk_color_parse("#DDD89A", &s_blue);
+    gdk_color_parse("#DD6C00", &s_white);
+
+    if (white_first) {
+        set_fg_color(bw, GTK_STATE_NORMAL, &color_black);
+        set_fg_color(by, GTK_STATE_NORMAL, &color_black);
+        set_fg_color(bk, GTK_STATE_NORMAL, &color_black);
+        set_fg_color(bs, GTK_STATE_NORMAL, &s_white);
+        set_fg_color(ww, GTK_STATE_NORMAL, &color_white);
+        set_fg_color(wy, GTK_STATE_NORMAL, &color_white);
+        set_fg_color(wk, GTK_STATE_NORMAL, &color_white);
+        set_fg_color(ws, GTK_STATE_NORMAL, &s_blue);
+
+        set_bg_color(bw, GTK_STATE_NORMAL, &color_white);
+        set_bg_color(by, GTK_STATE_NORMAL, &color_white);
+        set_bg_color(bk, GTK_STATE_NORMAL, &color_white);
+        set_bg_color(bs, GTK_STATE_NORMAL, &color_white);
+        set_bg_color(ww, GTK_STATE_NORMAL, bgcolor);
+        set_bg_color(wy, GTK_STATE_NORMAL, bgcolor);
+        set_bg_color(wk, GTK_STATE_NORMAL, bgcolor);
+        set_bg_color(ws, GTK_STATE_NORMAL, bgcolor);
+    } else {
+        set_fg_color(bw, GTK_STATE_NORMAL, &color_white);
+        set_fg_color(by, GTK_STATE_NORMAL, &color_white);
+        set_fg_color(bk, GTK_STATE_NORMAL, &color_white);
+        set_fg_color(bs, GTK_STATE_NORMAL, &s_blue);
+        set_fg_color(ww, GTK_STATE_NORMAL, &color_black);
+        set_fg_color(wy, GTK_STATE_NORMAL, &color_black);
+        set_fg_color(wk, GTK_STATE_NORMAL, &color_black);
+        set_fg_color(ws, GTK_STATE_NORMAL, &s_white);
+
+        set_bg_color(bw, GTK_STATE_NORMAL, bgcolor);
+        set_bg_color(by, GTK_STATE_NORMAL, bgcolor);
+        set_bg_color(bk, GTK_STATE_NORMAL, bgcolor);
+        set_bg_color(bs, GTK_STATE_NORMAL, bgcolor);
+        set_bg_color(ww, GTK_STATE_NORMAL, &color_white);
+        set_bg_color(wy, GTK_STATE_NORMAL, &color_white);
+        set_bg_color(wk, GTK_STATE_NORMAL, &color_white);
+        set_bg_color(ws, GTK_STATE_NORMAL, &color_white);
+    }
+
+    if (dsp_layout == 7) {
+        if (white_first) {
+            set_fg_color(blue_name_1, GTK_STATE_NORMAL, &color_black);
+            set_fg_color(blue_club, GTK_STATE_NORMAL, &color_black);
+            set_fg_color(white_name_1, GTK_STATE_NORMAL, &color_white);
+            set_fg_color(white_club, GTK_STATE_NORMAL, &color_white);
+
+            set_bg_color(blue_name_1, GTK_STATE_NORMAL, &color_white);
+            set_bg_color(blue_club, GTK_STATE_NORMAL, &color_white);
+            set_bg_color(white_name_1, GTK_STATE_NORMAL, bgcolor);
+            set_bg_color(white_club, GTK_STATE_NORMAL, bgcolor);
+        } else {
+            set_fg_color(blue_name_1, GTK_STATE_NORMAL, &color_white);
+            set_fg_color(blue_club, GTK_STATE_NORMAL, &color_white);
+            set_fg_color(white_name_1, GTK_STATE_NORMAL, &color_black);
+            set_fg_color(white_club, GTK_STATE_NORMAL, &color_black);
+
+            set_bg_color(blue_name_1, GTK_STATE_NORMAL, bgcolor);
+            set_bg_color(blue_club, GTK_STATE_NORMAL, bgcolor);
+            set_bg_color(white_name_1, GTK_STATE_NORMAL, &color_white);
+            set_bg_color(white_club, GTK_STATE_NORMAL, &color_white);
+        }
+    }
+}
+
 void toggle_color(GtkWidget *menu_item, gpointer data)
 {
         if (GTK_CHECK_MENU_ITEM(menu_item)->active) {
@@ -1558,16 +1629,7 @@ void toggle_color(GtkWidget *menu_item, gpointer data)
 		g_key_file_set_string(keyfile, "preferences", "color", "blue");
 	}
 
-        set_bg_color(bw, GTK_STATE_NORMAL, bgcolor);
-        set_bg_color(by, GTK_STATE_NORMAL, bgcolor);
-        set_bg_color(bk, GTK_STATE_NORMAL, bgcolor);
-        set_bg_color(bs, GTK_STATE_NORMAL, bgcolor);
-
-        if (dsp_layout == 7) {
-            set_bg_color(blue_name_1, GTK_STATE_NORMAL, bgcolor);
-            set_bg_color(blue_club, GTK_STATE_NORMAL, bgcolor);
-        }
-
+        set_colors();
 	expose(darea, 0, 0);
 }
 
@@ -1621,6 +1683,14 @@ void toggle_rules_stop_ippon(GtkWidget *menu_item, gpointer data)
 		rules_stop_ippon_2 = FALSE;
 		g_key_file_set_boolean(keyfile, "preferences", "stopippon", FALSE);
 	}
+}
+
+void toggle_whitefirst(GtkWidget *menu_item, gpointer data)
+{
+    white_first = GTK_CHECK_MENU_ITEM(menu_item)->active;
+    g_key_file_set_boolean(keyfile, "preferences", "whitefirst", white_first);
+    set_colors();
+    expose(darea, 0, 0);
 }
 
 void toggle_switch_sides(GtkWidget *menu_item, gpointer data)

@@ -47,6 +47,7 @@ void new_shiai(GtkWidget *w, gpointer data)
     GtkWidget *cont_date = gtk_entry_new();
     GtkWidget *cont_time = gtk_entry_new();
     GtkWidget *cont_num_tatamis = gtk_entry_new();
+    GtkWidget *cont_white_first = gtk_check_button_new();
     GtkWidget *dialog;
     GtkWidget *table = gtk_table_new(2, 5, FALSE);
 
@@ -67,15 +68,18 @@ void new_shiai(GtkWidget *w, gpointer data)
     gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new(_("Date:")), 0, 1, 1, 2);
     gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new(_("Place:")), 0, 1, 2, 3);
     gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new(_("Start time:")), 0, 1, 3, 4);
-    gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new(_("Number of tatamis")), 0, 1, 4, 5);
+    gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new(_("Number of tatamis:")), 0, 1, 4, 5);
+    gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new(_("White first:")), 0, 1, 5, 6);
 
     gtk_entry_set_text(GTK_ENTRY(cont_num_tatamis), "3");
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(cont_white_first), TRUE);
 
     gtk_table_attach_defaults(GTK_TABLE(table), cont_name, 1, 2, 0, 1);
     gtk_table_attach_defaults(GTK_TABLE(table), cont_date, 1, 2, 1, 2);
     gtk_table_attach_defaults(GTK_TABLE(table), cont_place, 1, 2, 2, 3);
     gtk_table_attach_defaults(GTK_TABLE(table), cont_time, 1, 2, 3, 4);
     gtk_table_attach_defaults(GTK_TABLE(table), cont_num_tatamis, 1, 2, 4, 5);
+    gtk_table_attach_defaults(GTK_TABLE(table), cont_white_first, 1, 2, 5, 6);
 
     gtk_widget_show_all(table);
     gtk_file_chooser_set_extra_widget(GTK_FILE_CHOOSER(dialog), table);
@@ -116,12 +120,14 @@ void new_shiai(GtkWidget *w, gpointer data)
                gtk_entry_get_text(GTK_ENTRY(cont_date)),
                gtk_entry_get_text(GTK_ENTRY(cont_place)),
                gtk_entry_get_text(GTK_ENTRY(cont_time)),
-               gtk_entry_get_text(GTK_ENTRY(cont_num_tatamis)));
+               gtk_entry_get_text(GTK_ENTRY(cont_num_tatamis)),
+               gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(cont_white_first)));
 
         open_shiai_display();
     }
         
     gtk_widget_destroy (dialog);
+    set_match_col_titles();
 }
 
 void open_shiai_from_net(GtkWidget *w, gpointer data)
@@ -404,6 +410,7 @@ void properties(GtkWidget *w, gpointer data)
     GtkWidget *cont_date = gtk_entry_new();
     GtkWidget *cont_time = gtk_entry_new();
     GtkWidget *cont_num_tatamis = gtk_entry_new();
+    GtkWidget *cont_white_first = gtk_check_button_new();
     GtkWidget *table = gtk_table_new(2, 7, FALSE);
     gint       num_comp, num_weighted;
     gchar      buf[8];
@@ -422,18 +429,20 @@ void properties(GtkWidget *w, gpointer data)
     gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new(_("Place:")), 0, 1, 2, 3);
     gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new(_("Start time:")), 0, 1, 3, 4);
     gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new(_("Number of tatamis:")), 0, 1, 4, 5);
-    gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new(_("Competitors:")), 0, 1, 5, 6);
-    gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new(_("Weighted:")), 0, 1, 6, 7);
+    gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new(_("White first:")), 0, 1, 5, 6);
+    gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new(_("Competitors:")), 0, 1, 6, 7);
+    gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new(_("Weighted:")), 0, 1, 7, 8);
 
     gtk_table_attach_defaults(GTK_TABLE(table), cont_name, 1, 2, 0, 1);
     gtk_table_attach_defaults(GTK_TABLE(table), cont_date, 1, 2, 1, 2);
     gtk_table_attach_defaults(GTK_TABLE(table), cont_place, 1, 2, 2, 3);
     gtk_table_attach_defaults(GTK_TABLE(table), cont_time, 1, 2, 3, 4);
     gtk_table_attach_defaults(GTK_TABLE(table), cont_num_tatamis, 1, 2, 4, 5);
+    gtk_table_attach_defaults(GTK_TABLE(table), cont_white_first, 1, 2, 5, 6);
     sprintf(buf, "%d", num_comp);
-    gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new(buf), 1, 2, 5, 6);
-    sprintf(buf, "%d", num_weighted);
     gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new(buf), 1, 2, 6, 7);
+    sprintf(buf, "%d", num_weighted);
+    gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new(buf), 1, 2, 7, 8);
 
     gtk_widget_show_all(table);
     gtk_container_add(GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), table);
@@ -443,16 +452,20 @@ void properties(GtkWidget *w, gpointer data)
     gtk_entry_set_text(GTK_ENTRY(cont_place), info_place);
     gtk_entry_set_text(GTK_ENTRY(cont_time), info_time);
     gtk_entry_set_text(GTK_ENTRY(cont_num_tatamis), info_num_tatamis);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(cont_white_first), info_white_first);
 
     if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT) {
         db_set_info(gtk_entry_get_text(GTK_ENTRY(cont_name)),
                     gtk_entry_get_text(GTK_ENTRY(cont_date)),
                     gtk_entry_get_text(GTK_ENTRY(cont_place)),
                     gtk_entry_get_text(GTK_ENTRY(cont_time)),
-                    gtk_entry_get_text(GTK_ENTRY(cont_num_tatamis)));
+                    gtk_entry_get_text(GTK_ENTRY(cont_num_tatamis)),
+                    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(cont_white_first)));
     }
         
     gtk_widget_destroy (dialog);        
+
+    set_match_col_titles();
 }
 
 static gboolean with_weight;

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-04-15 14:51+0300\n"
+"POT-Creation-Date: 2011-07-20 10:45+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -88,12 +88,6 @@ msgstr "Muuta kieli ruotsiksi"
 msgid "Change language to English"
 msgstr "Muuta kieli englanniksi"
 
-msgid "Match automatically from JudoShiai program"
-msgstr "xxx"
-
-msgid "Match time automatically from JudoShiai program"
-msgstr "Otteluaika automaattisesti JudoShiai-ohjelmalta"
-
 msgid "Contest duration automatically from JudoShiai program"
 msgstr "Otteluaika automaattisesti JudoShiai-ohjelmalta"
 
@@ -142,9 +136,6 @@ msgstr "Äänestys: sininen voittaa"
 msgid "Hantei: blue wins"
 msgstr "Hantei: sininen voittaa"
 
-msgid "Majority of three: white wins"
-msgstr "Äänestys: valkoinen voittaa"
-
 msgid "Hantei: white wins"
 msgstr "Hantei: valkoinen voittaa"
 
@@ -174,18 +165,6 @@ msgstr "Matto 7"
 
 msgid "Contest area 8"
 msgstr "Matto 8"
-
-msgid "Match duration automatically from JudoShiai program"
-msgstr "Otteluaika automaattisesti JudoShiai-ohjelmalta"
-
-msgid "installation_dir=%s\n"
-msgstr "xxx1\n"
-
-msgid "current_directory=%s\n"
-msgstr "xxx2\n"
-
-msgid "test string"
-msgstr "testi"
 
 msgid "Increment time"
 msgstr "Lisää ottelukelloa"
@@ -217,9 +196,6 @@ msgstr "Pisteet menossa valkoiselle"
 msgid "About Judotimer"
 msgstr "Tietoja Judotimerista"
 
-msgid "Full screen"
-msgstr "Kokonäyttötila"
-
 msgid "Full screen mode"
 msgstr "Kokonäyttötila"
 
@@ -240,12 +216,6 @@ msgstr "Aseta kellot"
 
 msgid "Clock:"
 msgstr "Ottelukello:"
-
-msgid "Year 2009 rules"
-msgstr "Vuoden 2009 säännöt"
-
-msgid "Short pin times"
-msgstr "Lyhyet sidonta-ajat"
 
 msgid "Hansoku-make to blue"
 msgstr "Hansoku-make siniselle"
@@ -529,15 +499,6 @@ msgstr "Sarja:"
 msgid "No seeding"
 msgstr "Ei sijoitusta"
 
-msgid "Gold medalist"
-msgstr "Kultamitalisti"
-
-msgid "Silver medalist"
-msgstr "Hopeamitalisti"
-
-msgid "Bronze medalist"
-msgstr "Pronssimitalisti"
-
 msgid "Empty categories removed"
 msgstr "Tyhjät sarjat poistettu"
 
@@ -586,29 +547,8 @@ msgstr "Takaisin"
 msgid "Wrong password"
 msgstr "Salasana virheellinen"
 
-msgid "Match controlling and browsing"
-msgstr "Ottelujen ohjaus ja katselu"
-
-msgid "Contest controlling and browsing"
-msgstr "Ottelujen ohjaus ja katselu"
-
-msgid "Java applet, Java must be enabled"
-msgstr "Java-appletti, javan tulee olla sallittuna"
-
-msgid "Password not in use"
-msgstr "Salasana ei k&auml;yt&ouml;ss&auml;"
-
 msgid "Logout"
 msgstr "Kirjaudu ulos"
-
-msgid "Login is required"
-msgstr "Sis&auml;&auml;nkirjautuminen tarvitaan"
-
-msgid "if you want to report match results"
-msgstr "jos halutaan raportoida ottelujen lopputuloksia"
-
-msgid "User name can be anything"
-msgstr "K&auml;ytt&auml;j&auml;nimi voi olla mit&auml; vain"
 
 msgid "Login"
 msgstr "Kirjaudu sis&auml;&auml;n"
@@ -701,9 +641,6 @@ msgstr "Valmistautuvat:"
 msgid "Delay the match"
 msgstr "Viivytä ottelua"
 
-msgid "Delay the contest"
-msgstr "Viivytä ottelua"
-
 msgid "Matches matched. Clear the results first."
 msgstr "Otteluita oteltu. Nollaa tulokset ensin."
 
@@ -712,9 +649,6 @@ msgstr "mitätöity"
 
 msgid "changed"
 msgstr "muuttunut"
-
-msgid "winner"
-msgstr "voittaja"
 
 msgid "points"
 msgstr "pisteet"
@@ -758,20 +692,11 @@ msgstr "Paikka:"
 msgid "Start time:"
 msgstr "Aloitusaika:"
 
-msgid "Number of tatamis"
-msgstr "Tatamien lkm:"
-
 msgid "Tournament from the net"
 msgstr "Kilpailu verkosta"
 
 msgid "Select sheet font"
 msgstr "Valitse kaavioiden fontti"
-
-msgid "Contest properties"
-msgstr "Kilpailun tiedot"
-
-msgid "Number of competitors:"
-msgstr "Ottelijoita:"
 
 msgid "Tournament"
 msgstr "Kilpailu"
@@ -820,12 +745,6 @@ msgstr "Siirrä kilpailijat tänne"
 msgid "Compose Unofficial Category"
 msgstr "Muodosta valituista salikisasarja"
 
-msgid "Draw"
-msgstr "Arvo sarja"
-
-msgid "Draw and Print"
-msgstr "Arvo ja tulosta sarja"
-
 msgid "Draw Manually"
 msgstr "Arvo sarja käsin"
 
@@ -840,12 +759,6 @@ msgstr "Poista kilpailijat"
 
 msgid "Show Sheet"
 msgstr "Näytä kaavio"
-
-msgid "Print Sheet (Printer)"
-msgstr "Tulosta kaavio (tulostin)"
-
-msgid "Print Sheet (PDF)"
-msgstr "Tulosta kaavio (PDF)"
 
 msgid "Search"
 msgstr "Etsi"
@@ -863,9 +776,6 @@ msgid "Age text:"
 msgstr "Ikäteksti:"
 
 msgid "Match time:"
-msgstr "Otteluaika:"
-
-msgid "Contest duration:"
 msgstr "Otteluaika:"
 
 msgid "Rest time:"
@@ -898,13 +808,7 @@ msgstr "Jätä ennalleen"
 msgid "Stop synchronization"
 msgstr "Lopeta synkronointi"
 
-msgid "Remove Matches"
-msgstr "Poista ottelut"
-
 msgid "Number of tatamis:"
-msgstr "Tatamien lkm:"
-
-msgid "Number of contest areas:"
 msgstr "Tatamien lkm:"
 
 msgid "Sheets"
@@ -932,9 +836,6 @@ msgid "Show Tatami"
 msgstr "Näytä tatami"
 
 msgid "Start New Match?"
-msgstr "Aloita uusi ottelu?"
-
-msgid "Start New Contest?"
 msgstr "Aloita uusi ottelu?"
 
 msgid "Hansokumake to blue"
@@ -1063,23 +964,8 @@ msgstr "Tulosta IWYKS"
 msgid "Print Comment"
 msgstr "Tulosta kommentti"
 
-msgid "Medals"
-msgstr "Mitalit"
-
-msgid "Statistics"
-msgstr "Tilastot"
-
-msgid "Name"
-msgstr "Nimi"
-
 msgid "Create Statistics"
 msgstr "Tee tilastot"
-
-msgid "Total"
-msgstr "Yhteensä"
-
-msgid "Matches:"
-msgstr "Otteluja:"
 
 msgid "NOTE"
 msgstr "HUOMAA"
@@ -1122,15 +1008,6 @@ msgstr "Järjestelmä:"
 
 msgid "Default"
 msgstr "Oletus"
-
-msgid "Round Robin"
-msgstr "Pooli"
-
-msgid "Double Round Robin"
-msgstr "Tuplapooli"
-
-msgid "Double Repechage"
-msgstr "Ranskalainen"
 
 msgid "FIN Double Repechage"
 msgstr "FIN Ranskalainen"
@@ -1228,9 +1105,6 @@ msgstr "Neloispooli"
 msgid "IJF Dbl Rep"
 msgstr "IJF Ransk."
 
-msgid "Dbl Repchg"
-msgstr "Ransk."
-
 msgid "FIN Dbl Repchg"
 msgstr "FIN Ransk."
 
@@ -1252,9 +1126,6 @@ msgstr "SWE Lyhyet ker."
 msgid "ESP Dbl Lost"
 msgstr "ESP Pitkä ker."
 
-msgid "ESP Dbl Rep/Bgn"
-msgstr "ESP Ransk. alusta"
-
 msgid "ESP Dbl Rep"
 msgstr "ESP Ransk."
 
@@ -1263,9 +1134,6 @@ msgstr "ESP Lyh. ker."
 
 msgid "ESP Double Lost"
 msgstr "ESP Pitkä keräily"
-
-msgid "ESP Double Repechage from Beginning"
-msgstr "ESP Ranskalainen alusta"
 
 msgid "ESP Double Repechage"
 msgstr "ESP Ranskalainen"
@@ -1325,43 +1193,88 @@ msgid "Stop clock on Ippon"
 msgstr "Ippon pysäyttää kellon"
 
 msgid "Switch sides"
-msgstr ""
+msgstr "Vaihda puolia"
 
 msgid "Display customized layout"
-msgstr ""
+msgstr "Näytön asettelu tiedostosta"
 
 msgid "Change language to Estonian"
-msgstr ""
+msgstr "Muuta kieli viroksi"
 
 msgid "Change language to Ukrainan"
-msgstr ""
+msgstr "Muuta kieli ukrainaksi"
 
 msgid "No competitor found!"
-msgstr ""
-
-msgid "Deleted Competitors"
-msgstr ""
+msgstr "Kilpailijaa ei löytynyt!"
 
 msgid "Modified Dbl Elim"
-msgstr ""
+msgstr "Muutettu kaksoiselim."
 
 msgid "FIN Dbl Repchg One Bronze"
-msgstr ""
+msgstr "FIN Ranskalainen (yksi pronssi)"
 
 msgid "Modified Double Elimination"
-msgstr ""
+msgstr "Muutettu kaksoiseliminointi"
 
 msgid "FIN Double Repechage One Bronze"
-msgstr ""
+msgstr "FIN Ranskalainen (yksi pronssi)"
 
 msgid "Silver medal match"
-msgstr ""
+msgstr "Hopeamitaliottelu"
 
 msgid "Pool Style 2"
-msgstr ""
+msgstr "Poolin tyyli 2"
 
 msgid "Use Belt Colors"
-msgstr ""
+msgstr "Käytä vöiden väriä"
 
 msgid "Print Unmatched"
-msgstr ""
+msgstr "Tulosta ottelemattomat"
+
+msgid "White first"
+msgstr "Valkoinen ensin"
+
+msgid "Show"
+msgstr "Näytä"
+
+msgid "Show Deleted"
+msgstr "Näytä poistetut"
+
+msgid "Add"
+msgstr "Lisää"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "White first:"
+msgstr "Valkoinen ensin:"
+
+msgid "Scale Serial Interface"
+msgstr "Vaa'an liitäntä"
+
+msgid "Serial Communication"
+msgstr "Sarjaliikenne"
+
+msgid "In Use"
+msgstr "Käytössä"
+
+msgid "Device"
+msgstr "Laite"
+
+msgid "Baudrate"
+msgstr "Nopeus"
+
+msgid "Basic Scripts"
+msgstr "Basic-ohjelmat"
+
+msgid "Select Script"
+msgstr "Valitse ohjelma"
+
+msgid "No script available"
+msgstr "Ohjelmaa ei ole"
+
+msgid "Run Script"
+msgstr "Suorita ohjelma"
+
+msgid "Repeat Script"
+msgstr "Toista ohjelma"

@@ -1994,7 +1994,7 @@ static GtkWidget *create_view_and_model(void)
     renderer = gtk_cell_renderer_text_new();
     g_object_set(renderer, "xalign", 0.0, NULL);
     col_offset = gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(view),
-                                                             -1, _("Blue"),
+                                                             -1, info_white_first ? _("White") : _("Blue"),
                                                              renderer, "text",
                                                              COL_MATCH_BLUE,
                                                              /*"visible",
@@ -2068,7 +2068,7 @@ static GtkWidget *create_view_and_model(void)
     renderer = gtk_cell_renderer_text_new();
     g_object_set(renderer, "xalign", 0.0, NULL);
     col_offset = gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(view),
-                                                             -1, _("White"),
+                                                             -1, info_white_first ? _("Blue") : _("White"),
                                                              renderer, "text",
                                                              COL_MATCH_WHITE,
                                                              "visible",
@@ -2674,7 +2674,7 @@ void set_match_col_titles(void)
         gtk_tree_view_column_set_title(col, _("Match"));
 
         col = gtk_tree_view_get_column(GTK_TREE_VIEW(match_view[i]), COL_MATCH_BLUE);
-        gtk_tree_view_column_set_title(col, _("Blue"));
+        gtk_tree_view_column_set_title(col, info_white_first ? _("White") : _("Blue"));
 
         col = gtk_tree_view_get_column(GTK_TREE_VIEW(match_view[i]), COL_MATCH_BLUE_POINTS);
         gtk_tree_view_column_set_title(col, _("Points"));
@@ -2683,7 +2683,7 @@ void set_match_col_titles(void)
         gtk_tree_view_column_set_title(col, _("Points"));
 
         col = gtk_tree_view_get_column(GTK_TREE_VIEW(match_view[i]), COL_MATCH_WHITE);
-        gtk_tree_view_column_set_title(col, _("White"));
+        gtk_tree_view_column_set_title(col, info_white_first ? _("Blue") : _("White"));
 
         col = gtk_tree_view_get_column(GTK_TREE_VIEW(match_view[i]), COL_MATCH_TIME);
         gtk_tree_view_column_set_title(col, _("Time"));
