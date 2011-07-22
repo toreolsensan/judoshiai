@@ -152,6 +152,9 @@ void write_png(GtkWidget *menuitem, gpointer userdata)
         paint_surfaces(&pd, c_pdf, c_png, cs_pdf, cs_png, buf);
         pd.page = 2;
         paint_surfaces(&pd, c_pdf, c_png, cs_pdf, cs_png, buf);
+    } else if (sys.system == SYSTEM_DPOOL2) {
+        pd.page = 1;
+        paint_surfaces(&pd, c_pdf, c_png, cs_pdf, cs_png, buf);
     }
 
     cairo_destroy(c_pdf);
@@ -962,9 +965,15 @@ static gint fill_in_pages(gint category, gint all)
                 pages_to_print[numpages++].pagenum = 1;
                 pages_to_print[numpages].cat = index;
                 pages_to_print[numpages++].pagenum = 2;
-            } else if (numpages < NUM_PAGES) {
+            } else if ((sys.system == SYSTEM_DPOOL2) &&
+                       numpages < NUM_PAGES - 1) {
+                pages_to_print[numpages].cat = index;
+                pages_to_print[numpages++].pagenum = 0;
                 pages_to_print[numpages].cat = index;
                 pages_to_print[numpages++].pagenum = 1;
+            } else if (numpages < NUM_PAGES) {
+                pages_to_print[numpages].cat = index;
+                pages_to_print[numpages++].pagenum = 0;
             }
 
             if (cat)
@@ -989,6 +998,9 @@ static gint fill_in_pages(gint category, gint all)
             pages_to_print[numpages++].pagenum = 1;
             pages_to_print[numpages].cat = category;
             pages_to_print[numpages++].pagenum = 2;
+        } else if (sys.system == SYSTEM_DPOOL2) {
+            pages_to_print[numpages].cat = category;
+            pages_to_print[numpages++].pagenum = 1;
         }
         cat = category;
 

@@ -84,6 +84,7 @@ static void name_cell_data_func (GtkTreeViewColumn *col,
         switch (data->system.system) {
         case SYSTEM_POOL: sys = _("Pool"); break;
         case SYSTEM_DPOOL: sys = _("Double pool"); break;
+        case SYSTEM_DPOOL2: sys = _("Double pool 2"); break;
         case SYSTEM_QPOOL: sys = _("Quadruple pool"); break;
         default: sys = _("Double repechage");
         }
@@ -379,6 +380,11 @@ void get_pool_winner(gint num, gint c[21], gboolean yes[21],
     for (i = 0; i <= 20; i++) {
         c[i] = i;
     }
+
+    // check for not defined competitors
+    for (i = 1; i <= num; i++)
+        if (ju[i] == NULL)
+            return;
         
     for (i = 1; i < 20; i++) {
         for (j = i+1; j <= 20; j++) {
@@ -448,13 +454,15 @@ gint num_matches(gint sys, gint num_judokas)
         return 3;
     else if (sys == SYSTEM_DPOOL)
         return num_matches_table_d[num_judokas]; 
+    else if (sys == SYSTEM_DPOOL2)
+        return num_matches_table_d[num_judokas]; 
     else if (sys == SYSTEM_QPOOL)
         return num_matches_table_q[num_judokas]; 
     else
         return num_matches_table[num_judokas]; 
 }
 
-void fill_pool_struct(gint category, gint num, struct pool_matches *pm)
+void fill_pool_struct(gint category, gint num, struct pool_matches *pm, gboolean final_pool)
 {
     gint i, k;
     gboolean all_done;
@@ -463,13 +471,23 @@ void fill_pool_struct(gint category, gint num, struct pool_matches *pm)
 
     sys = get_cat_system(category);
     sysq = sys.system == SYSTEM_QPOOL;
-    sysd = sys.system == SYSTEM_DPOOL;
+    sysd = sys.system == SYSTEM_DPOOL || sys.system == SYSTEM_DPOOL2;
 
     memset(pm, 0, sizeof(*pm));
     pm->finished = TRUE;
     pm->num_matches = num_matches(sys.system, num);
 
     db_read_category_matches(category, pm->m);
+
+    // two best of two pools fight in the final pool
+    if (final_pool) {
+        for (i = 1; i <= 6; i++)
+            pm->m[i] = pm->m[pm->num_matches+i];
+        pm->num_matches = 6;
+        num = 4;
+        sys.system = SYSTEM_POOL;
+        sysq = sysd = FALSE;
+    }
 
     if (num == 1) {
         GtkTreeIter iter, iter2;
@@ -609,7 +627,7 @@ gboolean pool_finished(gint numcomp, gint nummatches, gint sys, gboolean yes[], 
         if (sys == SYSTEM_QPOOL) {
             blue = poolsq[numcomp][i-1][0];
             white = poolsq[numcomp][i-1][1];
-        } else if (sys == SYSTEM_DPOOL) {
+        } else if (sys == SYSTEM_DPOOL || sys == SYSTEM_DPOOL2) {
             blue = poolsd[numcomp][i-1][0];
             white = poolsd[numcomp][i-1][1];
         } else {
@@ -639,14 +657,15 @@ static void update_pool_matches(gint category, gint num)
     case SYSTEM_POOL: num_pools = 1; num_knockouts = 0; break;
     case SYSTEM_DPOOL: num_pools = 2; num_knockouts = 3; break;
     case SYSTEM_QPOOL: num_pools = 4; num_knockouts = 7; break;
+    case SYSTEM_DPOOL2: num_pools = 2; num_knockouts = 0; break;
     }
 
     if (automatic_sheet_update || automatic_web_page_update)
         current_category = category;
     //g_print("current_category = %d\n", category);
 
-    /* Read mathes in. */
-    fill_pool_struct(category, num, &pm);
+    /* Read matches in. */
+    fill_pool_struct(category, num, &pm, FALSE);
 
     if (num_pools == 1) {
         if (pm.finished)
@@ -693,6 +712,37 @@ static void update_pool_matches(gint category, gint num)
     for (i = 0; i < num_pools; i++) {
         get_pool_winner(pool_size[i], c[i], yes[i], pm.wins, pm.pts, pm.mw, pm.j, pm.all_matched);
         pool_done[i] = pool_finished(num, last_match, sys.system, yes[i], &pm);
+    }
+
+    if (sys.system == SYSTEM_DPOOL2) {
+        if (pool_done[0] == FALSE || pool_done[1] == FALSE)
+            goto out;
+        
+        // check if there are matches done in the final pool
+        for (i = 1; i <= 6; i++)
+            if (pm.m[last_match+i].blue_points || pm.m[last_match+i].white_points)
+                goto out;
+
+        // make the final matches
+        struct judoka *winners[5];
+        winners[1] = pm.j[c[0][2]];
+        winners[2] = pm.j[c[0][1]];
+        winners[3] = pm.j[c[1][2]];
+        winners[4] = pm.j[c[1][1]];
+
+        for (i = 0; i < 6; i++) {
+            struct match ma;
+
+            memset(&ma, 0, sizeof(ma));
+            ma.category = category;
+            ma.number = last_match+i+1;
+            ma.blue = winners[pools[4][i][0]]->index;
+            ma.white = winners[pools[4][i][1]]->index;
+            set_match(&ma);
+            db_set_match(&ma);
+        }
+
+        goto out;
     }
 
     for (i = 0; i < num_pools; i++) {
@@ -1089,10 +1139,12 @@ gint get_match_number_flag(gint category, gint number)
 
     switch (cat->system.system) {
     case SYSTEM_POOL:
+    case SYSTEM_DPOOL2:
+    case SYSTEM_QPOOL:
 	return 0;
 
     case SYSTEM_DPOOL:
-        matchnum = num_matches(cat->system.system, cat->system.numcomp + 3);
+        matchnum = num_matches(cat->system.system, cat->system.numcomp) + 3;
 
 	if (number == matchnum - 2)
 	    return MATCH_FLAG_SEMIFINAL_A;
@@ -1101,10 +1153,6 @@ gint get_match_number_flag(gint category, gint number)
 	else if (number == matchnum)
 	    return MATCH_FLAG_GOLD;
 	return 0;
-
-    case SYSTEM_QPOOL:
-        return 0;
-        break;
 
     case SYSTEM_FRENCH_8:
     case SYSTEM_FRENCH_16:
@@ -1213,6 +1261,7 @@ void update_matches_small(guint category, struct compsys sys_or_tatami)
     switch (sys_or_tatami.system) {
     case SYSTEM_POOL:
     case SYSTEM_DPOOL:
+    case SYSTEM_DPOOL2:
     case SYSTEM_QPOOL:
         update_pool_matches(category, sys_or_tatami.numcomp);
         break;
@@ -1238,6 +1287,7 @@ void update_matches(guint category, struct compsys sys, gint tatami)
         switch (sys.system) {
         case SYSTEM_POOL:
         case SYSTEM_DPOOL:
+        case SYSTEM_DPOOL2:
         case SYSTEM_QPOOL:
             update_pool_matches(category, sys.numcomp);
             break;

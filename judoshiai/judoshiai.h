@@ -73,7 +73,9 @@
 #define SYSTEM_FRENCH_128  7
 #define SYSTEM_FRENCH_256  8
 #define SYSTEM_QPOOL       9
+#define SYSTEM_DPOOL2     10
 
+#if 0
 #define SYSTEM_POOL_Z         (SYSTEM_POOL<<SYSTEM_MASK_SHIFT)
 #define SYSTEM_DPOOL_Z        (SYSTEM_DPOOL<<SYSTEM_MASK_SHIFT)
 #define SYSTEM_FRENCH_8_Z     (SYSTEM_FRENCH_8<<SYSTEM_MASK_SHIFT)
@@ -83,6 +85,7 @@
 #define SYSTEM_FRENCH_128_Z   (SYSTEM_FRENCH_128<<SYSTEM_MASK_SHIFT)
 #define SYSTEM_FRENCH_256Z_Z  (SYSTEM_FRENCH_256<<SYSTEM_MASK_SHIFT)
 #define SYSTEM_QPOOL_Z        (SYSTEM_QPOOL<<SYSTEM_MASK_SHIFT)
+#endif
 
 enum tables {
     TABLE_DOUBLE_REPECHAGE = 0,
@@ -118,6 +121,7 @@ enum cat_systems {
     CAT_ESP_REPESCA_SIMPLE,
     CAT_MODIFIED_DOUBLE_ELIMINATION,
     CAT_SYSTEM_REPECHAGE_ONE_BRONZE,
+    CAT_SYSTEM_DPOOL2,
     NUM_SYSTEMS
 };
 #define CAT_IJF_DOUBLE_REPECHAGE CAT_ESP_REPESCA_DOBLE
@@ -797,7 +801,7 @@ extern void set_match_pages(GtkWidget *notebook);
 extern void matches_refresh(void);
 extern void matches_clear(void);
 extern void set_match(struct match *m);
-extern void fill_pool_struct(gint category, gint num, struct pool_matches *pm);
+extern void fill_pool_struct(gint category, gint num, struct pool_matches *pm, gboolean final_pool);
 extern void empty_pool_struct(struct pool_matches *pm);
 extern void get_pool_winner(gint num, gint c[21], gboolean yes[21], 
                             gint wins[21], gint pts[21], 

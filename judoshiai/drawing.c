@@ -894,7 +894,8 @@ static void make_manual_mathes_callback(GtkWidget *widget,
             if (mdata->sys.system == SYSTEM_QPOOL) {
                 m.blue = mdata->mcomp[ mdata->mpos[ poolsq[mdata->mjudokas][i][0] ].judoka ].index;
                 m.white = mdata->mcomp[ mdata->mpos[ poolsq[mdata->mjudokas][i][1] ].judoka ].index;
-            } else if (mdata->sys.system == SYSTEM_DPOOL) {
+            } else if (mdata->sys.system == SYSTEM_DPOOL ||
+                       mdata->sys.system == SYSTEM_DPOOL2) {
                 m.blue = mdata->mcomp[ mdata->mpos[ poolsd[mdata->mjudokas][i][0] ].judoka ].index;
                 m.white = mdata->mcomp[ mdata->mpos[ poolsd[mdata->mjudokas][i][1] ].judoka ].index;
             } else {
@@ -955,6 +956,8 @@ struct compsys get_system_for_category(gint index, gint competitors)
         sys = SYSTEM_POOL;
     } else if (competitors > 5 && competitors <= 10 && wishsys == CAT_SYSTEM_DPOOL) {
         sys = SYSTEM_DPOOL;
+    } else if (competitors > 5 && competitors <= 10 && wishsys == CAT_SYSTEM_DPOOL2) {
+        sys = SYSTEM_DPOOL2;
     } else if (competitors >= 8 && competitors <= 20 && wishsys == CAT_SYSTEM_QPOOL) {
         sys = SYSTEM_QPOOL;
     } else if (competitors > 5 && competitors <= 10 && wishsys == CAT_SYSTEM_DEFAULT &&
@@ -1058,6 +1061,7 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
     switch (mdata->sys.system) {
     case SYSTEM_POOL:
     case SYSTEM_DPOOL:
+    case SYSTEM_DPOOL2:
     case SYSTEM_QPOOL:
         mdata->mpositions = competitors;
         mdata->mfrench_sys = -1;

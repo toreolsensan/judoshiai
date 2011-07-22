@@ -1130,6 +1130,7 @@ static const gint system_menu_order[NUM_SYSTEMS] = {
     CAT_SYSTEM_DEFAULT,
     CAT_SYSTEM_POOL,
     CAT_SYSTEM_DPOOL,
+    CAT_SYSTEM_DPOOL2,
     CAT_SYSTEM_QPOOL,
     CAT_SYSTEM_REPECHAGE,
     CAT_SYSTEM_ENKELT_AATERKVAL,
@@ -1142,7 +1143,7 @@ static const gint system_menu_order[NUM_SYSTEMS] = {
     CAT_ESP_REPESCA_SIMPLE,
     CAT_SYSTEM_NO_REPECHAGE,
     CAT_MODIFIED_DOUBLE_ELIMINATION,
-    CAT_SYSTEM_REPECHAGE_ONE_BRONZE,
+    CAT_SYSTEM_REPECHAGE_ONE_BRONZE
 };
 
 const gint cat_system_to_table[NUM_SYSTEMS] = {
@@ -1160,6 +1161,7 @@ const gint cat_system_to_table[NUM_SYSTEMS] = {
     TABLE_ESP_REPESCA_SIMPLE,
     TABLE_MODIFIED_DOUBLE_ELIMINATION,
     TABLE_DOUBLE_REPECHAGE_ONE_BRONZE,
+    0
 };
 
 gchar *get_system_description(gint index, gint competitors)
@@ -1178,6 +1180,7 @@ gchar *get_system_description(gint index, gint competitors)
         return _("Pool");
     case SYSTEM_DPOOL: return _("Double Pool");
     case SYSTEM_QPOOL: return _("Quad Pool");
+    case SYSTEM_DPOOL2: return _("Double Pool 2");
     }
 
     if (system_is_french(sys.system)) {
@@ -1214,6 +1217,7 @@ static gchar *get_system_name(gint num)
     case CAT_SYSTEM_POOL: return _("Pool");
     case CAT_SYSTEM_DPOOL: return _("Double Pool");
     case CAT_SYSTEM_QPOOL: return _("Quad Pool");
+    case CAT_SYSTEM_DPOOL2: return _("Double Pool 2");
     case CAT_SYSTEM_REPECHAGE: return _("FIN Double Repechage");
     case CAT_SYSTEM_DUBBELT_AATERKVAL: return _("SWE Double Repechage");
     case CAT_SYSTEM_DIREKT_AATERKVAL: return _("SWE Double Elimination");
@@ -1256,6 +1260,7 @@ gboolean system_is_french(gint sys)
     case SYSTEM_POOL:
     case SYSTEM_DPOOL:
     case SYSTEM_QPOOL:
+    case SYSTEM_DPOOL2:
         return FALSE;
     }
 
@@ -1268,6 +1273,7 @@ gboolean system_wish_is_french(gint wish)
     case CAT_SYSTEM_POOL:
     case CAT_SYSTEM_DPOOL:
     case CAT_SYSTEM_QPOOL:
+    case CAT_SYSTEM_DPOOL2:
         return FALSE;
     }
 

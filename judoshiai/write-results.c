@@ -217,12 +217,15 @@ static gint make_left_frame(FILE *f)
 }
 
 
-static void pool_results(FILE *f, gint category, struct judoka *ctg, gint num_judokas)
+static void pool_results(FILE *f, gint category, struct judoka *ctg, gint num_judokas, gboolean dpool2)
 {
     struct pool_matches pm;
     gint i;
 
-    fill_pool_struct(category, num_judokas, &pm);
+    fill_pool_struct(category, num_judokas, &pm, dpool2);
+
+    if (dpool2)
+        num_judokas = 4;
 
     if (pm.finished)
         get_pool_winner(num_judokas, pm.c, pm.yes, pm.wins, pm.pts, pm.mw, pm.j, pm.all_matched);
@@ -258,7 +261,7 @@ static void dqpool_results(FILE *f, gint category, struct judoka *ctg, gint num_
     gint i;
     int gold, silver, bronze1, bronze2;
 
-    fill_pool_struct(category, num_judokas, &pm);
+    fill_pool_struct(category, num_judokas, &pm, FALSE);
 
     i = num_matches(sys.system, num_judokas) + 
         (sys.system == SYSTEM_DPOOL ? 1 : 5);
@@ -449,7 +452,8 @@ static void write_cat_result(FILE *f, gint category)
 
     switch (sys.system) {
     case SYSTEM_POOL:
-        pool_results(f, category, ctg, num_judokas);
+    case SYSTEM_DPOOL2:
+        pool_results(f, category, ctg, num_judokas, sys.system == SYSTEM_DPOOL2);
         break;
 
     case SYSTEM_DPOOL:
@@ -511,6 +515,8 @@ static FILE *open_write(gchar *filename)
 void write_html(gint cat)
 {
     gchar buf[64];
+    gchar *hextext;
+
     struct judoka *j = get_data(cat);
     if (!j)
         return;
@@ -519,7 +525,8 @@ void write_html(gint cat)
 
     struct compsys sys = db_get_system(cat);
         
-    snprintf(buf, sizeof(buf), "%s.html", txt2hex(j->last));
+    hextext = txt2hex(j->last);
+    snprintf(buf, sizeof(buf), "%s.html", hextext);
 
     FILE *f = open_write(buf);
     if (!f)
@@ -528,6 +535,8 @@ void write_html(gint cat)
     make_top_frame(f);
     make_left_frame(f);
 
+    hextext = txt2hex(j->last);
+
     if (sys.system == SYSTEM_FRENCH_64 ||
         sys.system == SYSTEM_QPOOL) {
         fprintf(f,
@@ -535,11 +544,17 @@ void write_html(gint cat)
                 "<img src=\"%s-1.png\"><br>"
                 "<img src=\"%s-2.png\">"
                 "</td>\n",
-                j->last, j->last, j->last);
+                hextext, hextext, hextext);
+    } else if (sys.system == SYSTEM_DPOOL2) {
+        fprintf(f,
+                "<td valign=\"top\"><img src=\"%s.png\"><br>"
+                "<img src=\"%s-1.png\">"
+                "</td>\n",
+                hextext, hextext);
     } else {
         fprintf(f,
                 "<td valign=\"top\"><img src=\"%s.png\"></td>\n",
-                j->last);
+                hextext);
     }
 
     make_bottom_frame(f);
