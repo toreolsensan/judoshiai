@@ -555,9 +555,12 @@ gchar *db_sql_command(const gchar *command)
     ret = g_strdup("");
     for (row = 0; row <= rows; row++) {
         for (col = 0; col < cols; col++) {
-            if (col == 0)
-                tmp = g_strconcat(ret, table[row*cols + col], NULL);
-            else if (col == cols - 1)
+            if (col == 0) {
+                if (cols == 1)
+                    tmp = g_strconcat(ret, table[row*cols + col], "\n", NULL);
+                else
+                    tmp = g_strconcat(ret, table[row*cols + col], NULL);
+            } else if (col == cols - 1)
                 tmp = g_strconcat(ret, " | ", table[row*cols + col], "\n", NULL);
             else
                 tmp = g_strjoin(" | ", ret, table[row*cols + col], NULL);
