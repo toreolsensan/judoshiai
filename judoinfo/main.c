@@ -46,6 +46,7 @@ gint           num_lines = NUM_LINES;
 gboolean       mirror_display = FALSE;
 gboolean       white_first = FALSE;
 gboolean       red_background = FALSE;
+gchar         *filename = NULL;
 
 #define MY_FONT "Arial"
 
@@ -671,4 +672,78 @@ static gboolean button_pressed(GtkWidget *sheet_page,
     }
 
     return FALSE;
+}
+
+void set_write_file(GtkWidget *menu_item, gpointer data)
+{
+    GtkWidget *dialog;
+    static gchar *last_dir = NULL;
+
+    dialog = gtk_file_chooser_dialog_new (_("Save file"),
+                                          GTK_WINDOW(main_window),
+                                          GTK_FILE_CHOOSER_ACTION_SAVE,
+                                          GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                                          GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
+                                          NULL);
+
+    //gtk_file_chooser_set_do_overwrite_confirmation (GTK_FILE_CHOOSER (dialog), TRUE);
+
+    if (last_dir)
+        gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), last_dir);
+
+    //gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (dialog), dflt);
+
+    g_free(filename);
+    filename = NULL;
+
+    if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT) {
+        filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
+        if (last_dir)
+            g_free(last_dir);
+        last_dir = gtk_file_chooser_get_current_folder(GTK_FILE_CHOOSER (dialog));
+    }
+
+    gtk_widget_destroy (dialog);
+}
+
+void write_matches(void)
+{
+    gint t, k;
+
+    if (!filename)
+        return;
+
+    for (t = 0; t < NUM_TATAMIS; t++)
+        if (show_tatami[t])
+            break;
+    
+    if (t >= NUM_TATAMIS)
+        return;
+
+    FILE *fout = fopen(filename, "w");
+    if (!fout)
+        return;
+
+    for (k = 1; k < num_lines; k++) {
+        struct match *m = &match_list[t][k];
+        struct name_data *j = avl_get_data(m->category);
+        if (j)
+            fprintf(fout, "%s;", j->last);
+        else
+            fprintf(fout, ";");
+
+        j = avl_get_data(m->blue);
+        if (j)
+            fprintf(fout, "%s;%s;%s;", j->last, j->first, j->club);
+        else
+            fprintf(fout, ";;;");
+
+        j = avl_get_data(m->white);
+        if (j)
+            fprintf(fout, "%s;%s;%s\r\n", j->last, j->first, j->club);
+        else
+            fprintf(fout, ";;\r\n");
+    }
+
+    fclose(fout);
 }

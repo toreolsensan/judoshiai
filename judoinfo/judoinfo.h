@@ -103,6 +103,7 @@ extern void avl_set_data(gint index, gchar *first, gchar *last, gchar *club);
 extern void init_trees(void);
 extern void refresh_window(void);
 extern gint timeout_ask_for_data(gpointer data);
+extern void write_matches(void);
 
 
 #endif

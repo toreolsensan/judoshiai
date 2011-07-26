@@ -23,6 +23,7 @@ static GtkWidget *full_screen, *small_display, *mirror, *whitefirst, *redbackgro
 static GtkWidget *tatami_show[NUM_TATAMIS];
 static GtkWidget *node_ip, *my_ip, *about;
 static GtkWidget *light, *menu_light;
+static GtkWidget *writefile;
 
 gboolean show_tatami[NUM_TATAMIS];
 static GtkTooltips *menu_tips;
@@ -47,6 +48,7 @@ extern void toggle_small_display(GtkWidget *menu_item, gpointer data);
 extern void toggle_mirror(GtkWidget *menu_item, gpointer data);
 extern void toggle_whitefirst(GtkWidget *menu_item, gpointer data);
 extern void toggle_redbackground(GtkWidget *menu_item, gpointer data);
+extern void set_write_file(GtkWidget *menu_item, gpointer data);
 
 static void about_judoinfo( GtkWidget *w,
 			    gpointer   data )
@@ -238,6 +240,12 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     }
 
     create_separator(preferencesmenu);
+    writefile = gtk_menu_item_new_with_label("");
+    gtk_menu_shell_append(GTK_MENU_SHELL(preferencesmenu), writefile);
+    g_signal_connect(G_OBJECT(writefile), "activate", 
+                     G_CALLBACK(set_write_file), 0);
+
+    create_separator(preferencesmenu);
     quit    = create_menu_item(preferencesmenu, destroy, 0);
 
     /* Create the Help menu content. */
@@ -342,6 +350,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(mirror, _("Mirror tatami order"));
     change_menu_label(whitefirst, _("White first"));
     change_menu_label(redbackground, _("Red background"));
+    change_menu_label(writefile, _("Write to file"));
 
     for (i = 0; i < NUM_TATAMIS; i++) {
         gchar buf[32];

@@ -168,6 +168,7 @@ void msg_received(struct message *input_msg)
             }
         }
 
+        write_matches();
         //refresh_window();
         break;
 
