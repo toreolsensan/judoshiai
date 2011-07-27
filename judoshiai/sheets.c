@@ -2175,9 +2175,7 @@ static gboolean print_cat(GtkWidget *window,
             print_doc(NULL, (gpointer)(pd->category | PRINT_SHEET | PRINT_TO_PRINTER));
             return TRUE;
         } else  {
-            pd->page++;
-            if (pd->page > 2)
-                pd->page = 0;
+            pd->page = next_page(pd->category, pd->page);
 
             GtkWidget *widget;
             widget = GTK_WIDGET(window);
@@ -2478,7 +2476,7 @@ gboolean change_current_page(GtkWidget *sheet_page,
         button_drag = TRUE;
 
         if (event->button == 1)
-            current_page = (current_page + 1) % 3;
+            current_page = next_page(current_category, current_page);
 
         expose(darea, 0, 0);
 

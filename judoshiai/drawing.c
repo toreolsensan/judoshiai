@@ -42,12 +42,12 @@ struct mdata {
         gchar *club;
         gchar *country;
         GtkWidget *eventbox, *label;
-    } mcomp[65];
+    } mcomp[NUM_COMPETITORS+1];
 
     struct mpos {
         gint judoka;
         GtkWidget *eventbox, *label;
-    } mpos[65];
+    } mpos[NUM_COMPETITORS+1];
 
     gint mjudokas, mpositions, mcategory_ix;
     gint selected, mfrench_sys;
@@ -139,7 +139,7 @@ void draw_one_category_manually(GtkTreeIter *parent, gint competitors)
 static void free_mdata(struct mdata *mdata)
 {
     gint i;
-    for (i = 1; i <= 64; i++) {
+    for (i = 1; i <= NUM_COMPETITORS; i++) {
         g_free(mdata->mcomp[i].club);
         g_free(mdata->mcomp[i].country);
     }
@@ -247,10 +247,13 @@ static void calc_place_values(gint *place_values, struct mdata *mdata)
     gint q1 = 0, q2 = 0, q3 = 0, q4 = 0;
 
     switch (mdata->mfrench_sys) {
-    case FRENCH_8:  num = 8;  break;
-    case FRENCH_16: num = 16; break;
-    case FRENCH_32: num = 32; break;
-    case FRENCH_64: num = 64; break;
+    case FRENCH_8:   num = 8;  break;
+    case FRENCH_16:  num = 16; break;
+    case FRENCH_32:  num = 32; break;
+    case FRENCH_64:  num = 64; break;
+#if (NUM_COMPETITORS > 64)
+    case FRENCH_128: num = 128; break;
+#endif
     default: return;
     }        
 
@@ -326,10 +329,11 @@ static void calc_place_values(gint *place_values, struct mdata *mdata)
 
 static gint get_free_pos_by_mask(gint mask, struct mdata *mdata)
 {
-    gint place_values[65], selected[64];
-    gint i, x, valid_place = 0;
+    gint place_values[NUM_COMPETITORS+1], selected[NUM_COMPETITORS];
+    gint i, x, valid_place = 0, valid_place_seeded = 0;
     gint min = mdata->mpositions, max = 1;
     gint best_value = 10000;
+    gint seeded = mdata->mcomp[mdata->selected].seeded;
 
     if (mask == 0)
         return 0;
@@ -391,9 +395,19 @@ static gint get_free_pos_by_mask(gint mask, struct mdata *mdata)
         return 0;
     }
 
+    if (seeded) { // ensure seeded can wear white judogi
+        for (i = 1; i <= mdata->mpositions; i++) {
+            if ((place_values[i] == best_value && (i & 1))) {
+                valid_place_seeded = i;
+                break;
+            }
+        }
+    }
+
     x = 0;
     for (i = 1; i <= mdata->mpositions; i++) {
-        if (place_values[i] == best_value)
+        if ((place_values[i] == best_value && valid_place_seeded == 0) ||
+            (place_values[i] == best_value && (i & 1)))
             selected[x++] = i;
     }
 
@@ -489,7 +503,7 @@ static gboolean select_number(GtkWidget *eventbox, GdkEventButton *event, void *
     gint num = 0, i, nxt;
     struct mdata *mdata = param;
 
-    for (i = 1; i <= 64; i++)
+    for (i = 1; i <= NUM_COMPETITORS; i++)
         if (eventbox == mdata->mpos[i].eventbox) {
             num = i;
             break;
@@ -552,7 +566,7 @@ static gboolean select_competitor(GtkWidget *eventbox, GdkEventButton *event, vo
     gint i;
     struct mdata *mdata = param;
 
-    for (i = 1; i <= 64; i++)
+    for (i = 1; i <= NUM_COMPETITORS; i++)
         if (eventbox == mdata->mcomp[i].eventbox) {
             index = i;
             break;
@@ -1020,8 +1034,10 @@ struct compsys get_system_for_category(gint index, gint competitors)
             sys = SYSTEM_FRENCH_16;
         } else if (competitors <= 32) {
             sys = SYSTEM_FRENCH_32;
-        } else {
+        } else if (competitors <= 64) {
             sys = SYSTEM_FRENCH_64;
+        } else {
+            sys = SYSTEM_FRENCH_128;
         }
     }
     
@@ -1082,6 +1098,12 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
         mdata->mpositions = 64;
         mdata->mfrench_sys = FRENCH_64;
         break;
+#if (NUM_COMPETITORS > 64)
+    case SYSTEM_FRENCH_128:
+        mdata->mpositions = 128;
+        mdata->mfrench_sys = FRENCH_128;
+        break;
+#endif
     }
 
     if (catname && catname[0] == '?') {
@@ -1312,7 +1334,7 @@ void draw_all(GtkWidget *w, gpointer data)
     ok = gtk_tree_model_get_iter_first(current_model, &iter);
     while (ok) {
         gint n = gtk_tree_model_iter_n_children(current_model, &iter);
-        if (n >= 1 && n <= 64)
+        if (n >= 1 && n <= NUM_COMPETITORS)
             draw_one_category(&iter, n);
 
         cnt++;

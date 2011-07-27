@@ -131,10 +131,12 @@ enum french_systems {
     FRENCH_16,
     FRENCH_32,
     FRENCH_64,
+    //FRENCH_128,
     NUM_FRENCH
 };
 
 #define NUM_MATCHES 128
+#define NUM_COMPETITORS 64
 
 #define NO_COMPETITOR  0
 #define GHOST          1
@@ -522,7 +524,7 @@ struct baudrates {
 extern avl_tree *categories_tree;
 extern struct category_data category_queue[NUM_TATAMIS+1];
 
-extern guint estim_num_matches[65];
+extern guint estim_num_matches[NUM_COMPETITORS+1];
 
 extern GtkWidget *match_view[NUM_TATAMIS];
 
@@ -967,5 +969,7 @@ extern gint is_special_match(struct compsys sys, gint match, gint *intval, doubl
 extern gchar *get_system_description(gint index, gint competitors);
 extern gboolean print_landscape(gint cat);
 extern gboolean paint_pool_style_2(gint cat);
+extern gint next_page(gint cat, gint page);
+extern gint num_pages(struct compsys sys);
 
 #endif

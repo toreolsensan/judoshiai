@@ -13,14 +13,14 @@
 #include "judoshiai.h"
 
 guint french_size[NUM_FRENCH] = {8, 16, 32, 64};
-guint estim_num_matches[65] = {
+guint estim_num_matches[NUM_COMPETITORS+1] = {
     0, 0, 1, 3, 6, 10, 9, 12,                                         /* 0 - 7 */
     11, 12, 14, 16, 18, 20, 21, 22,                                   /* 8 - 15 */
     23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 34, 36, 38, 40, 41, 42,   /* 16 - 31 */
     43, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59,   /* 32 - 47 */
     60, 62, 63, 65, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78,   /* 48 - 63 */
     79                                                                /* 64 */
-};
+};//XXXXXTODO
 
 
 static gboolean for_each_row(GtkTreeModel *model,
@@ -158,7 +158,7 @@ void view_popup_menu_draw_category(GtkWidget *menuitem, gpointer userdata)
 			
             num_selected++;
             n = gtk_tree_model_iter_n_children(current_model, &iter);
-            if (n >= 1 && n <= 64)
+            if (n >= 1 && n <= NUM_COMPETITORS)
                 draw_one_category(&iter, n);
             update_matches(index2, (struct compsys){0, 0, 0,0}, 0);
         }
@@ -172,7 +172,7 @@ void view_popup_menu_draw_category(GtkWidget *menuitem, gpointer userdata)
         return;
 
     n = gtk_tree_model_iter_n_children(current_model, &iter);
-    if (n >= 1 && n <= 64)
+    if (n >= 1 && n <= NUM_COMPETITORS)
         draw_one_category(&iter, n);
 
     //update_matches(index, (struct compsys){0, 0, 0,0}, 0);
@@ -192,7 +192,7 @@ void view_popup_menu_draw_category_manually(GtkWidget *menuitem, gpointer userda
         return;
 
     n = gtk_tree_model_iter_n_children(current_model, &iter);
-    if (n >= 2 && n <= 64)
+    if (n >= 2 && n <= NUM_COMPETITORS)
         draw_one_category_manually(&iter, n);
 #if 0
     matches_refresh();
@@ -233,7 +233,7 @@ void locate_to_tatamis(GtkWidget *w, gpointer data)
                            -1);
 		
         gint num_competitors = gtk_tree_model_iter_n_children(current_model, &iter);
-        gint num_matches = estim_num_matches[num_competitors <= 64 ? num_competitors : 64];
+        gint num_matches = estim_num_matches[num_competitors <= NUM_COMPETITORS ? num_competitors : NUM_COMPETITORS];
 
         struct category_data *catdata = avl_get_category(index);
         if (catdata && catdata->match_count)

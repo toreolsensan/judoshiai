@@ -184,7 +184,7 @@ static gint make_left_frame(FILE *f)
 
         num_cats++;
                                 
-        if (n >= 1 && n <= 64) {
+        if (n >= 1 && n <= NUM_COMPETITORS) {
             struct judoka *j;
 
             gtk_tree_model_get(current_model, &iter,
@@ -465,6 +465,7 @@ static void write_cat_result(FILE *f, gint category)
     case SYSTEM_FRENCH_16:
     case SYSTEM_FRENCH_32:
     case SYSTEM_FRENCH_64:
+    case SYSTEM_FRENCH_128:
         french_results(f, category, ctg, num_judokas, 
                        sys, 0);
         break;
@@ -492,7 +493,7 @@ void write_results(FILE *f)
         gint n = gtk_tree_model_iter_n_children(current_model, &iter);
         gint index;
 
-        if (n >= 1 && n <= 64) {
+        if (n >= 1 && n <= NUM_COMPETITORS) {
             gtk_tree_model_get(current_model, &iter,
                                COL_INDEX, &index,
                                -1);
@@ -537,7 +538,16 @@ void write_html(gint cat)
 
     hextext = txt2hex(j->last);
 
-    if (sys.system == SYSTEM_FRENCH_64 ||
+    if (sys.system == SYSTEM_FRENCH_128) {
+        fprintf(f,
+                "<td valign=\"top\"><img src=\"%s.png\"><br>"
+                "<img src=\"%s-1.png\"><br>"
+                "<img src=\"%s-2.png\"><br>"
+                "<img src=\"%s-3.png\"><br>"
+                "<img src=\"%s-4.png\">"
+                "</td>\n",
+                hextext, hextext, hextext, hextext, hextext);
+    } else if (sys.system == SYSTEM_FRENCH_64 ||
         sys.system == SYSTEM_QPOOL) {
         fprintf(f,
                 "<td valign=\"top\"><img src=\"%s.png\"><br>"
@@ -791,7 +801,7 @@ void write_htmls(gint num_cats)
 
         progress_show(cnt < num_cats ? 1.0*cnt/num_cats : 1.0, NULL);
 
-        if (n >= 1 && n <= 64) {
+        if (n >= 1 && n <= NUM_COMPETITORS) {
             gtk_tree_model_get(current_model, &iter,
                                COL_INDEX, &index,
                                -1);
@@ -966,7 +976,7 @@ void make_next_matches_html(void)
     // next matches
     g_static_mutex_lock(&next_match_mutex);
     for (k = 0; k < NEXT_MATCH_NUM; k++) {
-        gchar *bgcolor = (k & 1) ? "bgcolor=\"#a0a0a0\"" : "bgcolor=\"#f0f0f0\"";
+        //gchar *bgcolor = (k & 1) ? "bgcolor=\"#a0a0a0\"" : "bgcolor=\"#f0f0f0\"";
         gchar *class_ul = (k & 1) ? "class=\"cul1\"" : "class=\"cul2\"";
         gchar *class_ur = (k & 1) ? "class=\"cur1\"" : "class=\"cur2\"";
         gchar *class_dl = (k & 1) ? "class=\"cdl1\"" : "class=\"cdl2\"";

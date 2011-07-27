@@ -1386,3 +1386,26 @@ gboolean paint_pool_style_2(gint cat)
         return TRUE;
     return FALSE;
 }
+
+gint next_page(gint cat, gint page)
+{
+    struct compsys sys = get_cat_system(cat);
+
+    page++;
+    if (page >= num_pages(sys))
+        return 0;
+
+    return page;
+}
+
+gint num_pages(struct compsys sys)
+{
+    if (sys.system == SYSTEM_FRENCH_128)
+        return 5;
+    if (sys.system == SYSTEM_FRENCH_64 ||
+        sys.system == SYSTEM_QPOOL)
+        return 3;
+    if (sys.system == SYSTEM_DPOOL2)
+        return 2;
+    return 1;
+}

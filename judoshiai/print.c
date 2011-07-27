@@ -102,7 +102,7 @@ static void paint_surfaces(struct paint_data *pd,
 
 void write_png(GtkWidget *menuitem, gpointer userdata)
 {
-    gint ctg = (gint)userdata;
+    gint ctg = (gint)userdata, i;
     gchar buf[200];
     cairo_surface_t *cs_pdf, *cs_png;
     cairo_t *c_pdf, *c_png;
@@ -146,14 +146,8 @@ void write_png(GtkWidget *menuitem, gpointer userdata)
 
     paint_surfaces(&pd, c_pdf, c_png, cs_pdf, cs_png, buf);
 
-    if (sys.system == SYSTEM_FRENCH_64 ||
-        sys.system == SYSTEM_QPOOL) {
-        pd.page = 1;
-        paint_surfaces(&pd, c_pdf, c_png, cs_pdf, cs_png, buf);
-        pd.page = 2;
-        paint_surfaces(&pd, c_pdf, c_png, cs_pdf, cs_png, buf);
-    } else if (sys.system == SYSTEM_DPOOL2) {
-        pd.page = 1;
+    for (i = 1; i < num_pages(sys); i++) { // print other pages
+        pd.page = i;
         paint_surfaces(&pd, c_pdf, c_png, cs_pdf, cs_png, buf);
     }
 
@@ -917,7 +911,7 @@ static void paint_schedule(struct paint_data *pd)
                 n = 0;
                 if (find_iter(&tmp_iter, catdata->index)) {
                     gint k = gtk_tree_model_iter_n_children(current_model, &tmp_iter);
-                    n = estim_num_matches[k <= 64 ? k : 64];
+                    n = estim_num_matches[k <= NUM_COMPETITORS ? k : NUM_COMPETITORS];
                 }
             }
 
@@ -939,7 +933,7 @@ static gint fill_in_pages(gint category, gint all)
     gboolean ok;
     GtkTreeSelection *selection = 
         gtk_tree_view_get_selection(GTK_TREE_VIEW(current_view));
-    gint cat = 0;
+    gint cat = 0, i;
 
     numpages = 0;
 
@@ -955,25 +949,10 @@ static gint fill_in_pages(gint category, gint all)
         if (all ||
             gtk_tree_selection_iter_is_selected(selection, &iter)) {
             sys = db_get_system(index);
-                        
-            if ((sys.system == SYSTEM_FRENCH_64 ||
-                 sys.system == SYSTEM_QPOOL) &&
-                numpages < NUM_PAGES - 2) {
+                 
+            for (i = 0; i < num_pages(sys) && numpages < NUM_PAGES; i++) {
                 pages_to_print[numpages].cat = index;
-                pages_to_print[numpages++].pagenum = 0;
-                pages_to_print[numpages].cat = index;
-                pages_to_print[numpages++].pagenum = 1;
-                pages_to_print[numpages].cat = index;
-                pages_to_print[numpages++].pagenum = 2;
-            } else if ((sys.system == SYSTEM_DPOOL2) &&
-                       numpages < NUM_PAGES - 1) {
-                pages_to_print[numpages].cat = index;
-                pages_to_print[numpages++].pagenum = 0;
-                pages_to_print[numpages].cat = index;
-                pages_to_print[numpages++].pagenum = 1;
-            } else if (numpages < NUM_PAGES) {
-                pages_to_print[numpages].cat = index;
-                pages_to_print[numpages++].pagenum = 0;
+                pages_to_print[numpages++].pagenum = i;
             }
 
             if (cat)
@@ -990,17 +969,10 @@ static gint fill_in_pages(gint category, gint all)
 
     if (numpages == 0) {
         struct compsys sys = db_get_system(category);
-        pages_to_print[numpages].cat = category;
-        pages_to_print[numpages++].pagenum = 0;
-        if (sys.system == SYSTEM_FRENCH_64 ||
-            sys.system == SYSTEM_QPOOL) {
+
+        for (i = 0; i < num_pages(sys) && numpages < NUM_PAGES; i++) {
             pages_to_print[numpages].cat = category;
-            pages_to_print[numpages++].pagenum = 1;
-            pages_to_print[numpages].cat = category;
-            pages_to_print[numpages++].pagenum = 2;
-        } else if (sys.system == SYSTEM_DPOOL2) {
-            pages_to_print[numpages].cat = category;
-            pages_to_print[numpages++].pagenum = 1;
+            pages_to_print[numpages++].pagenum = i;
         }
         cat = category;
 
