@@ -131,12 +131,12 @@ enum french_systems {
     FRENCH_16,
     FRENCH_32,
     FRENCH_64,
-    //FRENCH_128,
+    FRENCH_128,
     NUM_FRENCH
 };
 
-#define NUM_MATCHES 128
-#define NUM_COMPETITORS 64
+#define NUM_MATCHES 256
+#define NUM_COMPETITORS 128
 
 #define NO_COMPETITOR  0
 #define GHOST          1
@@ -571,6 +571,8 @@ extern const guint french_num_matches[NUM_TABLES][NUM_FRENCH];
 extern const gint french_matches[NUM_TABLES][NUM_FRENCH][NUM_MATCHES][2];
 extern const gint medal_matches[NUM_TABLES][NUM_FRENCH][3];
 extern const gchar french_64_matches_to_page[NUM_TABLES][NUM_MATCHES];
+extern const gchar french_64_matches_to_page[NUM_TABLES][NUM_MATCHES];
+extern const gchar french_128_matches_to_page[NUM_TABLES][NUM_MATCHES];
 extern const gint result_y_position[NUM_TABLES][NUM_FRENCH];
 extern const gint repechage_start[NUM_TABLES][NUM_FRENCH][2];
 extern struct next_match_info next_matches_info[NUM_TATAMIS][2];

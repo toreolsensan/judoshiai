@@ -830,7 +830,7 @@ static void update_pool_matches(gint category, gint num)
 static void set_repechage_16(struct match m[], gint table, gint i)
 {
     gint p;
-    gint sys = 1;
+    gint sys = FRENCH_16;
     
     if (table == TABLE_SWE_ENKELT_AATERKVAL) {
 	if (!MATCHED_FRENCH(13+i))
@@ -864,7 +864,7 @@ static void set_repechage_16(struct match m[], gint table, gint i)
 static void set_repechage_32(struct match m[], gint table, gint i)
 {
     gint p;
-    gint sys = 2;
+    gint sys = FRENCH_32;
 
     if (table == TABLE_SWE_ENKELT_AATERKVAL) {
 	if (!MATCHED_FRENCH(29+i))
@@ -912,7 +912,7 @@ static void set_repechage_32(struct match m[], gint table, gint i)
 static void set_repechage_64(struct match m[], gint table, gint i)
 {
     gint p;
-    gint sys = 3;
+    gint sys = FRENCH_64;
 
     if (table == TABLE_SWE_ENKELT_AATERKVAL) {
 	if (!MATCHED_FRENCH(61+i))
@@ -963,6 +963,31 @@ static void set_repechage_64(struct match m[], gint table, gint i)
     }
 }
 
+static void set_repechage_128(struct match m[], gint table, gint i)
+{
+    gint p;
+    gint sys = FRENCH_128;
+
+    if (table == TABLE_DOUBLE_REPECHAGE) {
+	if (!MATCHED_FRENCH(121+i))
+	    return;
+
+	COPY_PLAYER((137+i), white, LOSER(121+i));
+	p = GET_PREV(121+i);
+	COPY_PLAYER((133+i), white, LOSER(p));
+	p = GET_PREV(p);
+	COPY_PLAYER((129+i), white, LOSER(p));
+	p = GET_PREV(p);
+	COPY_PLAYER((125+i), white, LOSER(p));
+	p = GET_PREV(p);
+	COPY_PLAYER((125+i), blue, LOSER(p));
+	set_match(&m[137+i]); db_set_match(&m[137+i]);
+	set_match(&m[133+i]); db_set_match(&m[133+i]);
+	set_match(&m[129+i]); db_set_match(&m[129+i]);
+	set_match(&m[125+i]); db_set_match(&m[125+i]);
+    }
+}
+
 static void update_french_matches(gint category, struct compsys systm)
 {
     gint i;
@@ -1007,6 +1032,14 @@ static void update_french_matches(gint category, struct compsys systm)
                 table != TABLE_ESP_REPESCA_SIMPLE) {
 		set_repechage_64(m, table, 2);
 		set_repechage_64(m, table, 3);
+	    }
+	} else if (sys == FRENCH_128) {
+	    set_repechage_128(m, table, 0);
+	    set_repechage_128(m, table, 1);
+	    if (table != TABLE_SWE_ENKELT_AATERKVAL &&
+                table != TABLE_ESP_REPESCA_SIMPLE) {
+		set_repechage_128(m, table, 2);
+		set_repechage_128(m, table, 3);
 	    }
 	}
     }
@@ -1158,6 +1191,7 @@ gint get_match_number_flag(gint category, gint number)
     case SYSTEM_FRENCH_16:
     case SYSTEM_FRENCH_32:
     case SYSTEM_FRENCH_64:
+    case SYSTEM_FRENCH_128:
         if (table == TABLE_MODIFIED_DOUBLE_ELIMINATION) {
             if (number == medal_matches[table][sys][1])
                 return MATCH_FLAG_SILVER;
@@ -1269,6 +1303,7 @@ void update_matches_small(guint category, struct compsys sys_or_tatami)
     case SYSTEM_FRENCH_16:
     case SYSTEM_FRENCH_32:
     case SYSTEM_FRENCH_64:
+    case SYSTEM_FRENCH_128:
         update_french_matches(category, sys_or_tatami);
         break;
     }
@@ -1295,6 +1330,7 @@ void update_matches(guint category, struct compsys sys, gint tatami)
         case SYSTEM_FRENCH_16:
         case SYSTEM_FRENCH_32:
         case SYSTEM_FRENCH_64:
+        case SYSTEM_FRENCH_128:
             update_french_matches(category, sys);
             break;
         }

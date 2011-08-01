@@ -239,8 +239,8 @@ void db_print_competitors_by_club(FILE *f)
 
     fprintf(print_file,
             "<td><table class=\"competitors\">"
-            "<tr><td colspan=\"5\" align=\"center\"><h2>%s</h2></td></tr>\n", _T(competitor));
-    fprintf(print_file, "<tr><th>%s</th><th><a href=\"competitors.html\">%s</a></th><th>%s</th><th>%s</th><th>&nbsp;%s&nbsp;</th></tr>\n", 
+            "<tr><td colspan=\"6\" align=\"center\"><h2>%s</h2></td></tr>\n", _T(competitor));
+    fprintf(print_file, "<tr><th></th><th>%s</th><th><a href=\"competitors.html\">%s</a></th><th>%s</th><th>%s</th><th>&nbsp;%s&nbsp;</th></tr>\n", 
             _T(club), _T(name), grade_visible ? _T(grade) : "", _T(category), create_statistics ? _T(position) : "");
 
     db_exec(db_name, "SELECT * FROM competitors ORDER BY \"club\" ASC, \"last\" ASC, \"first\" ASC", 

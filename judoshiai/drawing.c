@@ -24,12 +24,12 @@ enum draw_dialog_buttons {
     BUTTON_SHOW
 };
 
-guint french_matches_blue[32] = {
-    1, 17,  9, 25, 5, 21, 13, 29, 3, 19, 11, 27, 7, 23, 15, 31, 
-    2, 18, 10, 26, 6, 22, 14, 30, 4, 20, 12, 28, 8, 24, 16, 32
+guint french_matches_blue[64] = {
+    1, 33, 17, 49,  9, 41, 25, 57,  5, 37, 21, 53, 13, 45, 29, 61, 3, 35, 19, 51, 11, 43, 27, 59, 7, 39, 23, 55, 15, 47, 31, 63, 
+    2, 34, 18, 50, 10, 42, 26, 58,  6, 38, 22, 54, 14, 46, 30, 62, 4, 36, 20, 52, 12, 44, 28, 60, 8, 40, 24, 56, 16, 48, 32, 64
 };
-guint french_matches_white_offset[NUM_FRENCH] = {4, 8, 16, 32};
-guint french_mul[NUM_FRENCH] = {8, 4, 2, 1};
+guint french_matches_white_offset[NUM_FRENCH] = {4, 8, 16, 32, 64};
+guint french_mul[NUM_FRENCH] = {16, 8, 4, 2, 1};
 
 #define MAX_MATES 100000
 
@@ -991,6 +991,17 @@ struct compsys get_system_for_category(gint index, gint competitors)
             sys = SYSTEM_FRENCH_32;
         else
             sys = SYSTEM_FRENCH_64;
+    } else if (competitors > 64) { // only 2 tables supported
+        if (wishsys != DRAW_FINNISH &&
+            wishsys != CAT_IJF_DOUBLE_REPECHAGE) {
+            if (draw_system == DRAW_FINNISH)
+                wishsys = CAT_SYSTEM_REPECHAGE;
+            else
+                wishsys = CAT_IJF_DOUBLE_REPECHAGE;
+        }
+
+        table = cat_system_to_table[wishsys];
+        sys = SYSTEM_FRENCH_128;
     } else {
         if (wishsys == CAT_SYSTEM_DEFAULT) {
             switch (draw_system) {
@@ -1098,12 +1109,10 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
         mdata->mpositions = 64;
         mdata->mfrench_sys = FRENCH_64;
         break;
-#if (NUM_COMPETITORS > 64)
     case SYSTEM_FRENCH_128:
         mdata->mpositions = 128;
         mdata->mfrench_sys = FRENCH_128;
         break;
-#endif
     }
 
     if (catname && catname[0] == '?') {

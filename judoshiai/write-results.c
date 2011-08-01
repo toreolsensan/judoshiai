@@ -69,16 +69,16 @@ void write_competitor(FILE *f, const gchar *first, const gchar *last, const gcha
                 snprintf(buf, sizeof(buf), "-");
 
             fprintf(f, 
-                    "<tr><td>%s</td><td><a href=\"%d.html\">%s, %s</a></td><td>%s</td>"
+                    "<tr><td>%d</td><td>%s</td><td><a href=\"%d.html\">%s, %s</a></td><td>%s</td>"
                     "<td><a href=\"%s.html\">%s</a></td><td align=\"center\">%s</td></tr>\n", 
-                    crc != last_crc ? utf8_to_html(club) : buf2, 
+                    member_count, member_count == 1 ? utf8_to_html(club) : "", 
                     index, utf8_to_html(last), utf8_to_html(first), grade_visible ? belt : "", 
                     txt2hex(category), category, buf);
         } else
             fprintf(f, 
-                    "<tr><td>%s</td><td>%s, %s</td><td>%s</td>"
+                    "<tr><td>%d</td><td>%s</td><td>%s, %s</td><td>%s</td>"
                     "<td><a href=\"%s.html\">%s</a></td><td>&nbsp;</td></tr>\n", 
-                    crc != last_crc ? utf8_to_html(club) : buf2, 
+                    member_count, member_count == 1 ? utf8_to_html(club) : "", 
                     utf8_to_html(last), utf8_to_html(first), grade_visible ? belt : "",  
                     txt2hex(category), category);
 
@@ -760,12 +760,15 @@ void write_comp_stat(gint index)
         gint mtime = atoi(db_get_data(i, "time"));
         if (blue_points || white_points)
             fprintf(f, 
-                    "<tr><td>%s</td><td>%s %s</td><td class=\"bscore\">%05x</td>"
+                    "<tr><td>%s</td><td>%s %s</td><td class=\"%s\">%05x</td>"
                     "<td align=\"center\">%d - %d</td>"
-                    "<td class=\"wscore\">%05x</td><td>%s %s</td><td>%d:%02d</td></tr>\n",
+                    "<td class=\"%s\">%05x</td><td>%s %s</td><td>%d:%02d</td></tr>\n",
                     utf8_to_html(c->last), utf8_to_html(j1->first), utf8_to_html(j1->last),
+                    info_white_first ? "wscore" : "bscore",
                     blue_score, blue_points,
-                    white_points, white_score, 
+                    white_points, 
+                    info_white_first ? "bscore" : "wscore",
+                    white_score, 
                     utf8_to_html(j2->first), utf8_to_html(j2->last), mtime/60, mtime%60);
 
     done:
@@ -891,6 +894,15 @@ void make_png_all(GtkWidget *w, gpointer data)
         make_left_frame(f);
         saved_competitor_cnt = 0;
         db_print_competitors(f);
+        make_bottom_frame(f);
+        fclose(f);
+    }
+    f = open_write("competitors2.html");
+    if (f) {
+        make_top_frame(f);
+        make_left_frame(f);
+        saved_competitor_cnt = 0;
+        db_print_competitors_by_club(f);
         make_bottom_frame(f);
         fclose(f);
     }

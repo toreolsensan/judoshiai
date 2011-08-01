@@ -169,7 +169,8 @@ static double paint_comp(struct paint_data *pd, struct pool_matches *unused1, in
 	    small = TRUE;
 	if (table != TABLE_DOUBLE_REPECHAGE && 
             table != TABLE_SWE_DUBBELT_AATERKVAL &&
-            table != TABLE_DOUBLE_REPECHAGE_ONE_BRONZE) {
+            table != TABLE_DOUBLE_REPECHAGE_ONE_BRONZE &&
+            pd->systm.system != SYSTEM_FRENCH_128) {
 	    txtwidth *= 0.75;
 	    //extra = NAME_W + NAME_E + CLUB_WIDTH - txtwidth;
 	    crowded = TRUE;
@@ -302,6 +303,10 @@ static double paint_comp(struct paint_data *pd, struct pool_matches *unused1, in
                     snprintf(buf, sizeof(buf)-1, "%d. %s %s, %s, %s", 
                              number_b, j->first, j->last, belts[j->belt], 
 			     get_club_text(j, CLUB_TEXT_ABBREVIATION));
+                else if (club_text == CLUB_TEXT_COUNTRY)
+                    snprintf(buf, sizeof(buf)-1, "%d. %s  %s, %s", 
+                             number_b, get_club_text(j, CLUB_TEXT_ABBREVIATION),
+                             j->last, j->first);
                 else
                     snprintf(buf, sizeof(buf)-1, "%d. %s %s, %s", 
                              number_b, j->first, j->last, 
@@ -350,6 +355,10 @@ static double paint_comp(struct paint_data *pd, struct pool_matches *unused1, in
                     sprintf(buf, "%d. %s %s, %s, %s", 
                             number_w, j->first, j->last, belts[j->belt], 
 			    get_club_text(j, CLUB_TEXT_ABBREVIATION));
+                else if (club_text == CLUB_TEXT_COUNTRY)
+                    snprintf(buf, sizeof(buf)-1, "%d. %s  %s, %s", 
+                             number_b, get_club_text(j, CLUB_TEXT_ABBREVIATION),
+                             j->last, j->first);
                 else
                     sprintf(buf, "%d. %s %s, %s", 
                             number_w, j->first, j->last, 
@@ -1427,7 +1436,7 @@ static void paint_qpool(struct paint_data *pd, gint category, struct judoka *ctg
     empty_pool_struct(&pm);
 }
 
-static gint first_matches[NUM_FRENCH] = {4, 8, 16, 32};
+static gint first_matches[NUM_FRENCH] = {4, 8, 16, 32, 64};
 
 #define PAINT_WINNER(_w, _f)						\
     paint_comp(pd, NULL, level[_w]+1,                                   \
@@ -1533,6 +1542,17 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
         else
             last_match = 0;
         break;
+    case FRENCH_128:
+        space = NAME_S*0.35;
+
+        sysflag = SYSTEM_FRENCH_128;
+
+        if (pagenum < 4) {
+            first_match = 1 + pagenum*last_match/4;
+            last_match = first_match + last_match/4 - 1;
+        } else
+            last_match = 0;
+        break;
     }
 
     cairo_set_font_size(pd->c, text_h);
@@ -1566,6 +1586,8 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
 
         if (sys == FRENCH_64 && pagenum != french_64_matches_to_page[table][i])
             continue;
+        if (sys == FRENCH_128 && pagenum != french_128_matches_to_page[table][i])
+            continue;
 
         //if (blue_match < 0) blue_match = -blue_match;
         //if (white_match < 0) white_match = -white_match;
@@ -1588,7 +1610,7 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
         } else {
             if (repechage_start[table][sys][0] == i ||
                 repechage_start[table][sys][1] == i) {
-                pos_y += (sys == FRENCH_64) ? 3*space : 1.5*space;
+                pos_y += (sys == FRENCH_64 || sys == FRENCH_128) ? 3*space : 1.5*space;
             }
 
             if (blue_match <= 0/* || is_repecharge(sys, i, FALSE)*/) {
@@ -1607,17 +1629,20 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
                     white_pos = blue_pos + space;
                 else
                     white_pos = blue_pos + 1.5*space + 
-                        (level[i] >= 3 ? 2*space : 0.0);
+                        ((level[i] >= 3 && sys == FRENCH_64) || (level[i] >= 4 && sys == FRENCH_128) ? 2*space : 0.0);
             } else
                 white_pos = positions[white_match];
         }
+
+        gboolean lastpage = (sys == FRENCH_64 && pagenum == 2) ||
+            (sys == FRENCH_128 && pagenum == 4);
 
         positions[i] = 
             paint_comp(pd, NULL, level[i],
                        blue_pos, white_pos, 
                        m[i].blue, m[i].white,
                        m[i].blue_points, m[i].white_points,
-                       ((last_pos < blue_pos && sys != 3) || pagenum == 2 ? F_REPECHAGE : 0) | 
+                       ((last_pos < blue_pos && sys != 3) || lastpage ? F_REPECHAGE : 0) | 
                        sysflag | special_flags, 0, 0, i);
 
         if (special_match == SPECIAL_MATCH_STOP) {
@@ -1635,6 +1660,8 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
         PAINT_WINNER(final_blue, 0);
     else if (sys == FRENCH_64 && pagenum == 1)
         PAINT_WINNER(final_white, 0);
+    else if (sys == FRENCH_128 && pagenum < 4)
+        PAINT_WINNER(121+pagenum, 0);
 
     switch (sys) {
     case FRENCH_8:
@@ -1698,6 +1725,49 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
                            gold_match);
             level[gold_match] = 2;
 
+            PAINT_GOLD(gold_match);
+            GET_FIFTH1(get_abs_matchnum_by_pos(table, sys, 5, 1));
+            GET_FIFTH2(get_abs_matchnum_by_pos(table, sys, 5, 2));
+        }
+        break;
+    case FRENCH_128:
+        if (pagenum != 4)
+            return;
+
+        if (table == TABLE_MODIFIED_DOUBLE_ELIMINATION) {
+            /*
+            GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(table, sys, 1, 1));
+            gold = winner;
+            GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(table, sys, 2, 1));
+            silver = winner;
+            bronze1 = loser;
+            PAINT_WINNER(get_abs_matchnum_by_pos(table, sys, 1, 1), F_REPECHAGE);
+            PAINT_WINNER(get_abs_matchnum_by_pos(table, sys, 2, 1), F_REPECHAGE);
+            */
+        } else {
+            PAINT_BRONZE1(get_abs_matchnum_by_pos(table, sys, 3, 1));
+
+            if (one_bronze(table, sys)) {
+                GET_FOURTH(get_abs_matchnum_by_pos(table, sys, 4, 1));
+            } else {
+                PAINT_BRONZE2(get_abs_matchnum_by_pos(table, sys, 3, 2));
+            }
+#if 0
+            gdouble pos_y1 = positions[final_blue];
+            gdouble pos_y2 = positions[final_white];
+
+            level[gold_match] = level[final_blue];
+            positions[gold_match] = 
+                paint_comp(pd, NULL, level[gold_match],
+                           pos_y1, pos_y2, 
+                           m[gold_match].blue, 
+                           m[gold_match].white,
+                           m[gold_match].blue_points, 
+                           m[gold_match].white_points, 0, 0, 0, 
+                           gold_match);
+
+#endif
+            special_flags = F_REPECHAGE;
             PAINT_GOLD(gold_match);
             GET_FIFTH1(get_abs_matchnum_by_pos(table, sys, 5, 1));
             GET_FIFTH2(get_abs_matchnum_by_pos(table, sys, 5, 2));
@@ -1900,6 +1970,7 @@ void paint_category(struct paint_data *pd)
         break;
 
     case SYSTEM_FRENCH_64:
+    case SYSTEM_FRENCH_128:
         paint_french(pd, category, ctg, num_judokas, sys, pd->page);
         break;
     }
