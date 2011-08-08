@@ -14,10 +14,9 @@
 #include "judoshiai.h"
 
 
-#define NUM_MOVABLE 1000
 //static guint destination;
-static guint which[NUM_MOVABLE];
-static guint num_movable;
+guint selected_judokas[TOTAL_NUM_COMPETITORS];
+guint num_selected_judokas;
 static gchar *dest_category = NULL;
 static gint   dest_category_ix = 0;
 
@@ -36,8 +35,8 @@ static gboolean for_each_row_selected(GtkTreeModel *model,
                            COL_INDEX, &index,
                            -1);
 
-        if (num_movable < NUM_MOVABLE - 1) {
-            which[num_movable++] = index;
+        if (num_selected_judokas < TOTAL_NUM_COMPETITORS - 1) {
+            selected_judokas[num_selected_judokas++] = index;
         }
     }
         
@@ -62,12 +61,12 @@ static void view_popup_menu_move_judoka(GtkWidget *menuitem, gpointer userdata)
     }
 
     //destination = (guint)userdata;
-    num_movable = 0;
+    num_selected_judokas = 0;
     gtk_tree_model_foreach(model, for_each_row_selected, userdata);
     gtk_tree_selection_unselect_all(selection);
 
-    for (i = 0; i < num_movable; i++) {
-        struct judoka *j = get_data(which[i]);
+    for (i = 0; i < num_selected_judokas; i++) {
+        struct judoka *j = get_data(selected_judokas[i]);
         if (!j)
             continue;
 
@@ -94,12 +93,12 @@ static void view_popup_menu_copy_judoka(GtkWidget *menuitem, gpointer userdata)
     GtkTreeSelection *selection = 
         gtk_tree_view_get_selection(GTK_TREE_VIEW(treeview));
 
-    num_movable = 0;
+    num_selected_judokas = 0;
     gtk_tree_model_foreach(model, for_each_row_selected, userdata);
     gtk_tree_selection_unselect_all(selection);
 
-    for (i = 0; i < num_movable; i++) {
-        struct judoka *j = get_data(which[i]);
+    for (i = 0; i < num_selected_judokas; i++) {
+        struct judoka *j = get_data(selected_judokas[i]);
         if (!j)
             continue;
 
@@ -113,6 +112,22 @@ static void view_popup_menu_copy_judoka(GtkWidget *menuitem, gpointer userdata)
 
         free_judoka(j);
     }
+}
+
+static void view_popup_menu_print_cards(GtkWidget *menuitem, gpointer userdata)
+{
+    int i;
+
+    GtkTreeView *treeview = GTK_TREE_VIEW(current_view);
+    GtkTreeModel *model = current_model;
+    GtkTreeSelection *selection = 
+        gtk_tree_view_get_selection(GTK_TREE_VIEW(treeview));
+
+    num_selected_judokas = 0;
+    gtk_tree_model_foreach(model, for_each_row_selected, userdata);
+    gtk_tree_selection_unselect_all(selection);
+
+    print_accreditation_cards(FALSE);
 }
 
 static void view_popup_menu_change_category(GtkWidget *menuitem, gpointer userdata)
@@ -179,12 +194,12 @@ static void create_new_category(GtkWidget *menuitem, gpointer userdata)
     GtkTreeSelection *selection = 
         gtk_tree_view_get_selection(GTK_TREE_VIEW(treeview));
 
-    num_movable = 0;
+    num_selected_judokas = 0;
     gtk_tree_model_foreach(model, for_each_row_selected, userdata);
     gtk_tree_selection_unselect_all(selection);
 
-    for (i = 0; i < num_movable; i++) {
-        struct judoka *j = get_data(which[i]);
+    for (i = 0; i < num_selected_judokas; i++) {
+        struct judoka *j = get_data(selected_judokas[i]);
         if (!j)
             continue;
 
@@ -248,8 +263,8 @@ static void create_new_category(GtkWidget *menuitem, gpointer userdata)
     }
 	
 
-    for (i = 0; i < num_movable; i++) {
-        struct judoka *j = get_data(which[i]);
+    for (i = 0; i < num_selected_judokas; i++) {
+        struct judoka *j = get_data(selected_judokas[i]);
         
         if (!j)
             continue;
@@ -409,6 +424,11 @@ void view_popup_menu(GtkWidget *treeview,
     menuitem = gtk_menu_item_new_with_label(_("Print Selected Sheets (PDF)"));
     g_signal_connect(menuitem, "activate",
                      (GCallback) print_doc, (gpointer)((gint)userdata | PRINT_SHEET | PRINT_TO_PDF));
+    gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
+
+    menuitem = gtk_menu_item_new_with_label(_("Print Selected Accreditation Cards"));
+    g_signal_connect(menuitem, "activate",
+                     (GCallback) view_popup_menu_print_cards, userdata);
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
 
     gtk_widget_show_all(menu);

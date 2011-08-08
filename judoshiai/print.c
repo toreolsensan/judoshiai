@@ -47,6 +47,8 @@ static double rownum1, rowheight1;
 //static gint cumulative_time;
 #define YPOS (1.2*rownum1*rowheight1 + H(0.01))
 
+static gchar *pdf_out = NULL, *template_in = NULL;
+
 typedef enum {
     BARCODE_PS, 
     BARCODE_PDF, 
@@ -162,7 +164,7 @@ void write_png(GtkWidget *menuitem, gpointer userdata)
     free_judoka(ctgdata);
 }
 
-static gchar *get_save_as_name(const gchar *dflt)
+static gchar *get_save_as_name(const gchar *dflt, gboolean opendialog)
 {
     GtkWidget *dialog;
     gchar *filename;
@@ -170,9 +172,9 @@ static gchar *get_save_as_name(const gchar *dflt)
 
     dialog = gtk_file_chooser_dialog_new (_("Save file"),
                                           GTK_WINDOW(main_window),
-                                          GTK_FILE_CHOOSER_ACTION_SAVE,
+                                          opendialog ? GTK_FILE_CHOOSER_ACTION_OPEN : GTK_FILE_CHOOSER_ACTION_SAVE,
                                           GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-                                          GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
+                                          opendialog ? GTK_STOCK_OPEN : GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
                                           NULL);
     gtk_file_chooser_set_do_overwrite_confirmation (GTK_FILE_CHOOSER (dialog), TRUE);
 
@@ -204,26 +206,6 @@ static gchar *get_save_as_name(const gchar *dflt)
     valid_ascii_string(filename);
 
     return filename;
-}
-
-static gchar *get_open_name(void)
-{
-    GtkWidget *dialog;
-    gchar *name = NULL;
-
-    dialog = gtk_file_chooser_dialog_new (_("Select template"),
-                                          NULL,
-                                          GTK_FILE_CHOOSER_ACTION_OPEN,
-                                          GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-                                          GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
-                                          NULL);
-
-    if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
-        name = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
-
-    gtk_widget_destroy (dialog);
-
-    return name;
 }
 
 /* Code encoding:
@@ -438,9 +420,12 @@ static struct wn_data_s wn_texts_default[] = {
 };
 static struct wn_data_s wn_texts[NUM_WN_TEXTS] = {{0}};
 static gint num_wn_texts = 0;
+static gdouble note_w, note_h;
+static gdouble border;
+static gchar *background;
 
-#define X_MM(_a) (_a*SIZEX/210.0)
-#define Y_MM(_a) (_a*SIZEY/297.0)
+#define X_MM(_a) (_a*pd->paper_width/pd->paper_width_mm)
+#define Y_MM(_a) (_a*pd->paper_height/pd->paper_height_mm)
 #define IS_STR(_a) (strncmp(&(wn_texts[t].text[k]), _a, (len=strlen(_a)))==0)
 #define OUT  do { ok = FALSE; break; } while (0)
 #define NEXT_TOKEN  do { p = get_token(p); if (!p) { ok = FALSE; goto out; }} while (0)
@@ -459,16 +444,30 @@ static gchar *get_token(gchar *text)
     return p;
 }
 
-static void paint_weight_notes(struct paint_data *pd, gchar *templatefile)
+static void read_print_template(gchar *templatefile, GtkPrintContext *context)
 {
-    gint row, numrows, numpages, t = 0;
-    gchar buf[100];
-    cairo_text_extents_t extents;
-    gchar *background = NULL;
-    gdouble note_w = 210.0/2.0, note_h = 297.0/5.0;
-    gdouble sx = 1.0, sy = 1.0;
-    gdouble border = 1.0;
-    cairo_surface_t *image = NULL;
+    gint t = 0;
+    gdouble paper_width_mm = 210.0;
+    gdouble paper_height_mm = 297.0;
+
+    if (context) {
+        GtkPageSetup *setup = gtk_print_context_get_page_setup(context);
+
+        paper_width_mm = gtk_page_setup_get_paper_width(setup, GTK_UNIT_MM) -
+            gtk_page_setup_get_left_margin(setup, GTK_UNIT_MM) -
+            gtk_page_setup_get_right_margin(setup, GTK_UNIT_MM);
+
+        paper_height_mm = gtk_page_setup_get_paper_height(setup, GTK_UNIT_MM) -
+            gtk_page_setup_get_top_margin(setup, GTK_UNIT_MM) -
+            gtk_page_setup_get_bottom_margin(setup, GTK_UNIT_MM);
+    }
+
+    note_w = paper_width_mm/2;
+    note_h = paper_height_mm/5;
+
+    border = 1.0;
+    g_free(background);
+    background = NULL;
 
     // initialize text table
     while (wn_texts_default[t].font) {
@@ -591,6 +590,12 @@ static void paint_weight_notes(struct paint_data *pd, gchar *templatefile)
                 note_w = atof(p);
                 NEXT_TOKEN;
                 note_h = atof(p);
+            } else if (strncmp(p1, "cardgeom ", 9) == 0) {
+                p = p1;
+                NEXT_TOKEN;
+                note_w = paper_width_mm/atof(p);
+                NEXT_TOKEN;
+                note_h = paper_height_mm/atof(p);
             } else if (strncmp(p1, "color ", 6) == 0) {
                 p = p1;
                 NEXT_TOKEN;
@@ -616,21 +621,104 @@ static void paint_weight_notes(struct paint_data *pd, gchar *templatefile)
             return;
         }
     }
+}
+
+static gint find_print_judokas(gchar *where_string)
+{
+    gint row, numrows;
+    gchar request[256];
+
+    num_selected_judokas = 0;
 
     if (club_text == CLUB_TEXT_CLUB)
-        numrows = db_get_table("select * from competitors "
-                               "where \"deleted\"&1=0 "
-                               "order by \"club\",\"last\",\"first\" asc");
+        snprintf(request, sizeof(request), 
+                 "select \"index\" from competitors "
+                 "where \"deleted\"&1=0 %s "
+                 "order by \"club\",\"last\",\"first\" asc",
+                 where_string ? where_string : "");
     else if (club_text == CLUB_TEXT_COUNTRY)
-        numrows = db_get_table("select * from competitors "
-                               "where \"deleted\"&1=0 "
-                               "order by \"country\",\"last\",\"first\" asc");
+        snprintf(request, sizeof(request), 
+                 "select \"index\" from competitors "
+                 "where \"deleted\"&1=0 %s "
+                 "order by \"country\",\"last\",\"first\" asc",
+                 where_string ? where_string : "");
     else
-        numrows = db_get_table("select * from competitors "
-                               "where \"deleted\"&1=0 "
-                               "order by \"country\",\"club\",\"last\",\"first\" asc");
+        snprintf(request, sizeof(request), 
+                 "select \"index\" from competitors "
+                 "where \"deleted\"&1=0 %s "
+                 "order by \"country\",\"club\",\"last\",\"first\" asc",
+                 where_string ? where_string : "");
 
+    numrows = db_get_table(request);
     if (numrows < 0)
+        return numrows;
+
+    for (row = 0; row < numrows && row < TOTAL_NUM_COMPETITORS; row++) {
+        gchar *ix = db_get_data(row, "index");
+        selected_judokas[num_selected_judokas++] = atoi(ix);
+    }
+
+    db_close_table();
+
+    return num_selected_judokas;
+}
+
+static gint get_num_pages(struct paint_data *pd)
+{
+    gint i, pages = 1;
+    gdouble x = 0.0, y = 0.0;
+
+    for (i = 0; i < num_selected_judokas; i++) {
+        x += X_MM(note_w);
+        if (x + X_MM(note_w) > pd->paper_width + 1.0) {
+            x = 0.0;
+            y += Y_MM(note_h);
+            if (y + Y_MM(note_h) > pd->paper_height + 1.0) {
+                y = 0.0;
+                pages++;
+            }
+        }
+    }
+
+    if (x == 0.0 && y == 0.0)
+        pages--;
+
+    return pages;
+}
+
+static gint get_starting_judoka(struct paint_data *pd, gint what, gint pagenum)
+{
+    gint i, pages = 1;
+    gdouble x = 0.0, y = 0.0;
+
+    if (what & PRINT_ONE_PER_PAGE)
+        return pagenum-1;
+
+    for (i = 0; i < num_selected_judokas; i++) {
+        if (pages == pagenum)
+            return i;
+        x += X_MM(note_w);
+        if (x + X_MM(note_w) > pd->paper_width + 1.0) {
+            x = 0.0;
+            y += Y_MM(note_h);
+            if (y + Y_MM(note_h) > pd->paper_height + 1.0) {
+                y = 0.0;
+                pages++;
+            }
+        }
+    }
+    return num_selected_judokas;
+}
+
+static void paint_weight_notes(struct paint_data *pd, gint what, gint page)
+{
+    gint row, t = 0, current_page = 0;
+    gchar buf[100];
+    cairo_text_extents_t extents;
+    gdouble sx = 1.0, sy = 1.0;
+    cairo_surface_t *image = NULL;
+
+    if (num_selected_judokas <= 0)
         return;
 
     cairo_set_antialias(pd->c, CAIRO_ANTIALIAS_NONE);
@@ -658,24 +746,41 @@ static void paint_weight_notes(struct paint_data *pd, gchar *templatefile)
         sy = Y_MM(note_h)/h;
     }
 
-    numpages = numrows/10 + 1;
+    //numpages = num_selected_judokas/10 + 1;
         
     gdouble x = 0.0, y = 0.0;
     double bar_height = H(0.02);
     gchar id_str[10];
+    gchar request[128];
+    gint start = get_starting_judoka(pd, what, page);
+    gint stop = get_starting_judoka(pd, what, page+1);
 
-    for (row = 0; row < numrows; row++) {
-        gchar *last = db_get_data(row, "last");
-        gchar *first = db_get_data(row, "first");
-        gchar *club = db_get_data(row, "club");
-        gchar *country = db_get_data(row, "country");
-        gchar *cat = db_get_data(row, "regcategory");
-        gchar *realcat = db_get_data(row, "category");
-        gchar *ix = db_get_data(row, "index");
-        gchar *id = db_get_data(row, "id");
-        gchar *weight = db_get_data(row, "weight");
-        gchar *yob = db_get_data(row, "birthyear");
-        gchar *grade = db_get_data(row, "belt");
+    for (row = start; row < stop; row++) {
+        snprintf(request, sizeof(request), 
+                 "select * from competitors "
+                 "where \"deleted\"&1=0 and \"index\"=%d ",
+                 selected_judokas[row]);                 
+
+        gint numrows = db_get_table(request);
+
+        if (numrows < 0)
+            continue;
+        if (numrows < 1) {
+            db_close_table();
+            continue;
+        }
+
+        gchar *last = db_get_data(0, "last");
+        gchar *first = db_get_data(0, "first");
+        gchar *club = db_get_data(0, "club");
+        gchar *country = db_get_data(0, "country");
+        gchar *cat = db_get_data(0, "regcategory");
+        gchar *realcat = db_get_data(0, "category");
+        gchar *ix = db_get_data(0, "index");
+        gchar *id = db_get_data(0, "id");
+        gchar *weight = db_get_data(0, "weight");
+        gchar *yob = db_get_data(0, "birthyear");
+        gchar *grade = db_get_data(0, "belt");
 
         struct judoka j;
         j.club = club;
@@ -746,13 +851,13 @@ static void paint_weight_notes(struct paint_data *pd, gchar *templatefile)
                     } else if (IS_STR("%ID%")) {
                         d += sprintf(buf + d, "%s", id);
                     } else if (IS_STR("%ID-BARCODE%")) {
-                        g_print("id-barcode found, len=%d\n", len);
+                        //g_print("id-barcode found, len=%d\n", len);
                         draw_code_39_string(id, pd, bar_height, FALSE);
                     } else if (IS_STR("%ID-BARCODE-EXT%")) {
-                        g_print("id-barcode-ext found, len=%d\n", len);
+                        //g_print("id-barcode-ext found, len=%d\n", len);
                         draw_code_39_string(id, pd, bar_height, TRUE);
                     } else if (IS_STR("%BARCODE%")) {
-                        g_print("barcode found, len=%d\n", len);
+                        //g_print("barcode found, len=%d\n", len);
                         draw_code_39_string(id_str, pd, bar_height, FALSE);
                     } else if (IS_STR("%WEIGHTTEXT%"))
                         d += sprintf(buf + d, "%s", _T(weight));
@@ -781,27 +886,30 @@ static void paint_weight_notes(struct paint_data *pd, gchar *templatefile)
         } // for t
 
         x += X_MM(note_w);
-        if (x + X_MM(note_w) > pd->paper_width + 1.0) {
+        if (what & PRINT_ONE_PER_PAGE || x + X_MM(note_w) > pd->paper_width + 1.0) {
             x = 0.0;
             y += Y_MM(note_h);
-            if (y + Y_MM(note_h) > pd->paper_height + 1.0) {
+            if (what & PRINT_ONE_PER_PAGE || y + Y_MM(note_h) > pd->paper_height + 1.0) {
                 y = 0.0;
-                cairo_show_page(pd->c);
+                current_page++;
+#if 0
+                if (current_page == page || page == 0)
+                    cairo_show_page(pd->c);
                 cairo_set_source_rgb(pd->c, 1.0, 1.0, 1.0);
                 cairo_rectangle(pd->c, 0.0, 0.0, pd->paper_width, pd->paper_height);
                 cairo_fill(pd->c);
                 cairo_set_source_rgb(pd->c, 0.0, 0.0, 0.0);
+#endif
             }
         }
-    }
+        db_close_table();
+    } // for (row = 0; row < num_print_judokas; row++)
 
-    if (x > 0.0 || y > 0.0)
-        cairo_show_page(pd->c);
+    //if (x > 0.0 || y > 0.0)
+    //cairo_show_page(pd->c);
 
     if (image)
         cairo_surface_destroy(image);        
-    g_free(background);
-    db_close_table();
 }
 
 static gint get_start_time(void)
@@ -997,6 +1105,35 @@ static void begin_print(GtkPrintOperation *operation,
         fill_in_pages((gint)user_data & PRINT_DATA_MASK, 
                       what == PRINT_ALL_CATEGORIES);
         gtk_print_operation_set_n_pages(operation, numpages);
+    } else if (what == PRINT_WEIGHING_NOTES) {
+        GtkPageSetup *setup = gtk_print_context_get_page_setup(context);
+        struct paint_data pd;
+
+	pd.paper_width = gtk_print_context_get_width(context);
+	pd.paper_height = gtk_print_context_get_height(context);
+
+        pd.paper_width_mm = gtk_page_setup_get_paper_width(setup, GTK_UNIT_MM) -
+            gtk_page_setup_get_left_margin(setup, GTK_UNIT_MM) -
+            gtk_page_setup_get_right_margin(setup, GTK_UNIT_MM);
+
+        pd.paper_height_mm = gtk_page_setup_get_paper_height(setup, GTK_UNIT_MM) -
+            gtk_page_setup_get_top_margin(setup, GTK_UNIT_MM) -
+            gtk_page_setup_get_bottom_margin(setup, GTK_UNIT_MM);
+
+        if ((gint)user_data & PRINT_TEMPLATE)
+            read_print_template(template_in, context);
+        else
+            read_print_template(NULL, context);
+        
+        if ((gint)user_data & PRINT_ALL)
+            find_print_judokas(NULL);
+        
+        if ((gint)user_data & PRINT_ONE_PER_PAGE)
+            numpages = num_selected_judokas;
+        else
+            numpages = get_num_pages(&pd);
+
+        gtk_print_operation_set_n_pages(operation, numpages);
     } else {
 #if 0
         gint ctg = (gint)user_data;
@@ -1016,6 +1153,7 @@ static void draw_page(GtkPrintOperation *operation,
 {
     struct paint_data pd;
     gint ctg = (gint)user_data;
+    GtkPageSetup *setup = gtk_print_context_get_page_setup(context);
 
     memset(&pd, 0, sizeof(pd));
 
@@ -1023,10 +1161,16 @@ static void draw_page(GtkPrintOperation *operation,
     pd.c = gtk_print_context_get_cairo_context(context);
     pd.paper_width = gtk_print_context_get_width(context);
     pd.paper_height = gtk_print_context_get_height(context);
-    //XXXpd.row_height = 1;
+
+    pd.paper_width_mm = gtk_page_setup_get_paper_width(setup, GTK_UNIT_MM) -
+        gtk_page_setup_get_left_margin(setup, GTK_UNIT_MM) -
+        gtk_page_setup_get_right_margin(setup, GTK_UNIT_MM);
+
+    pd.paper_height_mm = gtk_page_setup_get_paper_height(setup, GTK_UNIT_MM) -
+        gtk_page_setup_get_top_margin(setup, GTK_UNIT_MM) -
+        gtk_page_setup_get_bottom_margin(setup, GTK_UNIT_MM);
 
     if (print_landscape(pd.category)) {
-        //XXXpd.row_height = 2;
         pd.rotate = TRUE;
     }
 
@@ -1038,7 +1182,8 @@ static void draw_page(GtkPrintOperation *operation,
         break;
 #endif
     case PRINT_WEIGHING_NOTES:
-        break;
+	paint_weight_notes(&pd, ctg, page_nr+1);
+	break;	
     case PRINT_SCHEDULE:
         paint_schedule(&pd);
         break;
@@ -1077,7 +1222,7 @@ void do_print(GtkWidget *menuitem, gpointer userdata)
 
 void print_doc(GtkWidget *menuitem, gpointer userdata)
 {
-    gchar *filename = NULL, *template = NULL;
+    gchar *filename = NULL;
     cairo_surface_t *cs;
     cairo_t *c;
     struct judoka *cat = NULL;
@@ -1092,14 +1237,9 @@ void print_doc(GtkWidget *menuitem, gpointer userdata)
     //XXXpd.row_height = 1;
     pd.paper_width = SIZEX;
     pd.paper_height = SIZEY;
-#if 0
-    if (what == PRINT_SHEET) {
-        struct category_data *d = avl_get_category(data);
-        if (d)
-            d->match_status |= CAT_PRINTED;
-        refresh_window();
-    }
-#endif
+    pd.paper_width_mm = 210.0; // A4 paper
+    pd.paper_height_mm = 297.0;
+
     switch (where) {
     case PRINT_TO_PRINTER:
         do_print(menuitem, userdata);
@@ -1116,29 +1256,23 @@ void print_doc(GtkWidget *menuitem, gpointer userdata)
                 cat = get_data(data);
             if (cat) {
                 gchar *fn = g_strdup_printf("%s.pdf", cat->last);
-                filename = get_save_as_name(fn);
+                filename = get_save_as_name(fn, FALSE);
                 free_judoka(cat);
                 g_free(fn);
             } else {
-                filename = get_save_as_name(_T(categoriesfile));
+                filename = get_save_as_name(_T(categoriesfile), FALSE);
             }
             break;
-        case PRINT_WITH_TEMPLATE:
-            template = get_open_name();
-            if (!template)
-                return;
         case PRINT_WEIGHING_NOTES:
-            filename = get_save_as_name(_T(weighinfile));
-            break;
+	    filename = g_strdup(pdf_out);
+	    break;
         case PRINT_SCHEDULE:
-            filename = get_save_as_name(_T(schedulefile));
+            filename = get_save_as_name(_T(schedulefile), FALSE);
             break;
         }
 
-        if (!filename) {
-            g_free(template);
+        if (!filename)
             return;
-        }
 
         cs = cairo_pdf_surface_create(filename, SIZEX, SIZEY);
         c = pd.c = cairo_create(cs);
@@ -1157,9 +1291,24 @@ void print_doc(GtkWidget *menuitem, gpointer userdata)
                 cairo_show_page(pd.c);
             }
             break;
-        case PRINT_WITH_TEMPLATE:
         case PRINT_WEIGHING_NOTES:
-            paint_weight_notes(&pd, template);
+	    if ((gint)userdata & PRINT_TEMPLATE)
+		read_print_template(template_in, NULL);
+	    else
+		read_print_template(NULL, NULL);
+
+	    if ((gint)userdata & PRINT_ALL)
+		find_print_judokas(NULL);
+
+	    if ((gint)userdata & PRINT_ONE_PER_PAGE)
+		numpages = num_selected_judokas;
+	    else
+		numpages = get_num_pages(&pd);
+
+            for (i = 1; i <= numpages; i++) {
+                paint_weight_notes(&pd, (gint)userdata, i);
+                cairo_show_page(pd.c);
+            }
             break;
         case PRINT_SCHEDULE:
             paint_schedule(&pd);
@@ -1168,7 +1317,6 @@ void print_doc(GtkWidget *menuitem, gpointer userdata)
         }
 
         g_free(filename);
-        g_free(template);
         cairo_destroy(c);
         cairo_surface_flush(cs);
         cairo_surface_destroy(cs);
@@ -1350,4 +1498,145 @@ void print_matches(GtkWidget *menuitem, gpointer userdata)
 
 out:
     gtk_widget_destroy (dialog);
+}
+
+struct print_struct {
+    GtkWidget *layout_default, *layout_template;
+    GtkWidget *print_printer, *print_pdf;
+    GtkWidget *pdf_file, *template_file;
+};
+
+static void update_print_struct(GtkWidget *w, gpointer *data)
+{
+    struct print_struct *s = data;
+
+    if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(s->layout_default)))
+        gtk_widget_set_sensitive(GTK_WIDGET(s->template_file), FALSE);
+    else
+        gtk_widget_set_sensitive(GTK_WIDGET(s->template_file), TRUE);
+        
+    if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(s->print_printer)))
+        gtk_widget_set_sensitive(GTK_WIDGET(s->pdf_file), FALSE);
+    else
+        gtk_widget_set_sensitive(GTK_WIDGET(s->pdf_file), TRUE);
+        
+    gtk_button_set_label(GTK_BUTTON(s->template_file), template_in ? template_in : "");
+    gtk_button_set_label(GTK_BUTTON(s->pdf_file), pdf_out ? pdf_out : "");
+}
+
+static void select_pdf(GtkWidget *w, GdkEventButton *event, gpointer *arg) 
+{
+    gchar *file = get_save_as_name("", FALSE);    
+    if (file) {
+        g_free(pdf_out);
+        pdf_out = file;
+        update_print_struct(NULL, arg);
+    }
+}
+
+static void select_template(GtkWidget *w, GdkEventButton *event, gpointer *arg) 
+{
+    gchar *file = get_save_as_name("", TRUE);    
+    if (file) {
+        g_free(template_in);
+        template_in = file;
+        update_print_struct(NULL, arg);
+    }
+}
+
+void print_accreditation_cards(gboolean all)
+{
+    GtkWidget *dialog;
+    GtkWidget *table = gtk_table_new(3, 5, FALSE);
+    GSList *layout_group = NULL;
+    GSList *print_group = NULL;
+    GtkWidget *one_per_page;
+    struct print_struct *s;
+
+    s = g_malloc(sizeof(*s));
+
+    dialog = gtk_dialog_new_with_buttons (_("Print Accreditation Cards"),
+                                          GTK_WINDOW(main_window),
+                                          GTK_DIALOG_DESTROY_WITH_PARENT,
+                                          GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                                          GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
+                                          NULL);
+
+    gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new(_("Layout:")), 0, 1, 0, 2);
+    gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new(_("Print To:")), 0, 1, 2, 4);
+
+    s->layout_default = gtk_radio_button_new_with_label(layout_group, _("Default"));
+    layout_group = gtk_radio_button_get_group(GTK_RADIO_BUTTON(s->layout_default));
+    s->layout_template = gtk_radio_button_new_with_label(layout_group, _("Template"));
+
+    gtk_table_attach_defaults(GTK_TABLE(table), s->layout_default, 1, 2, 0, 1);
+    gtk_table_attach_defaults(GTK_TABLE(table), s->layout_template, 1, 2, 1, 2);
+
+    s->print_printer = gtk_radio_button_new_with_label(print_group, _("Printer"));
+    print_group = gtk_radio_button_get_group(GTK_RADIO_BUTTON(s->print_printer));
+    s->print_pdf = gtk_radio_button_new_with_label(print_group, _("PDF"));
+
+    gtk_table_attach_defaults(GTK_TABLE(table), s->print_printer, 1, 2, 2, 3);
+    gtk_table_attach_defaults(GTK_TABLE(table), s->print_pdf, 1, 2, 3, 4);
+
+    one_per_page = gtk_check_button_new_with_label(_("One Card Per Page"));
+    gtk_table_attach_defaults(GTK_TABLE(table), one_per_page, 0, 3, 4, 5);
+
+    if (!template_in)
+        template_in = g_build_filename(installation_dir, "etc", "note-template-example.txt", NULL);
+    s->template_file = gtk_button_new_with_label(template_in);
+    gtk_table_attach_defaults(GTK_TABLE(table), s->template_file, 2, 3, 1, 2);
+
+    if (!pdf_out) {
+        gchar *dirname = g_path_get_dirname(database_name);
+        pdf_out = g_build_filename(dirname, "output.pdf", NULL);
+        g_free(dirname);
+    }
+    s->pdf_file = gtk_button_new_with_label(pdf_out);
+    gtk_table_attach_defaults(GTK_TABLE(table), s->pdf_file, 2, 3, 3, 4);
+
+    gtk_widget_set_sensitive(GTK_WIDGET(s->template_file), FALSE);
+    gtk_widget_set_sensitive(GTK_WIDGET(s->pdf_file), FALSE);
+
+    gtk_widget_show_all(table);
+    gtk_container_add(GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), table);
+
+    g_signal_connect(G_OBJECT(s->layout_default), "toggled", G_CALLBACK(update_print_struct), 
+		     (gpointer)s);
+    g_signal_connect(G_OBJECT(s->layout_template), "toggled", G_CALLBACK(update_print_struct), 
+		     (gpointer)s);
+    g_signal_connect(G_OBJECT(s->print_printer), "toggled", G_CALLBACK(update_print_struct), 
+		     (gpointer)s);
+    g_signal_connect(G_OBJECT(s->print_pdf), "toggled", G_CALLBACK(update_print_struct), 
+		     (gpointer)s);
+    g_signal_connect(G_OBJECT(s->pdf_file), "button-press-event", G_CALLBACK(select_pdf), 
+		     (gpointer)s);
+    g_signal_connect(G_OBJECT(s->template_file), "button-press-event", G_CALLBACK(select_template), 
+		     (gpointer)s);
+
+    if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT) {
+        gint flags = PRINT_WEIGHING_NOTES;
+
+        if (all)
+            flags |= PRINT_ALL;
+
+        if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(one_per_page)))
+            flags |=  PRINT_ONE_PER_PAGE;
+
+        if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(s->print_pdf)))
+            flags |=  PRINT_TO_PDF;
+
+        if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(s->layout_template)))
+            flags |=  PRINT_TEMPLATE;
+
+        print_doc(NULL, (gpointer)flags);
+    }
+
+    g_free(s);
+    gtk_widget_destroy(dialog);
+}
+
+void print_weight_notes(GtkWidget *menuitem, gpointer userdata)
+{
+    print_accreditation_cards(TRUE);    
 }
