@@ -10,10 +10,13 @@
 # - texts and pictures
 #
 # General settings:
-# - Note size is the size of the printed competitor ID/weigh-in note in mm.
-#   As many as possible notes are fitted on one A4 page.
-#   The following line is the default and can be left out (10 notes/A4 page).
-#     notesize 105 59.4
+# - Card size is the size of the printed competitor ID/weigh-in note in mm.
+#   As many as possible cards are fitted on one A4 page.
+#     cardsize 105 59.4
+#   Page geometry is a better way to tell how many cards you want on one page.
+#   Printer marginals are taken into the considiration. 
+#   The following line is the default and can be left out (2 columns, 5 rows).
+#     pagegeom 2 5
 # - Background picture can be used. Only PNG files are supported.
 #   Picture is resized to the notesize. Example:
 #     background C:\Pictures\MyBackground.png
@@ -99,13 +102,14 @@
 # Next is the default template for the weigh-in notes (so there is
 # no real use for it):
 
-notesize 105 59.4
 
+#cardsize 105 59.4
+
+pagegeom 2 5
 fontslant normal
 fontweight bold
 font Arial
 fontsize 12
-notesize 105 59.4
 color 0.0 0.0 0.0
 
 text 22.0 15.0 0 %REGCATEGORY%
