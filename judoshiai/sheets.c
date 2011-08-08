@@ -357,7 +357,7 @@ static double paint_comp(struct paint_data *pd, struct pool_matches *unused1, in
 			    get_club_text(j, CLUB_TEXT_ABBREVIATION));
                 else if (club_text == CLUB_TEXT_COUNTRY)
                     snprintf(buf, sizeof(buf)-1, "%d. %s  %s, %s", 
-                             number_b, get_club_text(j, CLUB_TEXT_ABBREVIATION),
+                             number_w, get_club_text(j, CLUB_TEXT_ABBREVIATION),
                              j->last, j->first);
                 else
                     sprintf(buf, "%d. %s %s, %s", 
@@ -1634,7 +1634,9 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
                 white_pos = positions[white_match];
         }
 
-        gboolean lastpage = (sys == FRENCH_64 && pagenum == 2) ||
+        gboolean lastpage = 
+            (sys == FRENCH_64 && pagenum == 2 && table != TABLE_MODIFIED_DOUBLE_ELIMINATION) ||
+            (sys == FRENCH_64 && pagenum == 3 && table == TABLE_MODIFIED_DOUBLE_ELIMINATION) ||
             (sys == FRENCH_128 && pagenum == 4);
 
         positions[i] = 
@@ -1690,7 +1692,8 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
         }
         break;
     case FRENCH_64:
-        if (pagenum != 2)
+        if ((table != TABLE_MODIFIED_DOUBLE_ELIMINATION && pagenum != 2) ||
+            (table == TABLE_MODIFIED_DOUBLE_ELIMINATION && pagenum != 3))
             return;
 
         if (table == TABLE_MODIFIED_DOUBLE_ELIMINATION) {
@@ -1699,6 +1702,7 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
             GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(table, sys, 2, 1));
             silver = winner;
             bronze1 = loser;
+            special_flags = F_REPECHAGE;
             PAINT_WINNER(get_abs_matchnum_by_pos(table, sys, 1, 1), F_REPECHAGE);
             PAINT_WINNER(get_abs_matchnum_by_pos(table, sys, 2, 1), F_REPECHAGE);
         } else {
