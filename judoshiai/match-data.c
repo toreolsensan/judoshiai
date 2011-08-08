@@ -156,6 +156,14 @@ gint get_matchnum_by_pos(gint table, gint sys, gint pos, gint num)
         return -french_matches[table][sys][medal_matches[table][sys][0]][1];
     }
 
+    if (pos == 7 && num == 1) {
+        return -french_matches[table][sys][medal_matches[table][sys][0]][0];
+    }
+
+    if (pos == 7 && num == 2) {
+        return -french_matches[table][sys][medal_matches[table][sys][1]][0];
+    }
+
     return 0;
 }
 
@@ -407,7 +415,7 @@ const gchar french_64_matches_to_page[NUM_TABLES][NUM_MATCHES] = {
     /*  111,112,113,114,115,116,117,118,119,120 */
     1, 1, 2, 2, 2, 2, 2, 2, 0, 1,
     /*  121,122,123,124,125 */
-    2, 2, 2, 2, 2
+    3, 3, 3, 3, 3
 },{ // double repechage one bronze
     0,
     /*  01,02,03,04,05,06,07,08,09,10 */
@@ -1513,22 +1521,22 @@ gint is_special_match(struct compsys sys, gint match, gint *intval, double *doub
             switch (match) {
             case 117:
             case 118:
-                *intval = F_REPECHAGE;
+                *intval = 0;//F_REPECHAGE;
                 return SPECIAL_MATCH_STOP;
             case 121:
-                *intval = 0;
-                *doubleval = 0.80;
-                *doubleval2 = 0.84;
+                *intval = 1;
+                *doubleval = 0.28;
+                *doubleval2 = 0.32;
                 return SPECIAL_MATCH_X_Y;
             case 122:
-                *intval = 0;
-                *doubleval = 0.88;
-                *doubleval2 = 0.92;
+                *intval = 1;
+                *doubleval = 0.36;
+                *doubleval2 = 0.40;
                 return SPECIAL_MATCH_X_Y;
             case 124:
-                *intval = 3;
-                *doubleval = 0.80;
-                *doubleval2 = 0.84;
+                *intval = 1;
+                *doubleval = 0.20;
+                *doubleval2 = 0.24;
                 return SPECIAL_MATCH_X_Y;
             }
         }
@@ -1568,6 +1576,9 @@ gint num_pages(struct compsys sys)
 {
     if (sys.system == SYSTEM_FRENCH_128)
         return 5;
+    if (sys.table == TABLE_MODIFIED_DOUBLE_ELIMINATION &&
+        sys.system == SYSTEM_FRENCH_64)
+        return 4;
     if (sys.system == SYSTEM_FRENCH_64 ||
         sys.system == SYSTEM_QPOOL)
         return 3;
