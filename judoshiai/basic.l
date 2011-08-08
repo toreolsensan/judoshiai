@@ -1103,7 +1103,7 @@ XOR       [Xx][Oo][Rr]
         date=localtime(&ttime);
         sprintf(
             yylval.str,
-            "%0d-%02d-%02d",
+            "%0d:%02d:%02d",
             date->tm_hour,date->tm_min,date->tm_sec
         );
 #ifdef YACC_DEBUG

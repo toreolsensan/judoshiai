@@ -2077,7 +2077,7 @@ int run_basic_script(char *file, GtkTextBuffer *buffer)
 {
     int count,count2;
 
-    yydebug = 1;
+    //yydebug = 1;
 
     bcount=0;                 /* buffer pointer for various operations */
     indexcnt=0;               /* used to index jump tables             */
