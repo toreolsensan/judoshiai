@@ -722,6 +722,8 @@ void club_stat_add(const gchar *club, const gchar *country, gint num)
     case 3: data->bronze++; break;
     case 4: data->fourth++; break;
     case 5: data->fifth++; break;
+    case 6: data->sixth++; break;
+    case 7: data->seventh++; break;
     }
 }
 
