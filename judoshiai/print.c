@@ -584,13 +584,14 @@ static void read_print_template(gchar *templatefile, GtkPrintContext *context)
                 NEXT_TOKEN;
                 g_free(background);
                 background = strdup(p);
-            } else if (strncmp(p1, "notesize ", 9) == 0) {
+            } else if (strncmp(p1, "notesize ", 9) == 0 ||
+                       strncmp(p1, "cardsize ", 9) == 0) {
                 p = p1;
                 NEXT_TOKEN;
                 note_w = atof(p);
                 NEXT_TOKEN;
                 note_h = atof(p);
-            } else if (strncmp(p1, "cardgeom ", 9) == 0) {
+            } else if (strncmp(p1, "pagegeom ", 9) == 0) {
                 p = p1;
                 NEXT_TOKEN;
                 note_w = paper_width_mm/atof(p);
