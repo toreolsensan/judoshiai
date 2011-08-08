@@ -786,7 +786,7 @@ static gboolean draw_one_comp(struct mdata *mdata)
             gint i, j;
             gint mates[4], clubmates[4];
             gint clubmask = get_club_only_mask(mdata);
-            gint pool_start[0];
+            gint pool_start[4];
             gint pool_size[4];
             gint pool_mask[4];
             gint size = mdata->mpositions/4;
