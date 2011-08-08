@@ -48,6 +48,7 @@ extern void select_use_logo(GtkWidget *w, gpointer data);
 extern void set_serial_dialog(GtkWidget *w, gpointer data);
 extern void serial_set_device(gchar *dev);
 extern void serial_set_baudrate(gint baud);
+extern void print_weight_notes(GtkWidget *menuitem, gpointer userdata);
 
 
 static GtkWidget *menubar, 
@@ -216,7 +217,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_menu_shell_append(GTK_MENU_SHELL(competitors_menu), competitor_bar_code_search);
     gtk_menu_shell_append(GTK_MENU_SHELL(competitors_menu), gtk_separator_menu_item_new());
     gtk_menu_shell_append(GTK_MENU_SHELL(competitors_menu), competitor_print_weigh_notes);
-    gtk_menu_shell_append(GTK_MENU_SHELL(competitors_menu), competitor_print_with_template);
+    //gtk_menu_shell_append(GTK_MENU_SHELL(competitors_menu), competitor_print_with_template);
 
     g_signal_connect(G_OBJECT(competitor_new),                 "activate", G_CALLBACK(new_judoka), 0);
     g_signal_connect(G_OBJECT(competitor_search),              "activate", G_CALLBACK(search_competitor), 0);
@@ -227,10 +228,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     g_signal_connect(G_OBJECT(competitor_remove_unweighted),   "activate", G_CALLBACK(remove_unweighed_competitors), 0);
     g_signal_connect(G_OBJECT(competitor_restore_removed),     "activate", G_CALLBACK(db_restore_removed_competitors), 0);
     g_signal_connect(G_OBJECT(competitor_bar_code_search),     "activate", G_CALLBACK(barcode_search), 0);
-    g_signal_connect(G_OBJECT(competitor_print_weigh_notes),   "activate", G_CALLBACK(print_doc), 
-                     (gpointer)(PRINT_WEIGHING_NOTES | PRINT_TO_PDF));
-    g_signal_connect(G_OBJECT(competitor_print_with_template), "activate", G_CALLBACK(print_doc), 
-                     (gpointer)(PRINT_WITH_TEMPLATE | PRINT_TO_PDF));
+    g_signal_connect(G_OBJECT(competitor_print_weigh_notes),   "activate", G_CALLBACK(print_weight_notes), NULL);
 
     gtk_widget_add_accelerator(competitor_new, "activate", group, GDK_N, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
     gtk_widget_add_accelerator(competitor_search, "activate", group, GDK_F, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
@@ -698,7 +696,7 @@ void set_menu_active(void)
     SET_SENSITIVE(competitor_restore_removed     , DB_OK);
     SET_SENSITIVE(competitor_bar_code_search     , DB_OK);
     SET_SENSITIVE(competitor_print_weigh_notes   , DB_OK);
-    SET_SENSITIVE(competitor_print_with_template , DB_OK);
+    //SET_SENSITIVE(competitor_print_with_template , DB_OK);
 
     SET_SENSITIVE(category_new            , DB_OK);
     SET_SENSITIVE(category_remove_empty   , DB_OK);
@@ -764,8 +762,8 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(competitor_remove_unweighted   , _("Remove Unweighted"));
     change_menu_label(competitor_restore_removed     , _("Restore Removed"));
     change_menu_label(competitor_bar_code_search     , _("Bar Code Search"));
-    change_menu_label(competitor_print_weigh_notes   , _("Print Weight Notes"));
-    change_menu_label(competitor_print_with_template , _("Print Competitors With Template"));
+    change_menu_label(competitor_print_weigh_notes   , _("Print Accreditation Cards"));
+    //change_menu_label(competitor_print_with_template , _("Print Competitors With Template"));
 
     change_menu_label(category_new            , _("New Category"));
     change_menu_label(category_remove_empty   , _("Remove Empty"));
