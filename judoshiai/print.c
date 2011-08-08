@@ -1584,7 +1584,7 @@ void print_accreditation_cards(gboolean all)
     gtk_table_attach_defaults(GTK_TABLE(table), one_per_page, 0, 3, 4, 5);
 
     if (!template_in)
-        template_in = g_build_filename(installation_dir, "etc", "note-template-example.txt", NULL);
+        template_in = g_build_filename(installation_dir, "etc", "accreditation-card-example.txt", NULL);
     s->template_file = gtk_button_new_with_label(template_in);
     gtk_table_attach_defaults(GTK_TABLE(table), s->template_file, 2, 3, 1, 2);
 
