@@ -138,10 +138,27 @@ static void repeat_script(GtkWidget *w, GdkEventButton *event, gpointer *arg)
         gtk_text_buffer_set_text(buffer, _("No script available"), -1);
 }
 
+void help_script(GtkWidget *w, gpointer data)
+{
+    gchar *docfile = g_build_filename(installation_dir, "doc", 
+                                      "sql-guide-en.pdf", NULL);
+#ifdef WIN32
+    ShellExecute(NULL, TEXT("open"), docfile, NULL, ".\\", SW_SHOWMAXIMIZED);
+#else /* ! WIN32 */
+    gchar *cmd;
+    cmd = g_strdup_printf("if which acroread ; then PDFR=acroread ; "
+                          "elif which evince ; then PDFR=evince ; "
+                          "else PDFR=xpdf ; fi ; $PDFR \"%s\" &", docfile);
+    system(cmd);
+    g_free(cmd);
+#endif /* ! WIN32 */
+    g_free(docfile);
+}
+
 void sql_window(GtkWidget *w, gpointer data)
 {
     GtkTextBuffer *buffer;
-    GtkWidget *vbox, *hbox, *line, *result, *script, *repeat;
+    GtkWidget *vbox, *hbox, *line, *result, *script, *repeat, *help;
     GtkWindow *window = GTK_WINDOW(gtk_window_new(GTK_WINDOW_TOPLEVEL));
     gtk_window_set_title(GTK_WINDOW(window), _("SQL"));
     gtk_widget_set_size_request(GTK_WIDGET(window), SIZEX, SIZEY);
@@ -158,6 +175,7 @@ void sql_window(GtkWidget *w, gpointer data)
     line = gtk_entry_new();
     script = gtk_button_new_with_label(_("Run Script"));
     repeat = gtk_button_new_with_label(_("Repeat Script"));
+    help = gtk_button_new_with_label(_("Help"));
 
     GtkWidget *scrolled_window = gtk_scrolled_window_new(NULL, NULL);
     gtk_container_set_border_width(GTK_CONTAINER(scrolled_window), 10);
@@ -167,6 +185,7 @@ void sql_window(GtkWidget *w, gpointer data)
     gtk_box_pack_start(GTK_BOX(vbox), line, FALSE, TRUE, 0);
     gtk_box_pack_start(GTK_BOX(hbox), script, FALSE, TRUE, 0);
     gtk_box_pack_start(GTK_BOX(hbox), repeat, FALSE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox), help, FALSE, TRUE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 0);
 
     gtk_widget_show_all(GTK_WIDGET(window));
@@ -185,6 +204,7 @@ void sql_window(GtkWidget *w, gpointer data)
     g_signal_connect(G_OBJECT(line), "key-press-event", G_CALLBACK(key_press), buffer); 
     g_signal_connect(G_OBJECT(script), "button-press-event", G_CALLBACK(run_script), buffer);
     g_signal_connect(G_OBJECT(repeat), "button-press-event", G_CALLBACK(repeat_script), buffer);
+    g_signal_connect(G_OBJECT(help), "button-press-event", G_CALLBACK(help_script), buffer);
 
     gtk_entry_set_text(GTK_ENTRY(line), "SELECT * FROM sqlite_master");
     gtk_widget_grab_focus(GTK_WIDGET(line));
