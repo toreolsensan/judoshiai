@@ -137,6 +137,7 @@ enum french_systems {
 
 #define NUM_MATCHES 256
 #define NUM_COMPETITORS 128
+#define TOTAL_NUM_COMPETITORS 2048
 
 #define NO_COMPETITOR  0
 #define GHOST          1
@@ -172,15 +173,17 @@ enum special_match_types {
 #define NUM_OTHERS 4
 
 #define PRINT_ITEM_MASK      0xf0000000
-#define PRINT_DEST_MASK      0x0f000000
+#define PRINT_DEST_MASK      0x01000000
 #define PRINT_DATA_MASK      0x00ffffff
 #define PRINT_TO_PRINTER     0x00000000
 #define PRINT_TO_PDF         0x01000000
+#define PRINT_TEMPLATE       0x02000000
+#define PRINT_ONE_PER_PAGE   0x04000000
+#define PRINT_ALL            0x08000000
 #define PRINT_SHEET          0x00000000
 #define PRINT_WEIGHING_NOTES 0x10000000
 #define PRINT_SCHEDULE       0x20000000
 #define PRINT_ALL_CATEGORIES 0x30000000
-#define PRINT_WITH_TEMPLATE  0x40000000
 
 #define IS(x) (!strcmp(azColName[i], #x))
 #define VARVAL(_var, _val) "\"" #_var "\"=\"" #_val "\""
@@ -490,6 +493,8 @@ struct club_data {
     gint bronze;
     gint fourth;
     gint fifth;
+    gint sixth;
+    gint seventh;
     gint competitors;
     struct club_data *next;
 };
@@ -508,6 +513,8 @@ struct paint_data {
     gdouble  paper_width;
     gdouble  paper_height;
     gdouble  total_width;
+    gdouble  paper_width_mm;
+    gdouble  paper_height_mm;
     gboolean write_results;
     GtkWidget *scroll;
     gboolean landscape;
@@ -599,6 +606,9 @@ extern gboolean create_statistics;
 extern gint webpwcrc32;
 
 const char *db_name;
+
+extern guint selected_judokas[TOTAL_NUM_COMPETITORS];
+extern guint num_selected_judokas;
 
 extern void progress_show(gdouble progress, const gchar *text);
 extern gboolean this_is_shiai(void);
@@ -957,6 +967,7 @@ extern void write_png(GtkWidget *menuitem, gpointer userdata);
 extern void do_print(GtkWidget *menuitem, gpointer userdata);
 extern void print_doc(GtkWidget *menuitem, gpointer userdata);
 extern void print_matches(GtkWidget *menuitem, gpointer userdata);
+extern void print_accreditation_cards(gboolean all);
 
 /* print_texts */
 extern gchar *print_texts[][NUM_LANGS];
