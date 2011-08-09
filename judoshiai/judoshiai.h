@@ -62,7 +62,7 @@
 #define BELT_4_DAN 9
 #define BELT_5_DAN 10
 
-#define NUM_TATAMIS 8
+#define NUM_TATAMIS 10
 
 #define SYSTEM_POOL        1
 #define SYSTEM_DPOOL       2
