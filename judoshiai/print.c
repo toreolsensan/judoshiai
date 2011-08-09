@@ -48,6 +48,7 @@ static double rownum1, rowheight1;
 #define YPOS (1.2*rownum1*rowheight1 + H(0.01))
 
 static gchar *pdf_out = NULL, *template_in = NULL;
+static gint print_flags = 0;
 
 typedef enum {
     BARCODE_PS, 
@@ -1507,7 +1508,7 @@ struct print_struct {
     GtkWidget *pdf_file, *template_file;
 };
 
-static void update_print_struct(GtkWidget *w, gpointer *data)
+static void update_print_struct(GtkWidget *w, gpointer data)
 {
     struct print_struct *s = data;
 
@@ -1599,6 +1600,21 @@ void print_accreditation_cards(gboolean all)
     gtk_widget_set_sensitive(GTK_WIDGET(s->template_file), FALSE);
     gtk_widget_set_sensitive(GTK_WIDGET(s->pdf_file), FALSE);
 
+    if ((print_flags & PRINT_ONE_PER_PAGE) && !all)
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(one_per_page), TRUE);
+
+    if (print_flags & PRINT_TO_PDF)
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(s->print_pdf), TRUE);
+    else
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(s->print_printer), TRUE);
+
+    if (print_flags & PRINT_TEMPLATE)
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(s->layout_template), TRUE);
+    else
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(s->layout_default), TRUE);
+
+    update_print_struct(NULL, s);
+
     gtk_widget_show_all(table);
     gtk_container_add(GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), table);
 
@@ -1631,6 +1647,8 @@ void print_accreditation_cards(gboolean all)
             flags |=  PRINT_TEMPLATE;
 
         print_doc(NULL, (gpointer)flags);
+
+        print_flags = flags;
     }
 
     g_free(s);

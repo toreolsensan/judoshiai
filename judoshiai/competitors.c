@@ -14,6 +14,8 @@
 #include "sqlite3.h"
 #include "judoshiai.h"
 
+#define RESPONSE_PRINT 1000
+
 struct treedata {
     GtkTreeStore  *treestore;
     GtkTreeIter    toplevel, child;
@@ -141,8 +143,10 @@ static void judoka_edited_callback(GtkWidget *widget,
         system.wishsys = get_system_number_by_menu_pos(gtk_combo_box_get_active
                                                        (GTK_COMBO_BOX(judoka_tmp->system)));
 
-    if (event_id != GTK_RESPONSE_OK || edited.last == NULL || 
-        edited.last[0] == 0 || (edited.last[0] == '?' && edited.last[1] == 0))
+    if ((event_id != GTK_RESPONSE_OK && event_id != RESPONSE_PRINT) || 
+        edited.last == NULL || 
+        edited.last[0] == 0 || 
+        (edited.last[0] == '?' && edited.last[1] == 0))
         goto out;
 
     if (!edited.visible) {
@@ -272,14 +276,24 @@ static void judoka_edited_callback(GtkWidget *widget,
     }
 
     //db_read_matches();
-    if (edited.visible)
+    if (edited.visible) {
         update_competitors_categories(edited.index);
+
+        if (event_id == RESPONSE_PRINT) {
+            selected_judokas[0] = edited.index;
+            num_selected_judokas = 1;
+            print_accreditation_cards(FALSE);
+        } 
+    }
 
     //matches_refresh();
 
     if (!edited.visible) {
         category_refresh(edited.index);
         update_category_status_info_all();
+
+        if (event_id == RESPONSE_PRINT)
+            print_doc(NULL, (gpointer)(edited.index | PRINT_SHEET | PRINT_TO_PRINTER));
     }
 
 out:
@@ -390,11 +404,13 @@ void view_on_row_activated(GtkTreeView        *treeview,
                                               GTK_WINDOW(main_window),
                                               GTK_DIALOG_DESTROY_WITH_PARENT,
                                               GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                                              GTK_STOCK_PRINT, RESPONSE_PRINT,
                                               NULL);
 
     GtkWidget *ok_button = gtk_dialog_add_button (GTK_DIALOG (dialog),
                                                   GTK_STOCK_OK,
                                                   GTK_RESPONSE_OK);
+
     accel_group = gtk_accel_group_new();
     gtk_window_add_accel_group (GTK_WINDOW (dialog), accel_group);
     gtk_widget_add_accelerator(ok_button, "clicked", accel_group, GDK_Return, 0, GTK_ACCEL_VISIBLE );
