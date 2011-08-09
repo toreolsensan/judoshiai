@@ -138,6 +138,12 @@ static void repeat_script(GtkWidget *w, GdkEventButton *event, gpointer *arg)
         gtk_text_buffer_set_text(buffer, _("No script available"), -1);
 }
 
+#ifdef WIN32
+#define WIN32_LEAN_AND_MEAN 1
+#include "windows.h"
+#include "shellapi.h"
+#endif /* WIN32 */
+
 void help_script(GtkWidget *w, gpointer data)
 {
     gchar *docfile = g_build_filename(installation_dir, "doc", 
