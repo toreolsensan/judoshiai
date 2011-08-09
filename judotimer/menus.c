@@ -179,7 +179,7 @@ static GtkWidget *match0, *match1, *match2, *match3, *match4, *match5, *gs;
 static GtkWidget *blue_wins, *white_wins, *red_background, *full_screen, *rules_no_koka;
 static GtkWidget *rules_leave_points, *rules_stop_ippon, *whitefirst;
 static GtkWidget *tatami_sel, *tatami_sel_none, *tatami_sel_1,  *tatami_sel_2,  *tatami_sel_3,  *tatami_sel_4;
-static GtkWidget *tatami_sel_5,  *tatami_sel_6,  *tatami_sel_7,  *tatami_sel_8;
+static GtkWidget *tatami_sel_5, *tatami_sel_6, *tatami_sel_7, *tatami_sel_8, *tatami_sel_9, *tatami_sel_10;
 static GtkWidget *node_ip, *my_ip, *manual, *about, *quick_guide;
 static GtkWidget *light, *menu_light, *menu_switched, *timeset;
 static GtkWidget *inc_time, *dec_time, *inc_osaekomi, *dec_osaekomi, *clock_only, *set_time, *layout_sel;
@@ -419,6 +419,8 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     tatami_sel_6    = gtk_radio_menu_item_new_with_label_from_widget((GtkRadioMenuItem *)tatami_sel_none, "");
     tatami_sel_7    = gtk_radio_menu_item_new_with_label_from_widget((GtkRadioMenuItem *)tatami_sel_none, "");
     tatami_sel_8    = gtk_radio_menu_item_new_with_label_from_widget((GtkRadioMenuItem *)tatami_sel_none, "");
+    tatami_sel_9    = gtk_radio_menu_item_new_with_label_from_widget((GtkRadioMenuItem *)tatami_sel_none, "");
+    tatami_sel_10   = gtk_radio_menu_item_new_with_label_from_widget((GtkRadioMenuItem *)tatami_sel_none, "");
     node_ip         = gtk_menu_item_new_with_label("Communication node");
     my_ip           = gtk_menu_item_new_with_label("Own IP addresses");
     inc_time        = gtk_menu_item_new_with_label("");
@@ -467,6 +469,8 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_menu_shell_append (GTK_MENU_SHELL (submenu), tatami_sel_6);
     gtk_menu_shell_append (GTK_MENU_SHELL (submenu), tatami_sel_7);
     gtk_menu_shell_append (GTK_MENU_SHELL (submenu), tatami_sel_8);
+    gtk_menu_shell_append (GTK_MENU_SHELL (submenu), tatami_sel_9);
+    gtk_menu_shell_append (GTK_MENU_SHELL (submenu), tatami_sel_10);
 
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), gtk_separator_menu_item_new());
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), node_ip);
@@ -514,6 +518,8 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     g_signal_connect(G_OBJECT(tatami_sel_6),    "activate", G_CALLBACK(tatami_selection),     (gpointer)6);
     g_signal_connect(G_OBJECT(tatami_sel_7),    "activate", G_CALLBACK(tatami_selection),     (gpointer)7);
     g_signal_connect(G_OBJECT(tatami_sel_8),    "activate", G_CALLBACK(tatami_selection),     (gpointer)8);
+    g_signal_connect(G_OBJECT(tatami_sel_9),    "activate", G_CALLBACK(tatami_selection),     (gpointer)9);
+    g_signal_connect(G_OBJECT(tatami_sel_10),    "activate", G_CALLBACK(tatami_selection),    (gpointer)10);
     g_signal_connect(G_OBJECT(node_ip),         "activate", G_CALLBACK(ask_node_ip_address),  (gpointer)0);
     g_signal_connect(G_OBJECT(my_ip),           "activate", G_CALLBACK(show_my_ip_addresses), (gpointer)0);
     g_signal_connect(G_OBJECT(inc_time),        "activate", G_CALLBACK(manipulate_time),      (gpointer)0);
@@ -602,6 +608,8 @@ void set_preferences(void)
         case 6: gtk_menu_item_activate(GTK_MENU_ITEM(tatami_sel_6)); break;
         case 7: gtk_menu_item_activate(GTK_MENU_ITEM(tatami_sel_7)); break;
         case 8: gtk_menu_item_activate(GTK_MENU_ITEM(tatami_sel_8)); break;
+        case 9: gtk_menu_item_activate(GTK_MENU_ITEM(tatami_sel_9)); break;
+        case 10: gtk_menu_item_activate(GTK_MENU_ITEM(tatami_sel_10)); break;
         }
     }
 
@@ -704,6 +712,8 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(tatami_sel_6, _("Contest area 6"));
     change_menu_label(tatami_sel_7, _("Contest area 7"));
     change_menu_label(tatami_sel_8, _("Contest area 8"));
+    change_menu_label(tatami_sel_9, _("Contest area 9"));
+    change_menu_label(tatami_sel_10, _("Contest area 10"));
 
     change_menu_label(node_ip,      _("Communication node"));
     change_menu_label(my_ip,        _("Own IP addresses"));
