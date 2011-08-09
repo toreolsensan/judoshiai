@@ -57,8 +57,12 @@
 #define HANSOKUMAKE_BLUE  3
 #define HANSOKUMAKE_WHITE 4
 
-#define NUM_TATAMIS  8
+#define NUM_TATAMIS  10
 #define NUM_LINES   10
+
+#define NORMAL_DISPLAY     0
+#define SMALL_DISPLAY      1
+#define HORIZONTAL_DISPLAY 2
 
 struct name_data {
     gint   index;

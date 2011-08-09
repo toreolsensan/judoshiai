@@ -19,7 +19,8 @@ void start_help(GtkWidget *w, gpointer data);
 
 static GtkWidget *menubar, *preferences, *help, *preferencesmenu, *helpmenu;
 static GtkWidget *quit, *manual;
-static GtkWidget *full_screen, *small_display, *mirror, *whitefirst, *redbackground;
+static GtkWidget *full_screen, *normal_display, *small_display, *horizontal_display;
+static GtkWidget *mirror, *whitefirst, *redbackground;
 static GtkWidget *tatami_show[NUM_TATAMIS];
 static GtkWidget *node_ip, *my_ip, *about;
 static GtkWidget *light, *menu_light;
@@ -208,10 +209,21 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     g_signal_connect(G_OBJECT(full_screen), "activate", 
                      G_CALLBACK(toggle_full_screen), 0);
 
-    small_display = gtk_check_menu_item_new_with_label("");
+    normal_display     = gtk_radio_menu_item_new_with_label(NULL, "");
+    small_display      = gtk_radio_menu_item_new_with_label_from_widget(GTK_RADIO_MENU_ITEM(normal_display), "");
+    horizontal_display = gtk_radio_menu_item_new_with_label_from_widget(GTK_RADIO_MENU_ITEM(normal_display), "");
+    create_separator(preferencesmenu);
+    gtk_menu_shell_append(GTK_MENU_SHELL(preferencesmenu), normal_display);
     gtk_menu_shell_append(GTK_MENU_SHELL(preferencesmenu), small_display);
+    gtk_menu_shell_append(GTK_MENU_SHELL(preferencesmenu), horizontal_display);
+    create_separator(preferencesmenu);
+
+    g_signal_connect(G_OBJECT(normal_display), "activate", 
+                     G_CALLBACK(toggle_small_display), (gpointer)NORMAL_DISPLAY);
     g_signal_connect(G_OBJECT(small_display), "activate", 
-                     G_CALLBACK(toggle_small_display), 0);
+                     G_CALLBACK(toggle_small_display), (gpointer)SMALL_DISPLAY);
+    g_signal_connect(G_OBJECT(horizontal_display), "activate", 
+                     G_CALLBACK(toggle_small_display), (gpointer)HORIZONTAL_DISPLAY);
 
     mirror = gtk_check_menu_item_new_with_label("");
     gtk_menu_shell_append(GTK_MENU_SHELL(preferencesmenu), mirror);
@@ -276,8 +288,19 @@ void set_preferences(void)
     }
 
     error = NULL;
-    if (g_key_file_get_boolean(keyfile, "preferences", "smalldisplay", &error)) {
-        gtk_menu_item_activate(GTK_MENU_ITEM(small_display));
+    i = g_key_file_get_integer(keyfile, "preferences", "displaytype", &error);
+    if (!error) {
+        switch (i) {
+        case NORMAL_DISPLAY:
+            gtk_menu_item_activate(GTK_MENU_ITEM(normal_display));
+            break;
+        case SMALL_DISPLAY:
+            gtk_menu_item_activate(GTK_MENU_ITEM(small_display));
+            break;
+        case HORIZONTAL_DISPLAY:
+            gtk_menu_item_activate(GTK_MENU_ITEM(horizontal_display));
+            break;
+        }
     }
 
     error = NULL;
@@ -346,7 +369,9 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(quit,         _("Quit"));
 
     change_menu_label(full_screen, _("Full screen mode"));
+    change_menu_label(normal_display, _("Normal display"));
     change_menu_label(small_display, _("Small display"));
+    change_menu_label(horizontal_display, _("Horizontal display"));
     change_menu_label(mirror, _("Mirror tatami order"));
     change_menu_label(whitefirst, _("White first"));
     change_menu_label(redbackground, _("Red background"));

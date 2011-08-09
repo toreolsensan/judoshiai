@@ -43,6 +43,7 @@ guint          current_year;
 static GtkWidget *darea = NULL;
 gint           language = LANG_FI;
 gint           num_lines = NUM_LINES;
+gint           display_type = NORMAL_DISPLAY;
 gboolean       mirror_display = FALSE;
 gboolean       white_first = FALSE;
 gboolean       red_background = FALSE;
@@ -56,7 +57,7 @@ gchar         *filename = NULL;
 #define W(_w) ((_w)*paper_width)
 #define H(_h) ((_h)*paper_height)
 
-#define BOX_HEIGHT (paper_height/(4.2*num_lines))
+#define BOX_HEIGHT (horiz ? paper_height/(4.0*(num_lines+0.25)*2.0) : paper_height/(4.0*(num_lines+0.25)))
 //#define BOX_HEIGHT (1.4*extents.height)
 
 #define NUM_RECTANGLES 1000
@@ -118,19 +119,24 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
 {
     gint i;
     cairo_text_extents_t extents;
-    gdouble y_pos = 0.0, colwidth = W(1.0/number_of_tatamis());
+    gint num_tatamis = number_of_tatamis();
+    gint num_columns = num_tatamis;
+    gdouble y_pos = 0.0, colwidth = W(1.0/num_tatamis);
     gdouble left = 0;
     gdouble right;
     time_t now = time(NULL);
     gboolean update_later = FALSE;
-    gint num_tatamis = 0;
+    gboolean upper = TRUE, horiz = (display_type == HORIZONTAL_DISPLAY);
 
-    for (i = 0; i < NUM_TATAMIS; i++)
-        if (show_tatami[i])
-            num_tatamis++;
+    if (horiz) {
+        num_columns = num_tatamis/2;
+        if (num_tatamis & 1)
+            num_columns++;
+        colwidth = W(1.0/num_columns);
+    }
 
     if (mirror_display && num_tatamis)
-        left = (num_tatamis - 1)*colwidth;
+            left = (num_columns - 1)*colwidth;
         
     num_rectangles = 0;
 
@@ -155,7 +161,13 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
 
         right = left + colwidth;
 
-        y_pos = BOX_HEIGHT;
+        if (horiz) {
+            if (upper)
+                y_pos = BOX_HEIGHT;
+            else
+                y_pos = H(0.5) + BOX_HEIGHT;
+        } else
+            y_pos = BOX_HEIGHT;
 
         for (k = 0; k < num_lines; k++) {
             struct match *m = &match_list[i][k];
@@ -335,20 +347,29 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
             point_click_areas[num_rectangles].x1 = left;
             point_click_areas[num_rectangles].y1 = y_pos;
             point_click_areas[num_rectangles].x2 = right;
+            point_click_areas[num_rectangles].y2 = y_pos + 4*BOX_HEIGHT;
+
             y_pos += 4*BOX_HEIGHT;
-            point_click_areas[num_rectangles].y2 = y_pos;
+
             if (num_rectangles < NUM_RECTANGLES-1)
                 num_rectangles++;
 
             cairo_move_to(c, left, y_pos);
             cairo_line_to(c, right, y_pos);
             cairo_stroke(c);
-        }
+        } // for (k = 0; k < num_lines; k++)
 
-        cairo_move_to(c, 10 + left, extents.height);
+        if (horiz) {
+            if (upper)
+                cairo_move_to(c, 10 + left, extents.height);
+            else
+                cairo_move_to(c, 10 + left, H(0.5)+extents.height);
+        } else
+            cairo_move_to(c, 10 + left, extents.height);
+
         sprintf(buf, "Tatami %d", i+1);
         cairo_show_text(c, buf);
-
+#if 0
         point_click_areas[num_rectangles].category = 0;
         point_click_areas[num_rectangles].number = 0;
         point_click_areas[num_rectangles].group = 0;
@@ -359,7 +380,7 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
         point_click_areas[num_rectangles].y2 = H(1.0);
         if (num_rectangles < NUM_RECTANGLES-1)
             num_rectangles++;
-
+#endif
         cairo_save(c);
         cairo_set_line_width(c, THICK_LINE);
         cairo_set_source_rgb(c, 0.0, 0.0, 0.0);
@@ -368,11 +389,20 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
         cairo_stroke(c);
         cairo_restore(c);
 
-        if (mirror_display)
+        if (horiz) {
+            if (!upper) {
+                if (mirror_display)
+                    left -= colwidth;
+                else
+                    left += colwidth;
+            }
+        } else if (mirror_display)
             left -= colwidth;
         else
             left += colwidth;
-    }
+
+        upper = !upper;
+    } // tatamis
 
 	
     cairo_save(c);
@@ -381,14 +411,22 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
     cairo_set_source_rgb(c, 0.0, 0.0, 0.0);
     cairo_move_to(c, 0, BOX_HEIGHT);
     cairo_line_to(c, W(1.0), BOX_HEIGHT);
+    if (horiz) {
+        cairo_move_to(c, 0, H(0.5));
+        cairo_line_to(c, W(1.0), H(0.5));
+        cairo_move_to(c, 0, H(0.5)+BOX_HEIGHT);
+        cairo_line_to(c, W(1.0), H(0.5)+BOX_HEIGHT);
+    }
     cairo_stroke(c);
 
-    cairo_set_source_rgb(c, 0.0, 0.0, 1.0);
-    cairo_move_to(c, 0, 5*BOX_HEIGHT);
-    cairo_line_to(c, W(1.0), 5*BOX_HEIGHT);
-    cairo_move_to(c, 0, 13*BOX_HEIGHT);
-    cairo_line_to(c, W(1.0), 13*BOX_HEIGHT);
-    cairo_stroke(c);
+    if (!horiz) {
+        cairo_set_source_rgb(c, 0.0, 0.0, 1.0);
+        cairo_move_to(c, 0, 5*BOX_HEIGHT);
+        cairo_line_to(c, W(1.0), 5*BOX_HEIGHT);
+        cairo_move_to(c, 0, 13*BOX_HEIGHT);
+        cairo_line_to(c, W(1.0), 13*BOX_HEIGHT);
+        cairo_stroke(c);
+    }
 
     cairo_restore(c);
 
@@ -440,11 +478,20 @@ void toggle_full_screen(GtkWidget *menu_item, gpointer data)
 void toggle_small_display(GtkWidget *menu_item, gpointer data)
 {
     if (GTK_CHECK_MENU_ITEM(menu_item)->active) {
-        num_lines = 6;
-        g_key_file_set_boolean(keyfile, "preferences", "smalldisplay", TRUE);
-    } else {
         num_lines = NUM_LINES;
-        g_key_file_set_boolean(keyfile, "preferences", "smalldisplay", FALSE);
+        display_type = (gint)data;
+        g_key_file_set_integer(keyfile, "preferences", "displaytype", (gint)data);
+
+        switch ((gint)data) {
+        case NORMAL_DISPLAY:
+            break;
+        case SMALL_DISPLAY:
+            num_lines = 6;
+            break;
+        case HORIZONTAL_DISPLAY:
+            num_lines = 3;
+            break;
+        }
     }
     expose(darea, 0, 0);
 }
