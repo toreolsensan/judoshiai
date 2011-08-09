@@ -144,6 +144,7 @@ enum french_systems {
 #define COMPETITOR     9
 
 #define F_REPECHAGE      0x0100
+#define F_BACK           0x0200
 #define F_SYSTEM_MASK    0x00ff
 
 #define DELETED      1
@@ -155,7 +156,8 @@ enum special_match_types {
     SPECIAL_MATCH_START = 1,
     SPECIAL_MATCH_STOP,
     SPECIAL_MATCH_FLAG,
-    SPECIAL_MATCH_X_Y
+    SPECIAL_MATCH_X_Y,
+    SPECIAL_MORE_SPACE
 };
 
 #define SET_ACCESS_NAME(_widget, _name)                 \

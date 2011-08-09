@@ -508,7 +508,7 @@ const gint result_y_position[NUM_TABLES][NUM_FRENCH] = {
     {4, 12, 28, 0, 0},
     {4, 12, 28, 0},
     {4, 16, 44, 0},
-    {4, 12, 44, 0},
+    {4, 12, 54, 0},
     {0, 0, 0, 0},
     {4, 12, 30, 0},
     {4, 12, 28, 0},
@@ -1429,6 +1429,18 @@ gint is_special_match(struct compsys sys, gint match, gint *intval, double *doub
     switch (sys.table) {
     case TABLE_DOUBLE_REPECHAGE:
         switch (sys.system) {
+        case  SYSTEM_FRENCH_32:
+            switch (match) {
+            case 41:
+            case 42:
+                *doubleval = 3.0;
+                return SPECIAL_MORE_SPACE;
+            case 1041:
+            case 1042:
+                *intval = F_BACK;
+                return SPECIAL_MATCH_FLAG;
+            }
+            break;
         case  SYSTEM_FRENCH_128:
             switch (match) {
             case 141:

@@ -150,6 +150,13 @@ static double paint_comp(struct paint_data *pd, struct pool_matches *unused1, in
     gchar numbuf[4];
     cairo_text_extents_t extents1;
     gboolean crowded = FALSE;
+    gint intval;
+    gdouble doubleval, doubleval2;
+    gint special_match;
+
+    special_match = is_special_match(pd->systm, 1000+comp_num, &intval, &doubleval, &doubleval2);
+    if (special_match == SPECIAL_MATCH_FLAG)
+        flags |= intval;
 
     snprintf(numbuf, sizeof(numbuf), "%d", comp_num);
     cairo_text_extents(pd->c, numbuf, &extents1);
@@ -183,7 +190,7 @@ static double paint_comp(struct paint_data *pd, struct pool_matches *unused1, in
     if (white_y < 0.0001) {
         gboolean back = FALSE;
 
-        if ((x + NAME_W) > W(0.95)) {
+        if ((x + NAME_W) > W(0.95) || (flags & F_BACK)) {
             x = x - NAME_W - 2.0*r2;
             back = TRUE;
         }
@@ -1489,7 +1496,8 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
     double text_h = TEXT_HEIGHT;
     double space = NAME_S;
     struct judoka *j1;
-    gint gold = 0, silver = 0, bronze1 = 0, bronze2 = 0, fourth = 0, fifth1 = 0, fifth2 = 0;
+    gint gold = 0, silver = 0, bronze1 = 0, bronze2 = 0, fourth = 0, 
+        fifth1 = 0, fifth2 = 0, seventh1 = 0, seventh2 = 0;
     gint winner, loser;
     gint sysflag = 0;
     gint sys = systm.system - SYSTEM_FRENCH_8;
@@ -1627,9 +1635,12 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
             if (white_match <= 0 /*|| is_repecharge(sys, i, TRUE)*/) {
                 if (table == TABLE_ESP_DOBLE_PERDIDA)
                     white_pos = blue_pos + space;
+                else if (special_match == SPECIAL_MORE_SPACE)
+                    white_pos = blue_pos + doubleval*space;
                 else
                     white_pos = blue_pos + 1.5*space + 
-                        ((level[i] >= 3 && sys == FRENCH_64) || (level[i] >= 4 && sys == FRENCH_128) ? 2*space : 0.0);
+                        ((level[i] >= 3 && sys == FRENCH_64) || 
+                         (level[i] >= 4 && sys == FRENCH_128) ? 2*space : 0.0);
             } else
                 white_pos = positions[white_match];
         }
@@ -1689,6 +1700,11 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
             PAINT_GOLD(gold_match);
             GET_FIFTH1(get_abs_matchnum_by_pos(table, sys, 5, 1));
             GET_FIFTH2(get_abs_matchnum_by_pos(table, sys, 5, 2));
+
+            GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(table, sys, 7, 1));
+            seventh1 = loser;
+            GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(table, sys, 7, 2));
+            seventh2 = loser;
         }
         break;
     case FRENCH_64:
@@ -1732,6 +1748,11 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
             PAINT_GOLD(gold_match);
             GET_FIFTH1(get_abs_matchnum_by_pos(table, sys, 5, 1));
             GET_FIFTH2(get_abs_matchnum_by_pos(table, sys, 5, 2));
+
+            GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(table, sys, 7, 1));
+            seventh1 = loser;
+            GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(table, sys, 7, 2));
+            seventh2 = loser;
         }
         break;
     case FRENCH_128:
@@ -1775,6 +1796,11 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
             PAINT_GOLD(gold_match);
             GET_FIFTH1(get_abs_matchnum_by_pos(table, sys, 5, 1));
             GET_FIFTH2(get_abs_matchnum_by_pos(table, sys, 5, 2));
+
+            GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(table, sys, 7, 1));
+            seventh1 = loser;
+            GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(table, sys, 7, 2));
+            seventh2 = loser;
         }
         break;
     }
@@ -1786,10 +1812,20 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
 	fifth1 = fifth2 = 0;
     }
 
+    if (table == TABLE_DOUBLE_REPECHAGE_ONE_BRONZE) {
+        seventh1 = seventh2 = 0;
+    }
+
     /* results */
-    result_table_2.num_rows = 6;
+    if (table == TABLE_MODIFIED_DOUBLE_ELIMINATION)
+        result_table_2.num_rows = 3;
+    else if (table == TABLE_DOUBLE_REPECHAGE_ONE_BRONZE)
+        result_table_2.num_rows = 6;
+    else
+        result_table_2.num_rows = 8;
+    
     result_table_2.position_x = W(0.96 - result_table_2.columns[0] - result_table_2.columns[1]);
-    result_table_2.position_y = H(0.9) - 5*ROW_HEIGHT;
+    result_table_2.position_y = H(0.9) - 7*ROW_HEIGHT;
     if (result_y_position[table][sys]) {
 	result_table_2.position_y = positions[result_y_position[table][sys]] + H(0.03);
     }
@@ -1806,6 +1842,10 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
         WRITE_TABLE(result_table_2, 4, 0, one_bronze(table, sys) ? "4" : "3");
         WRITE_TABLE(result_table_2, 5, 0, "5");
         WRITE_TABLE(result_table_2, 6, 0, "5");
+        if (table != TABLE_DOUBLE_REPECHAGE_ONE_BRONZE) {
+            WRITE_TABLE(result_table_2, 7, 0, "7");
+            WRITE_TABLE(result_table_2, 8, 0, "7");
+        }
     }
 
     if (gold && (j1 = get_data(gold))) {
@@ -1834,6 +1874,14 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
     }
     if (gold && (j1 = get_data(fifth2))) {
         WRITE_TABLE_H(result_table_2, 6, 1, j1->deleted, "%s %s, %s", j1->first, j1->last, get_club_text(j1, 0));
+        free_judoka(j1);
+    }
+    if (gold && (j1 = get_data(seventh1))) {
+        WRITE_TABLE_H(result_table_2, 7, 1, j1->deleted, "%s %s, %s", j1->first, j1->last, get_club_text(j1, 0));
+        free_judoka(j1);
+    }
+    if (gold && (j1 = get_data(seventh2))) {
+        WRITE_TABLE_H(result_table_2, 8, 1, j1->deleted, "%s %s, %s", j1->first, j1->last, get_club_text(j1, 0));
         free_judoka(j1);
     }
 }
@@ -1929,6 +1977,7 @@ void paint_category(struct paint_data *pd)
         cairo_move_to(pd->c, (W(0.95)-extents.width), H(0.05));
         cairo_show_text(pd->c, buf);
     } else {
+        gdouble textw, texth;
         snprintf(buf, sizeof(buf)-1, "%s  %s  %s   %s", 
                  info_competition,
                  info_date,
@@ -1939,7 +1988,15 @@ void paint_category(struct paint_data *pd)
                                CAIRO_FONT_WEIGHT_BOLD);
         cairo_set_font_size(pd->c, NAME_H*1.2);
         cairo_text_extents(pd->c, buf, &extents);
+        textw = extents.width;
+        texth = extents.height;
         cairo_move_to(pd->c, (W(1.0)-extents.width)/2.0, H(0.05));
+        cairo_show_text(pd->c, buf);
+
+        snprintf(buf, sizeof(buf)-1, "%s: %d", _T(competitor), pd->systm.numcomp);
+        cairo_set_font_size(pd->c, NAME_H*0.6);
+        cairo_text_extents(pd->c, buf, &extents);
+        cairo_move_to(pd->c, W(0.95) - extents.width, H(0.05) + texth);
         cairo_show_text(pd->c, buf);
     }
     cairo_restore(pd->c);
