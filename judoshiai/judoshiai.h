@@ -349,6 +349,7 @@ enum button_responses {
 #define CLUB_TEXT_COUNTRY      2
 #define CLUB_TEXT_ABBREVIATION 4
 #define CLUB_TEXT_ADDRESS      8
+#define CLUB_TEXT_NO_CLUB     16
 
 // Default drawing system
 enum default_drawing_system {
@@ -601,6 +602,7 @@ extern gboolean automatic_sheet_update;
 extern gboolean automatic_web_page_update;
 extern gboolean weights_in_sheets;
 extern gboolean grade_visible;
+extern gboolean club_last_first;
 extern gboolean pool_style;
 extern gboolean belt_colors;
 extern gboolean cleanup_import;
@@ -678,6 +680,7 @@ extern void print_time(gchar *fname, gint lineno);
 extern gint timeval_subtract(GTimeVal *result, GTimeVal *x, GTimeVal *y);
 extern gboolean valid_ascii_string(const gchar *s);
 extern const gchar *get_club_text(struct judoka *j, gint flags);
+extern const gchar *get_name_and_club_text(struct judoka *j, gint flags);
 
 
 /* db */

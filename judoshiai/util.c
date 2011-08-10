@@ -464,6 +464,31 @@ gboolean valid_ascii_string(const gchar *txt)
     return TRUE;
 }
 
+const gchar *get_name_and_club_text(struct judoka *j, gint flags)
+{
+    static gchar buffers[4][128];
+    static gint n = 0;
+    gchar *p;
+    
+    if (flags & CLUB_TEXT_NO_CLUB) {
+        if (club_last_first)
+            snprintf(buffers[n], 128, "%s, %s", j->last, j->first);
+        else            
+            snprintf(buffers[n], 128, "%s %s", j->first, j->last);
+    } else if (club_last_first)
+        snprintf(buffers[n], 128, "%s  %s, %s", 
+                 get_club_text(j, flags), j->last, j->first);
+    else    
+        snprintf(buffers[n], 128, "%s %s, %s", 
+                 j->first, j->last, get_club_text(j, flags));
+
+    p = buffers[n];
+    if (++n >= 4)
+	n = 0;
+
+    return p;
+}
+
 const gchar *get_club_text(struct judoka *j, gint flags)
 {
     static gchar buffers[4][64];
@@ -510,7 +535,11 @@ const gchar *get_club_text(struct judoka *j, gint flags)
     if (j->country && (j->club == NULL || j->club[0] == 0))
 	return j->country;
 
-    snprintf(buffers[n], 64, "%s/%s", j->club, j->country);
+    if (club_last_first)
+        snprintf(buffers[n], 64, "%s %s", j->country, j->club);
+    else
+        snprintf(buffers[n], 64, "%s/%s", j->club, j->country);
+
     p = buffers[n];
     if (++n >= 4)
 	n = 0;

@@ -306,7 +306,10 @@ static double paint_comp(struct paint_data *pd, struct pool_matches *unused1, in
             if (only_last)
                 snprintf(buf, sizeof(buf)-1, "%s", j->last);
             else if (number_b) {
-                if (j->belt && grade_visible)
+                if (club_last_first)
+                    snprintf(buf, sizeof(buf)-1, "%d. %s  %s, %s", 
+                             number_b, get_club_text(j, 0), j->last, j->first);
+                else if (j->belt && grade_visible)
                     snprintf(buf, sizeof(buf)-1, "%d. %s %s, %s, %s", 
                              number_b, j->first, j->last, belts[j->belt], 
 			     get_club_text(j, CLUB_TEXT_ABBREVIATION));
@@ -319,7 +322,10 @@ static double paint_comp(struct paint_data *pd, struct pool_matches *unused1, in
                              number_b, j->first, j->last, 
 			     get_club_text(j, CLUB_TEXT_ABBREVIATION));
             } else {
-                if (j->belt && grade_visible)
+                if (club_last_first)
+                    snprintf(buf, sizeof(buf)-1, "%s  %s, %s", 
+                             get_club_text(j, 0), j->last, j->first);
+                else if (j->belt && grade_visible)
                     snprintf(buf, sizeof(buf)-1, "%s %s, %s, %s", 
                              j->first, j->last, belts[j->belt], 
 			     get_club_text(j, CLUB_TEXT_ABBREVIATION));
@@ -358,7 +364,10 @@ static double paint_comp(struct paint_data *pd, struct pool_matches *unused1, in
             if (only_last)
                 sprintf(buf, "%s", j->last);
             else if (number_w) {
-                if (j->belt && grade_visible)
+                if (club_last_first)
+                    snprintf(buf, sizeof(buf)-1, "%d. %s  %s, %s", 
+                             number_w, get_club_text(j, 0), j->last, j->first);
+                else if (j->belt && grade_visible)
                     sprintf(buf, "%d. %s %s, %s, %s", 
                             number_w, j->first, j->last, belts[j->belt], 
 			    get_club_text(j, CLUB_TEXT_ABBREVIATION));
@@ -371,7 +380,10 @@ static double paint_comp(struct paint_data *pd, struct pool_matches *unused1, in
                             number_w, j->first, j->last, 
 			    get_club_text(j, CLUB_TEXT_ABBREVIATION));
             } else {
-                if (j->belt && grade_visible)
+                if (club_last_first)
+                    snprintf(buf, sizeof(buf)-1, "%s  %s, %s", 
+                             get_club_text(j, 0), j->last, j->first);
+                else if (j->belt && grade_visible)
                     sprintf(buf, "%s %s, %s, %s", 
                             j->first, j->last, belts[j->belt], 
 			    get_club_text(j, CLUB_TEXT_ABBREVIATION));
@@ -601,13 +613,14 @@ static void paint_pool(struct paint_data *pd, gint category, struct judoka *ctg,
         if (pm.j[i] == NULL)
             continue;
 
-        sprintf(num, "%d", i);
+        snprintf(num, sizeof(num), "%d", i);
         if (weights_in_sheets)
-            sprintf(name, "%s %s  (%d,%02d)", 
-                    pm.j[i]->first, pm.j[i]->last,
-                    pm.j[i]->weight/1000, (pm.j[i]->weight%1000)/10);
+            snprintf(name, sizeof(name), "%s  (%d,%02d)", 
+                        get_name_and_club_text(pm.j[i], CLUB_TEXT_NO_CLUB),
+                        pm.j[i]->weight/1000, (pm.j[i]->weight%1000)/10);
         else
-            sprintf(name, "%s %s", pm.j[i]->first, pm.j[i]->last);
+            snprintf(name, sizeof(name), "%s", get_name_and_club_text(pm.j[i], CLUB_TEXT_NO_CLUB));
+
         write_table(pd, &judoka_table, i, 0, num);
         write_table_h(pd, &judoka_table, i, 1, pm.j[i]->deleted, name);
         if (grade_visible)
@@ -639,8 +652,8 @@ static void paint_pool(struct paint_data *pd, gint category, struct judoka *ctg,
             continue;
 
         WRITE_TABLE(match_table, i, 0, "%d", i);
-        WRITE_TABLE(match_table, i, 1, "%s %s", pm.j[blue]->first, pm.j[blue]->last);
-        WRITE_TABLE(match_table, i, 4, "%s %s", pm.j[white]->first, pm.j[white]->last);
+        WRITE_TABLE(match_table, i, 1, "%s", get_name_and_club_text(pm.j[blue], CLUB_TEXT_NO_CLUB));
+        WRITE_TABLE(match_table, i, 4, "%s", get_name_and_club_text(pm.j[white], CLUB_TEXT_NO_CLUB));
         if (pm.m[i].blue_points || pm.m[i].white_points)
             WRITE_TABLE(match_table, i, 5, "%d - %d", pm.m[i].blue_points, pm.m[i].white_points);
         if (pm.m[i].blue_points || pm.m[i].white_points)
@@ -708,9 +721,8 @@ static void paint_pool(struct paint_data *pd, gint category, struct judoka *ctg,
         WRITE_TABLE(result_table, i, 0, "%d", draw_system == DRAW_SPANISH && i == 4 ? 3 : i);
         if (pm.finished == FALSE || pm.j[pm.c[i]] == NULL)
             continue;
-        WRITE_TABLE_H(result_table, i, 1, pm.j[pm.c[i]]->deleted, "%s %s, %s", 
-                      pm.j[pm.c[i]]->first, pm.j[pm.c[i]]->last, 
-		      get_club_text(pm.j[pm.c[i]], 0));
+        WRITE_TABLE_H(result_table, i, 1, pm.j[pm.c[i]]->deleted, "%s", 
+                      get_name_and_club_text(pm.j[pm.c[i]], 0)); 
     }
 
     /* clean up */
@@ -781,12 +793,14 @@ static void paint_pool_2(struct paint_data *pd, gint category, struct judoka *ct
             continue;
 
         sprintf(num, "%d", i);
+
         if (weights_in_sheets)
-            sprintf(name, "%s %s  (%d,%02d)", 
-                    pm.j[i]->first, pm.j[i]->last,
-                    pm.j[i]->weight/1000, (pm.j[i]->weight%1000)/10);
+            snprintf(name, sizeof(name), "%s  (%d,%02d)", 
+                        get_name_and_club_text(pm.j[i], CLUB_TEXT_NO_CLUB),
+                        pm.j[i]->weight/1000, (pm.j[i]->weight%1000)/10);
         else
-            sprintf(name, "%s %s", pm.j[i]->first, pm.j[i]->last);
+            snprintf(name, sizeof(name), "%s", get_name_and_club_text(pm.j[i], CLUB_TEXT_NO_CLUB));
+
         write_table(pd, &pool_table_2, 2*i-1, 0, num);
         write_table_h(pd, &pool_table_2, 2*i-1, 1, pm.j[i]->deleted, name);
         sprintf(name, "%s", get_club_text(pm.j[i], 0));
@@ -835,9 +849,8 @@ static void paint_pool_2(struct paint_data *pd, gint category, struct judoka *ct
         WRITE_TABLE(result_table, i, 0, "%d", draw_system == DRAW_SPANISH && i == 4 ? 3 : i);
         if (pm.finished == FALSE || pm.j[pm.c[i]] == NULL)
             continue;
-        WRITE_TABLE_H(result_table, i, 1, pm.j[pm.c[i]]->deleted, "%s %s, %s", 
-                      pm.j[pm.c[i]]->first, pm.j[pm.c[i]]->last, 
-		      get_club_text(pm.j[pm.c[i]], 0));
+        WRITE_TABLE_H(result_table, i, 1, pm.j[pm.c[i]]->deleted, "%s", 
+                      get_name_and_club_text(pm.j[pm.c[i]], 0));
     }
 
     /* clean up */
@@ -898,12 +911,13 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
             continue;
         WRITE_TABLE(judoka_table, i, 0, "%d", i);
         if (weights_in_sheets)
-            WRITE_TABLE_H(judoka_table, i, 1, pm.j[i]->deleted, "%s %s  (%d,%02d)", 
-                          pm.j[i]->first, pm.j[i]->last,
+            WRITE_TABLE_H(judoka_table, i, 1, pm.j[i]->deleted, "%s  (%d,%02d)", 
+                          get_name_and_club_text(pm.j[i], CLUB_TEXT_NO_CLUB),
                           pm.j[i]->weight/1000, (pm.j[i]->weight%1000)/10);
         else
-            WRITE_TABLE_H(judoka_table, i, 1, pm.j[i]->deleted, "%s %s", 
-                          pm.j[i]->first, pm.j[i]->last);
+            WRITE_TABLE_H(judoka_table, i, 1, pm.j[i]->deleted, "%s", 
+                          get_name_and_club_text(pm.j[i], CLUB_TEXT_NO_CLUB));
+
         if (grade_visible)
             WRITE_TABLE(judoka_table, i, 2, "%s", belts[pm.j[i]->belt]);
         WRITE_TABLE(judoka_table, i, 3, "%s", get_club_text(pm.j[i], 0));
@@ -935,14 +949,16 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
 
         WRITE_TABLE(judoka_table, i - num_pool_a, 0, "%d", i);
         if (weights_in_sheets)
-            WRITE_TABLE_H(judoka_table, i - num_pool_a, 1, pm.j[i]->deleted, "%s %s  (%d,%02d)", 
-                          pm.j[i]->first, pm.j[i]->last,
+            WRITE_TABLE_H(judoka_table, i - num_pool_a, 1, pm.j[i]->deleted, "%s  (%d,%02d)", 
+                          get_name_and_club_text(pm.j[i], CLUB_TEXT_NO_CLUB),
                           pm.j[i]->weight/1000, (pm.j[i]->weight%1000)/10);
         else
-            WRITE_TABLE_H(judoka_table, i - num_pool_a, 1, pm.j[i]->deleted, "%s %s", 
-                          pm.j[i]->first, pm.j[i]->last);
+            WRITE_TABLE_H(judoka_table, i - num_pool_a, 1, pm.j[i]->deleted, "%s", 
+                          get_name_and_club_text(pm.j[i], CLUB_TEXT_NO_CLUB));
+
         if (grade_visible)
             WRITE_TABLE(judoka_table, i - num_pool_a, 2, "%s", belts[pm.j[i]->belt]);
+
         WRITE_TABLE(judoka_table, i - num_pool_a, 3, "%s", 
 		    get_club_text(pm.j[i], 0));
     }
@@ -992,8 +1008,8 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
 
         if (pm.j[blue] && pm.j[white]) {
             WRITE_TABLE(match_table, ix, 0, "%d", i);
-            WRITE_TABLE(match_table, ix, 1, "%s %s", pm.j[blue]->first, pm.j[blue]->last);
-            WRITE_TABLE(match_table, ix, 4, "%s %s", pm.j[white]->first, pm.j[white]->last);
+            WRITE_TABLE(match_table, ix, 1, "%s", get_name_and_club_text(pm.j[blue], CLUB_TEXT_NO_CLUB));
+            WRITE_TABLE(match_table, ix, 4, "%s", get_name_and_club_text(pm.j[white], CLUB_TEXT_NO_CLUB));
             if (pm.m[i].blue_points || pm.m[i].white_points)
                 WRITE_TABLE(match_table, ix, 5, "%d - %d", pm.m[i].blue_points, pm.m[i].white_points);
             if (pm.m[i].blue_points || pm.m[i].white_points)
@@ -1145,24 +1161,23 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
         WRITE_TABLE(result_table, 4, 0, "3");
                 
         if (gold && (j1 = get_data(gold))) {
-            WRITE_TABLE_H(result_table, 1, 1, j1->deleted, "%s %s, %s", j1->first, j1->last, get_club_text(j1, 0));
+            WRITE_TABLE_H(result_table, 1, 1, j1->deleted, "%s", get_name_and_club_text(j1, 0));
             free_judoka(j1);
         }
         if (gold && (j1 = get_data(silver))) {
-            WRITE_TABLE_H(result_table, 2, 1, j1->deleted, "%s %s, %s", j1->first, j1->last, get_club_text(j1, 0));
+            WRITE_TABLE_H(result_table, 2, 1, j1->deleted, "%s", get_name_and_club_text(j1, 0));
             free_judoka(j1);
         }
         if (gold && (j1 = get_data(bronze1))) {
-            WRITE_TABLE_H(result_table, 3, 1, j1->deleted, "%s %s, %s", j1->first, j1->last, get_club_text(j1, 0));
+            WRITE_TABLE_H(result_table, 3, 1, j1->deleted, "%s", get_name_and_club_text(j1, 0));
             free_judoka(j1);
         }
         if (gold && (j1 = get_data(bronze2))) {
-            WRITE_TABLE_H(result_table, 4, 1, j1->deleted, "%s %s, %s", j1->first, j1->last, get_club_text(j1, 0));
+            WRITE_TABLE_H(result_table, 4, 1, j1->deleted, "%s", get_name_and_club_text(j1, 0));
             free_judoka(j1);
         }
     }
 
- out:
     /* clean up */
     empty_pool_struct(&pm);
 }
@@ -1243,12 +1258,13 @@ static void paint_qpool(struct paint_data *pd, gint category, struct judoka *ctg
 
                 WRITE_TABLE(judoka_table, i, 0, "%d", i+pool_start[pool]);
                 if (weights_in_sheets)
-                    WRITE_TABLE_H(judoka_table, i, 1, pm.j[i+pool_start[pool]]->deleted, "%s %s  (%d,%02d)", 
-                                  pm.j[i+pool_start[pool]]->first, pm.j[i+pool_start[pool]]->last,
+                    WRITE_TABLE_H(judoka_table, i, 1, pm.j[i+pool_start[pool]]->deleted, "%s  (%d,%02d)", 
+                                  get_name_and_club_text(pm.j[i+pool_start[pool]], CLUB_TEXT_NO_CLUB),
                                   pm.j[i+pool_start[pool]]->weight/1000, (pm.j[i+pool_start[pool]]->weight%1000)/10);
                 else
-                    WRITE_TABLE_H(judoka_table, i, 1, pm.j[i+pool_start[pool]]->deleted, "%s %s", 
-                                  pm.j[i+pool_start[pool]]->first, pm.j[i+pool_start[pool]]->last);
+                    WRITE_TABLE_H(judoka_table, i, 1, pm.j[i+pool_start[pool]]->deleted, "%s", 
+                                  get_name_and_club_text(pm.j[i+pool_start[pool]], CLUB_TEXT_NO_CLUB));
+
                 if (grade_visible)
                     WRITE_TABLE(judoka_table, i, 2, "%s", belts[pm.j[i+pool_start[pool]]->belt]);
                 WRITE_TABLE(judoka_table, i, 3, "%s", get_club_text(pm.j[i+pool_start[pool]], 0));
@@ -1323,8 +1339,8 @@ static void paint_qpool(struct paint_data *pd, gint category, struct judoka *ctg
 
                 if (pm.j[blue] && pm.j[white]) {
                     WRITE_TABLE(match_table, ix, 0, "%d", i);
-                    WRITE_TABLE(match_table, ix, 1, "%s %s", pm.j[blue]->first, pm.j[blue]->last);
-                    WRITE_TABLE(match_table, ix, 4, "%s %s", pm.j[white]->first, pm.j[white]->last);
+                    WRITE_TABLE(match_table, ix, 1, "%s", get_name_and_club_text(pm.j[blue], CLUB_TEXT_NO_CLUB));
+                    WRITE_TABLE(match_table, ix, 4, "%s", get_name_and_club_text(pm.j[white], CLUB_TEXT_NO_CLUB));
                     if (pm.m[i].blue_points || pm.m[i].white_points)
                         WRITE_TABLE(match_table, ix, 5, "%d - %d", pm.m[i].blue_points, pm.m[i].white_points);
                     if (pm.m[i].blue_points || pm.m[i].white_points)
@@ -1423,19 +1439,19 @@ static void paint_qpool(struct paint_data *pd, gint category, struct judoka *ctg
         WRITE_TABLE(result_table, 4, 0, "3");
                 
         if (gold && (j1 = get_data(gold))) {
-            WRITE_TABLE_H(result_table, 1, 1, j1->deleted, "%s %s, %s", j1->first, j1->last, get_club_text(j1, 0));
+            WRITE_TABLE_H(result_table, 1, 1, j1->deleted, "%s", get_name_and_club_text(j1, 0));
             free_judoka(j1);
         }
         if (gold && (j1 = get_data(silver))) {
-            WRITE_TABLE_H(result_table, 2, 1, j1->deleted, "%s %s, %s", j1->first, j1->last, get_club_text(j1, 0));
+            WRITE_TABLE_H(result_table, 2, 1, j1->deleted, "%s", get_name_and_club_text(j1, 0));
             free_judoka(j1);
         }
         if (gold && (j1 = get_data(bronze1))) {
-            WRITE_TABLE_H(result_table, 3, 1, j1->deleted, "%s %s, %s", j1->first, j1->last, get_club_text(j1, 0));
+            WRITE_TABLE_H(result_table, 3, 1, j1->deleted, "%s", get_name_and_club_text(j1, 0));
             free_judoka(j1);
         }
         if (gold && (j1 = get_data(bronze2))) {
-            WRITE_TABLE_H(result_table, 4, 1, j1->deleted, "%s %s, %s", j1->first, j1->last, get_club_text(j1, 0));
+            WRITE_TABLE_H(result_table, 4, 1, j1->deleted, "%s", get_name_and_club_text(j1, 0));
             free_judoka(j1);
         }
     } // page 2
@@ -1849,39 +1865,39 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
     }
 
     if (gold && (j1 = get_data(gold))) {
-        WRITE_TABLE_H(result_table_2, 1, 1, j1->deleted, "%s %s, %s", j1->first, j1->last, get_club_text(j1, 0));
+        WRITE_TABLE_H(result_table_2, 1, 1, j1->deleted, "%s", get_name_and_club_text(j1, 0));
         free_judoka(j1);
     }
     if (gold && (j1 = get_data(silver))) {
-        WRITE_TABLE_H(result_table_2, 2, 1, j1->deleted, "%s %s, %s", j1->first, j1->last, get_club_text(j1, 0));
+        WRITE_TABLE_H(result_table_2, 2, 1, j1->deleted, "%s", get_name_and_club_text(j1, 0));
         free_judoka(j1);
     }
     if (gold && (j1 = get_data(bronze1))) {
-        WRITE_TABLE_H(result_table_2, 3, 1, j1->deleted, "%s %s, %s", j1->first, j1->last, get_club_text(j1, 0));
+        WRITE_TABLE_H(result_table_2, 3, 1, j1->deleted, "%s", get_name_and_club_text(j1, 0));
         free_judoka(j1);
     }
     if (gold && one_bronze(table, sys) == FALSE && (j1 = get_data(bronze2))) {
-        WRITE_TABLE_H(result_table_2, 4, 1, j1->deleted, "%s %s, %s", j1->first, j1->last, get_club_text(j1, 0));
+        WRITE_TABLE_H(result_table_2, 4, 1, j1->deleted, "%s", get_name_and_club_text(j1, 0));
         free_judoka(j1);
     }
     if (gold && one_bronze(table, sys) && (j1 = get_data(fourth))) {
-        WRITE_TABLE_H(result_table_2, 4, 1, j1->deleted, "%s %s, %s", j1->first, j1->last, get_club_text(j1, 0));
+        WRITE_TABLE_H(result_table_2, 4, 1, j1->deleted, "%s", get_name_and_club_text(j1, 0));
         free_judoka(j1);
     }
     if (gold && (j1 = get_data(fifth1))) {
-        WRITE_TABLE_H(result_table_2, 5, 1, j1->deleted, "%s %s, %s", j1->first, j1->last, get_club_text(j1, 0));
+        WRITE_TABLE_H(result_table_2, 5, 1, j1->deleted, "%s", get_name_and_club_text(j1, 0));
         free_judoka(j1);
     }
     if (gold && (j1 = get_data(fifth2))) {
-        WRITE_TABLE_H(result_table_2, 6, 1, j1->deleted, "%s %s, %s", j1->first, j1->last, get_club_text(j1, 0));
+        WRITE_TABLE_H(result_table_2, 6, 1, j1->deleted, "%s", get_name_and_club_text(j1, 0));
         free_judoka(j1);
     }
     if (gold && (j1 = get_data(seventh1))) {
-        WRITE_TABLE_H(result_table_2, 7, 1, j1->deleted, "%s %s, %s", j1->first, j1->last, get_club_text(j1, 0));
+        WRITE_TABLE_H(result_table_2, 7, 1, j1->deleted, "%s", get_name_and_club_text(j1, 0));
         free_judoka(j1);
     }
     if (gold && (j1 = get_data(seventh2))) {
-        WRITE_TABLE_H(result_table_2, 8, 1, j1->deleted, "%s %s, %s", j1->first, j1->last, get_club_text(j1, 0));
+        WRITE_TABLE_H(result_table_2, 8, 1, j1->deleted, "%s", get_name_and_club_text(j1, 0));
         free_judoka(j1);
     }
 }

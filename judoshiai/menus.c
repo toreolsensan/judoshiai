@@ -31,6 +31,8 @@ extern void toggle_weights_in_sheets(gpointer callback_data,
                                      guint callback_action, GtkWidget *menu_item);
 extern void toggle_grade_visible(gpointer callback_data, 
                                  guint callback_action, GtkWidget *menu_item);
+extern void toggle_club_last_first(gpointer callback_data, 
+                                   guint callback_action, GtkWidget *menu_item);
 extern void toggle_pool_style(gpointer callback_data, 
                               guint callback_action, GtkWidget *menu_item);
 extern void toggle_belt_colors(gpointer callback_data, 
@@ -73,7 +75,8 @@ static GtkWidget *menubar,
     *preference_auto_sheet_update/*, *preference_auto_web_update*/, *preference_results_in_finnish, 
     *preference_langsel, *preference_results_in_swedish, *preference_results_in_english, 
     *preference_results_in_spanish, *preference_results_in_ukrainian, *preference_weights_to_pool_sheets, 
-    *preference_grade_visible, *preference_layout, *preference_pool_style, *preference_belt_colors,
+    *preference_grade_visible, *preference_club_last_first, 
+    *preference_layout, *preference_pool_style, *preference_belt_colors,
     *preference_sheet_font, *preference_password, *judotimer_control[NUM_TATAMIS],
     *preference_mirror, *preference_auto_arrange, *preference_club_text,
     *preference_club_text_club, *preference_club_text_country, *preference_club_text_both,
@@ -362,6 +365,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
 
     preference_weights_to_pool_sheets = gtk_check_menu_item_new_with_label(_("Weights Visible in Pool Sheets"));
     preference_grade_visible          = gtk_check_menu_item_new_with_label("");
+    preference_club_last_first        = gtk_check_menu_item_new_with_label("");
     preference_pool_style             = gtk_check_menu_item_new_with_label("");
     preference_belt_colors            = gtk_check_menu_item_new_with_label("");
     preference_sheet_font             = gtk_menu_item_new_with_label(_("Sheet Font"));
@@ -414,6 +418,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(preference_layout), submenu);
     gtk_menu_shell_append(GTK_MENU_SHELL(submenu), preference_weights_to_pool_sheets);
     gtk_menu_shell_append(GTK_MENU_SHELL(submenu), preference_grade_visible);
+    gtk_menu_shell_append(GTK_MENU_SHELL(submenu), preference_club_last_first);
     gtk_menu_shell_append(GTK_MENU_SHELL(submenu), preference_pool_style);
     gtk_menu_shell_append(GTK_MENU_SHELL(submenu), preference_belt_colors);
     gtk_menu_shell_append(GTK_MENU_SHELL(submenu), preference_use_logo);
@@ -448,6 +453,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
 
     g_signal_connect(G_OBJECT(preference_weights_to_pool_sheets), "activate", G_CALLBACK(toggle_weights_in_sheets), 0);
     g_signal_connect(G_OBJECT(preference_grade_visible),          "activate", G_CALLBACK(toggle_grade_visible), 0);
+    g_signal_connect(G_OBJECT(preference_club_last_first),        "activate", G_CALLBACK(toggle_club_last_first), 0);
     g_signal_connect(G_OBJECT(preference_pool_style),             "activate", G_CALLBACK(toggle_pool_style), 0);
     g_signal_connect(G_OBJECT(preference_belt_colors),            "activate", G_CALLBACK(toggle_belt_colors), 0);
     g_signal_connect(G_OBJECT(preference_sheet_font),             "activate", G_CALLBACK(font_dialog), 0);
@@ -521,6 +527,11 @@ void set_preferences(void)
     error = NULL;
     if (g_key_file_get_boolean(keyfile, "preferences", "gradevisible", &error) || error) {
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(preference_grade_visible), TRUE);
+    }
+
+    error = NULL;
+    if (g_key_file_get_boolean(keyfile, "preferences", "clublastfirst", &error)) {
+        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(preference_club_last_first), TRUE);
     }
 
     error = NULL;
@@ -818,6 +829,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(preference_layout                , _("Sheet Layout"));
     change_menu_label(preference_weights_to_pool_sheets, _("Weights Visible"));
     change_menu_label(preference_grade_visible         , _("Grade Visible"));
+    change_menu_label(preference_club_last_first       , _("Format: Country, Last, First"));
     change_menu_label(preference_pool_style            , _("Pool Style 2"));
     change_menu_label(preference_belt_colors           , _("Use Belt Colors"));
     change_menu_label(preference_sheet_font            , _("Sheet Font"));
