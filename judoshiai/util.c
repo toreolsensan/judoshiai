@@ -471,16 +471,31 @@ const gchar *get_name_and_club_text(struct judoka *j, gint flags)
     gchar *p;
     
     if (flags & CLUB_TEXT_NO_CLUB) {
-        if (club_last_first)
-            snprintf(buffers[n], 128, "%s, %s", j->last, j->first);
-        else            
+        switch (name_layout) {
+        case NAME_LAYOUT_N_S_C:
             snprintf(buffers[n], 128, "%s %s", j->first, j->last);
-    } else if (club_last_first)
-        snprintf(buffers[n], 128, "%s  %s, %s", 
-                 get_club_text(j, flags), j->last, j->first);
-    else    
-        snprintf(buffers[n], 128, "%s %s, %s", 
-                 j->first, j->last, get_club_text(j, flags));
+            break;
+        case NAME_LAYOUT_S_N_C:
+        case NAME_LAYOUT_C_S_N:
+            snprintf(buffers[n], 128, "%s, %s", j->last, j->first);
+            break;
+        }
+    } else {
+        switch (name_layout) {
+        case NAME_LAYOUT_N_S_C:
+            snprintf(buffers[n], 128, "%s %s, %s", 
+                     j->first, j->last, get_club_text(j, flags));
+            break;
+        case NAME_LAYOUT_S_N_C:
+            snprintf(buffers[n], 128, "%s, %s, %s", 
+                     j->last, j->first, get_club_text(j, flags));
+            break;
+        case NAME_LAYOUT_C_S_N:
+            snprintf(buffers[n], 128, "%s  %s, %s", 
+                     get_club_text(j, flags), j->last, j->first);
+            break;
+        }
+    }
 
     p = buffers[n];
     if (++n >= 4)
@@ -535,10 +550,7 @@ const gchar *get_club_text(struct judoka *j, gint flags)
     if (j->country && (j->club == NULL || j->club[0] == 0))
 	return j->country;
 
-    if (club_last_first)
-        snprintf(buffers[n], 64, "%s %s", j->country, j->club);
-    else
-        snprintf(buffers[n], 64, "%s/%s", j->club, j->country);
+    snprintf(buffers[n], 64, "%s/%s", j->country, j->club);
 
     p = buffers[n];
     if (++n >= 4)

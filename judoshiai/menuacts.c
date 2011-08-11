@@ -367,10 +367,10 @@ void toggle_grade_visible(GtkWidget *menu_item, gpointer data)
     g_key_file_set_boolean(keyfile, "preferences", "gradevisible", grade_visible);
 }
 
-void toggle_club_last_first(GtkWidget *menu_item, gpointer data)
+void toggle_name_layout(GtkWidget *menu_item, gpointer data)
 {
-    club_last_first = GTK_CHECK_MENU_ITEM(menu_item)->active;
-    g_key_file_set_boolean(keyfile, "preferences", "clublastfirst", club_last_first);
+    name_layout = (gint)data;
+    g_key_file_set_integer(keyfile, "preferences", "namelayout", name_layout);
 }
 
 void toggle_pool_style(GtkWidget *menu_item, gpointer data)

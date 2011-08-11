@@ -306,33 +306,19 @@ static double paint_comp(struct paint_data *pd, struct pool_matches *unused1, in
             if (only_last)
                 snprintf(buf, sizeof(buf)-1, "%s", j->last);
             else if (number_b) {
-                if (club_last_first)
-                    snprintf(buf, sizeof(buf)-1, "%d. %s  %s, %s", 
-                             number_b, get_club_text(j, 0), j->last, j->first);
-                else if (j->belt && grade_visible)
-                    snprintf(buf, sizeof(buf)-1, "%d. %s %s, %s, %s", 
-                             number_b, j->first, j->last, belts[j->belt], 
-			     get_club_text(j, CLUB_TEXT_ABBREVIATION));
-                else if (club_text == CLUB_TEXT_COUNTRY)
-                    snprintf(buf, sizeof(buf)-1, "%d. %s  %s, %s", 
-                             number_b, get_club_text(j, CLUB_TEXT_ABBREVIATION),
-                             j->last, j->first);
+                if (j->belt && grade_visible)
+                    snprintf(buf, sizeof(buf)-1, "%d. %s (%s)", 
+                             number_b, get_name_and_club_text(j, CLUB_TEXT_ABBREVIATION), belts[j->belt]);
                 else
-                    snprintf(buf, sizeof(buf)-1, "%d. %s %s, %s", 
-                             number_b, j->first, j->last, 
-			     get_club_text(j, CLUB_TEXT_ABBREVIATION));
+                    snprintf(buf, sizeof(buf)-1, "%d. %s", 
+                             number_b, get_name_and_club_text(j, CLUB_TEXT_ABBREVIATION));
             } else {
-                if (club_last_first)
-                    snprintf(buf, sizeof(buf)-1, "%s  %s, %s", 
-                             get_club_text(j, 0), j->last, j->first);
-                else if (j->belt && grade_visible)
-                    snprintf(buf, sizeof(buf)-1, "%s %s, %s, %s", 
-                             j->first, j->last, belts[j->belt], 
-			     get_club_text(j, CLUB_TEXT_ABBREVIATION));
+                if (j->belt && grade_visible)
+                    snprintf(buf, sizeof(buf)-1, "%s (%s)", 
+                             get_name_and_club_text(j, CLUB_TEXT_ABBREVIATION), belts[j->belt]);
                 else
-                    snprintf(buf, sizeof(buf)-1, "%s %s, %s", 
-                             j->first, j->last, 
-			     get_club_text(j, CLUB_TEXT_ABBREVIATION));
+                    snprintf(buf, sizeof(buf)-1, "%s", 
+                             get_name_and_club_text(j, CLUB_TEXT_ABBREVIATION));
             }
 
             cairo_text_extents(pd->c, buf, &extents);
@@ -364,33 +350,19 @@ static double paint_comp(struct paint_data *pd, struct pool_matches *unused1, in
             if (only_last)
                 sprintf(buf, "%s", j->last);
             else if (number_w) {
-                if (club_last_first)
-                    snprintf(buf, sizeof(buf)-1, "%d. %s  %s, %s", 
-                             number_w, get_club_text(j, 0), j->last, j->first);
-                else if (j->belt && grade_visible)
-                    sprintf(buf, "%d. %s %s, %s, %s", 
-                            number_w, j->first, j->last, belts[j->belt], 
-			    get_club_text(j, CLUB_TEXT_ABBREVIATION));
-                else if (club_text == CLUB_TEXT_COUNTRY)
-                    snprintf(buf, sizeof(buf)-1, "%d. %s  %s, %s", 
-                             number_w, get_club_text(j, CLUB_TEXT_ABBREVIATION),
-                             j->last, j->first);
+                if (j->belt && grade_visible)
+                    snprintf(buf, sizeof(buf)-1, "%d. %s (%s)", 
+                             number_w, get_name_and_club_text(j, CLUB_TEXT_ABBREVIATION), belts[j->belt]);
                 else
-                    sprintf(buf, "%d. %s %s, %s", 
-                            number_w, j->first, j->last, 
-			    get_club_text(j, CLUB_TEXT_ABBREVIATION));
+                    snprintf(buf, sizeof(buf)-1, "%d. %s", 
+                             number_w, get_name_and_club_text(j, CLUB_TEXT_ABBREVIATION));
             } else {
-                if (club_last_first)
-                    snprintf(buf, sizeof(buf)-1, "%s  %s, %s", 
-                             get_club_text(j, 0), j->last, j->first);
-                else if (j->belt && grade_visible)
-                    sprintf(buf, "%s %s, %s, %s", 
-                            j->first, j->last, belts[j->belt], 
-			    get_club_text(j, CLUB_TEXT_ABBREVIATION));
+                if (j->belt && grade_visible)
+                    snprintf(buf, sizeof(buf)-1, "%s (%s)", 
+                             get_name_and_club_text(j, CLUB_TEXT_ABBREVIATION), belts[j->belt]);
                 else
-                    sprintf(buf, "%s %s, %s", 
-                            j->first, j->last, 
-			    get_club_text(j, CLUB_TEXT_ABBREVIATION));
+                    snprintf(buf, sizeof(buf)-1, "%s", 
+                             get_name_and_club_text(j, CLUB_TEXT_ABBREVIATION));
             }
 
             cairo_text_extents(pd->c, buf, &extents);

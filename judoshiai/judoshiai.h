@@ -352,6 +352,13 @@ enum button_responses {
 #define CLUB_TEXT_ADDRESS      8
 #define CLUB_TEXT_NO_CLUB     16
 
+enum {
+    NAME_LAYOUT_N_S_C = 0,
+    NAME_LAYOUT_S_N_C,
+    NAME_LAYOUT_C_S_N,
+    NUM_NAME_LAYOUTS
+};
+
 // Default drawing system
 enum default_drawing_system {
     DRAW_INTERNATIONAL = 0,
@@ -603,7 +610,7 @@ extern gboolean automatic_sheet_update;
 extern gboolean automatic_web_page_update;
 extern gboolean weights_in_sheets;
 extern gboolean grade_visible;
-extern gboolean club_last_first;
+extern gint     name_layout;
 extern gboolean pool_style;
 extern gboolean belt_colors;
 extern gboolean cleanup_import;
