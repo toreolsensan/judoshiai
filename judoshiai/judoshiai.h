@@ -719,6 +719,7 @@ extern void db_set_system(int num, struct compsys sys);
 extern struct compsys db_get_system(gint num);
 extern gint db_get_tatami(gint num);
 extern void db_set_category_positions(gint category, gint competitor, gint position);
+extern gint db_get_competitors_position(gint competitor, gint *catindex);
 
 extern void db_read_competitor_statistics(gint *numcomp, gint *numweighted);
 extern void db_add_competitors(const gchar *competition, gboolean with_weight, 
@@ -992,6 +993,7 @@ extern gboolean paint_pool_style_2(gint cat);
 extern gint next_page(gint cat, gint page);
 extern gint num_pages(struct compsys sys);
 extern gint get_matchnum_by_pos(struct compsys systm, gint pos, gint num);
+extern gint db_position_to_real(struct compsys sys, gint pos);
 
 /* medal-matches */
 extern void move_medal_matches(GtkWidget *menuitem, gpointer userdata);

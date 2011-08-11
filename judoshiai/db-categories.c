@@ -14,8 +14,11 @@
 #include "sqlite3.h"
 #include "judoshiai.h"
 
+#define NUM_POSITIONS 8
+
 static struct compsys category_system;
 static struct judoka j;
+static gint positions[NUM_POSITIONS];
 
 static int db_callback_categories(void *data, int argc, char **argv, char **azColName)
 {
@@ -41,6 +44,22 @@ static int db_callback_categories(void *data, int argc, char **argv, char **azCo
             category_system.table = atoi(argv[i]);
         else if (IS(wishsys))
             category_system.wishsys = atoi(argv[i]);
+        else if (IS(pos1))
+            positions[0] = atoi(argv[i]);
+        else if (IS(pos2))
+            positions[1] = atoi(argv[i]);
+        else if (IS(pos3))
+            positions[2] = atoi(argv[i]);
+        else if (IS(pos4))
+            positions[3] = atoi(argv[i]);
+        else if (IS(pos5))
+            positions[4] = atoi(argv[i]);
+        else if (IS(pos6))
+            positions[5] = atoi(argv[i]);
+        else if (IS(pos7))
+            positions[6] = atoi(argv[i]);
+        else if (IS(pos8))
+            positions[7] = atoi(argv[i]);
     }
     //g_print("\n");
 
@@ -179,4 +198,26 @@ void db_set_category_positions(gint category, gint competitor, gint position)
                 "UPDATE categories SET "
                 "\"pos%d\"=%d WHERE \"index\"=%d",
                 position, competitor, category);
+}
+
+gint db_get_competitors_position(gint competitor, gint *catindex)
+{
+    gint i;
+
+    BZERO(positions);
+
+    db_exec_str((gpointer)DB_GET_SYSTEM, db_callback_categories,
+                "SELECT * FROM categories WHERE \"pos1\"=%d OR \"pos2\"=%d OR \"pos3\"=%d OR \"pos4\"=%d OR "
+                "\"pos5\"=%d OR \"pos6\"=%d OR \"pos7\"=%d OR \"pos8\"=%d",
+                competitor, competitor, competitor, competitor, 
+                competitor, competitor, competitor, competitor);
+
+    for (i = 0; i < NUM_POSITIONS; i++)
+        if (positions[i] == competitor) {
+            if (catindex)
+                *catindex = j.index;
+            return i+1;
+        }
+
+    return 0;
 }

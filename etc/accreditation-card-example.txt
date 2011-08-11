@@ -2,6 +2,7 @@
 # The list can be used for many purposes:
 # - print weigh-in notes where the competitor's weight is written down
 # - print ID cards
+# - print diplomas after the tournament
 #
 # Template file is composed of lines. A line starting with a hash mark is a comment,
 # otherwise it is a data line. Data belongs to one of the following categories:
@@ -23,7 +24,12 @@
 # - Note is surrounded by a border. You can set the border line width.
 #   Line width 0 means no border.
 #     border 1
-# 
+# - It is possible to print medal winners only. The following line prints
+#   gold, silver, and bronze medalists:
+#     winners 1 2 3
+#   Positions 1-7 are valid. Note! You must print the results first, since that
+#   saves the position information to the database!
+#
 # Attribute lines describe how the text should look like. Their values are valid
 # until replaced by another attribute line:
 # - Font should be something that is supported by your system. The deafult is Arial.
@@ -93,6 +99,9 @@
 #                     the 7-bit ASCII characters are supported. Barcode reader must be set
 #                     for the extended mode. UTF-8 is not supported.
 # %WEIGHTTEXT%        Text "Weight" in selected language.
+# %WINPOS%            Competitor's position in Arabic numerals (1-7). Note! You must print the results first!
+# %WINPOSR%           Competitor's position in Roman numerals (I-VII).
+# %WINCAT%            Name of the category where competitor won a medal.
 #
 # Picture file name can also contain the special strings. The following line inserts
 # the flag of the competitor's country rotated 45 degrees:

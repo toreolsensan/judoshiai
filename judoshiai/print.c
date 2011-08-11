@@ -192,7 +192,8 @@ static gchar *get_save_as_name(const gchar *dflt, gboolean opendialog)
         g_free(dirname);
     }
 
-    gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (dialog), dflt);
+    if (dflt && dflt[0])
+        gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (dialog), dflt);
 
     if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT) {
         filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
@@ -277,7 +278,7 @@ static void get_code_39_extended(gchar key, gchar *c1, gchar *c2)
     else if (key >= 91 && key <= 95) { *c1 = '%'; *c2 = key - 91 + 'K'; }
     else if (key == 96) { *c1 = '%'; *c2 = 'W'; }
     else if (key >= 97 && key <= 122) { *c1 = '+'; *c2 = key - 97 + 'A'; }
-    else if (key >= 123 && key <= 127) { *c1 = '%'; *c2 = key - 123 + 'P'; }
+    else if (key >= 123 && key <= 126) { *c1 = '%'; *c2 = key - 123 + 'P'; }
     else {
         g_print("Error %s:%d: key=%d\n", __FUNCTION__, __LINE__, key);
         *c1 = 0;
@@ -445,11 +446,15 @@ static gchar *get_token(gchar *text)
     return p;
 }
 
+static gint print_winners = 0;
+
 static void read_print_template(gchar *templatefile, GtkPrintContext *context)
 {
     gint t = 0;
     gdouble paper_width_mm = 210.0;
     gdouble paper_height_mm = 297.0;
+
+    print_winners = 0;
 
     if (context) {
         GtkPageSetup *setup = gtk_print_context_get_page_setup(context);
@@ -610,6 +615,13 @@ static void read_print_template(gchar *templatefile, GtkPrintContext *context)
                 p = p1;
                 NEXT_TOKEN;
                 border = atof(p);
+            } else if (strncmp(p1, "winners ", 8) == 0) {
+                p = p1;
+                p = get_token(p);
+                while (p) {
+                    print_winners |= 1 << atoi(p);
+                    p = get_token(p);
+                }
             } else { // error
                 ok = FALSE;
                 break;
@@ -644,6 +656,12 @@ static gint find_print_judokas(gchar *where_string)
                  "where \"deleted\"&1=0 %s "
                  "order by \"country\",\"last\",\"first\" asc",
                  where_string ? where_string : "");
+    else if (print_winners)
+        snprintf(request, sizeof(request), 
+                 "select \"index\" from competitors "
+                 "where \"deleted\"&1=0 %s "
+                 "order by \"category\",\"last\",\"first\" asc",
+                 where_string ? where_string : "");
     else
         snprintf(request, sizeof(request), 
                  "select \"index\" from competitors "
@@ -657,7 +675,24 @@ static gint find_print_judokas(gchar *where_string)
 
     for (row = 0; row < numrows && row < TOTAL_NUM_COMPETITORS; row++) {
         gchar *ix = db_get_data(row, "index");
-        selected_judokas[num_selected_judokas++] = atoi(ix);
+        gint index = atoi(ix);
+
+        if (print_winners) {
+            struct category_data *catdata = NULL;
+            gint wincat = 0;
+            gint winpos = db_get_competitors_position(index, &wincat);
+        
+            if (wincat) {
+                catdata = avl_get_category(wincat);
+                if (catdata)
+                    winpos = db_position_to_real(catdata->system, winpos);
+            }
+
+            if ((print_winners & (1 << winpos)) == 0)
+                continue;
+        }
+
+        selected_judokas[num_selected_judokas++] = index;
     }
 
     db_close_table();
@@ -712,6 +747,8 @@ static gint get_starting_judoka(struct paint_data *pd, gint what, gint pagenum)
     return num_selected_judokas;
 }
 
+static gchar *roman_numbers[9] = {"", "I", "II", "III", "IV", "V", "VI", "VII", "VIII"};
+
 static void paint_weight_notes(struct paint_data *pd, gint what, gint page)
 {
     gint row, t = 0, current_page = 0;
@@ -758,10 +795,23 @@ static void paint_weight_notes(struct paint_data *pd, gint what, gint page)
     gint stop = get_starting_judoka(pd, what, page+1);
 
     for (row = start; row < stop; row++) {
+        struct category_data *catdata = NULL;
+        gint wincat = 0;
+        gint winpos = db_get_competitors_position(selected_judokas[row], &wincat);
+        
+        if (wincat) {
+            catdata = avl_get_category(wincat);
+            if (catdata)
+                winpos = db_position_to_real(catdata->system, winpos);
+        }
+
+        if ((print_winners & 0xfffe) && (print_winners & (1 << winpos)) == 0)
+            continue;
+
         snprintf(request, sizeof(request), 
                  "select * from competitors "
                  "where \"deleted\"&1=0 and \"index\"=%d ",
-                 selected_judokas[row]);                 
+                 selected_judokas[row]);
 
         gint numrows = db_get_table(request);
 
@@ -863,6 +913,12 @@ static void paint_weight_notes(struct paint_data *pd, gint what, gint page)
                         draw_code_39_string(id_str, pd, bar_height, FALSE);
                     } else if (IS_STR("%WEIGHTTEXT%"))
                         d += sprintf(buf + d, "%s", _T(weight));
+                    else if (IS_STR("%WINPOS%"))
+                        d += sprintf(buf + d, "%d", winpos);
+                    else if (IS_STR("%WINPOSR%"))
+                        d += sprintf(buf + d, "%s", roman_numbers[winpos]);
+                    else if (IS_STR("%WINCAT%"))
+                          d += sprintf(buf + d, "%s", catdata ? catdata->category : "");
 
                     k += len;
                 }

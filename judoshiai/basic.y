@@ -79,6 +79,8 @@
 #include <gtk/gtk.h>
 #include "judoshiai.h"
 
+void yyerror(char *s);
+
 static GtkTextBuffer *gtkbuf;
 static void print_text_buffer(char *format, ...);
 static int sql(char *cmd);

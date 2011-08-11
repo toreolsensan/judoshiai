@@ -1640,3 +1640,17 @@ gint num_pages(struct compsys sys)
         return 2;
     return 1;
 }
+
+gint db_position_to_real(struct compsys sys, gint pos)
+{
+    if (sys.system == SYSTEM_POOL || sys.system == SYSTEM_DPOOL2)
+        return pos;
+
+    if (pos == 1 || pos == 2 || pos == 3 || pos == 5 || pos == 7)
+        return pos;
+
+    if (pos == 4 || pos == 6 || pos == 8)
+        return pos - 1;
+
+    return pos;
+}
