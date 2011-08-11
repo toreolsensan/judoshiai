@@ -715,9 +715,6 @@ static void update_pool_matches(gint category, gint num)
     }
 
     if (sys.system == SYSTEM_DPOOL2) {
-        if (pool_done[0] == FALSE || pool_done[1] == FALSE)
-            goto out;
-        
         // check if there are matches done in the final pool
         for (i = 1; i <= 6; i++)
             if (pm.m[last_match+i].blue_points || pm.m[last_match+i].white_points)
@@ -736,8 +733,13 @@ static void update_pool_matches(gint category, gint num)
             memset(&ma, 0, sizeof(ma));
             ma.category = category;
             ma.number = last_match+i+1;
-            ma.blue = winners[pools[4][i][0]]->index;
-            ma.white = winners[pools[4][i][1]]->index;
+            if (pool_done[0] == FALSE || pool_done[1] == FALSE) {
+                ma.blue = 0;
+                ma.white = 0;
+            } else {
+                ma.blue = winners[pools[4][i][0]]->index;
+                ma.white = winners[pools[4][i][1]]->index;
+            }
             set_match(&ma);
             db_set_match(&ma);
         }

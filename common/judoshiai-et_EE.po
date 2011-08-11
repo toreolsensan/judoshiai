@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-20 10:45+0300\n"
+"POT-Creation-Date: 2011-07-28 07:34+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,9 +18,6 @@ msgid "White won the voting"
 msgstr "Valge võitis häältega"
 
 msgid "Match:"
-msgstr "Võitlus:"
-
-msgid "Contest:"
 msgstr "Võitlus:"
 
 msgid "Next:"
@@ -43,9 +40,6 @@ msgstr "Lõpeta"
 
 msgid "Red background"
 msgstr "Punane taust"
-
-msgid "Tatami not chosen"
-msgstr "Tataami ei ole valitud"
 
 msgid "Communication node"
 msgstr "Ühendus"
@@ -71,14 +65,6 @@ msgstr "(Ühendus OK)"
 msgid "(Connection broken)"
 msgstr "(Ühendus katkenud)"
 
-msgid ""
-"Connection established to \n"
-"%ld.%ld.%ld.%ld"
-msgstr "Ühendus loodud %ld.%ld.%ld.%ld"
-
-msgid "Connection to the node broken"
-msgstr "Ühendus katkenud"
-
 msgid "Change language to Finnish"
 msgstr "Muuta kieli suomeksi"
 
@@ -87,12 +73,6 @@ msgstr "Muuda keel Eesti keeleks"
 
 msgid "Change language to English"
 msgstr "Muuta kieli englanniksi"
-
-msgid "Match automatically from JudoShiai program"
-msgstr "xxx"
-
-msgid "Match time automatically from JudoShiai program"
-msgstr "Vali võistluse aeg automaatselt JudoShiai-programmist"
 
 msgid "Contest duration automatically from JudoShiai program"
 msgstr "Vali võistluse aeg automaatselt JudoShiai-programmist"
@@ -136,14 +116,8 @@ msgstr "Võistluse aeg: 4 min"
 msgid "Contest duration: 5 min"
 msgstr "Võistluse aeg: 5 min"
 
-msgid "Majority of three: blue wins"
-msgstr "Häältega: sinine võitis"
-
 msgid "Hantei: blue wins"
 msgstr "Hantei: sinine võitis"
-
-msgid "Majority of three: white wins"
-msgstr "Häältega: valge Võitis"
 
 msgid "Hantei: white wins"
 msgstr "Hantei: valge võitis"
@@ -175,29 +149,11 @@ msgstr "Tataami 7"
 msgid "Contest area 8"
 msgstr "Tataami 8"
 
-msgid "Match duration automatically from JudoShiai program"
-msgstr "Otteluaika automaattisesti JudoShiai-ohjelmalta"
-
-msgid "installation_dir=%s\n"
-msgstr "xxx1\n"
-
-msgid "current_directory=%s\n"
-msgstr "xxx2\n"
-
-msgid "test string"
-msgstr "test"
-
 msgid "Increment time"
 msgstr "Lisa võistlus aega"
 
 msgid "Decrement time"
 msgstr "Vähenda võistluse aega"
-
-msgid "Increment osaekomi"
-msgstr "Lisa kinnihoidmise aega"
-
-msgid "Decrement osaekomi"
-msgstr "Vähenda kinnihoidmise aega"
 
 msgid "View clocks only"
 msgstr "Näita ainult kella"
@@ -216,9 +172,6 @@ msgstr "Punktid lähevad valgele"
 
 msgid "About Judotimer"
 msgstr "Info Judotimerist"
-
-msgid "Full screen"
-msgstr "Täisekraan"
 
 msgid "Full screen mode"
 msgstr "Täisekraan valik"
@@ -529,15 +482,6 @@ msgstr "Sari:"
 msgid "No seeding"
 msgstr "Ei ole paigutust"
 
-msgid "Gold medalist"
-msgstr "Kuldmedali omanik"
-
-msgid "Silver medalist"
-msgstr "Hõbemedali omanik"
-
-msgid "Bronze medalist"
-msgstr "Pronksmedali omanik"
-
 msgid "Empty categories removed"
 msgstr "Tühjad sarjad eemaldatud"
 
@@ -586,29 +530,8 @@ msgstr "Tagasi"
 msgid "Wrong password"
 msgstr "Vale parool"
 
-msgid "Match controlling and browsing"
-msgstr "Võistluste kontrollimine ja lehitsemine"
-
-msgid "Contest controlling and browsing"
-msgstr "Võistluste kontrollimine ja lehitsemine"
-
-msgid "Java applet, Java must be enabled"
-msgstr "Java-appletti, java peab olema lubatud"
-
-msgid "Password not in use"
-msgstr "Salasõna ei ole kasutusel&auml;yt&ouml;ss&auml;"
-
 msgid "Logout"
 msgstr "Logi välja"
-
-msgid "Login is required"
-msgstr "Sis&auml;&auml;nlogimine vajalik"
-
-msgid "if you want to report match results"
-msgstr "Kui on vaja võistluse tulemusi ja raporteid"
-
-msgid "User name can be anything"
-msgstr "K&auml;ytt&auml;j&auml;nimi või olla mit&auml; vaid"
 
 msgid "Login"
 msgstr "Logi sis&auml;&auml;n"
@@ -701,9 +624,6 @@ msgstr "Valmistuvad:"
 msgid "Delay the match"
 msgstr "Võistlus Lükkub edasi"
 
-msgid "Delay the contest"
-msgstr "Võistlus lükkub edasi"
-
 msgid "Matches matched. Clear the results first."
 msgstr "Võistlusi võisteldus. Nulli tulemused."
 
@@ -712,9 +632,6 @@ msgstr "Tühistatud"
 
 msgid "changed"
 msgstr "muutunud"
-
-msgid "winner"
-msgstr "võitja"
 
 msgid "points"
 msgstr "punktid"
@@ -758,20 +675,11 @@ msgstr "Koht:"
 msgid "Start time:"
 msgstr "Algusaeg:"
 
-msgid "Number of tatamis"
-msgstr "Tataamide hulk:"
-
 msgid "Tournament from the net"
 msgstr "Võistlused võrgust"
 
 msgid "Select sheet font"
 msgstr "Vali võistluse font"
-
-msgid "Contest properties"
-msgstr "Võistluse andmed"
-
-msgid "Number of competitors:"
-msgstr "Võistlejad:"
 
 msgid "Tournament"
 msgstr "Võistlus"
@@ -820,12 +728,6 @@ msgstr "Siirda võistlajad siia"
 msgid "Compose Unofficial Category"
 msgstr "Moodusta valitutest võistlus"
 
-msgid "Draw"
-msgstr "Loosi võistlus"
-
-msgid "Draw and Print"
-msgstr "Loosi ja prindi võistlus"
-
 msgid "Draw Manually"
 msgstr "Loosi käsitsi"
 
@@ -840,12 +742,6 @@ msgstr "Eemalda võistlejad"
 
 msgid "Show Sheet"
 msgstr "Näita Loos"
-
-msgid "Print Sheet (Printer)"
-msgstr "Prindi Tabel (Printer)"
-
-msgid "Print Sheet (PDF)"
-msgstr "Prindi Tabel (PDF)"
 
 msgid "Search"
 msgstr "Otsi"
@@ -864,9 +760,6 @@ msgstr "vanustekst:"
 
 msgid "Match time:"
 msgstr "võistluse aeg:"
-
-msgid "Contest duration:"
-msgstr "Võistluse aeg:"
 
 msgid "Rest time:"
 msgstr "Pausi aeg:"
@@ -898,13 +791,7 @@ msgstr "Jätä samaks"
 msgid "Stop synchronization"
 msgstr "Lopeta synkronointi"
 
-msgid "Remove Matches"
-msgstr "Poista ottelut"
-
 msgid "Number of tatamis:"
-msgstr "Tataamide arv:"
-
-msgid "Number of contest areas:"
 msgstr "Tataamide arv:"
 
 msgid "Sheets"
@@ -1063,23 +950,8 @@ msgstr "Prindi IWYKS"
 msgid "Print Comment"
 msgstr "Prindi kommentaarid"
 
-msgid "Medals"
-msgstr "Medalid"
-
-msgid "Statistics"
-msgstr "Tulemused"
-
-msgid "Name"
-msgstr "Nimi"
-
 msgid "Create Statistics"
 msgstr "Tee tulemused"
-
-msgid "Total"
-msgstr "kokku"
-
-msgid "Matches:"
-msgstr "Võistlusi:"
 
 msgid "NOTE"
 msgstr "NB"
@@ -1122,15 +994,6 @@ msgstr "Süsteem:"
 
 msgid "Default"
 msgstr "Alg"
-
-msgid "Round Robin"
-msgstr "Pool"
-
-msgid "Double Round Robin"
-msgstr "Topeltpool"
-
-msgid "Double Repechage"
-msgstr "Prantsuse"
 
 msgid "FIN Double Repechage"
 msgstr "FIN Ranskalainen"
@@ -1263,9 +1126,6 @@ msgstr "ESP Lyh. ker."
 
 msgid "ESP Double Lost"
 msgstr "ESP Pitkä keräily"
-
-msgid "ESP Double Repechage from Beginning"
-msgstr "ESP Ranskalainen alusta"
 
 msgid "ESP Double Repechage"
 msgstr "ESP Ranskalainen"
@@ -1412,4 +1272,13 @@ msgid "Run Script"
 msgstr ""
 
 msgid "Repeat Script"
+msgstr ""
+
+msgid "Double Pool 2"
+msgstr ""
+
+msgid "Double pool 2"
+msgstr ""
+
+msgid "Write to file"
 msgstr ""

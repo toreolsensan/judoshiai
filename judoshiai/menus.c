@@ -81,7 +81,7 @@ static GtkWidget *menubar,
     *preference_mirror, *preference_auto_arrange, *preference_club_text,
     *preference_club_text_club, *preference_club_text_country, *preference_club_text_both,
     *preference_club_text_abbr, *preference_use_logo,
-    *preference_serial,
+    *preference_serial, *preference_medal_matches,
     *help_manual, *help_about, *flags[NUM_LANGS], *menu_flags[NUM_LANGS];
 
 static GSList *lang_group = NULL, *club_group = NULL, *draw_group = NULL;
@@ -375,6 +375,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     preference_use_logo               = gtk_menu_item_new_with_label("");
 
     preference_serial                 = gtk_menu_item_new_with_label(_(""));
+    preference_medal_matches          = gtk_menu_item_new_with_label(_(""));
 
     //gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_comm_node);
     preference_comm = gtk_menu_item_new_with_label("");
@@ -429,6 +430,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_password);
 
     gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_serial);
+    gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_medal_matches);
 
     g_signal_connect(G_OBJECT(preference_comm_node),              "activate", G_CALLBACK(ask_node_ip_address), 0);
     g_signal_connect(G_OBJECT(preference_own_ip_addr),            "activate", G_CALLBACK(show_my_ip_addresses), 0);
@@ -462,6 +464,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     g_signal_connect(G_OBJECT(preference_auto_arrange),           "activate", G_CALLBACK(toggle_auto_arrange), 0);
     g_signal_connect(G_OBJECT(preference_use_logo),               "activate", G_CALLBACK(select_use_logo), 0);
     g_signal_connect(G_OBJECT(preference_serial),                 "activate", G_CALLBACK(set_serial_dialog), 0);
+    g_signal_connect(G_OBJECT(preference_medal_matches),          "activate", G_CALLBACK(move_medal_matches), 0);
 
 
     /* Create the Drawing menu content. */
@@ -839,6 +842,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(preference_use_logo              , _("Print Logo"));
 
     change_menu_label(preference_serial                , _("Scale Serial Interface"));
+    change_menu_label(preference_medal_matches         , _("Medal Matches..."));
 
     change_menu_label(help_manual, _("Manual"));
     change_menu_label(help_about , _("About"));

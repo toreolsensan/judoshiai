@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-20 10:45+0300\n"
+"POT-Creation-Date: 2011-07-28 07:33+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1278,3 +1278,12 @@ msgstr "Suorita ohjelma"
 
 msgid "Repeat Script"
 msgstr "Toista ohjelma"
+
+msgid "Double Pool 2"
+msgstr "Tuplapooli 2"
+
+msgid "Double pool 2"
+msgstr "Tuplapooli 2"
+
+msgid "Write to file"
+msgstr "Kirjoita tiedostoon"

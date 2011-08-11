@@ -1683,7 +1683,7 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
 
     gint final_blue = french_matches[table][sys][medal_matches[table][sys][2]][0];
     gint final_white = french_matches[table][sys][medal_matches[table][sys][2]][1];
-    gint gold_match = get_abs_matchnum_by_pos(table, sys, 1, 1);
+    gint gold_match = get_abs_matchnum_by_pos(systm, 1, 1);
 
     if (sys == FRENCH_64 && pagenum == 0)
         PAINT_WINNER(final_blue, 0);
@@ -1697,29 +1697,29 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
     case FRENCH_16:
     case FRENCH_32:
         if (table == TABLE_MODIFIED_DOUBLE_ELIMINATION) {
-            GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(table, sys, 1, 1));
+            GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(systm, 1, 1));
             gold = winner;
-            GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(table, sys, 2, 1));
+            GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(systm, 2, 1));
             silver = winner;
             bronze1 = loser;
-            PAINT_WINNER(get_abs_matchnum_by_pos(table, sys, 1, 1), 0);
-            PAINT_WINNER(get_abs_matchnum_by_pos(table, sys, 2, 1), F_REPECHAGE);
+            PAINT_WINNER(get_abs_matchnum_by_pos(systm, 1, 1), 0);
+            PAINT_WINNER(get_abs_matchnum_by_pos(systm, 2, 1), F_REPECHAGE);
         } else {
-            PAINT_BRONZE1(get_abs_matchnum_by_pos(table, sys, 3, 1));
+            PAINT_BRONZE1(get_abs_matchnum_by_pos(systm, 3, 1));
 
             if (one_bronze(table, sys)) {
-                GET_FOURTH(get_abs_matchnum_by_pos(table, sys, 4, 1));
+                GET_FOURTH(get_abs_matchnum_by_pos(systm, 4, 1));
             } else {
-                PAINT_BRONZE2(get_abs_matchnum_by_pos(table, sys, 3, 2));
+                PAINT_BRONZE2(get_abs_matchnum_by_pos(systm, 3, 2));
             }
 
             PAINT_GOLD(gold_match);
-            GET_FIFTH1(get_abs_matchnum_by_pos(table, sys, 5, 1));
-            GET_FIFTH2(get_abs_matchnum_by_pos(table, sys, 5, 2));
+            GET_FIFTH1(get_abs_matchnum_by_pos(systm, 5, 1));
+            GET_FIFTH2(get_abs_matchnum_by_pos(systm, 5, 2));
 
-            GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(table, sys, 7, 1));
+            GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(systm, 7, 1));
             seventh1 = loser;
-            GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(table, sys, 7, 2));
+            GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(systm, 7, 2));
             seventh2 = loser;
         }
         break;
@@ -1729,21 +1729,21 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
             return;
 
         if (table == TABLE_MODIFIED_DOUBLE_ELIMINATION) {
-            GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(table, sys, 1, 1));
+            GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(systm, 1, 1));
             gold = winner;
-            GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(table, sys, 2, 1));
+            GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(systm, 2, 1));
             silver = winner;
             bronze1 = loser;
             special_flags = F_REPECHAGE;
-            PAINT_WINNER(get_abs_matchnum_by_pos(table, sys, 1, 1), F_REPECHAGE);
-            PAINT_WINNER(get_abs_matchnum_by_pos(table, sys, 2, 1), F_REPECHAGE);
+            PAINT_WINNER(get_abs_matchnum_by_pos(systm, 1, 1), F_REPECHAGE);
+            PAINT_WINNER(get_abs_matchnum_by_pos(systm, 2, 1), F_REPECHAGE);
         } else {
-            PAINT_BRONZE1(get_abs_matchnum_by_pos(table, sys, 3, 1));
+            PAINT_BRONZE1(get_abs_matchnum_by_pos(systm, 3, 1));
 
             if (one_bronze(table, sys)) {
-                GET_FOURTH(get_abs_matchnum_by_pos(table, sys, 4, 1));
+                GET_FOURTH(get_abs_matchnum_by_pos(systm, 4, 1));
             } else {
-                PAINT_BRONZE2(get_abs_matchnum_by_pos(table, sys, 3, 2));
+                PAINT_BRONZE2(get_abs_matchnum_by_pos(systm, 3, 2));
             }
 
             pos_y += 6.0*space;
@@ -1762,12 +1762,12 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
             level[gold_match] = 2;
 
             PAINT_GOLD(gold_match);
-            GET_FIFTH1(get_abs_matchnum_by_pos(table, sys, 5, 1));
-            GET_FIFTH2(get_abs_matchnum_by_pos(table, sys, 5, 2));
+            GET_FIFTH1(get_abs_matchnum_by_pos(systm, 5, 1));
+            GET_FIFTH2(get_abs_matchnum_by_pos(systm, 5, 2));
 
-            GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(table, sys, 7, 1));
+            GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(systm, 7, 1));
             seventh1 = loser;
-            GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(table, sys, 7, 2));
+            GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(systm, 7, 2));
             seventh2 = loser;
         }
         break;
@@ -1777,21 +1777,21 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
 
         if (table == TABLE_MODIFIED_DOUBLE_ELIMINATION) {
             /*
-            GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(table, sys, 1, 1));
+            GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(systm, 1, 1));
             gold = winner;
-            GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(table, sys, 2, 1));
+            GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(systm, 2, 1));
             silver = winner;
             bronze1 = loser;
-            PAINT_WINNER(get_abs_matchnum_by_pos(table, sys, 1, 1), F_REPECHAGE);
-            PAINT_WINNER(get_abs_matchnum_by_pos(table, sys, 2, 1), F_REPECHAGE);
+            PAINT_WINNER(get_abs_matchnum_by_pos(systm, 1, 1), F_REPECHAGE);
+            PAINT_WINNER(get_abs_matchnum_by_pos(systm, 2, 1), F_REPECHAGE);
             */
         } else {
-            PAINT_BRONZE1(get_abs_matchnum_by_pos(table, sys, 3, 1));
+            PAINT_BRONZE1(get_abs_matchnum_by_pos(systm, 3, 1));
 
             if (one_bronze(table, sys)) {
-                GET_FOURTH(get_abs_matchnum_by_pos(table, sys, 4, 1));
+                GET_FOURTH(get_abs_matchnum_by_pos(systm, 4, 1));
             } else {
-                PAINT_BRONZE2(get_abs_matchnum_by_pos(table, sys, 3, 2));
+                PAINT_BRONZE2(get_abs_matchnum_by_pos(systm, 3, 2));
             }
 #if 0
             gdouble pos_y1 = positions[final_blue];
@@ -1810,12 +1810,12 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
 #endif
             special_flags = F_REPECHAGE;
             PAINT_GOLD(gold_match);
-            GET_FIFTH1(get_abs_matchnum_by_pos(table, sys, 5, 1));
-            GET_FIFTH2(get_abs_matchnum_by_pos(table, sys, 5, 2));
+            GET_FIFTH1(get_abs_matchnum_by_pos(systm, 5, 1));
+            GET_FIFTH2(get_abs_matchnum_by_pos(systm, 5, 2));
 
-            GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(table, sys, 7, 1));
+            GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(systm, 7, 1));
             seventh1 = loser;
-            GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(table, sys, 7, 2));
+            GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(systm, 7, 2));
             seventh2 = loser;
         }
         break;

@@ -313,6 +313,7 @@ enum {
 #define UNFREEZE_EXPORTED 1
 #define UNFREEZE_IMPORTED 2
 #define UNFREEZE_THIS     3
+#define FREEZE_THIS       4
 
 #define MATCH_EXISTS    1
 #define MATCH_MATCHED   2
@@ -588,7 +589,7 @@ extern const gint repechage_start[NUM_TABLES][NUM_FRENCH][2];
 extern struct next_match_info next_matches_info[NUM_TATAMIS][2];
 extern struct cat_def category_definitions[NUM_CATEGORIES];
 extern const gint cat_system_to_table[NUM_SYSTEMS];
-extern gint get_abs_matchnum_by_pos(gint table, gint sys, gint pos, gint num);
+extern gint get_abs_matchnum_by_pos(struct compsys sys, gint pos, gint num);
 extern gboolean one_bronze(gint table, gint sys);
 
 extern FILE *result_file;
@@ -746,6 +747,7 @@ extern void db_change_freezed(gint category, gint number,
 extern gboolean db_has_hansokumake(gint competitor);
 extern gint db_find_match_tatami(gint category, gint number);
 extern void db_set_comment(gint category, gint number, gint comment);
+extern void db_set_forced_tatami_number_delay(gint category, gint matchnumber, gint tatami, gint num, gboolean delay);
 extern void db_synchronize(char *name_2);
 extern void db_print_competitors(FILE *f);
 extern void db_print_competitors_by_club(FILE *f);
@@ -989,5 +991,9 @@ extern gboolean print_landscape(gint cat);
 extern gboolean paint_pool_style_2(gint cat);
 extern gint next_page(gint cat, gint page);
 extern gint num_pages(struct compsys sys);
+extern gint get_matchnum_by_pos(struct compsys systm, gint pos, gint num);
+
+/* medal-matches */
+extern void move_medal_matches(GtkWidget *menuitem, gpointer userdata);
 
 #endif

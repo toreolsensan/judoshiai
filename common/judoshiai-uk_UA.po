@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-20 10:45+0300\n"
+"POT-Creation-Date: 2011-07-28 07:34+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -121,9 +121,6 @@ msgstr "За третє місце А"
 
 msgid "Bronze match B"
 msgstr "За третє місце Б"
-
-msgid "Bronze medalist"
-msgstr "Бронзовий призер"
 
 msgid "CANNOT OPEN BACKUP FILE"
 msgstr "Не вдається відкрити резервну копію"
@@ -249,16 +246,6 @@ msgstr "Учасники:"
 msgid "Compose Unofficial Category"
 msgstr "Скласти неофіційні категорії"
 
-msgid ""
-"Connection established to \n"
-"%ld.%ld.%ld.%ld"
-msgstr ""
-"З'єднання встановлено в \n"
-"% LD.% LD.% LD.% LD"
-
-msgid "Connection to the node broken"
-msgstr "З'єднання розірвано"
-
 msgid "Connections to this node"
 msgstr "Підключення до вузла"
 
@@ -295,14 +282,8 @@ msgstr "Татамі 8"
 msgid "Contest area not chosen"
 msgstr "Татамі не вибрано"
 
-msgid "Contest controlling and browsing"
-msgstr "Управління і перегляд сутички"
-
 msgid "Contest duration automatically from JudoShiai program"
 msgstr "Тривалість сутички: автоматично"
-
-msgid "Contest duration:"
-msgstr "Тривалість сутички:"
 
 msgid "Contest duration: 2 min"
 msgstr "Тривалість сутички: 2 хв"
@@ -321,12 +302,6 @@ msgstr "Тривалість сутички: 5 хв"
 
 msgid "Contest duration: automatic"
 msgstr "Тривалість сутички: автоматично"
-
-msgid "Contest properties"
-msgstr "Умови сутички"
-
-msgid "Contest:"
-msgstr "Сутичка:"
 
 msgid "Contests"
 msgstr "Сутички"
@@ -358,12 +333,6 @@ msgstr "Бази даних оновлено."
 msgid "Date:"
 msgstr "Дата:"
 
-msgid "Dbl Repchg"
-msgstr "Подв. Втіш"
-
-msgid "Decrement osaekomi"
-msgstr "Зменшити осаекомі"
-
 msgid "Decrement pin time"
 msgstr "Зменшити осаекомі"
 
@@ -372,9 +341,6 @@ msgstr "Зменшити час"
 
 msgid "Default"
 msgstr "За замовчуванням"
-
-msgid "Delay the contest"
-msgstr "Затримка сутички"
 
 msgid "Delay the match"
 msgstr "Затримка сутички"
@@ -409,23 +375,11 @@ msgstr "Не змінювати"
 msgid "Double Pool"
 msgstr "Double Pool"
 
-msgid "Double Repechage"
-msgstr "Подвійне втішення"
-
-msgid "Double Round Robin"
-msgstr "Double Round Robin"
-
 msgid "Double pool"
 msgstr "Double pool"
 
 msgid "Double repechage"
 msgstr "Подвійне втішення"
-
-msgid "DoublePool"
-msgstr "DoublePool"
-
-msgid "Draw"
-msgstr "Скласти протокол"
 
 msgid "Draw All Categories"
 msgstr "Скласти усі протоколи"
@@ -435,9 +389,6 @@ msgstr "Скласти вручну"
 
 msgid "Draw Selected"
 msgstr "Скласти з вибраних"
-
-msgid "Draw and Print"
-msgstr "Скласти та друкувати"
 
 msgid "Draw and Print Selected"
 msgstr "Скласти та друкувати з вибраних"
@@ -454,17 +405,11 @@ msgstr "ESP Dbl Lost"
 msgid "ESP Dbl Rep"
 msgstr "ESP Dbl Rep"
 
-msgid "ESP Dbl Rep/Bgn"
-msgstr "ESP Dbl REP / BGN"
-
 msgid "ESP Double Lost"
 msgstr "ESP Double Lost"
 
 msgid "ESP Double Repechage"
 msgstr "ESP Double Repechage"
-
-msgid "ESP Double Repechage from Beginning"
-msgstr "ESP Double Repechage from Beginning"
 
 msgid "ESP Simple Rep"
 msgstr "ESP Simple Rep"
@@ -511,9 +456,6 @@ msgstr "Зовнішня баз даних"
 msgid "Freeze match order"
 msgstr "Зафіксувати порядок сутичок"
 
-msgid "Full screen"
-msgstr "Повний екран"
-
 msgid "Full screen mode"
 msgstr "Повноекранний режим"
 
@@ -522,9 +464,6 @@ msgstr "Дівчинка текст:"
 
 msgid "Gold medal match"
 msgstr "Фінальна сутичка"
-
-msgid "Gold medalist"
-msgstr "Золотий призер"
 
 msgid "Golden Score"
 msgstr "Голден Скор"
@@ -595,9 +534,6 @@ msgstr "Id:"
 msgid "Import from file"
 msgstr "Імпорт з файлу"
 
-msgid "Increment osaekomi"
-msgstr "Збільшення осаекомі"
-
 msgid "Increment pin time"
 msgstr "Збільшити час утримання"
 
@@ -609,9 +545,6 @@ msgstr "Міжнародна система"
 
 msgid "Is there another JudoShiai program running?"
 msgstr "Працюєще ще одна програма JudoShiai?"
-
-msgid "Java applet, Java must be enabled"
-msgstr "Java-аплет, Java повинен бути ввімкнений"
 
 msgid "Judotimer"
 msgstr "Judotimer"
@@ -637,17 +570,8 @@ msgstr "Log"
 msgid "Login"
 msgstr "Логін"
 
-msgid "Login is required"
-msgstr "Потрібен логін"
-
 msgid "Logout"
 msgstr "Вийти"
-
-msgid "Majority of three: blue wins"
-msgstr "Рішення суддів: переміг синій"
-
-msgid "Majority of three: white wins"
-msgstr "Рішення суддів: переміг білий"
 
 msgid "Manual"
 msgstr "Посібник"
@@ -660,15 +584,6 @@ msgstr "Сутичка"
 
 msgid "Match File"
 msgstr "Файл сутички"
-
-msgid "Match automatically from JudoShiai program"
-msgstr "Сутичка автоматично з програми"
-
-msgid "Match controlling and browsing"
-msgstr "Управління і перегляд сутички"
-
-msgid "Match duration automatically from JudoShiai program"
-msgstr "Тривалість сутички: автоматично"
 
 msgid "Match duration: 2 min"
 msgstr "Тривалість - 2 хв."
@@ -688,9 +603,6 @@ msgstr "Тривалість - 5 хв."
 msgid "Match duration: automatic"
 msgstr "Тривалість сутички: автоматично"
 
-msgid "Match time automatically from JudoShiai program"
-msgstr "Тривалість сутички: автоматично"
-
 msgid "Match time:"
 msgstr "Час сутички:"
 
@@ -708,12 +620,6 @@ msgstr "Сутичку занесено в протокол"
 
 msgid "Matches matched. Clear the results first."
 msgstr "Скасуйте результат!"
-
-msgid "Matches:"
-msgstr "Сутички:"
-
-msgid "Medals"
-msgstr "Медалі"
 
 msgid "Message"
 msgstr "Повідомлення"
@@ -736,9 +642,6 @@ msgstr "Переміщення учасників"
 msgid "NOTE"
 msgstr "ПРИМІТКА"
 
-msgid "Name"
-msgstr "Ім'я"
-
 msgid "New Category"
 msgstr "Нова категорія"
 
@@ -750,9 +653,6 @@ msgstr "Новий турнір"
 
 msgid "Next"
 msgstr "Наступна"
-
-msgid "Next contest"
-msgstr "Наступна сутичка"
 
 msgid "Next match"
 msgstr "Наступна сутичка"
@@ -787,15 +687,6 @@ msgstr "Не використовується"
 
 msgid "Number"
 msgstr "Номер"
-
-msgid "Number of competitors:"
-msgstr "Кількість учасників:"
-
-msgid "Number of contest areas:"
-msgstr "Кількість татамі:"
-
-msgid "Number of tatamis"
-msgstr "Кількість татамі"
 
 msgid "Number of tatamis:"
 msgstr "Кількість татамі:"
@@ -917,12 +808,6 @@ msgstr "Передати вибрані протоколи в PDF"
 msgid "Print Selected Sheets (Printer)"
 msgstr "Друкувати вибрані протоколи"
 
-msgid "Print Sheet (PDF)"
-msgstr "Друк (PDF)"
-
-msgid "Print Sheet (Printer)"
-msgstr "Друкувати"
-
 msgid "Print Started Categories"
 msgstr "- категорій, що тривають"
 
@@ -937,12 +822,6 @@ msgstr "Властивості"
 
 msgid "Quad Pool"
 msgstr "Quad Pool"
-
-msgid "Quad pool"
-msgstr "Quad pool"
-
-msgid "QuadPool"
-msgstr "QuadPool"
 
 msgid "Quadruple pool"
 msgstr "Quadruple pool"
@@ -1021,9 +900,6 @@ msgstr "Results in Estonian"
 
 msgid "Results in Ukrainian"
 msgstr "Results in Ukrainian"
-
-msgid "Round Robin"
-msgstr "Кругова система IJF"
 
 msgid "Run Advertisements"
 msgstr "Оголошення"
@@ -1124,9 +1000,6 @@ msgstr "Срібний призер"
 msgid "Single Elimination"
 msgstr "Single Elimination"
 
-msgid "Skip last second"
-msgstr "Skip last second"
-
 msgid "Slave mode"
 msgstr "Режим клієнта"
 
@@ -1145,20 +1018,11 @@ msgstr "Spanish System"
 msgid "Start Golden Score?"
 msgstr "Почати Голден Скор?"
 
-msgid "Start New Contest?"
-msgstr "Почати нову сутичку?"
-
 msgid "Start New Match?"
 msgstr "Почати нову сутичку?"
 
 msgid "Start time:"
 msgstr "Час початку:"
-
-msgid "Statistics"
-msgstr "Статистика"
-
-msgid "Stop Sound"
-msgstr "Зупинити звук"
 
 msgid "Stop clock on Ippon"
 msgstr "При Іппон зупинити годинник"
@@ -1175,17 +1039,11 @@ msgstr "Синтаксична помилка"
 msgid "System:"
 msgstr "Система:"
 
-msgid "Tatami not chosen"
-msgstr "Татамі не вибрано"
-
 msgid "Tatamis"
 msgstr "Татамі"
 
 msgid "Time"
 msgstr "Час"
-
-msgid "Total"
-msgstr "Всього"
 
 msgid "Tournament"
 msgstr "Турнір"
@@ -1229,9 +1087,6 @@ msgstr "Незважених учасників видалено"
 msgid "User"
 msgstr "Користувач"
 
-msgid "User name can be anything"
-msgstr "Ім'я користувача будь яке"
-
 msgid "View Log"
 msgstr "Перегляд журналу"
 
@@ -1270,9 +1125,6 @@ msgstr "Хантей: Білий виграв"
 
 msgid "Wrong password"
 msgstr "Неправильний пароль"
-
-msgid "Year 2009 rules"
-msgstr "Правила 2009 року"
 
 msgid "Year of Birth"
 msgstr "Рік народження"
@@ -1313,32 +1165,17 @@ msgstr "учасники вже є"
 msgid "copied"
 msgstr "Скопійовано"
 
-msgid "current_directory=%s\n"
-msgstr "current_directory=%s\n"
-
 msgid "errors"
 msgstr "помилки"
 
 msgid "has been copied with competitors and matches"
 msgstr "скопійовано з учасниками і сутичками"
 
-msgid "if you want to report match results"
-msgstr "Якщо ви хочете повідомити результати сутичок"
-
-msgid "installation_dir=%s\n"
-msgstr "installation_dir =% S\n"
-
 msgid "is not a valid ASCII string!"
 msgstr "не прийнятні символи ASCII!"
 
 msgid "points"
 msgstr "оцінка"
-
-msgid "test string"
-msgstr "Тест"
-
-msgid "winner"
-msgstr "переможець"
 
 msgid "Switch sides"
 msgstr "Перемкніть сторони"
@@ -1354,9 +1191,6 @@ msgstr "Оберіть українську"
 
 msgid "No competitor found!"
 msgstr "Учасника не знайдено"
-
-msgid "Deleted Competitors"
-msgstr "Видалити учасника"
 
 msgid "Modified Dbl Elim"
 msgstr "Modified Dbl Elim"
@@ -1425,4 +1259,13 @@ msgid "Run Script"
 msgstr ""
 
 msgid "Repeat Script"
+msgstr ""
+
+msgid "Double Pool 2"
+msgstr ""
+
+msgid "Double pool 2"
+msgstr ""
+
+msgid "Write to file"
 msgstr ""

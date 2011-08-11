@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-20 10:45+0300\n"
+"POT-Creation-Date: 2011-07-28 07:34+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,9 +18,6 @@ msgid "White won the voting"
 msgstr "Blanco ganó la votación"
 
 msgid "Match:"
-msgstr "Combate:"
-
-msgid "Contest:"
 msgstr "Combate:"
 
 msgid "Next:"
@@ -43,9 +40,6 @@ msgstr "Salir"
 
 msgid "Red background"
 msgstr "Fondo rojo"
-
-msgid "Tatami not chosen"
-msgstr "Tatami no seleccionado"
 
 msgid "Communication node"
 msgstr "Nodo de comunicación"
@@ -142,9 +136,6 @@ msgstr "Mayoria de tres: Azul gana"
 msgid "Hantei: blue wins"
 msgstr "Hantei: Azul gana"
 
-msgid "Majority of three: white wins"
-msgstr "Mayoria de tres: Blanco gana"
-
 msgid "Hantei: white wins"
 msgstr "Hantei: Blanco gana"
 
@@ -174,18 +165,6 @@ msgstr "Tatami 7"
 
 msgid "Contest area 8"
 msgstr "Tatami 8"
-
-msgid "Match duration automatically from JudoShiai program"
-msgstr "Duración del combate automática desde el programa JudoShiai"
-
-msgid "installation_dir=%s\n"
-msgstr "xxx1\n"
-
-msgid "current_directory=%s\n"
-msgstr "xxx2\n"
-
-msgid "test string"
-msgstr "testi"
 
 msgid "Increment time"
 msgstr "Incrementar tiempo"
@@ -240,12 +219,6 @@ msgstr "Configurar relojes"
 
 msgid "Clock:"
 msgstr "Reloj:"
-
-msgid "Year 2009 rules"
-msgstr "Reglas del año 2009"
-
-msgid "Short pin times"
-msgstr "Tiempos de inmovilización cortos"
 
 msgid "Hansoku-make to blue"
 msgstr "Hansoku-make para Azul"
@@ -529,15 +502,6 @@ msgstr "Categoria:"
 msgid "No seeding"
 msgstr "No cabeza"
 
-msgid "Gold medalist"
-msgstr "Medallista de oro"
-
-msgid "Silver medalist"
-msgstr "Medallista de plata"
-
-msgid "Bronze medalist"
-msgstr "Medallista de bronce"
-
 msgid "Empty categories removed"
 msgstr "Categorias vacias borradas"
 
@@ -586,29 +550,8 @@ msgstr "Atrás"
 msgid "Wrong password"
 msgstr "Clave errónea"
 
-msgid "Match controlling and browsing"
-msgstr "Control y navegación de combates"
-
-msgid "Contest controlling and browsing"
-msgstr "Control y navegación de la competición"
-
-msgid "Java applet, Java must be enabled"
-msgstr "Java-applet, Java tiene que estar activo"
-
-msgid "Password not in use"
-msgstr "No se está usando clave"
-
 msgid "Logout"
 msgstr "Salit"
-
-msgid "Login is required"
-msgstr "Se requiere logearse"
-
-msgid "if you want to report match results"
-msgstr "si quieres comunicar los resultados de los combates"
-
-msgid "User name can be anything"
-msgstr "El nombre de usuario puede ser cualquier cosa"
 
 msgid "Login"
 msgstr "Login"
@@ -690,9 +633,6 @@ msgstr "Doble repesca"
 msgid "Next match"
 msgstr "Siguiente combate"
 
-msgid "Next contest"
-msgstr "Siguiente combate"
-
 msgid "Preparing"
 msgstr "Preparado"
 
@@ -713,9 +653,6 @@ msgstr "Cancelado"
 
 msgid "changed"
 msgstr "Cambiado"
-
-msgid "winner"
-msgstr "Ganador"
 
 msgid "points"
 msgstr "Puntos"
@@ -768,12 +705,6 @@ msgstr "Torneo desde red"
 msgid "Select sheet font"
 msgstr "Seleccionar fuente de las hojas"
 
-msgid "Contest properties"
-msgstr "Propiedades del combate"
-
-msgid "Number of competitors:"
-msgstr "Númerod de competidores:"
-
 msgid "Tournament"
 msgstr "Torneo"
 
@@ -818,12 +749,6 @@ msgstr "Mover competidores aquí"
 
 msgid "Compose Unofficial Category"
 msgstr "Componer categoria no oficial"
-
-msgid "Draw"
-msgstr "Sortear"
-
-msgid "Draw and Print"
-msgstr "Sortear e imprimir"
 
 msgid "Draw Manually"
 msgstr "Sortear manualmente"
@@ -932,9 +857,6 @@ msgstr "Mostrar tatami"
 
 msgid "Start New Match?"
 msgstr "¿Comenzar nuevo combate?"
-
-msgid "Start New Contest?"
-msgstr "¿Comenzar nueva competición?"
 
 msgid "Hansokumake to blue"
 msgstr "Hansoku-make Azul"
@@ -1062,23 +984,8 @@ msgstr "Imprimir IWYKS"
 msgid "Print Comment"
 msgstr "Imprimir comentarios"
 
-msgid "Medals"
-msgstr "Medallas"
-
-msgid "Statistics"
-msgstr "Estadísticas"
-
-msgid "Name"
-msgstr "Nombre"
-
 msgid "Create Statistics"
 msgstr "Crear estadísticaas"
-
-msgid "Total"
-msgstr "Total"
-
-msgid "Matches:"
-msgstr "Combates:"
 
 msgid "NOTE"
 msgstr "NOTA"
@@ -1121,15 +1028,6 @@ msgstr "Sistema:"
 
 msgid "Default"
 msgstr "Por defecto"
-
-msgid "Round Robin"
-msgstr "Liga"
-
-msgid "Double Round Robin"
-msgstr "2 ligas cruzadas"
-
-msgid "Double Repechage"
-msgstr "Repesca doble"
 
 msgid "FIN Double Repechage"
 msgstr "Repesca doble desde 1ª ronda"
@@ -1199,23 +1097,11 @@ msgstr "Abreviaturas en las Hojas"
 msgid "One match"
 msgstr "Final directa"
 
-msgid "Dbl Repchg"
-msgstr "Rep. doble"
-
 msgid "FIN Dbl Repchg"
 msgstr "ESP Rep. doble ini."
 
-msgid "DoublePool"
-msgstr "2 ligas"
-
-msgid "QuadPool"
-msgstr "4 ligas"
-
 msgid "Sound"
 msgstr "Sonido"
-
-msgid "Stop Sound"
-msgstr "Sonido de Stop"
 
 msgid "Sound Files"
 msgstr "Archivos de sonido"
@@ -1331,9 +1217,6 @@ msgstr "Linea"
 msgid "Syntax error"
 msgstr "Error de sintaxis"
 
-msgid "Skip last second"
-msgstr "Omitir último segundo"
-
 msgid "Print Unmatched"
 msgstr "Imprimir desenparejados"
 
@@ -1353,9 +1236,6 @@ msgid "Change language to Ukrainan"
 msgstr ""
 
 msgid "No competitor found!"
-msgstr ""
-
-msgid "Deleted Competitors"
 msgstr ""
 
 msgid "Modified Dbl Elim"
@@ -1425,4 +1305,13 @@ msgid "Run Script"
 msgstr ""
 
 msgid "Repeat Script"
+msgstr ""
+
+msgid "Double Pool 2"
+msgstr ""
+
+msgid "Double pool 2"
+msgstr ""
+
+msgid "Write to file"
 msgstr ""

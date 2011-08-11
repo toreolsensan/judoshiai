@@ -115,61 +115,103 @@ gboolean one_bronze(gint table, gint sys)
             medal_matches[table][sys][0] == 0);
 }
 
-gint get_matchnum_by_pos(gint table, gint sys, gint pos, gint num)
+gint get_matchnum_by_pos(struct compsys systm, gint pos, gint num)
 {
-    if (pos == 1)
-        return medal_matches[table][sys][2];
+    gint sys;
+    gint table;
 
-    if (table == TABLE_MODIFIED_DOUBLE_ELIMINATION) {
-        if (pos == 2)
-            return medal_matches[table][sys][1];
-        
-        if (pos == 3 && num == 1)
-            return -medal_matches[table][sys][1];
+    // for the pools pos = 1 means last match, pos = 2 is the second last etc.
 
+    switch (systm.system) {
+    case SYSTEM_POOL:
+        return num_matches(systm.system, systm.numcomp) + 1 - pos;
+
+    case SYSTEM_DPOOL:
+        if (pos == 1)
+            return num_matches(systm.system, systm.numcomp) + 3;
+        else if (pos == 3 && num == 1)
+            return num_matches(systm.system, systm.numcomp) + 1;
+        else if (pos == 3 && num == 2)
+            return num_matches(systm.system, systm.numcomp) + 2;
         return 0;
-    }
 
-    if (pos == 2)
-        return -medal_matches[table][sys][2];
+    case SYSTEM_QPOOL:
+        if (pos == 1)
+            return num_matches(systm.system, systm.numcomp) + 7;
+        else if (pos == 3 && num == 1)
+            return num_matches(systm.system, systm.numcomp) + 5;
+        else if (pos == 3 && num == 2)
+            return num_matches(systm.system, systm.numcomp) + 6;
+        return 0;
 
-    if (pos == 3 && num == 1)
-        return medal_matches[table][sys][0];
+    case SYSTEM_DPOOL2:
+        return num_matches(systm.system, systm.numcomp) + 
+            num_matches(SYSTEM_POOL, 4) + 1 - pos;
 
-    if (pos == 3 && num == 2)
-        return medal_matches[table][sys][1];
+    case SYSTEM_FRENCH_8:
+    case SYSTEM_FRENCH_16:
+    case SYSTEM_FRENCH_32:
+    case SYSTEM_FRENCH_64:
+    case SYSTEM_FRENCH_128:
+    case SYSTEM_FRENCH_256:
+        sys = systm.system - SYSTEM_FRENCH_8;
+        table = systm.table;
 
-    if (pos == 4)
-        return -medal_matches[table][sys][0];
+        if (pos == 1)
+            return medal_matches[table][sys][2];
+
+        if (table == TABLE_MODIFIED_DOUBLE_ELIMINATION) {
+            if (pos == 2)
+                return medal_matches[table][sys][1];
         
-    if (pos == 5 && num == 1) {
-        if (medal_matches[table][sys][1]) 
+            if (pos == 3 && num == 1)
+                return -medal_matches[table][sys][1];
+
+            return 0;
+        }
+
+        if (pos == 2)
+            return -medal_matches[table][sys][2];
+
+        if (pos == 3 && num == 1)
+            return medal_matches[table][sys][0];
+
+        if (pos == 3 && num == 2)
+            return medal_matches[table][sys][1];
+
+        if (pos == 4)
             return -medal_matches[table][sys][0];
         
-        return -french_matches[table][sys][medal_matches[table][sys][0]][0];
-    }
+        if (pos == 5 && num == 1) {
+            if (medal_matches[table][sys][1]) 
+                return -medal_matches[table][sys][0];
+        
+            return -french_matches[table][sys][medal_matches[table][sys][0]][0];
+        }
 
-    if (pos == 5 && num == 2) {
-        if (medal_matches[table][sys][1]) 
-            return -medal_matches[table][sys][1];
+        if (pos == 5 && num == 2) {
+            if (medal_matches[table][sys][1]) 
+                return -medal_matches[table][sys][1];
 
-        return -french_matches[table][sys][medal_matches[table][sys][0]][1];
-    }
+            return -french_matches[table][sys][medal_matches[table][sys][0]][1];
+        }
 
-    if (pos == 7 && num == 1) {
-        return -french_matches[table][sys][medal_matches[table][sys][0]][0];
-    }
+        if (pos == 7 && num == 1) {
+            return -french_matches[table][sys][medal_matches[table][sys][0]][0];
+        }
 
-    if (pos == 7 && num == 2) {
-        return -french_matches[table][sys][medal_matches[table][sys][1]][0];
-    }
+        if (pos == 7 && num == 2) {
+            return -french_matches[table][sys][medal_matches[table][sys][1]][0];
+        }
+        break;
+    } // switch
 
     return 0;
 }
 
-gint get_abs_matchnum_by_pos(gint table, gint sys, gint pos, gint num)
+gint get_abs_matchnum_by_pos(struct compsys systm, gint pos, gint num)
 {
-    gint m = get_matchnum_by_pos(table, sys, pos, num);
+    gint m = get_matchnum_by_pos(systm, pos, num);
 
     if (m < 0)
         return -m;

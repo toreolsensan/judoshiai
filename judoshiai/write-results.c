@@ -358,32 +358,32 @@ static void french_results(FILE *f, gint category, struct judoka *ctg,
     memset(m, 0, sizeof(m));
     db_read_category_matches(category, m);
 
-    GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(table, sys, 1, 1));
+    GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(systm, 1, 1));
     gold = winner;
     silver = loser;
     if (table == TABLE_MODIFIED_DOUBLE_ELIMINATION) {
-        GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(table, sys, 2, 1));
+        GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(systm, 2, 1));
         silver = winner;
         bronze1 = loser;
     } else if (one_bronze(table, sys)) {
-        GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(table, sys, 3, 1));
+        GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(systm, 3, 1));
         bronze1 = winner;
         fourth = loser;
-        GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(table, sys, 5, 1));
+        GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(systm, 5, 1));
         fifth1 = loser;
-        GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(table, sys, 5, 2));
+        GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(systm, 5, 2));
         fifth2 = loser;
     } else {
-        GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(table, sys, 3, 1));
+        GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(systm, 3, 1));
         bronze1 = winner;
         fifth1 = loser;
-        GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(table, sys, 3, 2));
+        GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(systm, 3, 2));
         bronze2 = winner;
         fifth2 = loser;
 
-        GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(table, sys, 7, 1));
+        GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(systm, 7, 1));
         seventh1 = loser;
-        GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(table, sys, 7, 2));
+        GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(systm, 7, 2));
         seventh2 = loser;
     }
 

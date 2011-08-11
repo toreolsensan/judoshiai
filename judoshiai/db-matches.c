@@ -1326,3 +1326,11 @@ void db_set_comment(gint category, gint number, gint comment)
     num_saved_matches = 0;
 }
 
+void db_set_forced_tatami_number_delay(gint category, gint matchnumber, gint tatami, gint num, gboolean delay)
+{
+        db_exec_str(NULL, NULL,
+                    "UPDATE matches SET \"forcedtatami\"=%d, \"forcednumber\"=%d, "
+                    "\"comment\"=%d WHERE \"category\"=%d AND \"number\"=%d",
+                    tatami, num,
+                    delay ? COMMENT_WAIT : COMMENT_EMPTY, category, matchnumber);
+}
