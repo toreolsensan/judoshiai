@@ -54,6 +54,7 @@ static time_t big_end;
 gboolean rules_no_koka_dsp = FALSE;
 gboolean rules_leave_score = FALSE;
 gboolean rules_stop_ippon_2 = FALSE;
+gboolean rules_confirm_match = FALSE;
 GdkCursor *cursor = NULL;
 gboolean sides_switched = FALSE;
 gboolean white_first = FALSE;
@@ -1683,6 +1684,12 @@ void toggle_rules_stop_ippon(GtkWidget *menu_item, gpointer data)
 		rules_stop_ippon_2 = FALSE;
 		g_key_file_set_boolean(keyfile, "preferences", "stopippon", FALSE);
 	}
+}
+
+void toggle_confirm_match(GtkWidget *menu_item, gpointer data)
+{
+    rules_confirm_match = GTK_CHECK_MENU_ITEM(menu_item)->active;
+    g_key_file_set_boolean(keyfile, "preferences", "confirmmatch", rules_confirm_match);
 }
 
 void toggle_whitefirst(GtkWidget *menu_item, gpointer data)

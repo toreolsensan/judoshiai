@@ -560,11 +560,11 @@ void reset(guint key, struct msg_next_match *msg)
         st[0].match_time = st[0].elap;
         judotimer_log("Golden score starts");
         set_gs_text("GOLDEN SCORE");
-    } else if (demo == 0 &&
+    } else if ((demo == 0 &&
                (((st[0].bluepts[0] & 2) == 0 && (st[0].whitepts[0] & 2) == 0 &&
                  st[0].elap > 0.01 && st[0].elap < total - 0.01) ||
                 (st[0].running && rest_time)) &&
-               key != GDK_0) {
+                key != GDK_0) || rules_confirm_match) {
         GtkWidget *dialog;
         gint response;
 
