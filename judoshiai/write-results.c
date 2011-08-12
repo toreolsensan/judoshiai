@@ -26,17 +26,17 @@ static void write_result(FILE *f, gint num, const gchar *first, const gchar *las
 			 const gchar *club, const gchar *country)
 {
     if (club_text == (CLUB_TEXT_CLUB|CLUB_TEXT_COUNTRY))
-	fprintf(f, "<tr><td>%d.</td><td>%s %s</td><td>%s/%s</td></tr>\n", 
+	fprintf(f, "<tr><td>%d.</td><td>%s %s</td><td>%s/%s</td></tr>\r\n", 
 		num, utf8_to_html(first), utf8_to_html(last), utf8_to_html(club), utf8_to_html(country));
     else {
 	struct club_name_data *data = club_name_get(club);
 	if (club_text == CLUB_TEXT_CLUB && 
 	    data && data->address && data->address[0])
-	    fprintf(f, "<tr><td>%d.</td><td>%s %s</td><td>%s, %s</td></tr>\n", 
+	    fprintf(f, "<tr><td>%d.</td><td>%s %s</td><td>%s, %s</td></tr>\r\n", 
 		    num, utf8_to_html(first), utf8_to_html(last), 
 		    utf8_to_html(club), utf8_to_html(data->address));
 	else
-	    fprintf(f, "<tr><td>%d.</td><td>%s %s</td><td>%s</td></tr>\n", 
+	    fprintf(f, "<tr><td>%d.</td><td>%s %s</td><td>%s</td></tr>\r\n", 
 		    num, utf8_to_html(first), utf8_to_html(last), utf8_to_html(club_text==CLUB_TEXT_CLUB ? club : country));
     }
 
@@ -70,14 +70,14 @@ void write_competitor(FILE *f, const gchar *first, const gchar *last, const gcha
 
             fprintf(f, 
                     "<tr><td>%d</td><td>%s</td><td><a href=\"%d.html\">%s, %s</a></td><td>%s</td>"
-                    "<td><a href=\"%s.html\">%s</a></td><td align=\"center\">%s</td></tr>\n", 
+                    "<td><a href=\"%s.html\">%s</a></td><td align=\"center\">%s</td></tr>\r\n", 
                     member_count, member_count == 1 ? utf8_to_html(club) : "", 
                     index, utf8_to_html(last), utf8_to_html(first), grade_visible ? belt : "", 
                     txt2hex(category), category, buf);
         } else
             fprintf(f, 
                     "<tr><td>%d</td><td>%s</td><td>%s, %s</td><td>%s</td>"
-                    "<td><a href=\"%s.html\">%s</a></td><td>&nbsp;</td></tr>\n", 
+                    "<td><a href=\"%s.html\">%s</a></td><td>&nbsp;</td></tr>\r\n", 
                     member_count, member_count == 1 ? utf8_to_html(club) : "", 
                     utf8_to_html(last), utf8_to_html(first), grade_visible ? belt : "",  
                     txt2hex(category), category);
@@ -95,13 +95,13 @@ void write_competitor(FILE *f, const gchar *first, const gchar *last, const gcha
 
             fprintf(f, 
                     "<tr><td><a href=\"%d.html\">%s, %s</a></td><td>%s</td><td>%s</td>"
-                    "<td><a href=\"%s.html\">%s</a></td><td align=\"center\">%s</td></tr>\n", 
+                    "<td><a href=\"%s.html\">%s</a></td><td align=\"center\">%s</td></tr>\r\n", 
                     index, utf8_to_html(last), utf8_to_html(first), grade_visible ? belt : "", 
                     utf8_to_html(club), txt2hex(category), category, buf);
         } else
             fprintf(f, 
                     "<tr><td>%s, %s</td><td>%s</td><td>%s</td>"
-                    "<td><a href=\"%s.html\">%s</a></td><td>&nbsp;</td></tr>\n", 
+                    "<td><a href=\"%s.html\">%s</a></td><td>&nbsp;</td></tr>\r\n", 
                     utf8_to_html(last), utf8_to_html(first), grade_visible ? belt : "", utf8_to_html(club), 
                     txt2hex(category), category);
 
@@ -122,7 +122,7 @@ static void make_top_frame_1(FILE *f, gchar *meta)
             "<meta name=\"keywords\" content=\"JudoShiai-%s\" />\r\n"
             "<title>%s  %s  %s</title></head>\r\n"
             "<body class=\"titleframe\"><table><tr>\r\n"
-            "<td colspan=\"2\" align=\"center\"><h1>%s  %s  %s</h1></td></tr><tr>\r\n", 
+            "<td colspan=\"2\" align=\"center\" class=\"tournamentheader\"><h1>%s  %s  %s</h1></td></tr><tr>\r\n", 
             meta,
             SHIAI_VERSION,
             utf8_to_html(info_competition), utf8_to_html(info_date), utf8_to_html(info_place),
@@ -141,7 +141,7 @@ static void make_top_frame_refresh(FILE *f)
 
 static void make_bottom_frame(FILE *f)
 {
-    fprintf(f, "</tr></table></body></html>\n");
+    fprintf(f, "</tr></table></body></html>\r\n");
 }
 
 static gint make_left_frame(FILE *f)
@@ -152,27 +152,27 @@ static gint make_left_frame(FILE *f)
 
     fprintf(f, 
             "<td valign=\"top\"><table class=\"resultslink\"><tr><td class=\"resultslink\">"
-            "<a href=\"index.html\">%s</a></td></tr></table>\n", _T(results));
+            "<a href=\"index.html\">%s</a></td></tr></table>\r\n", _T(results));
     fprintf(f,
             "<table class=\"competitorslink\"><tr><td class=\"competitorslink\">"
-            "<a href=\"competitors.html\">%s</a></td></tr></table>\n", _T(competitor));
+            "<a href=\"competitors.html\">%s</a></td></tr></table>\r\n", _T(competitor));
     if (create_statistics) {
         fprintf(f, 
                 "<table class=\"medalslink\"><tr><td class=\"medalslink\">"
-                "<a href=\"medals.html\">%s</a></td></tr></table>\n", _T(medals));
+                "<a href=\"medals.html\">%s</a></td></tr></table>\r\n", _T(medals));
         fprintf(f, 
                 "<table class=\"statisticslink\"><tr><td class=\"statisticslink\">"
-                "<a href=\"statistics.html\">%s</a></td></tr></table>\n", _T(statistics));
+                "<a href=\"statistics.html\">%s</a></td></tr></table>\r\n", _T(statistics));
     }
 
     if (automatic_web_page_update)
         fprintf(f, 
                 "<table class=\"nextmatcheslink\"><tr><td class=\"nextmatcheslink\">"
-                "<a href=\"nextmatches.html\">%s</a></td></tr></table>\n", _T(nextmatch2));
+                "<a href=\"nextmatches.html\">%s</a></td></tr></table>\r\n", _T(nextmatch2));
 
     fprintf(f,
             "<table class=\"categorieshdr\"><tr><td class=\"categorieshdr\">"
-            "%s</td></tr></table>\n", _T(categories));
+            "%s</td></tr></table>\r\n", _T(categories));
 
     fprintf(f, "<table class=\"categorylinks\">");
 
@@ -197,11 +197,11 @@ static gint make_left_frame(FILE *f)
                             "<tr><td class=\"categorylinksleft\"><a href=\"%s.html\">%s</a></td>"
                             "<td class=\"categorylinksright\">"
                             "<a href=\"%s.pdf\" target=\"_blank\"> "
-                            "(PDF)</a></td></tr>", 
+                            "(PDF)</a></td></tr>\r\n", 
                             txt2hex(j->last), utf8_to_html(j->last), 
                             txt2hex(j->last));
                 } else {
-                    fprintf(f, "<tr><td class=\"categorylinksonly\"><a href=\"%s.html\">%s</a></td></tr>", 
+                    fprintf(f, "<tr><td class=\"categorylinksonly\"><a href=\"%s.html\">%s</a></td></tr>\r\n", 
                             txt2hex(j->last), utf8_to_html(j->last));
                 }
 
@@ -212,7 +212,7 @@ static gint make_left_frame(FILE *f)
         ok = gtk_tree_model_iter_next(current_model, &iter);
     }
 
-    fprintf(f, "</table></td>\n");
+    fprintf(f, "</table></td>\r\n");
     return num_cats;
 }
 
@@ -462,7 +462,7 @@ static void write_cat_result(FILE *f, gint category)
     if (ctg == NULL)
         return;
 
-    fprintf(f, "<tr><td colspan=\"3\"><b><a href=\"%s.html\">%s</a></b></td></tr>\n", 
+    fprintf(f, "<tr><td colspan=\"3\"><b><a href=\"%s.html\">%s</a></b></td></tr>\r\n", 
             txt2hex(ctg->last), utf8_to_html(ctg->last));
 
     /* find system */
@@ -503,7 +503,7 @@ void write_results(FILE *f)
         init_club_tree();
 
     fprintf(f, "<td valign=\"top\"><table class=\"resultlist\">\n"
-            "<tr><td colspan=\"3\" align=\"center\"><h2>%s</h2></td></tr>",
+            "<tr><td colspan=\"3\" align=\"center\"><h2>%s</h2></td></tr>\r\n",
             _T(results));
 
     ok = gtk_tree_model_get_iter_first(current_model, &iter);
@@ -536,6 +536,7 @@ void write_html(gint cat)
 {
     gchar buf[64];
     gchar *hextext;
+    gint i;
 
     struct judoka *j = get_data(cat);
     if (!j)
@@ -557,34 +558,14 @@ void write_html(gint cat)
 
     hextext = txt2hex(j->last);
 
-    if (sys.system == SYSTEM_FRENCH_128) {
-        fprintf(f,
-                "<td valign=\"top\"><img src=\"%s.png\"><br>"
-                "<img src=\"%s-1.png\"><br>"
-                "<img src=\"%s-2.png\"><br>"
-                "<img src=\"%s-3.png\"><br>"
-                "<img src=\"%s-4.png\">"
-                "</td>\n",
-                hextext, hextext, hextext, hextext, hextext);
-    } else if (sys.system == SYSTEM_FRENCH_64 ||
-        sys.system == SYSTEM_QPOOL) {
-        fprintf(f,
-                "<td valign=\"top\"><img src=\"%s.png\"><br>"
-                "<img src=\"%s-1.png\"><br>"
-                "<img src=\"%s-2.png\">"
-                "</td>\n",
-                hextext, hextext, hextext);
-    } else if (sys.system == SYSTEM_DPOOL2) {
-        fprintf(f,
-                "<td valign=\"top\"><img src=\"%s.png\"><br>"
-                "<img src=\"%s-1.png\">"
-                "</td>\n",
-                hextext, hextext);
-    } else {
-        fprintf(f,
-                "<td valign=\"top\"><img src=\"%s.png\"></td>\n",
-                hextext);
-    }
+    fprintf(f, "<td valign=\"top\"><table><tr class=\"cattr1\"><td>"
+            "<div class=\"catdiv\"><img src=\"%s.png\" class=\"catimg\"/></div></td></tr>\r\n", hextext);
+
+    for (i = 1; i < num_pages(sys); i++)
+        fprintf(f, "  <tr class=\"cattr2\"><td><div class=\"catdiv\">"
+                "<img src=\"%s-%d.png\" class=\"catimg\"/></div></td></tr>\r\n", hextext, i);
+
+    fprintf(f, "  </table></td>\r\n");
 
     make_bottom_frame(f);
     fclose(f);
@@ -678,7 +659,7 @@ out:
     }
 
     fprintf(f, "<td valign=\"top\"><table class=\"statistics\">\n"
-            "<tr><td class=\"stat2\" colspan=\"%d\"><h2>%s</h2></td></tr>\n"
+            "<tr><td class=\"stat2\" colspan=\"%d\"><h2>%s</h2></td></tr>\r\n"
             "<tr><th class=\"stat1\">%s:<th>%s", num_categories + 2,
             _T(statistics), _T(category), _T(total));
     for (i = 0; i < num_categories; i++)
@@ -745,10 +726,10 @@ void write_comp_stat(gint index)
     make_left_frame(f);
 
     fprintf(f, "<td valign=\"top\"><table class=\"compstat\">"
-            "<tr><th colspan=\"7\">%s %s, %s</th></tr>"
+            "<tr><th colspan=\"7\">%s %s, %s</th></tr>\r\n"
             "<tr><td class=\"cshdr\">%s<td class=\"cshdr\">%s<td class=\"cshdr\">IWYKS"
             "<td align=\"center\" class=\"cshdr\">%s<td class=\"cshdr\">IWYKS"
-            "<td class=\"cshdr\">%s<td class=\"cshdr\">%s</tr>",
+            "<td class=\"cshdr\">%s<td class=\"cshdr\">%s</tr>\r\n",
             utf8_to_html(j->first), utf8_to_html(j->last), utf8_to_html(j->club),
             _T(category), _T(name), _T(points), _T(name), _T(time));
 
@@ -781,7 +762,7 @@ void write_comp_stat(gint index)
             fprintf(f, 
                     "<tr><td>%s</td><td>%s %s</td><td class=\"%s\">%05x</td>"
                     "<td align=\"center\">%d - %d</td>"
-                    "<td class=\"%s\">%05x</td><td>%s %s</td><td>%d:%02d</td></tr>\n",
+                    "<td class=\"%s\">%05x</td><td>%s %s</td><td>%d:%02d</td></tr>\r\n",
                     utf8_to_html(c->last), utf8_to_html(j1->first), utf8_to_html(j1->last),
                     info_white_first ? "wscore" : "bscore",
                     blue_score, blue_points,
