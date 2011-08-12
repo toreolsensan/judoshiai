@@ -564,12 +564,11 @@ void reset(guint key, struct msg_next_match *msg)
                (((st[0].bluepts[0] & 2) == 0 && (st[0].whitepts[0] & 2) == 0 &&
                  st[0].elap > 0.01 && st[0].elap < total - 0.01) ||
                 (st[0].running && rest_time)) &&
-                key != GDK_0) || rules_confirm_match) {
+                key != GDK_0)) {
         GtkWidget *dialog;
         gint response;
 
         asking = TRUE;
-
         dialog = gtk_dialog_new_with_buttons (_("Start New Match?"),
 					      NULL,
 					      GTK_DIALOG_MODAL,
@@ -577,13 +576,9 @@ void reset(guint key, struct msg_next_match *msg)
 					      GTK_STOCK_OK, GTK_RESPONSE_OK,
 					      NULL);
         gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
-
         response = gtk_dialog_run(GTK_DIALOG(dialog));
-
         gtk_widget_destroy(dialog);
-
         asking = FALSE;
-
         if (response != GTK_RESPONSE_OK)
             return;
 
@@ -591,6 +586,23 @@ void reset(guint key, struct msg_next_match *msg)
             cancel_rest_time(rest_flags & MATCH_FLAG_BLUE_REST,
                              rest_flags & MATCH_FLAG_WHITE_REST);
         }
+    } else if (rules_confirm_match) {
+        GtkWidget *dialog;
+        gint response;
+
+        asking = TRUE;
+        dialog = gtk_dialog_new_with_buttons (_("Start New Match?"),
+					      NULL,
+					      GTK_DIALOG_MODAL,
+					      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+					      GTK_STOCK_OK, GTK_RESPONSE_OK,
+					      NULL);
+        gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
+        response = gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+        asking = FALSE;
+        if (response != GTK_RESPONSE_OK)
+            return;
     }
 
     rest_time = FALSE;
