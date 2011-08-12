@@ -41,6 +41,8 @@
 #     fontweight bold
 #     fontslant normal
 #     fontslant italic
+# - Text can be aligned left, center, or right. Left is the default:
+#     align left
 # - Font color is described by three numbers from 0.0 to 1.0. Numbers indicate the amount
 #   of red, green and blue. The default is black. Examples:
 #   White:
@@ -101,7 +103,6 @@
 # %WEIGHTTEXT%        Text "Weight" in selected language.
 # %WINPOS%            Competitor's position in Arabic numerals (1-7). Note! You must print the results first!
 # %WINPOSR%           Competitor's position in Roman numerals (I-VII).
-# %WINCAT%            Name of the category where competitor won a medal.
 #
 # Picture file name can also contain the special strings. The following line inserts
 # the flag of the competitor's country rotated 45 degrees:

@@ -405,19 +405,19 @@ static void draw_code_39_string(gchar *s, struct paint_data *pd, double bar_heig
 #define IS_PICTURE 1
 
 struct wn_data_s {
-    gdouble x, y, width, height, angle, size;
+    gdouble x, y, width, height, angle, size, align;
     gdouble red, green, blue;
     gint slant, weight, flags;
     gchar *font, *text;
 };
 
 static struct wn_data_s wn_texts_default[] = {
-    {22.0, 15.0, 0.0, 0.0, 0.0, 12.0, 0.0, 0.0, 0.0, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD, 0, "Arial", "%REGCATEGORY%"},
-    {36.0, 15.0, 0.0, 0.0, 0.0, 12.0, 0.0, 0.0, 0.0, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD, 0, "Arial", "%CLUBCOUNTRY%"},
-    {22.0, 23.0, 0.0, 0.0, 0.0, 12.0, 0.0, 0.0, 0.0, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD, 0, "Arial", "%LAST%, %FIRST%"},
-    {60.0, 44.0, 0.0, 0.0, 0.0, 12.0, 0.0, 0.0, 0.0, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD, 0, "Arial", "%INDEX%"},
-    {55.0, 34.0, 0.0, 0.0, 0.0, 12.0, 0.0, 0.0, 0.0, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD, 0, "Arial", "%BARCODE%"},
-    {22.0, 30.0, 0.0, 0.0, 0.0, 12.0, 0.0, 0.0, 0.0, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD, 0, "Arial", "%WEIGHTTEXT%"},
+    {22.0, 15.0, 0.0, 0.0, 0.0, 12.0, -1.0, 0.0, 0.0, 0.0, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD, 0, "Arial", "%REGCATEGORY%"},
+    {36.0, 15.0, 0.0, 0.0, 0.0, 12.0, -1.0, 0.0, 0.0, 0.0, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD, 0, "Arial", "%CLUBCOUNTRY%"},
+    {22.0, 23.0, 0.0, 0.0, 0.0, 12.0, -1.0, 0.0, 0.0, 0.0, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD, 0, "Arial", "%LAST%, %FIRST%"},
+    {60.0, 44.0, 0.0, 0.0, 0.0, 12.0, -1.0, 0.0, 0.0, 0.0, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD, 0, "Arial", "%INDEX%"},
+    {55.0, 34.0, 0.0, 0.0, 0.0, 12.0, -1.0, 0.0, 0.0, 0.0, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD, 0, "Arial", "%BARCODE%"},
+    {22.0, 30.0, 0.0, 0.0, 0.0, 12.0, -1.0, 0.0, 0.0, 0.0, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD, 0, "Arial", "%WEIGHTTEXT%"},
     {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0.0, 0.0, 0.0, 0, NULL, NULL}
 };
 static struct wn_data_s wn_texts[NUM_WN_TEXTS] = {{0}};
@@ -503,6 +503,7 @@ static void read_print_template(gchar *templatefile, GtkPrintContext *context)
     if (f) {
         gint slant = CAIRO_FONT_SLANT_NORMAL;
         gint weight = CAIRO_FONT_WEIGHT_NORMAL;
+        gdouble align = -1.0;
         gdouble x = 0.0, y = 0.0, a = 0.0, size = 12.0;
         gdouble r = 0.0, g = 0.0, b = 0.0, pw = 0.0, ph = 0.0;
         gchar line[128], *font = strdup("Arial");
@@ -560,6 +561,7 @@ static void read_print_template(gchar *templatefile, GtkPrintContext *context)
                 wn_texts[num_wn_texts].blue = b;
                 wn_texts[num_wn_texts].slant = slant;
                 wn_texts[num_wn_texts].weight = weight;
+                wn_texts[num_wn_texts].align = align;
                 g_free(wn_texts[num_wn_texts].font);
                 wn_texts[num_wn_texts].font = strdup(font);
                 g_free(wn_texts[num_wn_texts].text);
@@ -575,6 +577,17 @@ static void read_print_template(gchar *templatefile, GtkPrintContext *context)
                 p = p1;
                 NEXT_TOKEN;
                 size = atof(p);
+            } else if (strncmp(p1, "align ", 6) == 0) {
+                p = p1;
+                NEXT_TOKEN;
+                if (strstr(p, "left"))
+                    align = -1.0;
+                else if (strstr(p, "center"))
+                    align = 0.0;
+                else if (strstr(p, "right"))
+                    align = 1.0;
+                else
+                    align = atof(p);
             } else if (strncmp(p1, "fontslant ", 10) == 0) {
                 if (strstr(p1 + 10, "italic"))
                     slant = CAIRO_FONT_SLANT_ITALIC;
@@ -752,7 +765,7 @@ static gchar *roman_numbers[9] = {"", "I", "II", "III", "IV", "V", "VI", "VII", 
 static void paint_weight_notes(struct paint_data *pd, gint what, gint page)
 {
     gint row, t = 0, current_page = 0;
-    gchar buf[100];
+    gchar buf[128];
     cairo_text_extents_t extents;
     gdouble sx = 1.0, sy = 1.0;
     cairo_surface_t *image = NULL;
@@ -938,6 +951,13 @@ static void paint_weight_notes(struct paint_data *pd, gint what, gint page)
                     cairo_surface_destroy(img); 
                 }                
             } else {
+                if (wn_texts[t].align != -1.0) {
+                    cairo_text_extents(pd->c, buf, &extents);
+                    if (wn_texts[t].align == 0.0)
+                        cairo_move_to(pd->c, -extents.width/2, 0);
+                    else
+                        cairo_move_to(pd->c, -extents.width, 0);
+                }
                 cairo_show_text(pd->c, buf);
             }
             cairo_restore(pd->c);
