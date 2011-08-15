@@ -1,0 +1,1287 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-07-27 15:19+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Blue won the voting"
+msgstr "Blár vinnur"
+
+msgid "White won the voting"
+msgstr "Hvítur vinnur"
+
+msgid "Match:"
+msgstr "Viðureign:"
+
+msgid "Contest:"
+msgstr "Keppni:"
+
+msgid "Next:"
+msgstr "Næst:"
+
+msgid "Match"
+msgstr "Viðureign"
+
+msgid "Contest"
+msgstr "Keppni"
+
+msgid "Preferences"
+msgstr "Forgangur"
+
+msgid "Help"
+msgstr "Hjálp"
+
+msgid "Quit"
+msgstr "Hætta"
+
+msgid "Red background"
+msgstr "Rauður bakgrunnur"
+
+msgid "Tatami not chosen"
+msgstr "Völlur ekki valinn"
+
+msgid "Communication node"
+msgstr "Samskiptabúnaður"
+
+msgid "Own IP addresses"
+msgstr "Eigið IP vistfang"
+
+msgid "Manual"
+msgstr "Handstýrt"
+
+msgid "About"
+msgstr "Um"
+
+msgid "Address of the communication node"
+msgstr "Vistfang samskiptabúnaðar"
+
+msgid "IP address:"
+msgstr "IP-vistfang:"
+
+msgid "(Connection OK)"
+msgstr "(Tenging í lagi)"
+
+msgid "(Connection broken)"
+msgstr "(Tenging rofin)"
+
+msgid ""
+"Connection established to \n"
+"%ld.%ld.%ld.%ld"
+msgstr "Sambandi komið á %ld.%ld.%ld.%ld"
+
+msgid "Connection to the node broken"
+msgstr "Samband til samskiptabúnaðar rofinn"
+
+msgid "Change language to Finnish"
+msgstr "Skiptu yfir í Finnsku"
+
+msgid "Change language to Swedish"
+msgstr "Skiptu yfir í Sænsku"
+
+msgid "Change language to English"
+msgstr "Skiptu yfir í Ensku"
+
+msgid "Contest duration automatically from JudoShiai program"
+msgstr "Keppnistími sjálfvirkur frá JudoShiai-forriti"
+
+msgid "Fight:"
+msgstr "Viðureign:"
+
+msgid "Match duration: automatic"
+msgstr "Lengd viðureignar: sjálfvirk"
+
+msgid "Match duration: 2 min E-juniors"
+msgstr "Lengd viðureignar: 2 mín U-15 ára"
+
+msgid "Match duration: 2 min"
+msgstr "Lengd viðureignar: 2 mín"
+
+msgid "Match duration: 3 min"
+msgstr "Lengd viðureignar: 3 mín"
+
+msgid "Match duration: 4 min"
+msgstr "Lengd viðureignar: 4 mín"
+
+msgid "Match duration: 5 min"
+msgstr "Lengd viðureignar: 5 mín"
+
+msgid "Contest duration: automatic"
+msgstr "Lengd viðureignar: sjálfvirk"
+
+msgid "Contest duration: 2 min (short pin times)"
+msgstr "Lengd viðureignar: 2 mín (styttur fastatakstími)"
+
+msgid "Contest duration: 2 min"
+msgstr "Lengd viðureignar: 2 mín"
+
+msgid "Contest duration: 3 min"
+msgstr "Lengd viðureignar: 3 mín"
+
+msgid "Contest duration: 4 min"
+msgstr "Lengd viðureignar: 4 mín"
+
+msgid "Contest duration: 5 min"
+msgstr "Lengd viðureignar: 5 mín"
+
+msgid "Majority of three: blue wins"
+msgstr "Meirihluti þriggja: blár vinnur"
+
+msgid "Hantei: blue wins"
+msgstr "Hantei: blár vinnur"
+
+msgid "Hantei: white wins"
+msgstr "Hantei: hvítur vinnur"
+
+msgid "Contest area not chosen"
+msgstr "Keppnisvöllur ekki valinn"
+
+msgid "Contest area 1"
+msgstr "Keppnisvöllur 1"
+
+msgid "Contest area 2"
+msgstr "Keppnisvöllur 2"
+
+msgid "Contest area 3"
+msgstr "Keppnisvöllur 3"
+
+msgid "Contest area 4"
+msgstr "Keppnisvöllur 4"
+
+msgid "Contest area 5"
+msgstr "Keppnisvöllur 5"
+
+msgid "Contest area 6"
+msgstr "Keppnisvöllur 6"
+
+msgid "Contest area 7"
+msgstr "Keppnisvöllur 7"
+
+msgid "Contest area 8"
+msgstr "Keppnisvöllur 8"
+
+msgid "Increment time"
+msgstr "Bæta við tímann"
+
+msgid "Decrement time"
+msgstr "Minnka tímann"
+
+msgid "Increment osaekomi"
+msgstr "Bæta við tíma í fastataki"
+
+msgid "Decrement osaekomi"
+msgstr "Minnka tíma í fastataki"
+
+msgid "View clocks only"
+msgstr "Sýna aðeins klukkuna"
+
+msgid "Increment pin time"
+msgstr "Lengja fastataks tímann"
+
+msgid "Decrement pin time"
+msgstr "Stytta fastatakstímann"
+
+msgid "Points going to blue"
+msgstr "Stigin fara á bláann"
+
+msgid "Points going to white"
+msgstr "Stigin fara á hvítann"
+
+msgid "About Judotimer"
+msgstr "Um Judotimer"
+
+msgid "Full screen mode"
+msgstr "Sýna fullann skjá"
+
+msgid "Normal operation"
+msgstr "Venjuleg staða"
+
+msgid "Master mode"
+msgstr "Ráðandi staða"
+
+msgid "Slave mode"
+msgstr "Þjónustu staða"
+
+msgid "Undo!"
+msgstr "Afturkalla!"
+
+msgid "Set clocks"
+msgstr "Stilla klukkuna"
+
+msgid "Clock:"
+msgstr "Klukka:"
+
+msgid "Hansoku-make to blue"
+msgstr "Hansoku-make á bláan"
+
+msgid "Hansoku-make to white"
+msgstr "Hansoku-make á hvítann"
+
+msgid "Clear selection"
+msgstr "Hreinsa val"
+
+msgid "Display layout 1"
+msgstr "Skjá útlit 1"
+
+msgid "Display layout 2"
+msgstr "Skjá útlit 2"
+
+msgid "Display layout 3"
+msgstr "Skjá útlit 3"
+
+msgid "Display layout 4"
+msgstr "Skjá útlit 4"
+
+msgid "Display layout 5"
+msgstr "Skjá útlit 5"
+
+msgid "Quick guide"
+msgstr "Snöggar leiðbeiningar"
+
+msgid "Advertise"
+msgstr "Auglýsa"
+
+msgid "Run Advertisements"
+msgstr "Keyra auglýsingar"
+
+msgid "Competitors"
+msgstr "Keppendur"
+
+msgid "Categories"
+msgstr "Flokkar"
+
+msgid "Drawing"
+msgstr "Dráttur"
+
+msgid "Results"
+msgstr "Úrslit"
+
+msgid "Judotimer"
+msgstr "Júdó klukka"
+
+msgid "New Tournament"
+msgstr "Nýtt mót"
+
+msgid "Open Tournament"
+msgstr "Opna mót"
+
+msgid "Open Tournament from Net"
+msgstr "Opna mót í gegnum netið"
+
+msgid "Properties"
+msgstr "Eiginleikar"
+
+msgid "New Competitor"
+msgstr "Nýr keppandi"
+
+msgid "Search Competitor"
+msgstr "Leita að keppanda"
+
+msgid "Select From Another Shiai"
+msgstr "Velja af öðru móti"
+
+msgid "Add From a Text File"
+msgstr "Bæta við úr texta skrá"
+
+msgid "Add All From Another Shiai"
+msgstr "Bæta við af öðru móti"
+
+msgid "Add All with Weights"
+msgstr "Bæta við öllum sem hafa verið vigtaðir"
+
+msgid "Remove Unweighted"
+msgstr "Fjarlægja óvigtaða"
+
+msgid "Restore Removed"
+msgstr "Endurheimta fjarlægða"
+
+msgid "Bar Code Search"
+msgstr "Strikamerkja leit"
+
+msgid "Print Weight Notes"
+msgstr "Prenta vigtunar lista"
+
+msgid "New Category"
+msgstr "Nýr flokkur"
+
+msgid "Remove Empty"
+msgstr "Fjarlægja tóma"
+
+msgid "Create Categories"
+msgstr "Búa til flokka"
+
+msgid "Print All"
+msgstr "Prenta allt"
+
+msgid "Best of Three"
+msgstr "Best af þremur"
+
+msgid "Place To"
+msgstr "Flytjist á "
+
+msgid "Tatamis"
+msgstr "keppnisvellir"
+
+msgid "Draw All Categories"
+msgstr "Draga alla flokka"
+
+msgid "Print All (Web And PDF)"
+msgstr "Prenta allt (Web og PDF)"
+
+msgid "Print Schedule to Printer"
+msgstr "Prenta dagskrá"
+
+msgid "Print Schedule to PDF"
+msgstr "Prenta dagskrá á PDF"
+
+msgid "Control Tatami"
+msgstr "Stjórna keppnisvöllum"
+
+msgid "Communication Node"
+msgstr "Samskiptabúnaður"
+
+msgid "Own IP Addresses"
+msgstr "Eigið IP vistfang"
+
+msgid "Show Attached Connections"
+msgstr "Sýna þá sem eru tengdir"
+
+msgid "Automatic Sheet Update"
+msgstr "Sjálfvirk uppfærsla blaða"
+
+msgid "Automatic Web Page Update"
+msgstr "Sjálfvirk uppfærsla vefsíðu"
+
+msgid "Results in Finnish"
+msgstr "Úrslit á Finnsku"
+
+msgid "Results in Swedish"
+msgstr "Úrslit á Sænsku"
+
+msgid "Results in English"
+msgstr "Úrslit á Ensku"
+
+msgid "Results in Spanish"
+msgstr "Úrslit á Spænsku"
+
+msgid "Results in Estonian"
+msgstr "Úrslit á Eistnesku"
+
+msgid "Results in Ukrainian"
+msgstr "Úrslit á Úkranísku"
+
+msgid "Weights Visible in Pool Sheets"
+msgstr "Þyngdir sjáanlegar á Riðla forminu"
+
+msgid "Sheet Font"
+msgstr "Leturgerð á blöðum"
+
+msgid "Password"
+msgstr "Lykilorð"
+
+msgid "Password:"
+msgstr "Lykilorð:"
+
+msgid "Competitor already exists!"
+msgstr "Keppandi þegar skráður!"
+
+msgid "Competitor"
+msgstr "Keppandi"
+
+msgid "copied"
+msgstr "afritað"
+
+msgid "Category already exists!"
+msgstr "Flokkur þegar til!"
+
+msgid "Category"
+msgstr "Flokkur"
+
+msgid "has been copied with competitors and matches"
+msgstr "hefur verið afritaður með keppendum og viðureignum"
+
+msgid "Last Name"
+msgstr "Föðurnafn"
+
+msgid "First Name"
+msgstr "Nafn"
+
+msgid "Year of Birth"
+msgstr "Fæðingarár"
+
+msgid "Grade"
+msgstr "Gráða"
+
+msgid "Club"
+msgstr "Félag"
+
+msgid "Reg. Category"
+msgstr "Skráður í fl."
+
+msgid "Weight"
+msgstr "Þyngd"
+
+msgid "Drawing not finished!"
+msgstr "Drætti ekki lokið!"
+
+msgid "Matches matched in category"
+msgstr "Viðureignir jafnar í flokknum"
+
+msgid "Clear the results first"
+msgstr "Hreinsa úrslitin fyrst"
+
+msgid "Move the competitors"
+msgstr "Færðu keppendurna"
+
+msgid "Number"
+msgstr "Númer"
+
+msgid "Select first a competitor and then a number."
+msgstr "Veldu fyrst keppanda og síðan númer."
+
+msgid "All the categories has been drawn"
+msgstr "Allir flokkar hafa verið dregnir"
+
+msgid "Choose a directory"
+msgstr "Veldu skráarmöppu"
+
+msgid "Category drawn"
+msgstr "Flokkur dreginn"
+
+msgid "All the categories located to the tatamis"
+msgstr "Allir flokkarnir hafa verið staðsettir á keppnisvellina"
+
+msgid "Unlocated"
+msgstr "Óstaðsettur"
+
+msgid "Connections to this node"
+msgstr "Tengingar við þennan búnað"
+
+msgid "already exists!"
+msgstr "Er nú þegar til!"
+
+msgid "Group"
+msgstr "Hópur"
+
+msgid "Group:"
+msgstr "Hópur:"
+
+msgid "Last Name:"
+msgstr "Föðurnafn:"
+
+msgid "First Name:"
+msgstr "Nafn:"
+
+msgid "Year of Birth:"
+msgstr "Fæðingarár:"
+
+msgid "Grade:"
+msgstr "Gráða:"
+
+msgid "Club:"
+msgstr "Félag:"
+
+msgid "Reg. Category:"
+msgstr "Skráður í fl.:"
+
+msgid "Weight:"
+msgstr "Þyngd:"
+
+msgid "Category:"
+msgstr "Flokkur:"
+
+msgid "No seeding"
+msgstr "Ekki forraðað"
+
+msgid "Empty categories removed"
+msgstr "Tómir flokkar fjarlægðir"
+
+msgid "Unweighted competitors removed"
+msgstr "Óvigtaðir keppendur fjarlægðir"
+
+msgid "Matches exist. Undo the drawing first."
+msgstr "Viðureignir eru til staðar. Afturkalla dráttinn fyrst."
+
+msgid "Competitors removed"
+msgstr "Keppendur fjarlægðir"
+
+msgid "Type the barcode:"
+msgstr "Skrifaðu strikamerkið:"
+
+msgid "Bar code search"
+msgstr "Leit að strikamerki"
+
+msgid "Matches"
+msgstr "Viðureignir"
+
+msgid "Contests"
+msgstr "Keppnir"
+
+msgid "Sheet"
+msgstr "blað"
+
+msgid "Previous winner"
+msgstr "Síðasti sigurvegari"
+
+msgid "Cancel the match"
+msgstr "Ógilda viðureignina"
+
+msgid "Select a tatami"
+msgstr "Veldu keppnisvöll"
+
+msgid "Password accepted.<br>"
+msgstr "Lykilorð samþykkt.<br>"
+
+msgid "User"
+msgstr "Notandi"
+
+msgid "Back"
+msgstr "Til baka"
+
+msgid "Wrong password"
+msgstr "Rangt lykilorð"
+
+msgid "Logout"
+msgstr "Skrá út"
+
+msgid "Login"
+msgstr "Skrá inn"
+
+msgid "No rights to give results"
+msgstr "Enginn réttur til að gefa úrslit."
+
+msgid "Not used"
+msgstr "Ekki notað"
+
+msgid "Column"
+msgstr "Dálkur"
+
+msgid "Import from file"
+msgstr "Flytja inn frá skrá"
+
+msgid "Sex:"
+msgstr "Kyn:"
+
+msgid "Girl Text:"
+msgstr "GirlText:"
+
+msgid "Column Separator:"
+msgstr "Dálka aðgreinir:"
+
+msgid "competitors added"
+msgstr "keppendum bætt við"
+
+msgid "errors"
+msgstr "villur"
+
+msgid "competitors existed already"
+msgstr "keppendur til staðar nú þegar"
+
+msgid "Time"
+msgstr "Tími"
+
+msgid "Class"
+msgstr "Deild"
+
+msgid "Message"
+msgstr "Skilaboð"
+
+msgid "Log"
+msgstr "Atburðaskrá"
+
+msgid "Is there another JudoShiai program running?"
+msgstr "Er annað JudoShiai forrit í gangi?"
+
+msgid "Yes, another JudoShiai program is running"
+msgstr ""
+"Já, annað JudoShiai forrit er í gangi"
+
+msgid ""
+"No, this the only JudoShiai program. \n"
+"Purge erroneous lock file."
+msgstr ""
+"Nei, þetta er eina JudoShiaiforritið. \n"
+"Hreinsa ósanna læsta skrá."
+
+msgid ""
+"Communication is blocked! \n"
+"You can still use the program to create categories etc."
+msgstr ""
+"Samskipti eru lokuð!\n"
+"Þú getur enn notað forritið til að búa til flokka o.s.f."
+
+msgid "Pool"
+msgstr "Riðill"
+
+msgid "Double pool"
+msgstr "Tvöfaldur riðill"
+
+msgid "Double repechage"
+msgstr "Tvöföld uppreisn"
+
+msgid "Next match"
+msgstr "Næsta viðureign"
+
+msgid "Next contest"
+msgstr "Næsta keppni"
+
+msgid "Preparing"
+msgstr "Undirbýr"
+
+msgid "Preparing:"
+msgstr "Undirbýr:"
+
+msgid "Delay the match"
+msgstr "Seinka viðureign"
+
+msgid "Matches matched. Clear the results first."
+msgstr "Viðureignir jafnar. Hreinsaðu úrslitin fyrst."
+
+msgid "canceled"
+msgstr "ógilt"
+
+msgid "changed"
+msgstr "breytt"
+
+msgid "points"
+msgstr "stig"
+
+msgid "Expand All"
+msgstr "Útvíkka allt"
+
+msgid "Collapse All"
+msgstr "Draga allt saman"
+
+msgid "Remove comment"
+msgstr "fjarlægja athugasemdir"
+
+msgid "Blue"
+msgstr "Blár"
+
+msgid "White"
+msgstr "Hvítur"
+
+msgid "Comment"
+msgstr "Athugasemnd"
+
+msgid "Points"
+msgstr "Stig"
+
+msgid "Prev. winner:"
+msgstr "Síðasti sigurvegari:"
+
+msgid "Delayed"
+msgstr "Seinkað"
+
+msgid "Remove delay"
+msgstr "Fjarlægja seinkun"
+
+msgid "Date:"
+msgstr "Dagsetning:"
+
+msgid "Place:"
+msgstr "Staður:"
+
+msgid "Start time:"
+msgstr "Upphafstími:"
+
+msgid "Tournament from the net"
+msgstr "Mótið af netinu"
+
+msgid "Select sheet font"
+msgstr "Veldu leturgerð á blöðin"
+
+msgid "Tournament"
+msgstr "Mót"
+
+msgid "Tournament:"
+msgstr "Mót:"
+
+msgid "Tournaments"
+msgstr "Mót"
+
+msgid "Competitors:"
+msgstr "Keppendur:"
+
+msgid "Weighted:"
+msgstr "Vigtaður:"
+
+msgid "Add competitors"
+msgstr "Bæta við keppendum"
+
+msgid "Clean up duplicates and update reg. categories"
+msgstr ""
+"Hreinsa burt tvíritun og uppfæra skráða flokka"
+
+msgid "competitors added and updated"
+msgstr "Keppendum bætt við og uppfært"
+
+msgid "competitors already existed"
+msgstr "Keppendur nú þegar til staðar"
+
+msgid "competitors added unchanged"
+msgstr "Keppendum bætt við óbreyttum"
+
+msgid "Remove drawing first"
+msgstr "Fjarlægja fyrst dráttinn"
+
+msgid "already exists"
+msgstr "nú þegar til staðar"
+
+msgid "Move Competitors to Category..."
+msgstr "Flytja keppendur í flokk..."
+
+msgid "Move Competitors Here"
+msgstr "Flytja keppendur hingað"
+
+msgid "Compose Unofficial Category"
+msgstr "Búa til óformlegan flokk"
+
+msgid "Draw Manually"
+msgstr "Draga handvirkt"
+
+msgid "Remove Drawing"
+msgstr "Fjarlægja dráttinn"
+
+msgid "Copy Competitors"
+msgstr "Afrita  keppendur"
+
+msgid "Remove Competitors"
+msgstr "Fjarlægja keppendur"
+
+msgid "Show Sheet"
+msgstr "Sýna blað"
+
+msgid "Search"
+msgstr "Leita"
+
+msgid "----- Men -----"
+msgstr "----- Karlar -----"
+
+msgid "----- Women -----"
+msgstr "----- Konur -----"
+
+msgid "Highest age:"
+msgstr "Mesti aldur:"
+
+msgid "Age text:"
+msgstr "Aldurs fl."
+
+msgid "Match time:"
+msgstr "Keppnis tími:"
+
+msgid "Rest time:"
+msgstr "Hvíldar tími:"
+
+msgid "Pin times (IWYK):"
+msgstr "Fastatak (IWYK):"
+
+msgid "Highest weight (g):"
+msgstr "Mesta þyngd (g):"
+
+msgid "Weight text:"
+msgstr "Þyngdar fl.:"
+
+msgid "Save file"
+msgstr "Vista skrá"
+
+msgid "Which one is correct?"
+msgstr "Hvor þeirra er rétt?"
+
+msgid "Own database"
+msgstr "Eigin gagnabanki"
+
+msgid "Foreign database"
+msgstr "Erlendur gagnabanki"
+
+msgid "Do not change"
+msgstr "Ekki breyta"
+
+msgid "Stop synchronization"
+msgstr "Hætta samhæfingu"
+
+msgid "Number of tatamis:"
+msgstr "Fjöldi valla:"
+
+msgid "Sheets"
+msgstr "Blöð"
+
+msgid "Category starts"
+msgstr "Flokkur byrjar"
+
+msgid "Gold medal match"
+msgstr "Úrslitaviðureign"
+
+msgid "Bronze match A"
+msgstr "Brons viðureign A"
+
+msgid "Bronze match B"
+msgstr "Brons viðureign B"
+
+msgid "Semifinal A"
+msgstr "Undanrásir A"
+
+msgid "Semifinal B"
+msgstr "Undanrásir B"
+
+msgid "Show Tatami"
+msgstr "Sýna velli"
+
+msgid "Start New Match?"
+msgstr "Byrja nýja viðureign?"
+
+msgid "Hansokumake to blue"
+msgstr "Hansokumake á bláan"
+
+msgid "Hansokumake to white"
+msgstr "Hansokumake á hvítan"
+
+msgid "Golden Score"
+msgstr "Gullskor"
+
+msgid "Start Golden Score?"
+msgstr "Byrja Gull skor?"
+
+msgid "Hantei"
+msgstr "Hantei"
+
+msgid "Blue wins"
+msgstr "Blár vinnur"
+
+msgid "White wins"
+msgstr "Hvítur vinnur"
+
+msgid "REST TIME"
+msgstr "HVÍLDAR TÍMI"
+
+msgid "Seeding:"
+msgstr "Forröðun:"
+
+msgid "1"
+msgstr "1"
+
+msgid "2"
+msgstr "2"
+
+msgid "3"
+msgstr "3"
+
+msgid "4"
+msgstr "4"
+
+msgid "Freeze match order"
+msgstr "Frysta viðureignar röð"
+
+msgid "Unfreeze exported"
+msgstr "Leyfa útflutning"
+
+msgid "Unfreeze imported"
+msgstr "Leyfa innflutning"
+
+msgid "Unfreeze this"
+msgstr "Leyfa þetta"
+
+msgid "SQL Dialog"
+msgstr "SQL-samskipti"
+
+msgid "Print All (PDF)"
+msgstr "Prenta allt (PDF)"
+
+msgid "Golden Score:"
+msgstr "Gull skor:"
+
+msgid "SQL"
+msgstr "SQL"
+
+msgid "About JudoInfo"
+msgstr "Um JudoInfo"
+
+msgid "Next"
+msgstr "Næsta"
+
+msgid "Rest"
+msgstr "Hvíld"
+
+msgid "Do Backup"
+msgstr "Taktu afrit"
+
+msgid "CANNOT OPEN BACKUP FILE"
+msgstr "Get ekki opnað afritunnar skrá"
+
+msgid "Tournament Backup"
+msgstr "Móta afrit"
+
+msgid "Small display"
+msgstr "Lítil skjámynd"
+
+msgid "Draw Selected"
+msgstr "Draga valda"
+
+msgid "Draw and Print Selected"
+msgstr "Draga og Prenta valda aðila"
+
+msgid "Print Selected Sheets (Printer)"
+msgstr "Prenta valið blað (Prentari)"
+
+msgid "Print Selected Sheets (PDF)"
+msgstr "Prenta valið blað (PDF)"
+
+msgid "Advertisement"
+msgstr "Auglýsing"
+
+msgid "Tournament properties"
+msgstr "Tegund Móts"
+
+msgid "Print Matches (CSV)"
+msgstr "Prenta viðureignir (CSV)"
+
+msgid "Match File"
+msgstr "Viðureigna skrá"
+
+msgid "Print Not Started Categories"
+msgstr "Prenta flokka sem eru ekki byrjaðir"
+
+msgid "Print Started Categories"
+msgstr "Prenta flokka sem eru byrjaðir"
+
+msgid "Print Finished Categories"
+msgstr "Prenta flokka sem er lokið"
+
+msgid "Print Result"
+msgstr "Prenta úrslit"
+
+msgid "Print IWYKS"
+msgstr "Prenta IWYKS"
+
+msgid "Print Comment"
+msgstr "Prenta  athugasemdir"
+
+msgid "Create Statistics"
+msgstr "Búa til tölfræði"
+
+msgid "NOTE"
+msgstr "Minnispunktar"
+
+msgid "is not a valid ASCII string!"
+msgstr "er ekki gildur ASCII strengur!"
+
+msgid "No koka"
+msgstr "Ekki nota Koka"
+
+msgid "Leave points for GS"
+msgstr "Punktar fylgja með í GS"
+
+msgid "Automatic Match Delay"
+msgstr "Sjálfvirk seinkun á viðureignum"
+
+msgid "Cannot move"
+msgstr "Get ekk flutt"
+
+msgid "Mirror Tatami Order"
+msgstr "Öfug keppnisröð"
+
+msgid "Mirror tatami order"
+msgstr "Öfug vallar röð"
+
+msgid "Country"
+msgstr "Land"
+
+msgid "Id"
+msgstr "Kt"
+
+msgid "Country:"
+msgstr "Land:"
+
+msgid "Id:"
+msgstr "Kt:"
+
+msgid "System:"
+msgstr "Kerfi:"
+
+msgid "Default"
+msgstr "Sjálfgildi"
+
+msgid "FIN Double Repechage"
+msgstr "FIN Tvöföld uppreisn"
+
+msgid "SWE Double Repechage"
+msgstr "SWE Tvöföld uppreisn"
+
+msgid "SWE Double Elimination"
+msgstr "SWE Tvöfaldur útsláttur"
+
+msgid "EST Double Elimination"
+msgstr "EST Tvöfaldur útsláttur"
+
+msgid "Single Elimination"
+msgstr "Einfaldur útsláttur"
+
+msgid "SWE Single Repechage"
+msgstr "SWE Einföld uppreisn"
+
+msgid "Club Name Only"
+msgstr "Nafn félags eingöngu"
+
+msgid "Country Name Only"
+msgstr "Nafn þjóðar eingöngu"
+
+msgid "Both Club and Country"
+msgstr "Bæði félag og þjóð"
+
+msgid "International System"
+msgstr "Alþjóðlegt kerfi"
+
+msgid "Finnish System"
+msgstr "Finnska kerfið"
+
+msgid "Swedish System"
+msgstr "Sænska kerfið"
+
+msgid "Estonian System"
+msgstr "Eistneska kerfið"
+
+msgid "Reset to Defaults"
+msgstr "Endursetja á sjálfgildi"
+
+msgid "View Log"
+msgstr "Birta atburðaskrá"
+
+msgid "Double Pool"
+msgstr "Tvöfaldur riðill"
+
+msgid "Cannot handle: Database created with newer JudoShiai version."
+msgstr "Get ekki unnið með þetta: Gagnagrunnur útbúinn með nýrri útgáfu af JudoShiai."
+
+msgid "Database tables updated."
+msgstr "Gagnagrunnsskrá er uppfærð."
+
+msgid "Cannot open"
+msgstr "Get ekki opnað"
+
+msgid "Abbreviations in Sheets"
+msgstr "Skammstöfun á blöðum"
+
+msgid "Display layout"
+msgstr "Skjámynda útlit"
+
+msgid "Contest area"
+msgstr "Keppnissvæði"
+
+msgid "Set time"
+msgstr "Stilla klukku"
+
+msgid "Sound"
+msgstr "Hljóð"
+
+msgid "Change language to Spanish"
+msgstr "Breyta tungumáli yfir í Spænsku"
+
+msgid "Choose a file"
+msgstr "Velja skrá"
+
+msgid "Sound Files"
+msgstr "Hljóð skrár"
+
+msgid "All Files"
+msgstr "Allar skrár"
+
+msgid "Best of 3"
+msgstr "Best af þremur"
+
+msgid "One match"
+msgstr "Ein viðureign"
+
+msgid "Quad Pool"
+msgstr "Fjórir 4 manna riðlar"
+
+msgid "IJF Dbl Rep"
+msgstr "IJF Tvöföld uppreisn."
+
+msgid "FIN Dbl Repchg"
+msgstr "FIN Tvöföld Uppreisn."
+
+msgid "SWE Dubb återkv"
+msgstr "SWE Tvöföld uppreisn."
+
+msgid "SWE Dir återkv"
+msgstr "SWE Beinn útsláttur."
+
+msgid "EST D klass"
+msgstr "EST Pitkä ker."
+
+msgid "No Repechg"
+msgstr "Engin uppreisn"
+
+msgid "SWE Enkelt återkv"
+msgstr "SWE Lyhyet ker."
+
+msgid "ESP Dbl Lost"
+msgstr "ESP Pitkä ker."
+
+msgid "ESP Dbl Rep"
+msgstr "ESP Ransk."
+
+msgid "ESP Simple Rep"
+msgstr "ESP Lyh. ker."
+
+msgid "ESP Double Lost"
+msgstr "ESP Pitkä keräily"
+
+msgid "ESP Double Repechage"
+msgstr "ESP Ranskalainen"
+
+msgid "ESP Simple Repechage"
+msgstr "ESP Lyhyet keräilyt"
+
+msgid "Quadruple pool"
+msgstr "Neloispooli"
+
+msgid "IJF Double Repechage"
+msgstr "IJF Tvöföld uppreisn"
+
+msgid "Picture Files"
+msgstr "Myndaskrár"
+
+msgid "Print Headers"
+msgstr "Prenta haus"
+
+msgid "Language Selection"
+msgstr "Velja tungumál"
+
+msgid "Spanish System"
+msgstr "Spænska kerfið"
+
+msgid "Communication"
+msgstr "Samskipti"
+
+msgid "Club Text Selection"
+msgstr "Textaval við Félag"
+
+msgid "Print Logo"
+msgstr "Prenta logo"
+
+msgid "Sheet Layout"
+msgstr "Útlit blaðs"
+
+msgid "Weights Visible"
+msgstr "Þyngd sjáanleg"
+
+msgid "Grade Visible"
+msgstr "Gráða sjáanleg"
+
+msgid "Print Competitors With Template"
+msgstr "Prenta keppenda form "
+
+msgid "Select template"
+msgstr "Veldu form"
+
+msgid "Line"
+msgstr "Lína"
+
+msgid "Syntax error"
+msgstr "Syntax villa"
+
+msgid "Stop clock on Ippon"
+msgstr "Stoppa klukku á Ippon"
+
+msgid "Switch sides"
+msgstr "Skipta um stöðu"
+
+msgid "Display customized layout"
+msgstr "Sýna sérútbúið útlit"
+
+msgid "Change language to Estonian"
+msgstr "Skipta yfir í Eistnesku"
+
+msgid "Change language to Ukrainan"
+msgstr "Skipta yfir í Úkranísku"
+
+msgid "No competitor found!"
+msgstr "Enginn keppandi finnst!"
+
+msgid "Modified Dbl Elim"
+msgstr "Breyttur tvöfaldur útsláttur"
+
+msgid "FIN Dbl Repchg One Bronze"
+msgstr "FIN Tvöföld uppreisn (Eitt brons)"
+
+msgid "Modified Double Elimination"
+msgstr "Breyttur tvöfaldur útsláttur"
+
+msgid "FIN Double Repechage One Bronze"
+msgstr "FIN Tvöföld uppreisn (Eitt brons)"
+
+msgid "Silver medal match"
+msgstr "Silfur viðureign"
+
+msgid "Pool Style 2"
+msgstr "Riðla kerfi 2"
+
+msgid "Use Belt Colors"
+msgstr "Nota Belta Liti"
+
+msgid "Print Unmatched"
+msgstr "Prenta óglímdar viðureignir"
+
+msgid "White first"
+msgstr "Hvítur fyrst"
+
+msgid "Show"
+msgstr "Sýna"
+
+msgid "Show Deleted"
+msgstr "Sýna eydda"
+
+msgid "Add"
+msgstr "Bæta við"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "White first:"
+msgstr "Hvítur fyrst:"
+
+msgid "Scale Serial Interface"
+msgstr "Vog- Raðtengi (serial)"
+
+msgid "Serial Communication"
+msgstr "Raðræn samskipti (serial)"
+
+msgid "In Use"
+msgstr "Í notkun"
+
+msgid "Device"
+msgstr "Tæki"
+
+msgid "Baudrate"
+msgstr "Hraði (Baudrate)"
+
+msgid "Basic Scripts"
+msgstr "Grundvallar skriptur"
+
+msgid "Select Script"
+msgstr "Veldu skriptu"
+
+msgid "No script available"
+msgstr "Engin skripta í boði"
+
+msgid "Run Script"
+msgstr "Keyra skriptu"
+
+msgid "Repeat Script"
+msgstr "Endurtaka skriptu"
+
+msgid "Double Pool 2"
+msgstr "Tvöfaldur riðill 2"
+
+msgid "Double pool 2"
+msgstr "Tvöfaldur riðill 2"
+
+msgid "Write to file"
+msgstr "Skrifa í skrá"

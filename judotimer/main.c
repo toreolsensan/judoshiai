@@ -35,6 +35,7 @@ gint language = LANG_FI;
 #define TABLE_PARAM (GTK_EXPAND|GTK_FILL)
 
 static gint dsp_layout = 2;
+static gint selected_name_layout;
 static const gchar *num2str[11] = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "+"};
 static const gchar *pts2str[6]  = {"-", "K", "Y", "W", "I", "S"};
 guint current_year;
@@ -677,6 +678,84 @@ void set_score(guint score)
 	expose_label(NULL, points);
 }
 
+static void parse_name(const gchar *s, gchar *first, gchar *last, gchar *club, gchar *country)
+{
+    const gchar *p = s;
+    gint i;
+
+    *first = *last = *club = *country = 0;
+
+    i = 0;
+    while (*p >= ' ' && i < 31) {
+        *last++ = *p++;
+        i++;
+    }
+    *last = 0;
+    p++;
+    i = 0;
+    while (*p >= ' ' && i < 31) {
+        *first++ = *p++;
+        i++;
+    }
+    *first = 0;
+    p++;
+    i = 0;
+    while (*p >= ' ' && i < 31) {
+        *country++ = *p++;
+        i++;
+    }
+    *country = 0;
+    p++;
+    i = 0;
+    while (*p >= ' ' && i < 31) {
+        *club++ = *p++;
+        i++;
+    }
+    *club = 0;
+}
+
+static gchar *get_name_by_layout(gchar *first, gchar *last, gchar *club, gchar *country)
+{
+    switch (selected_name_layout) {
+    case 0:
+        if (country == NULL || country[0] == 0)
+            return g_strconcat(first, " ", last, ", ", club, NULL);
+        else if (club == NULL || club[0] == 0)
+            return g_strconcat(first, " ", last, ", ", country, NULL);
+        return g_strconcat(first, " ", last, ", ", country, "/", club, NULL);
+    case 1:
+        if (country == NULL || country[0] == 0)
+            return g_strconcat(last, ", ", first, ", ", club, NULL);
+        else if (club == NULL || club[0] == 0)
+            return g_strconcat(last, ", ", first, ", ", country, NULL);
+        return g_strconcat(last, ", ", first, ", ", country, "/", club, NULL);
+    case 2:
+        if (country == NULL || country[0] == 0)
+            return g_strconcat(club, "  ", last, ", ", first, NULL);
+        else if (club == NULL || club[0] == 0)
+            return g_strconcat(country, "  ", last, ", ", first, NULL);
+        return g_strconcat(country, "/", club, "  ", last, ", ", first, NULL);
+    case 3:
+        return g_strconcat(country, "  ", last, ", ", first, NULL);
+    case 4:
+        return g_strconcat(club, "  ", last, ", ", first, NULL);
+    case 5:
+        return g_strconcat(country, "  ", last, NULL);
+    case 6:
+        return g_strconcat(club, "  ", last, NULL);
+    case 7:
+        return g_strconcat(last, ", ", first, NULL);
+    case 8:
+        return g_strdup(last);
+    case 9:
+        return g_strdup(country);
+    case 10:
+        return g_strdup(club);
+    }
+
+    return NULL;
+}
+
 void show_message(gchar *cat_1,
                   gchar *blue_1,
                   gchar *white_1,
@@ -684,104 +763,92 @@ void show_message(gchar *cat_1,
                   gchar *blue_2,
                   gchar *white_2)
 {
-        gchar bbuf[64], wbuf[64];
-        gint len;
-        gchar *b_tmp = blue_1, *w_tmp = white_1;
+    gchar buf[32], *name;
+    gchar *b_tmp = blue_1, *w_tmp = white_1;
+    gchar b_first[32], b_last[32], b_club[32], b_country[32];
+    gchar w_first[32], w_last[32], w_club[32], w_country[32];
 
-        if (sides_switched) {
-            blue_1 = w_tmp;
-            white_1 = b_tmp;
+    b_first[0] = b_last[0] = b_club[0] = b_country[0] = 0;
+    w_first[0] = w_last[0] = w_club[0] = w_country[0] = 0;
+
+    if (sides_switched) {
+        blue_1 = w_tmp;
+        white_1 = b_tmp;
+    }
+
+    parse_name(blue_1, b_first, b_last, b_club, b_country);
+    parse_name(white_1, w_first, w_last, w_club, w_country);
+
+    if (dsp_layout == 6) {
+        g_utf8_strncpy(buf, b_first, 1);
+        snprintf(b_first, sizeof(b_first), "%s.", buf);
+
+        g_utf8_strncpy(buf, w_first, 1);
+        snprintf(w_first, sizeof(w_first), "%s.", buf);
+    }
+
+    set_text(MY_LABEL(cat1), cat_1);
+    set_text2(MY_LABEL(cat1), "");
+
+    if (dsp_layout == 7) {
+        // divide category on two lines
+        snprintf(buf, sizeof(buf), "%s", cat_1);
+        gchar *p = strrchr(buf, '-');
+        if (!p)
+            p = strrchr(buf, '+');
+        if (!p)
+            p = strrchr(buf, ' ');
+        if (p) {
+            set_text2(cat1, p);
+            *p = 0;
+            set_text(cat1, buf);
         }
 
-        if (dsp_layout == 6) {
-                memset(bbuf, 0, sizeof(bbuf));
-                memset(wbuf, 0, sizeof(wbuf));
+        // Show flags. Country must be in IOC format.
+        set_text(flag_blue, b_country);
+        set_text(flag_white, w_country);
+    }
 
-                gchar *p = strchr(blue_1, ' ');
-                if (p) {
-                        g_utf8_strncpy(bbuf, blue_1, 1);
-                        len = strlen(bbuf);
-                        snprintf(bbuf+len, sizeof(bbuf)-len, ". %s", p+1);
-                        blue_1 = bbuf;
-                }
-                p = strchr(white_1, ' ');
-                if (p) {
-                        g_utf8_strncpy(wbuf, white_1, 1);
-                        len = strlen(wbuf);
-                        snprintf(wbuf+len, sizeof(wbuf)-len, ". %s", p+1);
-                        white_1 = wbuf;
-                }
-        }
+    if (labels[blue_club].w > 0.01)
+        set_text(MY_LABEL(blue_club), b_club);
 
-        set_text(MY_LABEL(cat1), cat_1);
-        set_text2(MY_LABEL(cat1), "");
+    if (labels[white_club].w > 0.01)
+        set_text(MY_LABEL(white_club), w_club);
 
-        if (dsp_layout == 7) {
-            // divide category on two lines
-            snprintf(bbuf, sizeof(bbuf), "%s", cat_1);
-            gchar *p = strrchr(bbuf, '-');
-            if (!p)
-                p = strrchr(bbuf, '+');
-            if (!p)
-                p = strrchr(bbuf, ' ');
-            if (p) {
-                snprintf(wbuf, sizeof(wbuf), "%s", p);
-                *p = 0;
-                set_text(cat1, bbuf);
-                set_text2(cat1, wbuf);
-            }
+    name = get_name_by_layout(b_first, b_last, b_club, b_country);
+    set_text(MY_LABEL(blue_name_1), name);
+    g_free(name);
 
-            // Show flags. Country must be in IOC format in the end of the name.
-            gint len = strlen(blue_1);
-            if (len >= 3)
-                set_text(flag_blue, &blue_1[len - 3]);
-            
-            len = strlen(white_1);
-            if (len >= 3)
-                set_text(flag_white, &white_1[len - 3]);
-        }
+    name = get_name_by_layout(w_first, w_last, w_club, w_country);
+    set_text(MY_LABEL(white_name_1), name);
+    g_free(name);
 
-        if (labels[blue_club].w > 0.01) {
-            snprintf(bbuf, sizeof(bbuf), "%s", blue_1);
-            gchar *p = strchr(bbuf, ',');
-            if (p) {
-                *p = 0;
-                set_text(MY_LABEL(blue_club), p + 2);
-            } else
-                set_text(MY_LABEL(blue_club), "");
-            set_text(MY_LABEL(blue_name_1),  bbuf);
-        } else
-            set_text(MY_LABEL(blue_name_1),  blue_1);
+    set_text(MY_LABEL(cat2),         cat_2);
 
-        if (labels[white_club].w > 0.01) {
-            snprintf(bbuf, sizeof(bbuf), "%s", white_1);
-            gchar *p = strchr(bbuf, ',');
-            if (p) {
-                *p = 0;
-                set_text(MY_LABEL(white_club), p + 2);
-            } else
-                set_text(MY_LABEL(white_club), "");
-            set_text(MY_LABEL(white_name_1),  bbuf);
-        } else
-            set_text(MY_LABEL(white_name_1), white_1);
+    parse_name(blue_2, b_first, b_last, b_club, b_country);
+    parse_name(white_2, w_first, w_last, w_club, w_country);
 
-        set_text(MY_LABEL(cat2),         cat_2);
-        set_text(MY_LABEL(blue_name_2),  blue_2);
-        set_text(MY_LABEL(white_name_2), white_2);
+    name = get_name_by_layout(b_first, b_last, b_club, b_country);
+    set_text(MY_LABEL(blue_name_2), name);
+    g_free(name);
 
-	expose_label(NULL, cat1);
-	expose_label(NULL, blue_name_1);
-	expose_label(NULL, white_name_1);
-	expose_label(NULL, cat2);
-	expose_label(NULL, blue_name_2);
-	expose_label(NULL, white_name_2);
-	expose_label(NULL, blue_club);
-	expose_label(NULL, white_club);
-	expose_label(NULL, flag_blue);
-	expose_label(NULL, flag_white);
+    name = get_name_by_layout(w_first, w_last, w_club, w_country);
+    set_text(MY_LABEL(white_name_2), name);
+    g_free(name);
 
-	if (big_dialog)
-		show_big();
+    expose_label(NULL, cat1);
+    expose_label(NULL, blue_name_1);
+    expose_label(NULL, white_name_1);
+    expose_label(NULL, cat2);
+    expose_label(NULL, blue_name_2);
+    expose_label(NULL, white_name_2);
+    expose_label(NULL, blue_club);
+    expose_label(NULL, white_club);
+    expose_label(NULL, flag_blue);
+    expose_label(NULL, flag_white);
+
+    if (big_dialog)
+        show_big();
 }
 
 gchar *get_name(gint who)
@@ -988,7 +1055,8 @@ static void expose_label(cairo_t *c, gint w)
     } else {
         y = H(labels[w].y) + (H(labels[w].h)- extents.height)/2.0 - extents.y_bearing;
         cairo_move_to(c, x, y);
-        cairo_show_text(c, txt1);
+        if (w != flag_blue && w != flag_white)
+            cairo_show_text(c, txt1);
     }
 
     if (w == flag_blue || w == flag_white) {
@@ -2157,6 +2225,14 @@ void select_display_layout(GtkWidget *menu_item, gpointer data)
          display_big(" ", 4);
          }
     ****/
+}
+
+void select_name_layout(GtkWidget *menu_item, gpointer data)
+{
+    expose(darea, 0, 0);
+
+    selected_name_layout = (gint)data; 
+    g_key_file_set_integer(keyfile, "preferences", "namelayout", selected_name_layout);
 }
 
 void change_language_1(void)

@@ -173,6 +173,8 @@ static void change_menu_label(GtkWidget *item, const gchar *new_text)
     gtk_label_set_text(GTK_LABEL(menu_label), new_text);
 }
 
+#define NUM_NAME_LAYOUTS 11
+
 static GtkWidget *menubar, *match, *preferences, *help, *matchmenu, *preferencesmenu, *helpmenu;
 static GtkWidget *separator1, *separator2, *quit, *viewlog;
 static GtkWidget *match0, *match1, *match2, *match3, *match4, *match5, *gs;
@@ -188,23 +190,24 @@ static GtkTooltips *menu_tips;
 static GtkWidget *mode_normal, *mode_master, *mode_slave;
 static GtkWidget *undo, *hansokumake_blue, *hansokumake_white, *clear_selection, *switch_sides;
 static GtkWidget *advertise, *sound, *flags[NUM_LANGS], *menu_flags[NUM_LANGS];
+static GtkWidget *name_layout, *name_layouts[NUM_NAME_LAYOUTS];
 
 static const gchar *flags_files[NUM_LANGS] = {
-    "finland.png", "sweden.png", "uk.png", "spain.png", "estonia.png", "ukraine.png"
+    "finland.png", "sweden.png", "uk.png", "spain.png", "estonia.png", "ukraine.png", "iceland.png"
 };
 
 static const gchar *lang_names[NUM_LANGS] = {
-    "fi", "sv", "en", "es", "et", "uk"
+    "fi", "sv", "en", "es", "et", "uk", "is"
 };
 
 static const gchar *help_file_names[NUM_LANGS] = {
     "judoshiai-fi.pdf", "judoshiai-en.pdf", "judoshiai-en.pdf", "judoshiai-es.pdf", "judoshiai-en.pdf",
-    "judoshiai-uk.pdf"
+    "judoshiai-uk.pdf", "judoshiai-en.pdf"
 };
 
 static const gchar *timer_help_file_names[NUM_LANGS] = {
     "judotimer-fi.pdf", "judotimer-en.pdf", "judotimer-en.pdf", "judotimer-es.pdf", "judotimer-en.pdf",
-    "judotimer-uk.pdf"
+    "judotimer-uk.pdf", "judotimer-en.pdf"
 };
 
 static GtkWidget *get_picture(const gchar *name)
@@ -406,6 +409,11 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     layout_sel_5    = gtk_radio_menu_item_new_with_label_from_widget((GtkRadioMenuItem *)layout_sel_1, "");
     layout_sel_6    = gtk_radio_menu_item_new_with_label_from_widget((GtkRadioMenuItem *)layout_sel_1, "");
     layout_sel_7    = gtk_radio_menu_item_new_with_label_from_widget((GtkRadioMenuItem *)layout_sel_1, "");
+
+    name_layouts[0] = gtk_radio_menu_item_new_with_label(NULL, "");
+    for (i = 1; i < NUM_NAME_LAYOUTS; i++)
+        name_layouts[i] = gtk_radio_menu_item_new_with_label_from_widget(GTK_RADIO_MENU_ITEM(name_layouts[0]), "");
+
     full_screen     = gtk_check_menu_item_new_with_label("Full screen mode");
     rules_no_koka   = gtk_check_menu_item_new_with_label("");
     rules_leave_points = gtk_check_menu_item_new_with_label("");
@@ -458,6 +466,16 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_menu_shell_append (GTK_MENU_SHELL (submenu), layout_sel_5);
 
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), gtk_separator_menu_item_new());
+
+    name_layout = gtk_menu_item_new_with_label("");
+    gtk_menu_shell_append(GTK_MENU_SHELL(preferencesmenu), name_layout);
+    submenu = gtk_menu_new();
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(name_layout), submenu);
+    for (i = 0; i < NUM_NAME_LAYOUTS; i++)
+        gtk_menu_shell_append (GTK_MENU_SHELL (submenu), name_layouts[i]);
+
+    gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), gtk_separator_menu_item_new());
+
     tatami_sel = gtk_menu_item_new_with_label("");
     gtk_menu_shell_append(GTK_MENU_SHELL(preferencesmenu), tatami_sel);
     submenu = gtk_menu_new();
@@ -512,6 +530,10 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     g_signal_connect(G_OBJECT(layout_sel_5),    "activate", G_CALLBACK(select_display_layout), (gpointer)5);
     g_signal_connect(G_OBJECT(layout_sel_6),    "activate", G_CALLBACK(select_display_layout), (gpointer)6);
     g_signal_connect(G_OBJECT(layout_sel_7),    "activate", G_CALLBACK(select_display_layout), (gpointer)7);
+
+    for (i = 0; i < NUM_NAME_LAYOUTS; i++)
+        g_signal_connect(G_OBJECT(name_layouts[i]), "activate", G_CALLBACK(select_name_layout), (gpointer)i);
+
     g_signal_connect(G_OBJECT(tatami_sel_none), "activate", G_CALLBACK(tatami_selection),     (gpointer)0);
     g_signal_connect(G_OBJECT(tatami_sel_1),    "activate", G_CALLBACK(tatami_selection),     (gpointer)1);
     g_signal_connect(G_OBJECT(tatami_sel_2),    "activate", G_CALLBACK(tatami_selection),     (gpointer)2);
@@ -638,6 +660,13 @@ void set_preferences(void)
     }
 
     error = NULL;
+    i = g_key_file_get_integer(keyfile, "preferences", "namelayout", &error);
+    if (!error)
+        gtk_menu_item_activate(GTK_MENU_ITEM(name_layouts[i]));
+    else 
+        gtk_menu_item_activate(GTK_MENU_ITEM(name_layouts[0]));
+
+    error = NULL;
     str = g_key_file_get_string(keyfile, "preferences", "nodeipaddress", &error);
     if (!error) {
         gulong a,b,c,d;
@@ -711,6 +740,19 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(layout_sel_6, _("Display layout 5"));
     change_menu_label(layout_sel_7, _("Display customized layout"));
 
+    change_menu_label(name_layout,   _("Name format"));
+    change_menu_label(name_layouts[0], _("Name Surname, Country/Club"));
+    change_menu_label(name_layouts[1], _("Surname, Name, Country/Club"));
+    change_menu_label(name_layouts[2], _("Country/Club  Surname, Name"));
+    change_menu_label(name_layouts[3], _("Country  Surname, Name"));
+    change_menu_label(name_layouts[4], _("Club  Surname, Name"));
+    change_menu_label(name_layouts[5], _("Country Surname"));
+    change_menu_label(name_layouts[6], _("Club Surname"));
+    change_menu_label(name_layouts[7], _("Surname, Name"));
+    change_menu_label(name_layouts[8], _("Surname"));
+    change_menu_label(name_layouts[9], _("Country"));
+    change_menu_label(name_layouts[10], _("Club"));
+
     change_menu_label(tatami_sel,   _("Contest area"));
     change_menu_label(tatami_sel_none, _("Contest area not chosen"));
     change_menu_label(tatami_sel_1, _("Contest area 1"));
@@ -758,6 +800,8 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
                           _("Change language to Estonian"), NULL);
     gtk_tooltips_set_tip (GTK_TOOLTIPS (menu_tips), menu_flags[LANG_UK],
                           _("Change language to Ukrainan"), NULL);
+    gtk_tooltips_set_tip (GTK_TOOLTIPS (menu_tips), menu_flags[LANG_IS],
+                          _("Change language to Icelandic"), NULL);
 
     gtk_tooltips_set_tip (GTK_TOOLTIPS (menu_tips), match0,
                           _("Contest duration automatically from JudoShiai program"), NULL);

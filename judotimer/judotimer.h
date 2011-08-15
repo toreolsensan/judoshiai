@@ -35,7 +35,8 @@
 #define LANG_ES 3
 #define LANG_EE 4
 #define LANG_UK 5
-#define NUM_LANGS 6
+#define LANG_IS 6
+#define NUM_LANGS 7
 
 #define FRAME_WIDTH  600
 #define FRAME_HEIGHT 400
@@ -126,6 +127,7 @@ extern void toggle_rules_stop_ippon(GtkWidget *menu_item, gpointer data);
 extern void toggle_confirm_match(GtkWidget *menu_item, gpointer data);
 extern void toggle_whitefirst(GtkWidget *menu_item, gpointer data);
 extern void select_display_layout(GtkWidget *menu_item, gpointer data);
+extern void select_name_layout(GtkWidget *menu_item, gpointer data);
 extern gpointer client_thread(gpointer args);
 extern void show_message(gchar *cat_1, gchar *blue_1, gchar *white_1,
                          gchar *cat_2, gchar *blue_2, gchar *white_2);

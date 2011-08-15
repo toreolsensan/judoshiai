@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-28 07:33+0300\n"
+"POT-Creation-Date: 2011-08-12 13:45+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1287,3 +1287,84 @@ msgstr "Tuplapooli 2"
 
 msgid "Write to file"
 msgstr "Kirjoita tiedostoon"
+
+msgid "Confirm New Match"
+msgstr "Vahvista uusi ottelu"
+
+msgid "Contest area 9"
+msgstr "Matto 9"
+
+msgid "Contest area 10"
+msgstr "Matto 10"
+
+msgid "Move Medal Matches"
+msgstr "Siirrä mitaliottelut"
+
+msgid "Move match "
+msgstr "Siirrä ottelu"
+
+msgid "to tatami and/or"
+msgstr "matolle ja/tai"
+
+msgid " delay"
+msgstr "viivytä"
+
+msgid "Final"
+msgstr "Finaali"
+
+msgid "Bronze1"
+msgstr "Pronssi 1"
+
+msgid "Bronze2"
+msgstr "Pronssi 2"
+
+msgid "Pool's last"
+msgstr "Poolin viimeinen"
+
+msgid "No move"
+msgstr "Ei siirtoa"
+
+msgid "Print Accreditation Cards"
+msgstr "Tulosta akkreditointikortit"
+
+msgid "Name Format"
+msgstr "Nimen formaatti"
+
+msgid "Name Surname, Country/Club"
+msgstr "Etu Suku, Maa/Seura"
+
+msgid "Surname, Name, Country/Club"
+msgstr "Suku, Etu, Maa/Seura"
+
+msgid "Country/Club  Surname, Name"
+msgstr "Maa/Seura  Suku, Etu"
+
+msgid "Medal Matches..."
+msgstr "Mitaliottelut..."
+
+msgid "Print Selected Accreditation Cards"
+msgstr "Tulosta valitut akkreditointikortit"
+
+msgid "Layout:"
+msgstr "Asettelu:"
+
+msgid "Print To:"
+msgstr "Tulostustapa:"
+
+msgid "Template"
+msgstr "Malli"
+
+msgid "Printer"
+msgstr "Kirjoitin"
+
+msgid "PDF"
+msgstr "PDF"
+
+msgid "One Card Per Page"
+msgstr "Yksi kortti sivulle"
+
+msgid "Normal display"
+msgstr "Normaali näyttö"
+
+msgid "Horizontal display"
+msgstr "Vaakanäyttö"

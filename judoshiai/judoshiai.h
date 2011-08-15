@@ -36,7 +36,8 @@
 #define LANG_ES 3
 #define LANG_EE 4
 #define LANG_UK 5
-#define NUM_LANGS 6
+#define LANG_IS 6
+#define NUM_LANGS 7
 
 #if GTK_CHECK_VERSION(2,10,0)
 #define PRINT_SUPPORTED

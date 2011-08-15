@@ -74,7 +74,7 @@ static GtkWidget *menubar,
     *preference_comm, *preference_comm_node, *preference_own_ip_addr, *preference_show_connections,
     *preference_auto_sheet_update/*, *preference_auto_web_update*/, *preference_results_in_finnish, 
     *preference_langsel, *preference_results_in_swedish, *preference_results_in_english, 
-    *preference_results_in_spanish, *preference_results_in_ukrainian, *preference_weights_to_pool_sheets, 
+    *preference_results_in_spanish, *preference_results_in_ukrainian, *preference_results_in_icelandic, *preference_weights_to_pool_sheets, 
     *preference_grade_visible, *preference_name_layout, *preference_name_layout_0, *preference_name_layout_1, *preference_name_layout_2, 
     *preference_layout, *preference_pool_style, *preference_belt_colors,
     *preference_sheet_font, *preference_password, *judotimer_control[NUM_TATAMIS],
@@ -89,10 +89,10 @@ static GSList *lang_group = NULL, *club_group = NULL, *draw_group = NULL;
 static GtkTooltips *menu_tips;
 
 static const gchar *flags_files[NUM_LANGS] = {
-    "finland.png", "sweden.png", "uk.png", "spain.png", "estonia.png", "ukraine.png"
+    "finland.png", "sweden.png", "uk.png", "spain.png", "estonia.png", "ukraine.png", "iceland.png"
 };
 static const gchar *lang_names[NUM_LANGS] = {
-    "fi", "sv", "en", "es", "et", "uk"
+    "fi", "sv", "en", "es", "et", "uk", "is"
 };
 
 static GtkWidget *get_picture(const gchar *name)
@@ -355,6 +355,8 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     preference_results_in_spanish     = gtk_radio_menu_item_new_with_label(lang_group, _("Results in Spanish"));
     lang_group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(preference_results_in_spanish));
     preference_results_in_ukrainian   = gtk_radio_menu_item_new_with_label(lang_group, _("Results in Ukrainian"));
+    lang_group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(preference_results_in_ukrainian));
+    preference_results_in_icelandic   = gtk_radio_menu_item_new_with_label(lang_group, _("Results in Icelandic"));
 
     preference_club_text_club         = gtk_radio_menu_item_new_with_label(club_group, _("Club Name Only"));
     club_group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(preference_club_text_club));
@@ -403,6 +405,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_menu_shell_append(GTK_MENU_SHELL(submenu), preference_results_in_english);
     gtk_menu_shell_append(GTK_MENU_SHELL(submenu), preference_results_in_spanish);
     gtk_menu_shell_append(GTK_MENU_SHELL(submenu), preference_results_in_ukrainian);
+    gtk_menu_shell_append(GTK_MENU_SHELL(submenu), preference_results_in_icelandic);
 
     gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), gtk_separator_menu_item_new());
 
@@ -459,6 +462,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     g_signal_connect(G_OBJECT(preference_results_in_english),     "activate", G_CALLBACK(set_lang), (gpointer)LANG_EN);
     g_signal_connect(G_OBJECT(preference_results_in_spanish),     "activate", G_CALLBACK(set_lang), (gpointer)LANG_ES);
     g_signal_connect(G_OBJECT(preference_results_in_ukrainian),   "activate", G_CALLBACK(set_lang), (gpointer)LANG_UK);
+    g_signal_connect(G_OBJECT(preference_results_in_icelandic),   "activate", G_CALLBACK(set_lang), (gpointer)LANG_IS);
 
     g_signal_connect(G_OBJECT(preference_club_text_club),    "activate", 
 		     G_CALLBACK(set_club_text), (gpointer)CLUB_TEXT_CLUB);
@@ -626,6 +630,9 @@ void set_preferences(void)
         break;	
     case LANG_UK:
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(preference_results_in_ukrainian), TRUE);
+        break;	
+    case LANG_IS:
+        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(preference_results_in_icelandic), TRUE);
         break;	
     default:
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(preference_results_in_finnish), TRUE);
@@ -849,6 +856,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(preference_results_in_english    , _("Results in English"));
     change_menu_label(preference_results_in_spanish    , _("Results in Spanish"));
     change_menu_label(preference_results_in_ukrainian  , _("Results in Ukrainian"));
+    change_menu_label(preference_results_in_icelandic  , _("Results in Icelandic"));
 
     change_menu_label(preference_club_text             , _("Club Text Selection"));
     change_menu_label(preference_club_text_club        , _("Club Name Only"));

@@ -603,7 +603,8 @@ static const gchar *help_file_names[NUM_LANGS] = {
     "judoshiai-en.pdf", // en
     "judoshiai-es.pdf", // es
     "judoshiai-en.pdf", // et
-    "judoshiai-uk.pdf"  // uk
+    "judoshiai-uk.pdf", // uk
+    "judoshiai-en.pdf"  // is
 };
 
 void start_help(GtkWidget *w, gpointer data)

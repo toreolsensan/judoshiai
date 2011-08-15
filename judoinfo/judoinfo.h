@@ -35,7 +35,8 @@
 #define LANG_ES 3
 #define LANG_EE 4
 #define LANG_UK 5
-#define NUM_LANGS 6
+#define LANG_IS 6
+#define NUM_LANGS 7
 
 #define FRAME_WIDTH  600
 #define FRAME_HEIGHT 400

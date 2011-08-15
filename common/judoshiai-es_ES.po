@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-28 07:34+0300\n"
+"POT-Creation-Date: 2011-08-12 13:45+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1314,4 +1314,85 @@ msgid "Double pool 2"
 msgstr ""
 
 msgid "Write to file"
+msgstr ""
+
+msgid "Confirm New Match"
+msgstr ""
+
+msgid "Contest area 9"
+msgstr ""
+
+msgid "Contest area 10"
+msgstr ""
+
+msgid "Move Medal Matches"
+msgstr ""
+
+msgid "Move match "
+msgstr ""
+
+msgid "to tatami and/or"
+msgstr ""
+
+msgid " delay"
+msgstr ""
+
+msgid "Final"
+msgstr ""
+
+msgid "Bronze1"
+msgstr ""
+
+msgid "Bronze2"
+msgstr ""
+
+msgid "Pool's last"
+msgstr ""
+
+msgid "No move"
+msgstr ""
+
+msgid "Print Accreditation Cards"
+msgstr ""
+
+msgid "Name Format"
+msgstr ""
+
+msgid "Name Surname, Country/Club"
+msgstr ""
+
+msgid "Surname, Name, Country/Club"
+msgstr ""
+
+msgid "Country/Club  Surname, Name"
+msgstr ""
+
+msgid "Medal Matches..."
+msgstr ""
+
+msgid "Print Selected Accreditation Cards"
+msgstr ""
+
+msgid "Layout:"
+msgstr ""
+
+msgid "Print To:"
+msgstr ""
+
+msgid "Template"
+msgstr ""
+
+msgid "Printer"
+msgstr ""
+
+msgid "PDF"
+msgstr ""
+
+msgid "One Card Per Page"
+msgstr ""
+
+msgid "Normal display"
+msgstr ""
+
+msgid "Horizontal display"
 msgstr ""

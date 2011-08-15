@@ -1388,9 +1388,9 @@ void update_matches(guint category, struct compsys sys, gint tatami)
                      "%s", g->last);
             snprintf(msg.u.next_match.blue_1, 
                      sizeof(msg.u.next_match.blue_1),
-                     "%s %s, %s", j1->first, j1->last, get_club_text(j1, CLUB_TEXT_ABBREVIATION));
+                     "%s\t%s\t%s\t%s", j1->last, j1->first, j1->country, j1->club);
             snprintf(msg.u.next_match.white_1, sizeof(msg.u.next_match.white_1),
-                     "%s %s, %s", j2->first, j2->last, get_club_text(j2, CLUB_TEXT_ABBREVIATION));
+                     "%s\t%s\t%s\t%s", j2->last, j2->first, j2->country, j2->club);
 
             snprintf(buf, sizeof(buf), "%s: %s: %s %s, %s - %s %s, %s", _("Match"), 
                      g->last, 
@@ -1452,15 +1452,13 @@ void update_matches(guint category, struct compsys sys, gint tatami)
                      "%s", g->last);
             if (j1)
                 snprintf(msg.u.next_match.blue_2, sizeof(msg.u.next_match.blue_2),
-                         "%s %s, %s", j1->first, j1->last, 
-			 get_club_text(j1, CLUB_TEXT_ABBREVIATION));
+                         "%s\t%s\t%s\t%s", j1->last, j1->first, j1->country, j1->club); 
             else
                 snprintf(msg.u.next_match.blue_2, sizeof(msg.u.next_match.blue_2), "?");
 
             if (j2)
                 snprintf(msg.u.next_match.white_2, sizeof(msg.u.next_match.white_2),
-                         "%s %s, %s", j2->first, j2->last, 
-			 get_club_text(j2, CLUB_TEXT_ABBREVIATION));
+                         "%s\t%s\t%s\t%s", j2->last, j2->first, j2->country, j2->club);
             else
                 snprintf(msg.u.next_match.white_2, sizeof(msg.u.next_match.white_2), "?");
 

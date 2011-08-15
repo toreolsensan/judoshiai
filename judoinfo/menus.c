@@ -32,15 +32,15 @@ static GtkTooltips *menu_tips;
 static GtkWidget *flags[NUM_LANGS], *menu_flags[NUM_LANGS];
 
 static const gchar *flags_files[NUM_LANGS] = {
-    "finland.png", "sweden.png", "uk.png", "spain.png", "estonia.png", "ukraine.png"
+    "finland.png", "sweden.png", "uk.png", "spain.png", "estonia.png", "ukraine.png", "iceland.png"
 };
 static const gchar *lang_names[NUM_LANGS] = {
-    "fi", "sv", "en", "es", "et", "uk"
+    "fi", "sv", "en", "es", "et", "uk", "is"
 };
 
 static const gchar *help_file_names[NUM_LANGS] = {
     "judoshiai-fi.pdf", "judoshiai-en.pdf", "judoshiai-en.pdf", "judoshiai-es.pdf", "judoshiai-en.pdf",
-    "judoshiai-uk.pdf"
+    "judoshiai-uk.pdf", "judoshiai-en.pdf"
 };
 
 
@@ -402,6 +402,8 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
                           _("Change language to Estonian"), NULL);
     gtk_tooltips_set_tip (GTK_TOOLTIPS (menu_tips), menu_flags[LANG_UK],
                           _("Change language to Ukrainan"), NULL);
+    gtk_tooltips_set_tip (GTK_TOOLTIPS (menu_tips), menu_flags[LANG_IS],
+                          _("Change language to Icelandic"), NULL);
 
     g_key_file_set_integer(keyfile, "preferences", "language", language);
 
