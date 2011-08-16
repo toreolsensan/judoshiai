@@ -1693,7 +1693,7 @@ static void on_enter(GtkEntry *entry, gpointer user_data)  {
     gint indx;
     the_text = gtk_entry_get_text(GTK_ENTRY(entry)); 
     indx = db_get_index_by_id(the_text);
-    g_print("text=%s indx=%d\n", the_text, indx);
+
     if (indx)
         display_competitor(indx);
     else

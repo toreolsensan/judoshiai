@@ -759,8 +759,14 @@ void get_competitor(http_parser_t *parser)
 
     send_html_top(parser, "onLoad=\"document.valtable.weight.focus()\"");
 
-    sprintf(buf, "select * from competitors where \"index\"=%s", ix);
+    snprintf(buf, sizeof(buf), "select * from competitors where \"id\"=\"%s\"", ix);
     gint numrows = db_get_table(buf);
+
+    if (numrows == 0) {
+        db_close_table();
+        snprintf(buf, sizeof(buf), "select * from competitors where \"index\"=%s", ix);
+        numrows = db_get_table(buf);
+    }
 
     if (numrows < 0) {
         sendf(s, "<h1>%s</h1>", _("No competitor found!"));
