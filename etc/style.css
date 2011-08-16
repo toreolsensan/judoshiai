@@ -285,6 +285,13 @@ table.nextmatches td.ccr2 {
     background: #EEE;
 }
 
+tr.judogiok {
+    color: #050;
+}
+tr.judoginok {
+    color: #500;
+}
+
 @media print {
 .nextmatcheslink, .medalslink, .statisticslink, .tournamentheader, .categorylinks, .categorieshdr, 
 .competitorslink, .resultslink {

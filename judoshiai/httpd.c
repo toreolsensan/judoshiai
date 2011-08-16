@@ -1042,7 +1042,7 @@ void get_competitors(http_parser_t *parser, gboolean show_deleted)
           "<td><b>%s</b></td>"
           "<td><a href=\"?order=regcat\"><b>%s</b></a></td>"
           "<td></td></tr>\r\n",
-          "Country", "Club", "Last Name", "First Name", "Reg.Category");
+          "Country", "Club", "Surname", "Name", "Reg.Category");
 
     for (row = 0; row < numrows; row++) {
         gchar *last = db_get_data(row, "last");
@@ -1055,9 +1055,10 @@ void get_competitors(http_parser_t *parser, gboolean show_deleted)
 
         if (((deleted&1) && show_deleted) ||
             ((deleted&1) == 0 && show_deleted == FALSE)) {
-            sendf(s, "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td>"
+            sendf(s, "<tr %s><td>%s</td><td>%s</td><td>%s</td><td>%s</td>"
                   "<td>%s</td>"
                   "<td><a href=\"getcompetitor?index=%s\">%s</a></td></tr>\r\n",
+                  (deleted & JUDOGI_OK) ? "class=\"judogiok\"" : ((deleted & JUDOGI_NOK) ? "class=\"judoginok\"" : ""), 
                   country, club, last, first, cat, id, "Edit");
         }
     }	
