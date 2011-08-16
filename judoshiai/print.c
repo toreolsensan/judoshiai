@@ -688,29 +688,38 @@ static gint find_print_judokas(gchar *where_string)
 
     for (row = 0; row < numrows && row < TOTAL_NUM_COMPETITORS; row++) {
         gchar *ix = db_get_data(row, "index");
-        gint index = atoi(ix);
-
-        if (print_winners) {
-            struct category_data *catdata = NULL;
-            gint wincat = 0;
-            gint winpos = db_get_competitors_position(index, &wincat);
-        
-            if (wincat) {
-                catdata = avl_get_category(wincat);
-                if (catdata)
-                    winpos = db_position_to_real(catdata->system, winpos);
-            }
-
-            if ((print_winners & (1 << winpos)) == 0)
-                continue;
-        }
-
-        selected_judokas[num_selected_judokas++] = index;
+        selected_judokas[num_selected_judokas++] = atoi(ix);
     }
 
     db_close_table();
 
     return num_selected_judokas;
+}
+
+static void filter_winners(void)
+{
+    gint i, n = 0;
+
+    if (print_winners == 0)
+        return;
+
+    for (i = 0; i < num_selected_judokas; i++) {
+        gint index = selected_judokas[i];
+        struct category_data *catdata = NULL;
+        gint wincat = 0;
+        gint winpos = db_get_competitors_position(index, &wincat);
+        
+        if (wincat) {
+            catdata = avl_get_category(wincat);
+            if (catdata)
+                winpos = db_position_to_real(catdata->system, winpos);
+        }
+
+        if ((print_winners & (1 << winpos)))
+            selected_judokas[n++] = selected_judokas[i];
+    }
+
+    num_selected_judokas = n;
 }
 
 static gint get_num_pages(struct paint_data *pd)
@@ -1205,6 +1214,8 @@ static void begin_print(GtkPrintOperation *operation,
         
         if ((gint)user_data & PRINT_ALL)
             find_print_judokas(NULL);
+
+        filter_winners();
         
         if ((gint)user_data & PRINT_ONE_PER_PAGE)
             numpages = num_selected_judokas;
@@ -1377,6 +1388,8 @@ void print_doc(GtkWidget *menuitem, gpointer userdata)
 
 	    if ((gint)userdata & PRINT_ALL)
 		find_print_judokas(NULL);
+
+            filter_winners();
 
 	    if ((gint)userdata & PRINT_ONE_PER_PAGE)
 		numpages = num_selected_judokas;

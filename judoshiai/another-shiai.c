@@ -185,6 +185,10 @@ static int db_competitor_callback(void *data, int argc, char **argv, char **azCo
             j.deleted = argv[i] ? atoi(argv[i]) : 0;
         else if (IS(id))
             j.id = argv[i] ? argv[i] : "";
+        else if (IS(seeding))
+            j.seeding = argv[i] ? atoi(argv[i]) : 0;
+        else if (IS(clubseeding))
+            j.clubseeding = argv[i] ? atoi(argv[i]) : 0;
     }
 
     if ((j.deleted & DELETED))
@@ -202,8 +206,8 @@ static int db_category_callback(void *data, int argc, char **argv, char **azColN
     struct judoka j;
     GtkTreeModel *model = data;
     struct compsys cs;
-    BZERO(cs);
 
+    BZERO(cs);
     memset(&j, 0, sizeof(j));
 
     for (i = 0; i < argc; i++) {
@@ -319,7 +323,9 @@ static GtkTreeModel *create_and_fill_model(gchar *dbname)
                                    G_TYPE_BOOLEAN,/* visible */
                                    G_TYPE_STRING, /* category */
                                    G_TYPE_UINT,   /* deleted */
-                                   G_TYPE_STRING  /* id */
+                                   G_TYPE_STRING, /* id */
+                                   G_TYPE_INT,    /* seeding */
+                                   G_TYPE_INT     /* clubseeding */
         );
 
     model = GTK_TREE_MODEL(treestore);

@@ -784,7 +784,8 @@ void get_competitor(http_parser_t *parser)
     GET_INT(deleted);
     GET_STR(country);
     GET_STR(id);
-    gint seeding = (deleted >> 2) & 7;
+    GET_INT(seeding);
+    GET_INT(clubseeding);
 
 #define HTML_ROW_STR(_h, _x)                                            \
     sendf(s, "<tr><td>%s:</td><td><input type=\"text\" name=\"%s\" value=\"%s\"/></td></tr>\r\n", \
@@ -824,10 +825,25 @@ void get_competitor(http_parser_t *parser)
         sendf(s, "<option %s>%d</option>", seeding == i ? "selected" : "", i);
     sendf(s, "</select></td></tr>\r\n");
 
-    sendf(s, "<tr><td>%s:</td><td><input type=\"checkbox\" name=\"hansokumake\" "
-          "value=\"yes\" %s/></td></tr>\r\n", "Hansoku-make", deleted&2 ? "checked" : "");
+    sendf(s, "<tr><td>%s:</td><td><input type=\"text\" name=\"clubseeding\" value=\"%d\"/></td></tr>\r\n", \
+          "Club Seeding", clubseeding);
 
     HTML_ROW_STR("ID", id);
+
+    sendf(s, "<tr><td>%s:</td><td><select name=\"gender\" value=\"\">", "Gender");
+    sendf(s, "<option %s>%s</option>", (deleted & (GENDER_MALE | GENDER_FEMALE)) == 0 ? "selected" : "", "?");
+    sendf(s, "<option %s>%s</option>", deleted & GENDER_MALE ? "selected" : "", "Male");
+    sendf(s, "<option %s>%s</option>", deleted & GENDER_FEMALE ? "selected" : "", "Female");
+    sendf(s, "</select></td></tr>\r\n");
+
+    sendf(s, "<tr><td>%s:</td><td><select name=\"judogi\" value=\"\">", "Judogi");
+    sendf(s, "<option %s>%s</option>", (deleted & (JUDOGI_OK | JUDOGI_NOK)) == 0 ? "selected" : "", "Not checked");
+    sendf(s, "<option %s>%s</option>", deleted & JUDOGI_OK ? "selected" : "", "OK");
+    sendf(s, "<option %s>%s</option>", deleted & JUDOGI_NOK ? "selected" : "", "NOK");
+    sendf(s, "</select></td></tr>\r\n");
+
+    sendf(s, "<tr><td>%s:</td><td><input type=\"checkbox\" name=\"hansokumake\" "
+          "value=\"yes\" %s/></td></tr>\r\n", "Hansoku-make", deleted&2 ? "checked" : "");
 
     if (category[0] == '?')
         sendf(s, "<tr><td>%s:</td><td><input type=\"checkbox\" name=\"delete\" "
@@ -869,10 +885,13 @@ void set_competitor(http_parser_t *parser)
     DEF_STR(category);
     DEF_INT(deleted);
     DEF_INT(seeding);
+    DEF_INT(clubseeding);
     DEF_STR(country);
     DEF_STR(hansokumake);
     DEF_STR(id);
     DEF_STR(delete);
+    DEF_STR(judogi);
+    DEF_STR(gender);
 
     avl_node *node;
     http_var_t *var;
@@ -880,7 +899,6 @@ void set_competitor(http_parser_t *parser)
     while (node) {
         var = (http_var_t *)node->key;
         if (var) {
-            //printf("Query variable: '%s'='%s'\n", var->name, var->value);
             if (0) { }
             GET_HTML_INT(index);
             GET_HTML_STR(last);
@@ -894,21 +912,34 @@ void set_competitor(http_parser_t *parser)
             GET_HTML_STR(category);
             //GET_HTML_INT(deleted);
             GET_HTML_INT(seeding);
+            GET_HTML_INT(clubseeding);
             GET_HTML_STR(country);
             GET_HTML_STR(hansokumake);
             GET_HTML_STR(id);
             GET_HTML_STR(delete);
+            GET_HTML_STR(judogi);
+            GET_HTML_STR(gender);
         }
         node = avl_get_next(node);
     }
 
+    deleted = 0;
+
     if (!strcmp(delete, "yes"))
-        deleted = 1;
+        deleted |= DELETED;
 
     if (!strcmp(hansokumake, "yes"))
-        deleted |= 2;
+        deleted |= HANSOKUMAKE;
 
-    deleted |= seeding << 2;
+    if (!strcmp(gender, "Male"))
+        deleted |= GENDER_MALE;
+    else if (!strcmp(gender, "Female"))
+        deleted |= GENDER_FEMALE;
+
+    if (!strcmp(judogi, "OK"))
+        deleted |= JUDOGI_OK;
+    else if (!strcmp(judogi, "NOK"))
+        deleted |= JUDOGI_NOK;
 
     gint beltval;
     gchar *b = belt;
@@ -945,6 +976,8 @@ void set_competitor(http_parser_t *parser)
     msg.u.edit_competitor.deleted = deleted;
     STRCPY(country);
     STRCPY(id);
+    msg.u.edit_competitor.seeding = seeding;
+    msg.u.edit_competitor.clubseeding = clubseeding;
 
     struct message *msg2 = put_to_rec_queue(&msg);
     time_t start = time(NULL);

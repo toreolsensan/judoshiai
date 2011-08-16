@@ -65,6 +65,10 @@ static int db_callback(void *data, int argc, char **argv, char **azColName)
             j.country = argv[i] ? argv[i] : "";
         else if (IS(id))
             j.id = argv[i] ? argv[i] : "";
+        else if (IS(seeding))
+            j.seeding = argv[i] ? atoi(argv[i]) : 0;
+        else if (IS(clubseeding))
+            j.clubseeding = argv[i] ? atoi(argv[i]) : 0;
     }
     //g_print("\n");
 
@@ -156,11 +160,13 @@ void db_add_judoka(int num, struct judoka *j)
             "INSERT INTO competitors VALUES ("
             "%d, \"%s\", \"%s\", \"%d\", "
             "%d, \"%s\", \"%s\", "
-            "%d, %d, \"%s\", %d, \"%s\", \"%s\""
+            "%d, %d, \"%s\", %d, \"%s\", \"%s\","
+            "%d, %d"
             ")", 
             num, j->last, j->first, j->birthyear,
             j->belt, j->club, j->regcategory,
-            j->weight, j->visible, j->category, j->deleted, j->country, j->id);
+            j->weight, j->visible, j->category, j->deleted, j->country, j->id,
+            j->seeding, j->clubseeding);
 
     db_exec(db_name, buffer, NULL, db_callback);
 
@@ -176,11 +182,13 @@ void db_update_judoka(int num, struct judoka *j)
                     "last=\"%s\", first=\"%s\", birthyear=\"%d\", "
                     "belt=\"%d\", club=\"%s\", regcategory=\"%s\", "
                     "weight=\"%d\", visible=\"%d\", "
-                    "category=\"%s\", deleted=\"%d\", country=\"%s\", id=\"%s\" "
+                    "category=\"%s\", deleted=\"%d\", country=\"%s\", id=\"%s\", "
+                    "seeding=\"%d\", clubseeding=\"%d\""
                     "WHERE \"index\"=%d",
                     j->last, j->first, j->birthyear,
                     j->belt, j->club, j->regcategory,
-                    j->weight, j->visible, j->category, j->deleted, j->country, j->id, num);
+                    j->weight, j->visible, j->category, j->deleted, j->country, j->id, 
+                    j->seeding, j->clubseeding, num);
     else
         db_exec_str(NULL, db_callback,
                     "UPDATE competitors SET "
@@ -188,10 +196,12 @@ void db_update_judoka(int num, struct judoka *j)
                     "belt=\"%d\", club=\"%s\", regcategory=\"%s\", "
                     "weight=\"%d\", visible=\"%d\", "
                     "deleted=\"%d\", country=\"%s\", id=\"%s\" "
+                    "seeding=\"%d\", clubseeding=\"%d\""
                     "WHERE \"index\"=%d",
                     j->last, j->first, j->birthyear,
                     j->belt, j->club, j->regcategory,
-                    j->weight, j->visible, j->deleted, j->country, j->id, num);
+                    j->weight, j->visible, j->deleted, j->country, j->id, 
+                    j->seeding, j->clubseeding, num);
 
     avl_set_competitor(num, j->first, j->last);
     avl_set_competitor_status(num, j->deleted);

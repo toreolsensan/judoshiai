@@ -69,17 +69,22 @@ void write_competitor(FILE *f, const gchar *first, const gchar *last, const gcha
                 snprintf(buf, sizeof(buf), "-");
 
             fprintf(f, 
-                    "<tr><td>%d</td><td>%s</td><td><a href=\"%d.html\">%s, %s</a></td><td>%s</td>"
+                    "<tr><td>%d</td><td>%s</td><td><a href=\"%d.html\">%s %s</a></td><td>%s</td>"
                     "<td><a href=\"%s.html\">%s</a></td><td align=\"center\">%s</td></tr>\r\n", 
                     member_count, member_count == 1 ? utf8_to_html(club) : "", 
-                    index, utf8_to_html(last), utf8_to_html(first), grade_visible ? belt : "", 
+                    index, 
+                    print_lang == LANG_IS ? utf8_to_html(first) : utf8_to_html(last), 
+                    print_lang == LANG_IS ? utf8_to_html(last) : utf8_to_html(first), 
+                    grade_visible ? belt : "", 
                     txt2hex(category), category, buf);
         } else
             fprintf(f, 
-                    "<tr><td>%d</td><td>%s</td><td>%s, %s</td><td>%s</td>"
+                    "<tr><td>%d</td><td>%s</td><td>%s %s</td><td>%s</td>"
                     "<td><a href=\"%s.html\">%s</a></td><td>&nbsp;</td></tr>\r\n", 
                     member_count, member_count == 1 ? utf8_to_html(club) : "", 
-                    utf8_to_html(last), utf8_to_html(first), grade_visible ? belt : "",  
+                    print_lang == LANG_IS ? utf8_to_html(first) : utf8_to_html(last), 
+                    print_lang == LANG_IS ? utf8_to_html(last) : utf8_to_html(first), 
+                    grade_visible ? belt : "",  
                     txt2hex(category), category);
 
         last_crc = crc;
@@ -94,15 +99,20 @@ void write_competitor(FILE *f, const gchar *first, const gchar *last, const gcha
                 snprintf(buf, sizeof(buf), "-");
 
             fprintf(f, 
-                    "<tr><td><a href=\"%d.html\">%s, %s</a></td><td>%s</td><td>%s</td>"
+                    "<tr><td><a href=\"%d.html\">%s %s</a></td><td>%s</td><td>%s</td>"
                     "<td><a href=\"%s.html\">%s</a></td><td align=\"center\">%s</td></tr>\r\n", 
-                    index, utf8_to_html(last), utf8_to_html(first), grade_visible ? belt : "", 
+                    index, 
+                    print_lang == LANG_IS ? utf8_to_html(first) : utf8_to_html(last), 
+                    print_lang == LANG_IS ? utf8_to_html(last) : utf8_to_html(first), 
+                    grade_visible ? belt : "", 
                     utf8_to_html(club), txt2hex(category), category, buf);
         } else
             fprintf(f, 
-                    "<tr><td>%s, %s</td><td>%s</td><td>%s</td>"
+                    "<tr><td>%s %s</td><td>%s</td><td>%s</td>"
                     "<td><a href=\"%s.html\">%s</a></td><td>&nbsp;</td></tr>\r\n", 
-                    utf8_to_html(last), utf8_to_html(first), grade_visible ? belt : "", utf8_to_html(club), 
+                    print_lang == LANG_IS ? utf8_to_html(first) : utf8_to_html(last), 
+                    print_lang == LANG_IS ? utf8_to_html(last) : utf8_to_html(first), 
+                    grade_visible ? belt : "", utf8_to_html(club), 
                     txt2hex(category), category);
 
         saved_competitors[saved_competitor_cnt] = index;

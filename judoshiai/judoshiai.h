@@ -148,8 +148,12 @@ enum french_systems {
 #define F_BACK           0x0200
 #define F_SYSTEM_MASK    0x00ff
 
-#define DELETED      1
-#define HANSOKUMAKE  2
+#define DELETED       0x01
+#define HANSOKUMAKE   0x02
+#define JUDOGI_OK     0x20
+#define JUDOGI_NOK    0x40
+#define GENDER_MALE   0x80
+#define GENDER_FEMALE 0x100
 
 #define NEXT_MATCH_NUM 10
 
@@ -209,6 +213,7 @@ enum special_match_types {
 #define INVALID_MATCH              1000
 
 #define NUM_CATEGORIES 32
+#define NUM_SEEDED 4
 
 enum {
     COL_INDEX = 0,
@@ -224,6 +229,8 @@ enum {
     COL_CATEGORY,
     COL_DELETED,
     COL_ID,
+    COL_SEEDING,
+    COL_CLUBSEEDING,
     NUM_COLS
 };
 
@@ -386,6 +393,9 @@ struct judoka {
     guint         deleted;
     const gchar  *country;
     const gchar  *id;
+    gint          seeding;
+    gint          clubseeding;
+    gint          gender;
 };
 
 struct match {

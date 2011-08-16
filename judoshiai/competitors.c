@@ -52,11 +52,14 @@ struct judoka_widget {
     GtkWidget *weight;
     GtkWidget *ok;
     GtkWidget *seeding;
+    GtkWidget *clubseeding;
     GtkWidget *hansokumake;
     GtkWidget *country;
     GtkWidget *id;
     GtkWidget *system;
     GtkWidget *realcategory;
+    GtkWidget *gender;
+    GtkWidget *judogi;
 };
 
 GtkWidget *weight_entry = NULL;
@@ -130,7 +133,26 @@ static void judoka_edited_callback(GtkWidget *widget,
         edited.weight = weight_grams(gtk_entry_get_text(GTK_ENTRY(judoka_tmp->weight)));
 
     if (judoka_tmp->seeding)
-        edited.deleted |= gtk_combo_box_get_active(GTK_COMBO_BOX(judoka_tmp->seeding)) << 2;
+        edited.seeding = gtk_combo_box_get_active(GTK_COMBO_BOX(judoka_tmp->seeding));
+
+    if (judoka_tmp->clubseeding)
+        edited.clubseeding = atoi(gtk_entry_get_text(GTK_ENTRY(judoka_tmp->clubseeding)));
+
+    if (judoka_tmp->gender) {
+        gint gender = gtk_combo_box_get_active(GTK_COMBO_BOX(judoka_tmp->gender));
+        if (gender == 1)
+            edited.deleted |= GENDER_MALE;
+        else if (gender == 2)
+            edited.deleted |= GENDER_FEMALE;
+    }
+
+    if (judoka_tmp->judogi) {
+        gint judogi = gtk_combo_box_get_active(GTK_COMBO_BOX(judoka_tmp->judogi));
+        if (judogi == 1)
+            edited.deleted |= JUDOGI_OK;
+        else if (judogi == 2)
+            edited.deleted |= JUDOGI_NOK;
+    }
 
     if (judoka_tmp->hansokumake && 
         gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(judoka_tmp->hansokumake)))
@@ -194,8 +216,15 @@ static void judoka_edited_callback(GtkWidget *widget,
                 
         if ((edited.regcategory == NULL || edited.regcategory[0] == 0) &&
             edited.weight > 10000) {
-            gint gender = find_gender(edited.first);
+            gint gender = 0;
             gint age = current_year - edited.birthyear;
+
+            if (edited.deleted & GENDER_MALE)
+                gender = IS_MALE;
+            else if (edited.deleted & GENDER_FEMALE)
+                gender = IS_FEMALE;
+            else
+                gender = find_gender(edited.first);
 
             if (edited.regcategory)
                 g_free((gchar *)edited.regcategory);
@@ -353,10 +382,10 @@ void view_on_row_activated(GtkTreeView        *treeview,
 	*country = NULL,
 	*id = NULL;
     guint belt, index, birthyear;
-    gint weight;
+    gint weight, seeding = 0, clubseeding = 0;
     gboolean visible;
     guint deleted;
-    char weight_s[10], birthyear_s[10];
+    gchar weight_s[10], birthyear_s[10], clubseeding_s[10];
     GtkAccelGroup *accel_group;
     /*if (editing_ongoing)
       return;*/
@@ -381,9 +410,12 @@ void view_on_row_activated(GtkTreeView        *treeview,
                                COL_DELETED, &deleted,
 			       COL_COUNTRY, &country,
 			       COL_ID, &id,
+			       COL_SEEDING, &seeding,
+			       COL_CLUBSEEDING, &clubseeding,
                                -1);
-            sprintf(weight_s, "%d,%02d", weight/1000, (weight%1000)/10);
-            sprintf(birthyear_s, "%d", birthyear);
+            snprintf(weight_s, sizeof(weight_s), "%d,%02d", weight/1000, (weight%1000)/10);
+            snprintf(birthyear_s, sizeof(birthyear_s), "%d", birthyear);
+            snprintf(clubseeding_s, sizeof(clubseeding_s), "%d", clubseeding);
 	}
     } else {
         visible = (gboolean) ((int)userdata == NEW_JUDOKA ? TRUE : FALSE);
@@ -393,6 +425,7 @@ void view_on_row_activated(GtkTreeView        *treeview,
         sprintf(birthyear_s, "0");
         belt = 0;
         index = (guint) userdata;
+        strcpy(clubseeding_s, "0");
     }
 	
     judoka_tmp->index = index;
@@ -492,21 +525,52 @@ void view_on_row_activated(GtkTreeView        *treeview,
         gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, 9, 10);
         judoka_tmp->seeding = tmp = gtk_combo_box_new_text();
         gtk_combo_box_append_text((GtkComboBox *)tmp, _("No seeding"));
-        gtk_combo_box_append_text((GtkComboBox *)tmp, _("1"));
-        gtk_combo_box_append_text((GtkComboBox *)tmp, _("2"));
-        gtk_combo_box_append_text((GtkComboBox *)tmp, _("3"));
-        gtk_combo_box_append_text((GtkComboBox *)tmp, _("4"));
+        gchar buf[8];
+        for (i = 0; i < NUM_SEEDED; i++) {
+            snprintf(buf, sizeof(buf), "%d", i+1); 
+            gtk_combo_box_append_text((GtkComboBox *)tmp, buf);
+        }
         gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, 9, 10);
-        gtk_combo_box_set_active((GtkComboBox *)tmp, deleted >> 2);
+        gtk_combo_box_set_active((GtkComboBox *)tmp, seeding);
 
-        tmp = gtk_label_new("Hansoku-make:");
-        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, 10, 11);
-        judoka_tmp->hansokumake = gtk_check_button_new();
-        gtk_table_attach_defaults(GTK_TABLE(table), judoka_tmp->hansokumake, 1, 2, 10, 11);
-        if (deleted & HANSOKUMAKE)
-            gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(judoka_tmp->hansokumake), TRUE);
+        judoka_tmp->clubseeding = set_entry(table, 10, _("Club Seeding:"), clubseeding_s);
 
         judoka_tmp->id = set_entry(table, 11, _("Id:"), id);
+
+        tmp = gtk_label_new(_("Gender:"));
+        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, 12, 13);
+        judoka_tmp->gender = tmp = gtk_combo_box_new_text();
+        gtk_combo_box_append_text((GtkComboBox *)tmp, "?");
+        gtk_combo_box_append_text((GtkComboBox *)tmp, _("Male"));
+        gtk_combo_box_append_text((GtkComboBox *)tmp, _("Female"));
+        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, 12, 13);
+        if (deleted & GENDER_MALE)
+            gtk_combo_box_set_active((GtkComboBox *)tmp, 1);
+        else if (deleted & GENDER_FEMALE)
+            gtk_combo_box_set_active((GtkComboBox *)tmp, 2);
+        else
+            gtk_combo_box_set_active((GtkComboBox *)tmp, 0);
+
+        tmp = gtk_label_new(_("Judogi:"));
+        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, 13, 14);
+        judoka_tmp->judogi = tmp = gtk_combo_box_new_text();
+        gtk_combo_box_append_text((GtkComboBox *)tmp, "?");
+        gtk_combo_box_append_text((GtkComboBox *)tmp, _("OK"));
+        gtk_combo_box_append_text((GtkComboBox *)tmp, _("NOK"));
+        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, 13, 14);
+        if (deleted & JUDOGI_OK)
+            gtk_combo_box_set_active((GtkComboBox *)tmp, 1);
+        else if (deleted & JUDOGI_NOK)
+            gtk_combo_box_set_active((GtkComboBox *)tmp, 2);
+        else
+            gtk_combo_box_set_active((GtkComboBox *)tmp, 0);
+
+        tmp = gtk_label_new("Hansoku-make:");
+        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, 14, 15);
+        judoka_tmp->hansokumake = gtk_check_button_new();
+        gtk_table_attach_defaults(GTK_TABLE(table), judoka_tmp->hansokumake, 1, 2, 14, 15);
+        if (deleted & HANSOKUMAKE)
+            gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(judoka_tmp->hansokumake), TRUE);
 
         g_signal_connect(G_OBJECT(judoka_tmp->club), "key-press-event", 
                          G_CALLBACK(complete_cb), club_completer);
@@ -588,7 +652,9 @@ static GtkTreeModel *create_and_fill_model (void)
                                       G_TYPE_BOOLEAN,/* visible */
                                       G_TYPE_STRING, /* category */
                                       G_TYPE_UINT,   /* deleted */
-				      G_TYPE_STRING  /* id */
+				      G_TYPE_STRING, /* id */
+                                      G_TYPE_UINT,   /* seeding */
+                                      G_TYPE_UINT    /* clubseeding */
         );
     current_model = (GtkTreeModel *)td.treestore;
     sortable = GTK_TREE_SORTABLE(current_model);
@@ -620,17 +686,19 @@ void last_name_cell_data_func (GtkTreeViewColumn *col,
     guint  deleted;
     guint  index;
     guint  weight;
+    gint   seeding;
 
     gtk_tree_model_get(model, iter, 
                        COL_INDEX, &index,
                        COL_LAST_NAME, &last, 
                        COL_VISIBLE, &visible, 
                        COL_WEIGHT, &weight,
+                       COL_SEEDING, &seeding,
                        COL_DELETED, &deleted, -1);
 
     if (visible) {
-        if (deleted >> 2)
-            g_snprintf(buf, sizeof(buf), "%s (%d)", last, deleted >> 2);
+        if (seeding)
+            g_snprintf(buf, sizeof(buf), "%s (%d)", last, seeding);
         else
             g_snprintf(buf, sizeof(buf), "%s", last);
 
@@ -638,8 +706,18 @@ void last_name_cell_data_func (GtkTreeViewColumn *col,
             g_object_set(renderer, "strikethrough", TRUE, "cell-background-set", FALSE, NULL);
         else
             g_object_set(renderer, "strikethrough", FALSE, "cell-background-set", FALSE, NULL);
+
+        if (deleted & JUDOGI_OK)
             g_object_set(renderer, 
-                         "foreground", "Black", FALSE, 
+                         "foreground", "darkgreen", FALSE, 
+                         NULL);
+        else if (deleted & JUDOGI_NOK)
+            g_object_set(renderer, 
+                         "foreground", "darkred", FALSE, 
+                         NULL);
+        else
+            g_object_set(renderer, 
+                         "foreground", "black", FALSE, 
                          NULL);
     } else {
         gint status = 0;

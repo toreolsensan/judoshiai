@@ -286,7 +286,7 @@ table.nextmatches td.ccr2 {
 }
 
 @media print {
-.medalslink, .statisticslink, .tournamentheader, .categorylinks, .categorieshdr, 
+.nextmatcheslink, .medalslink, .statisticslink, .tournamentheader, .categorylinks, .categorieshdr, 
 .competitorslink, .resultslink {
     display:none;
 }

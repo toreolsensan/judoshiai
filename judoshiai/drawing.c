@@ -154,7 +154,7 @@ static gint get_next_comp(struct mdata *mdata)
     gint highest_val = -1, highest_num = 0, same_club = 0, same_country = 0;
     
     // find seeded in order
-    for (seed = 1; seed <= 4; seed++) {
+    for (seed = 1; seed <= NUM_SEEDED; seed++) {
         for (i = 0; i < mdata->mjudokas; i++) {
             if (mdata->mcomp[x].pos == 0 && 
                 mdata->mcomp[x].seeded == seed)
@@ -261,12 +261,12 @@ static void calc_place_values(gint *place_values, struct mdata *mdata)
         if (mdata->mpos[x].judoka) {
             place_values[x+1]++;
             if (mdata->mcomp[mdata->mpos[x].judoka].seeded)
-                place_values[x+1] += 5 - mdata->mcomp[mdata->mpos[x].judoka].seeded;
+                place_values[x+1] += NUM_SEEDED + 1 - mdata->mcomp[mdata->mpos[x].judoka].seeded;
         }
         if (mdata->mpos[x+1].judoka) {
             place_values[x]++;
             if (mdata->mcomp[mdata->mpos[x+1].judoka].seeded)
-                place_values[x] += 5 - mdata->mcomp[mdata->mpos[x+1].judoka].seeded;
+                place_values[x] += NUM_SEEDED + 1 - mdata->mcomp[mdata->mpos[x+1].judoka].seeded;
         }
     }
 
@@ -422,7 +422,7 @@ static gint get_seeded_mask(gint mask, struct mdata *mdata)
 {
     gint i, res = 0, seed = 0;
 
-    for (seed = 0; seed < 4; seed++) {
+    for (seed = 0; seed < NUM_SEEDED; seed++) {
         if ((mask & (1<<seed)) == 0)
             continue;
 
@@ -602,7 +602,7 @@ static gboolean draw_one_comp(struct mdata *mdata)
 
     if (mdata->mfrench_sys >= 0) {
         if (draw_system == DRAW_SPANISH &&
-            mdata->mcomp[comp].seeded > 0 && mdata->mcomp[comp].seeded <= 4) {
+            mdata->mcomp[comp].seeded > 0 && mdata->mcomp[comp].seeded <= NUM_SEEDED) {
             gint x;
             switch (mdata->mcomp[comp].seeded) {
             case 1: x = 0; break;

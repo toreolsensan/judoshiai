@@ -137,10 +137,13 @@ static gboolean add_competitor(gchar **tokens, gint num_cols, struct i_text *d)
         gint age = current_year - j.birthyear;
 
         if (valid_data(TXT_GENDER, tokens, num_cols, d)) {
-            if (strstr(tokens[d->columns[TXT_GENDER] - 1], d->girlstr))
+            if (strstr(tokens[d->columns[TXT_GENDER] - 1], d->girlstr)) {
                 gender = IS_FEMALE;
-            else
+                j.deleted |= GENDER_FEMALE;
+            } else {
                 gender = IS_MALE;
+                j.deleted |= GENDER_MALE;
+            }
         } else {
             gender = find_gender(j.first);
         }

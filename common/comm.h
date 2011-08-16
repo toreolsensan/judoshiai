@@ -187,6 +187,8 @@ struct msg_edit_competitor {
     gint deleted;
     gchar country[20];
     gchar id[20];
+    gint seeding;
+    gint clubseeding;
 };
 
 struct msg_scale {

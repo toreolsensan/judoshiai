@@ -173,7 +173,8 @@ static int db_info_cb(void *data, int argc, char **argv, char **azColName)
     return 0;
 }
 
-static gboolean tatami_exists, number_exists, country_exists, id_exists, numcomp_exists;
+static gboolean tatami_exists, number_exists, country_exists, 
+    id_exists, numcomp_exists, seeding_exists;
 
 static int db_callback_tables(void *data, int argc, char **argv, char **azColName)
 {
@@ -191,6 +192,8 @@ static int db_callback_tables(void *data, int argc, char **argv, char **azColNam
                 id_exists = TRUE;
             if (strstr(argv[i], "categories") && strstr(argv[i], "numcomp"))
                 numcomp_exists = TRUE;
+            if (strstr(argv[i], "competitors") && strstr(argv[i], "seeding"))
+                seeding_exists = TRUE;
         }
     }
 
@@ -233,7 +236,7 @@ gint db_init(const char *dbname)
 
     sqlite3_close(db);
 
-    if (compcols   > 13 ||
+    if (compcols   > 15 ||
         catcols    > 17 || 
         matchcols  > 13 ||
         infocols   > 2  ||
@@ -267,7 +270,8 @@ gint db_init(const char *dbname)
 
     read_cat_definitions();
 
-    tatami_exists = number_exists = country_exists = id_exists = numcomp_exists = FALSE;
+    tatami_exists = number_exists = country_exists = id_exists = 
+        numcomp_exists = seeding_exists = FALSE;
 
     db_exec(db_name, 
             "SELECT sql FROM sqlite_master", 
@@ -291,6 +295,15 @@ gint db_init(const char *dbname)
         db_exec(db_name, "ALTER TABLE competitors ADD \"id\" TEXT", NULL, NULL);
     }
 
+    if (!seeding_exists) {
+        g_print("seeding does not exist, add one\n");
+        db_exec(db_name, "ALTER TABLE competitors ADD \"seeding\" INTEGER", NULL, NULL);
+        db_exec(db_name, "ALTER TABLE competitors ADD \"clubseeding\" INTEGER", NULL, NULL);
+        db_exec(db_name, "UPDATE competitors SET 'seeding'=(\"deleted\">>2)&7 ", NULL, NULL);
+        db_exec(db_name, "UPDATE competitors SET 'deleted'=(\"deleted\")&3 ", NULL, NULL);
+        db_exec(db_name, "UPDATE competitors SET 'clubseeding'=0 ", NULL, NULL);
+    }
+
     if (!numcomp_exists) {
         g_print("numcomp does not exist, add one\n");
         db_exec(db_name, "ALTER TABLE categories ADD \"numcomp\" INTEGER", NULL, NULL);
@@ -310,7 +323,7 @@ gint db_init(const char *dbname)
         db_exec(db_name, "ALTER TABLE categories ADD \"pos8\" INTEGER", NULL, NULL);
     }
 
-    if (!tatami_exists || !number_exists || !country_exists || !id_exists || !numcomp_exists)
+    if (!tatami_exists || !number_exists || !country_exists || !id_exists || !numcomp_exists || !seeding_exists)
         SHOW_MESSAGE("%s", _("Database tables updated."));
 
     set_menu_active();

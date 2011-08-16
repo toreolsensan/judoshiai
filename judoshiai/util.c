@@ -215,6 +215,8 @@ struct judoka *get_data_by_iter(GtkTreeIter *iter)
                        COL_CATEGORY, &j->category,
                        COL_DELETED, &j->deleted,
                        COL_ID, &j->id, 
+                       COL_SEEDING, &j->seeding, 
+                       COL_CLUBSEEDING, &j->clubseeding, 
                        -1);
     return j;
 }
@@ -237,6 +239,8 @@ struct judoka *get_data_by_iter_model(GtkTreeIter *iter, GtkTreeModel *model)
                        COL_CATEGORY, &j->category,
                        COL_DELETED, &j->deleted,
                        COL_ID, &j->id, 
+                       COL_SEEDING, &j->seeding, 
+                       COL_CLUBSEEDING, &j->clubseeding, 
                        -1);
     return j;
 }
@@ -272,6 +276,8 @@ void put_data_by_iter(struct judoka *j, GtkTreeIter *iter)
                        COL_CATEGORY,   j->category ? j->category : "?",
                        COL_DELETED,    j->deleted,
                        COL_ID,         j->id ? j->id : "",
+                       COL_SEEDING,    j->seeding, 
+                       COL_CLUBSEEDING,j->clubseeding, 
                        -1);
 }
 
@@ -298,6 +304,8 @@ void put_data_by_iter_model(struct judoka *j, GtkTreeIter *iter, GtkTreeModel *m
                        COL_CATEGORY,   j->category ? j->category : "?",
                        COL_DELETED,    j->deleted,
                        COL_ID,         j->id ? j->id : "",
+                       COL_SEEDING,    j->seeding, 
+                       COL_CLUBSEEDING,j->clubseeding, 
                        -1);
 }
 
@@ -477,7 +485,7 @@ const gchar *get_name_and_club_text(struct judoka *j, gint flags)
             break;
         case NAME_LAYOUT_S_N_C:
         case NAME_LAYOUT_C_S_N:
-            snprintf(buffers[n], 128, "%s, %s", j->last, j->first);
+            snprintf(buffers[n], 128, "%s %s", j->last, j->first);
             break;
         }
     } else {
@@ -487,11 +495,11 @@ const gchar *get_name_and_club_text(struct judoka *j, gint flags)
                      j->first, j->last, get_club_text(j, flags));
             break;
         case NAME_LAYOUT_S_N_C:
-            snprintf(buffers[n], 128, "%s, %s, %s", 
+            snprintf(buffers[n], 128, "%s %s, %s", 
                      j->last, j->first, get_club_text(j, flags));
             break;
         case NAME_LAYOUT_C_S_N:
-            snprintf(buffers[n], 128, "%s  %s, %s", 
+            snprintf(buffers[n], 128, "%s, %s %s", 
                      get_club_text(j, flags), j->last, j->first);
             break;
         }

@@ -65,7 +65,7 @@ static struct {
     gchar info_place[30];
 } others[NUM_OTHERS];
 
-#define NUM_CONNECTIONS 16
+#define NUM_CONNECTIONS 32
 static struct {
     guint fd;
     gulong addr;
@@ -223,6 +223,8 @@ void msg_received(struct message *input_msg)
         SET_J(deleted);
         SET_J(country);
         SET_J(id);
+        SET_J(seeding);
+        SET_J(clubseeding);
         if (j2.index) { // edit old competitor 
             j = get_data(j2.index);
             if (j) {

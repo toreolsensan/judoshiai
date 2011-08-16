@@ -82,9 +82,18 @@ void create_categories(GtkWidget *w, gpointer data)
                     j->category = NULL;
 
                     if (j->regcategory == NULL || j->regcategory[0] == 0) {
+                        gint gender = 0;
+
+                        if (j->deleted & GENDER_MALE)
+                            gender = IS_MALE;
+                        else if (j->deleted & GENDER_FEMALE)
+                            gender = IS_FEMALE;
+                        else
+                            gender = find_gender(j->first);
+
                         j->category = find_correct_category(current_year - j->birthyear, 
                                                             j->weight, 
-                                                            find_gender(j->first), 
+                                                            gender, 
                                                             NULL, TRUE);
                     } else {
                         j->category = find_correct_category(0, j->weight, 0, j->regcategory, FALSE);
