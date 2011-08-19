@@ -213,7 +213,7 @@ enum special_match_types {
 #define INVALID_MATCH              1000
 
 #define NUM_CATEGORIES 32
-#define NUM_SEEDED 4
+#define NUM_SEEDED 8
 
 enum {
     COL_INDEX = 0,

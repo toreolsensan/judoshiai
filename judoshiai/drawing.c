@@ -38,6 +38,7 @@ struct mdata {
         gint index;
         gint pos;
         gint seeded;
+        gint clubseeded;
         gint num_mates;
         gchar *club;
         gchar *country;
@@ -58,9 +59,9 @@ struct mdata {
 
 GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors, 
                                         struct mdata *mdata);
-static void make_manual_mathes_callback(GtkWidget *widget, 
-                                        GdkEvent *event,
-                                        void *data);
+static void make_manual_matches_callback(GtkWidget *widget, 
+                                         GdkEvent *event,
+                                         void *data);
 static gboolean select_competitor(GtkWidget *eventbox, GdkEventButton *event, void *param);
 static gint get_competitor_number(gint pos, struct mdata *mdata);
 
@@ -96,11 +97,13 @@ static gint cmp_clubs(struct mcomp *m1, struct mcomp *m2)
 {
     gint result = 0;
 
+    // club name is the same
     if (m1->club && m2->club &&
 	m1->club[0] && m2->club[0] &&
 	strcmp(m1->club, m2->club) == 0)
 	result |= CLUB_TEXT_CLUB;
     
+    // country name is the same
     if (m1->country && m2->country && 
 	m1->country[0] && m2->country[0] && 
 	strcmp(m1->country, m2->country) == 0)
@@ -121,8 +124,8 @@ void draw_one_category(GtkTreeIter *parent, gint competitors)
     dialog = draw_one_category_manually_1(parent, competitors, mdata);
 
     if (dialog) {
-        make_manual_mathes_callback(dialog, (gpointer)BUTTON_REST, mdata);
-        make_manual_mathes_callback(dialog, (gpointer)GTK_RESPONSE_OK, mdata);
+        make_manual_matches_callback(dialog, (gpointer)BUTTON_REST, mdata);
+        make_manual_matches_callback(dialog, (gpointer)GTK_RESPONSE_OK, mdata);
     }
 }
 
@@ -148,10 +151,20 @@ static void free_mdata(struct mdata *mdata)
 
 static gint last_selected = 0;
 
+/* Competitors are drawed in the following order:
+ * - seeded. 
+ * - their clubmates.
+ * - competitors from the biggest club.
+ * - competitors from the same country.
+ * - competitors from the 2nd biggest club.
+ * - competitors from the same country.
+ * - etc.
+ */
 static gint get_next_comp(struct mdata *mdata)
 {
     gint i, seed, x = (rand()%mdata->mjudokas) + 1;
     gint highest_val = -1, highest_num = 0, same_club = 0, same_country = 0;
+    gint club_seeding = 0, same_club_seeding = 0, same_country_seeding = 0;
     
     // find seeded in order
     for (seed = 1; seed <= NUM_SEEDED; seed++) {
@@ -166,47 +179,80 @@ static gint get_next_comp(struct mdata *mdata)
     }
 
     // find ordinary competitors
+    // find from the same club as previous
+    if (last_selected) {
+        for (i = 1; i <= mdata->mjudokas; i++) {
+            if (mdata->mcomp[x].pos == 0) {
+                    gint c = cmp_clubs(&mdata->mcomp[x], &mdata->mcomp[last_selected]);
+                    if (c & CLUB_TEXT_CLUB)
+                        if ((same_club_seeding && mdata->mcomp[x].clubseeded && 
+                             same_club_seeding > mdata->mcomp[x].clubseeded) ||
+                            (same_club_seeding == 0)) {
+                            same_club_seeding = mdata->mcomp[x].clubseeded;
+                            same_club = x;
+                        }                        
+                    if (c & CLUB_TEXT_COUNTRY)
+                        if ((same_country_seeding && mdata->mcomp[x].clubseeded && 
+                             same_country_seeding > mdata->mcomp[x].clubseeded) ||
+                            (same_country_seeding == 0)) {
+                            same_country_seeding = mdata->mcomp[x].clubseeded;
+                            same_country = x;
+                        }           
+            }
+            
+            if (++x > mdata->mjudokas)
+                x = 1;
+        }
+    }
+
+    if (same_club) {
+        last_selected = same_club;
+        return same_club;
+    }
+    if (same_country) {
+        last_selected = same_country;
+        return same_country;
+    }
+
+    // find from the rest
     for (i = 0; i < mdata->mjudokas; i++) {
 	if (mdata->mcomp[x].pos == 0) {
-	    if (mdata->mcomp[x].num_mates > highest_val) {
-		highest_val = mdata->mcomp[x].num_mates;
-		highest_num = x;
-		same_club = 0;
-		same_country = 0;
-	    } else if (mdata->mcomp[x].num_mates == highest_val &&
-		       last_selected) {
-		gint c = cmp_clubs(&mdata->mcomp[x], &mdata->mcomp[last_selected]);
-		if (c & CLUB_TEXT_CLUB)
-		    same_club = x;
-		if (c & CLUB_TEXT_COUNTRY)
-		    same_country = x;
+            // not yet drawed
+	    if (mdata->mcomp[x].num_mates >= highest_val) {
+                if (mdata->mcomp[x].num_mates > highest_val) {
+                    // select from club who has the most competitors
+                    highest_val = mdata->mcomp[x].num_mates;
+                    highest_num = x;
+                    club_seeding = mdata->mcomp[x].clubseeded;
+                } 
+
+                if ((club_seeding && mdata->mcomp[x].clubseeded && club_seeding > mdata->mcomp[x].clubseeded) ||
+                    (club_seeding == 0 && mdata->mcomp[x].clubseeded)) {
+                    club_seeding = mdata->mcomp[x].clubseeded;
+                    highest_num = x;
+                }
 	    }
 	}
 	if (++x > mdata->mjudokas)
 	    x = 1;
     }
 
-    if (same_club)
-	last_selected = same_club;
-    else if (same_country)
-	last_selected = same_country;
-    else
-	last_selected = highest_num;
+    last_selected = highest_num;
 
     return last_selected;
 }
 
 static gint get_section(gint num, struct mdata *mdata)
 {
-    gint i, sec_siz = mdata->mpositions/4;
+    gint i, sec_siz = mdata->mpositions/NUM_SEEDED;
     gint sec_max = sec_siz;
 
     // for pool & double pool section is competitor number
     if (mdata->mfrench_sys < 0)
         return (num - 1);
 
-    // for french system section is A, B, C, or D.
-    for (i = 0; i < 4; i++) {
+    // for french system section is A1, A2, B1, B2, C1, C2, D1 or D2.
+    for (i = 0; i < NUM_SEEDED; i++) {
         if (num <= sec_max)
             return i;
         sec_max += sec_siz;
@@ -257,6 +303,8 @@ static void calc_place_values(gint *place_values, struct mdata *mdata)
     default: return;
     }        
 
+    // add one to place value if fight has the other competitor
+    // add also a seeding based number if the competitor is seeded
     for (x = 1; x <= mdata->mpositions-1; x += 2) {
         if (mdata->mpos[x].judoka) {
             place_values[x+1]++;
@@ -270,6 +318,7 @@ static void calc_place_values(gint *place_values, struct mdata *mdata)
         }
     }
 
+    // calculate number of competitors in each quarter
     for (x = 1; x <= mdata->mpositions; x++) {
         if (mdata->mpos[x].judoka == 0)
             continue;
@@ -284,6 +333,7 @@ static void calc_place_values(gint *place_values, struct mdata *mdata)
             q4++;
     }
 
+    // balance halfs 
     if (q1 + q2 > q3 + q4) {
         for (x = 1; x <= mdata->mpositions/2; x++)
             place_values[x] += 2;
@@ -292,6 +342,7 @@ static void calc_place_values(gint *place_values, struct mdata *mdata)
             place_values[x] += 2;
     }
 
+    // balance 1st and 2nd quarters
     if (q1 > q2) {
         for (x = 1; x <= mdata->mpositions/4; x++)
             place_values[x]++;
@@ -300,6 +351,7 @@ static void calc_place_values(gint *place_values, struct mdata *mdata)
             place_values[x]++;
     }
 
+    // balance 3rd and 4th quarters
     if (q3 > q4) {
         for (x = mdata->mpositions/2 + 1; x <= mdata->mpositions*3/4; x++)
             place_values[x]++;
@@ -308,6 +360,7 @@ static void calc_place_values(gint *place_values, struct mdata *mdata)
             place_values[x]++;
     }
 
+    // add value based on the closeness of the club mates
     cnt = 2;
     while (cnt < num) {
         for (x = 1; x <= mdata->mpositions; x += cnt) {
@@ -354,30 +407,36 @@ static gint get_free_pos_by_mask(gint mask, struct mdata *mdata)
         return 0;
     }
 
-    for (i = 0; i < 4; i++) {
+    // find minimum valid position
+    for (i = 0; i < NUM_SEEDED; i++) {
         if (mask & (1<<i)) {
-            min = mdata->mpositions*i/4 + 1;
+            min = mdata->mpositions*i/NUM_SEEDED + 1;
             break;
         }
     }
 
-    for (i = 3; i >= 0; i--) {
+    // find maximum valid position
+    for (i = NUM_SEEDED - 1; i >= 0; i--) {
         if (mask & (1<<i)) {
-            max = mdata->mpositions*(i+1)/4;
+            max = mdata->mpositions*(i+1)/NUM_SEEDED;
             break;
         }
     }
 
+    // random number between min and max
     x = rand()%(max - min + 1) + min;
 
+    // calculate avoiding points for the positions
     memset(place_values, 0, sizeof(place_values));
     memset(selected, 0, sizeof(selected));
     calc_place_values(place_values, mdata);
 
     for (i = 1; i <= mdata->mpositions; i++) {
+        // is this position in a valid mask section
         gint currmask = 1<<get_section(x, mdata);
         if ((currmask & mask) && mdata->mpos[x].judoka == 0 
             /*XXX && get_competitor_number(x, mdata) <= mdata->mjudokas*/) {
+            // update the lowest avoid value
             if (place_values[x] < best_value) {
                 best_value = place_values[x];
                 valid_place = x;
@@ -437,6 +496,7 @@ static gint get_seeded_mask(gint mask, struct mdata *mdata)
     return res;
 }
 
+// return sections who have competitors from the same club or country
 static gint get_club_mask(struct mdata *mdata)
 {
     gint i, res = 0;
@@ -455,6 +515,7 @@ static gint get_club_mask(struct mdata *mdata)
     return res;
 }
 
+// return sections who have competitors from the same club
 static gint get_club_only_mask(struct mdata *mdata)
 {
     gint i, res = 0;
@@ -481,6 +542,7 @@ static gint get_competitor_group(gint comp, struct mdata *mdata)
 }
 #endif
 
+// return competitor's number based on position
 gint get_drawed_number(gint pos, gint sys)
 {
     if (sys >= 0 && (pos&1))
@@ -491,11 +553,13 @@ gint get_drawed_number(gint pos, gint sys)
     return pos;
 }
 
+// return competitor's number based on position
 static gint get_competitor_number(gint pos, struct mdata *mdata)
 {
     return get_drawed_number(pos, mdata->mfrench_sys);
 }
 
+// manually select position for the competitor
 static gboolean select_number(GtkWidget *eventbox, GdkEventButton *event, void *param)
 {
     GdkColor bg;
@@ -559,6 +623,7 @@ static gboolean select_number(GtkWidget *eventbox, GdkEventButton *event, void *
     return TRUE;
 }
 
+// manually select next competitor to be drawn
 static gboolean select_competitor(GtkWidget *eventbox, GdkEventButton *event, void *param)
 {
     guint index = 0;
@@ -591,6 +656,19 @@ static gboolean select_competitor(GtkWidget *eventbox, GdkEventButton *event, vo
 static gint seedposq[21] = {0, 0, 0, 0, 0, 0, 0, 0, 0xff, 0x1fe, 0x3f6, // 0 - 10
                             0x7b6, 0xdb6, 0x1b66, 0x3666, 0x6666, 0x6666, 0xccd2, 0x19a52, 0x34a52, 0x94a52}; // 11 - 20
 
+// get mask for example from half length one quarter = section C
+// = create_mask(1, 2, 4)
+// half from beginning = create_mask(0, 1, 2)
+static gint create_mask(gint start_dividend, gint start_divisor, gint length_divisor)
+{
+    gint mask = 0, i;
+    gint start = start_dividend*NUM_SEEDED/start_divisor;
+    gint end = start + NUM_SEEDED/length_divisor;
+    for (i = start; i < end; i++)
+        mask |= 1<<i;
+    return mask;
+}
+
 static gboolean draw_one_comp(struct mdata *mdata)
 {
     gint comp = mdata->selected;
@@ -605,40 +683,53 @@ static gboolean draw_one_comp(struct mdata *mdata)
             mdata->mcomp[comp].seeded > 0 && mdata->mcomp[comp].seeded <= NUM_SEEDED) {
             gint x;
             switch (mdata->mcomp[comp].seeded) {
-            case 1: x = 0; break;
-            case 2: x = 2; break;
-            case 3: x = 1; break;
-            case 4: x = 3; break;
+            case 1: case 5: x = 0; break;
+            case 2: case 6: x = 2; break;
+            case 3: case 7: x = 1; break;
+            case 4: case 8: x = 3; break;
             }
-            found = mdata->mpositions*(x)/4 + 1;
+            found = mdata->mpositions*(x)/4 + 
+                mdata->mcomp[comp].seeded > 4 ? mdata->mpositions/8 + 1 : 1;
 
             if (mdata->mpos[found].judoka)
                 found = 0;
         }
 
         if (!found) {
-            if (mdata->mcomp[comp].seeded == 2) {
-                mask = get_seeded_mask(1, mdata); // look for 1. seeded
-                if (mask & 0x3)
-                    found = get_free_pos_by_mask((mask ^ 0xc) & 0xc, mdata);
-                else
-                    found = get_free_pos_by_mask(0x3, mdata);
-            } else if (mdata->mcomp[comp].seeded == 3) {
-                mask = get_seeded_mask(2, mdata); // look for 2. seeded
-                if (mask & 0x3)
-                    found = get_free_pos_by_mask(mask ^ 0x3, mdata);
-                else 
-                    found = get_free_pos_by_mask(mask ^ 0xc, mdata);
-            } else if (mdata->mcomp[comp].seeded == 4) {
-                mask = get_seeded_mask(1, mdata); // look for 3. seeded
-                if (mask & 0x3)
-                    found = get_free_pos_by_mask(mask ^ 0x3, mdata);
-                else 
-                    found = get_free_pos_by_mask(mask ^ 0xc, mdata);
+            gint seeded = mdata->mcomp[comp].seeded;
+            if (seeded > 1) {
+                gint d = 0, k = 2;
+                gint test_mask = create_mask(d,NUM_SEEDED,2); // AB
+
+                do {
+                    mask = get_seeded_mask(1<<(seeded-k), mdata); // look for the previous seeded
+                    k++;
+                } while (mask == 0 && (seeded-k >= 0));
+
+                if (seeded & 1) {
+                    // put to same half as the previous
+                    if ((mask & test_mask) == 0)
+                        d = NUM_SEEDED/2; // prev seeded in CD half
+                    
+                    test_mask = create_mask(d,NUM_SEEDED,4);
+                    if (mask & test_mask)
+                        d += NUM_SEEDED/4;
+
+                    test_mask = create_mask(d,NUM_SEEDED,4);
+                } else {
+                    // put to different half as the previous
+                    if (mask & test_mask)
+                        d = NUM_SEEDED/2; // prev seeded in AB half
+                    
+                    test_mask = create_mask(d,NUM_SEEDED,2);
+                }
+
+                found = get_free_pos_by_mask((test_mask ^ mask) & test_mask, mdata);
             }
         }
+
         if (!found)
-            found = get_free_pos_by_mask(0xf, mdata);
+            found = get_free_pos_by_mask(create_mask(0,1,1), mdata); // look everywhere
     } else if (sys != SYSTEM_QPOOL) {
         gint getmask;
 
@@ -867,9 +958,9 @@ static gboolean draw_one_comp(struct mdata *mdata)
     return (found > 0);
 }
 
-static void make_manual_mathes_callback(GtkWidget *widget, 
-                                        GdkEvent *event,
-                                        void *data)
+static void make_manual_matches_callback(GtkWidget *widget, 
+                                         GdkEvent *event,
+                                         void *data)
 {
     gint i;
     struct mdata *mdata = data;
@@ -1118,7 +1209,7 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
     if (catname && catname[0] == '?') {
         //SHOW_MESSAGE("Cannot draw %s", catname);
         g_free(catname);
-        free(mdata);
+        g_free(mdata);
         return NULL;
     }
 
@@ -1133,7 +1224,7 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
                      j ? j->last : "?", _("Clear the results first"));
         free_judoka(j);
 #endif
-        free(mdata);
+        g_free(mdata);
         return dialog;
     }
 
@@ -1150,6 +1241,7 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
         guint index;
         gchar *club, *country;
         gint deleted;
+        gint seeding, clubseeding;
         GtkTreeIter iter;
         struct judoka *j;
 
@@ -1162,6 +1254,8 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
                            COL_CLUB, &club,
                            COL_COUNTRY, &country,
                            COL_DELETED, &deleted,
+                           COL_SEEDING, &seeding,
+                           COL_CLUBSEEDING, &clubseeding,
                            -1);
 
         j = get_data(index);
@@ -1181,7 +1275,8 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
         mdata->mcomp[i+1].index = index;
         mdata->mcomp[i+1].club = club;
         mdata->mcomp[i+1].country = country;
-        mdata->mcomp[i+1].seeded = deleted>>2;
+        mdata->mcomp[i+1].seeded = seeding;
+        mdata->mcomp[i+1].clubseeded = clubseeding;
         free_judoka(j);
     }
         
@@ -1229,7 +1324,9 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
             (mdata->mfrench_sys == 2 && i > 8 && i <= 16) ||
             (mdata->mfrench_sys == 2 && i > 24) ||
             (mdata->mfrench_sys == 3 && i > 16 && i <= 32) ||
-            (mdata->mfrench_sys == 3 && i > 48))
+            (mdata->mfrench_sys == 3 && i > 48) ||
+            (mdata->mfrench_sys == 3 && i > 32 && i <= 64) ||
+            (mdata->mfrench_sys == 3 && i > 96))
             gtk_widget_modify_bg(eventbox, GTK_STATE_NORMAL, &bg1);
         else
             gtk_widget_modify_bg(eventbox, GTK_STATE_NORMAL, &bg2);
@@ -1314,7 +1411,7 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
         gtk_widget_show_all(dialog);
 
     g_signal_connect(G_OBJECT(dialog), "response",
-                     G_CALLBACK(make_manual_mathes_callback), mdata);
+                     G_CALLBACK(make_manual_matches_callback), mdata);
 
     last_selected = 0;
     gboolean retval = FALSE;

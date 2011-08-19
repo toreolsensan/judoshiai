@@ -724,8 +724,8 @@ static void update_pool_matches(gint category, gint num)
         struct judoka *winners[5];
         winners[1] = pm.j[c[0][2]];
         winners[2] = pm.j[c[0][1]];
-        winners[3] = pm.j[c[1][2]];
-        winners[4] = pm.j[c[1][1]];
+        winners[3] = pm.j[c[1][1]];
+        winners[4] = pm.j[c[1][2]];
 
         for (i = 0; i < 6; i++) {
             struct match ma;

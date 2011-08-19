@@ -1,4 +1,4 @@
-﻿/* -*- mode: C; c-basic-offset: 4;  -*- */
+/* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
  * Copyright (C) 2006-2011 by Hannu Jokinen

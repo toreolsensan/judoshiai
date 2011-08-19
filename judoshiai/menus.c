@@ -869,8 +869,8 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(preference_grade_visible         , _("Grade Visible"));
     change_menu_label(preference_name_layout           , _("Name Format"));
     change_menu_label(preference_name_layout_0         , _("Name Surname, Country/Club"));
-    change_menu_label(preference_name_layout_1         , _("Surname, Name, Country/Club"));
-    change_menu_label(preference_name_layout_2         , _("Country/Club  Surname, Name"));
+    change_menu_label(preference_name_layout_1         , _("Surname Name, Country/Club"));
+    change_menu_label(preference_name_layout_2         , _("Country/Club,  Surname Name"));
     change_menu_label(preference_pool_style            , _("Pool Style 2"));
     change_menu_label(preference_belt_colors           , _("Use Belt Colors"));
     change_menu_label(preference_sheet_font            , _("Sheet Font"));
