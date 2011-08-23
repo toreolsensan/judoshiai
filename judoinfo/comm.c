@@ -39,7 +39,7 @@
 #include <glib/gwin32.h>
 #endif
 
-#include "judoinfo.h"
+#include "judoweight.h"
 #include "comm.h"
 
 /* System-dependent definitions */
@@ -75,40 +75,11 @@ gint timeout_callback(gpointer data)
     return TRUE;
 }
 
-#define ASK_TABLE_LEN 1024
-static gint ask_table[ASK_TABLE_LEN];
-static gint put_ptr = 0, get_ptr = 0;
-
-gint timeout_ask_for_data(gpointer data)
-{
-    struct message msg;
-    extern gint my_address;
-
-    if (get_ptr != put_ptr) {
-        msg.type = MSG_NAME_REQ;
-        msg.sender = my_address;
-        msg.u.name_req.index = ask_table[get_ptr++];
-        send_packet(&msg);
-		
-        if (get_ptr >= ASK_TABLE_LEN)
-            get_ptr = 0;
-    }
-    return TRUE;
-}
-
-static void ask_for_data(gint index)
-{
-    ask_table[put_ptr++] = index;
-    if (put_ptr >= ASK_TABLE_LEN)
-        put_ptr = 0;
-}
-
 gboolean msg_accepted(struct message *m)
 {
     switch (m->type) {
-    case MSG_MATCH_INFO:
-    case MSG_NAME_INFO:
-    case MSG_CANCEL_REST_TIME:
+    case MSG_EDIT_COMPETITOR:
+    case MSG_SCALE:
         return TRUE;
     }
     return FALSE;
@@ -119,6 +90,7 @@ void msg_received(struct message *input_msg)
     gint tatami;
     gint position;
     struct name_data *j;
+    gchar  buf[16];
 
     if (input_msg->sender < 10)
         return;
@@ -129,98 +101,21 @@ void msg_received(struct message *input_msg)
             input_msg->type, input_msg->sender);
 #endif
     switch (input_msg->type) {
-    case MSG_MATCH_INFO:
-        tatami = input_msg->u.match_info.tatami - 1;
-        position = input_msg->u.match_info.position;
-        if (tatami < 0 || tatami >= NUM_TATAMIS)
-            return;
-        if (position < 0 || position >= NUM_LINES)
-            return;
-
-        match_list[tatami][position].category = input_msg->u.match_info.category;
-        match_list[tatami][position].number   = input_msg->u.match_info.number;
-        match_list[tatami][position].blue     = input_msg->u.match_info.blue;
-        match_list[tatami][position].white    = input_msg->u.match_info.white;
-        match_list[tatami][position].flags    = input_msg->u.match_info.flags;
-        match_list[tatami][position].rest_end = input_msg->u.match_info.rest_time + time(NULL);
-
-        /***
-            g_print("match info %d:%d b=%d w=%d\n",
-            match_list[tatami][position].category,
-            match_list[tatami][position].number,
-            match_list[tatami][position].blue,
-            match_list[tatami][position].white);
-        ***/
-        j = avl_get_data(match_list[tatami][position].category);
-        if (j == NULL) {
-            ask_for_data(match_list[tatami][position].category);
-        }
-
-        j = avl_get_data(match_list[tatami][position].blue);
-        if (j == NULL) {
-            ask_for_data(match_list[tatami][position].blue);
-        }
-
-        if (position > 0) {
-            j = avl_get_data(match_list[tatami][position].white);
-            if (j == NULL) {
-                ask_for_data(match_list[tatami][position].white);
-            }
-        }
-
-        write_matches();
-        //refresh_window();
+    case MSG_EDIT_COMPETITOR:
+	set_display(&input_msg->u.edit_competitor);
         break;
 
-    case MSG_NAME_INFO:
-        avl_set_data(input_msg->u.name_info.index, 
-                     input_msg->u.name_info.first, 
-                     input_msg->u.name_info.last, 
-                     input_msg->u.name_info.club);
-        //refresh_window();
-#if 0
-        g_print("name info %d: %s %s, %s\n", 
-                input_msg->u.name_info.index, 
-                input_msg->u.name_info.first, 
-                input_msg->u.name_info.last, 
-                input_msg->u.name_info.club);
-#endif
+    case MSG_SCALE:
+            g_snprintf(buf, sizeof(buf), "%d.%02d", input_msg->u.scale.weight/1000, (input_msg->u.scale.weight%1000)/10);
+            if (weight_entry)
+                gtk_button_set_label(GTK_BUTTON(weight_entry), buf);
         break;
-#if 0
-    case MSG_CANCEL_REST_TIME:
-        for (tatami = 0; tatami < NUM_TATAMIS; tatami++) {
-            for (position = 0; position < NUM_LINES; position++) {
-                if (match_list[tatami][position].category == input_msg->u.cancel_rest_time.category &&
-                    match_list[tatami][position].number == input_msg->u.cancel_rest_time.number) {
-                    match_list[tatami][position].rest_end = 0;
-                    match_list[tatami][position].flags = 0;
-                    //refresh_window();
-                    return;
-                }
-            }
-        }
-        break;
-#endif
     }
 }
 
 
 void send_packet(struct message *msg)
 {
-#if 0
-    if (msg->type == MSG_RESULT) {
-        printf("tatami=%d cat=%d match=%d min=%d blue=%x white=%x bv=%d wv=%d\n",
-               msg->u.result.tatami,
-               msg->u.result.category,
-               msg->u.result.match,
-               msg->u.result.minutes,
-               msg->u.result.blue_score,
-               msg->u.result.white_score,
-               msg->u.result.blue_vote,
-               msg->u.result.white_vote);
-    }
-#endif
-
     msg_to_queue(msg);
 }
 

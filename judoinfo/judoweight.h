@@ -5,8 +5,8 @@
  * Full copyright text is included in the software package.
  */ 
 
-#ifndef _JUDOINFO_H_
-#define _JUDOINFO_H_
+#ifndef _JUDOWEIGHT_H_
+#define _JUDOWEIGHT_H_
 
 #include "comm.h"
 
@@ -38,56 +38,18 @@
 #define LANG_IS 6
 #define NUM_LANGS 7
 
-#define FRAME_WIDTH  600
-#define FRAME_HEIGHT 400
+#define FRAME_WIDTH  500
+#define FRAME_HEIGHT 300
 
-#define BLUE  1
-#define WHITE 2
-#define CMASK 3
-#define GIVE_POINTS 4
-
-#define OSAEKOMI_DSP_NO      0
-#define OSAEKOMI_DSP_YES     1
-#define OSAEKOMI_DSP_BLUE    2
-#define OSAEKOMI_DSP_WHITE   3
-#define OSAEKOMI_DSP_UNKNOWN 4
-
-#define CLEAR_SELECTION   0
-#define HANTEI_BLUE       1
-#define HANTEI_WHITE      2
-#define HANSOKUMAKE_BLUE  3
-#define HANSOKUMAKE_WHITE 4
-
-#define NUM_TATAMIS  10
-#define NUM_LINES   10
-
-#define NORMAL_DISPLAY     0
-#define SMALL_DISPLAY      1
-#define HORIZONTAL_DISPLAY 2
-
-struct name_data {
-    gint   index;
-    gchar *last;
-    gchar *first;
-    gchar *club;
-};
-
-struct match {
-    gint   category;
-    gint   number;
-    gint   blue;
-    gint   white;
-    gint   flags;
-    time_t rest_end;
-};
+#define JUDOGI_OK     0x20
+#define JUDOGI_NOK    0x40
 
 extern GTimer *timer;
 extern gchar *installation_dir;
 extern gulong my_ip_address, node_ip_addr;
 extern GKeyFile *keyfile;
-extern gboolean show_tatami[NUM_TATAMIS];
-extern struct match match_list[NUM_TATAMIS][NUM_LINES];
 extern gint language;
+extern GtkWidget *weight_entry;
 
 extern gboolean this_is_shiai(void);
 extern void msg_to_queue(struct message *msg);
@@ -98,17 +60,11 @@ extern gulong host2net(gulong a);
 
 extern GtkWidget *get_menubar_menu(GtkWidget  *window);
 extern gpointer client_thread(gpointer args);
+extern gpointer serial_thread(gpointer args);
 extern gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param);
 extern void ask_node_ip_address( GtkWidget *w, gpointer data);
 extern void show_my_ip_addresses( GtkWidget *w, gpointer data);
-extern gint number_of_tatamis(void);
-extern void init_trees(void);
-extern struct name_data *avl_get_data(gint index);
-extern void avl_set_data(gint index, gchar *first, gchar *last, gchar *club);
-extern void init_trees(void);
-extern void refresh_window(void);
-extern gint timeout_ask_for_data(gpointer data);
-extern void write_matches(void);
 
+extern void set_display(struct msg_edit_competitor *msg);
 
 #endif
