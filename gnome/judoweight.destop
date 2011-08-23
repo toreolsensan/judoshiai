@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=JudoWeight for weigh-in
+Comment=Remote weigh-in and judogi control
+Exec=judoweight
+Icon=judoweight.png
+Terminal=false
+Type=Application
+Categories=Application;Other;
+StartupNotify=true
