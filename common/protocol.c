@@ -139,6 +139,24 @@ gint encode_msg(struct message *m, guchar *buf, gint buflen)
 	put32(m->u.update_label.label_num);
 	put32(m->u.update_label.xalign);
 	break;
+    case MSG_EDIT_COMPETITOR:
+	put32(m->u.edit_competitor.operation);
+	put32(m->u.edit_competitor.index);
+	putstr(m->u.edit_competitor.last);
+	putstr(m->u.edit_competitor.first);
+	put32(m->u.edit_competitor.birthyear);
+	putstr(m->u.edit_competitor.club);
+	putstr(m->u.edit_competitor.regcategory);
+	put32(m->u.edit_competitor.belt);
+	put32(m->u.edit_competitor.weight);
+	put32(m->u.edit_competitor.visible);
+	putstr(m->u.edit_competitor.category);
+	put32(m->u.edit_competitor.deleted);
+	putstr(m->u.edit_competitor.country);
+	putstr(m->u.edit_competitor.id);
+	put32(m->u.edit_competitor.seeding);
+	put32(m->u.edit_competitor.clubseeding);
+	break;
     }
 
     gint len = (gint)(p - buf);
@@ -277,6 +295,24 @@ gint decode_msg(struct message *m, guchar *buf, gint buflen)
 	getstr(m->u.update_label.size);
 	get32(m->u.update_label.label_num);
 	get32(m->u.update_label.xalign);
+	break;
+    case MSG_EDIT_COMPETITOR:
+	get32(m->u.edit_competitor.operation);
+	get32(m->u.edit_competitor.index);
+	getstr(m->u.edit_competitor.last);
+	getstr(m->u.edit_competitor.first);
+	get32(m->u.edit_competitor.birthyear);
+	getstr(m->u.edit_competitor.club);
+	getstr(m->u.edit_competitor.regcategory);
+	get32(m->u.edit_competitor.belt);
+	get32(m->u.edit_competitor.weight);
+	get32(m->u.edit_competitor.visible);
+	getstr(m->u.edit_competitor.category);
+	get32(m->u.edit_competitor.deleted);
+	getstr(m->u.edit_competitor.country);
+	getstr(m->u.edit_competitor.id);
+	get32(m->u.edit_competitor.seeding);
+	get32(m->u.edit_competitor.clubseeding);
 	break;
     }
 

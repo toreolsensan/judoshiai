@@ -19,7 +19,8 @@
 #define APPLICATION_TYPE_SHIAI   1
 #define APPLICATION_TYPE_TIMER   2
 #define APPLICATION_TYPE_INFO    3
-#define NUM_APPLICATION_TYPES    4
+#define APPLICATION_TYPE_WEIGHT  4
+#define NUM_APPLICATION_TYPES    5
 
 #define COMM_ESCAPE 0xff
 #define COMM_FF     0xfe
@@ -173,7 +174,14 @@ struct msg_update_label {
     gint xalign;
 };
 
+#define EDIT_OP_GET        0
+#define EDIT_OP_SET        1
+#define EDIT_OP_SET_WEIGHT 2
+#define EDIT_OP_SET_FLAGS  4
+#define EDIT_OP_GET_BY_ID  8
+
 struct msg_edit_competitor {
+    gint operation;
     gint index; // == 0 -> new competitor
     gchar last[32];
     gchar first[32];
