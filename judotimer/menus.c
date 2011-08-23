@@ -179,7 +179,7 @@ static GtkWidget *menubar, *match, *preferences, *help, *matchmenu, *preferences
 static GtkWidget *separator1, *separator2, *quit, *viewlog;
 static GtkWidget *match0, *match1, *match2, *match3, *match4, *match5, *gs;
 static GtkWidget *blue_wins, *white_wins, *red_background, *full_screen, *rules_no_koka;
-static GtkWidget *rules_leave_points, *rules_stop_ippon, *whitefirst, *confirm_match;
+static GtkWidget *rules_leave_points, *rules_stop_ippon, *whitefirst, *showcomp, *confirm_match;
 static GtkWidget *tatami_sel, *tatami_sel_none, *tatami_sel_1,  *tatami_sel_2,  *tatami_sel_3,  *tatami_sel_4;
 static GtkWidget *tatami_sel_5, *tatami_sel_6, *tatami_sel_7, *tatami_sel_8, *tatami_sel_9, *tatami_sel_10;
 static GtkWidget *node_ip, *my_ip, *manual, *about, *quick_guide;
@@ -401,6 +401,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     /* Create the Preferences menu content. */
     red_background  = gtk_check_menu_item_new_with_label("Red background");
     whitefirst      = gtk_check_menu_item_new_with_label("White first");
+    showcomp        = gtk_check_menu_item_new_with_label("");
     clock_only      = gtk_check_menu_item_new_with_label("View only clocks");
     layout_sel_1    = gtk_radio_menu_item_new_with_label(NULL, "");
     layout_sel_2    = gtk_radio_menu_item_new_with_label_from_widget((GtkRadioMenuItem *)layout_sel_1, "");
@@ -451,6 +452,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), rules_stop_ippon);
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), confirm_match);
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), whitefirst);
+    gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), showcomp);
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), gtk_separator_menu_item_new());
 
     layout_sel = gtk_menu_item_new_with_label("");
@@ -523,6 +525,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     g_signal_connect(G_OBJECT(rules_stop_ippon), "activate", G_CALLBACK(toggle_rules_stop_ippon), (gpointer)0);
     g_signal_connect(G_OBJECT(confirm_match),   "activate", G_CALLBACK(toggle_confirm_match),  (gpointer)0);
     g_signal_connect(G_OBJECT(whitefirst),      "activate", G_CALLBACK(toggle_whitefirst),     (gpointer)0);
+    g_signal_connect(G_OBJECT(showcomp),        "activate", G_CALLBACK(toggle_show_comp),      (gpointer)0);
     g_signal_connect(G_OBJECT(layout_sel_1),    "activate", G_CALLBACK(select_display_layout), (gpointer)1);
     g_signal_connect(G_OBJECT(layout_sel_2),    "activate", G_CALLBACK(select_display_layout), (gpointer)2);
     g_signal_connect(G_OBJECT(layout_sel_3),    "activate", G_CALLBACK(select_display_layout), (gpointer)3);
@@ -681,6 +684,13 @@ void set_preferences(void)
         language = i;
     else
         language = LANG_FI;
+
+    error = NULL;
+    if (g_key_file_get_boolean(keyfile, "preferences", "showcompetitornames", &error)) {
+        gtk_menu_item_activate(GTK_MENU_ITEM(showcomp));
+        show_competitor_names = TRUE;
+    }
+
 }
 
 gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param)
@@ -730,6 +740,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(confirm_match, _("Confirm New Match"));
     change_menu_label(clock_only, _("View clocks only"));
     change_menu_label(whitefirst, _("White first"));
+    change_menu_label(showcomp, _("Show competitors"));
 
     change_menu_label(layout_sel,   _("Display layout"));
     change_menu_label(layout_sel_1, _("Display layout 1"));

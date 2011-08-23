@@ -186,6 +186,9 @@ void msg_received(struct message *input_msg)
             last_category = input_msg->u.next_match.category;
             last_match = input_msg->u.next_match.match;
             display_ad_window();
+            display_comp_window(input_msg->u.next_match.cat_1,
+                                input_msg->u.next_match.blue_1,
+                                input_msg->u.next_match.white_1);
         }
 
         if (input_msg->sender < 10 || 
@@ -209,6 +212,12 @@ void msg_received(struct message *input_msg)
         if (input_msg->u.next_match.minutes && automatic)
             reset(GDK_0, &input_msg->u.next_match);
 
+        if (current_category != input_msg->u.next_match.category ||
+            current_match != input_msg->u.next_match.match)
+            display_comp_window(input_msg->u.next_match.cat_1,
+                                input_msg->u.next_match.blue_1,
+                                input_msg->u.next_match.white_1);
+
         current_category = input_msg->u.next_match.category;
         current_match = input_msg->u.next_match.match;
 
@@ -216,7 +225,7 @@ void msg_received(struct message *input_msg)
             if (current_category != msgout.u.next_match.category ||
                 current_match != msgout.u.next_match.match) {
                 result_send_time = 0;
-            } else if (time(NULL) - result_send_time > 4) {
+            } else if (time(NULL) - result_send_time > 15) {
                 send_packet(&msgout);
                 result_send_time = time(NULL);
 

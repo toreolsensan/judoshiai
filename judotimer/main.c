@@ -678,7 +678,7 @@ void set_score(guint score)
 	expose_label(NULL, points);
 }
 
-static void parse_name(const gchar *s, gchar *first, gchar *last, gchar *club, gchar *country)
+void parse_name(const gchar *s, gchar *first, gchar *last, gchar *club, gchar *country)
 {
     const gchar *p = s;
     gint i;
@@ -1768,6 +1768,12 @@ void toggle_whitefirst(GtkWidget *menu_item, gpointer data)
     expose(darea, 0, 0);
 }
 
+void toggle_show_comp(GtkWidget *menu_item, gpointer data)
+{
+    show_competitor_names = GTK_CHECK_MENU_ITEM(menu_item)->active;
+    g_key_file_set_boolean(keyfile, "preferences", "showcompetitornames", show_competitor_names);
+}
+
 void toggle_switch_sides(GtkWidget *menu_item, gpointer data)
 {
     gchar *tmp;
@@ -2212,6 +2218,7 @@ void select_display_layout(GtkWidget *menu_item, gpointer data)
         break;
     }
 
+    set_colors();
     expose(darea, 0, 0);
 
     g_key_file_set_integer(keyfile, "preferences", "displaylayout", (gint)data);
@@ -2250,5 +2257,10 @@ gboolean this_is_shiai(void)
 gint application_type(void)
 {
         return APPLICATION_TYPE_TIMER;
+}
+
+gboolean blue_background(void)
+{
+    return bgcolor == &color_blue;
 }
 

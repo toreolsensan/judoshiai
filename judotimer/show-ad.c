@@ -1516,9 +1516,16 @@ static gint read_gif(gchar *FileName)
  * The real dumping routine.						      *
  ******************************************************************************/
 
+gboolean show_competitor_names = FALSE;
 static GtkWindow *ad_window = NULL;
-                      
-static struct frame *get_current_frame(void)
+static gboolean comp_names_pending = FALSE;
+static gboolean no_ads = FALSE;
+static time_t comp_names_start = 0;
+static gchar category[32];
+static gchar b_first[32], b_last[32], b_club[32], b_country[32];
+static gchar w_first[32], w_last[32], w_club[32], w_country[32];
+
+static struct frame *get_current_frame(GtkWidget *widget)
 {
     gint i;
     struct frame *f = advertisements[current_ad].frames.next;
@@ -1529,9 +1536,10 @@ static struct frame *get_current_frame(void)
 #endif
     for (i = 0; i < current_frame; i++) {
         if (!f)
-            return NULL;
+            break;
         f = f->next;
     }
+
     return f;
 }
 
@@ -1547,12 +1555,82 @@ static gboolean current_ad_has_one_frame(void)
 static gboolean expose_ad(GtkWidget *widget, GdkEventExpose *event, gpointer userdata)
 {
     gint width, height;
-    struct frame *frame = get_current_frame();
-    if (!frame)
-        return FALSE;
+    struct frame *frame = NULL;
+
+    if (!no_ads)
+        frame = get_current_frame(widget);
 
     width = widget->allocation.width;
     height = widget->allocation.height;
+
+    if (!frame) {
+        if (comp_names_pending == FALSE)
+            return FALSE;
+
+#define FIRST_BLOCK_C 0.25
+#define FIRST_BLOCK_START  0.0
+#define SECOND_BLOCK_START  (FIRST_BLOCK_C*height)
+#define THIRD_BLOCK_START ((1.0+FIRST_BLOCK_C)*height/2.0)
+#define FIRST_BLOCK_HEIGHT (FIRST_BLOCK_C*height)
+#define OTHER_BLOCK_HEIGHT ((height-FIRST_BLOCK_HEIGHT)/2.0)
+
+        cairo_text_extents_t extents;
+        cairo_t *c = gdk_cairo_create(widget->window);
+
+        cairo_set_source_rgb(c, 0.0, 0.0, 0.0);
+        cairo_rectangle(c, 0.0, 0.0, width, FIRST_BLOCK_HEIGHT);
+        cairo_fill(c);
+        
+        cairo_set_source_rgb(c, 1.0, 1.0, 1.0);
+        if (white_first)
+            cairo_rectangle(c, 0.0, SECOND_BLOCK_START, width, OTHER_BLOCK_HEIGHT);
+        else
+            cairo_rectangle(c, 0.0, THIRD_BLOCK_START, width, OTHER_BLOCK_HEIGHT);
+        cairo_fill(c);
+        
+        if (blue_background())
+            cairo_set_source_rgb(c, 0.0, 0.0, 1.0);
+        else
+            cairo_set_source_rgb(c, 1.0, 0.0, 0.0);
+
+        if (white_first)
+            cairo_rectangle(c, 0.0, THIRD_BLOCK_START, width, OTHER_BLOCK_HEIGHT);
+        else
+            cairo_rectangle(c, 0.0, SECOND_BLOCK_START, width, OTHER_BLOCK_HEIGHT);
+        cairo_fill(c);
+
+        cairo_set_font_size(c, 0.6*FIRST_BLOCK_HEIGHT);
+
+        cairo_set_source_rgb(c, 1.0, 1.0, 1.0);
+        cairo_text_extents(c, category, &extents);
+        cairo_move_to(c, 10.0, (FIRST_BLOCK_HEIGHT - extents.height)/2.0 - extents.y_bearing);
+        cairo_show_text(c, category);
+
+        if (white_first)
+            cairo_set_source_rgb(c, 0.0, 0.0, 0.0);
+        else
+            cairo_set_source_rgb(c, 1.0, 1.0, 1.0);
+
+        cairo_set_font_size(c, 0.6*OTHER_BLOCK_HEIGHT);
+        cairo_text_extents(c, b_last, &extents);
+        cairo_move_to(c, 10.0, SECOND_BLOCK_START + (OTHER_BLOCK_HEIGHT - extents.height)/2.0 - extents.y_bearing);
+        cairo_show_text(c, b_last);
+
+        if (white_first)
+            cairo_set_source_rgb(c, 1.0, 1.0, 1.0);
+        else
+            cairo_set_source_rgb(c, 0.0, 0.0, 0.0);
+
+        cairo_text_extents(c, w_last, &extents);
+        cairo_move_to(c, 10.0, THIRD_BLOCK_START + (OTHER_BLOCK_HEIGHT - extents.height)/2.0 - extents.y_bearing);
+        cairo_show_text(c, w_last);
+
+        cairo_show_page(c);
+        cairo_destroy(c);
+
+        return FALSE;
+    }
+
     //gtk_window_get_size(ad_window, &width, &height);
 
     gdouble scalex = 1.0*width/frame->width, 
@@ -1600,16 +1678,36 @@ static gboolean refresh_frame(gpointer data)
     if (ad_window == NULL)
         return FALSE;
 
+    if (comp_names_pending && no_ads) {
+        if (comp_names_start == 0)
+            comp_names_start = time(NULL);
+        else if (time(NULL) - comp_names_start > 3) {
+            no_ads = FALSE;
+            comp_names_pending = FALSE;
+            comp_names_start = 0;
+            gtk_widget_destroy(GTK_WIDGET(data));
+            return FALSE;
+        }
+        return TRUE;
+    }
+
     current_frame++;
-    if (get_current_frame() == NULL) {
+    if (get_current_frame(GTK_WIDGET(data)) == NULL) {
         current_frame = 0;
         current_ad++;
         if (current_ad >= num_ads)
             current_ad = 0;
+
+        if (comp_names_pending) {
+            no_ads = TRUE;
+            goto update;
+        }
+
         gtk_widget_destroy(GTK_WIDGET(data));
         return FALSE;
     }
 
+ update:
     widget = GTK_WIDGET(data);
     if (widget->window) {
         region = gdk_drawable_get_clip_region(widget->window);
@@ -1670,21 +1768,30 @@ static void save_advertisement(GifRowType *ScreenBuffer,
 
 extern GtkWidget *main_window;
 
+#define USE_FULL_SCREEN 1
+
 void display_ad_window(void)
 {
-    if (ad_window || num_ads == 0)
+    if (ad_window)
         return;
 
-    gint width = advertisements[current_ad].swidth;
-    gint height = advertisements[current_ad].sheight;
+    if (comp_names_pending == FALSE && num_ads == 0)
+        return;
 
+#ifndef USE_FULL_SCREEN
+    gint width;
+    gint height;
     gtk_window_get_size(GTK_WINDOW(main_window), &width, &height);
+#endif
 
     GtkWindow *window = ad_window = GTK_WINDOW(gtk_window_new(GTK_WINDOW_TOPLEVEL));
     gtk_window_set_title(GTK_WINDOW(window), _("Advertisement"));
+#ifdef USE_FULL_SCREEN
     gtk_window_fullscreen(GTK_WINDOW(window));
-    //gtk_widget_set_size_request(window, width, height);
-    //gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
+#else
+    gtk_widget_set_size_request(GTK_WIDGET(window), width, height);
+#endif
+    gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 
     GtkWidget *darea = gtk_drawing_area_new();
     gtk_container_add (GTK_CONTAINER (window), darea);
@@ -1697,7 +1804,9 @@ void display_ad_window(void)
     g_signal_connect(G_OBJECT(darea), 
                      "expose-event", G_CALLBACK(expose_ad), NULL);
 
-    if (current_ad_has_one_frame())
+    if (comp_names_pending)
+        g_timeout_add(1000, refresh_frame, window);
+    else if (current_ad_has_one_frame())
         g_timeout_add(2000, refresh_frame, window);
     else
         g_timeout_add(100, refresh_frame, window);
@@ -1718,8 +1827,9 @@ void toggle_advertise(GtkWidget *menu_item, gpointer data)
                                          NULL);
 
     do_ads = gtk_check_button_new_with_label(_("Run Advertisements"));
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(do_ads), TRUE);
+    //gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(do_ads), TRUE);
     gtk_widget_show(do_ads);
+
     gtk_file_chooser_set_extra_widget(GTK_FILE_CHOOSER(dialog), do_ads);
 
     if (ad_directory)
@@ -1745,29 +1855,42 @@ void toggle_advertise(GtkWidget *menu_item, gpointer data)
     current_frame = 0;
     memset(&advertisements, 0, sizeof(advertisements));
 
-    if (!ok)
-        return;
-
-    GDir *dir = g_dir_open(ad_directory, 0, NULL);
-    if (dir) {
-        const gchar *fname = g_dir_read_name(dir);
-        while (fname) {
-            gchar *fullname = g_build_filename(ad_directory, fname, NULL);
-            if (strstr(fname, ".gif"))
-                read_gif(fullname);
-            else if (strstr(fname, ".png") && num_ads < NUM_ADS) {
-                struct frame *frame = g_malloc(sizeof(*frame));
-                memset(frame, 0, sizeof(frame));
-                frame->surface = cairo_image_surface_create_from_png(fullname);
-                frame->width = cairo_image_surface_get_width(frame->surface);
-                frame->height = cairo_image_surface_get_height(frame->surface);
-                advertisements[num_ads].frames.next = frame;
-                num_ads++;
+    if (ok) {
+        GDir *dir = g_dir_open(ad_directory, 0, NULL);
+        if (dir) {
+            const gchar *fname = g_dir_read_name(dir);
+            while (fname) {
+                gchar *fullname = g_build_filename(ad_directory, fname, NULL);
+                if (strstr(fname, ".gif"))
+                    read_gif(fullname);
+                else if (strstr(fname, ".png") && num_ads < NUM_ADS) {
+                    struct frame *frame = g_malloc(sizeof(*frame));
+                    memset(frame, 0, sizeof(frame));
+                    frame->surface = cairo_image_surface_create_from_png(fullname);
+                    frame->width = cairo_image_surface_get_width(frame->surface);
+                    frame->height = cairo_image_surface_get_height(frame->surface);
+                    advertisements[num_ads].frames.next = frame;
+                    num_ads++;
+                }
+                g_free(fullname);
+                fname = g_dir_read_name(dir);
             }
-            g_free(fullname);
-            fname = g_dir_read_name(dir);
+            g_dir_close(dir);
         }
-        g_dir_close(dir);
     }
 }
 
+void display_comp_window(gchar *cat, gchar *comp1, gchar *comp2)
+{
+    if (!show_competitor_names)
+        return;
+
+    strncpy(category, cat, sizeof(category)-1);
+    parse_name(comp1, b_first, b_last, b_club, b_country);
+    parse_name(comp2, w_first, w_last, w_club, w_country);
+    comp_names_start = 0;
+    comp_names_pending = TRUE;
+    if (ad_window == NULL)
+        no_ads = TRUE;
+    display_ad_window();
+}

@@ -91,6 +91,8 @@ extern gint language;
 extern gboolean rest_time;
 extern gint current_category, current_match;
 extern gboolean sides_switched;
+extern gboolean white_first;
+extern gboolean show_competitor_names;
 
 extern gboolean this_is_shiai(void);
 extern void copy_packet(struct message *msg); // not used
@@ -126,6 +128,7 @@ extern void toggle_rules_leave_points(GtkWidget *menu_item, gpointer data);
 extern void toggle_rules_stop_ippon(GtkWidget *menu_item, gpointer data);
 extern void toggle_confirm_match(GtkWidget *menu_item, gpointer data);
 extern void toggle_whitefirst(GtkWidget *menu_item, gpointer data);
+extern void toggle_show_comp(GtkWidget *menu_item, gpointer data);
 extern void select_display_layout(GtkWidget *menu_item, gpointer data);
 extern void select_name_layout(GtkWidget *menu_item, gpointer data);
 extern gpointer client_thread(gpointer args);
@@ -175,6 +178,9 @@ extern void set_gs_text(gchar *txt);
 extern void clear_switch_sides(void);
 extern void toggle_switch_sides(GtkWidget *menu_item, gpointer data);
 extern void light_switch_sides(gboolean yes);
+extern void parse_name(const gchar *s, gchar *first, gchar *last, gchar *club, gchar *country);
+extern void display_comp_window(gchar *cat, gchar *comp1, gchar *comp2);
+extern gboolean blue_background(void);
 
 
 #endif
