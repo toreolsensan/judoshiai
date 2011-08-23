@@ -50,6 +50,7 @@ extern void select_use_logo(GtkWidget *w, gpointer data);
 extern void set_serial_dialog(GtkWidget *w, gpointer data);
 extern void serial_set_device(gchar *dev);
 extern void serial_set_baudrate(gint baud);
+extern void serial_set_type(gint type);
 extern void print_weight_notes(GtkWidget *menuitem, gpointer userdata);
 
 
@@ -714,6 +715,11 @@ void set_preferences(void)
     x1 = g_key_file_get_integer(keyfile, "preferences", "serialbaudrate", &error);
     if (!error)
         serial_set_baudrate(x1);
+
+    error = NULL;
+    x1 = g_key_file_get_integer(keyfile, "preferences", "serialtype", &error);
+    if (!error)
+        serial_set_type(x1);
 }
 
 static void change_menu_label(GtkWidget *item, const gchar *new_text)
@@ -879,7 +885,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(preference_auto_arrange          , _("Automatic Match Delay"));
     change_menu_label(preference_use_logo              , _("Print Logo"));
 
-    change_menu_label(preference_serial                , _("Scale Serial Interface"));
+    change_menu_label(preference_serial                , _("Scale Serial Interface..."));
     change_menu_label(preference_medal_matches         , _("Medal Matches..."));
 
     change_menu_label(help_manual, _("Manual"));

@@ -49,6 +49,9 @@ protocol.o: ../common/protocol.c
 binreloc.o: ../common/binreloc.c
 	${CC} $(PROF) -g $(CFLAGS) -c $< -o $@
 
+serial.o: ../common/serial.c
+	${CC} $(PROF) -g $(CFLAGS) -c $< -o $@
+
 %.o: %.c
 	${CC} $(PROF) -g $(CFLAGS) -c $< -o $@
 

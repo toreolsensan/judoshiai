@@ -969,6 +969,7 @@ void set_competitor(http_parser_t *parser)
     memset(&msg, 0, sizeof(msg));
 
     msg.type = MSG_EDIT_COMPETITOR;
+    msg.u.edit_competitor.operation = EDIT_OP_SET;
     msg.u.edit_competitor.index = index;
     STRCPY(last);
     STRCPY(first);

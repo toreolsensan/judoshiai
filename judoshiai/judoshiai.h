@@ -544,12 +544,6 @@ struct paint_data {
     gint     row_height;
 };
 
-#define NUM_BAUDRATES 5
-struct baudrates {
-    gint value;
-    gchar *text;
-};
-
 extern avl_tree *categories_tree;
 extern struct category_data category_queue[NUM_TATAMIS+1];
 

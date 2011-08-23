@@ -208,56 +208,101 @@ void msg_received(struct message *input_msg)
         break;
 
     case MSG_EDIT_COMPETITOR:
-#define SET_J(_x) j2._x = input_msg->u.edit_competitor._x
-        memset(&j2, 0, sizeof(j2));
-        SET_J(index);
-        SET_J(last);
-        SET_J(first);
-        SET_J(birthyear);
-        SET_J(belt);
-        SET_J(club);
-        SET_J(regcategory);
-        SET_J(weight);
-        SET_J(visible);
-        SET_J(category);
-        SET_J(deleted);
-        SET_J(country);
-        SET_J(id);
-        SET_J(seeding);
-        SET_J(clubseeding);
-        if (j2.index) { // edit old competitor 
-            j = get_data(j2.index);
-            if (j) {
-                j2.category = j->category;
-                db_update_judoka(j2.index, &j2);
-                if ((j->deleted & 1) == 0 && (j2.deleted & 1)) {
-                    GtkTreeIter iter;
-                    if (find_iter(&iter, j2.index))
-                        gtk_tree_store_remove((GtkTreeStore *)current_model, &iter);
-                } else {
-                    display_one_judoka(&j2);
-                    update_competitors_categories(j2.index);
-                }
+	if (input_msg->u.edit_competitor.operation == EDIT_OP_GET_BY_ID) {
+	    gint indx = db_get_index_by_id(input_msg->u.edit_competitor.id);
+	    if (indx)
+		j = get_data(indx);
+	    else
+		j = get_data(atoi(input_msg->u.edit_competitor.id));
+
+	    memset(&output_msg, 0, sizeof(output_msg));
+	    output_msg.type = MSG_EDIT_COMPETITOR;
+	    output_msg.u.edit_competitor.operation = EDIT_OP_GET;
+
+	    if (j) {
+#define CP2MSG_INT(_dst) output_msg.u.edit_competitor._dst = j->_dst
+#define CP2MSG_STR(_dst) strncpy(output_msg.u.edit_competitor._dst, j->_dst, sizeof(output_msg.u.edit_competitor._dst)-1)
+		CP2MSG_INT(index);
+		CP2MSG_STR(last);
+		CP2MSG_STR(first);
+		CP2MSG_INT(birthyear);
+		CP2MSG_STR(club);
+		CP2MSG_STR(regcategory);
+		CP2MSG_INT(belt);
+		CP2MSG_INT(weight);
+		CP2MSG_INT(visible);
+		CP2MSG_STR(category);
+		CP2MSG_INT(deleted);
+		CP2MSG_STR(country);
+		CP2MSG_STR(id);
+		CP2MSG_INT(seeding);
+		CP2MSG_INT(clubseeding);
+		free_judoka(j);
+	    }
+
+	    send_packet(&output_msg);
+	} else if (input_msg->u.edit_competitor.operation == EDIT_OP_SET_WEIGHT) {
+            j = get_data(input_msg->u.edit_competitor.index);
+	    if (j) {
+                j->weight = input_msg->u.edit_competitor.weight;
+                j->deleted = input_msg->u.edit_competitor.deleted;
+                if (j->visible)
+                    db_update_judoka(j->index, j);
+                display_one_judoka(j);
                 free_judoka(j);
-            } else if ((j2.deleted & 1) == 0) {
-                j2.category = "?";
-                db_update_judoka(j2.index, &j2);
-
-                if (j2.index >= current_index)
-                    current_index = j2.index + 1;
-
-                display_one_judoka(&j2);
-                
-                avl_set_competitor(j2.index, j2.first, j2.last);
-                avl_set_competitor_status(j2.index, j2.deleted);
             }
-        } else { // add new competitor
-            j2.index = current_index++;
-            j2.category = "?";
-            db_add_judoka(j2.index, &j2);
-            display_one_judoka(&j2);
-            update_competitors_categories(j2.index);
-        }
+	} else if (input_msg->u.edit_competitor.operation == EDIT_OP_SET) {
+#define SET_J(_x) j2._x = input_msg->u.edit_competitor._x
+	    memset(&j2, 0, sizeof(j2));
+	    SET_J(index);
+	    SET_J(last);
+	    SET_J(first);
+	    SET_J(birthyear);
+	    SET_J(belt);
+	    SET_J(club);
+	    SET_J(regcategory);
+	    SET_J(weight);
+	    SET_J(visible);
+	    SET_J(category);
+	    SET_J(deleted);
+	    SET_J(country);
+	    SET_J(id);
+	    SET_J(seeding);
+	    SET_J(clubseeding);
+	    if (j2.index) { // edit old competitor 
+		j = get_data(j2.index);
+		if (j) {
+		    j2.category = j->category;
+		    db_update_judoka(j2.index, &j2);
+		    if ((j->deleted & 1) == 0 && (j2.deleted & 1)) {
+			GtkTreeIter iter;
+			if (find_iter(&iter, j2.index))
+			    gtk_tree_store_remove((GtkTreeStore *)current_model, &iter);
+		    } else {
+			display_one_judoka(&j2);
+			update_competitors_categories(j2.index);
+		    }
+		    free_judoka(j);
+		} else if ((j2.deleted & 1) == 0) {
+		    j2.category = "?";
+		    db_update_judoka(j2.index, &j2);
+
+		    if (j2.index >= current_index)
+			current_index = j2.index + 1;
+
+		    display_one_judoka(&j2);
+                
+		    avl_set_competitor(j2.index, j2.first, j2.last);
+		    avl_set_competitor_status(j2.index, j2.deleted);
+		}
+	    } else { // add new competitor
+		j2.index = current_index++;
+		j2.category = "?";
+		db_add_judoka(j2.index, &j2);
+		display_one_judoka(&j2);
+		update_competitors_categories(j2.index);
+	    }
+	}
         break;
 
     case MSG_SCALE:
@@ -372,21 +417,23 @@ void set_tatami_state(GtkWidget *menu_item, gpointer data)
 
 /* Which message is sent to who? Avoid sending unnecessary messages. */
 static gboolean send_message_to_application[NUM_MESSAGES][NUM_APPLICATION_TYPES] = {
-    // ALL  SHIAI  TIMER  INFO
-    {FALSE, FALSE, FALSE, FALSE}, // 0,
-    {TRUE,  FALSE, TRUE , FALSE}, // MSG_NEXT_MATCH = 1,
-    {TRUE,  FALSE, FALSE, FALSE}, // MSG_RESULT,
-    {TRUE,  FALSE, TRUE , FALSE}, // MSG_ACK,
-    {TRUE,  FALSE, FALSE, FALSE}, // MSG_SET_COMMENT,
-    {TRUE,  FALSE, FALSE, FALSE}, // MSG_SET_POINTS,
-    {TRUE,  FALSE, FALSE, FALSE}, // MSG_HELLO,
-    {TRUE,  FALSE, FALSE, FALSE}, // MSG_DUMMY,
-    {TRUE,  FALSE, FALSE, TRUE }, // MSG_MATCH_INFO,
-    {TRUE,  FALSE, FALSE, TRUE }, // MSG_NAME_INFO,
-    {TRUE,  FALSE, FALSE, FALSE}, // MSG_NAME_REQ,
-    {TRUE,  FALSE, FALSE, FALSE}, // MSG_ALL_REQ,
-    {TRUE,  FALSE, FALSE, TRUE }, // MSG_CANCEL_REST_TIME,
-    {TRUE,  FALSE, TRUE , FALSE}  // MSG_UPDATE_LABEL,
+    // ALL  SHIAI  TIMER  INFO   WEIGHT
+    {FALSE, FALSE, FALSE, FALSE, FALSE}, // 0,
+    {TRUE,  FALSE, TRUE , FALSE, FALSE}, // MSG_NEXT_MATCH = 1,
+    {TRUE,  FALSE, FALSE, FALSE, FALSE}, // MSG_RESULT,
+    {TRUE,  FALSE, TRUE , FALSE, FALSE}, // MSG_ACK,
+    {TRUE,  FALSE, FALSE, FALSE, FALSE}, // MSG_SET_COMMENT,
+    {TRUE,  FALSE, FALSE, FALSE, FALSE}, // MSG_SET_POINTS,
+    {TRUE,  FALSE, FALSE, FALSE, FALSE}, // MSG_HELLO,
+    {TRUE,  FALSE, FALSE, FALSE, FALSE}, // MSG_DUMMY,
+    {TRUE,  FALSE, FALSE, TRUE , FALSE}, // MSG_MATCH_INFO,
+    {TRUE,  FALSE, FALSE, TRUE , FALSE}, // MSG_NAME_INFO,
+    {TRUE,  FALSE, FALSE, FALSE, FALSE}, // MSG_NAME_REQ,
+    {TRUE,  FALSE, FALSE, FALSE, FALSE}, // MSG_ALL_REQ,
+    {TRUE,  FALSE, FALSE, TRUE , FALSE}, // MSG_CANCEL_REST_TIME,
+    {TRUE,  FALSE, TRUE , FALSE, FALSE}, // MSG_UPDATE_LABEL,
+    {FALSE, FALSE, FALSE, FALSE, TRUE }, // MSG_EDIT_COMPETITOR,
+    {FALSE, FALSE, FALSE, FALSE, FALSE}  // MSG_SCALE,
 };
 
 /*
