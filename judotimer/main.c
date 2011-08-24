@@ -1318,114 +1318,114 @@ void dump_screen(void)
 int main( int   argc,
           char *argv[] )
 {
-        /* GtkWidget is the storage type for widgets */
-	GtkWidget *window;
-	GtkWidget *menubar;
-        GdkColor   fg, bg;
-        time_t     now;
-        struct tm *tm;
-        GThread   *gth = NULL;         /* thread id */
-        gboolean   run_flag = TRUE;   /* used as exit flag for threads */
-        gint i;
+    /* GtkWidget is the storage type for widgets */
+    GtkWidget *window;
+    GtkWidget *menubar;
+    GdkColor   fg, bg;
+    time_t     now;
+    struct tm *tm;
+    GThread   *gth = NULL;         /* thread id */
+    gboolean   run_flag = TRUE;   /* used as exit flag for threads */
+    gint i;
 
-        judotimer_log("JudoTimer starts");
+    judotimer_log("JudoTimer starts");
 
-        font = pango_font_description_from_string("Sans bold 12");
+    font = pango_font_description_from_string("Sans bold 12");
 
-        gdk_color_parse("#FFFF00", &color_yellow);
-        gdk_color_parse("#FFFFFF", &color_white);
-        gdk_color_parse("#404040", &color_grey);
-        gdk_color_parse("#00FF00", &color_green);
-        gdk_color_parse("#0000FF", &color_blue);
-        gdk_color_parse("#FF0000", &color_red);
-        gdk_color_parse("#000000", &color_black);
+    gdk_color_parse("#FFFF00", &color_yellow);
+    gdk_color_parse("#FFFFFF", &color_white);
+    gdk_color_parse("#404040", &color_grey);
+    gdk_color_parse("#00FF00", &color_green);
+    gdk_color_parse("#0000FF", &color_blue);
+    gdk_color_parse("#FF0000", &color_red);
+    gdk_color_parse("#000000", &color_black);
 
 #ifdef WIN32
-        installation_dir = g_win32_get_package_installation_directory(NULL, NULL);
+    installation_dir = g_win32_get_package_installation_directory(NULL, NULL);
 #else
-        gbr_init(NULL);
-        installation_dir = gbr_find_prefix(NULL);
+    gbr_init(NULL);
+    installation_dir = gbr_find_prefix(NULL);
 #endif
 
-        program_path = argv[0];
+    program_path = argv[0];
 
-        current_directory[0] = 0;
+    current_directory[0] = 0;
 
-        if (current_directory[0] == 0)
-                strcpy(current_directory, ".");
-        g_print("current_directory=%s\n", current_directory);
-	conffile = g_build_filename(g_get_user_data_dir(), "judotimer.ini", NULL);
-	g_print("conf file = %s\n", conffile);
+    if (current_directory[0] == 0)
+        strcpy(current_directory, ".");
+    g_print("current_directory=%s\n", current_directory);
+    conffile = g_build_filename(g_get_user_data_dir(), "judotimer.ini", NULL);
+    g_print("conf file = %s\n", conffile);
 
-	keyfile = g_key_file_new();
-	g_key_file_load_from_file(keyfile, conffile, 0, NULL);
+    keyfile = g_key_file_new();
+    g_key_file_load_from_file(keyfile, conffile, 0, NULL);
 
-        now = time(NULL);
-        tm = localtime(&now);
-        current_year = tm->tm_year+1900;
-        srand(now); //srandom(now);
-        my_address = now + getpid()*10000;
+    now = time(NULL);
+    tm = localtime(&now);
+    current_year = tm->tm_year+1900;
+    srand(now); //srandom(now);
+    my_address = now + getpid()*10000;
 
-        g_print("LOCALE = %s homedir=%s configdir=%s instdir=%s\n",
-                setlocale(LC_ALL, 0),
-		g_get_home_dir(),
-		g_get_user_config_dir(),
-		installation_dir);
+    g_print("LOCALE = %s homedir=%s configdir=%s instdir=%s\n",
+            setlocale(LC_ALL, 0),
+            g_get_home_dir(),
+            g_get_user_config_dir(),
+            installation_dir);
 
-        g_thread_init(NULL);    /* Initialize GLIB thread support */
-        gdk_threads_init();     /* Initialize GDK locks */
-        gdk_threads_enter();    /* Acquire GDK locks */
+    g_thread_init(NULL);    /* Initialize GLIB thread support */
+    gdk_threads_init();     /* Initialize GDK locks */
+    gdk_threads_enter();    /* Acquire GDK locks */
 
-        gtk_init (&argc, &argv);
+    gtk_init (&argc, &argv);
 
-        main_window = window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_title(GTK_WINDOW(main_window), "JudoTimer");
-        gtk_widget_set_size_request(window, FRAME_WIDTH, FRAME_HEIGHT);
+    main_window = window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_title(GTK_WINDOW(main_window), "JudoTimer");
+    gtk_widget_set_size_request(window, FRAME_WIDTH, FRAME_HEIGHT);
 
-        gchar *iconfile = g_build_filename(installation_dir, "etc", "judotimer.png", NULL);
-        gtk_window_set_default_icon_from_file(iconfile, NULL);
-        g_free(iconfile);
+    gchar *iconfile = g_build_filename(installation_dir, "etc", "judotimer.png", NULL);
+    gtk_window_set_default_icon_from_file(iconfile, NULL);
+    g_free(iconfile);
 
-        g_signal_connect (G_OBJECT (window), "delete_event",
-                          G_CALLBACK (delete_event), NULL);
+    g_signal_connect (G_OBJECT (window), "delete_event",
+                      G_CALLBACK (delete_event), NULL);
 
-        g_signal_connect (G_OBJECT (window), "destroy",
-                          G_CALLBACK (destroy), NULL);
+    g_signal_connect (G_OBJECT (window), "destroy",
+                      G_CALLBACK (destroy), NULL);
 
-        gtk_container_set_border_width (GTK_CONTAINER (window), 10);
+    gtk_container_set_border_width (GTK_CONTAINER (window), 10);
 
-	main_vbox = gtk_vbox_new(FALSE, 0);
-	gtk_container_set_border_width (GTK_CONTAINER (main_vbox), 1);
-	gtk_container_add (GTK_CONTAINER (window), main_vbox);
-        gtk_widget_show(main_vbox);
+    main_vbox = gtk_vbox_new(FALSE, 0);
+    gtk_container_set_border_width (GTK_CONTAINER (main_vbox), 1);
+    gtk_container_add (GTK_CONTAINER (window), main_vbox);
+    gtk_widget_show(main_vbox);
 
-        /* menubar */
-	menubar = get_menubar_menu(window);
-        gtk_widget_show(menubar);
+    /* menubar */
+    menubar = get_menubar_menu(window);
+    gtk_widget_show(menubar);
 
-        gtk_box_pack_start(GTK_BOX(main_vbox), menubar, FALSE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(main_vbox), menubar, FALSE, TRUE, 0);
 
-	darea = gtk_drawing_area_new();
-	GTK_WIDGET_SET_FLAGS(darea, GTK_CAN_FOCUS);
-	gtk_widget_add_events(darea, GDK_BUTTON_PRESS_MASK);
+    darea = gtk_drawing_area_new();
+    GTK_WIDGET_SET_FLAGS(darea, GTK_CAN_FOCUS);
+    gtk_widget_add_events(darea, GDK_BUTTON_PRESS_MASK);
 
-        gtk_widget_show(darea);
+    gtk_widget_show(darea);
 
-	gtk_box_pack_start_defaults(GTK_BOX(main_vbox), darea);
+    gtk_box_pack_start_defaults(GTK_BOX(main_vbox), darea);
 
- 	g_signal_connect(G_OBJECT(darea),
-			 "expose-event", G_CALLBACK(expose), NULL);
-        g_signal_connect(G_OBJECT(darea),
-			 "button-press-event", G_CALLBACK(button_pressed), NULL);
+    g_signal_connect(G_OBJECT(darea),
+                     "expose-event", G_CALLBACK(expose), NULL);
+    g_signal_connect(G_OBJECT(darea),
+                     "button-press-event", G_CALLBACK(button_pressed), NULL);
 
-        /* labels */
+    /* labels */
 
-	/*0.0          0.2            0.5          0.7
-	 * | Match:     | Nimi sin     | Next:      | Nimi2 sin
-	 * | Cat: xx    | Nimi valk    | Cat: yy    | Nimi2 valk
-	 * | Comment
-	 * |
-	 */
+    /*0.0          0.2            0.5          0.7
+     * | Match:     | Nimi sin     | Next:      | Nimi2 sin
+     * | Cat: xx    | Nimi valk    | Cat: yy    | Nimi2 valk
+     * | Comment
+     * |
+     */
 
 #define SMALL_H 0.032
 #define BIG_H   ((1.0 - 4*SMALL_H)/3.0)
@@ -1435,187 +1435,195 @@ int main( int   argc,
 #define BIG_W2 0.25
 #define TXTW 0.12
 
-        GET_LABEL(blue_name_1, "",  TXTW,     0.0,     0.5-TXTW, SMALL_H);
-        GET_LABEL(white_name_1, "", TXTW,     SMALL_H, 0.5-TXTW, SMALL_H);
-        GET_LABEL(blue_name_2, "",  0.5+TXTW, 0.0,     0.5-TXTW, SMALL_H);
-        GET_LABEL(white_name_2, "", 0.5+TXTW, SMALL_H, 0.5-TXTW, SMALL_H);
-        GET_LABEL(blue_club, "", 0,0,0,0);
-        GET_LABEL(white_club, "", 0,0,0,0);
+    GET_LABEL(blue_name_1, "",  TXTW,     0.0,     0.5-TXTW, SMALL_H);
+    GET_LABEL(white_name_1, "", TXTW,     SMALL_H, 0.5-TXTW, SMALL_H);
+    GET_LABEL(blue_name_2, "",  0.5+TXTW, 0.0,     0.5-TXTW, SMALL_H);
+    GET_LABEL(white_name_2, "", 0.5+TXTW, SMALL_H, 0.5-TXTW, SMALL_H);
+    GET_LABEL(blue_club, "", 0,0,0,0);
+    GET_LABEL(white_club, "", 0,0,0,0);
 
-        GET_LABEL(match1, _("Match:"), 0.0, 0.0, TXTW, SMALL_H);
-        GET_LABEL(match2, _("Next:"),  0.5, 0.0, TXTW, SMALL_H);
+    GET_LABEL(match1, _("Match:"), 0.0, 0.0, TXTW, SMALL_H);
+    GET_LABEL(match2, _("Next:"),  0.5, 0.0, TXTW, SMALL_H);
 
-        GET_LABEL(wazaari, "W", 0.0,       BIG_START, BIG_W, BIG_H);
-        GET_LABEL(yuko, "Y",    1.0*BIG_W, BIG_START, BIG_W, BIG_H);
-        GET_LABEL(koka, "K",    2.0*BIG_W, BIG_START, BIG_W, BIG_H);
-        GET_LABEL(shido, "S",   3.0*BIG_W, BIG_START, BIG_W, BIG_H);
-        GET_LABEL(padding, "",   4.0*BIG_W, BIG_START, 3.0*BIG_W, BIG_H);
-        GET_LABEL(sonomama, "SONO", 7.0*BIG_W, BIG_START, BIG_W, BIG_H);
+    GET_LABEL(wazaari, "W", 0.0,       BIG_START, BIG_W, BIG_H);
+    GET_LABEL(yuko, "Y",    1.0*BIG_W, BIG_START, BIG_W, BIG_H);
+    GET_LABEL(koka, "K",    2.0*BIG_W, BIG_START, BIG_W, BIG_H);
+    GET_LABEL(shido, "S",   3.0*BIG_W, BIG_START, BIG_W, BIG_H);
+    GET_LABEL(padding, "",   4.0*BIG_W, BIG_START, 3.0*BIG_W, BIG_H);
+    GET_LABEL(sonomama, "SONO", 7.0*BIG_W, BIG_START, BIG_W, BIG_H);
 
-        GET_LABEL(bw, "0", 0.0,       BIG_START+BIG_H, BIG_W, BIG_H);
-        GET_LABEL(by, "0", 1.0*BIG_W, BIG_START+BIG_H, BIG_W, BIG_H);
-        GET_LABEL(bk, "0", 2.0*BIG_W, BIG_START+BIG_H, BIG_W, BIG_H);
-        GET_LABEL(bs, "0", 3.0*BIG_W, BIG_START+BIG_H, BIG_W, BIG_H);
-        GET_LABEL(ww, "0", 0.0,       BIG_START+2*BIG_H, BIG_W, BIG_H);
-        GET_LABEL(wy, "0", 1.0*BIG_W, BIG_START+2*BIG_H, BIG_W, BIG_H);
-        GET_LABEL(wk, "0", 2.0*BIG_W, BIG_START+2*BIG_H, BIG_W, BIG_H);
-        GET_LABEL(ws, "0", 3.0*BIG_W, BIG_START+2*BIG_H, BIG_W, BIG_H);
+    GET_LABEL(bw, "0", 0.0,       BIG_START+BIG_H, BIG_W, BIG_H);
+    GET_LABEL(by, "0", 1.0*BIG_W, BIG_START+BIG_H, BIG_W, BIG_H);
+    GET_LABEL(bk, "0", 2.0*BIG_W, BIG_START+BIG_H, BIG_W, BIG_H);
+    GET_LABEL(bs, "0", 3.0*BIG_W, BIG_START+BIG_H, BIG_W, BIG_H);
+    GET_LABEL(ww, "0", 0.0,       BIG_START+2*BIG_H, BIG_W, BIG_H);
+    GET_LABEL(wy, "0", 1.0*BIG_W, BIG_START+2*BIG_H, BIG_W, BIG_H);
+    GET_LABEL(wk, "0", 2.0*BIG_W, BIG_START+2*BIG_H, BIG_W, BIG_H);
+    GET_LABEL(ws, "0", 3.0*BIG_W, BIG_START+2*BIG_H, BIG_W, BIG_H);
 
-        GET_LABEL(t_min, "0",  4.0*BIG_W, BIG_START+BIG_H, BIG_W, BIG_H);
-        GET_LABEL(colon, ":",  5.0*BIG_W, BIG_START+BIG_H, BIG_W, BIG_H);
-        GET_LABEL(t_tsec, "0", 6.0*BIG_W, BIG_START+BIG_H, BIG_W, BIG_H);
-        GET_LABEL(t_sec, "0",  7.0*BIG_W, BIG_START+BIG_H, BIG_W, BIG_H);
-        GET_LABEL(o_tsec, "0", 4.0*BIG_W, BIG_START+2*BIG_H, BIG_W, BIG_H);
-        GET_LABEL(o_sec, "0",  5.0*BIG_W, BIG_START+2*BIG_H, BIG_W, BIG_H);
+    GET_LABEL(t_min, "0",  4.0*BIG_W, BIG_START+BIG_H, BIG_W, BIG_H);
+    GET_LABEL(colon, ":",  5.0*BIG_W, BIG_START+BIG_H, BIG_W, BIG_H);
+    GET_LABEL(t_tsec, "0", 6.0*BIG_W, BIG_START+BIG_H, BIG_W, BIG_H);
+    GET_LABEL(t_sec, "0",  7.0*BIG_W, BIG_START+BIG_H, BIG_W, BIG_H);
+    GET_LABEL(o_tsec, "0", 4.0*BIG_W, BIG_START+2*BIG_H, BIG_W, BIG_H);
+    GET_LABEL(o_sec, "0",  5.0*BIG_W, BIG_START+2*BIG_H, BIG_W, BIG_H);
 
-        GET_LABEL(points, "-", 6.5*BIG_W, BIG_START+2*BIG_H, 1.5*BIG_W, BIG_H);
-        GET_LABEL(pts_to_blue, "?", 6.0*BIG_W, BIG_START+2*BIG_H, 0.5*BIG_W, BIG_H/2.0);
-        GET_LABEL(pts_to_white, "?", 6.0*BIG_W, BIG_START+2.5*BIG_H, 0.5*BIG_W, BIG_H/2.0);
-        GET_LABEL(comment, "-", 0.0, 2.0*SMALL_H, 1.0, SMALL_H);
+    GET_LABEL(points, "-", 6.5*BIG_W, BIG_START+2*BIG_H, 1.5*BIG_W, BIG_H);
+    GET_LABEL(pts_to_blue, "?", 6.0*BIG_W, BIG_START+2*BIG_H, 0.5*BIG_W, BIG_H/2.0);
+    GET_LABEL(pts_to_white, "?", 6.0*BIG_W, BIG_START+2.5*BIG_H, 0.5*BIG_W, BIG_H/2.0);
+    GET_LABEL(comment, "-", 0.0, 2.0*SMALL_H, 1.0, SMALL_H);
 
-        GET_LABEL(cat1, "-", 0.0, SMALL_H, TXTW, SMALL_H);
-        GET_LABEL(cat2, "-", 0.5, SMALL_H, TXTW, SMALL_H);
-        GET_LABEL(gs, "", 0.0, 0.0, 0.0, 0.0);
-        GET_LABEL(flag_blue, "", 0.0, 0.0, 0.0, 0.0);
-        GET_LABEL(flag_white, "", 0.0, 0.0, 0.0, 0.0);
+    GET_LABEL(cat1, "-", 0.0, SMALL_H, TXTW, SMALL_H);
+    GET_LABEL(cat2, "-", 0.5, SMALL_H, TXTW, SMALL_H);
+    GET_LABEL(gs, "", 0.0, 0.0, 0.0, 0.0);
+    GET_LABEL(flag_blue, "", 0.0, 0.0, 0.0, 0.0);
+    GET_LABEL(flag_white, "", 0.0, 0.0, 0.0, 0.0);
 
-	labels[match1].xalign = -1;
-	labels[match2].xalign = -1;
-	labels[blue_name_1].xalign = -1;
-	labels[white_name_1].xalign = -1;
-	labels[blue_name_2].xalign = -1;
-	labels[white_name_2].xalign = -1;
-	labels[cat1].xalign = -1;
-	labels[cat2].xalign = -1;
-	labels[gs].xalign = -1;
-	labels[blue_club].xalign = -1;
-	labels[white_club].xalign = -1;
+    labels[match1].xalign = -1;
+    labels[match2].xalign = -1;
+    labels[blue_name_1].xalign = -1;
+    labels[white_name_1].xalign = -1;
+    labels[blue_name_2].xalign = -1;
+    labels[white_name_2].xalign = -1;
+    labels[cat1].xalign = -1;
+    labels[cat2].xalign = -1;
+    labels[gs].xalign = -1;
+    labels[blue_club].xalign = -1;
+    labels[white_club].xalign = -1;
 
-	labels[wazaari].size = 0.6;
-	labels[yuko].size = 0.6;
-	labels[koka].size = 0.6;
-	labels[shido].size = 0.6;
+    labels[wazaari].size = 0.6;
+    labels[yuko].size = 0.6;
+    labels[koka].size = 0.6;
+    labels[shido].size = 0.6;
 
-	labels[bs].size = 0.6;
-	labels[ws].size = 0.6;
+    labels[bs].size = 0.6;
+    labels[ws].size = 0.6;
 
-	labels[pts_to_blue].size = 0.5;
-	labels[pts_to_white].size = 0.5;
+    labels[pts_to_blue].size = 0.5;
+    labels[pts_to_white].size = 0.5;
 
-	labels[sonomama].size = 0.1;
-	labels[sonomama].text2 = g_strdup("MAMA");
+    labels[sonomama].size = 0.1;
+    labels[sonomama].text2 = g_strdup("MAMA");
 
-        /* colors */
+    /* colors */
 
-        fg = color_white;
-        gdk_color_parse("#000000", &bg);
-        SET_COLOR(match1);
-        SET_COLOR(match2);
-        SET_COLOR(blue_name_1);
-        SET_COLOR(white_name_1);
-        SET_COLOR(blue_name_2);
-        SET_COLOR(white_name_2);
-        SET_COLOR(blue_club);
-        SET_COLOR(white_club);
-        SET_COLOR(comment);
-        SET_COLOR(wazaari);
-        SET_COLOR(yuko);
-        SET_COLOR(koka);
-        SET_COLOR(shido);
-        SET_COLOR(cat1);
-        SET_COLOR(cat2);
-        SET_COLOR(gs);
+    fg = color_white;
+    gdk_color_parse("#000000", &bg);
+    SET_COLOR(match1);
+    SET_COLOR(match2);
+    SET_COLOR(blue_name_1);
+    SET_COLOR(white_name_1);
+    SET_COLOR(blue_name_2);
+    SET_COLOR(white_name_2);
+    SET_COLOR(blue_club);
+    SET_COLOR(white_club);
+    SET_COLOR(comment);
+    SET_COLOR(wazaari);
+    SET_COLOR(yuko);
+    SET_COLOR(koka);
+    SET_COLOR(shido);
+    SET_COLOR(cat1);
+    SET_COLOR(cat2);
+    SET_COLOR(gs);
 
-        fg = color_yellow;
-        SET_COLOR(t_min);
-        SET_COLOR(colon);
-        SET_COLOR(t_tsec);
-        SET_COLOR(t_sec);
+    fg = color_yellow;
+    SET_COLOR(t_min);
+    SET_COLOR(colon);
+    SET_COLOR(t_tsec);
+    SET_COLOR(t_sec);
 
-        fg = color_grey;
-        SET_COLOR(o_tsec);
-        SET_COLOR(o_sec);
-        SET_COLOR(points);
-	SET_COLOR(pts_to_blue);
-	SET_COLOR(pts_to_white);
+    fg = color_grey;
+    SET_COLOR(o_tsec);
+    SET_COLOR(o_sec);
+    SET_COLOR(points);
+    SET_COLOR(pts_to_blue);
+    SET_COLOR(pts_to_white);
 
-        fg = color_white;
-        gdk_color_parse("#0000FF", &bg);
-        SET_COLOR(bw);
-        SET_COLOR(by);
-        SET_COLOR(bk);
+    fg = color_white;
+    gdk_color_parse("#0000FF", &bg);
+    SET_COLOR(bw);
+    SET_COLOR(by);
+    SET_COLOR(bk);
 
-        gdk_color_parse("#DDD89A", &fg);
-        SET_COLOR(bs);
+    gdk_color_parse("#DDD89A", &fg);
+    SET_COLOR(bs);
 
-        gdk_color_parse("#000000", &fg);
-        gdk_color_parse("#FFFFFF", &bg);
-        SET_COLOR(ww);
-        SET_COLOR(wy);
-        SET_COLOR(wk);
+    gdk_color_parse("#000000", &fg);
+    gdk_color_parse("#FFFFFF", &bg);
+    SET_COLOR(ww);
+    SET_COLOR(wy);
+    SET_COLOR(wk);
 
-        gdk_color_parse("#DD6C00", &fg);
-        SET_COLOR(ws);
+    gdk_color_parse("#DD6C00", &fg);
+    SET_COLOR(ws);
 
-        gdk_color_parse("#AF0000", &fg);
-        gdk_color_parse("#000000", &bg);
-        SET_COLOR(sonomama);
+    gdk_color_parse("#AF0000", &fg);
+    gdk_color_parse("#000000", &bg);
+    SET_COLOR(sonomama);
 
 
-        gdk_color_parse("#000000", &fg);
-        gdk_color_parse("#000000", &bg);
+    gdk_color_parse("#000000", &fg);
+    gdk_color_parse("#000000", &bg);
 
-        for (i = 0; i < num_labels; i++)
-            defaults_for_labels[i] = labels[i];
+    for (i = 0; i < num_labels; i++)
+        defaults_for_labels[i] = labels[i];
 
-        /* signals */
+    /* signals */
 
 #if 0
-	g_signal_connect(G_OBJECT(main_window),
-			 "expose-event", G_CALLBACK(expose), NULL);
+    g_signal_connect(G_OBJECT(main_window),
+                     "expose-event", G_CALLBACK(expose), NULL);
 #endif
-	g_signal_connect(G_OBJECT(main_window),
-			 "key-press-event", G_CALLBACK(key_press), NULL);
+    g_signal_connect(G_OBJECT(main_window),
+                     "key-press-event", G_CALLBACK(key_press), NULL);
 
-        /* timers */
+    /* timers */
 
-        timer = g_timer_new();
+    timer = g_timer_new();
 
-        g_timeout_add(100, timeout, NULL);
+    g_timeout_add(100, timeout, NULL);
 
-        gtk_widget_show_all(window);
+    gtk_widget_show_all(window);
 
-	set_preferences();
-        change_language(NULL, NULL, (gpointer)language);
+    set_preferences();
+    change_language(NULL, NULL, (gpointer)language);
 
-        open_comm_socket();
+    open_comm_socket();
 
-        /* Create a bg thread using glib */
-        gth = g_thread_create((GThreadFunc)client_thread,
-                              (gpointer)&run_flag, FALSE, NULL);
-	gth = g_thread_create((GThreadFunc)master_thread,
-			      (gpointer)&run_flag, FALSE, NULL);
+    /* Create a bg thread using glib */
+    gth = g_thread_create((GThreadFunc)client_thread,
+                          (gpointer)&run_flag, FALSE, NULL);
+    gth = g_thread_create((GThreadFunc)master_thread,
+                          (gpointer)&run_flag, FALSE, NULL);
 
-        gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER_ALWAYS);
+    gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER_ALWAYS);
 
-	cursor = gdk_cursor_new(GDK_HAND2);
-	gdk_window_set_cursor(GTK_WIDGET(main_window)->window, cursor);
+    cursor = gdk_cursor_new(GDK_HAND2);
+    gdk_window_set_cursor(GTK_WIDGET(main_window)->window, cursor);
 
-        open_sound();
+    open_sound();
 
-        /* All GTK applications must have a gtk_main(). Control ends here
-         * and waits for an event to occur (like a key press or
-         * mouse event). */
-        gtk_main();
+    for (i = 1; i < argc; i++) {
+        if (argv[i][0] == '-' && argv[i][1] == 'd') {
+            demo = atoi(&argv[i][2]);
+        } else if (argv[i][0] == '-' && argv[i][1] == 't') {
+            tatami = atoi(&argv[i][2]);
+        }
+    }
 
-        close_sound();
+    /* All GTK applications must have a gtk_main(). Control ends here
+     * and waits for an event to occur (like a key press or
+     * mouse event). */
+    gtk_main();
 
-        gdk_threads_leave();  /* release GDK locks */
-        run_flag = FALSE;     /* flag threads to stop and exit */
-        //g_thread_join(gth);   /* wait for thread to exit */
+    close_sound();
 
-        //dump_screen();
-        return 0;
+    gdk_threads_leave();  /* release GDK locks */
+    run_flag = FALSE;     /* flag threads to stop and exit */
+    //g_thread_join(gth);   /* wait for thread to exit */
+
+    //dump_screen();
+    return 0;
 }
 
 static void set_colors(void)
