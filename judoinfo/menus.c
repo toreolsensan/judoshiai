@@ -12,19 +12,21 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 
-#include "judoweight.h"
+#include "judoinfo.h"
 
 void start_help(GtkWidget *w, gpointer data);
-extern void set_serial_dialog(GtkWidget *w, gpointer data);
-extern void serial_set_device(gchar *dev);
-extern void serial_set_baudrate(gint baud);
-extern void serial_set_type(gint type);
+
 
 static GtkWidget *menubar, *preferences, *help, *preferencesmenu, *helpmenu;
 static GtkWidget *quit, *manual;
-static GtkWidget *node_ip, *my_ip, *preference_serial, *about;
+static GtkWidget *full_screen, *normal_display, *small_display, *horizontal_display;
+static GtkWidget *mirror, *whitefirst, *redbackground;
+static GtkWidget *tatami_show[NUM_TATAMIS];
+static GtkWidget *node_ip, *my_ip, *about;
 static GtkWidget *light, *menu_light;
+static GtkWidget *writefile;
 
+gboolean show_tatami[NUM_TATAMIS];
 static GtkTooltips *menu_tips;
 
 static GtkWidget *flags[NUM_LANGS], *menu_flags[NUM_LANGS];
@@ -41,18 +43,48 @@ static const gchar *help_file_names[NUM_LANGS] = {
     "judoshiai-uk.pdf", "judoshiai-en.pdf"
 };
 
+
+extern void toggle_full_screen(GtkWidget *menu_item, gpointer data);
+extern void toggle_small_display(GtkWidget *menu_item, gpointer data);
+extern void toggle_mirror(GtkWidget *menu_item, gpointer data);
+extern void toggle_whitefirst(GtkWidget *menu_item, gpointer data);
+extern void toggle_redbackground(GtkWidget *menu_item, gpointer data);
+extern void set_write_file(GtkWidget *menu_item, gpointer data);
+
 static void about_judoinfo( GtkWidget *w,
 			    gpointer   data )
 {
     gtk_show_about_dialog (NULL, 
-                           "name", "JudoWeight",
-                           "title", _("About JudoWeight"),
+                           "name", "JudoInfo",
+                           "title", _("About JudoInfo"),
                            "copyright", "Copyright 2006-2011 Hannu Jokinen",
                            "version", SHIAI_VERSION,
                            "website", "http://sourceforge.net/projects/judoshiai/",
                            NULL);
 }
 
+static void tatami_selection(GtkWidget *w,
+                             gpointer   data )
+{
+    gchar buf[32];
+    gint tatami = (gint)data;
+    sprintf(buf, "tatami%d", tatami);
+    show_tatami[tatami-1] = GTK_CHECK_MENU_ITEM(w)->active;
+    g_key_file_set_boolean(keyfile, "preferences", buf, 
+                           GTK_CHECK_MENU_ITEM(w)->active);
+
+    refresh_window();
+}
+
+gint number_of_tatamis(void)
+{
+    gint i, n = 0;
+    for (i = 0; i < NUM_TATAMIS; i++)
+        if (show_tatami[i])
+            n++;
+
+    return n;
+}
 
 static void change_menu_label(GtkWidget *item, const gchar *new_text)
 {
@@ -172,9 +204,58 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
 
   
     /* Create the Preferences menu content. */
+    full_screen = gtk_check_menu_item_new_with_label("");
+    gtk_menu_shell_append(GTK_MENU_SHELL(preferencesmenu), full_screen);
+    g_signal_connect(G_OBJECT(full_screen), "activate", 
+                     G_CALLBACK(toggle_full_screen), 0);
+
+    normal_display     = gtk_radio_menu_item_new_with_label(NULL, "");
+    small_display      = gtk_radio_menu_item_new_with_label_from_widget(GTK_RADIO_MENU_ITEM(normal_display), "");
+    horizontal_display = gtk_radio_menu_item_new_with_label_from_widget(GTK_RADIO_MENU_ITEM(normal_display), "");
+    create_separator(preferencesmenu);
+    gtk_menu_shell_append(GTK_MENU_SHELL(preferencesmenu), normal_display);
+    gtk_menu_shell_append(GTK_MENU_SHELL(preferencesmenu), small_display);
+    gtk_menu_shell_append(GTK_MENU_SHELL(preferencesmenu), horizontal_display);
+    create_separator(preferencesmenu);
+
+    g_signal_connect(G_OBJECT(normal_display), "activate", 
+                     G_CALLBACK(toggle_small_display), (gpointer)NORMAL_DISPLAY);
+    g_signal_connect(G_OBJECT(small_display), "activate", 
+                     G_CALLBACK(toggle_small_display), (gpointer)SMALL_DISPLAY);
+    g_signal_connect(G_OBJECT(horizontal_display), "activate", 
+                     G_CALLBACK(toggle_small_display), (gpointer)HORIZONTAL_DISPLAY);
+
+    mirror = gtk_check_menu_item_new_with_label("");
+    gtk_menu_shell_append(GTK_MENU_SHELL(preferencesmenu), mirror);
+    g_signal_connect(G_OBJECT(mirror), "activate", 
+                     G_CALLBACK(toggle_mirror), 0);
+
+    whitefirst = gtk_check_menu_item_new_with_label("");
+    gtk_menu_shell_append(GTK_MENU_SHELL(preferencesmenu), whitefirst);
+    g_signal_connect(G_OBJECT(whitefirst), "activate", 
+                     G_CALLBACK(toggle_whitefirst), 0);
+
+    redbackground = gtk_check_menu_item_new_with_label("");
+    gtk_menu_shell_append(GTK_MENU_SHELL(preferencesmenu), redbackground);
+    g_signal_connect(G_OBJECT(redbackground), "activate", 
+                     G_CALLBACK(toggle_redbackground), 0);
+
     node_ip = create_menu_item(preferencesmenu, ask_node_ip_address, 0);
     my_ip   = create_menu_item(preferencesmenu, show_my_ip_addresses, 0);
-    preference_serial = create_menu_item(preferencesmenu, set_serial_dialog, 0);
+    create_separator(preferencesmenu);
+
+    for (i = 0; i < NUM_TATAMIS; i++) {
+        tatami_show[i] = gtk_check_menu_item_new_with_label("");
+        gtk_menu_shell_append(GTK_MENU_SHELL(preferencesmenu), tatami_show[i]);
+        g_signal_connect(G_OBJECT(tatami_show[i]), "activate", 
+                         G_CALLBACK(tatami_selection), (gpointer)(i+1));
+    }
+
+    create_separator(preferencesmenu);
+    writefile = gtk_menu_item_new_with_label("");
+    gtk_menu_shell_append(GTK_MENU_SHELL(preferencesmenu), writefile);
+    g_signal_connect(G_OBJECT(writefile), "activate", 
+                     G_CALLBACK(set_write_file), 0);
 
     create_separator(preferencesmenu);
     quit    = create_menu_item(preferencesmenu, destroy, 0);
@@ -198,8 +279,55 @@ void set_preferences(void)
 {
     GError *error = NULL;
     gchar  *str;
-    gint    i, x1;
+    gint    i;
     gboolean b;
+
+    error = NULL;
+    if (g_key_file_get_boolean(keyfile, "preferences", "fullscreen", &error)) {
+        gtk_menu_item_activate(GTK_MENU_ITEM(full_screen));
+    }
+
+    error = NULL;
+    i = g_key_file_get_integer(keyfile, "preferences", "displaytype", &error);
+    if (!error) {
+        switch (i) {
+        case NORMAL_DISPLAY:
+            gtk_menu_item_activate(GTK_MENU_ITEM(normal_display));
+            break;
+        case SMALL_DISPLAY:
+            gtk_menu_item_activate(GTK_MENU_ITEM(small_display));
+            break;
+        case HORIZONTAL_DISPLAY:
+            gtk_menu_item_activate(GTK_MENU_ITEM(horizontal_display));
+            break;
+        }
+    }
+
+    error = NULL;
+    if (g_key_file_get_boolean(keyfile, "preferences", "mirror", &error)) {
+        gtk_menu_item_activate(GTK_MENU_ITEM(mirror));
+    }
+
+    error = NULL;
+    if (g_key_file_get_boolean(keyfile, "preferences", "whitefirst", &error)) {
+        gtk_menu_item_activate(GTK_MENU_ITEM(whitefirst));
+    }
+
+    error = NULL;
+    if (g_key_file_get_boolean(keyfile, "preferences", "redbackground", &error)) {
+        gtk_menu_item_activate(GTK_MENU_ITEM(redbackground));
+    }
+
+    for (i = 1; i <= NUM_TATAMIS; i++) {
+        gchar t[10];
+        sprintf(t, "tatami%d", i);
+        error = NULL;
+        b = g_key_file_get_boolean(keyfile, "preferences", t, &error);
+        if (b && !error) {
+            gtk_menu_item_activate(GTK_MENU_ITEM(tatami_show[i-1]));
+            tatami_selection(tatami_show[i-1], (gpointer)i);
+        }
+    }
 
     error = NULL;
     str = g_key_file_get_string(keyfile, "preferences", "nodeipaddress", &error);
@@ -216,23 +344,6 @@ void set_preferences(void)
         language = i;
     else
         language = LANG_FI;
-
-    error = NULL;
-    str = g_key_file_get_string(keyfile, "preferences", "serialdevice", &error);
-    if (!error) {
-        serial_set_device(str);
-        g_free(str);
-    }
-
-    error = NULL;
-    x1 = g_key_file_get_integer(keyfile, "preferences", "serialbaudrate", &error);
-    if (!error)
-        serial_set_baudrate(x1);
-
-    error = NULL;
-    x1 = g_key_file_get_integer(keyfile, "preferences", "serialtype", &error);
-    if (!error)
-        serial_set_type(x1);
 }
 
 gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param)
@@ -257,9 +368,23 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
 
     change_menu_label(quit,         _("Quit"));
 
+    change_menu_label(full_screen, _("Full screen mode"));
+    change_menu_label(normal_display, _("Normal display"));
+    change_menu_label(small_display, _("Small display"));
+    change_menu_label(horizontal_display, _("Horizontal display"));
+    change_menu_label(mirror, _("Mirror tatami order"));
+    change_menu_label(whitefirst, _("White first"));
+    change_menu_label(redbackground, _("Red background"));
+    change_menu_label(writefile, _("Write to file"));
+
+    for (i = 0; i < NUM_TATAMIS; i++) {
+        gchar buf[32];
+        sprintf(buf, "%s %d", _("Show Tatami"), i+1);
+        change_menu_label(tatami_show[i], buf);
+    }
+
     change_menu_label(node_ip,      _("Communication node"));
     change_menu_label(my_ip,        _("Own IP addresses"));
-    change_menu_label(preference_serial, _("Scale Serial Interface..."));
 
     change_menu_label(manual,       _("Manual"));
     change_menu_label(about,        _("About"));
