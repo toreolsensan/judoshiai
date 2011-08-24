@@ -92,7 +92,7 @@ void msg_received(struct message *input_msg)
     struct name_data *j;
     gchar  buf[16];
 
-    if (input_msg->sender < 10)
+    if (input_msg->sender == my_address)
         return;
 
     traffic_last_rec_time = time(NULL);
@@ -106,9 +106,9 @@ void msg_received(struct message *input_msg)
         break;
 
     case MSG_SCALE:
-            g_snprintf(buf, sizeof(buf), "%d.%02d", input_msg->u.scale.weight/1000, (input_msg->u.scale.weight%1000)/10);
-            if (weight_entry)
-                gtk_button_set_label(GTK_BUTTON(weight_entry), buf);
+        g_snprintf(buf, sizeof(buf), "%d.%02d", input_msg->u.scale.weight/1000, (input_msg->u.scale.weight%1000)/10);
+        if (weight_entry)
+            gtk_button_set_label(GTK_BUTTON(weight_entry), buf);
         break;
     }
 }

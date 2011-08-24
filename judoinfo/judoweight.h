@@ -50,6 +50,7 @@ extern gulong my_ip_address, node_ip_addr;
 extern GKeyFile *keyfile;
 extern gint language;
 extern GtkWidget *weight_entry;
+extern gint my_address;
 
 extern gboolean this_is_shiai(void);
 extern void msg_to_queue(struct message *msg);

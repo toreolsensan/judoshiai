@@ -261,7 +261,7 @@ int main( int   argc,
     tmp = gtk_label_new(_("Name:"));
     gtk_misc_set_alignment(GTK_MISC(tmp), 1, 0.5);
     gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, row, row+1);
-    name_box = gtk_label_new("Ujhhhhd Bkasjdkd Yttsdaytsd");
+    name_box = gtk_label_new("?");
     gtk_label_set_width_chars(GTK_LABEL(name_box), 40);
     gtk_misc_set_alignment(GTK_MISC(name_box), 0, 0.5);
     gtk_table_attach_defaults(GTK_TABLE(table), name_box, 1, 4, row, row+1);
