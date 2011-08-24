@@ -69,6 +69,7 @@ extern struct message *put_to_rec_queue(volatile struct message *m);
 extern GtkWidget     *weight_entry;
 extern GtkWidget     *main_window;
 extern GKeyFile      *keyfile;
+extern gint           my_address;
 
 #define NUM_BAUDRATES 5
 struct baudrates {
@@ -86,23 +87,24 @@ static void handle_character(gchar c)
 {
     static gint weight = 0;
     static gint decimal = 0;
-        
+
     if (c == '.' || c == ',') {
         decimal = 1;
     } else if (c < '0' || c > '9') {
         if ((device_type == DEV_TYPE_NORMAL   && c == '\r') ||
             (device_type == DEV_TYPE_STATHMOS && c == 0x1e) ||
             (device_type == DEV_TYPE_AP1      && c == 0x04)) {
-            if (weight_entry && weight < 300000) {
+
+            if (weight_entry && weight > 5000 && weight < 300000) {
                 struct message msg;
                 memset(&msg, 0, sizeof(msg));
                 msg.type = MSG_SCALE;
                 msg.u.scale.weight = weight;
                 put_to_rec_queue(&msg);
 
-                weight = 0;
-                decimal = 0;
             }
+            weight = 0;
+            decimal = 0;
         }
     } else if (device_type == DEV_TYPE_STATHMOS) {
         weight = 10*weight + (c - '0');

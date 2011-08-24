@@ -127,7 +127,7 @@ void msg_received(struct message *input_msg)
 
 #if 0
     if (input_msg->type != MSG_HELLO)
-        g_print("msg type = %d from %lx\n", input_msg->type, addr);
+        g_print("msg type = %d from %lx (my addr = %lx)\n", input_msg->type, addr, my_address);
 #endif
 
     if (input_msg->sender == my_address)
@@ -306,9 +306,9 @@ void msg_received(struct message *input_msg)
         break;
 
     case MSG_SCALE:
-            g_snprintf(buf, sizeof(buf), "%d.%02d", input_msg->u.scale.weight/1000, (input_msg->u.scale.weight%1000)/10);
-            if (weight_entry)
-                gtk_button_set_label(GTK_BUTTON(weight_entry), buf);
+        g_snprintf(buf, sizeof(buf), "%d.%02d", input_msg->u.scale.weight/1000, (input_msg->u.scale.weight%1000)/10);
+        if (weight_entry)
+            gtk_button_set_label(GTK_BUTTON(weight_entry), buf);
         break;
     }
 }

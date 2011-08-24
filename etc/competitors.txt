@@ -1,129 +1,129 @@
-Jack,Taylor,Stonehaven Judo Club,GBR,m,1991,1d,74
-Thomas,Brown,Cambridge Judo,GBR,m,1994,2k,61
-Oliver,Wilson,Barnet Judo,GBR,m,1995,2k,58
-Maja,Johansson,Oxelösunds JK,SWE,f,1995,2k,43
-Emma,Andersson,Kristinehamns JK,SWE,f,1994,2k,53
-Julia,Karlsson,Borlänge JC,SWE,f,1993,1k,55
-Ella,Olsson,Oxelösunds JK,SWE,f,1992,1k,54
-Elsa,Svensson,Kristinehamns JK,SWE,f,1995,2k,42
-Alice,Pettersson,Borlänge JC,SWE,f,1991,1d,61
-Alva,Bengtsson,Borås JK,SWE,f,1994,2k,56
-Linnea,Carlsson,Oxelösunds JK,SWE,f,1991,1d,60
-Wilma,Gustavsson,Kristinehamns JK,SWE,f,1995,2k,46
-Klara,Lindgren,Borlänge JC,SWE,f,1993,1k,54
-Lucas,Nilsson,Borås JK,SWE,m,1994,2k,47
-Oscar,Eriksson,Oxelösunds JK,SWE,m,1995,2k,48
-William,Larsson,Kristinehamns JK,SWE,m,1992,1k,56
-Elias,Persson,Borlänge JC,SWE,m,1990,1d,67
-Hugo,Gustafsson,Borås JK,SWE,m,1993,1k,66
-Alexander,Jonsson,Oxelösunds JK,SWE,m,1995,2k,53
-Erik,Jansson,Kristinehamns JK,SWE,m,1994,2k,48
-Isak,Hansson,Borlänge JC,SWE,m,1991,1d,56
-Filip,Jönsson,Borås JK,SWE,m,1992,1k,75
-Emil,Petersson,SPIF,SWE,m,1995,2k,64
-Viktor,Lindberg,Oxelösunds JK,SWE,m,1993,1k,63
-Thea,ANDERSEN,Bergen Judo Klubb,NOR,f,1995,2k,42
-Tea,BERG,Hamar Judoklubb,NOR,f,1994,2k,47
-Emma,CHRISTENSEN,Judo Klubb Stord,NOR,f,1990,1d,51
-Sara,ERIKSEN,Namsos Judo Club,NOR,f,1992,1k,50
-Julie,HANSEN,Bergen Judo Klubb,NOR,f,1993,1k,60
-Ida,IVERSEN,Oslo Judo Klubb,NOR,f,1994,2k,44
-Hanna,JOHANSEN,Judo Klubb Stord,NOR,f,1995,2k,50
-Nora,KRISTIANSEN,Hamar Judoklubb,NOR,f,1989,1d,58
-Ingrid,LARSEN,Namsos Judo Club,NOR,f,1990,1d,60
-Jonas,DAHL,Oslo Judo Klubb,NOR,m,1994,2k,49
-Mathias,FREDRIKSEN,Bergen Judo Klubb,NOR,m,1993,1k,66
-Matias,GUNDERSEN,Hamar Judoklubb,NOR,m,1995,2k,56
-Alexander,HALVORSEN,Namsos Judo Club,NOR,m,1992,1k,59
-Aleksander,JENSEN,Judo Klubb Stord,NOR,m,1990,1d,69
-Andreas,NILSEN,Oslo Judo Klubb,NOR,m,1994,2k,71
-Elias,PETTERSEN,Bergen Judo Klubb,NOR,m,1991,1d,79
-Kristian,SVENDSEN,Hamar Judoklubb,NOR,m,1993,1k,61
-Christian,AMUNDSEN,Judo Klubb Stord,NOR,m,1995,2k,56
-Emma,Virtanen,Finndai,FIN,f,1994,2k,44
-Ella,Nieminen,Iisalmen Judoseura,FIN,f,1992,1k,53
-Sara,Mäkelä,Kokkolan Budo,FIN,f,1989,1d,64
-Venla,Laine,Nummelan Judo,FIN,f,1993,1k,61
-Siiri,Heikkinen,Raision Ryhti,FIN,f,1995,2k,51
-Aino,Mäenpää,Nummelan Judo,FIN,f,1994,2k,47
-Iida,Sillanpää,Finndai,FIN,f,1991,1d,59
-Anni,Lehtimäki,Iisalmen Judoseura,FIN,f,1990,1d,49
-Emilia,Kivimäki,Raision Ryhti,FIN,f,1993,1k,49
-Helmi,Myllymäki,Kokkolan Budo,FIN,f,1994,2k,53
-Onni,Korhonen,Nummelan Judo,FIN,m,1995,2k,53
-Eetu,Mäkinen,Raision Ryhti,FIN,m,1992,1k,66
-Veeti,Hämäläinen,Nummelan Judo,FIN,m,1989,1d,74
-Elias,Koskinen,Finndai,FIN,m,1993,1k,67
-Aleksi,Järvinen,Iisalmen Judoseura,FIN,m,1994,2k,58
-Joona,Uusitalo,Kokkolan Budo,FIN,m,1990,1d,63
-Lauri,Järvenpää,Raision Ryhti,FIN,m,1995,2k,51
-Leevi,Välimäki,Nummelan Judo,FIN,m,1991,1d,65
-Matias,Keskitalo,Kokkolan Budo,FIN,m,1992,1k,70
-Rasmus,Alatalo,Finndai,FIN,m,1993,1k,57
-Grace,Smith,Cambridge Judo,GBR,f,1994,2k,43
-Ruby,Jones,Barnet Judo,GBR,f,1995,2k,42
-Olivia,Williams,Walderslade Judo Club,GBR,f,1989,1d,69
-Emily,Johnson,Stonehaven Judo Club,GBR,f,1990,1d,54
-Jessica,Robinson,Peebles Judo Club,GBR,f,1993,1k,57
-Sophie,Thompson,Cambridge Judo,GBR,f,1989,1d,61
-Chloe,Walker,Barnet Judo,GBR,f,1994,2k,52
-Lily,Roberts,Walderslade Judo Club,GBR,f,1995,2k,49
-Ella,Hall,Llantwit Major Judo Club,GBR,f,1992,1k,56
-Amelia,Jackson,Windsor Judo Club,GBR,f,1993,1k,53
-Joshua,Davies,Walderslade Judo Club,GBR,m,1993,1k,59
-Harry,Wright,Llantwit Major Judo Club,GBR,m,1990,1d,61
-Charlie,Evans,Peebles Judo Club,GBR,m,1992,1k,65
-Daniel,White,St Peter's Belfast,GBR,m,1989,1d,76
-William,Green,Walderslade Judo Club,GBR,m,1994,2k,67
-James,Wood,Cambridge Judo,GBR,m,1993,1k,59
-Alfie,Clarke,Barnet Judo,GBR,m,1995,2k,51
-Hanna,Müller,Judoclub Horb,GER,f,1991,1d,56
-Leoni,Schneider,Judo-Club Passau,GER,f,1994,2k,60
-Lena,Meyer,TSV Ellgau,GER,f,1993,1k,57
-Anna,Schulz,SV Darmstadt 98,GER,f,1995,2k,48
-Lea,Becker,TuS Holle,GER,f,1992,1k,52
-Lara,Schäfer,Judoclub Horb,GER,f,1990,1d,56
-Mia,Bauer,Judo-Club Passau,GER,f,1991,1d,58
-Laura,Klein,TSV Ellgau,GER,f,1994,2k,48
-Lili,Richter,SV Darmstadt 98,GER,f,1993,1k,63
-Emily,Wolf,TuS Holle,GER,f,1995,2k,50
-Leon,Schmidt,Judoclub Horb,GER,m,1989,1d,82
-Luka,Fischer,Judo-Club Passau,GER,m,1992,1k,74
-Fynn,Weber,TSV Ellgau,GER,m,1994,2k,75
-Tim,Wagner,SV Darmstadt 98,GER,m,1993,1k,61
-Felix,Hoffmann,TuS Holle,GER,m,1995,2k,58
-Jonas,Koch,TSV Ellgau,GER,m,1991,1d,75
-Louis,Schröder,Judoclub Horb,GER,m,1990,1d,64
-Maximilian,Neumann,Judo-Club Passau,GER,m,1988,2d,82
-Julian,Schwarz,JSV Nippon Ahlen,GER,m,1989,1d,77
-Emma,Martin,Dojo Provencal,FRA,f,1995,2k,48
-Léa,Dubois,Hurionville Judo Club,FRA,f,1994,2k,51
-Manon,Robert,Lagardere Paris Racing,FRA,f,1993,1k,58
-Clara,Petit,Union Sportive Bonduoise,FRA,f,1992,1k,53
-Chloé,Leroy,Union Sportive Bonduoise,FRA,f,1991,1d,55
-Enzo,Bernard,Dojo Provencal,FRA,m,1995,2k,47
-Mathis,Thomas,Hurionville Judo Club,FRA,m,1994,2k,54
-Lucas,Richard,Lagardere Paris Racing,FRA,m,1993,1k,61
-Hugo,Durand,Hurionville Judo Club,FRA,m,1991,1d,66
-Mathéo,Moreau,Dojo Provencal,FRA,m,1992,1k,69
-Laura,Jensen,Måløv Judo Klub,DEN,f,1995,2k,52
-Sofie,Nielsen,Aarhus Judo Klub,DEN,f,1990,1d,55
-Mathilde,Andersen,Roskilde Budo Klub,DEN,f,1994,2k,59
-Emma,Larsen,Aarhus Judo Klub,DEN,f,1993,1k,57
-Freja,Rasmussen,Måløv Judo Klub,DEN,f,1991,1d,55
-Lucas,Hansen,Brøndby Judo Klub,DEN,m,1992,1k,80
-Mikkel,Pedersen,Roskilde Budo Klub,DEN,m,1995,2k,67
-Frederik,Christensen,Aarhus Judo Klub,DEN,m,1989,1d,88
-Magnus,Petersen,Måløv Judo Klub,DEN,m,1994,2k,76
-Mads,Madsen,Brøndby Judo Klub,DEN,m,1993,1k,69
-Emil,Kristensen,Måløv Judo Klub,DEN,m,1991,1d,57
-Sophie,Jansen,Judo Vereniging IJsselmeer,NED,f,1995,2k,45
-Lieke,de Jong,Budovereniging Bakeru,NED,f,1990,1d,50
-Julia,Visser,Samourais Eindhoven,NED,f,1993,1k,56
-Sanne,van Dijk,SC Sonnenberch,NED,f,1994,2k,68
-Daan,de Vries,Judo Vereniging IJsselmeer,NED,m,1992,1k,61
-Tim,Smit,Samourais Eindhoven,NED,m,1995,2k,53
-Jayden,vd Berg,Budovereniging Bakeru,NED,m,1988,2d,76
-Sem,Bakker,Judoclub Middelharnis,NED,m,1991,1d,79
-Thomas,de Boer,SC Sonnenberch,NED,m,1993,1k,68
-Jesse,Mulder,Samourais Eindhoven,NED,m,1994,2k,59
+Jack,Taylor,Stonehaven Judo Club,GBR,m,0,0,1991,1d,74
+Thomas,Brown,Cambridge Judo,GBR,m,0,0,1994,2k,61
+Oliver,Wilson,Barnet Judo,GBR,m,0,0,1995,2k,58
+Maja,Johansson,Oxelösunds JK,SWE,f,1,1,1995,2k,43
+Emma,Andersson,Kristinehamns JK,SWE,f,0,0,1994,2k,53
+Julia,Karlsson,Borlänge JC,SWE,f,0,0,1993,1k,55
+Ella,Olsson,Oxelösunds JK,SWE,f,0,2,1992,1k,54
+Elsa,Svensson,Kristinehamns JK,SWE,f,0,0,1995,2k,42
+Alice,Pettersson,Borlänge JC,SWE,f,0,0,1991,1d,61
+Alva,Bengtsson,Borås JK,SWE,f,0,0,1994,2k,56
+Linnea,Carlsson,Oxelösunds JK,SWE,f,0,3,1991,1d,60
+Wilma,Gustavsson,Kristinehamns JK,SWE,f,0,0,1995,2k,46
+Klara,Lindgren,Borlänge JC,SWE,f,0,0,1993,1k,54
+Lucas,Nilsson,Borås JK,SWE,m,2,1,1994,2k,47
+Oscar,Eriksson,Oxelösunds JK,SWE,m,0,4,1995,2k,48
+William,Larsson,Kristinehamns JK,SWE,m,0,0,1992,1k,56
+Elias,Persson,Borlänge JC,SWE,m,0,0,1990,1d,67
+Hugo,Gustafsson,Borås JK,SWE,m,0,0,1993,1k,66
+Alexander,Jonsson,Oxelösunds JK,SWE,m,0,0,1995,2k,53
+Erik,Jansson,Kristinehamns JK,SWE,m,0,0,1994,2k,48
+Isak,Hansson,Borlänge JC,SWE,m,0,0,1991,1d,56
+Filip,Jönsson,Borås JK,SWE,m,0,2,1992,1k,75
+Emil,Petersson,SPIF,SWE,m,0,0,1995,2k,64
+Viktor,Lindberg,Oxelösunds JK,SWE,m,0,0,1993,1k,63
+Thea,ANDERSEN,Bergen Judo Klubb,NOR,f,0,0,1995,2k,42
+Tea,BERG,Hamar Judoklubb,NOR,f,0,0,1994,2k,47
+Emma,CHRISTENSEN,Judo Klubb Stord,NOR,f,0,0,1990,1d,51
+Sara,ERIKSEN,Namsos Judo Club,NOR,f,0,0,1992,1k,50
+Julie,HANSEN,Bergen Judo Klubb,NOR,f,0,0,1993,1k,60
+Ida,IVERSEN,Oslo Judo Klubb,NOR,f,0,0,1994,2k,44
+Hanna,JOHANSEN,Judo Klubb Stord,NOR,f,0,0,1995,2k,50
+Nora,KRISTIANSEN,Hamar Judoklubb,NOR,f,0,0,1989,1d,58
+Ingrid,LARSEN,Namsos Judo Club,NOR,f,0,0,1990,1d,60
+Jonas,DAHL,Oslo Judo Klubb,NOR,m,0,0,1994,2k,49
+Mathias,FREDRIKSEN,Bergen Judo Klubb,NOR,m,0,0,1993,1k,66
+Matias,GUNDERSEN,Hamar Judoklubb,NOR,m,0,0,1995,2k,56
+Alexander,HALVORSEN,Namsos Judo Club,NOR,m,0,0,1992,1k,59
+Aleksander,JENSEN,Judo Klubb Stord,NOR,m,0,0,1990,1d,69
+Andreas,NILSEN,Oslo Judo Klubb,NOR,m,0,0,1994,2k,71
+Elias,PETTERSEN,Bergen Judo Klubb,NOR,m,0,0,1991,1d,79
+Kristian,SVENDSEN,Hamar Judoklubb,NOR,m,0,0,1993,1k,61
+Christian,AMUNDSEN,Judo Klubb Stord,NOR,m,0,0,1995,2k,56
+Emma,Virtanen,Finndai,FIN,f,0,0,1994,2k,44
+Ella,Nieminen,Iisalmen Judoseura,FIN,f,0,0,1992,1k,53
+Sara,Mäkelä,Kokkolan Budo,FIN,f,0,0,1989,1d,64
+Venla,Laine,Nummelan Judo,FIN,f,0,0,1993,1k,61
+Siiri,Heikkinen,Raision Ryhti,FIN,f,0,0,1995,2k,51
+Aino,Mäenpää,Nummelan Judo,FIN,f,0,0,1994,2k,47
+Iida,Sillanpää,Finndai,FIN,f,0,1,1991,1d,59
+Anni,Lehtimäki,Iisalmen Judoseura,FIN,f,0,0,1990,1d,49
+Emilia,Kivimäki,Raision Ryhti,FIN,f,0,0,1993,1k,49
+Helmi,Myllymäki,Kokkolan Budo,FIN,f,0,0,1994,2k,53
+Onni,Korhonen,Nummelan Judo,FIN,m,0,0,1995,2k,53
+Eetu,Mäkinen,Raision Ryhti,FIN,m,0,0,1992,1k,66
+Veeti,Hämäläinen,Nummelan Judo,FIN,m,0,0,1989,1d,74
+Elias,Koskinen,Finndai,FIN,m,3,2,1993,1k,67
+Aleksi,Järvinen,Iisalmen Judoseura,FIN,m,0,0,1994,2k,58
+Joona,Uusitalo,Kokkolan Budo,FIN,m,0,0,1990,1d,63
+Lauri,Järvenpää,Raision Ryhti,FIN,m,0,0,1995,2k,51
+Leevi,Välimäki,Nummelan Judo,FIN,m,0,0,1991,1d,65
+Matias,Keskitalo,Kokkolan Budo,FIN,m,0,0,1992,1k,70
+Rasmus,Alatalo,Finndai,FIN,m,0,3,1993,1k,57
+Grace,Smith,Cambridge Judo,GBR,f,0,0,1994,2k,43
+Ruby,Jones,Barnet Judo,GBR,f,0,0,1995,2k,42
+Olivia,Williams,Walderslade Judo Club,GBR,f,0,0,1989,1d,69
+Emily,Johnson,Stonehaven Judo Club,GBR,f,0,0,1990,1d,54
+Jessica,Robinson,Peebles Judo Club,GBR,f,0,0,1993,1k,57
+Sophie,Thompson,Cambridge Judo,GBR,f,0,0,1989,1d,61
+Chloe,Walker,Barnet Judo,GBR,f,0,0,1994,2k,52
+Lily,Roberts,Walderslade Judo Club,GBR,f,0,0,1995,2k,49
+Ella,Hall,Llantwit Major Judo Club,GBR,f,0,0,1992,1k,56
+Amelia,Jackson,Windsor Judo Club,GBR,f,0,0,1993,1k,53
+Joshua,Davies,Walderslade Judo Club,GBR,m,0,0,1993,1k,59
+Harry,Wright,Llantwit Major Judo Club,GBR,m,0,0,1990,1d,61
+Charlie,Evans,Peebles Judo Club,GBR,m,0,0,1992,1k,65
+Daniel,White,St Peter's Belfast,GBR,m,0,0,1989,1d,76
+William,Green,Walderslade Judo Club,GBR,m,0,0,1994,2k,67
+James,Wood,Cambridge Judo,GBR,m,0,0,1993,1k,59
+Alfie,Clarke,Barnet Judo,GBR,m,0,0,1995,2k,51
+Hanna,Müller,Judoclub Horb,GER,f,0,0,1991,1d,56
+Leoni,Schneider,Judo-Club Passau,GER,f,0,0,1994,2k,60
+Lena,Meyer,TSV Ellgau,GER,f,0,0,1993,1k,57
+Anna,Schulz,SV Darmstadt 98,GER,f,0,0,1995,2k,48
+Lea,Becker,TuS Holle,GER,f,0,0,1992,1k,52
+Lara,Schäfer,Judoclub Horb,GER,f,0,0,1990,1d,56
+Mia,Bauer,Judo-Club Passau,GER,f,0,0,1991,1d,58
+Laura,Klein,TSV Ellgau,GER,f,0,0,1994,2k,48
+Lili,Richter,SV Darmstadt 98,GER,f,0,0,1993,1k,63
+Emily,Wolf,TuS Holle,GER,f,0,0,1995,2k,50
+Leon,Schmidt,Judoclub Horb,GER,m,0,0,1989,1d,82
+Luka,Fischer,Judo-Club Passau,GER,m,0,0,1992,1k,74
+Fynn,Weber,TSV Ellgau,GER,m,0,0,1994,2k,75
+Tim,Wagner,SV Darmstadt 98,GER,m,0,0,1993,1k,61
+Felix,Hoffmann,TuS Holle,GER,m,0,0,1995,2k,58
+Jonas,Koch,TSV Ellgau,GER,m,0,0,1991,1d,75
+Louis,Schröder,Judoclub Horb,GER,m,0,0,1990,1d,64
+Maximilian,Neumann,Judo-Club Passau,GER,m,0,0,1988,2d,82
+Julian,Schwarz,JSV Nippon Ahlen,GER,m,0,0,1989,1d,77
+Emma,Martin,Dojo Provencal,FRA,f,0,0,1995,2k,48
+Léa,Dubois,Hurionville Judo Club,FRA,f,0,0,1994,2k,51
+Manon,Robert,Lagardere Paris Racing,FRA,f,0,0,1993,1k,58
+Clara,Petit,Union Sportive Bonduoise,FRA,f,0,0,1992,1k,53
+Chloé,Leroy,Union Sportive Bonduoise,FRA,f,0,0,1991,1d,55
+Enzo,Bernard,Dojo Provencal,FRA,m,0,0,1995,2k,47
+Mathis,Thomas,Hurionville Judo Club,FRA,m,0,0,1994,2k,54
+Lucas,Richard,Lagardere Paris Racing,FRA,m,0,0,1993,1k,61
+Hugo,Durand,Hurionville Judo Club,FRA,m,0,0,1991,1d,66
+Mathéo,Moreau,Dojo Provencal,FRA,m,0,0,1992,1k,69
+Laura,Jensen,Måløv Judo Klub,DEN,f,0,0,1995,2k,52
+Sofie,Nielsen,Aarhus Judo Klub,DEN,f,0,0,1990,1d,55
+Mathilde,Andersen,Roskilde Budo Klub,DEN,f,0,0,1994,2k,59
+Emma,Larsen,Aarhus Judo Klub,DEN,f,0,0,1993,1k,57
+Freja,Rasmussen,Måløv Judo Klub,DEN,f,0,0,1991,1d,55
+Lucas,Hansen,Brøndby Judo Klub,DEN,m,0,0,1992,1k,80
+Mikkel,Pedersen,Roskilde Budo Klub,DEN,m,0,0,1995,2k,67
+Frederik,Christensen,Aarhus Judo Klub,DEN,m,0,0,1989,1d,88
+Magnus,Petersen,Måløv Judo Klub,DEN,m,0,0,1994,2k,76
+Mads,Madsen,Brøndby Judo Klub,DEN,m,0,0,1993,1k,69
+Emil,Kristensen,Måløv Judo Klub,DEN,m,0,0,1991,1d,57
+Sophie,Jansen,Judo Vereniging IJsselmeer,NED,f,0,0,1995,2k,45
+Lieke,de Jong,Budovereniging Bakeru,NED,f,0,0,1990,1d,50
+Julia,Visser,Samourais Eindhoven,NED,f,0,0,1993,1k,56
+Sanne,van Dijk,SC Sonnenberch,NED,f,0,0,1994,2k,68
+Daan,de Vries,Judo Vereniging IJsselmeer,NED,m,0,0,1992,1k,61
+Tim,Smit,Samourais Eindhoven,NED,m,0,0,1995,2k,53
+Jayden,vd Berg,Budovereniging Bakeru,NED,m,0,0,1988,2d,76
+Sem,Bakker,Judoclub Middelharnis,NED,m,0,0,1991,1d,79
+Thomas,de Boer,SC Sonnenberch,NED,m,0,0,1993,1k,68
+Jesse,Mulder,Samourais Eindhoven,NED,m,0,0,1994,2k,59
