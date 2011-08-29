@@ -680,7 +680,7 @@ void set_score(guint score)
 
 void parse_name(const gchar *s, gchar *first, gchar *last, gchar *club, gchar *country)
 {
-    const gchar *p = s;
+    const guchar *p = (const guchar *)s;
     gint i;
 
     *first = *last = *club = *country = 0;
