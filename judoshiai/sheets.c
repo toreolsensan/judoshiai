@@ -30,7 +30,7 @@ static gint current_page = 0;
 #define CLUB_WIDTH W(0.16)
 
 #define TEXT_OFFSET   W(0.01)
-#define TEXT_HEIGHT   (NAME_H*0.6)
+#define TEXT_HEIGHT   (NAME_H*0.6*font_size)
 
 #define THIN_LINE     (pd->paper_width < 700.0 ? 1.0 : pd->paper_width/700.0)
 #define THICK_LINE    (2*THIN_LINE)
@@ -65,6 +65,7 @@ static gint current_page = 0;
 #define MY_FONT "Arial"
 static gchar font_face[32];
 static gint  font_slant = CAIRO_FONT_SLANT_NORMAL, font_weight = CAIRO_FONT_WEIGHT_NORMAL;
+static gdouble font_size = 1.0;
 static GtkWidget *sheet_label = NULL;
 static gdouble ROW_HEIGHT;
 
@@ -2680,12 +2681,12 @@ void parse_font_text(gchar *font, gchar *face, gint *slant, gint *weight, gdoubl
         *weight = CAIRO_FONT_WEIGHT_NORMAL;
 
     if (num && size)
-        *size = atof(num);
+        *size = atof(num)/12.0;
 }
 
 void set_font(gchar *font)
 {
-    parse_font_text(font, font_face, &font_slant, &font_weight, NULL);
+    parse_font_text(font, font_face, &font_slant, &font_weight, &font_size);
     g_key_file_set_string(keyfile, "preferences", "sheetfont", font);
 }
 
