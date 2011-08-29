@@ -901,6 +901,35 @@ void belt_cell_data_func (GtkTreeViewColumn *col,
     g_object_set(renderer, "text", buf, NULL);
 }
 
+void seeding_cell_data_func (GtkTreeViewColumn *col,
+                             GtkCellRenderer   *renderer,
+                             GtkTreeModel      *model,
+                             GtkTreeIter       *iter,
+                             gpointer           user_data)
+{
+    gchar  buf[64];
+    gint   seeding, clubseeding;
+    gboolean visible;
+
+    gtk_tree_model_get(model, iter, 
+                       COL_VISIBLE, &visible, 
+                       COL_SEEDING, &seeding,
+                       COL_CLUBSEEDING, &clubseeding,
+                       -1);
+  
+    buf[0] = 0;
+
+    if (visible) {
+        gint s = user_data ? clubseeding : seeding;
+        if (s)
+            g_snprintf(buf, sizeof(buf), "%d", s);
+
+        //g_object_set(renderer, "foreground-set", FALSE, NULL); /* print this normal */
+    }
+
+    g_object_set(renderer, "text", buf, NULL);
+}
+
 static gchar *selected_regcategory = NULL;
 static gboolean selected_visible;
 
@@ -1157,6 +1186,34 @@ static GtkWidget *create_view_and_model(void)
                                                               NULL);
     col = gtk_tree_view_get_column (GTK_TREE_VIEW (view), col_offset - 1);
     gtk_tree_view_column_set_sort_column_id(GTK_TREE_VIEW_COLUMN(col), COL_ID);
+
+  /* --- Column seeding --- */
+
+    renderer = gtk_cell_renderer_text_new();
+    g_object_set (renderer, "xalign", 0.0, NULL);
+    col_offset = gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (view),
+                                                              -1, _("Seeding"),
+                                                              renderer, "text",
+                                                              COL_WEIGHT,
+                                                              NULL);
+    col = gtk_tree_view_get_column (GTK_TREE_VIEW (view), col_offset - 1);
+    gtk_tree_view_column_set_cell_data_func(col, renderer, seeding_cell_data_func, NULL, NULL);
+    //gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (col), TRUE);
+    gtk_tree_view_column_set_sort_column_id(GTK_TREE_VIEW_COLUMN(col), COL_SEEDING);
+
+  /* --- Column clubseeding --- */
+
+    renderer = gtk_cell_renderer_text_new();
+    g_object_set (renderer, "xalign", 0.0, NULL);
+    col_offset = gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (view),
+                                                              -1, _("Club Seeding"),
+                                                              renderer, "text",
+                                                              COL_WEIGHT,
+                                                              NULL);
+    col = gtk_tree_view_get_column (GTK_TREE_VIEW (view), col_offset - 1);
+    gtk_tree_view_column_set_cell_data_func(col, renderer, seeding_cell_data_func, (gpointer)1, NULL);
+    //gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (col), TRUE);
+    gtk_tree_view_column_set_sort_column_id(GTK_TREE_VIEW_COLUMN(col), COL_CLUBSEEDING);
 
     /*****/
 

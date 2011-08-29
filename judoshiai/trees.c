@@ -628,6 +628,10 @@ const gchar *utf8_to_html(const gchar *txt)
 
     /* Cyrillic text would generate far too long strings.
        Output is UTF-8 based from version 2.2 onwards. */
+    if (g_utf8_validate(txt, -1, NULL) == FALSE) {
+        SYS_LOG_WARNING("Not UTF-8 string: %s\n", txt);
+        return txt;
+    }
     return txt;
 
 #if 0
