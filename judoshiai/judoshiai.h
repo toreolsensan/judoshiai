@@ -782,6 +782,7 @@ extern void db_cat_def_table_done(void);
 extern void db_add_colums_to_cat_def_table(void);
 extern gboolean catdef_needs_init(void);
 extern gchar *db_get_col_data(gchar **data, gint numcols, gint row, gchar *name);
+extern gchar *db_get_row_col_data(gint row, gint col);
 
 /* categories */
 extern void create_categories(GtkWidget *w, gpointer   data);

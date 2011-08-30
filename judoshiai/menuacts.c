@@ -715,3 +715,196 @@ void make_backup(void)
         filenames[ix] = NULL;
     }
 }
+
+#define SIZEX 400
+#define SIZEY 400
+
+static gboolean delete_event_validate( GtkWidget *widget,
+                                       GdkEvent  *event,
+                                       gpointer   data )
+{
+    return FALSE;
+}
+
+static void destroy_validate( GtkWidget *widget,
+                              gpointer   data )
+{
+}
+
+#define VALIDATE_ERR_OK     0
+#define VALIDATE_ERR_UTF8   1
+#define VALIDATE_ERR_SPACES 2
+
+static gint validate_word(const gchar *word)
+{
+    gint len;
+    gchar last;
+
+    if (!word)
+        return VALIDATE_ERR_OK;
+
+    len = strlen(word);
+    if (len == 0)
+        return VALIDATE_ERR_OK;
+        
+    if (!g_utf8_validate(word, -1, NULL))
+        return VALIDATE_ERR_UTF8;
+
+    last = word[len-1];
+    if (word[0] == ' ' || word[0] == '\t' ||
+        last == ' ' || last == '\t')
+        return VALIDATE_ERR_SPACES;
+
+    return VALIDATE_ERR_OK;
+}
+
+void db_validation(GtkWidget *w, gpointer data)
+{
+    GtkTextBuffer *buffer;
+    GtkWidget *vbox, *result, *ok;
+    GtkWindow *window = GTK_WINDOW(gtk_window_new(GTK_WINDOW_TOPLEVEL));
+    gtk_window_set_title(GTK_WINDOW(window), _("Database Validation"));
+    gtk_widget_set_size_request(GTK_WIDGET(window), SIZEX, SIZEY);
+    gtk_window_set_transient_for(GTK_WINDOW(window), GTK_WINDOW(main_window));
+    gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER_ON_PARENT);
+    gtk_window_set_destroy_with_parent(GTK_WINDOW(window), TRUE);
+
+    vbox = gtk_vbox_new(FALSE, 1);
+    gtk_container_set_border_width (GTK_CONTAINER (vbox), 1);
+    gtk_container_add (GTK_CONTAINER (window), vbox);
+
+    result = gtk_text_view_new();
+    ok = gtk_button_new_with_label(_("OK"));
+
+    GtkWidget *scrolled_window = gtk_scrolled_window_new(NULL, NULL);
+    gtk_container_set_border_width(GTK_CONTAINER(scrolled_window), 10);
+    gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_window), result);
+
+    gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), ok, FALSE, TRUE, 0);
+
+    gtk_widget_show_all(GTK_WIDGET(window));
+    buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(result));
+
+    PangoFontDescription *font_desc = pango_font_description_from_string("Courier 10");
+    gtk_widget_modify_font(GTK_WIDGET(result), font_desc);
+    pango_font_description_free (font_desc);
+
+    g_signal_connect (G_OBJECT (window), "delete_event",
+                      G_CALLBACK (delete_event_validate), NULL);
+    g_signal_connect (G_OBJECT (window), "destroy",
+                      G_CALLBACK (destroy_validate), NULL);
+
+    g_signal_connect_swapped (ok, "clicked",
+			      G_CALLBACK (gtk_widget_destroy),
+                              window);
+
+    gtk_text_view_set_editable(GTK_TEXT_VIEW(result), FALSE);
+
+    // database qeuries
+    gint row, rows;
+
+    // find double seedings
+    gtk_text_buffer_insert_at_cursor(buffer, _("Duplicate seedings:\n"), -1);    
+    
+    rows = db_get_table("select category,seeding,count(*) from competitors "
+                        "group by category,seeding having seeding>0 and count(*)>1");
+
+    if (rows > 0) {
+        for (row = 0; row < rows; row++) {
+            gchar *cat = db_get_data(row, "category");
+            gchar *sed = db_get_data(row, "seeding");
+            gchar *cnt = db_get_data(row, "count(*)");
+            gchar *txt = g_strdup_printf("  %s %s: %s %s %s %s %s.\n", 
+                                         _("Category"), cat,
+                                         _("seeding"), sed, _("defined"), cnt, _("times"));
+
+            gtk_text_buffer_insert_at_cursor(buffer, txt, -1);
+            g_free(txt);
+        }
+    }
+    if (rows >= 0)
+        db_close_table();
+        
+    // find double club seedings
+    gtk_text_buffer_insert_at_cursor(buffer, _("Duplicate club seedings:\n"), -1);    
+    
+    rows = db_get_table("select club,clubseeding,count(*) from competitors "
+                        "group by club,clubseeding having clubseeding>0 and count(*)>1");
+
+    if (rows > 0) {
+        for (row = 0; row < rows; row++) {
+            gchar *club = db_get_data(row, "club");
+            gchar *sed = db_get_data(row, "clubseeding");
+            gchar *cnt = db_get_data(row, "count(*)");
+            gchar *txt = g_strdup_printf("  %s %s: %s %s %s %s %s.\n", 
+                                         _("Club"), club,
+                                         _("seeding"), sed, _("defined"), cnt, _("times"));
+
+            gtk_text_buffer_insert_at_cursor(buffer, txt, -1);
+            g_free(txt);
+        }
+    }
+    if (rows >= 0)
+        db_close_table();
+        
+    // not defined categories
+    gtk_text_buffer_insert_at_cursor(buffer, _("Missing category definitions:\n"), -1);    
+    
+    rows = db_get_table("select category from categories "
+                        "where not exists (select agetext || weighttext as wclass from catdef "
+                        "where categories.category=wclass)");
+
+    if (rows > 0) {
+        for (row = 0; row < rows; row++) {
+            gchar *cat = db_get_data(row, "category");
+            gchar *txt = g_strdup_printf("  %s %s %s %s.\n", 
+                                         _("Category"), cat, _("is not"), _("defined"));
+
+            gtk_text_buffer_insert_at_cursor(buffer, txt, -1);
+            g_free(txt);
+        }
+    }
+    if (rows >= 0)
+        db_close_table();
+        
+    // badly written names
+    gtk_text_buffer_insert_at_cursor(buffer, _("Typing errors:\n"), -1);    
+
+    rows = db_get_table("select * from competitors");
+
+    if (rows > 0) {
+        for (row = 0; row < rows; row++) {
+            gint col = 0;
+            gchar *word;
+            while ((word = db_get_row_col_data(row, col))) {
+                gint val = validate_word(word);
+                if (val) {
+                    gint i;
+                    gchar *txt = g_strdup_printf("  %s (%s): ",
+                                                 val == VALIDATE_ERR_UTF8 ? _("UTF-8 errors") : _("Extra spaces"), 
+                                                 db_get_row_col_data(-1, col));
+                    gtk_text_buffer_insert_at_cursor(buffer, txt, -1);
+                    g_free(txt);
+
+                    col = 0;
+                    while ((word = db_get_row_col_data(row, col))) {
+                        gtk_text_buffer_insert_at_cursor(buffer, "'", -1);
+                        if (g_utf8_validate(word, -1, NULL))
+                            gtk_text_buffer_insert_at_cursor(buffer, word, -1);
+                        else
+                            gtk_text_buffer_insert_at_cursor(buffer, "!!!!!", -1);
+                        gtk_text_buffer_insert_at_cursor(buffer, "' ", -1);
+                        col++;
+                    }
+                    gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
+                    break;
+                }
+                col++;
+            }
+        }
+    }
+    if (rows >= 0)
+        db_close_table();
+}
+

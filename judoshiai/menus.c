@@ -44,6 +44,7 @@ extern void start_help(GtkWidget *w, gpointer data);
 extern void locate_to_tatamis(GtkWidget *w, gpointer data);
 extern void set_tatami_state(GtkWidget *menu_item, gpointer data);
 extern void backup_shiai(GtkWidget *w, gpointer data);
+extern void db_validation(GtkWidget *w, gpointer data);
 extern void toggle_mirror(GtkWidget *menu_item, gpointer data);
 extern void toggle_auto_arrange(GtkWidget *menu_item, gpointer data);
 extern void select_use_logo(GtkWidget *w, gpointer data);
@@ -62,7 +63,7 @@ static GtkWidget *menubar,
     *categories_menu, *drawing_menu, *results_menu, 
     *judotimer_menu, *preferences_menu, *help_menu, *sql_dialog,
     *tournament_new, *tournament_choose, *tournament_choose_net, *tournament_properties, 
-    *tournament_quit, *tournament_backup,
+    *tournament_quit, *tournament_backup, *tournament_validation,
     *competitor_new, *competitor_search, *competitor_select_from_tournament, *competitor_add_from_text_file,
     *competitor_add_all_from_shiai, *competitor_add_all_with_weights, *competitor_remove_unweighted,
     *competitor_restore_removed, *competitor_bar_code_search, *competitor_print_weigh_notes, *competitor_print_with_template,
@@ -171,6 +172,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     tournament_choose_net = gtk_menu_item_new_with_label(_("Open Tournament from Net"));
     tournament_properties = gtk_menu_item_new_with_label(_("Properties"));
     tournament_backup     = gtk_menu_item_new_with_label(_("Tournament Backup"));
+    tournament_validation = gtk_menu_item_new_with_label(_("Validate Database"));
     sql_dialog            = gtk_menu_item_new_with_label(_("SQL Dialog"));
     tournament_quit       = gtk_menu_item_new_with_label(_("Quit"));
 
@@ -179,6 +181,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     //gtk_menu_shell_append(GTK_MENU_SHELL(tournament_menu), tournament_choose_net);
     gtk_menu_shell_append(GTK_MENU_SHELL(tournament_menu), tournament_properties);
     gtk_menu_shell_append(GTK_MENU_SHELL(tournament_menu), tournament_backup);
+    gtk_menu_shell_append(GTK_MENU_SHELL(tournament_menu), tournament_validation);
     gtk_menu_shell_append(GTK_MENU_SHELL(tournament_menu), gtk_separator_menu_item_new());
     gtk_menu_shell_append(GTK_MENU_SHELL(tournament_menu), sql_dialog);
     gtk_menu_shell_append(GTK_MENU_SHELL(tournament_menu), gtk_separator_menu_item_new());
@@ -189,6 +192,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     g_signal_connect(G_OBJECT(tournament_choose_net), "activate", G_CALLBACK(open_shiai_from_net), 0);
     g_signal_connect(G_OBJECT(tournament_properties), "activate", G_CALLBACK(properties), 0);
     g_signal_connect(G_OBJECT(tournament_backup),     "activate", G_CALLBACK(backup_shiai), 0);
+    g_signal_connect(G_OBJECT(tournament_validation), "activate", G_CALLBACK(db_validation), 0);
     g_signal_connect(G_OBJECT(sql_dialog),            "activate", G_CALLBACK(sql_window), 0);
     g_signal_connect(G_OBJECT(tournament_quit),       "activate", G_CALLBACK(destroy), 0);
 
@@ -738,6 +742,7 @@ void set_menu_active(void)
 
     SET_SENSITIVE(tournament_properties, DB_OK);
     SET_SENSITIVE(tournament_backup    , DB_OK);
+    SET_SENSITIVE(tournament_validation, DB_OK);
     SET_SENSITIVE(sql_dialog           , DB_OK);
 
     SET_SENSITIVE(competitor_new                 , DB_OK);
@@ -804,6 +809,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(tournament_choose_net, _("Open Tournament from Net"));
     change_menu_label(tournament_properties, _("Properties"));
     change_menu_label(tournament_backup    , _("Tournament Backup"));
+    change_menu_label(tournament_validation, _("Validate Database"));
     change_menu_label(sql_dialog,            _("SQL Dialog"));
     change_menu_label(tournament_quit      , _("Quit"));
 

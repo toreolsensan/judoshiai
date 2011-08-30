@@ -20,6 +20,23 @@ static char **tablep = NULL;
 static int tablerows, tablecols;
 static GStaticMutex table_mutex = G_STATIC_MUTEX_INIT;
 
+static void utf8error(sqlite3_context *context, int argc, sqlite3_value **argv)
+{
+    switch (sqlite3_value_type(argv[0]) ) {
+    case SQLITE_TEXT: {
+        const unsigned char *tVal = sqlite3_value_text(argv[0]);
+        if (g_utf8_validate((gchar *)tVal, -1, NULL))
+            sqlite3_result_int(context, 0);
+        else
+            sqlite3_result_int(context, 1);
+        break;
+    }
+    default:
+        sqlite3_result_null(context);
+        break;
+    }
+}
+
 int db_get_table(char *command)
 {
     sqlite3 *db;
@@ -44,6 +61,8 @@ int db_get_table(char *command)
         g_static_mutex_unlock(&table_mutex);
         return -1;
     }
+
+    sqlite3_create_function(db, "utf8error", 1, SQLITE_UTF8, NULL, utf8error, NULL, NULL);
 
     //g_print("\nSQL: %s:\n  %s\n", db_name, cmd);
     rc = sqlite3_get_table(db, command, &tablep, &tablerows, &tablecols, &zErrMsg);
@@ -89,5 +108,15 @@ gchar *db_get_col_data(gchar **data, gint numcols, gint row, gchar *name)
         return NULL;
     
     return data[(row+1)*numcols + col];
+}
+
+gchar *db_get_row_col_data(gint row, gint col)
+{
+    gchar **data = tablep;
+
+    if (col >= tablecols)
+        return NULL;
+    
+    return data[(row+1)*tablecols + col];
 }
 
