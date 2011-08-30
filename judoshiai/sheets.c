@@ -2064,7 +2064,8 @@ static void paint_point_box(struct paint_data *pd, gdouble horpos, gdouble verpo
 
     if (points == 0)
         cairo_set_source_rgb(pd->c, 0.0, 0.0, 0.0);
-    else if (blue)
+    else if ((blue && info_white_first == FALSE) || 
+             (blue == FALSE && info_white_first))
         cairo_set_source_rgb(pd->c, 0.0, 0.0, 1.0);
     else
         cairo_set_source_rgb(pd->c, 1.0, 1.0, 1.0);
@@ -2074,7 +2075,8 @@ static void paint_point_box(struct paint_data *pd, gdouble horpos, gdouble verpo
 
     if (points == 0)
         cairo_set_source_rgb(pd->c, 1.0, 1.0, 0.0);
-    else if (blue)
+    else if ((blue && info_white_first == FALSE) || 
+             (blue == FALSE && info_white_first))
         cairo_set_source_rgb(pd->c, 1.0, 1.0, 1.0);
     else
         cairo_set_source_rgb(pd->c, 0.0, 0.0, 0.0);
