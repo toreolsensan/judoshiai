@@ -751,11 +751,22 @@ static gint validate_word(const gchar *word)
         return VALIDATE_ERR_UTF8;
 
     last = word[len-1];
+
     if (word[0] == ' ' || word[0] == '\t' ||
         last == ' ' || last == '\t')
         return VALIDATE_ERR_SPACES;
 
     return VALIDATE_ERR_OK;
+}
+
+static void insert_bold(GtkTextBuffer *buffer, gchar *txt)
+{
+    GtkTextIter start, end;
+    gtk_text_buffer_insert_at_cursor(buffer, txt, -1);    
+    gint linecnt = gtk_text_buffer_get_line_count(buffer);
+    gtk_text_buffer_get_iter_at_line (buffer, &start, linecnt-2);
+    gtk_text_buffer_get_iter_at_line (buffer, &end, linecnt-1);                                       
+    gtk_text_buffer_apply_tag_by_name (buffer, "bold", &start, &end);
 }
 
 void db_validation(GtkWidget *w, gpointer data)
@@ -801,12 +812,21 @@ void db_validation(GtkWidget *w, gpointer data)
 
     gtk_text_view_set_editable(GTK_TEXT_VIEW(result), FALSE);
 
+    gtk_text_buffer_set_text(buffer, "", -1);
+    gtk_text_buffer_create_tag (buffer, "bold", 
+                                "weight", PANGO_WEIGHT_BOLD, NULL); 
+
     // database qeuries
     gint row, rows;
 
     // find double seedings
-    gtk_text_buffer_insert_at_cursor(buffer, _("Duplicate seedings:\n"), -1);    
-    
+    GtkTextIter start, end;
+    insert_bold(buffer, _("Duplicate seedings:\n"));    
+    gint linecnt = gtk_text_buffer_get_line_count(buffer);
+    gtk_text_buffer_get_iter_at_line (buffer, &start, linecnt-2);
+    gtk_text_buffer_get_iter_at_line (buffer, &end, linecnt-1);                                       
+    gtk_text_buffer_apply_tag_by_name (buffer, "bold", &start, &end);
+
     rows = db_get_table("select category,seeding,count(*) from competitors "
                         "group by category,seeding having seeding>0 and count(*)>1");
 
@@ -827,7 +847,7 @@ void db_validation(GtkWidget *w, gpointer data)
         db_close_table();
         
     // find double club seedings
-    gtk_text_buffer_insert_at_cursor(buffer, _("Duplicate club seedings:\n"), -1);    
+    insert_bold(buffer, _("Duplicate club seedings:\n"));
     
     rows = db_get_table("select club,clubseeding,count(*) from competitors "
                         "group by club,clubseeding having clubseeding>0 and count(*)>1");
@@ -849,7 +869,7 @@ void db_validation(GtkWidget *w, gpointer data)
         db_close_table();
         
     // not defined categories
-    gtk_text_buffer_insert_at_cursor(buffer, _("Missing category definitions:\n"), -1);    
+    insert_bold(buffer, _("Missing category definitions:\n"));
     
     rows = db_get_table("select category from categories "
                         "where not exists (select agetext || weighttext as wclass from catdef "
@@ -869,7 +889,7 @@ void db_validation(GtkWidget *w, gpointer data)
         db_close_table();
         
     // badly written names
-    gtk_text_buffer_insert_at_cursor(buffer, _("Typing errors:\n"), -1);    
+    insert_bold(buffer, _("Typing errors:\n"));
 
     rows = db_get_table("select * from competitors");
 
@@ -880,7 +900,6 @@ void db_validation(GtkWidget *w, gpointer data)
             while ((word = db_get_row_col_data(row, col))) {
                 gint val = validate_word(word);
                 if (val) {
-                    gint i;
                     gchar *txt = g_strdup_printf("  %s (%s): ",
                                                  val == VALIDATE_ERR_UTF8 ? _("UTF-8 errors") : _("Extra spaces"), 
                                                  db_get_row_col_data(-1, col));
