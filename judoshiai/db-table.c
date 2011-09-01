@@ -37,6 +37,29 @@ static void utf8error(sqlite3_context *context, int argc, sqlite3_value **argv)
     }
 }
 
+static void getweight(sqlite3_context *context, int argc, sqlite3_value **argv)
+{
+    switch (sqlite3_value_type(argv[0]) ) {
+    case SQLITE_TEXT: {
+        const unsigned char *tVal = sqlite3_value_text(argv[0]);
+        const guchar *p = tVal;
+        gint weight = 0;
+        while (*p) {
+            if (*p >= '0' && *p <= '9')
+                weight = 10*weight + (*p - '0');
+            else if (*p == '.' || *p == ',')
+                break;
+            p++;
+        }
+        sqlite3_result_int(context, 1000*weight);
+        break;
+    }
+    default:
+        sqlite3_result_null(context);
+        break;
+    }
+}
+
 int db_get_table(char *command)
 {
     sqlite3 *db;
@@ -63,6 +86,7 @@ int db_get_table(char *command)
     }
 
     sqlite3_create_function(db, "utf8error", 1, SQLITE_UTF8, NULL, utf8error, NULL, NULL);
+    sqlite3_create_function(db, "getweight", 1, SQLITE_UTF8, NULL, getweight, NULL, NULL);
 
     //g_print("\nSQL: %s:\n  %s\n", db_name, cmd);
     rc = sqlite3_get_table(db, command, &tablep, &tablerows, &tablecols, &zErrMsg);
