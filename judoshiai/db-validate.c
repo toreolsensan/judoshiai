@@ -292,32 +292,10 @@ void db_validation(GtkWidget *w, gpointer data)
         db_close_table();
 
     // find suspicious weights
-    rows = db_get_table("select last,first,category,weight from competitors "
-                        "where weight>0 and (weight<15000 or weight>180000)");
-
-    if (rows > 0) {
-        insert_tag(buffer, _("Suspicious weights:\n"), "bold", 1);
-        for (row = 0; row < rows; row++) {
-            gchar *cat = db_get_data(row, "category");
-            gchar *last = db_get_data(row, "last");
-            gchar *first = db_get_data(row, "first");
-            gint   weight = atoi(db_get_data(row, "weight"));
-            gchar *txt = g_strdup_printf("  %s %s: %s=%s %s=%d.%02d kg\n", 
-                                         last, first, _("Category"), cat, 
-                                         _("Weight"), weight/1000, (weight%1000)/10);
-
-            gtk_text_buffer_insert_at_cursor(buffer, txt, -1);
-            g_free(txt);
-            warnings++;
-        }
-    }
-    if (rows >= 0)
-        db_close_table();
-
-    // find more suspicious weights
     rows = db_get_table("select last,first,category,regcategory,weight from competitors "
                         "where weight>0 and "
-                        "( ( getweight(category)=0 and getweight(regcategory)>0 and "
+                        "( weight<10000 or weight>200000 or "
+                        "  ( getweight(category)=0 and getweight(regcategory)>0 and "
                         "    ( weight>getweight(regcategory)+5000 or "
                         "      weight<getweight(regcategory)-10000)) or "
                         "  ( getweight(category)>0 and "
@@ -325,13 +303,14 @@ void db_validation(GtkWidget *w, gpointer data)
                         "      weight<getweight(category)-10000))) order by last, first");
 
     if (rows > 0) {
+        insert_tag(buffer, _("Suspicious weights:\n"), "bold", 1);
         for (row = 0; row < rows; row++) {
             gchar *cat = db_get_data(row, "category");
             gchar *rcat = db_get_data(row, "regcategory");
             gchar *last = db_get_data(row, "last");
             gchar *first = db_get_data(row, "first");
             gint   weight = atoi(db_get_data(row, "weight"));
-            gchar *txt = g_strdup_printf("  %s %s: %s=%s %s=%s %s=%d.%02d kg\n", 
+            gchar *txt = g_strdup_printf("  %s %s:  %s=%s  %s=%s  %s=%d.%02d kg\n", 
                                          last, first, _("Category"), cat, _("Reg. Category"), rcat, 
                                          _("Weight"), weight/1000, (weight%1000)/10);
 
@@ -342,8 +321,6 @@ void db_validation(GtkWidget *w, gpointer data)
     }
     if (rows >= 0)
         db_close_table();
-
-
 
     gchar *txt = g_strdup_printf("\n* %d %s. *\n", warnings, _("warnings")); 
     insert_tag(buffer, txt, "bold", 1);

@@ -45,13 +45,23 @@ static void getweight(sqlite3_context *context, int argc, sqlite3_value **argv)
         const guchar *p = tVal;
         gint weight = 0;
         while (*p) {
-            if (*p >= '0' && *p <= '9')
-                weight = 10*weight + (*p - '0');
-            else if (*p == '.' || *p == ',')
+            if (*p >= '0' && *p <= '9') {
+                weight = 10*weight + 1000*(*p - '0');
+            } else if (*p == '.' || *p == ',') {
+                p++;
+                if (*p >= '0' && *p <= '9') {
+                    weight += 100*(*p - '0');
+                    p++;
+                    if (*p >= '0' && *p <= '9') {
+                        weight += 10*(*p - '0');
+                    }
+                }
                 break;
+            } else
+                weight = 0;
             p++;
         }
-        sqlite3_result_int(context, 1000*weight);
+        sqlite3_result_int(context, weight);
         break;
     }
     default:
