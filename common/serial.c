@@ -64,6 +64,7 @@
 #define DEV_TYPE_NORMAL   0
 #define DEV_TYPE_STATHMOS 1
 #define DEV_TYPE_AP1      2
+#define DEV_TYPE_MYWEIGHT 3
 
 extern struct message *put_to_rec_queue(volatile struct message *m);
 extern GtkWidget     *weight_entry;
@@ -93,7 +94,8 @@ static void handle_character(gchar c)
     } else if (c < '0' || c > '9') {
         if ((device_type == DEV_TYPE_NORMAL   && c == '\r') ||
             (device_type == DEV_TYPE_STATHMOS && c == 0x1e) ||
-            (device_type == DEV_TYPE_AP1      && c == 0x04)) {
+            (device_type == DEV_TYPE_AP1      && (c == 'k' || c == 0x04 || c == 0x03)) ||
+            (device_type == DEV_TYPE_MYWEIGHT && (c == 'k' || c == '\r'))) {
 
             if (weight_entry && weight > 5000 && weight < 300000) {
                 struct message msg;
@@ -106,7 +108,8 @@ static void handle_character(gchar c)
             weight = 0;
             decimal = 0;
         }
-    } else if (device_type == DEV_TYPE_STATHMOS) {
+    } else if (device_type == DEV_TYPE_STATHMOS ||
+               device_type == DEV_TYPE_MYWEIGHT) {
         weight = 10*weight + (c - '0');
     } else if (decimal == 0) {
         weight = 10*weight + 1000*(c - '0');
@@ -138,6 +141,9 @@ static gchar send_chars(void)
 
     if (device_type == DEV_TYPE_AP1)
         return 0x11;
+
+    if (device_type == DEV_TYPE_MYWEIGHT)
+        return 0x0d;
 
     return 0;
 }
@@ -332,6 +338,7 @@ void set_serial_dialog(GtkWidget *w, gpointer data)
     gtk_combo_box_append_text((GtkComboBox *)devtype, "Normal");
     gtk_combo_box_append_text((GtkComboBox *)devtype, "Stathmos/Allvåg");
     gtk_combo_box_append_text((GtkComboBox *)devtype, "AP-1");
+    gtk_combo_box_append_text((GtkComboBox *)devtype, "My Weight");
     gtk_combo_box_set_active((GtkComboBox *)devtype, device_type);
 
     gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new(_("In Use")), 0, 1, 0, 1);
