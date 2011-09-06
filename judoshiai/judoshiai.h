@@ -761,6 +761,8 @@ extern gboolean db_has_hansokumake(gint competitor);
 extern gint db_find_match_tatami(gint category, gint number);
 extern void db_set_comment(gint category, gint number, gint comment);
 extern void db_set_forced_tatami_number_delay(gint category, gint matchnumber, gint tatami, gint num, gboolean delay);
+extern void set_judogi_status(gint index, gint flags);
+extern gint get_judogi_status(gint index);
 extern void db_synchronize(char *name_2);
 extern void db_print_competitors(FILE *f);
 extern void db_print_competitors_by_club(FILE *f);
@@ -857,6 +859,8 @@ extern void update_match_pages_visibility(void);
 extern gint get_match_number_flag(gint category, gint number);
 extern gchar *get_match_number_text(gint category, gint number);
 extern void send_matches(gint tatami);
+extern void send_match(gint tatami, gint pos, struct match *m);
+extern void send_next_matches(gint category, gint tatami, struct match *nm);
 
 /* sheets */
 extern void paint_category(struct paint_data *pd);

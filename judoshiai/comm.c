@@ -237,6 +237,7 @@ void msg_received(struct message *input_msg)
 		CP2MSG_STR(id);
 		CP2MSG_INT(seeding);
 		CP2MSG_INT(clubseeding);
+                output_msg.u.edit_competitor.matchflags = get_judogi_status(j->index);
 		free_judoka(j);
 	    }
 
@@ -245,12 +246,14 @@ void msg_received(struct message *input_msg)
             j = get_data(input_msg->u.edit_competitor.index);
 	    if (j) {
                 j->weight = input_msg->u.edit_competitor.weight;
-                j->deleted = input_msg->u.edit_competitor.deleted;
+                //j->deleted = input_msg->u.edit_competitor.deleted;
                 if (j->visible)
                     db_update_judoka(j->index, j);
                 display_one_judoka(j);
                 free_judoka(j);
             }
+	} else if (input_msg->u.edit_competitor.operation == EDIT_OP_SET_JUDOGI) {
+            set_judogi_status(input_msg->u.edit_competitor.index, input_msg->u.edit_competitor.matchflags);
 	} else if (input_msg->u.edit_competitor.operation == EDIT_OP_SET) {
 #define SET_J(_x) j2._x = input_msg->u.edit_competitor._x
 	    memset(&j2, 0, sizeof(j2));
@@ -417,23 +420,23 @@ void set_tatami_state(GtkWidget *menu_item, gpointer data)
 
 /* Which message is sent to who? Avoid sending unnecessary messages. */
 static gboolean send_message_to_application[NUM_MESSAGES][NUM_APPLICATION_TYPES] = {
-    // ALL  SHIAI  TIMER  INFO   WEIGHT
-    {FALSE, FALSE, FALSE, FALSE, FALSE}, // 0,
-    {TRUE,  FALSE, TRUE , FALSE, FALSE}, // MSG_NEXT_MATCH = 1,
-    {TRUE,  FALSE, FALSE, FALSE, FALSE}, // MSG_RESULT,
-    {TRUE,  FALSE, TRUE , FALSE, FALSE}, // MSG_ACK,
-    {TRUE,  FALSE, FALSE, FALSE, FALSE}, // MSG_SET_COMMENT,
-    {TRUE,  FALSE, FALSE, FALSE, FALSE}, // MSG_SET_POINTS,
-    {TRUE,  FALSE, FALSE, FALSE, FALSE}, // MSG_HELLO,
-    {TRUE,  FALSE, FALSE, FALSE, FALSE}, // MSG_DUMMY,
-    {TRUE,  FALSE, FALSE, TRUE , FALSE}, // MSG_MATCH_INFO,
-    {TRUE,  FALSE, FALSE, TRUE , FALSE}, // MSG_NAME_INFO,
-    {TRUE,  FALSE, FALSE, FALSE, FALSE}, // MSG_NAME_REQ,
-    {TRUE,  FALSE, FALSE, FALSE, FALSE}, // MSG_ALL_REQ,
-    {TRUE,  FALSE, FALSE, TRUE , FALSE}, // MSG_CANCEL_REST_TIME,
-    {TRUE,  FALSE, TRUE , FALSE, FALSE}, // MSG_UPDATE_LABEL,
-    {FALSE, FALSE, FALSE, FALSE, TRUE }, // MSG_EDIT_COMPETITOR,
-    {FALSE, FALSE, FALSE, FALSE, FALSE}  // MSG_SCALE,
+    // ALL  SHIAI  TIMER  INFO   WEIGHT JUDOGI
+    {FALSE, FALSE, FALSE, FALSE, FALSE, FALSE}, // 0,
+    {TRUE,  FALSE, TRUE , FALSE, FALSE, FALSE}, // MSG_NEXT_MATCH = 1,
+    {TRUE,  FALSE, FALSE, FALSE, FALSE, FALSE}, // MSG_RESULT,
+    {TRUE,  FALSE, TRUE , FALSE, FALSE, FALSE}, // MSG_ACK,
+    {TRUE,  FALSE, FALSE, FALSE, FALSE, FALSE}, // MSG_SET_COMMENT,
+    {TRUE,  FALSE, FALSE, FALSE, FALSE, FALSE}, // MSG_SET_POINTS,
+    {TRUE,  FALSE, FALSE, FALSE, FALSE, FALSE}, // MSG_HELLO,
+    {TRUE,  FALSE, FALSE, FALSE, FALSE, FALSE}, // MSG_DUMMY,
+    {TRUE,  FALSE, FALSE, TRUE , FALSE, TRUE }, // MSG_MATCH_INFO,
+    {TRUE,  FALSE, FALSE, TRUE , FALSE, TRUE }, // MSG_NAME_INFO,
+    {TRUE,  FALSE, FALSE, FALSE, FALSE, FALSE}, // MSG_NAME_REQ,
+    {TRUE,  FALSE, FALSE, FALSE, FALSE, FALSE}, // MSG_ALL_REQ,
+    {TRUE,  FALSE, FALSE, TRUE , FALSE, TRUE }, // MSG_CANCEL_REST_TIME,
+    {TRUE,  FALSE, TRUE , FALSE, FALSE, FALSE}, // MSG_UPDATE_LABEL,
+    {FALSE, FALSE, FALSE, FALSE, TRUE , TRUE }, // MSG_EDIT_COMPETITOR,
+    {FALSE, FALSE, FALSE, FALSE, FALSE, FALSE}  // MSG_SCALE,
 };
 
 /*
@@ -771,6 +774,8 @@ void show_node_connections( GtkWidget *w,
         case APPLICATION_TYPE_SHIAI: t = "JudoShiai"; break;
         case APPLICATION_TYPE_TIMER: t = "JudoTimer"; break;
         case APPLICATION_TYPE_INFO:  t = "JudoInfo";  break;
+        case APPLICATION_TYPE_WEIGHT:t = "JudoWeight";  break;
+        case APPLICATION_TYPE_JUDOGI:t = "JudoJudogi";  break;
         }
 
         myaddr = ntohl(connections[i].addr);

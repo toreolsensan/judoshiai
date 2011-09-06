@@ -848,7 +848,7 @@ struct match *db_next_matchXXX(gint category, gint tatami)
     sprintf(buffer, 
             "SELECT * FROM matches "
             "WHERE matches.\"blue_points\"=0 "
-            "AND matches.\"deleted\"=0 "
+            "AND matches.\"deleted\"&1=0 "
             "AND matches.\"white_points\"=0 "
             "AND matches.\"blue\"<>%d AND matches.\"white\"<>%d "
             "AND (matches.\"blue\"=0 OR EXISTS (SELECT * FROM competitors WHERE "
@@ -923,7 +923,7 @@ struct match *db_next_matchXXX(gint category, gint tatami)
         sprintf(buffer, 
                 "UPDATE matches SET \"comment\"=%d WHERE "
                 "\"category\"=%d AND \"number\"=%d "
-                "AND \"deleted\"=0",
+                "AND \"deleted\"&1=0",
                 COMMENT_MATCH_1, next_match[0].category, next_match[0].number);
         db_exec(db_name, buffer, 0, 0);
     }
@@ -933,7 +933,7 @@ struct match *db_next_matchXXX(gint category, gint tatami)
         sprintf(buffer, 
                 "UPDATE matches SET \"comment\"=%d WHERE "
                 "\"category\"=%d AND \"number\"=%d "
-                "AND \"deleted\"=0",
+                "AND \"deleted\"&1=0",
                 COMMENT_MATCH_2, next_match[1].category, next_match[1].number);
         db_exec(db_name, buffer, 0, 0);
     }
@@ -1048,7 +1048,7 @@ struct match *db_next_match(gint category, gint tatami)
     db_cmd((gpointer)DB_NEXT_MATCH, db_callback_matches,
 	   "SELECT * FROM matches "
 	   "WHERE matches.\"blue_points\"=0 "
-	   "AND matches.\"deleted\"=0 "
+	   "AND matches.\"deleted\"&1=0 "
 	   "AND matches.\"white_points\"=0 "
 	   "AND matches.\"blue\"<>%d AND matches.\"white\"<>%d "
 	   "AND (matches.\"blue\"=0 OR EXISTS (SELECT * FROM competitors WHERE "
@@ -1162,7 +1162,7 @@ struct match *db_next_match(gint category, gint tatami)
 	db_cmd(NULL, NULL,
 	       "UPDATE matches SET \"comment\"=%d WHERE "
 	       "\"category\"=%d AND \"number\"=%d "
-	       "AND \"deleted\"=0",
+	       "AND \"deleted\"&1=0",
 	       COMMENT_MATCH_1, next_match[0].category, next_match[0].number);
     }
 
@@ -1171,7 +1171,7 @@ struct match *db_next_match(gint category, gint tatami)
 	db_cmd(NULL, NULL,
 	       "UPDATE matches SET \"comment\"=%d WHERE "
 	       "\"category\"=%d AND \"number\"=%d "
-	       "AND \"deleted\"=0",
+	       "AND \"deleted\"&1=0",
 	       COMMENT_MATCH_2, next_match[1].category, next_match[1].number);
     }
 
@@ -1224,7 +1224,7 @@ struct match *db_matches_waiting(void)
     sprintf(buffer, 
             "SELECT * FROM matches "
             "WHERE matches.'blue_points'=0 "
-            "AND matches.'deleted'=0 "
+            "AND matches.'deleted'&1=0 "
             "AND matches.'white_points'=0 "
             "AND matches.'blue'<>%d AND matches.'white'<>%d "
             "AND matches.'comment'=%d "
@@ -1314,7 +1314,7 @@ void db_set_comment(gint category, gint number, gint comment)
 
     /* update the display */
     sprintf(buffer, 
-            "SELECT * FROM matches WHERE \"category\"=%d AND \"number\"=%d AND \"deleted\"=0",
+            "SELECT * FROM matches WHERE \"category\"=%d AND \"number\"=%d AND \"deleted\"&1=0",
             category, number);
     db_exec(db_name, buffer, (gpointer)ADD_MATCH, db_callback_matches);
 
@@ -1333,4 +1333,68 @@ void db_set_forced_tatami_number_delay(gint category, gint matchnumber, gint tat
                     "\"comment\"=%d WHERE \"category\"=%d AND \"number\"=%d",
                     tatami, num,
                     delay ? COMMENT_WAIT : COMMENT_EMPTY, category, matchnumber);
+}
+
+
+void set_judogi_status(gint index, gint flags)
+{
+    gint t, n;
+
+    // only the three first matches are affected
+    for (n = 0; n < 3; n++) {
+        for (t = 1; t <= NUM_TATAMIS; t++) {
+            if (next_matches[t][n].number == INVALID_MATCH)
+                continue;
+            if (next_matches[t][n].blue == index || next_matches[t][n].white == index) {
+                if (next_matches[t][n].blue == index) {
+                    next_matches[t][n].deleted &= ~(MATCH_FLAG_JUDOGI1_OK | MATCH_FLAG_JUDOGI1_NOK);
+                    if (flags & JUDOGI_OK)
+                        next_matches[t][n].deleted |= MATCH_FLAG_JUDOGI1_OK;
+                    else if (flags & JUDOGI_NOK)
+                        next_matches[t][n].deleted |= MATCH_FLAG_JUDOGI1_NOK;
+                } else {
+                    next_matches[t][n].deleted &= ~(MATCH_FLAG_JUDOGI2_OK | MATCH_FLAG_JUDOGI2_NOK);
+                    if (flags & JUDOGI_OK)
+                        next_matches[t][n].deleted |= MATCH_FLAG_JUDOGI2_OK;
+                    else if (flags & JUDOGI_NOK)
+                        next_matches[t][n].deleted |= MATCH_FLAG_JUDOGI2_NOK;
+                }
+
+                db_exec_str(NULL, NULL,
+                            "UPDATE matches SET \"deleted\"=%d "
+                            "WHERE \"category\"=%d AND \"number\"=%d",
+                            next_matches[t][n].deleted, next_matches[t][n].category, next_matches[t][n].number);
+                send_match(t, n+1, &(next_matches[t][n]));
+                send_next_matches(0, t, &(next_matches[t][0]));
+            }
+        }
+    }
+}
+
+gint get_judogi_status(gint index)
+{
+    gint t, n;
+
+    for (n = 0; n < NEXT_MATCH_NUM; n++) {
+        for (t = 1; t <= NUM_TATAMIS; t++) {
+            if (next_matches[t][n].number == INVALID_MATCH)
+                continue;
+
+            if (next_matches[t][n].blue == index) {
+                if (next_matches[t][n].deleted & MATCH_FLAG_JUDOGI1_OK)
+                    return JUDOGI_OK;
+                else if (next_matches[t][n].deleted & MATCH_FLAG_JUDOGI1_NOK)
+                    return JUDOGI_NOK;
+                return 0;
+            } else if (next_matches[t][n].white == index) {
+                if (next_matches[t][n].deleted & MATCH_FLAG_JUDOGI2_OK)
+                    return JUDOGI_OK;
+                else if (next_matches[t][n].deleted & MATCH_FLAG_JUDOGI2_NOK)
+                    return JUDOGI_NOK;
+                return 0;
+            }
+        }
+    }
+
+    return 0;
 }

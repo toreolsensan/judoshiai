@@ -146,6 +146,7 @@ static void judoka_edited_callback(GtkWidget *widget,
             edited.deleted |= GENDER_FEMALE;
     }
 
+#ifdef JUDOGI_CONTROL
     if (judoka_tmp->judogi) {
         gint judogi = gtk_combo_box_get_active(GTK_COMBO_BOX(judoka_tmp->judogi));
         if (judogi == 1)
@@ -153,7 +154,7 @@ static void judoka_edited_callback(GtkWidget *widget,
         else if (judogi == 2)
             edited.deleted |= JUDOGI_NOK;
     }
-
+#endif
     if (judoka_tmp->hansokumake && 
         gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(judoka_tmp->hansokumake)))
         edited.deleted |= HANSOKUMAKE;
@@ -452,28 +453,31 @@ void view_on_row_activated(GtkTreeView        *treeview,
     g_signal_connect(G_OBJECT(dialog), "response",
                      G_CALLBACK(judoka_edited_callback), (gpointer)judoka_tmp);
 
-    table = gtk_table_new(2, 8, FALSE);
+    table = gtk_table_new(2, 15, FALSE);
     gtk_container_add(GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), table);
 
     if (visible) {
-        judoka_tmp->last = set_entry(table, 0, _("Last Name:"), last);
-        judoka_tmp->first = set_entry(table, 1, _("First Name:"), first);
-        judoka_tmp->birthyear = set_entry(table, 2, _("Year of Birth:"), birthyear_s);
+        gint row = 0;
+
+        judoka_tmp->last = set_entry(table, row++, _("Last Name:"), last);
+        judoka_tmp->first = set_entry(table, row++, _("First Name:"), first);
+        judoka_tmp->birthyear = set_entry(table, row++, _("Year of Birth:"), birthyear_s);
 
         tmp = gtk_label_new(_("Grade:"));
-        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, 3, 4);
+        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, row, row+1);
         judoka_tmp->belt = tmp = gtk_combo_box_new_text();
         for (i = 0; belts[i]; i++)
             gtk_combo_box_append_text((GtkComboBox *)tmp, belts[i]);
-        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, 3, 4);
+        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, row, row+1);
         gtk_combo_box_set_active((GtkComboBox *)tmp, belt);
+        row++;
 
-        judoka_tmp->club = set_entry(table, 4, _("Club:"), club);
-        judoka_tmp->country = set_entry(table, 5, _("Country:"), country);
-        judoka_tmp->regcategory = set_entry(table, 6, _("Reg. Category:"), regcategory);
+        judoka_tmp->club = set_entry(table, row++, _("Club:"), club);
+        judoka_tmp->country = set_entry(table, row++, _("Country:"), country);
+        judoka_tmp->regcategory = set_entry(table, row++, _("Reg. Category:"), regcategory);
 
         tmp = gtk_label_new(_("Category:"));
-        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, 7, 8);
+        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, row, row+1);
         judoka_tmp->realcategory = tmp = gtk_combo_box_new_text();
 
         gint active = 0, loop = 0;
@@ -494,11 +498,12 @@ void view_on_row_activated(GtkTreeView        *treeview,
             loop++;
         }
 
-        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, 7, 8);
+        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, row, row+1);
         gtk_combo_box_set_active((GtkComboBox *)tmp, active);
+        row++;
 
         if (serial_used) {
-            gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new(_("Weight:")), 0, 1, 8, 9);
+            gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new(_("Weight:")), 0, 1, row, row+1);
             judoka_tmp->weight = gtk_entry_new();
             gtk_entry_set_max_length(GTK_ENTRY(judoka_tmp->weight), 7);
             gtk_entry_set_width_chars(GTK_ENTRY(judoka_tmp->weight), 7);
@@ -507,7 +512,7 @@ void view_on_row_activated(GtkTreeView        *treeview,
             GtkWidget *wbutton = gtk_button_new_with_label("---");
             gtk_box_pack_start_defaults(GTK_BOX(whbox), judoka_tmp->weight);
             gtk_box_pack_start_defaults(GTK_BOX(whbox), wbutton);
-            gtk_table_attach_defaults(GTK_TABLE(table), whbox, 1, 2, 8, 9);
+            gtk_table_attach_defaults(GTK_TABLE(table), whbox, 1, 2, row, row+1);
             weight_entry = wbutton;
             if (last && last[0])
                 gtk_widget_grab_focus(wbutton);
@@ -520,9 +525,10 @@ void view_on_row_activated(GtkTreeView        *treeview,
             if (last && last[0])
                 gtk_widget_grab_focus(judoka_tmp->weight);
         }
+        row++;
 
         tmp = gtk_label_new(_("Seeding:"));
-        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, 9, 10);
+        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, row, row+1);
         judoka_tmp->seeding = tmp = gtk_combo_box_new_text();
         gtk_combo_box_append_text((GtkComboBox *)tmp, _("No seeding"));
         gchar buf[8];
@@ -530,50 +536,55 @@ void view_on_row_activated(GtkTreeView        *treeview,
             snprintf(buf, sizeof(buf), "%d", i+1); 
             gtk_combo_box_append_text((GtkComboBox *)tmp, buf);
         }
-        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, 9, 10);
+        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, row, row+1);
         gtk_combo_box_set_active((GtkComboBox *)tmp, seeding);
+        row++;
 
-        judoka_tmp->clubseeding = set_entry(table, 10, _("Club Seeding:"), clubseeding_s);
+        judoka_tmp->clubseeding = set_entry(table, row++, _("Club Seeding:"), clubseeding_s);
 
-        judoka_tmp->id = set_entry(table, 11, _("Id:"), id);
+        judoka_tmp->id = set_entry(table, row++, _("Id:"), id);
 
         tmp = gtk_label_new(_("Gender:"));
-        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, 12, 13);
+        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, row, row+1);
         judoka_tmp->gender = tmp = gtk_combo_box_new_text();
         gtk_combo_box_append_text((GtkComboBox *)tmp, "?");
         gtk_combo_box_append_text((GtkComboBox *)tmp, _("Male"));
         gtk_combo_box_append_text((GtkComboBox *)tmp, _("Female"));
-        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, 12, 13);
+        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, row, row+1);
         if (deleted & GENDER_MALE)
             gtk_combo_box_set_active((GtkComboBox *)tmp, 1);
         else if (deleted & GENDER_FEMALE)
             gtk_combo_box_set_active((GtkComboBox *)tmp, 2);
         else
             gtk_combo_box_set_active((GtkComboBox *)tmp, 0);
+        row++;
 
+#ifdef JUDOGI_CONTROL
         tmp = gtk_label_new(_("Judogi:"));
-        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, 13, 14);
+        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, row, row+1);
         judoka_tmp->judogi = tmp = gtk_combo_box_new_text();
         gtk_combo_box_append_text((GtkComboBox *)tmp, "?");
         gtk_combo_box_append_text((GtkComboBox *)tmp, _("OK"));
         gtk_combo_box_append_text((GtkComboBox *)tmp, _("NOK"));
-        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, 13, 14);
+        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, row, row+1);
         if (deleted & JUDOGI_OK)
             gtk_combo_box_set_active((GtkComboBox *)tmp, 1);
         else if (deleted & JUDOGI_NOK)
             gtk_combo_box_set_active((GtkComboBox *)tmp, 2);
         else
             gtk_combo_box_set_active((GtkComboBox *)tmp, 0);
-
+        row++;
+#endif
         tmp = gtk_label_new("Hansoku-make:");
-        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, 14, 15);
+        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, row, row+1);
         judoka_tmp->hansokumake = gtk_check_button_new();
-        gtk_table_attach_defaults(GTK_TABLE(table), judoka_tmp->hansokumake, 1, 2, 14, 15);
+        gtk_table_attach_defaults(GTK_TABLE(table), judoka_tmp->hansokumake, 1, 2, row, row+1);
         if (deleted & HANSOKUMAKE)
             gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(judoka_tmp->hansokumake), TRUE);
 
         g_signal_connect(G_OBJECT(judoka_tmp->club), "key-press-event", 
                          G_CALLBACK(complete_cb), club_completer);
+        row++;
     } else {
         struct category_data *catdata = NULL;
         catdata = avl_get_category(index);

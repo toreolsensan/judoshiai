@@ -1234,6 +1234,42 @@ gchar *get_match_number_text(gint category, gint number)
     return NULL;
 }
 
+void send_match(gint tatami, gint pos, struct match *m)
+{
+    struct message msg;
+
+    memset(&msg, 0, sizeof(msg));
+    msg.type = MSG_MATCH_INFO;
+    msg.u.match_info.tatami   = tatami;
+    msg.u.match_info.position = pos;
+    msg.u.match_info.category = m->category;
+    msg.u.match_info.number   = m->number;
+    msg.u.match_info.blue     = m->blue;
+    msg.u.match_info.white    = m->white;
+
+    struct category_data *cat = avl_get_category(m->category);
+    if (cat) {
+        msg.u.match_info.flags = get_match_number_flag(m->category, m->number);
+
+        time_t last_time1 = avl_get_competitor_last_match_time(m->blue);
+        time_t last_time2 = avl_get_competitor_last_match_time(m->white);
+        time_t last_time = last_time1 > last_time2 ? last_time1 : last_time2;
+        gint rest_time = cat->rest_time;
+        time_t now = time(NULL);
+			
+        if (now < last_time + rest_time) {
+            msg.u.match_info.rest_time = last_time + rest_time - now;
+            if (last_time1 > last_time2)
+                msg.u.match_info.flags |= MATCH_FLAG_BLUE_REST | MATCH_FLAG_BLUE_DELAYED;
+            else
+                msg.u.match_info.flags |= MATCH_FLAG_WHITE_REST | MATCH_FLAG_WHITE_DELAYED;
+        } else
+            msg.u.match_info.rest_time = 0;
+    }
+    msg.u.match_info.flags |= MATCH_FLAG_JUDOGI_MASK & m->deleted;
+    send_packet(&msg);
+}
+
 void send_matches(gint tatami)
 {
     struct message msg;
@@ -1256,36 +1292,7 @@ void send_matches(gint tatami)
     send_packet(&msg);
 
     for (k = 0; k < NEXT_MATCH_NUM; k++) {
-        memset(&msg, 0, sizeof(msg));
-        msg.type = MSG_MATCH_INFO;
-        msg.u.match_info.tatami   = tatami;
-        msg.u.match_info.position = k + 1;
-        msg.u.match_info.category = m[k].category;
-        msg.u.match_info.number   = m[k].number;
-        msg.u.match_info.blue     = m[k].blue;
-        msg.u.match_info.white    = m[k].white;
-
-        struct category_data *cat = avl_get_category(m[k].category);
-        if (cat) {
-            msg.u.match_info.flags = get_match_number_flag(m[k].category, m[k].number);
-
-            time_t last_time1 = avl_get_competitor_last_match_time(m[k].blue);
-            time_t last_time2 = avl_get_competitor_last_match_time(m[k].white);
-            time_t last_time = last_time1 > last_time2 ? last_time1 : last_time2;
-            gint rest_time = cat->rest_time;
-            time_t now = time(NULL);
-			
-            if (now < last_time + rest_time) {
-                msg.u.match_info.rest_time = last_time + rest_time - now;
-                if (last_time1 > last_time2)
-                    msg.u.match_info.flags |= MATCH_FLAG_BLUE_REST | MATCH_FLAG_BLUE_DELAYED;
-                else
-                    msg.u.match_info.flags |= MATCH_FLAG_WHITE_REST | MATCH_FLAG_WHITE_DELAYED;
-            } else
-                msg.u.match_info.rest_time = 0;
-        }
-
-        send_packet(&msg);
+        send_match(tatami, k+1, &(m[k]));
     }
 }
 
@@ -1311,46 +1318,17 @@ void update_matches_small(guint category, struct compsys sys_or_tatami)
     }
 }
 
-void update_matches(guint category, struct compsys sys, gint tatami)
+void send_next_matches(gint category, gint tatami, struct match *nm)
 {
-    struct match *nm;
-    struct judoka *j1 = NULL, *j2 = NULL, *g = NULL;
     struct message msg;
-
-    if (category) {
-        if (sys.system == 0)
-            sys = db_get_system(category);
-
-        switch (sys.system) {
-        case SYSTEM_POOL:
-        case SYSTEM_DPOOL:
-        case SYSTEM_DPOOL2:
-        case SYSTEM_QPOOL:
-            update_pool_matches(category, sys.numcomp);
-            break;
-        case SYSTEM_FRENCH_8:
-        case SYSTEM_FRENCH_16:
-        case SYSTEM_FRENCH_32:
-        case SYSTEM_FRENCH_64:
-        case SYSTEM_FRENCH_128:
-            update_french_matches(category, sys);
-            break;
-        }
-    }
-
-    g_static_mutex_lock(&next_match_mutex);
-    nm = db_next_match(tatami ? 0 : category, tatami);
-
-    if (nm == NULL) {
-        g_static_mutex_unlock(&next_match_mutex);
-        return;
-    }
+    struct judoka *j1 = NULL, *j2 = NULL, *g = NULL;
 
     /* create a message for the judotimers */
     memset(&msg, 0, sizeof(msg));
     msg.type = MSG_NEXT_MATCH;
     msg.u.next_match.category = nm[0].category;
     msg.u.next_match.match = nm[0].number;
+    msg.u.next_match.flags = nm[0].deleted;
 
     if (nm[0].number < 1000) {
         if (!tatami)
@@ -1511,9 +1489,44 @@ void update_matches(guint category, struct compsys sys, gint tatami)
         }
     }
 	
-    g_static_mutex_unlock(&next_match_mutex);
-
     send_packet(&msg);
+}
+
+void update_matches(guint category, struct compsys sys, gint tatami)
+{
+    struct match *nm;
+
+    if (category) {
+        if (sys.system == 0)
+            sys = db_get_system(category);
+
+        switch (sys.system) {
+        case SYSTEM_POOL:
+        case SYSTEM_DPOOL:
+        case SYSTEM_DPOOL2:
+        case SYSTEM_QPOOL:
+            update_pool_matches(category, sys.numcomp);
+            break;
+        case SYSTEM_FRENCH_8:
+        case SYSTEM_FRENCH_16:
+        case SYSTEM_FRENCH_32:
+        case SYSTEM_FRENCH_64:
+        case SYSTEM_FRENCH_128:
+            update_french_matches(category, sys);
+            break;
+        }
+    }
+
+    g_static_mutex_lock(&next_match_mutex);
+    nm = db_next_match(tatami ? 0 : category, tatami);
+
+    if (nm == NULL) {
+        g_static_mutex_unlock(&next_match_mutex);
+        return;
+    }
+
+    send_next_matches(category, tatami, nm);
+    g_static_mutex_unlock(&next_match_mutex);
 
     if (category)
         update_category_status_info(category);
