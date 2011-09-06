@@ -40,14 +40,24 @@ gint           language = LANG_FI;
 static GtkWidget *name_box;
 static GtkWidget *id_box;
 static GtkWidget *weight_box;
+#ifdef JUDOGI_STATUS
 static GtkWidget *judogi_box;
+#endif
 GtkWidget *weight_entry = NULL;
 
 static struct message saved;
+static gchar  *saved_id = NULL;
 
 void set_display(struct msg_edit_competitor *msg)
 {
     gchar buf[32];
+
+    if (!saved_id)
+        return;
+
+    if (atoi(saved_id) != msg->index && 
+        strcmp(saved_id, msg->id))
+        return;
 
     saved.u.edit_competitor = *msg;
 
@@ -56,12 +66,14 @@ void set_display(struct msg_edit_competitor *msg)
     snprintf(buf, sizeof(buf), "%d.%02d", msg->weight/1000, (msg->weight%1000)/10);
     gtk_entry_set_text(GTK_ENTRY(weight_box), buf);
 
+#ifdef JUDOGI_STATUS
     if (msg->deleted & JUDOGI_OK)
 	gtk_combo_box_set_active(GTK_COMBO_BOX(judogi_box), 1);
     else if (msg->deleted & JUDOGI_NOK)
 	gtk_combo_box_set_active(GTK_COMBO_BOX(judogi_box), 2);
     else
 	gtk_combo_box_set_active(GTK_COMBO_BOX(judogi_box), 0);
+#endif
 }
 
 static gboolean delete_event( GtkWidget *widget,
@@ -114,8 +126,9 @@ static gint weight_grams(const gchar *s)
 static void on_ok(GtkEntry *entry, gpointer user_data)  
 { 
     const gchar *weight = gtk_entry_get_text(GTK_ENTRY(weight_box)); 
+#ifdef JUDOGI_STATUS
     gint judogi = gtk_combo_box_get_active(GTK_COMBO_BOX(judogi_box));
-
+#endif
     if (saved.u.edit_competitor.index < 10)
         return;
 
@@ -123,18 +136,21 @@ static void on_ok(GtkEntry *entry, gpointer user_data)
     saved.u.edit_competitor.operation = EDIT_OP_SET_WEIGHT;
     saved.u.edit_competitor.weight = weight_grams(weight);
 
+#ifdef JUDOGI_STATUS
     saved.u.edit_competitor.deleted &= ~(JUDOGI_OK | JUDOGI_NOK);
     if (judogi == 1)
 	saved.u.edit_competitor.deleted |= JUDOGI_OK;
     else if (judogi == 2)
 	saved.u.edit_competitor.deleted |= JUDOGI_NOK;
-
+#endif
     send_packet(&saved);
 
     saved.u.edit_competitor.index = 0;
     gtk_label_set_label(GTK_LABEL(name_box), "?");
     gtk_entry_set_text(GTK_ENTRY(weight_box), "?");
+#ifdef JUDOGI_STATUS
     gtk_combo_box_set_active(GTK_COMBO_BOX(judogi_box), 0);
+#endif
     gtk_widget_grab_focus(id_box);
 }
 
@@ -144,6 +160,8 @@ static void on_enter(GtkEntry *entry, gpointer user_data)
     struct message output_msg;
 
     the_text = gtk_entry_get_text(GTK_ENTRY(entry)); 
+    g_free(saved_id);
+    saved_id = g_strdup(the_text);
 
     memset(&output_msg, 0, sizeof(output_msg));
     output_msg.type = MSG_EDIT_COMPETITOR;
@@ -156,7 +174,9 @@ static void on_enter(GtkEntry *entry, gpointer user_data)
 
     gtk_label_set_label(GTK_LABEL(name_box), "?");
     gtk_entry_set_text(GTK_ENTRY(weight_box), "?");
+#ifdef JUDOGI_STATUS
     gtk_combo_box_set_active(GTK_COMBO_BOX(judogi_box), 0);
+#endif
 }
 
 void destroy( GtkWidget *widget,
@@ -287,6 +307,8 @@ int main( int   argc,
                      (GCallback) set_weight_on_button_pressed, weight_box);
     row++;
 
+
+#ifdef JUDOGI_STATUS
     tmp = gtk_label_new(_("Judogi:"));
     gtk_misc_set_alignment(GTK_MISC(tmp), 1, 0.5);
     gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, row, row+1);
@@ -295,15 +317,15 @@ int main( int   argc,
     gtk_combo_box_append_text((GtkComboBox *)tmp, _("OK"));
     gtk_combo_box_append_text((GtkComboBox *)tmp, _("NOK"));
     gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, row, row+1);
-#if 0
+
     if (deleted & JUDOGI_OK)
         gtk_combo_box_set_active((GtkComboBox *)tmp, 1);
     else if (deleted & JUDOGI_NOK)
         gtk_combo_box_set_active((GtkComboBox *)tmp, 2);
     else
         gtk_combo_box_set_active((GtkComboBox *)tmp, 0);
-#endif
     row++;
+#endif
 
     tmp = gtk_button_new_with_label(_("OK"));
     gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, row, row+1);
