@@ -56,6 +56,7 @@ gint encode_msg(struct message *m, guchar *buf, gint buflen)
 	putstr(m->u.next_match.cat_2);
 	putstr(m->u.next_match.blue_2);
 	putstr(m->u.next_match.white_2);
+	put32(m->u.next_match.flags);
 	break;
     case MSG_RESULT:
 	put32(m->u.result.tatami);
@@ -125,6 +126,8 @@ gint encode_msg(struct message *m, guchar *buf, gint buflen)
     case MSG_UPDATE_LABEL:
 	putstr(m->u.update_label.expose);
 	putstr(m->u.update_label.text);
+	putstr(m->u.update_label.text2);
+	putstr(m->u.update_label.text3);
 	putstr(m->u.update_label.x);
 	putstr(m->u.update_label.y);
 	putstr(m->u.update_label.w);
@@ -156,6 +159,7 @@ gint encode_msg(struct message *m, guchar *buf, gint buflen)
 	putstr(m->u.edit_competitor.id);
 	put32(m->u.edit_competitor.seeding);
 	put32(m->u.edit_competitor.clubseeding);
+	put32(m->u.edit_competitor.matchflags);
 	break;
     }
 
@@ -213,6 +217,7 @@ gint decode_msg(struct message *m, guchar *buf, gint buflen)
 	getstr(m->u.next_match.cat_2);
 	getstr(m->u.next_match.blue_2);
 	getstr(m->u.next_match.white_2);
+	get32(m->u.next_match.flags);
 	break;
     case MSG_RESULT:
 	get32(m->u.result.tatami);
@@ -282,6 +287,8 @@ gint decode_msg(struct message *m, guchar *buf, gint buflen)
     case MSG_UPDATE_LABEL:
 	getstr(m->u.update_label.expose);
 	getstr(m->u.update_label.text);
+	getstr(m->u.update_label.text2);
+	getstr(m->u.update_label.text3);
 	getstr(m->u.update_label.x);
 	getstr(m->u.update_label.y);
 	getstr(m->u.update_label.w);
@@ -313,6 +320,7 @@ gint decode_msg(struct message *m, guchar *buf, gint buflen)
 	getstr(m->u.edit_competitor.id);
 	get32(m->u.edit_competitor.seeding);
 	get32(m->u.edit_competitor.clubseeding);
+	get32(m->u.edit_competitor.matchflags);
 	break;
     }
 

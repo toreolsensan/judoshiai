@@ -20,7 +20,8 @@
 #define APPLICATION_TYPE_TIMER   2
 #define APPLICATION_TYPE_INFO    3
 #define APPLICATION_TYPE_WEIGHT  4
-#define NUM_APPLICATION_TYPES    5
+#define APPLICATION_TYPE_JUDOGI  5
+#define NUM_APPLICATION_TYPES    6
 
 #define COMM_ESCAPE 0xff
 #define COMM_FF     0xfe
@@ -46,18 +47,23 @@ enum message_types {
     NUM_MESSAGES
 };
 
-#define MATCH_FLAG_BLUE_DELAYED  1
-#define MATCH_FLAG_WHITE_DELAYED 2
-#define MATCH_FLAG_REST_TIME     4
-#define MATCH_FLAG_BLUE_REST     8
-#define MATCH_FLAG_WHITE_REST   16
-#define MATCH_FLAG_SEMIFINAL_A  32
-#define MATCH_FLAG_SEMIFINAL_B  64
-#define MATCH_FLAG_BRONZE_A    128
-#define MATCH_FLAG_BRONZE_B    256
-#define MATCH_FLAG_GOLD        512
-#define MATCH_FLAG_SILVER     1024
-
+#define MATCH_FLAG_BLUE_DELAYED  0x0001
+#define MATCH_FLAG_WHITE_DELAYED 0x0002
+#define MATCH_FLAG_REST_TIME     0x0004
+#define MATCH_FLAG_BLUE_REST     0x0008
+#define MATCH_FLAG_WHITE_REST    0x0010
+#define MATCH_FLAG_SEMIFINAL_A   0x0020  
+#define MATCH_FLAG_SEMIFINAL_B   0x0040
+#define MATCH_FLAG_BRONZE_A      0x0080
+#define MATCH_FLAG_BRONZE_B      0x0100
+#define MATCH_FLAG_GOLD          0x0200
+#define MATCH_FLAG_SILVER        0x0400
+#define MATCH_FLAG_JUDOGI1_OK    0x0800
+#define MATCH_FLAG_JUDOGI1_NOK   0x1000
+#define MATCH_FLAG_JUDOGI2_OK    0x2000
+#define MATCH_FLAG_JUDOGI2_NOK   0x4000
+#define MATCH_FLAG_JUDOGI_MASK (MATCH_FLAG_JUDOGI1_OK | MATCH_FLAG_JUDOGI1_NOK | \
+                                MATCH_FLAG_JUDOGI2_OK | MATCH_FLAG_JUDOGI2_NOK)
 
 struct msg_next_match {
     int tatami;
@@ -77,6 +83,7 @@ struct msg_next_match {
     char cat_2[32];
     char blue_2[64];
     char white_2[64];
+    int  flags;
 };
 
 struct msg_result {
@@ -165,6 +172,8 @@ struct msg_cancel_rest_time {
 struct msg_update_label {
     gchar expose[64];
     gchar text[64];
+    gchar text2[64];
+    gchar text3[16];
     gdouble x, y;
     gdouble w, h;
     gdouble fg_r, fg_g, fg_b;
@@ -179,6 +188,7 @@ struct msg_update_label {
 #define EDIT_OP_SET_WEIGHT 2
 #define EDIT_OP_SET_FLAGS  4
 #define EDIT_OP_GET_BY_ID  8
+#define EDIT_OP_SET_JUDOGI 16
 
 struct msg_edit_competitor {
     gint operation;
@@ -197,6 +207,7 @@ struct msg_edit_competitor {
     gchar id[20];
     gint seeding;
     gint clubseeding;
+    gint matchflags;
 };
 
 struct msg_scale {
