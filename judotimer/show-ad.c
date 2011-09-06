@@ -1768,7 +1768,13 @@ static void save_advertisement(GifRowType *ScreenBuffer,
 
 extern GtkWidget *main_window;
 
-#define USE_FULL_SCREEN 1
+//#define USE_FULL_SCREEN 1
+
+static gboolean close_display(GtkWidget *widget, GdkEventKey *event, gpointer userdata)
+{
+    gtk_widget_destroy(userdata);
+    return FALSE;
+}
 
 void display_ad_window(void)
 {
@@ -1803,9 +1809,13 @@ void display_ad_window(void)
                       G_CALLBACK (destroy_ad), NULL);
     g_signal_connect(G_OBJECT(darea), 
                      "expose-event", G_CALLBACK(expose_ad), NULL);
+    g_signal_connect(G_OBJECT(darea),
+                     "button-press-event", G_CALLBACK(close_display), window);
+    g_signal_connect(G_OBJECT(window),
+                     "key-press-event", G_CALLBACK(close_display), window);
 
     if (comp_names_pending)
-        g_timeout_add(1000, refresh_frame, window);
+        g_timeout_add(mode == MODE_SLAVE ? 2000 : 10000, refresh_frame, window);
     else if (current_ad_has_one_frame())
         g_timeout_add(2000, refresh_frame, window);
     else

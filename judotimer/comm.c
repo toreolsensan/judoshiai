@@ -206,17 +206,32 @@ void msg_received(struct message *input_msg)
                      input_msg->u.next_match.white_1, 
                      input_msg->u.next_match.cat_2, 
                      input_msg->u.next_match.blue_2, 
-                     input_msg->u.next_match.white_2);
+                     input_msg->u.next_match.white_2,
+                     input_msg->u.next_match.flags);
 
         //g_print("minutes=%d auto=%d\n", input_msg->u.next_match.minutes, automatic);
         if (input_msg->u.next_match.minutes && automatic)
             reset(GDK_0, &input_msg->u.next_match);
 
         if (current_category != input_msg->u.next_match.category ||
-            current_match != input_msg->u.next_match.match)
+            current_match != input_msg->u.next_match.match) {
             display_comp_window(input_msg->u.next_match.cat_1,
                                 input_msg->u.next_match.blue_1,
                                 input_msg->u.next_match.white_1);
+            if (mode == MODE_MASTER) {
+                struct message msg;
+                memset(&msg, 0, sizeof(msg));
+                msg.type = MSG_UPDATE_LABEL;
+                msg.u.update_label.label_num = START_COMPETITORS;
+                strncpy(msg.u.update_label.text, input_msg->u.next_match.blue_1,
+                        sizeof(msg.u.update_label.text)-1);
+                strncpy(msg.u.update_label.text2, input_msg->u.next_match.white_1,
+                        sizeof(msg.u.update_label.text2)-1);
+                strncpy(msg.u.update_label.text3, input_msg->u.next_match.cat_1,
+                        sizeof(msg.u.update_label.text3)-1);
+                send_label_msg(&msg);
+            }
+        }
 
         current_category = input_msg->u.next_match.category;
         current_match = input_msg->u.next_match.match;

@@ -761,7 +761,8 @@ void show_message(gchar *cat_1,
                   gchar *white_1,
                   gchar *cat_2,
                   gchar *blue_2,
-                  gchar *white_2)
+                  gchar *white_2,
+                  gint flags)
 {
     gchar buf[32], *name;
     gchar *b_tmp = blue_1, *w_tmp = white_1;
@@ -836,6 +837,19 @@ void show_message(gchar *cat_1,
     set_text(MY_LABEL(white_name_2), name);
     g_free(name);
 
+    if (flags & MATCH_FLAG_JUDOGI1_NOK)
+        set_text(MY_LABEL(comment), 
+                 white_first ? 
+                 _("White has a judogi problem.") :
+                 _("Blue has a judogi problem."));
+    else if (flags & MATCH_FLAG_JUDOGI2_NOK)
+        set_text(MY_LABEL(comment), 
+                 white_first ? 
+                 _("Blue has a judogi problem.") :
+                 _("White has a judogi problem."));
+    else
+        set_text(MY_LABEL(comment), "");
+                 
     expose_label(NULL, cat1);
     expose_label(NULL, blue_name_1);
     expose_label(NULL, white_name_1);
@@ -846,6 +860,7 @@ void show_message(gchar *cat_1,
     expose_label(NULL, white_club);
     expose_label(NULL, flag_blue);
     expose_label(NULL, flag_white);
+    expose_label(NULL, comment);
 
     if (big_dialog)
         show_big();
@@ -1252,40 +1267,43 @@ static gboolean timeout(void *param)
 
 void update_label(struct msg_update_label *msg)
 {
-        gint i, w = msg->label_num;
+    gint i, w = msg->label_num;
 
-        if (w == START_BIG || w == STOP_BIG) {
-                if (w == START_BIG)
-                        display_big(msg->text, 1000);
-                else
-                        delete_big(NULL);
-        } else if (w == START_ADVERTISEMENT) {
-                display_ad_window();
-        } else if (w >= 0 && w < num_labels) {
-                //labels[w].x = msg->x;
-                //labels[w].y = msg->y;
-                //labels[w].w = msg->w;
-                //labels[w].h = msg->h;
-                set_text(w, msg->text);
-                //labels[w].size = msg->size;
-                //labels[w].xalign = msg->xalign;
-                labels[w].fg_r = msg->fg_r;
-                labels[w].fg_g = msg->fg_g;
-                labels[w].fg_b = msg->fg_b;
-                labels[w].bg_r = msg->bg_r;
-                labels[w].bg_g = msg->bg_g;
-                labels[w].bg_b = msg->bg_b;
-                expose_label(NULL, w);
+    if (w == START_BIG || w == STOP_BIG) {
+        if (w == START_BIG)
+            display_big(msg->text, 1000);
+        else
+            delete_big(NULL);
+    } else if (w == START_ADVERTISEMENT) {
+        display_ad_window();
+    } else if (w == START_COMPETITORS) {
+        display_comp_window(msg->text3, msg->text, msg->text2);
+        return;
+    } else if (w >= 0 && w < num_labels) {
+        //labels[w].x = msg->x;
+        //labels[w].y = msg->y;
+        //labels[w].w = msg->w;
+        //labels[w].h = msg->h;
+        set_text(w, msg->text);
+        //labels[w].size = msg->size;
+        //labels[w].xalign = msg->xalign;
+        labels[w].fg_r = msg->fg_r;
+        labels[w].fg_g = msg->fg_g;
+        labels[w].fg_b = msg->fg_b;
+        labels[w].bg_r = msg->bg_r;
+        labels[w].bg_g = msg->bg_g;
+        labels[w].bg_b = msg->bg_b;
+        expose_label(NULL, w);
+    }
+
+    for (i = 0; i < num_labels; i++) {
+        if (msg->expose[i]) {
+            expose_label(NULL, i);
         }
+    }
 
-        for (i = 0; i < num_labels; i++) {
-                if (msg->expose[i]) {
-                        expose_label(NULL, i);
-                }
-        }
-
-	if (big_dialog)
-		show_big();
+    if (big_dialog)
+        show_big();
 }
 
 #if 0
@@ -1824,7 +1842,7 @@ void set_gs_text(gchar *txt)
 void select_display_layout(GtkWidget *menu_item, gpointer data)
 {
 #define NO_SHOW(x) set_position(x, 0.0, 0.0, 0.0, 0.0)
-    gchar *filename;
+    gchar *filename = NULL;
     FILE *f;
     gint i;
 
@@ -2125,9 +2143,9 @@ void select_display_layout(GtkWidget *menu_item, gpointer data)
                         labels[num].bg_b = lbl.bg_b;
                         labels[num].wrap = lbl.wrap;
                     } else
-                        printf("Read error in file %s, num = %d\n", filename, num);
+                        g_print("Read error in file %s, num = %d\n", filename, num);
                 } else
-                    printf("Read error in file %s\n", filename);
+                    g_print("Read error in file %s\n", filename);
             }
             fclose(f);
         } else {
@@ -2223,6 +2241,8 @@ void select_display_layout(GtkWidget *menu_item, gpointer data)
 
             set_position(points,  1 - W_TIME, 1.0 - H_TIME, W_TIME, H_TIME);
         }
+
+        g_free(filename);
         break;
     }
 

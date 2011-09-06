@@ -641,7 +641,7 @@ void reset(guint key, struct msg_next_match *msg)
         st[i].stackdepth = 0;
     }
 
-    if (golden_score == FALSE) {
+    if (golden_score == FALSE && sides_switched) {
         clear_switch_sides();
     }
 

@@ -65,6 +65,7 @@
 #define START_BIG 128
 #define STOP_BIG  129
 #define START_ADVERTISEMENT 130
+#define START_COMPETITORS 131
 
 
 extern GTimer *timer;
@@ -103,7 +104,7 @@ extern int clock_running(void);
 //extern void set_cursor(int cursor);
 //extern int lz_uncompress(unsigned char *in, unsigned char *out, unsigned int insize);
 extern void show_message(char *cat1, char *blue1, char *white1,
-                         char *cat2, char *blue2, char *white2);
+                         char *cat2, char *blue2, char *white2, gint flags);
 extern void send_result(int bluepts[4], int whitepts[4], char blue_vote, char white_vote,
 			char blue_hansokumake, char white_hansokumake);
 extern void update_status(void);
@@ -132,8 +133,6 @@ extern void toggle_show_comp(GtkWidget *menu_item, gpointer data);
 extern void select_display_layout(GtkWidget *menu_item, gpointer data);
 extern void select_name_layout(GtkWidget *menu_item, gpointer data);
 extern gpointer client_thread(gpointer args);
-extern void show_message(gchar *cat_1, gchar *blue_1, gchar *white_1,
-                         gchar *cat_2, gchar *blue_2, gchar *white_2);
 extern void voting_result(GtkWidget *w, gpointer data);
 extern void reset_display(gint key);
 extern gboolean osaekomi_running(void);
