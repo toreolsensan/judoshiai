@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=JudoWeight for weigh-in
-Comment=Remote weigh-in and judogi control
+Comment=Remote weigh-in
 Exec=judoweight
 Icon=judoweight.png
 Terminal=false

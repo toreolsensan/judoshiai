@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=JudoJudogi for judogi control
+Comment=Remote judogi control
+Exec=judojudogi
+Icon=judojudogi.png
+Terminal=false
+Type=Application
+Categories=Application;Other;
+StartupNotify=true
