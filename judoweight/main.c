@@ -24,6 +24,8 @@
 #include "judoweight.h"
 #include "binreloc.h"
 
+#define JUDOGI_STATUS
+
 gchar         *program_path;
 GtkWidget     *main_vbox = NULL;
 GtkWidget     *main_window = NULL;
@@ -50,7 +52,7 @@ static gchar  *saved_id = NULL;
 
 void set_display(struct msg_edit_competitor *msg)
 {
-    gchar buf[32];
+    gchar buf[128];
 
     if (!saved_id)
         return;
@@ -61,7 +63,8 @@ void set_display(struct msg_edit_competitor *msg)
 
     saved.u.edit_competitor = *msg;
 
-    snprintf(buf, sizeof(buf), "%s %s", msg->last, msg->first);
+    snprintf(buf, sizeof(buf), "%s %s, %s/%s: %s", 
+             msg->last, msg->first, msg->country, msg->club, msg->regcategory);
     gtk_label_set_label(GTK_LABEL(name_box), buf);
     snprintf(buf, sizeof(buf), "%d.%02d", msg->weight/1000, (msg->weight%1000)/10);
     gtk_entry_set_text(GTK_ENTRY(weight_box), buf);
@@ -267,7 +270,7 @@ int main( int   argc,
 
     /* */
     gint row = 0;
-    GtkWidget *table = gtk_table_new(4, 5, FALSE);
+    GtkWidget *table = gtk_table_new(5, 5, FALSE);
     gtk_table_set_col_spacings(GTK_TABLE(table), 5);
     gtk_table_set_row_spacings(GTK_TABLE(table), 5);
     GtkWidget *tmp = gtk_label_new(_("ID:"));
@@ -282,7 +285,7 @@ int main( int   argc,
     gtk_misc_set_alignment(GTK_MISC(tmp), 1, 0.5);
     gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, row, row+1);
     name_box = gtk_label_new("?");
-    gtk_label_set_width_chars(GTK_LABEL(name_box), 40);
+    //gtk_label_set_width_chars(GTK_LABEL(name_box), 60);
     gtk_misc_set_alignment(GTK_MISC(name_box), 0, 0.5);
     gtk_table_attach_defaults(GTK_TABLE(table), name_box, 1, 4, row, row+1);
     row++;
@@ -309,7 +312,7 @@ int main( int   argc,
 
 
 #ifdef JUDOGI_STATUS
-    tmp = gtk_label_new(_("Judogi:"));
+    tmp = gtk_label_new(_("Control:"));
     gtk_misc_set_alignment(GTK_MISC(tmp), 1, 0.5);
     gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, row, row+1);
     judogi_box = tmp = gtk_combo_box_new_text();
@@ -317,13 +320,14 @@ int main( int   argc,
     gtk_combo_box_append_text((GtkComboBox *)tmp, _("OK"));
     gtk_combo_box_append_text((GtkComboBox *)tmp, _("NOK"));
     gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, row, row+1);
-
+#if 0
     if (deleted & JUDOGI_OK)
         gtk_combo_box_set_active((GtkComboBox *)tmp, 1);
     else if (deleted & JUDOGI_NOK)
         gtk_combo_box_set_active((GtkComboBox *)tmp, 2);
     else
         gtk_combo_box_set_active((GtkComboBox *)tmp, 0);
+#endif
     row++;
 #endif
 
