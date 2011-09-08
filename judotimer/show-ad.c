@@ -1524,6 +1524,7 @@ static time_t comp_names_start = 0;
 static gchar category[32];
 static gchar b_first[32], b_last[32], b_club[32], b_country[32];
 static gchar w_first[32], w_last[32], w_club[32], w_country[32];
+static GtkWidget *ok_button = NULL;
 
 static struct frame *get_current_frame(GtkWidget *widget)
 {
@@ -1576,6 +1577,9 @@ static gboolean expose_ad(GtkWidget *widget, GdkEventExpose *event, gpointer use
 
         cairo_text_extents_t extents;
         cairo_t *c = gdk_cairo_create(widget->window);
+
+        if (ok_button)
+            gtk_widget_show(ok_button);
 
         cairo_set_source_rgb(c, 0.0, 0.0, 0.0);
         cairo_rectangle(c, 0.0, 0.0, width, FIRST_BLOCK_HEIGHT);
@@ -1668,6 +1672,10 @@ static void destroy_ad( GtkWidget *widget,
                         gpointer   data )
 {
     ad_window = NULL;
+    no_ads = FALSE;
+    comp_names_pending = FALSE;
+    comp_names_start = 0;
+    ok_button = NULL;
 }
 
 static gboolean refresh_frame(gpointer data)
@@ -1679,6 +1687,7 @@ static gboolean refresh_frame(gpointer data)
         return FALSE;
 
     if (comp_names_pending && no_ads) {
+#if 0
         if (comp_names_start == 0)
             comp_names_start = time(NULL);
         else if (time(NULL) - comp_names_start > 3) {
@@ -1687,7 +1696,9 @@ static gboolean refresh_frame(gpointer data)
             comp_names_start = 0;
             gtk_widget_destroy(GTK_WIDGET(data));
             return FALSE;
+
         }
+#endif
         return TRUE;
     }
 
@@ -1775,6 +1786,10 @@ static gboolean close_display(GtkWidget *widget, GdkEventKey *event, gpointer us
     gtk_widget_destroy(userdata);
     return FALSE;
 }
+static gboolean close_display_2(GtkWidget *widget, gpointer userdata)
+{
+    return close_display(widget, NULL, userdata);
+}
 
 void display_ad_window(void)
 {
@@ -1784,24 +1799,32 @@ void display_ad_window(void)
     if (comp_names_pending == FALSE && num_ads == 0)
         return;
 
-#ifndef USE_FULL_SCREEN
     gint width;
     gint height;
     gtk_window_get_size(GTK_WINDOW(main_window), &width, &height);
-#endif
 
     GtkWindow *window = ad_window = GTK_WINDOW(gtk_window_new(GTK_WINDOW_TOPLEVEL));
     gtk_window_set_title(GTK_WINDOW(window), _("Advertisement"));
-#ifdef USE_FULL_SCREEN
-    gtk_window_fullscreen(GTK_WINDOW(window));
-#else
-    gtk_widget_set_size_request(GTK_WIDGET(window), width, height);
-#endif
+    if (fullscreen)
+        gtk_window_fullscreen(GTK_WINDOW(window));
+    else
+        gtk_widget_set_size_request(GTK_WIDGET(window), width, height);
+
     gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 
+    GtkWidget *vbox;
+    vbox = gtk_vbox_new(FALSE, 1);
+    gtk_container_set_border_width (GTK_CONTAINER (vbox), 1);
+    ok_button = gtk_button_new_with_label(_("OK"));
+    gtk_box_pack_start(GTK_BOX(vbox), ok_button, FALSE, TRUE, 5);
+
     GtkWidget *darea = gtk_drawing_area_new();
-    gtk_container_add (GTK_CONTAINER (window), darea);
+    gtk_box_pack_start(GTK_BOX(vbox), darea, TRUE, TRUE, 0);
+
+    gtk_container_add (GTK_CONTAINER (window), vbox);
     gtk_widget_show_all(GTK_WIDGET(window));
+
+    gtk_widget_hide(ok_button);
 
     g_signal_connect (G_OBJECT (window), "delete_event",
                       G_CALLBACK (delete_event_ad), NULL);
@@ -1809,14 +1832,14 @@ void display_ad_window(void)
                       G_CALLBACK (destroy_ad), NULL);
     g_signal_connect(G_OBJECT(darea), 
                      "expose-event", G_CALLBACK(expose_ad), NULL);
-    g_signal_connect(G_OBJECT(darea),
-                     "button-press-event", G_CALLBACK(close_display), window);
     g_signal_connect(G_OBJECT(window),
                      "key-press-event", G_CALLBACK(close_display), window);
+    g_signal_connect(G_OBJECT(ok_button), 
+                     "clicked", G_CALLBACK(close_display_2), window);
 
-    if (comp_names_pending)
-        g_timeout_add(mode == MODE_SLAVE ? 2000 : 10000, refresh_frame, window);
-    else if (current_ad_has_one_frame())
+    if (comp_names_pending) {
+        //g_timeout_add(mode == MODE_SLAVE ? 2000 : 100000, refresh_frame, window);
+    } else if (current_ad_has_one_frame())
         g_timeout_add(2000, refresh_frame, window);
     else
         g_timeout_add(100, refresh_frame, window);
@@ -1896,8 +1919,8 @@ void display_comp_window(gchar *cat, gchar *comp1, gchar *comp2)
         return;
 
     strncpy(category, cat, sizeof(category)-1);
-    parse_name(comp1, b_first, b_last, b_club, b_country);
-    parse_name(comp2, w_first, w_last, w_club, w_country);
+    strncpy(b_last, comp1, sizeof(b_last)-1);
+    strncpy(w_last, comp2, sizeof(w_last)-1);
     comp_names_start = 0;
     comp_names_pending = TRUE;
     if (ad_window == NULL)

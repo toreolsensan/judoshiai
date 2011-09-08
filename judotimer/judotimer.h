@@ -70,6 +70,7 @@
 
 extern GTimer *timer;
 
+extern GtkWidget *main_window;
 extern gint tatami, mode;
 extern gboolean blue_wins_voting;
 extern gboolean white_wins_voting;
@@ -94,6 +95,8 @@ extern gint current_category, current_match;
 extern gboolean sides_switched;
 extern gboolean white_first;
 extern gboolean show_competitor_names;
+extern gchar saved_first1[32], saved_first2[32], saved_last1[32], saved_last2[32], saved_cat[16];
+extern gboolean fullscreen;
 
 extern gboolean this_is_shiai(void);
 extern void copy_packet(struct message *msg); // not used

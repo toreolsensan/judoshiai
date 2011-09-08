@@ -59,6 +59,7 @@ gboolean rules_confirm_match = FALSE;
 GdkCursor *cursor = NULL;
 gboolean sides_switched = FALSE;
 gboolean white_first = FALSE;
+gboolean fullscreen = FALSE;
 
 static const gchar *num_to_str(guint num)
 {
@@ -572,18 +573,27 @@ void set_timer_osaekomi_color(gint osaekomi_state, gint pts)
         set_fg_color(points, GTK_STATE_NORMAL, fg);
         set_bg_color(points, GTK_STATE_NORMAL, bg);
 
+        gint pts1, pts2;
+        if (white_first) {
+            pts1 = pts_to_white;
+            pts2 = pts_to_blue;
+        } else {
+            pts1 = pts_to_blue;
+            pts2 = pts_to_white;
+        }
+
         if (osaekomi_state == OSAEKOMI_DSP_YES) {
                 color = &color_green;
-		set_fg_color(pts_to_blue, GTK_STATE_NORMAL, &color_white);
-		set_bg_color(pts_to_blue, GTK_STATE_NORMAL, bgcolor);
-		set_fg_color(pts_to_white, GTK_STATE_NORMAL, &color_black);
-		set_bg_color(pts_to_white, GTK_STATE_NORMAL, &color_white);
+		set_fg_color(pts1, GTK_STATE_NORMAL, &color_white);
+		set_bg_color(pts1, GTK_STATE_NORMAL, bgcolor);
+		set_fg_color(pts2, GTK_STATE_NORMAL, &color_black);
+		set_bg_color(pts2, GTK_STATE_NORMAL, &color_white);
         } else {
                 color = &color_grey;
-		set_fg_color(pts_to_blue, GTK_STATE_NORMAL, &color_grey);
-		set_bg_color(pts_to_blue, GTK_STATE_NORMAL, &color_black);
-		set_fg_color(pts_to_white, GTK_STATE_NORMAL, &color_grey);
-		set_bg_color(pts_to_white, GTK_STATE_NORMAL, &color_black);
+		set_fg_color(pts1, GTK_STATE_NORMAL, &color_grey);
+		set_bg_color(pts1, GTK_STATE_NORMAL, &color_black);
+		set_fg_color(pts2, GTK_STATE_NORMAL, &color_grey);
+		set_bg_color(pts2, GTK_STATE_NORMAL, &color_black);
 	}
 
         set_fg_color(o_tsec, GTK_STATE_NORMAL, color);
@@ -756,6 +766,8 @@ static gchar *get_name_by_layout(gchar *first, gchar *last, gchar *club, gchar *
     return NULL;
 }
 
+gchar saved_first1[32], saved_first2[32], saved_last1[32], saved_last2[32], saved_cat[16];
+
 void show_message(gchar *cat_1,
                   gchar *blue_1,
                   gchar *white_1,
@@ -771,6 +783,7 @@ void show_message(gchar *cat_1,
 
     b_first[0] = b_last[0] = b_club[0] = b_country[0] = 0;
     w_first[0] = w_last[0] = w_club[0] = w_country[0] = 0;
+    saved_first1[0] = saved_first2[0] = saved_last1[0] = saved_last2[0] = saved_cat[0] = 0;
 
     if (sides_switched) {
         blue_1 = w_tmp;
@@ -779,6 +792,12 @@ void show_message(gchar *cat_1,
 
     parse_name(blue_1, b_first, b_last, b_club, b_country);
     parse_name(white_1, w_first, w_last, w_club, w_country);
+
+    strncpy(saved_last1, b_last, sizeof(saved_last1)-1);
+    strncpy(saved_last2, w_last, sizeof(saved_last2)-1);
+    strncpy(saved_first1, b_first, sizeof(saved_first1)-1);
+    strncpy(saved_first2, w_first, sizeof(saved_first2)-1);
+    strncpy(saved_cat, cat_1, sizeof(saved_cat)-1);
 
     if (dsp_layout == 6) {
         g_utf8_strncpy(buf, b_first, 1);
@@ -792,6 +811,7 @@ void show_message(gchar *cat_1,
     set_text2(MY_LABEL(cat1), "");
 
     if (dsp_layout == 7) {
+#if 0
         // divide category on two lines
         snprintf(buf, sizeof(buf), "%s", cat_1);
         gchar *p = strrchr(buf, '-');
@@ -804,7 +824,7 @@ void show_message(gchar *cat_1,
             *p = 0;
             set_text(cat1, buf);
         }
-
+#endif
         // Show flags. Country must be in IOC format.
         set_text(flag_blue, b_country);
         set_text(flag_white, w_country);
@@ -890,35 +910,47 @@ void set_comment_text(gchar *txt)
 void voting_result(GtkWidget *w,
                    gpointer   data)
 {
-	blue_wins_voting = FALSE;
-	white_wins_voting = FALSE;
-	hansokumake_to_blue = FALSE;
-	hansokumake_to_white = FALSE;
+    blue_wins_voting = FALSE;
+    white_wins_voting = FALSE;
+    hansokumake_to_blue = FALSE;
+    hansokumake_to_white = FALSE;
 
-	switch ((gint)data) {
-        case HANTEI_BLUE:
-                set_text(MY_LABEL(comment), _("Blue won the voting"));
-                blue_wins_voting = TRUE;
-		break;
-        case HANTEI_WHITE:
-                set_text(MY_LABEL(comment), _("White won the voting"));
-                white_wins_voting = TRUE;
-		break;
-	case HANSOKUMAKE_BLUE:
-                set_text(MY_LABEL(comment), _("Hansokumake to blue"));
-		hansokumake_to_blue = TRUE;
-		break;
-	case HANSOKUMAKE_WHITE:
-                set_text(MY_LABEL(comment), _("Hansokumake to white"));
-		hansokumake_to_white = TRUE;
-		break;
-	case CLEAR_SELECTION:
-                set_text(MY_LABEL(comment), "");
-		break;
-        }
-	expose_label(NULL, comment);
+    switch ((gint)data) {
+    case HANTEI_BLUE:
+        if (white_first)
+            set_text(MY_LABEL(comment), _("White won the voting"));
+        else
+            set_text(MY_LABEL(comment), _("Blue won the voting"));
+        blue_wins_voting = TRUE;
+        break;
+    case HANTEI_WHITE:
+        if (white_first)
+            set_text(MY_LABEL(comment), _("Blue won the voting"));
+        else
+            set_text(MY_LABEL(comment), _("White won the voting"));
+        white_wins_voting = TRUE;
+        break;
+    case HANSOKUMAKE_BLUE:
+        if (white_first)
+            set_text(MY_LABEL(comment), _("Hansokumake to white"));
+        else
+            set_text(MY_LABEL(comment), _("Hansokumake to blue"));
+        hansokumake_to_blue = TRUE;
+        break;
+    case HANSOKUMAKE_WHITE:
+        if (white_first)
+            set_text(MY_LABEL(comment), _("Hansokumake to blue"));
+        else
+            set_text(MY_LABEL(comment), _("Hansokumake to white"));
+        hansokumake_to_white = TRUE;
+        break;
+    case CLEAR_SELECTION:
+        set_text(MY_LABEL(comment), "");
+        break;
+    }
+    expose_label(NULL, comment);
 
-	set_hantei_winner((gint)data);
+    set_hantei_winner((gint)data);
 }
 
 gboolean delete_big(gpointer data)
@@ -1730,14 +1762,15 @@ void toggle_color(GtkWidget *menu_item, gpointer data)
 
 void toggle_full_screen(GtkWidget *menu_item, gpointer data)
 {
-        if (GTK_CHECK_MENU_ITEM(menu_item)->active) {
-                gtk_window_fullscreen(GTK_WINDOW(main_window));
-		g_key_file_set_boolean(keyfile, "preferences", "fullscreen", TRUE);
-        } else {
-                gtk_window_unfullscreen(GTK_WINDOW(main_window));
-		g_key_file_set_boolean(keyfile, "preferences", "fullscreen", FALSE);
-	}
-	expose(darea, 0, 0);
+    fullscreen = GTK_CHECK_MENU_ITEM(menu_item)->active;
+    if (fullscreen) {
+        gtk_window_fullscreen(GTK_WINDOW(main_window));
+        g_key_file_set_boolean(keyfile, "preferences", "fullscreen", TRUE);
+    } else {
+        gtk_window_unfullscreen(GTK_WINDOW(main_window));
+        g_key_file_set_boolean(keyfile, "preferences", "fullscreen", FALSE);
+    }
+    expose(darea, 0, 0);
 }
 
 void toggle_rules_no_koka(GtkWidget *menu_item, gpointer data)
@@ -1838,6 +1871,50 @@ void set_gs_text(gchar *txt)
 {
     set_text(gs, txt);
 }
+
+static gchar *get_float(gchar *p, gdouble *result)
+{
+    gdouble r = 0.0;
+    gdouble decimal = 0.0;
+    gboolean neg = FALSE;
+    while (*p && *p <= ' ') p++;
+    while (*p && ((*p >= '0' && *p <= '9') || *p == '.' || *p == ',' || *p == '-')) {
+        if (*p == '-')
+            neg = TRUE;
+        else if (*p == '.' || *p == ',')
+            decimal = 0.1;
+        else if (decimal) {
+            r = r + (*p - '0')*decimal;
+            decimal *= 0.1;
+        } else {
+            r = 10.0*r + (*p - '0');
+        }
+        p++;
+    }
+    if (neg) r = -r;
+    *result = r;
+    return p;
+}
+
+static gchar *get_integer(gchar *p, gint *result)
+{
+    gint r = 0;
+    gboolean neg = FALSE;
+    while (*p && *p <= ' ') p++;
+    while (*p && ((*p >= '0' && *p <= '9') || *p == '-')) {
+        if (*p == '-')
+            neg = TRUE;
+        else
+            r = 10*r + (*p - '0');
+        p++;
+    }
+    if (neg) r = -r;
+    *result = r;
+    return p;
+}
+
+#define GF(x) p = get_float(p, &x)
+#define GI(x) p = get_integer(p, &x)
 
 void select_display_layout(GtkWidget *menu_item, gpointer data)
 {
@@ -2123,12 +2200,12 @@ void select_display_layout(GtkWidget *menu_item, gpointer data)
             while (fgets(line, sizeof(line), f)) {
                 if (line[0] == '#' || strlen(line) < 4)
                     continue;
-                if (sscanf(line, "%d %lf %lf %lf %lf %lf %d %lf %lf %lf %lf %lf %lf %d",
-                           &num, &lbl.x, &lbl.y, &lbl.w, &lbl.h,
-                           &lbl.size, &lbl.xalign, 
-                           &lbl.fg_r, &lbl.fg_g, &lbl.fg_b, 
-                           &lbl.bg_r, &lbl.bg_g, &lbl.bg_b, &lbl.wrap) == 14) {
-                    if (num >= 0 && num < num_labels) {
+                gchar *p = line;
+                GI(num); GF(lbl.x); GF(lbl.y); GF(lbl.w); GF(lbl.h);
+                GF(lbl.size); GI(lbl.xalign); 
+                GF(lbl.fg_r); GF(lbl.fg_g); GF(lbl.fg_b); 
+                GF(lbl.bg_r); GF(lbl.bg_g); GF(lbl.bg_b); GI(lbl.wrap);
+                if (num >= 0 && num < num_labels) {
                         labels[num].x = lbl.x; 
                         labels[num].y = lbl.y; 
                         labels[num].w = lbl.w; 
@@ -2142,10 +2219,8 @@ void select_display_layout(GtkWidget *menu_item, gpointer data)
                         labels[num].bg_g = lbl.bg_g;
                         labels[num].bg_b = lbl.bg_b;
                         labels[num].wrap = lbl.wrap;
-                    } else
-                        g_print("Read error in file %s, num = %d\n", filename, num);
                 } else
-                    g_print("Read error in file %s\n", filename);
+                    g_print("Read error in file %s, num = %d\n", filename, num);
             }
             fclose(f);
         } else {

@@ -525,10 +525,184 @@ static void ask_for_hantei(void)
 #endif
 
 static gboolean asking = FALSE;
+static guint key_pending = 0;
+static GtkWidget *ask_area;
+
+#define ASK_OK  0x7301
+#define ASK_NOK 0x7302
+
+static gint get_winner(void)
+{
+    gint winner = 0;
+    if (st[0].bluepts[0] > st[0].whitepts[0]) winner = BLUE;
+    else if (st[0].bluepts[0] < st[0].whitepts[0]) winner = WHITE;
+    else if (st[0].bluepts[1] > st[0].whitepts[1]) winner = BLUE;
+    else if (st[0].bluepts[1] < st[0].whitepts[1]) winner = WHITE;
+    else if (st[0].bluepts[2] > st[0].whitepts[2]) winner = BLUE;
+    else if (st[0].bluepts[2] < st[0].whitepts[2]) winner = WHITE;
+    else if (blue_wins_voting) winner = BLUE;
+    else if (white_wins_voting) winner = WHITE;
+    else if (hansokumake_to_white) winner = BLUE;
+    else if (hansokumake_to_blue) winner = WHITE;
+
+    return winner;
+}
+
+static gboolean delete_event_ask( GtkWidget *widget, GdkEvent  *event, gpointer   data )
+{
+    return FALSE;
+}
+
+static void destroy_ask( GtkWidget *widget, gpointer   data )
+{
+    ask_area = NULL;
+    asking = FALSE;
+}
+
+static gboolean close_ask_ok(GtkWidget *widget, gpointer userdata)
+{
+    reset(ASK_OK, NULL);
+    gtk_widget_destroy(userdata);
+    return FALSE;
+}
+
+static gboolean close_ask_nok(GtkWidget *widget, gpointer userdata)
+{
+    reset(ASK_NOK, NULL);
+    gtk_widget_destroy(userdata);
+    return FALSE;
+}
+
+#define FIRST_BLOCK_C 0.25
+#define FIRST_BLOCK_START  0.0
+#define SECOND_BLOCK_START  (FIRST_BLOCK_C*height)
+#define THIRD_BLOCK_START ((1.0+FIRST_BLOCK_C)*height/2.0)
+#define FIRST_BLOCK_HEIGHT (FIRST_BLOCK_C*height)
+#define OTHER_BLOCK_HEIGHT ((height-FIRST_BLOCK_HEIGHT)/2.0)
+
+static gboolean expose_ask(GtkWidget *widget, GdkEventExpose *event, gpointer userdata)
+{
+    gint width, height, winner = get_winner();
+    const gchar *last_wname, *first_wname, *wtext = _("WINNER:");
+
+    if (!winner)
+        return FALSE;
+
+    if (winner == BLUE) {
+        last_wname = saved_last1;
+        first_wname = saved_first1;
+    } else {
+        last_wname = saved_last2;
+        first_wname = saved_first2;
+    }
+
+    width = widget->allocation.width;
+    height = widget->allocation.height;
+
+    cairo_text_extents_t extents;
+    cairo_t *c = gdk_cairo_create(widget->window);
+
+    cairo_set_source_rgb(c, 0.0, 0.0, 0.0);
+    cairo_rectangle(c, 0.0, 0.0, width, FIRST_BLOCK_HEIGHT);
+    cairo_fill(c);
+        
+    cairo_set_source_rgb(c, 1.0, 1.0, 0.6);
+    cairo_rectangle(c, 0.0, SECOND_BLOCK_START, width, 2*OTHER_BLOCK_HEIGHT);
+    cairo_fill(c);
+
+    cairo_set_font_size(c, 0.6*FIRST_BLOCK_HEIGHT);
+    cairo_set_source_rgb(c, 1.0, 1.0, 1.0);
+    cairo_text_extents(c, wtext, &extents);
+    cairo_move_to(c, 10.0, (FIRST_BLOCK_HEIGHT - extents.height)/2.0 - extents.y_bearing);
+    cairo_show_text(c, wtext);
+    cairo_text_extents(c, saved_cat, &extents);
+    cairo_move_to(c, width - 10.0 - extents.width, (FIRST_BLOCK_HEIGHT - extents.height)/2.0 - extents.y_bearing);
+    cairo_show_text(c, saved_cat);
+
+    cairo_set_source_rgb(c, 0, 0, 0);
+    cairo_set_font_size(c, 0.6*OTHER_BLOCK_HEIGHT);
+    cairo_text_extents(c, last_wname, &extents);
+    cairo_move_to(c, 10.0, SECOND_BLOCK_START + (OTHER_BLOCK_HEIGHT - extents.height)/2.0 - extents.y_bearing);
+    cairo_show_text(c, last_wname);
+    cairo_text_extents(c, first_wname, &extents);
+    cairo_move_to(c, 10.0, THIRD_BLOCK_START + (OTHER_BLOCK_HEIGHT - extents.height)/2.0 - extents.y_bearing);
+    cairo_show_text(c, first_wname);
+
+    cairo_show_page(c);
+    cairo_destroy(c);
+
+    return FALSE;
+}
+
+static void create_ask_window(void)
+{
+    GtkWidget *vbox, *hbox, *ok, *nok, *lbl;
+    gint width;
+    gint height;
+    gtk_window_get_size(GTK_WINDOW(main_window), &width, &height);
+
+    GtkWindow *window = GTK_WINDOW(gtk_window_new(GTK_WINDOW_TOPLEVEL));
+    gtk_window_set_title(GTK_WINDOW(window), _("Start New Match?"));
+    if (fullscreen && show_competitor_names && get_winner())
+        gtk_window_fullscreen(GTK_WINDOW(window));
+    else if (show_competitor_names && get_winner())
+        gtk_widget_set_size_request(GTK_WIDGET(window), width, height);
+
+    gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
+
+    vbox = gtk_vbox_new(FALSE, 1);
+    gtk_container_set_border_width (GTK_CONTAINER (vbox), 1);
+
+    hbox = gtk_hbox_new(FALSE, 1);
+    lbl = gtk_label_new(_("Start New Match?"));
+    ok = gtk_button_new_with_label(_("OK"));
+    nok = gtk_button_new_with_label(_("Cancel"));
+    gtk_box_pack_start(GTK_BOX(hbox), lbl, FALSE, TRUE, 5);
+    gtk_box_pack_start(GTK_BOX(hbox), ok, FALSE, TRUE, 5);
+    gtk_box_pack_start(GTK_BOX(hbox), nok, FALSE, TRUE, 5);
+
+    gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 0);
+
+    if (show_competitor_names && get_winner()) {
+        ask_area = gtk_drawing_area_new();
+        gtk_box_pack_start(GTK_BOX(vbox), ask_area, TRUE, TRUE, 5);
+        g_signal_connect(G_OBJECT(ask_area), 
+                         "expose-event", G_CALLBACK(expose_ask), NULL);
+    }
+
+    gtk_container_add (GTK_CONTAINER (window), vbox);
+    gtk_widget_show_all(GTK_WIDGET(window));
+
+    g_signal_connect (G_OBJECT (window), "delete_event",
+                      G_CALLBACK (delete_event_ask), NULL);
+    g_signal_connect (G_OBJECT (window), "destroy",
+                      G_CALLBACK (destroy_ask), NULL);
+
+    g_signal_connect(G_OBJECT(ok), 
+                     "clicked", G_CALLBACK(close_ask_ok), window);
+    g_signal_connect(G_OBJECT(nok), 
+                     "clicked", G_CALLBACK(close_ask_nok), window);
+}
 
 void reset(guint key, struct msg_next_match *msg)
 {
     gint i;
+    gboolean asked = FALSE;
+
+    if (key == ASK_OK) {
+        if (0 && rest_time) {
+            cancel_rest_time(rest_flags & MATCH_FLAG_BLUE_REST,
+                             rest_flags & MATCH_FLAG_WHITE_REST);
+        }
+        key = key_pending;
+        key_pending = 0;
+        asking = FALSE;
+        asked = TRUE;
+    } else if (key == ASK_NOK) {
+        key_pending = 0;
+        asking = FALSE;
+        return;
+    }
 
     if ((st[0].running && rest_time == FALSE) || st[0].oRunning || asking)
         return;
@@ -560,49 +734,46 @@ void reset(guint key, struct msg_next_match *msg)
         st[0].match_time = st[0].elap;
         judotimer_log("Golden score starts");
         set_gs_text("GOLDEN SCORE");
-    } else if ((demo == 0 &&
+    } else if (demo == 0 &&
+               asked == FALSE &&
                (((st[0].bluepts[0] & 2) == 0 && (st[0].whitepts[0] & 2) == 0 &&
                  st[0].elap > 0.01 && st[0].elap < total - 0.01) ||
-                (st[0].running && rest_time)) &&
-                key != GDK_0)) {
+                (st[0].running && rest_time) ||
+                rules_confirm_match) &&
+               key != GDK_0) {
         GtkWidget *dialog;
         gint response;
 
+        key_pending = key;
         asking = TRUE;
+        create_ask_window();
+        return;
+#if 0
         dialog = gtk_dialog_new_with_buttons (_("Start New Match?"),
 					      NULL,
 					      GTK_DIALOG_MODAL,
 					      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 					      GTK_STOCK_OK, GTK_RESPONSE_OK,
 					      NULL);
+
+        GtkWidget *darea = gtk_drawing_area_new();
+        gtk_container_add(GTK_CONTAINER (window), darea);
+
         gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
         response = gtk_dialog_run(GTK_DIALOG(dialog));
         gtk_widget_destroy(dialog);
         asking = FALSE;
         if (response != GTK_RESPONSE_OK)
             return;
+#endif
+    }
 
-        if (rest_time) {
-            cancel_rest_time(rest_flags & MATCH_FLAG_BLUE_REST,
-                             rest_flags & MATCH_FLAG_WHITE_REST);
-        }
-    } else if (rules_confirm_match) {
-        GtkWidget *dialog;
-        gint response;
 
-        asking = TRUE;
-        dialog = gtk_dialog_new_with_buttons (_("Start New Match?"),
-					      NULL,
-					      GTK_DIALOG_MODAL,
-					      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-					      GTK_STOCK_OK, GTK_RESPONSE_OK,
-					      NULL);
-        gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
-        response = gtk_dialog_run(GTK_DIALOG(dialog));
-        gtk_widget_destroy(dialog);
-        asking = FALSE;
-        if (response != GTK_RESPONSE_OK)
-            return;
+    if (key != GDK_0 && rest_time) {
+        if (rest_flags & MATCH_FLAG_BLUE_REST)
+            cancel_rest_time(TRUE, FALSE);
+        else if (rest_flags & MATCH_FLAG_WHITE_REST)
+            cancel_rest_time(FALSE, TRUE);
     }
 
     rest_time = FALSE;
@@ -804,9 +975,11 @@ gboolean set_osaekomi_winner(gint who)
 
     st[0].osaekomi_winner = who;
 
-    if (who == BLUE)
+    if ((who == BLUE && white_first == FALSE) ||
+        ((who == WHITE && white_first == TRUE)))
         set_comment_text(_("Points going to blue"));
-    else if (who == WHITE)
+    else if ((who == WHITE && white_first == FALSE) ||
+             ((who == BLUE && white_first == TRUE)))
         set_comment_text(_("Points going to white"));
     else
         set_comment_text("");
@@ -924,7 +1097,7 @@ void clock_key(guint key, guint event_state)
     lasttime = now;
 
     if (key == GDK_t) {
-        display_ad_window();
+        display_comp_window(saved_cat, saved_last1, saved_last2);
         return;
 
         extern GtkWidget *main_window;

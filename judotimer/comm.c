@@ -177,6 +177,7 @@ void msg_received(struct message *input_msg)
 #endif
     switch (input_msg->type) {
     case MSG_NEXT_MATCH:
+#if 0
         /* show ad as a slave */
         if (mode == MODE_SLAVE &&
             input_msg->u.next_match.tatami == tatami &&
@@ -190,7 +191,7 @@ void msg_received(struct message *input_msg)
                                 input_msg->u.next_match.blue_1,
                                 input_msg->u.next_match.white_1);
         }
-
+#endif
         if (input_msg->sender < 10 || 
             input_msg->u.next_match.tatami != tatami ||
             mode == MODE_SLAVE)
@@ -215,9 +216,12 @@ void msg_received(struct message *input_msg)
 
         if (current_category != input_msg->u.next_match.category ||
             current_match != input_msg->u.next_match.match) {
-            display_comp_window(input_msg->u.next_match.cat_1,
-                                input_msg->u.next_match.blue_1,
-                                input_msg->u.next_match.white_1);
+            /***
+            g_print("current=%d/%d new=%d/%d\n", 
+                    current_category, current_match,
+                    input_msg->u.next_match.category, input_msg->u.next_match.match);
+            ***/
+            display_comp_window(saved_cat, saved_last1, saved_last2);
             if (mode == MODE_MASTER) {
                 struct message msg;
                 memset(&msg, 0, sizeof(msg));
