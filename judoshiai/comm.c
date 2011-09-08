@@ -246,7 +246,7 @@ void msg_received(struct message *input_msg)
             j = get_data(input_msg->u.edit_competitor.index);
 	    if (j) {
                 j->weight = input_msg->u.edit_competitor.weight;
-                //j->deleted = input_msg->u.edit_competitor.deleted;
+                j->deleted = input_msg->u.edit_competitor.deleted;
                 if (j->visible)
                     db_update_judoka(j->index, j);
                 display_one_judoka(j);

@@ -15,6 +15,7 @@
 #include "judoshiai.h"
 
 #define RESPONSE_PRINT 1000
+#define JUDOGI_CONTROL
 
 struct treedata {
     GtkTreeStore  *treestore;
@@ -560,7 +561,7 @@ void view_on_row_activated(GtkTreeView        *treeview,
         row++;
 
 #ifdef JUDOGI_CONTROL
-        tmp = gtk_label_new(_("Judogi:"));
+        tmp = gtk_label_new(_("Control:"));
         gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, row, row+1);
         judoka_tmp->judogi = tmp = gtk_combo_box_new_text();
         gtk_combo_box_append_text((GtkComboBox *)tmp, "?");
