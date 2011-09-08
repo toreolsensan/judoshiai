@@ -842,7 +842,7 @@ void get_competitor(http_parser_t *parser)
     sendf(s, "<option %s>%s</option>", deleted & GENDER_FEMALE ? "selected" : "", "Female");
     sendf(s, "</select></td></tr>\r\n");
 
-    sendf(s, "<tr><td>%s:</td><td><select name=\"judogi\" value=\"\">", "Judogi");
+    sendf(s, "<tr><td>%s:</td><td><select name=\"judogi\" value=\"\">", "Control");
     sendf(s, "<option %s>%s</option>", (deleted & (JUDOGI_OK | JUDOGI_NOK)) == 0 ? "selected" : "", "Not checked");
     sendf(s, "<option %s>%s</option>", deleted & JUDOGI_OK ? "selected" : "", "OK");
     sendf(s, "<option %s>%s</option>", deleted & JUDOGI_NOK ? "selected" : "", "NOK");
