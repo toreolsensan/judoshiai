@@ -383,7 +383,7 @@ static gint points, comment, cat1, cat2, gs;
 static gint pts_to_blue, pts_to_white, flag_blue, flag_white;
 
 static GdkColor color_yellow, color_white, color_grey, color_green, color_blue, color_red, color_black;
-static GdkColor *bgcolor = &color_blue;
+static GdkColor *bgcolor = &color_blue, bgcolor_pts, bgcolor_points;
 
 #define MY_LABEL(_x) _x
 
@@ -550,11 +550,11 @@ void set_timer_osaekomi_color(gint osaekomi_state, gint pts)
 	switch (osaekomi_state) {
 	case OSAEKOMI_DSP_NO:
 		fg = &color_grey;
-		bg = &color_black;
+		bg = &bgcolor_points;
 		break;
 	case OSAEKOMI_DSP_YES:
 		fg = &color_green;
-		bg = &color_black;
+		bg = &bgcolor_points;
 		break;
 	case OSAEKOMI_DSP_BLUE:
 		fg = &color_white;
@@ -566,7 +566,7 @@ void set_timer_osaekomi_color(gint osaekomi_state, gint pts)
 		break;
 	case OSAEKOMI_DSP_UNKNOWN:
 		fg = &color_white;
-		bg = &color_black;
+		bg = &bgcolor_points;
 		break;
 	}
 
@@ -591,9 +591,9 @@ void set_timer_osaekomi_color(gint osaekomi_state, gint pts)
         } else {
                 color = &color_grey;
 		set_fg_color(pts1, GTK_STATE_NORMAL, &color_grey);
-		set_bg_color(pts1, GTK_STATE_NORMAL, &color_black);
+		set_bg_color(pts1, GTK_STATE_NORMAL, &bgcolor_pts);
 		set_fg_color(pts2, GTK_STATE_NORMAL, &color_grey);
-		set_bg_color(pts2, GTK_STATE_NORMAL, &color_black);
+		set_bg_color(pts2, GTK_STATE_NORMAL, &bgcolor_pts);
 	}
 
         set_fg_color(o_tsec, GTK_STATE_NORMAL, color);
@@ -1389,6 +1389,8 @@ int main( int   argc,
     gdk_color_parse("#0000FF", &color_blue);
     gdk_color_parse("#FF0000", &color_red);
     gdk_color_parse("#000000", &color_black);
+    bgcolor_pts = color_black;
+    bgcolor_points = color_black;
 
 #ifdef WIN32
     installation_dir = g_win32_get_package_installation_directory(NULL, NULL);
@@ -1939,6 +1941,7 @@ void select_display_layout(GtkWidget *menu_item, gpointer data)
         labels[i].bg_b = defaults_for_labels[i].bg_b;
         labels[i].wrap = defaults_for_labels[i].wrap;
     }
+    bgcolor_pts = bgcolor_points = color_black;
 
     clocks_only = FALSE;
     dsp_layout = (gint)data;
@@ -2219,6 +2222,15 @@ void select_display_layout(GtkWidget *menu_item, gpointer data)
                         labels[num].bg_g = lbl.bg_g;
                         labels[num].bg_b = lbl.bg_b;
                         labels[num].wrap = lbl.wrap;
+                        if (num == pts_to_blue) {
+                            bgcolor_pts.red = 65535.0*lbl.bg_r;
+                            bgcolor_pts.green = 65535.0*lbl.bg_g;
+                            bgcolor_pts.blue = 65535.0*lbl.bg_b;
+                        } else if (num == points) {
+                            bgcolor_points.red = 65535.0*lbl.bg_r;
+                            bgcolor_points.green = 65535.0*lbl.bg_g;
+                            bgcolor_points.blue = 65535.0*lbl.bg_b;
+                        }
                 } else
                     g_print("Read error in file %s, num = %d\n", filename, num);
             }
