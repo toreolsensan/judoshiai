@@ -108,8 +108,7 @@ static void handle_character(gchar c)
             weight = 0;
             decimal = 0;
         }
-    } else if (device_type == DEV_TYPE_STATHMOS ||
-               device_type == DEV_TYPE_MYWEIGHT) {
+    } else if (device_type == DEV_TYPE_STATHMOS) {
         weight = 10*weight + (c - '0');
     } else if (decimal == 0) {
         weight = 10*weight + 1000*(c - '0');
