@@ -483,6 +483,7 @@ static void read_print_template(gchar *templatefile, GtkPrintContext *context)
         wn_texts[t].height = wn_texts_default[t].height;
         wn_texts[t].angle = wn_texts_default[t].angle;
         wn_texts[t].size = wn_texts_default[t].size;
+        wn_texts[t].align = wn_texts_default[t].align;
         wn_texts[t].red = wn_texts_default[t].red;
         wn_texts[t].green = wn_texts_default[t].green;
         wn_texts[t].blue = wn_texts_default[t].blue;
