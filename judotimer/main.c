@@ -499,111 +499,121 @@ void set_timer_run_color(gboolean running)
 
 void set_timer_osaekomi_color(gint osaekomi_state, gint pts)
 {
-        GdkColor *fg = &color_white, *bg = &color_black, *color = &color_green;
+    GdkColor *fg = &color_white, *bg = &color_black, *color = &color_green;
 
-	if (pts) {
-		if (osaekomi_state == OSAEKOMI_DSP_BLUE ||
-		    osaekomi_state == OSAEKOMI_DSP_WHITE ||
-		    osaekomi_state == OSAEKOMI_DSP_UNKNOWN ||
-		    osaekomi_state == OSAEKOMI_DSP_NO) {
-			gint b = bk, w = wk;
-			gdouble sb, sw;
+    if (pts) {
+        if (osaekomi_state == OSAEKOMI_DSP_BLUE ||
+            osaekomi_state == OSAEKOMI_DSP_WHITE ||
+            osaekomi_state == OSAEKOMI_DSP_UNKNOWN ||
+            osaekomi_state == OSAEKOMI_DSP_NO) {
+            gint b = bk, w = wk;
+            gdouble sb, sw;
 
-			if (rules_no_koka_dsp) {
-				switch (pts) {
-				case 2: b = bk; w = wk; break;
-				case 3: b = by; w = wy; break;
-				case 4: b = bw; w = ww; break;
-				}
-			} else {
-				switch (pts) {
-				case 1: b = bk; w = wk; break;
-				case 2: b = by; w = wy; break;
-				case 3: b = bw; w = ww; break;
-				}
-			}
+            if (rules_no_koka_dsp) {
+                switch (pts) {
+                case 2: b = bk; w = wk; break;
+                case 3: b = by; w = wy; break;
+                case 4: b = bw; w = ww; break;
+                }
+            } else {
+                switch (pts) {
+                case 1: b = bk; w = wk; break;
+                case 2: b = by; w = wy; break;
+                case 3: b = bw; w = ww; break;
+                }
+            }
 
-			sb = labels[b].size;
-			sw = labels[w].size;
+            sb = labels[b].size;
+            sw = labels[w].size;
 
-			if (osaekomi_state == OSAEKOMI_DSP_BLUE ||
-			    osaekomi_state == OSAEKOMI_DSP_UNKNOWN)
-				labels[b].size = 0.5;
-			if (osaekomi_state == OSAEKOMI_DSP_WHITE ||
-			    osaekomi_state == OSAEKOMI_DSP_UNKNOWN)
-				labels[w].size = 0.5;
+            if (osaekomi_state == OSAEKOMI_DSP_BLUE ||
+                osaekomi_state == OSAEKOMI_DSP_UNKNOWN)
+                labels[b].size = 0.5;
+            if (osaekomi_state == OSAEKOMI_DSP_WHITE ||
+                osaekomi_state == OSAEKOMI_DSP_UNKNOWN)
+                labels[w].size = 0.5;
 
-			expose_label(NULL, b);
-			expose_label(NULL, w);
-			labels[b].size = sb;
-			labels[w].size = sw;
-		}
-	} else {
-		expose_label(NULL, bw);
-		expose_label(NULL, by);
-		expose_label(NULL, bk);
-		expose_label(NULL, ww);
-		expose_label(NULL, wy);
-		expose_label(NULL, wk);
-	}
-
-	switch (osaekomi_state) {
-	case OSAEKOMI_DSP_NO:
-		fg = &color_grey;
-		bg = &bgcolor_points;
-		break;
-	case OSAEKOMI_DSP_YES:
-		fg = &color_green;
-		bg = &bgcolor_points;
-		break;
-	case OSAEKOMI_DSP_BLUE:
-		fg = &color_white;
-		bg = bgcolor;
-		break;
-	case OSAEKOMI_DSP_WHITE:
-		fg = &color_black;
-		bg = &color_white;
-		break;
-	case OSAEKOMI_DSP_UNKNOWN:
-		fg = &color_white;
-		bg = &bgcolor_points;
-		break;
-	}
-
-        set_fg_color(points, GTK_STATE_NORMAL, fg);
-        set_bg_color(points, GTK_STATE_NORMAL, bg);
-
-        gint pts1, pts2;
-        if (white_first) {
-            pts1 = pts_to_white;
-            pts2 = pts_to_blue;
-        } else {
-            pts1 = pts_to_blue;
-            pts2 = pts_to_white;
+            expose_label(NULL, b);
+            expose_label(NULL, w);
+            labels[b].size = sb;
+            labels[w].size = sw;
         }
+    } else {
+        expose_label(NULL, bw);
+        expose_label(NULL, by);
+        expose_label(NULL, bk);
+        expose_label(NULL, ww);
+        expose_label(NULL, wy);
+        expose_label(NULL, wk);
+    }
 
-        if (osaekomi_state == OSAEKOMI_DSP_YES) {
-                color = &color_green;
-		set_fg_color(pts1, GTK_STATE_NORMAL, &color_white);
-		set_bg_color(pts1, GTK_STATE_NORMAL, bgcolor);
-		set_fg_color(pts2, GTK_STATE_NORMAL, &color_black);
-		set_bg_color(pts2, GTK_STATE_NORMAL, &color_white);
+    switch (osaekomi_state) {
+    case OSAEKOMI_DSP_NO:
+        fg = &color_grey;
+        bg = &bgcolor_points;
+        break;
+    case OSAEKOMI_DSP_YES:
+        fg = &color_green;
+        bg = &bgcolor_points;
+        break;
+    case OSAEKOMI_DSP_BLUE:
+        if (white_first) {
+            fg = &color_black;
+            bg = &color_white;
         } else {
-                color = &color_grey;
-		set_fg_color(pts1, GTK_STATE_NORMAL, &color_grey);
-		set_bg_color(pts1, GTK_STATE_NORMAL, &bgcolor_pts);
-		set_fg_color(pts2, GTK_STATE_NORMAL, &color_grey);
-		set_bg_color(pts2, GTK_STATE_NORMAL, &bgcolor_pts);
-	}
+            fg = &color_white;
+            bg = bgcolor;
+        }
+        break;
+    case OSAEKOMI_DSP_WHITE:
+        if (white_first) {
+            fg = &color_white;
+            bg = bgcolor;
+        } else {
+            fg = &color_black;
+            bg = &color_white;
+        }
+        break;
+    case OSAEKOMI_DSP_UNKNOWN:
+        fg = &color_white;
+        bg = &bgcolor_points;
+        break;
+    }
 
-        set_fg_color(o_tsec, GTK_STATE_NORMAL, color);
-        set_fg_color(o_sec, GTK_STATE_NORMAL, color);
+    set_fg_color(points, GTK_STATE_NORMAL, fg);
+    set_bg_color(points, GTK_STATE_NORMAL, bg);
 
-	expose_label(NULL, points);
-	expose_label(NULL, o_tsec);
-	expose_label(NULL, o_sec);
-	expose_label(NULL, pts_to_blue);
-	expose_label(NULL, pts_to_white);
+    gint pts1, pts2;
+    if (white_first) {
+        pts1 = pts_to_white;
+        pts2 = pts_to_blue;
+    } else {
+        pts1 = pts_to_blue;
+        pts2 = pts_to_white;
+    }
+
+    if (osaekomi_state == OSAEKOMI_DSP_YES) {
+        color = &color_green;
+        set_fg_color(pts1, GTK_STATE_NORMAL, &color_white);
+        set_bg_color(pts1, GTK_STATE_NORMAL, bgcolor);
+        set_fg_color(pts2, GTK_STATE_NORMAL, &color_black);
+        set_bg_color(pts2, GTK_STATE_NORMAL, &color_white);
+    } else {
+        color = &color_grey;
+        set_fg_color(pts1, GTK_STATE_NORMAL, &color_grey);
+        set_bg_color(pts1, GTK_STATE_NORMAL, &bgcolor_pts);
+        set_fg_color(pts2, GTK_STATE_NORMAL, &color_grey);
+        set_bg_color(pts2, GTK_STATE_NORMAL, &bgcolor_pts);
+    }
+
+    set_fg_color(o_tsec, GTK_STATE_NORMAL, color);
+    set_fg_color(o_sec, GTK_STATE_NORMAL, color);
+
+    expose_label(NULL, points);
+    expose_label(NULL, o_tsec);
+    expose_label(NULL, o_sec);
+    expose_label(NULL, pts_to_blue);
+    expose_label(NULL, pts_to_white);
 }
 
 void set_timer_value(guint min, guint tsec, guint sec)

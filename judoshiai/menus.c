@@ -217,7 +217,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_menu_shell_append(GTK_MENU_SHELL(competitors_menu), competitor_select_from_tournament);
     gtk_menu_shell_append(GTK_MENU_SHELL(competitors_menu), competitor_add_from_text_file);
     gtk_menu_shell_append(GTK_MENU_SHELL(competitors_menu), competitor_add_all_from_shiai);
-    gtk_menu_shell_append(GTK_MENU_SHELL(competitors_menu), competitor_add_all_with_weights);
+    //gtk_menu_shell_append(GTK_MENU_SHELL(competitors_menu), competitor_add_all_with_weights);
     gtk_menu_shell_append(GTK_MENU_SHELL(competitors_menu), gtk_separator_menu_item_new());
     gtk_menu_shell_append(GTK_MENU_SHELL(competitors_menu), competitor_remove_unweighted);
     gtk_menu_shell_append(GTK_MENU_SHELL(competitors_menu), competitor_restore_removed);

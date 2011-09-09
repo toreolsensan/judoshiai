@@ -1202,7 +1202,7 @@ static GtkWidget *create_view_and_model(void)
   /* --- Column seeding --- */
 
     renderer = gtk_cell_renderer_text_new();
-    g_object_set (renderer, "xalign", 0.0, NULL);
+    g_object_set (renderer, "xalign", 0.5, NULL);
     col_offset = gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (view),
                                                               -1, _("Seeding"),
                                                               renderer, "text",
@@ -1216,7 +1216,7 @@ static GtkWidget *create_view_and_model(void)
   /* --- Column clubseeding --- */
 
     renderer = gtk_cell_renderer_text_new();
-    g_object_set (renderer, "xalign", 0.0, NULL);
+    g_object_set (renderer, "xalign", 0.5, NULL);
     col_offset = gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (view),
                                                               -1, _("Club Seeding"),
                                                               renderer, "text",

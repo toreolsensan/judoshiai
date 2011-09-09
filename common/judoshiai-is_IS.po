@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-27 15:19+0300\n"
+"POT-Creation-Date: 2011-09-09 15:06+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -599,8 +599,7 @@ msgid "Is there another JudoShiai program running?"
 msgstr "Er annað JudoShiai forrit í gangi?"
 
 msgid "Yes, another JudoShiai program is running"
-msgstr ""
-"Já, annað JudoShiai forrit er í gangi"
+msgstr "Já, annað JudoShiai forrit er í gangi"
 
 msgid ""
 "No, this the only JudoShiai program. \n"
@@ -716,8 +715,7 @@ msgid "Add competitors"
 msgstr "Bæta við keppendum"
 
 msgid "Clean up duplicates and update reg. categories"
-msgstr ""
-"Hreinsa burt tvíritun og uppfæra skráða flokka"
+msgstr "Hreinsa burt tvíritun og uppfæra skráða flokka"
 
 msgid "competitors added and updated"
 msgstr "Keppendum bætt við og uppfært"
@@ -1056,7 +1054,8 @@ msgid "Double Pool"
 msgstr "Tvöfaldur riðill"
 
 msgid "Cannot handle: Database created with newer JudoShiai version."
-msgstr "Get ekki unnið með þetta: Gagnagrunnur útbúinn með nýrri útgáfu af JudoShiai."
+msgstr ""
+"Get ekki unnið með þetta: Gagnagrunnur útbúinn með nýrri útgáfu af JudoShiai."
 
 msgid "Database tables updated."
 msgstr "Gagnagrunnsskrá er uppfærð."
@@ -1285,3 +1284,219 @@ msgstr "Tvöfaldur riðill 2"
 
 msgid "Write to file"
 msgstr "Skrifa í skrá"
+
+msgid "White has a judogi problem."
+msgstr ""
+
+msgid "Blue has a judogi problem."
+msgstr ""
+
+msgid "Show Competitors"
+msgstr ""
+
+msgid "Confirm New Match"
+msgstr ""
+
+msgid "Show competitors"
+msgstr ""
+
+msgid "Name format"
+msgstr ""
+
+msgid "Name Surname, Country/Club"
+msgstr ""
+
+msgid "Surname, Name, Country/Club"
+msgstr ""
+
+msgid "Country/Club  Surname, Name"
+msgstr ""
+
+msgid "Country  Surname, Name"
+msgstr ""
+
+msgid "Club  Surname, Name"
+msgstr ""
+
+msgid "Country Surname"
+msgstr ""
+
+msgid "Club Surname"
+msgstr ""
+
+msgid "Surname, Name"
+msgstr ""
+
+msgid "Surname"
+msgstr ""
+
+msgid "Contest area 9"
+msgstr ""
+
+msgid "Contest area 10"
+msgstr ""
+
+msgid "Change language to Icelandic"
+msgstr ""
+
+msgid "WINNER"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Club Seeding:"
+msgstr ""
+
+msgid "Gender:"
+msgstr ""
+
+msgid "Male"
+msgstr ""
+
+msgid "Female"
+msgstr ""
+
+msgid "Control:"
+msgstr ""
+
+msgid "NOK"
+msgstr ""
+
+msgid "Seeding"
+msgstr ""
+
+msgid "Club Seeding"
+msgstr ""
+
+msgid "Database Validation"
+msgstr ""
+
+msgid "Duplicate seedings:\n"
+msgstr ""
+
+msgid "seeding"
+msgstr ""
+
+msgid "defined"
+msgstr ""
+
+msgid "times"
+msgstr ""
+
+msgid "Duplicate club seedings:\n"
+msgstr ""
+
+msgid "Missing category definitions:\n"
+msgstr ""
+
+msgid "is not"
+msgstr ""
+
+msgid "Typing errors:\n"
+msgstr ""
+
+msgid "UTF-8 errors"
+msgstr ""
+
+msgid "Extra spaces"
+msgstr ""
+
+msgid "Possible duplicate competitors:\n"
+msgstr ""
+
+msgid "Possible duplicate club names:\n"
+msgstr ""
+
+msgid "Suspicious weights:\n"
+msgstr ""
+
+msgid "warnings"
+msgstr ""
+
+msgid "Move Medal Matches"
+msgstr ""
+
+msgid "Move match "
+msgstr ""
+
+msgid "to tatami and/or"
+msgstr ""
+
+msgid " delay"
+msgstr ""
+
+msgid "Final"
+msgstr ""
+
+msgid "Bronze1"
+msgstr ""
+
+msgid "Bronze2"
+msgstr ""
+
+msgid "Pool's last"
+msgstr ""
+
+msgid "No move"
+msgstr ""
+
+msgid "Weighted only"
+msgstr ""
+
+msgid "With weights"
+msgstr ""
+
+msgid "Validate Database"
+msgstr ""
+
+msgid "Results in Icelandic"
+msgstr ""
+
+msgid "Print Accreditation Cards"
+msgstr ""
+
+msgid "Name Format"
+msgstr ""
+
+msgid "Surname Name, Country/Club"
+msgstr ""
+
+msgid "Country/Club,  Surname Name"
+msgstr ""
+
+msgid "Scale Serial Interface..."
+msgstr ""
+
+msgid "Medal Matches..."
+msgstr ""
+
+msgid "Print Selected Accreditation Cards"
+msgstr ""
+
+msgid "Layout:"
+msgstr ""
+
+msgid "Print To:"
+msgstr ""
+
+msgid "Template"
+msgstr ""
+
+msgid "Printer"
+msgstr ""
+
+msgid "PDF"
+msgstr ""
+
+msgid "One Card Per Page"
+msgstr ""
+
+msgid "Normal display"
+msgstr ""
+
+msgid "Horizontal display"
+msgstr ""
+
+msgid "Type"
+msgstr ""

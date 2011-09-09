@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-12 13:45+0300\n"
+"POT-Creation-Date: 2011-09-09 15:06+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1362,4 +1362,139 @@ msgid "Normal display"
 msgstr ""
 
 msgid "Horizontal display"
+msgstr ""
+
+msgid "White has a judogi problem."
+msgstr ""
+
+msgid "Blue has a judogi problem."
+msgstr ""
+
+msgid "Show Competitors"
+msgstr ""
+
+msgid "Show competitors"
+msgstr ""
+
+msgid "Name format"
+msgstr ""
+
+msgid "Country  Surname, Name"
+msgstr ""
+
+msgid "Club  Surname, Name"
+msgstr ""
+
+msgid "Country Surname"
+msgstr ""
+
+msgid "Club Surname"
+msgstr ""
+
+msgid "Surname, Name"
+msgstr ""
+
+msgid "Surname"
+msgstr ""
+
+msgid "Change language to Icelandic"
+msgstr ""
+
+msgid "WINNER"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Club Seeding:"
+msgstr ""
+
+msgid "Gender:"
+msgstr ""
+
+msgid "Male"
+msgstr ""
+
+msgid "Female"
+msgstr ""
+
+msgid "Control:"
+msgstr ""
+
+msgid "NOK"
+msgstr ""
+
+msgid "Seeding"
+msgstr ""
+
+msgid "Club Seeding"
+msgstr ""
+
+msgid "Database Validation"
+msgstr ""
+
+msgid "Duplicate seedings:\n"
+msgstr ""
+
+msgid "seeding"
+msgstr ""
+
+msgid "defined"
+msgstr ""
+
+msgid "times"
+msgstr ""
+
+msgid "Duplicate club seedings:\n"
+msgstr ""
+
+msgid "Missing category definitions:\n"
+msgstr ""
+
+msgid "is not"
+msgstr ""
+
+msgid "Typing errors:\n"
+msgstr ""
+
+msgid "UTF-8 errors"
+msgstr ""
+
+msgid "Extra spaces"
+msgstr ""
+
+msgid "Possible duplicate competitors:\n"
+msgstr ""
+
+msgid "Possible duplicate club names:\n"
+msgstr ""
+
+msgid "Suspicious weights:\n"
+msgstr ""
+
+msgid "warnings"
+msgstr ""
+
+msgid "Weighted only"
+msgstr ""
+
+msgid "With weights"
+msgstr ""
+
+msgid "Validate Database"
+msgstr ""
+
+msgid "Results in Icelandic"
+msgstr ""
+
+msgid "Surname Name, Country/Club"
+msgstr ""
+
+msgid "Country/Club,  Surname Name"
+msgstr ""
+
+msgid "Scale Serial Interface..."
+msgstr ""
+
+msgid "Type"
 msgstr ""

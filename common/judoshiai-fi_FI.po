@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-12 13:45+0300\n"
+"POT-Creation-Date: 2011-09-09 15:06+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,9 +18,6 @@ msgid "White won the voting"
 msgstr "Valkoinen voitti äänestyksen"
 
 msgid "Match:"
-msgstr "Ottelu:"
-
-msgid "Contest:"
 msgstr "Ottelu:"
 
 msgid "Next:"
@@ -1249,9 +1246,6 @@ msgstr "OK"
 msgid "White first:"
 msgstr "Valkoinen ensin:"
 
-msgid "Scale Serial Interface"
-msgstr "Vaa'an liitäntä"
-
 msgid "Serial Communication"
 msgstr "Sarjaliikenne"
 
@@ -1352,7 +1346,7 @@ msgid "Print To:"
 msgstr "Tulostustapa:"
 
 msgid "Template"
-msgstr "Malli"
+msgstr "Malline"
 
 msgid "Printer"
 msgstr "Kirjoitin"
@@ -1368,3 +1362,138 @@ msgstr "Normaali näyttö"
 
 msgid "Horizontal display"
 msgstr "Vaakanäyttö"
+
+msgid "White has a judogi problem."
+msgstr "Valkoisella on judogiongelma"
+
+msgid "Blue has a judogi problem."
+msgstr "Sinisellä on judogiongelma"
+
+msgid "Show Competitors"
+msgstr "Näytä ottelijat"
+
+msgid "Show competitors"
+msgstr "Näytä ottelijat"
+
+msgid "Name format"
+msgstr "Nimen ulkoasu"
+
+msgid "Country  Surname, Name"
+msgstr "Maa  Sukunimi, Etunimi"
+
+msgid "Club  Surname, Name"
+msgstr "Seura Sukunimi, Etunimi"
+
+msgid "Country Surname"
+msgstr "Maa Sukunimi"
+
+msgid "Club Surname"
+msgstr "Seura Sukunimi"
+
+msgid "Surname, Name"
+msgstr "Sukunimi, Etunimi"
+
+msgid "Surname"
+msgstr "Sukunimi"
+
+msgid "Change language to Icelandic"
+msgstr "Muuta kieli islanniksi"
+
+msgid "WINNER"
+msgstr "VOITTAJA"
+
+msgid "Cancel"
+msgstr "Peru"
+
+msgid "Club Seeding:"
+msgstr "Sijoitus seurassa:"
+
+msgid "Gender:"
+msgstr "Sukupuoli:"
+
+msgid "Male"
+msgstr "Mies"
+
+msgid "Female"
+msgstr "Nainen"
+
+msgid "Control:"
+msgstr "Kontrolli:"
+
+msgid "NOK"
+msgstr "Ei OK"
+
+msgid "Seeding"
+msgstr "Sijoitus"
+
+msgid "Club Seeding"
+msgstr "Sijoitus seurassa"
+
+msgid "Database Validation"
+msgstr "Tietokannan tarkistus"
+
+msgid "Duplicate seedings:\n"
+msgstr "Samoja sijoituksia sarjassa:\n"
+
+msgid "seeding"
+msgstr "sijoitus"
+
+msgid "defined"
+msgstr "määritelty"
+
+msgid "times"
+msgstr "kertaa"
+
+msgid "Duplicate club seedings:\n"
+msgstr "Samoja sijoituksia seurassa:\n"
+
+msgid "Missing category definitions:\n"
+msgstr "Puuttuvia sarjamäärittelyjä:\n"
+
+msgid "is not"
+msgstr "ei ole"
+
+msgid "Typing errors:\n"
+msgstr "Kirjoitusvirheitä:\n"
+
+msgid "UTF-8 errors"
+msgstr "UTF-8-virheitä"
+
+msgid "Extra spaces"
+msgstr "Ylimääräisiä välilyöntejä"
+
+msgid "Possible duplicate competitors:\n"
+msgstr "Mahdollisesti samoja kilpailijoita:\n"
+
+msgid "Possible duplicate club names:\n"
+msgstr "Mahdollisesti samoja seurojen nimiä:\n"
+
+msgid "Suspicious weights:\n"
+msgstr "Epäilyttäviä painoja:\n"
+
+msgid "warnings"
+msgstr "varoitusta"
+
+msgid "Weighted only"
+msgstr "Vain punnitut"
+
+msgid "With weights"
+msgstr "Painojen kanssa"
+
+msgid "Validate Database"
+msgstr "Tarkista tietokanta"
+
+msgid "Results in Icelandic"
+msgstr "Tulokset islanniksi"
+
+msgid "Surname Name, Country/Club"
+msgstr "Sukunimi Etunimi, Maa/Seura"
+
+msgid "Country/Club,  Surname Name"
+msgstr "Maa/Seura, Sukunimi Etunimi"
+
+msgid "Scale Serial Interface..."
+msgstr "Vaa'an liitäntä..."
+
+msgid "Type"
+msgstr "Tyyppi"

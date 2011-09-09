@@ -24,6 +24,7 @@ extern void write_competitor(FILE *f, const gchar *first, const gchar *last, con
 #define COMPETITOR_STATISTICS        16
 #define PRINT_COMPETITORS_BY_CLUB    32
 #define FIND_COMPETITOR_BY_ID        64
+#define CLEANUP                     128
 
 static FILE *print_file = NULL;
 static gint num_competitors;
@@ -117,16 +118,19 @@ static int db_callback(void *data, int argc, char **argv, char **azColName)
     if ((flags & ADD_COMPETITORS_WITH_WEIGHTS) ||
         (flags & ADD_COMPETITORS)) {
         GtkTreeIter iter;
-        if (cleanup_import && find_iter_name(&iter, j.last, j.first, j.club)) {
+        if ((flags & CLEANUP) && find_iter_name(&iter, j.last, j.first, j.club)) {
             competitors_not_added++;
             return 0;
         }
         j.index = current_index++;
         j.category = "?";
 
-        if (cleanup_import) {
+        if (flags & CLEANUP) {
             newcat = find_correct_category(j.birthyear ? current_year - j.birthyear : 0, 
-                                           j.weight, 0, j.regcategory, TRUE);
+                                           j.weight, 
+                                           (j.deleted & GENDER_FEMALE) ? IS_FEMALE : 
+                                           (j.deleted & GENDER_MALE ? IS_MALE : 0), 
+                                           j.regcategory, TRUE);
             if (newcat)
                 j.regcategory = newcat;
         }
@@ -278,17 +282,24 @@ void db_read_competitor_statistics(gint *numcomp, gint *numweighted)
 }
 
 void db_add_competitors(const gchar *competition, gboolean with_weight, 
-			gint *added, gint *not_added)
+			gboolean weighted, gboolean cleanup, gint *added, gint *not_added)
 {
-    char buffer[100];
+    gint flags = 0;
 
     competitors_not_added = competitors_added = 0;
 
-    sprintf(buffer, 
-            "SELECT * FROM competitors");
-    db_exec(competition, buffer, 
-            (void *)(with_weight?ADD_COMPETITORS_WITH_WEIGHTS:ADD_COMPETITORS), 
-            db_callback);
+    if (with_weight)
+        flags = ADD_COMPETITORS_WITH_WEIGHTS;
+    else
+        flags = ADD_COMPETITORS;
+
+    if (cleanup)
+        flags |= CLEANUP;
+
+    if (weighted)
+        db_exec(competition, "SELECT * FROM competitors WHERE \"weight\">0", (gpointer)flags, db_callback);
+    else
+        db_exec(competition, "SELECT * FROM competitors", (gpointer)flags, db_callback);
 
     *added = competitors_added;
     *not_added = competitors_not_added;

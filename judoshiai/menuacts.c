@@ -479,7 +479,7 @@ static gboolean with_weight;
 static void get_competitors(void)
 {
     GtkWidget *dialog;
-    GtkWidget *cleanup;
+    GtkWidget *cleanup, *only_weighted, *with_weights, *vbox;
     GtkFileFilter *filter = gtk_file_filter_new();
     gint added = 0, not_added = 0;
 
@@ -493,9 +493,17 @@ static void get_competitors(void)
                                           GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
                                           NULL);
 
+    vbox = gtk_vbox_new(FALSE, 0);
     cleanup = gtk_check_button_new_with_label(_("Clean up duplicates and update reg. categories"));
     gtk_widget_show(cleanup);
-    gtk_file_chooser_set_extra_widget(GTK_FILE_CHOOSER(dialog), cleanup);
+    only_weighted = gtk_check_button_new_with_label(_("Weighted only"));
+    gtk_widget_show(only_weighted);
+    with_weights = gtk_check_button_new_with_label(_("With weights"));
+    gtk_widget_show(with_weights);
+    gtk_box_pack_start(GTK_BOX(vbox), with_weights, FALSE, TRUE, 2);
+    gtk_box_pack_start(GTK_BOX(vbox), only_weighted, FALSE, TRUE, 2);
+    gtk_box_pack_start(GTK_BOX(vbox), cleanup, FALSE, TRUE, 2);
+    gtk_file_chooser_set_extra_widget(GTK_FILE_CHOOSER(dialog), vbox);
 
     gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter);
 
@@ -514,14 +522,16 @@ static void get_competitors(void)
     {
         gchar *name;
 
-        cleanup_import = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(cleanup));
-
         name = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
-        db_add_competitors(name, with_weight, &added, &not_added);
+        db_add_competitors(name, 
+                           gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(with_weights)), 
+                           gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(only_weighted)), 
+                           gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(cleanup)), 
+                           &added, &not_added);
         valid_ascii_string(name);
         g_free (name);
 
-        if (cleanup_import)
+        if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(cleanup)))
             SHOW_MESSAGE("%d %s (%d %s).", 
                          added, _("competitors added and updated"), not_added, _("competitors already existed"));
         else

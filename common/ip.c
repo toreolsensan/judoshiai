@@ -428,6 +428,27 @@ struct message msg_to_send[MSG_QUEUE_LEN];
 static volatile gint rec_msg_queue_put = 0, rec_msg_queue_get = 0;
 static struct message rec_msgs[MSG_QUEUE_LEN];
 
+static gboolean already_in_rec_queue(volatile struct message *msg)
+{
+    if (msg->type != MSG_RESULT)
+        return FALSE;
+
+    gint i = rec_msg_queue_get;
+
+    while (i != rec_msg_queue_put) {
+        if (memcmp((struct message *)&msg->u.result, &rec_msgs[i].u.result, sizeof(msg->u.result)) == 0) {
+            g_print("resend: tatami=%d cat=%d num=%d\n",
+                    msg->u.result.tatami, msg->u.result.category, msg->u.result.match);
+            return TRUE;
+        }
+
+        i++;
+        if (i >= MSG_QUEUE_LEN)
+            i = 0;
+    }
+    return FALSE;
+}
+
 void msg_to_queue(struct message *msg)
 {
     g_static_mutex_lock (&send_mutex);
@@ -525,6 +546,12 @@ struct message *put_to_rec_queue(volatile struct message *m)
         return NULL;
 
     g_static_mutex_lock(&rec_mutex);
+
+    if (already_in_rec_queue(m)) {
+        g_static_mutex_unlock(&rec_mutex);
+        return NULL;
+    }
+
     rec_msgs[rec_msg_queue_put] = *m;
     ret = &rec_msgs[rec_msg_queue_put];
     rec_msg_queue_put++;

@@ -347,7 +347,7 @@ void db_new(const char *dbname,
         "\"belt\" INTEGER, \"club\" TEXT, \"regcategory\" TEXT, "
         "\"weight\" INTEGER, \"visible\" INTEGER, "
         "\"category\" TEXT, \"deleted\" INTEGER, "
-        "\"country\" TEXT, \"id\" TEXT )";
+        "\"country\" TEXT, \"id\" TEXT, \"seeding\" INTEGER, \"clubseeding\" INTEGER )";
     char *cmd3 = "CREATE TABLE categories ("
         "\"index\" INTEGER, \"category\" TEXT, \"tatami\" INTEGER, "
         "\"deleted\" INTEGER, \"group\" INTEGER, \"system\" INTEGER, "

@@ -734,8 +734,8 @@ extern void db_set_category_positions(gint category, gint competitor, gint posit
 extern gint db_get_competitors_position(gint competitor, gint *catindex);
 
 extern void db_read_competitor_statistics(gint *numcomp, gint *numweighted);
-extern void db_add_competitors(const gchar *competition, gboolean with_weight, 
-			       gint *added, gint *not_added);
+extern void db_add_competitors(const gchar *competition, gboolean with_weight, gboolean weighted, 
+			       gboolean cleanup, gint *added, gint *not_added);
 extern void db_set_match(struct match *m);
 extern void db_reset_last_match_times(gint category, gint number, gboolean blue, gboolean white);
 extern void db_set_match_hansokumake(gint category, gint number, gint blue, gint white);

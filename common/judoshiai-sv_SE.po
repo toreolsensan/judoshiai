@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-12 13:45+0300\n"
+"POT-Creation-Date: 2011-09-09 15:06+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -374,4 +374,64 @@ msgid "Contest area 9"
 msgstr ""
 
 msgid "Contest area 10"
+msgstr ""
+
+msgid "White has a judogi problem."
+msgstr ""
+
+msgid "Blue has a judogi problem."
+msgstr ""
+
+msgid "Show Competitors"
+msgstr ""
+
+msgid "Show competitors"
+msgstr ""
+
+msgid "Name format"
+msgstr ""
+
+msgid "Name Surname, Country/Club"
+msgstr ""
+
+msgid "Surname, Name, Country/Club"
+msgstr ""
+
+msgid "Country/Club  Surname, Name"
+msgstr ""
+
+msgid "Country  Surname, Name"
+msgstr ""
+
+msgid "Club  Surname, Name"
+msgstr ""
+
+msgid "Country Surname"
+msgstr ""
+
+msgid "Club Surname"
+msgstr ""
+
+msgid "Surname, Name"
+msgstr ""
+
+msgid "Surname"
+msgstr ""
+
+msgid "Country"
+msgstr ""
+
+msgid "Club"
+msgstr ""
+
+msgid "Change language to Icelandic"
+msgstr ""
+
+msgid "OK"
+msgstr ""
+
+msgid "WINNER"
+msgstr ""
+
+msgid "Cancel"
 msgstr ""

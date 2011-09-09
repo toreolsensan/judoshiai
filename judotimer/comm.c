@@ -244,7 +244,7 @@ void msg_received(struct message *input_msg)
             if (current_category != msgout.u.next_match.category ||
                 current_match != msgout.u.next_match.match) {
                 result_send_time = 0;
-            } else if (time(NULL) - result_send_time > 15) {
+            } else if (time(NULL) - result_send_time > 14) {
                 send_packet(&msgout);
                 result_send_time = time(NULL);
 

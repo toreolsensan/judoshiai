@@ -583,7 +583,7 @@ static gboolean close_ask_nok(GtkWidget *widget, gpointer userdata)
 static gboolean expose_ask(GtkWidget *widget, GdkEventExpose *event, gpointer userdata)
 {
     gint width, height, winner = get_winner();
-    const gchar *last_wname, *first_wname, *wtext = _("WINNER:");
+    const gchar *last_wname, *first_wname, *wtext = _("WINNER");
 
     if (!winner)
         return FALSE;
