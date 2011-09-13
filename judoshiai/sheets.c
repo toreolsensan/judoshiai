@@ -1515,7 +1515,7 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
     case FRENCH_32:
 	if (table == TABLE_DOUBLE_REPECHAGE || 
             table == TABLE_SWE_DUBBELT_AATERKVAL ||
-            table == TABLE_MODIFIED_DOUBLE_ELIMINATION ||
+            //table == TABLE_MODIFIED_DOUBLE_ELIMINATION ||
             table == TABLE_DOUBLE_REPECHAGE_ONE_BRONZE) {
 	    space = NAME_S*0.35;
 	    text_h = 0.9*TEXT_HEIGHT;
@@ -1525,7 +1525,9 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
 	}
         break;
     case FRENCH_64:
-	if ((table == TABLE_EST_D_KLASS || table == TABLE_SWE_DIREKT_AATERKVAL) && 
+	if ((table == TABLE_EST_D_KLASS || 
+             table == TABLE_SWE_DIREKT_AATERKVAL ||
+             table == TABLE_MODIFIED_DOUBLE_ELIMINATION) && 
 	    pagenum == 2)
 	    space = NAME_S*0.25;
 	else

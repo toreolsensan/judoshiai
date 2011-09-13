@@ -549,7 +549,7 @@ const gchar french_128_matches_to_page[NUM_TABLES][NUM_MATCHES] = {
 const gint result_y_position[NUM_TABLES][NUM_FRENCH] = {
     {4, 12, 28, 0, 0},
     {4, 12, 28, 0},
-    {4, 16, 44, 0},
+    {4, 22, 50, 0},
     {4, 12, 54, 0},
     {0, 0, 0, 0},
     {4, 12, 30, 0},
@@ -1470,6 +1470,7 @@ gint is_special_match(struct compsys sys, gint match, gint *intval, double *doub
 
     switch (sys.table) {
     case TABLE_DOUBLE_REPECHAGE:
+    case TABLE_SWE_DUBBELT_AATERKVAL:
         switch (sys.system) {
         case  SYSTEM_FRENCH_32:
             switch (match) {
@@ -1498,7 +1499,6 @@ gint is_special_match(struct compsys sys, gint match, gint *intval, double *doub
             }
         }
         break;
-    case TABLE_SWE_DUBBELT_AATERKVAL:
     case TABLE_SWE_DIREKT_AATERKVAL:
     case TABLE_EST_D_KLASS:
     case TABLE_NO_REPECHAGE:
@@ -1571,6 +1571,13 @@ gint is_special_match(struct compsys sys, gint match, gint *intval, double *doub
         break;
     case TABLE_MODIFIED_DOUBLE_ELIMINATION:
         switch (sys.system) {
+        case  SYSTEM_FRENCH_32:
+            switch (match) {
+            case 61:
+                *doubleval = 3.0;
+                return SPECIAL_MORE_SPACE;
+            }
+            break;
         case  SYSTEM_FRENCH_64:
             switch (match) {
             case 117:

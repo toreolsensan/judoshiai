@@ -296,10 +296,12 @@ void db_validation(GtkWidget *w, gpointer data)
                         "where weight>0 and "
                         "( weight<10000 or weight>200000 or "
                         "  ( getweight(category)=0 and getweight(regcategory)>0 and "
-                        "    ( weight>getweight(regcategory)+5000 or "
-                        "      weight<getweight(regcategory)-10000)) or "
+                        "    ( ( regcategory not like '%+%' and "
+                        "        weight>getweight(regcategory)) or "
+                        "        weight<getweight(regcategory)-10000)) or "
                         "  ( getweight(category)>0 and "
-                        "    ( weight>getweight(category) or "
+                        "    ( ( category not like '%+%' and "
+                        "        weight>getweight(category)) or "
                         "      weight<getweight(category)-10000))) order by last, first");
 
     if (rows > 0) {

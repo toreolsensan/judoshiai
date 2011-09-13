@@ -23,12 +23,12 @@ judoshiai-is_IS.mo: judoshiai-is_IS.po
 	$(MSGFMT) -o judoshiai-is_IS.mo judoshiai-is_IS.po 
 
 po:
-	$(XGETTEXT) --from-code=UTF-8 -d judoshiai-fi_FI -C --keyword=_ -j ../judotimer/*.c -j ../judoshiai/*.c -j ../judoinfo/*.c ../common/*.c
+	$(XGETTEXT) --from-code=UTF-8 -d judoshiai-fi_FI -C --keyword=_ -j ../judotimer/*.c -j ../judoshiai/*.c -j ../judoinfo/*.c ../common/*.c ../judoweight/*.c ../judojudogi/*.c
 	$(XGETTEXT) --from-code=UTF-8 -d judoshiai-sv_SE -C --keyword=_ -j ../judotimer/*.c
-	$(XGETTEXT) --from-code=UTF-8 -d judoshiai-es_ES -C --keyword=_ -j ../judotimer/*.c -j ../judoshiai/*.c -j ../judoinfo/*.c ../common/*.c
-	$(XGETTEXT) --from-code=UTF-8 -d judoshiai-et_EE -C --keyword=_ -j ../judotimer/*.c -j ../judoshiai/*.c -j ../judoinfo/*.c ../common/*.c
-	$(XGETTEXT) --from-code=UTF-8 -d judoshiai-uk_UA -C --keyword=_ -j ../judotimer/*.c -j ../judoshiai/*.c -j ../judoinfo/*.c ../common/*.c
-	$(XGETTEXT) --from-code=UTF-8 -d judoshiai-is_IS -C --keyword=_ -j ../judotimer/*.c -j ../judoshiai/*.c -j ../judoinfo/*.c ../common/*.c
+	$(XGETTEXT) --from-code=UTF-8 -d judoshiai-es_ES -C --keyword=_ -j ../judotimer/*.c -j ../judoshiai/*.c -j ../judoinfo/*.c ../common/*.c ../judoweight/*.c ../judojudogi/*.c
+	$(XGETTEXT) --from-code=UTF-8 -d judoshiai-et_EE -C --keyword=_ -j ../judotimer/*.c -j ../judoshiai/*.c -j ../judoinfo/*.c ../common/*.c ../judoweight/*.c ../judojudogi/*.c
+	$(XGETTEXT) --from-code=UTF-8 -d judoshiai-uk_UA -C --keyword=_ -j ../judotimer/*.c -j ../judoshiai/*.c -j ../judoinfo/*.c ../common/*.c ../judoweight/*.c ../judojudogi/*.c
+	$(XGETTEXT) --from-code=UTF-8 -d judoshiai-is_IS -C --keyword=_ -j ../judotimer/*.c -j ../judoshiai/*.c -j ../judoinfo/*.c ../common/*.c ../judoweight/*.c ../judojudogi/*.c
 
 uncomment:
 	grep -v '^#' judoshiai-fi_FI.po >judoshiai-fi_FI.tmp

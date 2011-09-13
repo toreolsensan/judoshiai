@@ -1066,7 +1066,7 @@ struct compsys get_system_for_category(gint index, gint competitors)
     } else if (competitors >= 8 && competitors <= 20 && wishsys == CAT_SYSTEM_QPOOL) {
         sys = SYSTEM_QPOOL;
     } else if (competitors > 5 && competitors <= 10 && wishsys == CAT_SYSTEM_DEFAULT &&
-               draw_system == DRAW_SPANISH) {
+               (draw_system == DRAW_SPANISH || draw_system == DRAW_NORWEGIAN)) {
             sys = SYSTEM_DPOOL;
     } else if (competitors > 5 && competitors <= 7 && wishsys == CAT_SYSTEM_DEFAULT) {
         if (draw_system == DRAW_INTERNATIONAL || draw_system == DRAW_ESTONIAN) {
@@ -1125,6 +1125,10 @@ struct compsys get_system_for_category(gint index, gint competitors)
                             wishsys = CAT_ESP_DOBLE_PERDIDA;
                     }
                 }
+                break;
+            case DRAW_NORWEGIAN:
+                wishsys = CAT_SYSTEM_DUBBELT_AATERKVAL;
+                break;
             }
         }
 

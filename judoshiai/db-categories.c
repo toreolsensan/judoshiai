@@ -20,6 +20,13 @@ static struct compsys category_system;
 static struct judoka j;
 static gint positions[NUM_POSITIONS];
 
+static gint my_atoi(gchar *p)
+{
+    if (!p)
+        return 0;
+    return atoi(p);
+}
+
 static int db_callback_categories(void *data, int argc, char **argv, char **azColName)
 {
     gint i, flags = (int)data;
@@ -27,39 +34,39 @@ static int db_callback_categories(void *data, int argc, char **argv, char **azCo
     for (i = 0; i < argc; i++) {
         //g_print(" %s=%s", azColName[i], argv[i]);
         if (IS(index))
-            j.index = atoi(argv[i]);
+            j.index = my_atoi(argv[i]);
         else if (IS(category))
             j.last = argv[i];
         else if (IS(tatami))
-            j.belt = atoi(argv[i]);
+            j.belt = my_atoi(argv[i]);
         else if (IS(deleted))
-            j.deleted = atoi(argv[i]);
+            j.deleted = my_atoi(argv[i]);
         else if (IS(group))
-            j.birthyear = atoi(argv[i]);
+            j.birthyear = my_atoi(argv[i]);
         else if (IS(system))
-            category_system.system = atoi(argv[i]);
+            category_system.system = my_atoi(argv[i]);
         else if (IS(numcomp))
-            category_system.numcomp = atoi(argv[i]);
+            category_system.numcomp = my_atoi(argv[i]);
         else if (IS(table))
-            category_system.table = atoi(argv[i]);
+            category_system.table = my_atoi(argv[i]);
         else if (IS(wishsys))
-            category_system.wishsys = atoi(argv[i]);
+            category_system.wishsys = my_atoi(argv[i]);
         else if (IS(pos1))
-            positions[0] = atoi(argv[i]);
+            positions[0] = my_atoi(argv[i]);
         else if (IS(pos2))
-            positions[1] = atoi(argv[i]);
+            positions[1] = my_atoi(argv[i]);
         else if (IS(pos3))
-            positions[2] = atoi(argv[i]);
+            positions[2] = my_atoi(argv[i]);
         else if (IS(pos4))
-            positions[3] = atoi(argv[i]);
+            positions[3] = my_atoi(argv[i]);
         else if (IS(pos5))
-            positions[4] = atoi(argv[i]);
+            positions[4] = my_atoi(argv[i]);
         else if (IS(pos6))
-            positions[5] = atoi(argv[i]);
+            positions[5] = my_atoi(argv[i]);
         else if (IS(pos7))
-            positions[6] = atoi(argv[i]);
+            positions[6] = my_atoi(argv[i]);
         else if (IS(pos8))
-            positions[7] = atoi(argv[i]);
+            positions[7] = my_atoi(argv[i]);
     }
     //g_print("\n");
 
