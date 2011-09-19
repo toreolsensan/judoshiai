@@ -606,7 +606,15 @@ static gboolean expose_ask(GtkWidget *widget, GdkEventExpose *event, gpointer us
     cairo_rectangle(c, 0.0, 0.0, width, FIRST_BLOCK_HEIGHT);
     cairo_fill(c);
         
-    cairo_set_source_rgb(c, 1.0, 1.0, 0.6);
+    if ((winner == BLUE && white_first) || (winner == WHITE && white_first == FALSE))
+        cairo_set_source_rgb(c, 1.0, 1.0, 1.0);
+    else {
+        if (blue_background())
+            cairo_set_source_rgb(c, 0, 0, 1.0);
+        else
+            cairo_set_source_rgb(c, 1.0, 0, 0);
+    }
+
     cairo_rectangle(c, 0.0, SECOND_BLOCK_START, width, 2*OTHER_BLOCK_HEIGHT);
     cairo_fill(c);
 
@@ -619,7 +627,11 @@ static gboolean expose_ask(GtkWidget *widget, GdkEventExpose *event, gpointer us
     cairo_move_to(c, width - 10.0 - extents.width, (FIRST_BLOCK_HEIGHT - extents.height)/2.0 - extents.y_bearing);
     cairo_show_text(c, saved_cat);
 
-    cairo_set_source_rgb(c, 0, 0, 0);
+    if ((winner == BLUE && white_first) || (winner == WHITE && white_first == FALSE))
+        cairo_set_source_rgb(c, 0, 0, 0);
+    else
+        cairo_set_source_rgb(c, 1.0, 1.0, 1.0);
+
     cairo_set_font_size(c, 0.6*OTHER_BLOCK_HEIGHT);
     cairo_text_extents(c, last_wname, &extents);
     cairo_move_to(c, 10.0, SECOND_BLOCK_START + (OTHER_BLOCK_HEIGHT - extents.height)/2.0 - extents.y_bearing);
