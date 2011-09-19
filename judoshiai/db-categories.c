@@ -201,6 +201,9 @@ void db_read_categories(void)
 
 void db_set_category_positions(gint category, gint competitor, gint position)
 {
+    if (automatic_web_page_update || create_statistics == FALSE)
+        return;
+
     db_exec_str(NULL, NULL,
                 "UPDATE categories SET "
                 "\"pos%d\"=%d WHERE \"index\"=%d",

@@ -250,7 +250,7 @@ static void pool_results(FILE *f, gint category, struct judoka *ctg, gint num_ju
             write_result(f, i == 4 ? 3 : i, pm.j[pm.c[i]]->first, 
                          pm.j[pm.c[i]]->last, pm.j[pm.c[i]]->club, pm.j[pm.c[i]]->country);
             avl_set_competitor_position(pm.j[pm.c[i]]->index, i == 4 ? 3 : i);
-            db_set_category_positions(category, pm.j[pm.c[i]]->index, i == 4 ? 3 : i);
+            db_set_category_positions(category, pm.j[pm.c[i]]->index, i);
         } else if (i <= 3 && 
             (pm.j[pm.c[i]]->deleted & HANSOKUMAKE) == 0) {
             write_result(f, i, pm.j[pm.c[i]]->first, 
