@@ -1310,6 +1310,43 @@ static gboolean compare_search_key(GtkTreeModel *model,
 }
 #endif
 
+#if 0
+gboolean query_tooltip (GtkWidget  *widget, gint x, gint y, gboolean keyboard_mode,
+                        GtkTooltip *tooltip, gpointer user_data)
+{
+    GtkTreePath* path;
+    GtkTreePath* path2;
+    GtkTreeViewDropPosition pos;
+    GtkTreeViewColumn* col;
+    gint cx, cy;
+
+    gtk_tree_view_get_path_at_pos((GtkTreeView*)widget, x, y, &path,
+                                  &col, &cx, &cy);
+    gtk_tree_view_get_dest_row_at_pos((GtkTreeView*)widget, x, y, &path2, &pos);
+
+    if (path2) {
+        GtkTreeIter iter;
+        gtk_tree_model_get_iter(current_model, &iter, path2);
+        struct judoka *j = get_data_by_iter(&iter);
+        if (j) {
+            gtk_tooltip_set_text(tooltip, j->last);
+            free_judoka(j);
+            return x < 40;
+        }
+    }
+
+
+    printf("INFO: get_path_at_pos: %s -- get_dest_row_at_pos: %s -- x,y: %d/%d\n",
+           (path == NULL ? "NULL" : gtk_tree_path_to_string(path)),
+           (path2 == NULL ? "NULL" : gtk_tree_path_to_string(path2)),
+           x, y);
+
+    gtk_tooltip_set_text(tooltip, "Testing");
+    
+    return x < 40;
+}
+#endif
+
 /*
  * Page init
  */
@@ -1321,6 +1358,11 @@ void set_judokas_page(GtkWidget *notebook)
     GtkTreeViewColumn *col;
     gboolean retval = FALSE;
 
+#if 0
+    GtkSettings *settings = gtk_settings_get_default();
+    gtk_settings_set_long_property(settings ,"gtk-tooltip-timeout", 500, NULL);
+#endif
+
     /* 
      * list of judokas
      */
@@ -1328,7 +1370,12 @@ void set_judokas_page(GtkWidget *notebook)
     gtk_container_set_border_width(GTK_CONTAINER(judokas_scrolled_window), 10);
 
     view = create_view_and_model();
-
+#if 0
+    /* TESTING CODE */
+    gtk_widget_set_has_tooltip(view, TRUE);
+    g_signal_connect (view, "query-tooltip", query_tooltip, NULL);
+    /****/
+#endif
     /* pack the table into the scrolled window */
     gtk_scrolled_window_add_with_viewport (
         GTK_SCROLLED_WINDOW(judokas_scrolled_window), view);

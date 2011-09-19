@@ -269,7 +269,7 @@ static void dqpool_results(FILE *f, gint category, struct judoka *ctg, gint num_
     struct pool_matches pm;
     struct judoka *j1 = NULL;
     gint i;
-    int gold, silver, bronze1, bronze2;
+    int gold = 0, silver = 0, bronze1 = 0, bronze2 = 0;
 
     fill_pool_struct(category, num_judokas, &pm, FALSE);
 
@@ -296,7 +296,7 @@ static void dqpool_results(FILE *f, gint category, struct judoka *ctg, gint num_
     if (pm.m[i].blue_points || pm.m[i].white == GHOST) {
         gold = pm.m[i].blue;
         silver = pm.m[i].white;
-    } else {
+    } else if (pm.m[i].white_points || pm.m[i].blue == GHOST) {
         gold = pm.m[i].white;
         silver = pm.m[i].blue;
     }
