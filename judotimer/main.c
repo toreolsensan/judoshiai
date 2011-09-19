@@ -1837,6 +1837,7 @@ void toggle_whitefirst(GtkWidget *menu_item, gpointer data)
     g_key_file_set_boolean(keyfile, "preferences", "whitefirst", white_first);
     set_colors();
     expose(darea, 0, 0);
+    change_language(NULL, NULL, (gpointer)language);
 }
 
 void toggle_show_comp(GtkWidget *menu_item, gpointer data)
