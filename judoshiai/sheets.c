@@ -335,13 +335,15 @@ static double paint_comp(struct paint_data *pd, struct pool_matches *unused1, in
             }
             free_judoka(j);
 
-            sprintf(buf, "%d", blue_pts);
-            cairo_text_extents(pd->c, buf, &extents);
-            cairo_move_to(pd->c, 
-                          extra + 
-                          x + txtwidth - r2 + 2.0 - extents.x_bearing, 
-                          py + (small ? 0 : 1.5*extents.height));
-            cairo_show_text(pd->c, buf);
+            if (blue_pts || white_pts) {
+                sprintf(buf, "%d", blue_pts);
+                cairo_text_extents(pd->c, buf, &extents);
+                cairo_move_to(pd->c, 
+                              extra + 
+                              x + txtwidth - r2 + 2.0 - extents.x_bearing, 
+                              py + (small ? 0 : 1.5*extents.height));
+                cairo_show_text(pd->c, buf);
+            }
         }
     }
 
@@ -379,13 +381,15 @@ static double paint_comp(struct paint_data *pd, struct pool_matches *unused1, in
             }
             free_judoka(j);
 
-            sprintf(buf, "%d", white_pts);
-            cairo_text_extents(pd->c, buf, &extents);
-            cairo_move_to(pd->c, 
-                          extra +
-			  x + txtwidth - r2 + 2.0 - extents.x_bearing,
-                          py + (small ? 0 : extents.height));
-            cairo_show_text(pd->c, buf);
+            if (blue_pts || white_pts) {
+                sprintf(buf, "%d", white_pts);
+                cairo_text_extents(pd->c, buf, &extents);
+                cairo_move_to(pd->c, 
+                              extra +
+                              x + txtwidth - r2 + 2.0 - extents.x_bearing,
+                              py + (small ? 0 : extents.height));
+                cairo_show_text(pd->c, buf);
+            }
         }
     }
 
