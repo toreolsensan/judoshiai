@@ -84,13 +84,15 @@ static gint device_type = 0;
 static gboolean serial_changed = FALSE;       
 gboolean serial_used = FALSE;
 
-static void handle_character(gchar c)
+static gchar handle_character(gchar c)
 {
     static gint weight = 0;
     static gint decimal = 0;
 
     if (c == '.' || c == ',') {
         decimal = 1;
+    } else if (device_type == DEV_TYPE_AP1 && c == 0x06) { // ACK
+        return 0x11; // DC1
     } else if (c < '0' || c > '9') {
         if ((device_type == DEV_TYPE_NORMAL   && c == '\r') ||
             (device_type == DEV_TYPE_STATHMOS && c == 0x1e) ||
@@ -121,6 +123,7 @@ static void handle_character(gchar c)
         decimal++;
     }
     //g_print("weight=%d\n", weight);
+    return 0;
 }
 
 static gchar send_chars(void)
@@ -139,7 +142,7 @@ static gchar send_chars(void)
         return 0x05;
 
     if (device_type == DEV_TYPE_AP1)
-        return 0x11;
+        return 0x05;
 
     if (device_type == DEV_TYPE_MYWEIGHT)
         return 0x0d;
@@ -221,12 +224,18 @@ gpointer serial_thread(gpointer args)
         }
 
         while (*((gboolean *)args) && serial_device[0] && serial_changed == FALSE) {       /* loop for input */
+            gchar ch = 0, ch2 = 0;
+
             if (ReadFile(hSerial, szBuff, 31, &dwBytesRead, NULL)) {
                 szBuff[dwBytesRead] = 0;
-                for (i = 0; i < dwBytesRead; i++)
-                    handle_character(szBuff[i]);
+                for (i = 0; i < dwBytesRead; i++) {
+                    ch2 = handle_character(szBuff[i]);
+                    if (ch2 && ch == 0) ch = ch2;
+                }
             }
-            gchar ch = send_chars();
+
+            if (!ch) ch = send_chars();
+
             if (ch) {
                 szBuff[0] = ch;
                 if(!WriteFile(hSerial, szBuff, 1, &dwBytesRead, NULL))
@@ -286,12 +295,17 @@ gpointer serial_thread(gpointer args)
         tcsetattr(fd,TCSANOW,&newtio);
         
         while (*((gboolean *)args) && serial_device[0] && serial_changed == FALSE) {       /* loop for input */
+            gchar ch = 0, ch2 = 0;
+
             res = read(fd, buf, sizeof(buf)-1);   /* returns after 1 char has been input */
 
-            for (i = 0; i < res; i++)
-                handle_character(buf[i]);
+            for (i = 0; i < res; i++) {
+                ch2 = handle_character(buf[i]);
+                if (ch2 && ch == 0) ch = ch2;
+            }
 
-            gchar ch = send_chars();
+            if (!ch) ch = send_chars();
+
             if (ch) {
                 buf[0] = ch;
                 write(fd, buf, 1);
