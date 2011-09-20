@@ -1412,6 +1412,8 @@ static int db_callback_match_num(void *data, int argc, char **argv, char **azCol
     for (i = 0; i < argc; i++) {
         if (!strcmp(azColName[i], "MAX(number)"))
             maxmatch = argv[i] ? atoi(argv[i]) : 0;
+        else if (!strcmp(azColName[i], "MAX(forcednumber)"))
+            nextforcednum = argv[i] ? atoi(argv[i]) : 0;
     }
 
     return 0;
@@ -1447,6 +1449,9 @@ gint db_force_match_number(gint category)
     if (!medalmatchexists)
         return 0;
 
+    db_exec_str(NULL, db_callback_match_num,
+                "SELECT MAX(forcednumber) FROM matches");
+
     db_exec_str(NULL, db_callback_medal_match_exists,
                 "SELECT forcedtatami FROM matches WHERE \"category\"=%d AND "
                 "\"number\">%d AND \"forcedtatami\">0 AND \"forcednumber\"=0",
@@ -1455,15 +1460,15 @@ gint db_force_match_number(gint category)
     db_exec_str(NULL, NULL,
                 "UPDATE matches SET \"forcednumber\"=%d "
                 "WHERE \"category\"=%d AND \"number\"=%d",
-                nextforcednum++, category, maxmatch+1);
+                ++nextforcednum, category, maxmatch+1);
     db_exec_str(NULL, NULL,
                 "UPDATE matches SET \"forcednumber\"=%d "
                 "WHERE \"category\"=%d AND \"number\"=%d",
-                nextforcednum++, category, maxmatch+2);
+                ++nextforcednum, category, maxmatch+2);
     db_exec_str(NULL, NULL,
                 "UPDATE matches SET \"forcednumber\"=%d "
                 "WHERE \"category\"=%d AND \"number\"=%d",
-                nextforcednum++, category, maxmatch+3);
+                ++nextforcednum, category, maxmatch+3);
 
     for (i = 1; i <= number_of_tatamis; i++)
         if (medalmatchexists & (1 << i))
