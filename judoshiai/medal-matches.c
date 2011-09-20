@@ -31,9 +31,7 @@ static struct {
 void update_medal_matches(gint category)
 {
     gint j, num;
-
     struct category_data *catdata = avl_get_category(category);    
-    g_print("  cat %s\n", catdata->category);
 
     for (j = 0; j < NUM_MATCH_TYPES; j++) {
         num = 0;
@@ -55,7 +53,8 @@ void update_medal_matches(gint category)
 
         if (num) {
             db_set_forced_tatami_number_delay(catdata->index, num, 
-                                              medal_matches_types[j].tatami, 0, medal_matches_types[j].delay);
+                                              medal_matches_types[j].tatami, 0, 
+                                              medal_matches_types[j].delay);
             //db_set_comment(catdata->index, num, medal_matches_types[j].delay ? COMMENT_WAIT : COMMENT_EMPTY);        
         }
     } // for j
@@ -135,6 +134,8 @@ void move_medal_matches(GtkWidget *menuitem, gpointer userdata)
 
             while (catdata) {
                 update_medal_matches(catdata->index);
+                if (catdata->system.numcomp == 2)
+                    db_force_match_number(catdata->index);
                 catdata = catdata->next;
             }
 

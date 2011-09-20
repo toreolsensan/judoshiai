@@ -1623,6 +1623,8 @@ void set_points(GtkWidget *menuitem, gpointer userdata)
     msg.u.set_points.white_points = is_blue ? 0 : points;
     send_packet(&msg);
 
+    db_force_match_number(category);
+
     make_backup();
 }
 
@@ -1644,6 +1646,8 @@ void set_points_from_net(struct message *msg)
 
     update_matches(msg->u.set_points.category, sys, 
                    db_find_match_tatami(msg->u.set_points.category, msg->u.set_points.number));
+
+    db_force_match_number(msg->u.set_points.category);
 
     make_backup();
 }
@@ -1710,6 +1714,8 @@ void set_points_and_score(struct message *msg)
     log_match(category, number, blue_pts, white_pts);
 
     update_matches(category, sys, db_find_match_tatami(category, number));
+
+    db_force_match_number(category);
 
     make_backup();
 }

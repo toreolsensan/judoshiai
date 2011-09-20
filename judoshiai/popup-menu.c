@@ -30,16 +30,36 @@ static gboolean for_each_row_selected(GtkTreeModel *model,
 
     if (gtk_tree_selection_iter_is_selected(selection, iter)) {
         guint index;
+        gboolean visible;
 
         gtk_tree_model_get(model, iter,
                            COL_INDEX, &index,
+                           COL_VISIBLE, &visible,
                            -1);
 
-        if (num_selected_judokas < TOTAL_NUM_COMPETITORS - 1) {
-            selected_judokas[num_selected_judokas++] = index;
+        if (visible) {
+            if (num_selected_judokas < TOTAL_NUM_COMPETITORS - 1)
+                selected_judokas[num_selected_judokas++] = index;
+        } else {
+            GtkTreeIter tmp_iter;
+            gboolean ok;
+
+            ok = gtk_tree_model_iter_children(model, &tmp_iter, iter);
+            while (ok) {
+                guint index2;
+
+                gtk_tree_model_get(model, &tmp_iter,
+                                   COL_INDEX, &index2,
+                                   -1);
+
+                if (num_selected_judokas < TOTAL_NUM_COMPETITORS - 1)
+                    selected_judokas[num_selected_judokas++] = index2;
+
+                ok = gtk_tree_model_iter_next(model, &tmp_iter);
+            }
         }
     }
-        
+
     return FALSE;
 }
 

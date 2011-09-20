@@ -1330,7 +1330,8 @@ void db_set_forced_tatami_number_delay(gint category, gint matchnumber, gint tat
 {
         db_exec_str(NULL, NULL,
                     "UPDATE matches SET \"forcedtatami\"=%d, \"forcednumber\"=%d, "
-                    "\"comment\"=%d WHERE \"category\"=%d AND \"number\"=%d",
+                    "\"comment\"=%d WHERE \"category\"=%d AND \"number\"=%d AND "
+                    "\"forcedtatami\"=0 AND \"forcednumber\"=0",
                     tatami, num,
                     delay ? COMMENT_WAIT : COMMENT_EMPTY, category, matchnumber);
 }
@@ -1397,4 +1398,76 @@ gint get_judogi_status(gint index)
     }
 
     return 0;
+}
+
+static gint maxmatch;
+static gint nextforcednum = 1;
+static gint medalmatchexists;
+
+static int db_callback_match_num(void *data, int argc, char **argv, char **azColName)
+{
+    guint flags = (int)data;
+    gint i, val;
+
+    for (i = 0; i < argc; i++) {
+        if (!strcmp(azColName[i], "MAX(number)"))
+            maxmatch = argv[i] ? atoi(argv[i]) : 0;
+    }
+
+    return 0;
+}
+
+static int db_callback_medal_match_exists(void *data, int argc, char **argv, char **azColName)
+{
+    gint i;
+    for (i = 0; i < argc; i++) {
+        if (!strcmp(azColName[i], "forcedtatami"))
+            medalmatchexists |= argv[i] ? 1 << atoi(argv[i]) : 0;
+    }
+    return 0;
+}
+
+gint db_force_match_number(gint category)
+{
+    gint i;
+
+    maxmatch = 0;
+    medalmatchexists = 0;
+
+    db_exec_str(NULL, db_callback_match_num,
+                "SELECT MAX(number) FROM  matches WHERE \"category\"=%d AND"
+                "(\"blue_points\">0 OR \"white_points\">0)",
+                category);
+
+    db_exec_str(NULL, db_callback_medal_match_exists,
+                "SELECT forcedtatami FROM matches WHERE \"category\"=%d AND "
+                "\"number\"=%d AND \"forcedtatami\">0 AND \"forcednumber\"=0",
+                category, maxmatch+1);
+
+    if (!medalmatchexists)
+        return 0;
+
+    db_exec_str(NULL, db_callback_medal_match_exists,
+                "SELECT forcedtatami FROM matches WHERE \"category\"=%d AND "
+                "\"number\">%d AND \"forcedtatami\">0 AND \"forcednumber\"=0",
+                category, maxmatch);
+
+    db_exec_str(NULL, NULL,
+                "UPDATE matches SET \"forcednumber\"=%d "
+                "WHERE \"category\"=%d AND \"number\"=%d",
+                nextforcednum++, category, maxmatch+1);
+    db_exec_str(NULL, NULL,
+                "UPDATE matches SET \"forcednumber\"=%d "
+                "WHERE \"category\"=%d AND \"number\"=%d",
+                nextforcednum++, category, maxmatch+2);
+    db_exec_str(NULL, NULL,
+                "UPDATE matches SET \"forcednumber\"=%d "
+                "WHERE \"category\"=%d AND \"number\"=%d",
+                nextforcednum++, category, maxmatch+3);
+
+    for (i = 1; i <= number_of_tatamis; i++)
+        if (medalmatchexists & (1 << i))
+            update_matches(0, (struct compsys){0,0,0,0}, i);
+
+    return medalmatchexists;
 }

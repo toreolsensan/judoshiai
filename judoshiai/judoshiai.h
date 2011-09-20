@@ -764,6 +764,8 @@ extern void db_set_comment(gint category, gint number, gint comment);
 extern void db_set_forced_tatami_number_delay(gint category, gint matchnumber, gint tatami, gint num, gboolean delay);
 extern void set_judogi_status(gint index, gint flags);
 extern gint get_judogi_status(gint index);
+extern gint db_force_match_number(gint category);
+
 extern void db_synchronize(char *name_2);
 extern void db_print_competitors(FILE *f);
 extern void db_print_competitors_by_club(FILE *f);
