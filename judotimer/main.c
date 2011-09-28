@@ -1321,6 +1321,8 @@ void update_label(struct msg_update_label *msg)
     } else if (w == START_COMPETITORS) {
         display_comp_window(msg->text3, msg->text, msg->text2);
         return;
+    } else if (w == STOP_COMPETITORS) {
+        close_ad_window();
     } else if (w >= 0 && w < num_labels) {
         //labels[w].x = msg->x;
         //labels[w].y = msg->y;

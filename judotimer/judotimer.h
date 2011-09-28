@@ -66,7 +66,9 @@
 #define STOP_BIG  129
 #define START_ADVERTISEMENT 130
 #define START_COMPETITORS 131
-
+#define STOP_COMPETITORS 132
+#define START_WINNER 133
+#define STOP_WINNER 134
 
 extern GTimer *timer;
 
@@ -183,6 +185,7 @@ extern void light_switch_sides(gboolean yes);
 extern void parse_name(const gchar *s, gchar *first, gchar *last, gchar *club, gchar *country);
 extern void display_comp_window(gchar *cat, gchar *comp1, gchar *comp2);
 extern gboolean blue_background(void);
+extern void close_ad_window(void);
 
 
 #endif

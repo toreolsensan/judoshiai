@@ -1671,6 +1671,14 @@ static gboolean delete_event_ad( GtkWidget *widget,
 static void destroy_ad( GtkWidget *widget,
                         gpointer   data )
 {
+    if (mode == MODE_MASTER) {
+        struct message msg;
+        memset(&msg, 0, sizeof(msg));
+        msg.type = MSG_UPDATE_LABEL;
+        msg.u.update_label.label_num = STOP_COMPETITORS;
+        send_label_msg(&msg);
+    }
+
     ad_window = NULL;
     no_ads = FALSE;
     comp_names_pending = FALSE;
@@ -1789,6 +1797,12 @@ static gboolean close_display(GtkWidget *widget, GdkEventKey *event, gpointer us
 static gboolean close_display_2(GtkWidget *widget, gpointer userdata)
 {
     return close_display(widget, NULL, userdata);
+}
+
+void close_ad_window(void)
+{
+    if (ad_window)
+        close_display(NULL, NULL, ad_window);
 }
 
 void display_ad_window(void)
@@ -1918,9 +1932,18 @@ void display_comp_window(gchar *cat, gchar *comp1, gchar *comp2)
     if (!show_competitor_names)
         return;
 
+    gchar *p;
+
     strncpy(category, cat, sizeof(category)-1);
     strncpy(b_last, comp1, sizeof(b_last)-1);
     strncpy(w_last, comp2, sizeof(w_last)-1);
+    
+    p = strchr(b_last, '\t');
+    if (p) *p = 0;
+
+    p = strchr(w_last, '\t');
+    if (p) *p = 0;
+
     comp_names_start = 0;
     comp_names_pending = TRUE;
     if (ad_window == NULL)
