@@ -247,8 +247,22 @@ void msg_received(struct message *input_msg)
 	    if (j) {
                 j->weight = input_msg->u.edit_competitor.weight;
                 j->deleted = input_msg->u.edit_competitor.deleted;
-                if (j->visible)
+                if (j->visible) {
                     db_update_judoka(j->index, j);
+
+                    memset(&output_msg, 0, sizeof(output_msg));
+                    output_msg.type = MSG_EDIT_COMPETITOR;
+                    output_msg.u.edit_competitor.operation = EDIT_OP_CONFIRM;
+                    CP2MSG_INT(index);
+                    CP2MSG_STR(last);
+                    CP2MSG_STR(first);
+                    CP2MSG_STR(club);
+                    CP2MSG_STR(country);
+                    CP2MSG_STR(regcategory);
+                    CP2MSG_INT(weight);
+                    CP2MSG_INT(deleted);
+                    send_packet(&output_msg);
+                }
                 display_one_judoka(j);
                 free_judoka(j);
             }

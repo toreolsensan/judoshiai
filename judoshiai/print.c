@@ -936,11 +936,13 @@ static void paint_weight_notes(struct paint_data *pd, gint what, gint page)
                         draw_code_39_string(id_str, pd, bar_height, FALSE);
                     } else if (IS_STR("%WEIGHTTEXT%"))
                         d += sprintf(buf + d, "%s", _T(weight));
-                    else if (IS_STR("%WINPOS%"))
-                        d += sprintf(buf + d, "%d", winpos);
-                    else if (IS_STR("%WINPOSR%"))
-                        d += sprintf(buf + d, "%s", roman_numbers[winpos]);
-                    else if (IS_STR("%WINCAT%"))
+                    else if (IS_STR("%WINPOS%")) {
+                        if (winpos)
+                            d += sprintf(buf + d, "%d", winpos);
+                    } else if (IS_STR("%WINPOSR%")) {
+                        if (winpos)
+                            d += sprintf(buf + d, "%s", roman_numbers[winpos]);
+                    } else if (IS_STR("%WINCAT%"))
                           d += sprintf(buf + d, "%s", catdata ? catdata->category : "");
 
                     k += len;
