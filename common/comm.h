@@ -189,6 +189,7 @@ struct msg_update_label {
 #define EDIT_OP_SET_FLAGS  4
 #define EDIT_OP_GET_BY_ID  8
 #define EDIT_OP_SET_JUDOGI 16
+#define EDIT_OP_CONFIRM    32
 
 struct msg_edit_competitor {
     gint operation;
