@@ -46,13 +46,27 @@ static GtkWidget *weight_box;
 static GtkWidget *judogi_box;
 #endif
 GtkWidget *weight_entry = NULL;
+static GtkWidget *confirm_box;
 
 static struct message saved;
 static gchar  *saved_id = NULL;
+static GdkCursor *wait_cursor = NULL;
 
 void set_display(struct msg_edit_competitor *msg)
 {
     gchar buf[128];
+
+    gdk_window_set_cursor(GTK_WIDGET(main_window)->window, NULL);
+
+    if (msg->operation == EDIT_OP_CONFIRM) {
+        snprintf(buf, sizeof(buf), "%s %s, %s/%s: %s: %d.%02d %s", 
+                 msg->last, msg->first, msg->country, msg->club, msg->regcategory,
+                 msg->weight/1000, (msg->weight%1000)/10,
+                 (msg->deleted & JUDOGI_OK) ? "OK" :
+                 ((msg->deleted & JUDOGI_NOK) ? "NOK" : ""));
+        gtk_label_set_label(GTK_LABEL(confirm_box), buf);
+        return;
+    }
 
     if (!saved_id)
         return;
@@ -148,6 +162,13 @@ static void on_ok(GtkEntry *entry, gpointer user_data)
 #endif
     send_packet(&saved);
 
+    struct msg_edit_competitor *msg = &saved.u.edit_competitor;
+    judoweight_log("%s %s, %s/%s: %s: %d.%02d %s", 
+                   msg->last, msg->first, msg->country, msg->club, msg->regcategory,
+                   msg->weight/1000, (msg->weight%1000)/10,
+                   (msg->deleted & JUDOGI_OK) ? "OK" :
+                   ((msg->deleted & JUDOGI_NOK) ? "NOK" : ""));
+
     saved.u.edit_competitor.index = 0;
     gtk_label_set_label(GTK_LABEL(name_box), "?");
     gtk_entry_set_text(GTK_ENTRY(weight_box), "?");
@@ -155,6 +176,7 @@ static void on_ok(GtkEntry *entry, gpointer user_data)
     gtk_combo_box_set_active(GTK_COMBO_BOX(judogi_box), 0);
 #endif
     gtk_widget_grab_focus(id_box);
+    gdk_window_set_cursor(GTK_WIDGET(main_window)->window, wait_cursor);
 }
 
 static void on_enter(GtkEntry *entry, gpointer user_data)  
@@ -180,6 +202,7 @@ static void on_enter(GtkEntry *entry, gpointer user_data)
 #ifdef JUDOGI_STATUS
     gtk_combo_box_set_active(GTK_COMBO_BOX(judogi_box), 0);
 #endif
+    gdk_window_set_cursor(GTK_WIDGET(main_window)->window, wait_cursor);
 }
 
 void destroy( GtkWidget *widget,
@@ -241,6 +264,8 @@ int main( int   argc,
 
     gtk_init (&argc, &argv);
 
+    wait_cursor = gdk_cursor_new(GDK_WATCH);
+
     main_window = window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(main_window), "JudoWeight");
     //gtk_widget_set_size_request(window, FRAME_WIDTH, FRAME_HEIGHT);
@@ -270,7 +295,7 @@ int main( int   argc,
 
     /* */
     gint row = 0;
-    GtkWidget *table = gtk_table_new(5, 5, FALSE);
+    GtkWidget *table = gtk_table_new(5, 6, FALSE);
     gtk_table_set_col_spacings(GTK_TABLE(table), 5);
     gtk_table_set_row_spacings(GTK_TABLE(table), 5);
     GtkWidget *tmp = gtk_label_new(_("ID:"));
@@ -335,6 +360,15 @@ int main( int   argc,
     gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, row, row+1);
     g_signal_connect(G_OBJECT(tmp), 
                      "clicked", G_CALLBACK(on_ok), NULL);
+    row++;
+
+    tmp = gtk_label_new(_("Confirm:"));
+    gtk_misc_set_alignment(GTK_MISC(tmp), 1, 0.5);
+    gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, row, row+1);
+    confirm_box = gtk_label_new("");
+    gtk_misc_set_alignment(GTK_MISC(confirm_box), 0, 0.5);
+    gtk_table_attach_defaults(GTK_TABLE(table), confirm_box, 1, 4, row, row+1);
+    row++;
 
     gtk_box_pack_start(GTK_BOX(main_vbox), table, FALSE, TRUE, 0);
 
@@ -398,3 +432,52 @@ void refresh_window(void)
     }
 }
 
+gchar *logfile_name = NULL;
+
+void judoweight_log(gchar *format, ...)
+{
+    guint t;
+    gchar buf[256];
+    va_list args;
+    va_start(args, format);
+    gchar *text = g_strdup_vprintf(format, args);
+    va_end(args);
+
+    t = time(NULL);
+
+    if (logfile_name == NULL) {
+        struct tm *tm = localtime((time_t *)&t);
+        sprintf(buf, "judoweight_%04d%02d%02d_%02d%02d%02d.log",
+                tm->tm_year+1900,
+                tm->tm_mon+1,
+                tm->tm_mday,
+                tm->tm_hour,
+                tm->tm_min,
+                tm->tm_sec);
+        logfile_name = g_build_filename(g_get_user_data_dir(), buf, NULL);
+        g_print("logfile_name=%s\n", logfile_name);
+    }
+
+    FILE *f = fopen(logfile_name, "a");
+    if (f) {
+        struct tm *tm = localtime((time_t *)&t);
+        gsize x;
+
+        gchar *text_ISO_8859_1 =
+            g_convert(text, -1, "ISO-8859-1", "UTF-8", NULL, &x, NULL);
+
+        fprintf(f, "%02d:%02d:%02d %s\n",
+                tm->tm_hour,
+                tm->tm_min,
+                tm->tm_sec,
+                text_ISO_8859_1);
+
+        g_free(text_ISO_8859_1);
+        fclose(f);
+    } else {
+        g_print("Cannot open log file\n");
+        perror("logfile_name");
+    }
+
+    g_free(text);
+}

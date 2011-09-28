@@ -67,5 +67,6 @@ extern void ask_node_ip_address( GtkWidget *w, gpointer data);
 extern void show_my_ip_addresses( GtkWidget *w, gpointer data);
 
 extern void set_display(struct msg_edit_competitor *msg);
+extern void judoweight_log(gchar *format, ...);
 
 #endif
