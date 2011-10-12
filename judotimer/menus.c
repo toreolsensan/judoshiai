@@ -182,7 +182,7 @@ static void change_menu_label(GtkWidget *item, const gchar *new_text)
 #define NUM_NAME_LAYOUTS 11
 
 static GtkWidget *menubar, *match, *preferences, *help, *matchmenu, *preferencesmenu, *helpmenu;
-static GtkWidget *separator1, *separator2, *quit, *viewlog, *showcomp;
+static GtkWidget *separator1, *separator2, *quit, *viewlog, *showcomp_act;
 static GtkWidget *match0, *match1, *match2, *match3, *match4, *match5, *gs;
 static GtkWidget *blue_wins, *white_wins, *red_background, *full_screen, *rules_no_koka;
 static GtkWidget *rules_leave_points, *rules_stop_ippon, *whitefirst, *showcomp, *confirm_match;
@@ -357,7 +357,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     switch_sides  = gtk_check_menu_item_new_with_label("Switch sides");
     separator2 = gtk_separator_menu_item_new();
     viewlog = gtk_menu_item_new_with_label(_("View Log"));
-    showcomp = gtk_menu_item_new_with_label(_("Show Competitors"));
+    showcomp_act = gtk_menu_item_new_with_label(_("Show Competitors"));
     quit = gtk_menu_item_new_with_label(_("Quit"));
 
     gtk_menu_shell_append (GTK_MENU_SHELL (matchmenu), match0);
@@ -376,7 +376,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_menu_shell_append (GTK_MENU_SHELL (matchmenu), switch_sides);
     gtk_menu_shell_append (GTK_MENU_SHELL (matchmenu), separator2);
     gtk_menu_shell_append (GTK_MENU_SHELL (matchmenu), viewlog);
-    gtk_menu_shell_append (GTK_MENU_SHELL (matchmenu), showcomp);
+    gtk_menu_shell_append (GTK_MENU_SHELL (matchmenu), showcomp_act);
     gtk_menu_shell_append (GTK_MENU_SHELL (matchmenu), gtk_separator_menu_item_new());
     gtk_menu_shell_append (GTK_MENU_SHELL (matchmenu), quit);
 
@@ -395,7 +395,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     g_signal_connect(G_OBJECT(switch_sides), "activate", G_CALLBACK(toggle_switch_sides), (gpointer)0);
 
     g_signal_connect(G_OBJECT(viewlog),     "activate", G_CALLBACK(start_log_view), NULL);
-    g_signal_connect(G_OBJECT(showcomp),    "activate", G_CALLBACK(display_competitors), NULL);
+    g_signal_connect(G_OBJECT(showcomp_act),"activate", G_CALLBACK(display_competitors), NULL);
     g_signal_connect(G_OBJECT(quit),        "activate", G_CALLBACK(destroy/*gtk_main_quit*/), NULL);
 
     gtk_widget_add_accelerator(quit, "activate", group, GDK_Q, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
@@ -749,7 +749,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(switch_sides,      _("Switch sides"));
 
     change_menu_label(viewlog,      _("View Log"));
-    change_menu_label(viewlog,      _("Show Competitors"));
+    change_menu_label(showcomp_act, _("Show Competitors"));
     change_menu_label(quit,         _("Quit"));
 
     change_menu_label(red_background, _("Red background"));
