@@ -30,7 +30,7 @@ static gint num_saved_matches;
 static struct match saved_matches[NUM_SAVED_MATCHES];
 
 static struct match *next_match, next_matches[NUM_TATAMIS+1][NEXT_MATCH_NUM];
-static struct match matches_waiting[NEXT_MATCH_NUM];
+static struct match matches_waiting[WAITING_MATCH_NUM];
 static gint num_matches_waiting = 0;
 static gint next_match_num;
 static gint next_match_tatami;
@@ -239,7 +239,7 @@ static int db_callback_matches(void *data, int argc, char **argv, char **azColNa
     } else if ((flags & DB_READ_CATEGORY_MATCHES) && ((m.deleted & DELETED) == 0)) {
         category_matches_p[m.number] = m;
     } else if (flags & DB_MATCH_WAITING) {
-        if (num_matches_waiting < NEXT_MATCH_NUM)
+        if (num_matches_waiting < WAITING_MATCH_NUM)
             matches_waiting[num_matches_waiting++] = m;
     } else if (flags & DB_UPDATE_LAST_MATCH_TIME) {
         if (m.blue > COMPETITOR)
@@ -359,11 +359,11 @@ void db_change_freezed(gint category, gint number,
         /* second match */
         comment = COMMENT_MATCH_2;
     }
-
+#if 0
     if (tatami && comment == COMMENT_MATCH_1 &&
         db_match_ready(category, number) == FALSE)
         return;
-
+#endif
     if (tatami) {
         db_exec_str(NULL, NULL, "UPDATE matches SET \"forcednumber\"=\"forcednumber\"+1 "
                     "WHERE \"forcednumber\">=%d AND \"forcedtatami\"=%d",
@@ -504,6 +504,13 @@ gboolean db_match_exists(gint category, gint number, gint flags)
     db_exec(db_name, buffer, NULL, db_callback_matches);
         
     return (flags & DB_MATCH_ROW) ? match_row_found : match_found;
+}
+
+struct match *db_get_match_data(gint category, gint number)
+{
+    if (db_match_exists(category, number, 0))
+        return &m;
+    return NULL;
 }
 
 gboolean db_matches_exists(void)
@@ -1216,7 +1223,7 @@ struct match *db_matches_waiting(void)
     gchar buffer[1000];
     gint i;
 
-    for (i = 0; i < NEXT_MATCH_NUM; i++)
+    for (i = 0; i < WAITING_MATCH_NUM; i++)
         matches_waiting[i].number = INVALID_MATCH;
 
     num_matches_waiting = 0;

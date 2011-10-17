@@ -156,6 +156,7 @@ enum french_systems {
 #define GENDER_FEMALE 0x100
 
 #define NEXT_MATCH_NUM 10
+#define WAITING_MATCH_NUM 40
 
 enum special_match_types {
     SPECIAL_MATCH_START = 1,
@@ -744,6 +745,7 @@ extern void db_read_category_matches(gint category, struct match *m);
 extern void db_read_matches(void);
 extern gboolean db_match_exists(gint category, gint number, gint flags);
 extern gboolean db_matches_exists(void);
+extern struct match *db_get_match_data(gint category, gint number);
 extern gboolean db_matched_matches_exist(gint category);
 extern gint db_category_match_status(gint category);
 extern gint db_competitor_match_status(gint competitor);

@@ -198,7 +198,7 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
             cairo_restore(c);
         }
 
-        for (k = 0; k < NEXT_MATCH_NUM; k++) {
+        for (k = 0; k < (i ? NEXT_MATCH_NUM : WAITING_MATCH_NUM); k++) {
             struct match *m = &nm[k];
             gchar buf[40];
 			
@@ -218,7 +218,11 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
             else
                 cairo_set_source_rgb(c, 1.0, 1.0, 1.0);
 
-            cairo_rectangle(c, left, y_pos, colwidth, 4*BOX_HEIGHT);
+            if (i)
+                cairo_rectangle(c, left, y_pos, colwidth, 4*BOX_HEIGHT);
+            else
+                cairo_rectangle(c, left, y_pos, colwidth, BOX_HEIGHT);
+
             cairo_fill(c);
             cairo_restore(c);
 			
@@ -231,15 +235,24 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
             //cairo_show_text(c, catdata ? catdata->category : "?");
 
             gchar *txt = get_match_number_text(m->category, m->number);
-            if (txt || m->forcedtatami) {
+            if (txt || m->forcedtatami || i == 0) {
                 cairo_move_to(c, left+5+colwidth/2, y_pos+extents.height);
-                if (txt && m->forcedtatami)
+                if (i == 0) {
+                    if (txt && m->forcedtatami)
+                        snprintf(buf, sizeof(buf), "T%d:%s", m->forcedtatami, txt);
+                    else if (txt)
+                        snprintf(buf, sizeof(buf), "T%d:%s", 
+                                 catdata ? catdata->tatami : 0, txt);
+                    else
+                        snprintf(buf, sizeof(buf), "T%d", 
+                                 catdata ? catdata->tatami : 0);
+                } else if (txt && m->forcedtatami)
                     snprintf(buf, sizeof(buf), "T%d:%s", 
                              catdata ? catdata->tatami : 0,
                              txt);
                 else if (m->forcedtatami)
                     snprintf(buf, sizeof(buf), "T%d", catdata ? catdata->tatami : 0);
-                else
+                else if (txt)
                     snprintf(buf, sizeof(buf), "%s", txt);
                 cairo_show_text(c, buf);
             }
@@ -257,67 +270,69 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
             }
             cairo_restore(c);
 
-            struct judoka *j = get_data(m->blue);
-            if (j) {
-                cairo_save(c);
+            if (i) {
+                struct judoka *j = get_data(m->blue);
+                if (j) {
+                    cairo_save(c);
 
-                if (m->flags & MATCH_FLAG_BLUE_DELAYED) {
-                    if (m->flags & MATCH_FLAG_BLUE_REST)
-                        cairo_set_source_rgb(c, 0.5, 0.5, 1.0);
+                    if (m->flags & MATCH_FLAG_BLUE_DELAYED) {
+                        if (m->flags & MATCH_FLAG_BLUE_REST)
+                            cairo_set_source_rgb(c, 0.5, 0.5, 1.0);
+                        else
+                            cairo_set_source_rgb(c, 1.0, 0.5, 0.5);
+                    } else if (m->forcedtatami)
+                        cairo_set_source_rgb(c, 1.0, 1.0, 0.6);
                     else
-                        cairo_set_source_rgb(c, 1.0, 0.5, 0.5);
-                } else if (m->forcedtatami)
-                    cairo_set_source_rgb(c, 1.0, 1.0, 0.6);
-                else
-                    cairo_set_source_rgb(c, 1.0, 1.0, 1.0);
+                        cairo_set_source_rgb(c, 1.0, 1.0, 1.0);
 
-                cairo_rectangle(c, left, y_pos+BOX_HEIGHT, colwidth/2, 3*BOX_HEIGHT);
-                cairo_fill(c);
+                    cairo_rectangle(c, left, y_pos+BOX_HEIGHT, colwidth/2, 3*BOX_HEIGHT);
+                    cairo_fill(c);
 
-                cairo_set_source_rgb(c, 0, 0, 0);
+                    cairo_set_source_rgb(c, 0, 0, 0);
 
-                cairo_select_font_face(c, MY_FONT, 0, CAIRO_FONT_WEIGHT_BOLD);
-                cairo_move_to(c, left+5, y_pos+2*BOX_HEIGHT+extents.height);
-                cairo_show_text(c, j->last);
-                cairo_restore(c);
+                    cairo_select_font_face(c, MY_FONT, 0, CAIRO_FONT_WEIGHT_BOLD);
+                    cairo_move_to(c, left+5, y_pos+2*BOX_HEIGHT+extents.height);
+                    cairo_show_text(c, j->last);
+                    cairo_restore(c);
 
-                cairo_move_to(c, left+5, y_pos+BOX_HEIGHT+extents.height);
-                cairo_show_text(c, j->first);
+                    cairo_move_to(c, left+5, y_pos+BOX_HEIGHT+extents.height);
+                    cairo_show_text(c, j->first);
 
-                cairo_move_to(c, left+5, y_pos+3*BOX_HEIGHT+extents.height);
-                cairo_show_text(c, get_club_text(j, 0));
-                free_judoka(j);
-            }
-            j = get_data(m->white);
-            if (j) {
-                cairo_save(c);
+                    cairo_move_to(c, left+5, y_pos+3*BOX_HEIGHT+extents.height);
+                    cairo_show_text(c, get_club_text(j, 0));
+                    free_judoka(j);
+                }
+                j = get_data(m->white);
+                if (j) {
+                    cairo_save(c);
 
-                if (m->flags & MATCH_FLAG_WHITE_DELAYED) {
-                    if (m->flags & MATCH_FLAG_WHITE_REST)
-                        cairo_set_source_rgb(c, 0.5, 0.5, 1.0);
+                    if (m->flags & MATCH_FLAG_WHITE_DELAYED) {
+                        if (m->flags & MATCH_FLAG_WHITE_REST)
+                            cairo_set_source_rgb(c, 0.5, 0.5, 1.0);
+                        else
+                            cairo_set_source_rgb(c, 1.0, 0.5, 0.5);
+                    } else if (m->forcedtatami)
+                        cairo_set_source_rgb(c, 1.0, 1.0, 0.6);
                     else
-                        cairo_set_source_rgb(c, 1.0, 0.5, 0.5);
-                } else if (m->forcedtatami)
-                    cairo_set_source_rgb(c, 1.0, 1.0, 0.6);
-                else
-                    cairo_set_source_rgb(c, 1.0, 1.0, 1.0);
+                        cairo_set_source_rgb(c, 1.0, 1.0, 1.0);
 
-                cairo_rectangle(c, left+colwidth/2, y_pos+BOX_HEIGHT, colwidth/2, 3*BOX_HEIGHT);
-                cairo_fill(c);
+                    cairo_rectangle(c, left+colwidth/2, y_pos+BOX_HEIGHT, colwidth/2, 3*BOX_HEIGHT);
+                    cairo_fill(c);
 
-                cairo_set_source_rgb(c, 0, 0, 0);
+                    cairo_set_source_rgb(c, 0, 0, 0);
 
-                cairo_select_font_face(c, MY_FONT, 0, CAIRO_FONT_WEIGHT_BOLD);
-                cairo_move_to(c, left+5+colwidth/2, y_pos+2*BOX_HEIGHT+extents.height);
-                cairo_show_text(c, j->last);
-                cairo_restore(c);
+                    cairo_select_font_face(c, MY_FONT, 0, CAIRO_FONT_WEIGHT_BOLD);
+                    cairo_move_to(c, left+5+colwidth/2, y_pos+2*BOX_HEIGHT+extents.height);
+                    cairo_show_text(c, j->last);
+                    cairo_restore(c);
 
-                cairo_move_to(c, left+5+colwidth/2, y_pos+BOX_HEIGHT+extents.height);
-                cairo_show_text(c, j->first);
+                    cairo_move_to(c, left+5+colwidth/2, y_pos+BOX_HEIGHT+extents.height);
+                    cairo_show_text(c, j->first);
 
-                cairo_move_to(c, left+5+colwidth/2, y_pos+3*BOX_HEIGHT+extents.height);
-                cairo_show_text(c, get_club_text(j, 0));
-                free_judoka(j);
+                    cairo_move_to(c, left+5+colwidth/2, y_pos+3*BOX_HEIGHT+extents.height);
+                    cairo_show_text(c, get_club_text(j, 0));
+                    free_judoka(j);
+                }
             }
 
             point_click_areas[num_rectangles].category = m->category;
@@ -327,7 +342,10 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
             point_click_areas[num_rectangles].x1 = left;
             point_click_areas[num_rectangles].y1 = y_pos;
             point_click_areas[num_rectangles].x2 = right;
-            y_pos += 4*BOX_HEIGHT;
+            if (i)
+                y_pos += 4*BOX_HEIGHT;
+            else
+                y_pos += BOX_HEIGHT;
             point_click_areas[num_rectangles].y2 = y_pos;
             if (num_rectangles < NUM_RECTANGLES-1)
                 num_rectangles++;
@@ -476,6 +494,40 @@ static gint scroll_callback(gpointer userdata)
     return TRUE;
 }
 
+static gboolean query_tooltip (GtkWidget  *widget, gint x, gint y, gboolean keyboard_mode,
+                               GtkTooltip *tooltip, gpointer user_data)
+{
+    gchar buf[128];
+    gint n = 0;
+    gint t = find_box(x, y);
+    if (t < 0)
+        return FALSE;
+
+    if (point_click_areas[t].tatami)
+        return FALSE;
+
+    struct match *m = db_get_match_data(point_click_areas[t].category, point_click_areas[t].number);
+    if (!m)
+        return FALSE;
+
+    buf[0] = 0;
+    struct judoka *j = get_data(m->blue);
+    if (j) {
+        n = snprintf(buf, sizeof(buf), "%s %s, %s", j->last, j->first, get_club_text(j, 0));
+        free_judoka(j);
+    } else
+        n = snprintf(buf, sizeof(buf), "???");
+
+    j = get_data(m->white);
+    if (j) {
+        n += snprintf(buf+n, sizeof(buf)-n, "\n%s %s, %s", j->last, j->first, get_club_text(j, 0));
+        free_judoka(j);
+    } else
+        n += snprintf(buf+n, sizeof(buf)-n, "\n???");
+
+    gtk_tooltip_set_text(tooltip, buf);
+    return TRUE;
+}
 
 void set_match_graph_page(GtkWidget *notebook)
 {
@@ -518,6 +570,9 @@ void set_match_graph_page(GtkWidget *notebook)
                      "motion-notify-event", G_CALLBACK(motion_notify), &w);
 
     g_timeout_add(500, scroll_callback, &w);
+
+    gtk_widget_set_has_tooltip(w.darea, TRUE);
+    g_signal_connect (w.darea, "query-tooltip", G_CALLBACK(query_tooltip), NULL);
 }
 
 static gint find_box(gdouble x, gdouble y)

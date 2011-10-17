@@ -1389,6 +1389,14 @@ void send_next_matches(gint category, gint tatami, struct match *nm)
                 next_matches_info[tatami-1][0].blue = nm[0].blue;
                 next_matches_info[tatami-1][0].white = nm[0].white;
             }
+        } else if (g) {
+            msg.u.next_match.tatami = tatami;
+            gtk_label_set_text(GTK_LABEL(next_match[tatami-1][0]), _("Match:"));
+            snprintf(msg.u.next_match.cat_1, 
+                     sizeof(msg.u.next_match.cat_1),
+                     "%s", g->last);
+            snprintf(msg.u.next_match.blue_1, sizeof(msg.u.next_match.blue_1), "\t\t\t");
+            snprintf(msg.u.next_match.white_1, sizeof(msg.u.next_match.white_1), "\t\t\t");
         }
         free_judoka(g);
         free_judoka(j1);
