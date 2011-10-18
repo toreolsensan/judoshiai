@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-12 10:33+0300\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2011-10-17 13:36+0300\n"
+"PO-Revision-Date: 2011-10-18 11:25+0200\n"
+"Last-Translator: Oleh Koshel <kapitel_bc@ukr.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
@@ -84,16 +84,16 @@ msgid "Automatic Match Delay"
 msgstr "Автоматична затримка"
 
 msgid "Automatic Sheet Update"
-msgstr "Автоматичне оновлення протокола"
+msgstr "Автоматичне оновлення протоколу"
 
 msgid "Automatic Web Page Update"
 msgstr "Автоматичне оновлення веб-сторінки"
 
 msgid "Back"
-msgstr "Назад"
+msgstr "Повернутися"
 
 msgid "Bar Code Search"
-msgstr "Пошук штрих-коду"
+msgstr "Пошук по штрих-коду"
 
 msgid "Bar code search"
 msgstr "Пошук штрих-коду"
@@ -129,7 +129,7 @@ msgid "Cancel the match"
 msgstr "Скасування сутички"
 
 msgid "Cannot handle: Database created with newer JudoShiai version."
-msgstr "Бази даних, створені новішою версією JudoShiai."
+msgstr "База даних створена новішою версією JudoShiai."
 
 msgid "Cannot move"
 msgstr "Неможливо перемістити"
@@ -195,7 +195,7 @@ msgid "Club Name Only"
 msgstr "Тільки команда"
 
 msgid "Club Text Selection"
-msgstr "Команда: оберіть текст"
+msgstr "Команда: оберіть формат"
 
 msgid "Club:"
 msgstr "Команда:"
@@ -367,7 +367,7 @@ msgid "Display layout 5"
 msgstr "Макет 5"
 
 msgid "Do Backup"
-msgstr "Зробити резервну"
+msgstr "Зробити копію"
 
 msgid "Do not change"
 msgstr "Не змінювати"
@@ -460,7 +460,7 @@ msgid "Full screen mode"
 msgstr "Повноекранний режим"
 
 msgid "Girl Text:"
-msgstr "Дівчинка текст:"
+msgstr "Жінки: ..."
 
 msgid "Gold medal match"
 msgstr "Фінальна сутичка"
@@ -502,7 +502,7 @@ msgid "Hantei"
 msgstr "Хантей"
 
 msgid "Hantei: blue wins"
-msgstr "Хантей: синій перемоги"
+msgstr "Хантей: синій переміг"
 
 msgid "Hantei: white wins"
 msgstr "Хантей: білий переміг"
@@ -526,10 +526,10 @@ msgid "IP address:"
 msgstr "IP-адреси:"
 
 msgid "Id"
-msgstr "Id"
+msgstr "Код"
 
 msgid "Id:"
-msgstr "Id:"
+msgstr "Код:"
 
 msgid "Import from file"
 msgstr "Імпорт з файлу"
@@ -670,7 +670,7 @@ msgid "No rights to give results"
 msgstr "Не маєте права змінювати результ!"
 
 msgid "No seeding"
-msgstr "Сіяти..."
+msgstr "Без посіву"
 
 msgid ""
 "No, this the only JudoShiai program. \n"
@@ -701,7 +701,7 @@ msgid "Open Tournament from Net"
 msgstr "Відкритий турнір з мережі"
 
 msgid "Own IP Addresses"
-msgstr "Власний IP-адреси"
+msgstr "Власний IP-адрес"
 
 msgid "Own IP addresses"
 msgstr "Власні IP адреси"
@@ -758,7 +758,7 @@ msgid "Prev. winner:"
 msgstr "Перемога:"
 
 msgid "Previous winner"
-msgstr "Попередній переможець"
+msgstr "Переможець попередньої сутички"
 
 msgid "Print All"
 msgstr "Друкувати все"
@@ -773,34 +773,34 @@ msgid "Print Comment"
 msgstr "Додати коментар"
 
 msgid "Print Competitors With Template"
-msgstr "Друк учасників в шаблон"
+msgstr "Друк учасників з шаблону"
 
 msgid "Print Finished Categories"
-msgstr "- завершених категорій"
+msgstr "Друк завершених категорій"
 
 msgid "Print Headers"
-msgstr "Друк заголовків"
+msgstr "Друкувати заголовки"
 
 msgid "Print IWYKS"
 msgstr "Додати оцінки (IWYS)"
 
 msgid "Print Logo"
-msgstr "Друк логотипу"
+msgstr "Друкувати логотип"
 
 msgid "Print Matches (CSV)"
 msgstr "СКЛАД ПАР (csv)"
 
 msgid "Print Not Started Categories"
-msgstr "- не розпочатих категорій"
+msgstr "Друкувати не розпочаті категорії"
 
 msgid "Print Result"
-msgstr "Додати результати"
+msgstr "Додавати результати"
 
 msgid "Print Schedule to PDF"
 msgstr "Розклад у PDF"
 
 msgid "Print Schedule to Printer"
-msgstr "Розклад на принтер"
+msgstr "Надрукувати розклад"
 
 msgid "Print Selected Sheets (PDF)"
 msgstr "Передати вибрані протоколи в PDF"
@@ -809,13 +809,13 @@ msgid "Print Selected Sheets (Printer)"
 msgstr "Друкувати вибрані протоколи"
 
 msgid "Print Started Categories"
-msgstr "- категорій, що тривають"
+msgstr "Друкувати категорії, що тривають"
 
 msgid "Print Unmatched"
 msgstr "Включити лише наступні пари"
 
 msgid "Print Weight Notes"
-msgstr "Картки зважування"
+msgstr "Друкувати картки зважування"
 
 msgid "Properties"
 msgstr "Властивості"
@@ -833,7 +833,7 @@ msgid "Quit"
 msgstr "Вихід"
 
 msgid "REST TIME"
-msgstr "ВІДПОЧИНОК"
+msgstr "ПЕРЕРВА"
 
 msgid "Red background"
 msgstr "Червоне тло"
@@ -899,7 +899,7 @@ msgid "Results in Estonian"
 msgstr "Results in Estonian"
 
 msgid "Results in Ukrainian"
-msgstr "Results in Ukrainian"
+msgstr "Результати українською"
 
 msgid "Run Advertisements"
 msgstr "Оголошення"
@@ -926,7 +926,7 @@ msgid "SWE Enkelt återkv"
 msgstr "SWE Enkelt återkv"
 
 msgid "SWE Single Repechage"
-msgstr "SWE Одномісний розраду"
+msgstr "SWE Single Repechage"
 
 msgid "Save file"
 msgstr "Зберегти файл"
@@ -962,7 +962,7 @@ msgid "Semifinal B"
 msgstr "Півфінал Б"
 
 msgid "Set clocks"
-msgstr "Встановити годинник"
+msgstr "Встановити таймер"
 
 msgid "Set time"
 msgstr "Установка часу"
@@ -992,13 +992,13 @@ msgid "Show Sheet"
 msgstr "Показати протокол"
 
 msgid "Show Tatami"
-msgstr "Показати Татамі"
+msgstr "Показати татамі"
 
 msgid "Silver medalist"
 msgstr "Срібний призер"
 
 msgid "Single Elimination"
-msgstr "Single Elimination"
+msgstr "Вибування"
 
 msgid "Slave mode"
 msgstr "Режим клієнта"
@@ -1121,7 +1121,7 @@ msgid "White wins"
 msgstr "Переміг Білий"
 
 msgid "White won the voting"
-msgstr "Хантей: Білий виграв"
+msgstr "Хантей: Білий переміг"
 
 msgid "Wrong password"
 msgstr "Неправильний пароль"
@@ -1178,7 +1178,7 @@ msgid "points"
 msgstr "оцінка"
 
 msgid "Switch sides"
-msgstr "Перемкніть сторони"
+msgstr "Змінити порядок"
 
 msgid "Display customized layout"
 msgstr "Макет 6"
@@ -1199,7 +1199,7 @@ msgid "FIN Dbl Repchg One Bronze"
 msgstr "FIN Dbl Repchg One Bronze"
 
 msgid "Modified Double Elimination"
-msgstr "Змінене подвійне усунення"
+msgstr "Змінене подвійне вибування"
 
 msgid "FIN Double Repechage One Bronze"
 msgstr "FIN Double Repechage One Bronze"
@@ -1214,289 +1214,296 @@ msgid "Use Belt Colors"
 msgstr "Колір пояса"
 
 msgid "White first"
-msgstr ""
+msgstr "Білий спочатку:"
 
 msgid "Show"
-msgstr ""
+msgstr "Показати"
 
 msgid "Show Deleted"
-msgstr ""
+msgstr "Показати видалення"
 
 msgid "Add"
-msgstr ""
+msgstr "Додайти"
 
 msgid "OK"
-msgstr ""
+msgstr "Гаразд"
 
 msgid "White first:"
-msgstr ""
+msgstr "Білий спочатку:"
 
 msgid "Scale Serial Interface"
-msgstr ""
+msgstr "Параметри мережі"
 
 msgid "Serial Communication"
-msgstr ""
+msgstr "Зв'язок"
 
 msgid "In Use"
-msgstr ""
+msgstr "Задіяти"
 
 msgid "Device"
-msgstr ""
+msgstr "Порт"
 
 msgid "Baudrate"
-msgstr ""
+msgstr "Швидкість"
 
 msgid "Basic Scripts"
-msgstr ""
+msgstr "Основний сценарій"
 
 msgid "Select Script"
-msgstr ""
+msgstr "Вибрати сценарій"
 
 msgid "No script available"
-msgstr ""
+msgstr "Сценарій недоступний"
 
 msgid "Run Script"
-msgstr ""
+msgstr "Управління сценарієм"
 
 msgid "Repeat Script"
-msgstr ""
+msgstr "Повторити сценарій"
 
 msgid "Double Pool 2"
-msgstr ""
+msgstr "Double pool 2"
 
 msgid "Double pool 2"
-msgstr ""
+msgstr "Double pool 2"
 
 msgid "Write to file"
-msgstr ""
+msgstr "Записати у файл"
 
 msgid "Confirm New Match"
-msgstr ""
+msgstr "Підтвердити нову сутичку"
 
 msgid "Contest area 9"
-msgstr ""
+msgstr "Татамі 9"
 
 msgid "Contest area 10"
-msgstr ""
+msgstr "Татамі 10"
 
 msgid "Move Medal Matches"
-msgstr ""
+msgstr "Порядок призових сутичок"
 
 msgid "Move match "
-msgstr ""
+msgstr "Зміна "
 
 msgid "to tatami and/or"
-msgstr ""
+msgstr "татамі та/або"
 
 msgid " delay"
-msgstr ""
+msgstr "затримка сутички"
 
 msgid "Final"
-msgstr ""
+msgstr "ФІНАЛ"
 
 msgid "Bronze1"
-msgstr ""
+msgstr "За бронзу 1"
 
 msgid "Bronze2"
-msgstr ""
+msgstr "За бронзу 2"
 
 msgid "Pool's last"
-msgstr ""
+msgstr "Останнє коло"
 
 msgid "No move"
-msgstr ""
+msgstr "Без змін"
 
 msgid "Print Accreditation Cards"
-msgstr ""
+msgstr "Друк карток акредитації"
 
 msgid "Name Format"
-msgstr ""
+msgstr "Формат імені"
 
 msgid "Name Surname, Country/Club"
-msgstr ""
+msgstr "Ім'я Прізвище, Країна/Клуб"
 
 msgid "Surname, Name, Country/Club"
-msgstr ""
+msgstr "Прізвище, Ім'я, Країна/Клуб"
 
 msgid "Country/Club  Surname, Name"
-msgstr ""
+msgstr "Країна/Клуб Прізвище, Ім'я"
 
 msgid "Medal Matches..."
-msgstr ""
+msgstr "Призові сутички..."
 
 msgid "Print Selected Accreditation Cards"
-msgstr ""
+msgstr "Друк вибраних карток акредитації"
 
 msgid "Layout:"
-msgstr ""
+msgstr "Компонування:"
 
 msgid "Print To:"
-msgstr ""
+msgstr "Друкувати у:"
 
 msgid "Template"
-msgstr ""
+msgstr "Шаблон"
 
 msgid "Printer"
-msgstr ""
+msgstr "Прінтер"
 
 msgid "PDF"
-msgstr ""
+msgstr "PDF"
 
 msgid "One Card Per Page"
-msgstr ""
+msgstr "Одна картка на аркуш"
 
 msgid "Normal display"
-msgstr ""
+msgstr "Нормальний показ"
 
 msgid "Horizontal display"
-msgstr ""
+msgstr "Горизонтальний показ"
 
 msgid "White has a judogi problem."
-msgstr ""
+msgstr " Білий має проблеми з дзюдогі."
 
 msgid "Blue has a judogi problem."
-msgstr ""
+msgstr "Синій має проблеми з дзюдогі."
 
 msgid "Show Competitors"
-msgstr ""
+msgstr "Показати учасників"
 
 msgid "Show competitors"
-msgstr ""
+msgstr "Показати учасників"
 
 msgid "Name format"
-msgstr ""
+msgstr "Формат імені"
 
 msgid "Country  Surname, Name"
-msgstr ""
+msgstr "Країна Прізвище, Ім'я"
 
 msgid "Club  Surname, Name"
-msgstr ""
+msgstr "Клуб Прізвище, Ім'я"
 
 msgid "Country Surname"
-msgstr ""
+msgstr "Країна Прізвище"
 
 msgid "Club Surname"
-msgstr ""
+msgstr "Клуб Прізвище"
 
 msgid "Surname, Name"
-msgstr ""
+msgstr "Прізвище, Ім'я"
 
 msgid "Surname"
-msgstr ""
+msgstr "Прізвище"
 
 msgid "Change language to Icelandic"
-msgstr ""
+msgstr "Change language to Icelandic"
 
 msgid "WINNER"
-msgstr ""
+msgstr "ПЕРЕМОЖЕЦЬ"
 
 msgid "Cancel"
-msgstr ""
+msgstr "Відмінити"
 
 msgid "Club Seeding:"
-msgstr ""
+msgstr "Посів команди:"
 
 msgid "Gender:"
-msgstr ""
+msgstr "Стать:"
 
 msgid "Male"
-msgstr ""
+msgstr "Чоловік"
 
 msgid "Female"
-msgstr ""
+msgstr "Жінка"
 
 msgid "Control:"
-msgstr ""
+msgstr "Управління:"
 
 msgid "NOK"
-msgstr ""
+msgstr "NOK"
 
 msgid "Seeding"
-msgstr ""
+msgstr "Посів"
 
 msgid "Club Seeding"
-msgstr ""
+msgstr "Посів команди"
 
 msgid "Database Validation"
-msgstr ""
+msgstr "Перевірка бази даних"
 
 msgid "Duplicate seedings:\n"
-msgstr ""
+msgstr "Дублікат посіву:\n"
 
 msgid "seeding"
-msgstr ""
+msgstr "посів"
 
 msgid "defined"
-msgstr ""
+msgstr "визначити"
 
 msgid "times"
-msgstr ""
+msgstr "раз"
 
 msgid "Duplicate club seedings:\n"
-msgstr ""
+msgstr "Дублювати клуб у посівах:\n"
 
 msgid "Missing category definitions:\n"
-msgstr ""
+msgstr "Відсутні визначення категорії:\n"
 
 msgid "is not"
-msgstr ""
+msgstr "немає"
 
 msgid "Typing errors:\n"
-msgstr ""
+msgstr "Помилка друку:\n"
 
 msgid "UTF-8 errors"
-msgstr ""
+msgstr "Помилка UTF-8"
 
 msgid "Extra spaces"
-msgstr ""
+msgstr "Додаткові пробіли"
 
 msgid "Possible duplicate competitors:\n"
-msgstr ""
+msgstr "Можливі дублювання учасників:\n"
 
 msgid "Possible duplicate club names:\n"
-msgstr ""
+msgstr "Можливі повтори імен клубу:\n"
 
 msgid "Suspicious weights:\n"
-msgstr ""
+msgstr "Підозріла вага:\n"
 
 msgid "warnings"
-msgstr ""
+msgstr "попередження"
 
 msgid "Weighted only"
-msgstr ""
+msgstr "Лише зважені"
 
 msgid "With weights"
-msgstr ""
+msgstr "З вагою"
 
 msgid "Validate Database"
-msgstr ""
+msgstr "Перевірка бази даних"
 
 msgid "Results in Icelandic"
-msgstr ""
+msgstr "Results in Icelandic"
 
 msgid "Surname Name, Country/Club"
-msgstr ""
+msgstr "Прізвище Ім'я, Країна/Клуб"
 
 msgid "Country/Club,  Surname Name"
-msgstr ""
+msgstr "Країна/Клуб, Прізвище Ім'я "
 
 msgid "Scale Serial Interface..."
-msgstr ""
+msgstr "Параметри мережі..."
 
 msgid "Type"
-msgstr ""
+msgstr "Type"
 
 msgid "ID:"
-msgstr ""
+msgstr "Код:"
 
 msgid "Name:"
-msgstr ""
+msgstr "Ім'я:"
 
 msgid "About JudoWeight"
-msgstr ""
+msgstr "Про JudoWeight"
 
 msgid "No match soon! Please wait for a while."
-msgstr ""
+msgstr "Перерва в сутичках! Будь ласка, зачекайте деякий час."
 
 msgid "About JudoJudogi"
-msgstr ""
+msgstr "Про JudoJudogi"
+
+msgid "Norwegian System"
+msgstr "Norwegian System"
+
+msgid "Confirm:"
+msgstr "Підтвердити:"
+
