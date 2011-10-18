@@ -186,6 +186,8 @@ extern void parse_name(const gchar *s, gchar *first, gchar *last, gchar *club, g
 extern void display_comp_window(gchar *cat, gchar *comp1, gchar *comp2);
 extern gboolean blue_background(void);
 extern void close_ad_window(void);
+extern void display_ask_window(gchar *name, gchar *cat, gchar winner);
+extern void close_ask_window(void);
 
 
 #endif

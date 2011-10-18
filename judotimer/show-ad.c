@@ -1829,8 +1829,11 @@ void display_ad_window(void)
     GtkWidget *vbox;
     vbox = gtk_vbox_new(FALSE, 1);
     gtk_container_set_border_width (GTK_CONTAINER (vbox), 1);
-    ok_button = gtk_button_new_with_label(_("OK"));
-    gtk_box_pack_start(GTK_BOX(vbox), ok_button, FALSE, TRUE, 5);
+    if (mode != MODE_SLAVE) {
+        ok_button = gtk_button_new_with_label(_("OK"));
+        gtk_box_pack_start(GTK_BOX(vbox), ok_button, FALSE, TRUE, 5);
+    } else
+        ok_button = NULL;
 
     GtkWidget *darea = gtk_drawing_area_new();
     gtk_box_pack_start(GTK_BOX(vbox), darea, TRUE, TRUE, 0);
@@ -1848,8 +1851,9 @@ void display_ad_window(void)
                      "expose-event", G_CALLBACK(expose_ad), NULL);
     g_signal_connect(G_OBJECT(window),
                      "key-press-event", G_CALLBACK(close_display), window);
-    g_signal_connect(G_OBJECT(ok_button), 
-                     "clicked", G_CALLBACK(close_display_2), window);
+    if (mode != MODE_SLAVE) 
+        g_signal_connect(G_OBJECT(ok_button), 
+                         "clicked", G_CALLBACK(close_display_2), window);
 
     if (comp_names_pending) {
         //g_timeout_add(mode == MODE_SLAVE ? 2000 : 100000, refresh_frame, window);

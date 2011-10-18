@@ -1323,6 +1323,11 @@ void update_label(struct msg_update_label *msg)
         return;
     } else if (w == STOP_COMPETITORS) {
         close_ad_window();
+    } else if (w == START_WINNER) {
+        display_ask_window(msg->text, msg->text2, msg->text3[0]);
+        return;
+    } else if (w == STOP_WINNER) {
+        close_ask_window();
     } else if (w >= 0 && w < num_labels) {
         //labels[w].x = msg->x;
         //labels[w].y = msg->y;

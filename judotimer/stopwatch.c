@@ -548,6 +548,8 @@ static gint get_winner(void)
     return winner;
 }
 
+static GtkWindow *ask_window = NULL;
+
 static gboolean delete_event_ask( GtkWidget *widget, GdkEvent  *event, gpointer   data )
 {
     return FALSE;
@@ -555,8 +557,16 @@ static gboolean delete_event_ask( GtkWidget *widget, GdkEvent  *event, gpointer 
 
 static void destroy_ask( GtkWidget *widget, gpointer   data )
 {
+    if (mode == MODE_MASTER) {
+        struct message msg;
+        memset(&msg, 0, sizeof(msg));
+        msg.type = MSG_UPDATE_LABEL;
+        msg.u.update_label.label_num = STOP_WINNER;
+        send_label_msg(&msg);
+    }
     ask_area = NULL;
     asking = FALSE;
+    ask_window = NULL;
 }
 
 static gboolean close_ask_ok(GtkWidget *widget, gpointer userdata)
@@ -653,7 +663,7 @@ static void create_ask_window(void)
     gint height;
     gtk_window_get_size(GTK_WINDOW(main_window), &width, &height);
 
-    GtkWindow *window = GTK_WINDOW(gtk_window_new(GTK_WINDOW_TOPLEVEL));
+    GtkWindow *window = ask_window = GTK_WINDOW(gtk_window_new(GTK_WINDOW_TOPLEVEL));
     gtk_window_set_title(GTK_WINDOW(window), _("Start New Match?"));
     if (fullscreen && show_competitor_names && get_winner())
         gtk_window_fullscreen(GTK_WINDOW(window));
@@ -665,15 +675,17 @@ static void create_ask_window(void)
     vbox = gtk_vbox_new(FALSE, 1);
     gtk_container_set_border_width (GTK_CONTAINER (vbox), 1);
 
-    hbox = gtk_hbox_new(FALSE, 1);
-    lbl = gtk_label_new(_("Start New Match?"));
-    ok = gtk_button_new_with_label(_("OK"));
-    nok = gtk_button_new_with_label(_("Cancel"));
-    gtk_box_pack_start(GTK_BOX(hbox), lbl, FALSE, TRUE, 5);
-    gtk_box_pack_start(GTK_BOX(hbox), ok, FALSE, TRUE, 5);
-    gtk_box_pack_start(GTK_BOX(hbox), nok, FALSE, TRUE, 5);
+    if (mode != MODE_SLAVE) {
+        hbox = gtk_hbox_new(FALSE, 1);
+        lbl = gtk_label_new(_("Start New Match?"));
+        ok = gtk_button_new_with_label(_("OK"));
+        nok = gtk_button_new_with_label(_("Cancel"));
+        gtk_box_pack_start(GTK_BOX(hbox), lbl, FALSE, TRUE, 5);
+        gtk_box_pack_start(GTK_BOX(hbox), ok, FALSE, TRUE, 5);
+        gtk_box_pack_start(GTK_BOX(hbox), nok, FALSE, TRUE, 5);
 
-    gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 0);
+    }
 
     if (show_competitor_names && get_winner()) {
         ask_area = gtk_drawing_area_new();
@@ -690,10 +702,42 @@ static void create_ask_window(void)
     g_signal_connect (G_OBJECT (window), "destroy",
                       G_CALLBACK (destroy_ask), NULL);
 
-    g_signal_connect(G_OBJECT(ok), 
-                     "clicked", G_CALLBACK(close_ask_ok), window);
-    g_signal_connect(G_OBJECT(nok), 
-                     "clicked", G_CALLBACK(close_ask_nok), window);
+    if (mode != MODE_SLAVE) {
+        g_signal_connect(G_OBJECT(ok), 
+                         "clicked", G_CALLBACK(close_ask_ok), window);
+        g_signal_connect(G_OBJECT(nok), 
+                         "clicked", G_CALLBACK(close_ask_nok), window);
+    }
+}
+
+void close_ask_window(void)
+{
+    close_ask_ok(NULL, ask_window);
+}
+
+void display_ask_window(gchar *name, gchar *cat, gchar winner)
+{
+    gchar first[32], last[32], club[32], country[32];
+
+    parse_name(name, first, last, club, country);
+
+    memset(st[0].bluepts, 0, sizeof(st[0].bluepts));
+    memset(st[0].whitepts, 0, sizeof(st[0].whitepts));
+
+    if (winner == BLUE) {
+        st[0].bluepts[0] = 1;
+        st[0].whitepts[0] = 0;
+        strncpy(saved_last1, last, sizeof(saved_last1)-1);
+        strncpy(saved_first1, first, sizeof(saved_first1)-1);
+    } else if (winner == BLUE) {
+        st[0].bluepts[0] = 0;
+        st[0].whitepts[0] = 1;
+        strncpy(saved_last2, last, sizeof(saved_last2)-1);
+        strncpy(saved_first2, first, sizeof(saved_first2)-1);
+    }
+
+    strncpy(saved_cat, cat, sizeof(saved_cat)-1);
+    create_ask_window();
 }
 
 void reset(guint key, struct msg_next_match *msg)
@@ -759,6 +803,23 @@ void reset(guint key, struct msg_next_match *msg)
         key_pending = key;
         asking = TRUE;
         create_ask_window();
+
+        if (mode == MODE_MASTER) {
+            struct message msg;
+            gint winner = get_winner();
+            memset(&msg, 0, sizeof(msg));
+            msg.type = MSG_UPDATE_LABEL;
+            msg.u.update_label.label_num = START_WINNER;
+            snprintf(msg.u.update_label.text, sizeof(msg.u.update_label.text), 
+                     "%s\t%s\t\t", 
+                     winner == BLUE ? saved_last1 : saved_last2,
+                     winner == BLUE ? saved_first1 : saved_first2);
+            strncpy(msg.u.update_label.text2, saved_cat,
+                    sizeof(msg.u.update_label.text2)-1);
+            msg.u.update_label.text3[0] = winner;
+            send_label_msg(&msg);
+        }
+
         return;
 #if 0
         dialog = gtk_dialog_new_with_buttons (_("Start New Match?"),
