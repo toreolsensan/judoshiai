@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-12 10:33+0300\n"
+"POT-Creation-Date: 2011-10-17 13:36+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1167,13 +1167,13 @@ msgid "ESP Double Repechage from Beginning"
 msgstr "Repesca doble desde 1ª ronda"
 
 msgid "ESP Double Repechage"
-msgstr "Repesca doble"
+msgstr "ESP Repesca doble"
 
 msgid "IJF Double Repechage"
-msgstr "Repesca doble"
+msgstr "IJF Repesca doble"
 
 msgid "ESP Simple Repechage"
-msgstr "Repesca simple"
+msgstr "ESP Repesca simple"
 
 msgid "Quadruple pool"
 msgstr "4 Ligas cruzadas"
@@ -1224,325 +1224,331 @@ msgid "Stop clock on Ippon"
 msgstr "Parar reloj en Ippon"
 
 msgid "Switch sides"
-msgstr ""
+msgstr "Cambiar posicion"
 
 msgid "Display customized layout"
-msgstr ""
+msgstr "Pantalla personalizada"
 
 msgid "Change language to Estonian"
-msgstr ""
+msgstr "Cambiar el idioma a Estonio"
 
 msgid "Change language to Ukrainan"
-msgstr ""
+msgstr "Cambiar el idioma a Ucraniano"
 
 msgid "No competitor found!"
-msgstr ""
+msgstr "¡Competidor no encontrado!"
 
 msgid "Modified Dbl Elim"
-msgstr ""
+msgstr "Modificado Dbl Elim"
 
 msgid "FIN Dbl Repchg One Bronze"
-msgstr ""
+msgstr "FIN Repesca doble Un Bronce"
 
 msgid "Modified Double Elimination"
-msgstr ""
+msgstr "Modificado Doble Eliminatoria"
 
 msgid "FIN Double Repechage One Bronze"
-msgstr ""
+msgstr "FIN Repesca doble Un Bronce"
 
 msgid "Silver medal match"
-msgstr ""
+msgstr "Combate medalla de plata"
 
 msgid "Pool Style 2"
-msgstr ""
+msgstr "Estilo de Liga 2"
 
 msgid "Use Belt Colors"
-msgstr ""
+msgstr "Usar Color Cinturón"
 
 msgid "White first"
-msgstr ""
+msgstr "Blanco primero"
 
 msgid "Show"
-msgstr ""
+msgstr "Mostrar"
 
 msgid "Show Deleted"
-msgstr ""
+msgstr "Mostrar Borrados"
 
 msgid "Add"
-msgstr ""
+msgstr "Añadir"
 
 msgid "OK"
-msgstr ""
+msgstr "OK"
 
 msgid "White first:"
-msgstr ""
+msgstr "Blanco primero:"
 
 msgid "Scale Serial Interface"
-msgstr ""
+msgstr "Adaptador Interface Serie"
 
 msgid "Serial Communication"
-msgstr ""
+msgstr "Comunicación Puerto Serie"
 
 msgid "In Use"
-msgstr ""
+msgstr "En Uso"
 
 msgid "Device"
-msgstr ""
+msgstr "Dispositivo"
 
 msgid "Baudrate"
-msgstr ""
+msgstr "Baudrate"
 
 msgid "Basic Scripts"
-msgstr ""
+msgstr "Scripts Básicos"
 
 msgid "Select Script"
-msgstr ""
+msgstr "Seleccionar Script"
 
 msgid "No script available"
-msgstr ""
+msgstr "Script no disponible"
 
 msgid "Run Script"
-msgstr ""
+msgstr "Ejecutar Script"
 
 msgid "Repeat Script"
-msgstr ""
+msgstr "Repetir Script"
 
 msgid "Double Pool 2"
-msgstr ""
+msgstr "Liga Doble cruzada 2"
 
 msgid "Double pool 2"
-msgstr ""
+msgstr "Liga doble cruzada 2"
 
 msgid "Write to file"
-msgstr ""
+msgstr "Escribir a fichero"
 
 msgid "Confirm New Match"
-msgstr ""
+msgstr "Confirmar Combate Nuevo"
 
 msgid "Contest area 9"
-msgstr ""
+msgstr "Tatami 9"
 
 msgid "Contest area 10"
-msgstr ""
+msgstr "Tatami 10"
 
 msgid "Move Medal Matches"
-msgstr ""
+msgstr "Mover Combates de Medallas"
 
 msgid "Move match "
-msgstr ""
+msgstr "Mover combate "
 
 msgid "to tatami and/or"
-msgstr ""
+msgstr "al tatami y/o"
 
 msgid " delay"
-msgstr ""
+msgstr " retrasar"
 
 msgid "Final"
-msgstr ""
+msgstr "Final"
 
 msgid "Bronze1"
-msgstr ""
+msgstr "Bronce1"
 
 msgid "Bronze2"
-msgstr ""
+msgstr "Bronce2"
 
 msgid "Pool's last"
 msgstr ""
 
 msgid "No move"
-msgstr ""
+msgstr "No mover"
 
 msgid "Print Accreditation Cards"
-msgstr ""
+msgstr "Imprimir Tarjetas Acreditación"
 
 msgid "Name Format"
-msgstr ""
+msgstr "Formato de Nombre"
 
 msgid "Name Surname, Country/Club"
-msgstr ""
+msgstr "Nombre Apellidos, País/Club"
 
 msgid "Surname, Name, Country/Club"
-msgstr ""
+msgstr "Apellidos, Nombre, País/Club"
 
 msgid "Country/Club  Surname, Name"
-msgstr ""
+msgstr "País/Club Apellidos, Nombre"
 
 msgid "Medal Matches..."
-msgstr ""
+msgstr "Combates de Medallas..."
 
 msgid "Print Selected Accreditation Cards"
-msgstr ""
+msgstr "Imprimir Tarjetas Acreditación Seleccionadas"
 
 msgid "Layout:"
-msgstr ""
+msgstr "Disposición"
 
 msgid "Print To:"
-msgstr ""
+msgstr "Imprimir A:"
 
 msgid "Template"
-msgstr ""
+msgstr "Plantilla"
 
 msgid "Printer"
-msgstr ""
+msgstr "Impresora"
 
 msgid "PDF"
-msgstr ""
+msgstr "PDF"
 
 msgid "One Card Per Page"
-msgstr ""
+msgstr "Una Tarjeta Por Página"
 
 msgid "Normal display"
-msgstr ""
+msgstr "Pantalla Normal"
 
 msgid "Horizontal display"
-msgstr ""
+msgstr "Pantalla Horizontal"
 
 msgid "White has a judogi problem."
-msgstr ""
+msgstr "Blanco tiene un problema con el judogi"
 
 msgid "Blue has a judogi problem."
-msgstr ""
+msgstr "Azul tiene un problema con el judogi"
 
 msgid "Show Competitors"
-msgstr ""
+msgstr "Mostrar Competidores"
 
 msgid "Show competitors"
-msgstr ""
+msgstr "Mostrar competidores"
 
 msgid "Name format"
-msgstr ""
+msgstr "Formato de Nombre"
 
 msgid "Country  Surname, Name"
-msgstr ""
+msgstr "País  Apellidos, Nombre"
 
 msgid "Club  Surname, Name"
-msgstr ""
+msgstr "Club Apellidos, Nombre"
 
 msgid "Country Surname"
-msgstr ""
+msgstr "País Apellidos"
 
 msgid "Club Surname"
-msgstr ""
+msgstr "Club Apellidos"
 
 msgid "Surname, Name"
-msgstr ""
+msgstr "Apellidos Nombre"
 
 msgid "Surname"
-msgstr ""
+msgstr "Apellidos"
 
 msgid "Change language to Icelandic"
-msgstr ""
+msgstr "Cambiar el idioma a Islandes"
 
 msgid "WINNER"
-msgstr ""
+msgstr "GANADOR"
 
 msgid "Cancel"
-msgstr ""
+msgstr "Cancelar"
 
 msgid "Club Seeding:"
-msgstr ""
+msgstr "Club Cabeza de Serie:"
 
 msgid "Gender:"
-msgstr ""
+msgstr "Género"
 
 msgid "Male"
-msgstr ""
+msgstr "Masculino"
 
 msgid "Female"
-msgstr ""
+msgstr "Femenino"
 
 msgid "Control:"
-msgstr ""
+msgstr "Contro:"
 
 msgid "NOK"
-msgstr ""
+msgstr "NOK"
 
 msgid "Seeding"
-msgstr ""
+msgstr "Cabeza de Serie"
 
 msgid "Club Seeding"
-msgstr ""
+msgstr "Club Cabeza de Serie"
 
 msgid "Database Validation"
-msgstr ""
+msgstr "Validación de Base de Datos"
 
 msgid "Duplicate seedings:\n"
-msgstr ""
+msgstr "Duplicados cabezas de serie:\n"
 
 msgid "seeding"
-msgstr ""
+msgstr "cabeza de serire"
 
 msgid "defined"
-msgstr ""
+msgstr "definido"
 
 msgid "times"
-msgstr ""
+msgstr "veces"
 
 msgid "Duplicate club seedings:\n"
-msgstr ""
+msgstr "Duplicados clubs cabezas de serie:\n"
 
 msgid "Missing category definitions:\n"
-msgstr ""
+msgstr "Perdidas definiciones de categorías:\n"
 
 msgid "is not"
-msgstr ""
+msgstr "no está"
 
 msgid "Typing errors:\n"
-msgstr ""
+msgstr "Errores escribiendo:\n"
 
 msgid "UTF-8 errors"
-msgstr ""
+msgstr "Errores UTF-8"
 
 msgid "Extra spaces"
-msgstr ""
+msgstr "Espacios extra"
 
 msgid "Possible duplicate competitors:\n"
-msgstr ""
+msgstr "Posible duplicación de competidores:\n"
 
 msgid "Possible duplicate club names:\n"
-msgstr ""
+msgstr "Posible duplicación de nombres de club:\n"
 
 msgid "Suspicious weights:\n"
-msgstr ""
+msgstr "Pesos dudosos:\n"
 
 msgid "warnings"
-msgstr ""
+msgstr "alertas"
 
 msgid "Weighted only"
-msgstr ""
+msgstr "Sólo los pesados"
 
 msgid "With weights"
-msgstr ""
+msgstr "Con pesos"
 
 msgid "Validate Database"
-msgstr ""
+msgstr "Validar Base de Datos"
 
 msgid "Results in Icelandic"
-msgstr ""
+msgstr "Resultados en Islandes"
 
 msgid "Surname Name, Country/Club"
-msgstr ""
+msgstr "Apellidos Nombre, País/Club"
 
 msgid "Country/Club,  Surname Name"
-msgstr ""
+msgstr "País/Club,  Apellidos Nombre"
 
 msgid "Scale Serial Interface..."
 msgstr ""
 
 msgid "Type"
-msgstr ""
+msgstr "Tipo"
 
 msgid "ID:"
-msgstr ""
+msgstr "ID:"
 
 msgid "Name:"
-msgstr ""
+msgstr "Nombre:"
 
 msgid "About JudoWeight"
-msgstr ""
+msgstr "Acerca de JudoWeight"
 
 msgid "No match soon! Please wait for a while."
-msgstr ""
+msgstr "¡No hay combates proximamente! Por favor espere un rato"
 
 msgid "About JudoJudogi"
-msgstr ""
+msgstr "Acerca de JudoJudogi"
+
+msgid "Norwegian System"
+msgstr "Sistema Noruego"
+
+msgid "Confirm:"
+msgstr "Confirmar:"
