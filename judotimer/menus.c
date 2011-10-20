@@ -570,6 +570,8 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     g_signal_connect(G_OBJECT(advertise),       "activate", G_CALLBACK(toggle_advertise),     (gpointer)0);
     g_signal_connect(G_OBJECT(sound),           "activate", G_CALLBACK(select_sound),         (gpointer)0);
 
+    gtk_widget_add_accelerator(full_screen,     "activate", group, GDK_F, 0, GTK_ACCEL_VISIBLE);
+
     /* Create the Help menu content. */
     manual = gtk_menu_item_new_with_label("Manual");
     quick_guide = gtk_menu_item_new_with_label("Quick guide");
