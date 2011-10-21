@@ -114,9 +114,10 @@ gboolean         golden_score = FALSE;
 gboolean         rest_time = FALSE;
 static gint      rest_flags = 0;
 
-static void log_scores(gchar *txt)
+static void log_scores(gchar *txt, gint who)
 {
-    judotimer_log("%s: IWYKS = %d%d%d%d%d - %d%d%d%d%d", txt,
+    judotimer_log("%s%s: IWYKS = %d%d%d%d%d - %d%d%d%d%d", txt,
+                  ((who == BLUE && white_first) || (who == WHITE && white_first == FALSE)) ? "white" : "blue",
                   st[0].bluepts[0]&2 ? 1 : 0,
                   st[0].bluepts[0]&1,
                   st[0].bluepts[1],
@@ -1100,9 +1101,9 @@ gint approve_osaekomi_score(gint who)
     }
 
     if (who == BLUE)
-        log_scores("Osaekomi score to blue");
+        log_scores("Osaekomi score to ", BLUE);
     else
-        log_scores("Osaekomi score to white");
+        log_scores("Osaekomi score to ", WHITE);
 
     check_ippon();
 
@@ -1283,7 +1284,7 @@ void clock_key(guint key, guint event_state)
         incdecpts(&st[0].whitepts[0], shift);
         if (rules_no_koka_dsp) {
             incdecpts(&st[0].whitepts[0], shift);
-            log_scores("Ippon to white");
+            log_scores("Ippon to ", WHITE);
         }
 #if 0 //XXXXXXXXXX
         if (st[0].whitepts[0] > 2)
@@ -1294,7 +1295,7 @@ void clock_key(guint key, guint event_state)
     case GDK_F6:
         if (rules_no_koka_dsp) {
             incdecpts(&st[0].whitepts[0], shift);
-            log_scores("Waza-ari to white");
+            log_scores("Waza-ari to ", WHITE);
         } else
             incdecpts(&st[0].whitepts[1], shift);
         check_ippon();
@@ -1302,7 +1303,7 @@ void clock_key(guint key, guint event_state)
     case GDK_F7:
         if (rules_no_koka_dsp) {
             incdecpts(&st[0].whitepts[1], shift);
-            log_scores("Yuko to white");
+            log_scores("Yuko to ", WHITE);
         } else
             incdecpts(&st[0].whitepts[2], shift);
         break;
@@ -1318,7 +1319,7 @@ void clock_key(guint key, guint event_state)
             case 4: incdecpts(&st[0].bluepts[0], DEC);
             }
             incdecpts(&st[0].whitepts[3], DEC);
-            log_scores("Cancel waza-ari to white");
+            log_scores("Cancel shido to ", WHITE);
         } else {
             incdecpts(&st[0].whitepts[3], INC);
             switch (st[0].whitepts[3]) {
@@ -1329,14 +1330,14 @@ void clock_key(guint key, guint event_state)
             case 3: incdecpts(&st[0].bluepts[1], DEC); incdecpts(&st[0].bluepts[0], INC); break;
             case 4: incdecpts(&st[0].bluepts[0], INC);
             }
-            log_scores("Shido to white");
+            log_scores("Shido to ", WHITE);
         }
         break;
     case GDK_F1:
         incdecpts(&st[0].bluepts[0], shift);
         if (rules_no_koka_dsp) {
             incdecpts(&st[0].bluepts[0], shift);
-            log_scores("Ippon to blue");
+            log_scores("Ippon to ", BLUE);
         }
 #if 0 //XXXXXXXX
         if (st[0].bluepts[0] > 2)
@@ -1347,7 +1348,7 @@ void clock_key(guint key, guint event_state)
     case GDK_F2:
         if (rules_no_koka_dsp) {
             incdecpts(&st[0].bluepts[0], shift);
-            log_scores("Waza-ari to blue");
+            log_scores("Waza-ari to ", BLUE);
         } else
             incdecpts(&st[0].bluepts[1], shift);
         check_ippon();
@@ -1355,7 +1356,7 @@ void clock_key(guint key, guint event_state)
     case GDK_F3:
         if (rules_no_koka_dsp) {
             incdecpts(&st[0].bluepts[1], shift);
-            log_scores("Yuko to blue");
+            log_scores("Yuko to ", BLUE);
         } else
             incdecpts(&st[0].bluepts[2], shift);
         break;
@@ -1371,7 +1372,7 @@ void clock_key(guint key, guint event_state)
             case 4: incdecpts(&st[0].whitepts[0], DEC);
             }
             incdecpts(&st[0].bluepts[3], DEC);
-            log_scores("Cancel shido to blue");
+            log_scores("Cancel shido to ", BLUE);
         } else {
             incdecpts(&st[0].bluepts[3], INC);
             switch (st[0].bluepts[3]) {
@@ -1382,7 +1383,7 @@ void clock_key(guint key, guint event_state)
             case 3: incdecpts(&st[0].whitepts[1], DEC); incdecpts(&st[0].whitepts[0], INC); break;
             case 4: incdecpts(&st[0].whitepts[0], INC);
             }
-            log_scores("Shido to blue");
+            log_scores("Shido to ", BLUE);
         }
         break;
     default:
