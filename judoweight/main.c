@@ -231,6 +231,8 @@ int main( int   argc,
     GThread   *gth = NULL;         /* thread id */
     gboolean   run_flag = TRUE;   /* used as exit flag for threads */
 
+    putenv("UBUNTU_MENUPROXY=");
+
     font = pango_font_description_from_string("Sans bold 12");
 
 #ifdef WIN32

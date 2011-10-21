@@ -588,6 +588,8 @@ int main( int   argc,
     GThread   *gth = NULL;         /* thread id */
     gboolean   run_flag = TRUE;   /* used as exit flag for threads */
 
+    putenv("UBUNTU_MENUPROXY=");
+
     init_trees();
 
     gdk_color_parse("#FFFF00", &color_yellow);

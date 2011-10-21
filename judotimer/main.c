@@ -1395,6 +1395,8 @@ int main( int   argc,
     gboolean   run_flag = TRUE;   /* used as exit flag for threads */
     gint i;
 
+    putenv("UBUNTU_MENUPROXY=");
+
     judotimer_log("JudoTimer starts");
 
     font = pango_font_description_from_string("Sans bold 12");

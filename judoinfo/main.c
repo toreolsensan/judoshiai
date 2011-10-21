@@ -538,6 +538,8 @@ int main( int   argc,
     GThread   *gth = NULL;         /* thread id */
     gboolean   run_flag = TRUE;   /* used as exit flag for threads */
 
+    putenv("UBUNTU_MENUPROXY=");
+
     init_trees();
 
     font = pango_font_description_from_string("Sans bold 12");

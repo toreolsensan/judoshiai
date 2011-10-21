@@ -255,6 +255,8 @@ int main( int   argc,
     GThread   *gth = NULL;         /* thread id */
     gboolean   run_flag = TRUE;   /* used as exit flag for threads */
 
+    putenv("UBUNTU_MENUPROXY=");
+
 #ifndef WIN32
     struct rlimit rlp;
     getrlimit(RLIMIT_CORE, &rlp);
