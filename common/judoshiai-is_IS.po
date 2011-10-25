@@ -769,7 +769,7 @@ msgid "Highest age:"
 msgstr "Hæsti aldur:"
 
 msgid "Age text:"
-msgstr "Aldurs fl."
+msgstr "Aldurs fl.:"
 
 msgid "Match time:"
 msgstr "Keppnis tími:"
@@ -1346,10 +1346,10 @@ msgid "Cancel"
 msgstr "Ógilda"
 
 msgid "Club Seeding:"
-msgstr "Félagi forraðað"
+msgstr "Félagi forraðað:"
 
 msgid "Gender:"
-msgstr "Kyn"
+msgstr "Kyn:"
 
 msgid "Male"
 msgstr "Karl"
@@ -1358,7 +1358,7 @@ msgid "Female"
 msgstr "Kona"
 
 msgid "Control:"
-msgstr "Staðfesta"
+msgstr "Staðfesta:"
 
 msgid "NOK"
 msgstr "Ekki í lagi"
@@ -1475,10 +1475,10 @@ msgid "Print Selected Accreditation Cards"
 msgstr "Prenta valin skráningarspjöld"
 
 msgid "Layout:"
-msgstr "Útlit"
+msgstr "Útlit:"
 
 msgid "Print To:"
-msgstr "Prenta á"
+msgstr "Prenta á:"
 
 msgid "Template"
 msgstr "Form"
@@ -1502,10 +1502,10 @@ msgid "Type"
 msgstr "Innsláttur"
 
 msgid "ID:"
-msgstr "Kt."
+msgstr "Kt.:"
 
 msgid "Name:"
-msgstr "Nafn"
+msgstr "Nafn:"
 
 msgid "About JudoWeight"
 msgstr "Útgáfa"
@@ -1520,4 +1520,4 @@ msgid "Norwegian System"
 msgstr "Norska kerfið"
 
 msgid "Confirm:"
-msgstr "Staðfesta"
+msgstr "Staðfesta:"
