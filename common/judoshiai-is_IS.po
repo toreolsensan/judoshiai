@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-12 10:33+0300\n"
+"POT-Creation-Date: 2011-10-17 13:36+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -12,28 +12,28 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "Blue won the voting"
-msgstr "Blár vinnur"
+msgstr "Blár vann"
 
 msgid "White won the voting"
-msgstr "Hvítur vinnur"
+msgstr "Hvítur vann"
 
 msgid "Match:"
-msgstr "Viðureign:"
+msgstr "Keppni:"
 
 msgid "Contest:"
-msgstr "Keppni:"
+msgstr "Keppnin:"
 
 msgid "Next:"
 msgstr "Næst:"
 
 msgid "Match"
-msgstr "Viðureign"
-
-msgid "Contest"
 msgstr "Keppni"
 
+msgid "Contest"
+msgstr "Keppnin"
+
 msgid "Preferences"
-msgstr "Forgangur"
+msgstr "Stillingar"
 
 msgid "Help"
 msgstr "Hjálp"
@@ -54,10 +54,10 @@ msgid "Own IP addresses"
 msgstr "Eigið IP vistfang"
 
 msgid "Manual"
-msgstr "Handstýrt"
+msgstr "Handbók"
 
 msgid "About"
-msgstr "Um"
+msgstr "Útgáfa"
 
 msgid "Address of the communication node"
 msgstr "Vistfang samskiptabúnaðar"
@@ -194,7 +194,7 @@ msgid "Points going to white"
 msgstr "Stigin fara á hvítann"
 
 msgid "About Judotimer"
-msgstr "Um Judotimer"
+msgstr "Úgáfa"
 
 msgid "Full screen mode"
 msgstr "Sýna fullann skjá"
@@ -242,7 +242,7 @@ msgid "Display layout 5"
 msgstr "Skjá útlit 5"
 
 msgid "Quick guide"
-msgstr "Snöggar leiðbeiningar"
+msgstr "Leiðbeiningar"
 
 msgid "Advertise"
 msgstr "Auglýsa"
@@ -275,7 +275,7 @@ msgid "Open Tournament from Net"
 msgstr "Opna mót í gegnum netið"
 
 msgid "Properties"
-msgstr "Eiginleikar"
+msgstr "Nánar"
 
 msgid "New Competitor"
 msgstr "Nýr keppandi"
@@ -323,10 +323,10 @@ msgid "Best of Three"
 msgstr "Best af þremur"
 
 msgid "Place To"
-msgstr "Flytjist á "
+msgstr "Dreyfist á "
 
 msgid "Tatamis"
-msgstr "keppnisvellir"
+msgstr "Keppnissvæði"
 
 msgid "Draw All Categories"
 msgstr "Draga alla flokka"
@@ -341,7 +341,7 @@ msgid "Print Schedule to PDF"
 msgstr "Prenta dagskrá á PDF"
 
 msgid "Control Tatami"
-msgstr "Stjórna keppnisvöllum"
+msgstr "Stjórn keppnisvalla"
 
 msgid "Communication Node"
 msgstr "Samskiptabúnaður"
@@ -380,7 +380,7 @@ msgid "Weights Visible in Pool Sheets"
 msgstr "Þyngdir sjáanlegar á Riðla forminu"
 
 msgid "Sheet Font"
-msgstr "Leturgerð á blöðum"
+msgstr "Leturgerð"
 
 msgid "Password"
 msgstr "Lykilorð"
@@ -407,7 +407,7 @@ msgid "has been copied with competitors and matches"
 msgstr "hefur verið afritaður með keppendum og viðureignum"
 
 msgid "Last Name"
-msgstr "Föðurnafn"
+msgstr "Eftirnafn"
 
 msgid "First Name"
 msgstr "Nafn"
@@ -455,7 +455,7 @@ msgid "Category drawn"
 msgstr "Flokkur dreginn"
 
 msgid "All the categories located to the tatamis"
-msgstr "Allir flokkarnir hafa verið staðsettir á keppnisvellina"
+msgstr "Allir flokkarnir staðsettir á keppnisvöllunum"
 
 msgid "Unlocated"
 msgstr "Óstaðsettur"
@@ -631,10 +631,10 @@ msgid "Next contest"
 msgstr "Næsta keppni"
 
 msgid "Preparing"
-msgstr "Undirbýr"
+msgstr "Tilbúin"
 
 msgid "Preparing:"
-msgstr "Undirbýr:"
+msgstr "Tilbúin:"
 
 msgid "Delay the match"
 msgstr "Seinka viðureign"
@@ -676,7 +676,7 @@ msgid "Prev. winner:"
 msgstr "Síðasti sigurvegari:"
 
 msgid "Delayed"
-msgstr "Seinkað"
+msgstr "Í bið"
 
 msgid "Remove delay"
 msgstr "Fjarlægja seinkun"
@@ -766,7 +766,7 @@ msgid "----- Women -----"
 msgstr "----- Konur -----"
 
 msgid "Highest age:"
-msgstr "Mesti aldur:"
+msgstr "Hæsti aldur:"
 
 msgid "Age text:"
 msgstr "Aldurs fl."
@@ -829,7 +829,7 @@ msgid "Semifinal B"
 msgstr "Undanrásir B"
 
 msgid "Show Tatami"
-msgstr "Sýna velli"
+msgstr "Sýna keppnissvæði"
 
 msgid "Start New Match?"
 msgstr "Byrja nýja viðureign?"
@@ -916,7 +916,7 @@ msgid "Tournament Backup"
 msgstr "Móta afrit"
 
 msgid "Small display"
-msgstr "Lítil skjámynd"
+msgstr "Skjámynd 2"
 
 msgid "Draw Selected"
 msgstr "Draga valda"
@@ -982,10 +982,10 @@ msgid "Cannot move"
 msgstr "Get ekk flutt"
 
 msgid "Mirror Tatami Order"
-msgstr "Öfug keppnisröð"
+msgstr "Öfug keppnisvallaröð"
 
 msgid "Mirror tatami order"
-msgstr "Öfug vallar röð"
+msgstr "Öfug keppnisvallaröð"
 
 msgid "Country"
 msgstr "Land"
@@ -1091,7 +1091,7 @@ msgid "All Files"
 msgstr "Allar skrár"
 
 msgid "Best of 3"
-msgstr "Best af þremur"
+msgstr "Best af 3"
 
 msgid "One match"
 msgstr "Ein viðureign"
@@ -1160,7 +1160,7 @@ msgid "Communication"
 msgstr "Samskipti"
 
 msgid "Club Text Selection"
-msgstr "Textaval við Félag"
+msgstr "Félaga snið"
 
 msgid "Print Logo"
 msgstr "Prenta logo"
@@ -1286,232 +1286,238 @@ msgid "Write to file"
 msgstr "Skrifa í skrá"
 
 msgid "White has a judogi problem."
-msgstr ""
+msgstr "Júdóbúnings vandamál hjá hvítum"
 
 msgid "Blue has a judogi problem."
-msgstr ""
+msgstr "Júdóbúnings vandamál hjá bláum"
 
 msgid "Show Competitors"
-msgstr ""
+msgstr "Sýna kepppendur"
 
 msgid "Confirm New Match"
-msgstr ""
+msgstr "Staðfesta nýja keppni"
 
 msgid "Show competitors"
-msgstr ""
+msgstr "Sýna kepppendur"
 
 msgid "Name format"
-msgstr ""
+msgstr "Nafna snið"
 
 msgid "Name Surname, Country/Club"
-msgstr ""
+msgstr "Nafn Eftirnafn, Land/Félag"
 
 msgid "Surname, Name, Country/Club"
-msgstr ""
+msgstr "Eftirnafn, Nafn, Land/Félag"
 
 msgid "Country/Club  Surname, Name"
-msgstr ""
+msgstr "Land/Félag  Eftirnafn, Nafn"
 
 msgid "Country  Surname, Name"
-msgstr ""
+msgstr "Land  Eftirnafn, Nafn"
 
 msgid "Club  Surname, Name"
-msgstr ""
+msgstr "Félag  Eftirnafn, Nafn"
 
 msgid "Country Surname"
-msgstr ""
+msgstr "Land Eftirnafn"
 
 msgid "Club Surname"
-msgstr ""
+msgstr "Félag Eftirnafn"
 
 msgid "Surname, Name"
-msgstr ""
+msgstr "Eftirnafn, Nafn"
 
 msgid "Surname"
-msgstr ""
+msgstr "Eftirnafn"
 
 msgid "Contest area 9"
-msgstr ""
+msgstr "Keppnisvöllur 9"
 
 msgid "Contest area 10"
-msgstr ""
+msgstr "Keppnisvöllur 10"
 
 msgid "Change language to Icelandic"
-msgstr ""
+msgstr "Skipta yfir í Íslensku"
 
 msgid "WINNER"
-msgstr ""
+msgstr "Sigurvegari"
 
 msgid "Cancel"
-msgstr ""
+msgstr "Ógilda"
 
 msgid "Club Seeding:"
-msgstr ""
+msgstr "Félagi forraðað"
 
 msgid "Gender:"
-msgstr ""
+msgstr "Kyn"
 
 msgid "Male"
-msgstr ""
+msgstr "Karl"
 
 msgid "Female"
-msgstr ""
+msgstr "Kona"
 
 msgid "Control:"
-msgstr ""
+msgstr "Staðfesta"
 
 msgid "NOK"
-msgstr ""
+msgstr "Ekki í lagi"
 
 msgid "Seeding"
-msgstr ""
+msgstr "Forröðun"
 
 msgid "Club Seeding"
-msgstr ""
+msgstr "Félagi forraðað"
 
 msgid "Database Validation"
-msgstr ""
+msgstr "Villu prófun"
 
 msgid "Duplicate seedings:\n"
-msgstr ""
+msgstr "Tví forraðað:\n"
 
 msgid "seeding"
-msgstr ""
+msgstr "Forraðað"
 
 msgid "defined"
-msgstr ""
+msgstr "Skilgreining"
 
 msgid "times"
-msgstr ""
+msgstr "Tími"
 
 msgid "Duplicate club seedings:\n"
-msgstr ""
+msgstr "Félagi tví forraðað:\n"
 
 msgid "Missing category definitions:\n"
-msgstr ""
+msgstr "Vantar skilgreiningu á flokkum:\n"
 
 msgid "is not"
-msgstr ""
+msgstr "er ekki"
 
 msgid "Typing errors:\n"
-msgstr ""
+msgstr "Innsláttar villa:\n"
 
 msgid "UTF-8 errors"
-msgstr ""
+msgstr "UTF-8 villa"
 
 msgid "Extra spaces"
-msgstr ""
+msgstr "Auka bil"
 
 msgid "Possible duplicate competitors:\n"
-msgstr ""
+msgstr "Keppandi hugsanlega tvískráður:\n"
 
 msgid "Possible duplicate club names:\n"
-msgstr ""
+msgstr "Félag hugsanlega tvískráð:\n"
 
 msgid "Suspicious weights:\n"
-msgstr ""
+msgstr "Grunsamleg þyngd:\n"
 
 msgid "warnings"
-msgstr ""
+msgstr "Aðvörun"
 
 msgid "Move Medal Matches"
-msgstr ""
+msgstr "Færa til verðlaunaviðureignir"
 
 msgid "Move match "
-msgstr ""
+msgstr "Fæara viðureign"
 
 msgid "to tatami and/or"
-msgstr ""
+msgstr "á keppnisvöll og/eða"
 
 msgid " delay"
-msgstr ""
+msgstr "seinka"
 
 msgid "Final"
-msgstr ""
+msgstr "Úrslit"
 
 msgid "Bronze1"
-msgstr ""
+msgstr "Brons 1"
 
 msgid "Bronze2"
-msgstr ""
+msgstr "Brons 2"
 
 msgid "Pool's last"
-msgstr ""
+msgstr "Síðasta í riðli"
 
 msgid "No move"
-msgstr ""
+msgstr "Ekki færa"
 
 msgid "Weighted only"
-msgstr ""
+msgstr "Eingöngu vigtaðir"
 
 msgid "With weights"
-msgstr ""
+msgstr "Með þyngd"
 
 msgid "Validate Database"
-msgstr ""
+msgstr "Villu prófun"
 
 msgid "Results in Icelandic"
-msgstr ""
+msgstr "Úrslit á Íslensku"
 
 msgid "Print Accreditation Cards"
-msgstr ""
+msgstr "Prenta skráningarspjald"
 
 msgid "Name Format"
-msgstr ""
+msgstr "Nafna snið"
 
 msgid "Surname Name, Country/Club"
-msgstr ""
+msgstr "Eftirnafn Nafn, Land/Félag"
 
 msgid "Country/Club,  Surname Name"
-msgstr ""
+msgstr "Land/Félag,  Eftirnafn Nafn"
 
 msgid "Scale Serial Interface..."
-msgstr ""
+msgstr "Vog- Raðtengi (serial)"
 
 msgid "Medal Matches..."
-msgstr ""
+msgstr "Verðlauna viðureignir"
 
 msgid "Print Selected Accreditation Cards"
-msgstr ""
+msgstr "Prenta valin skráningarspjöld"
 
 msgid "Layout:"
-msgstr ""
+msgstr "Útlit"
 
 msgid "Print To:"
-msgstr ""
+msgstr "Prenta á"
 
 msgid "Template"
-msgstr ""
+msgstr "Form"
 
 msgid "Printer"
-msgstr ""
+msgstr "Prentari"
 
 msgid "PDF"
-msgstr ""
+msgstr "PDF"
 
 msgid "One Card Per Page"
-msgstr ""
+msgstr "Eitt spjald á blaðsíðu"
 
 msgid "Normal display"
-msgstr ""
+msgstr "Skjámynd 1"
 
 msgid "Horizontal display"
-msgstr ""
+msgstr "Skjámynd 3"
 
 msgid "Type"
-msgstr ""
+msgstr "Innsláttur"
 
 msgid "ID:"
-msgstr ""
+msgstr "Kt."
 
 msgid "Name:"
-msgstr ""
+msgstr "Nafn"
 
 msgid "About JudoWeight"
-msgstr ""
+msgstr "Útgáfa"
 
 msgid "No match soon! Please wait for a while."
-msgstr ""
+msgstr "Það er bið í næstu viðureign, vinsamlegast bíðið"
 
 msgid "About JudoJudogi"
-msgstr ""
+msgstr "Útgáfa"
+
+msgid "Norwegian System"
+msgstr "Norska kerfið"
+
+msgid "Confirm:"
+msgstr "Staðfesta"
