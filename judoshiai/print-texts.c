@@ -35,7 +35,7 @@ gchar *print_texts[numprinttexts][NUM_LANGS] = {
     {"Tulos", "Resultat", "Result", "Resultado", "", "Результат", "Úrslit"},
     {"Tulokset", "Resultat", "Results", "Clasificación", "", "Результати", "Úrslit"},
     {"Aika", "Tid", "Time", "Tiempo", "", "Час", "Tími"},
-    {"Voit.", "Vin.", "Wins", "Victs.", "", "П", "Vinningar"},
+    {"Voit.", "Vin.", "Wins", "Victs.", "", "П", "Vin."},
     {"Pist.", "Poäng", "Pts", "Pts.", "", "О", "Stig"},
     {"Sij.", "Plats", "Pos", "Pos.", "", "М", "Sæti"},
     {"Ed. voit", "Föregående vinnare", "Previous winner", "Ganador anterior", "", "Previous winner", "Fyrri sigurvegari"},
