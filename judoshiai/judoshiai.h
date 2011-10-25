@@ -696,6 +696,7 @@ extern gint timeval_subtract(GTimeVal *result, GTimeVal *x, GTimeVal *y);
 extern gboolean valid_ascii_string(const gchar *s);
 extern const gchar *get_club_text(struct judoka *j, gint flags);
 extern const gchar *get_name_and_club_text(struct judoka *j, gint flags);
+extern gboolean firstname_lastname(void);
 
 
 /* db */

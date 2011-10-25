@@ -208,8 +208,8 @@ static double paint_comp(struct paint_data *pd, struct pool_matches *unused1, in
             else
                 j = get_data(white);
             if (j) {
-                cairo_text_extents(pd->c, j->last, &extents);
-                snprintf(buf, sizeof(buf)-1, "%s", j->last);
+                cairo_text_extents(pd->c, print_lang == LANG_IS ? j->first : j->last, &extents);
+                snprintf(buf, sizeof(buf)-1, "%s", print_lang == LANG_IS ? j->first : j->last);
                 cairo_move_to(pd->c, x + TEXT_OFFSET, 
                               blue_y - extents.height - extents.y_bearing - H(0.005));
                 cairo_show_text(pd->c, buf);
@@ -305,7 +305,7 @@ static double paint_comp(struct paint_data *pd, struct pool_matches *unused1, in
         j = get_data(blue);
         if (j) {
             if (only_last)
-                snprintf(buf, sizeof(buf)-1, "%s", j->last);
+                snprintf(buf, sizeof(buf)-1, "%s", print_lang == LANG_IS ? j->first : j->last);
             else if (number_b) {
                 if (j->belt && grade_visible)
                     snprintf(buf, sizeof(buf)-1, "%d. %s (%s)", 
@@ -351,7 +351,7 @@ static double paint_comp(struct paint_data *pd, struct pool_matches *unused1, in
         j = get_data(white);
         if (j) {
             if (only_last)
-                sprintf(buf, "%s", j->last);
+                sprintf(buf, "%s", print_lang == LANG_IS ? j->first : j->last);
             else if (number_w) {
                 if (j->belt && grade_visible)
                     snprintf(buf, sizeof(buf)-1, "%d. %s (%s)", 

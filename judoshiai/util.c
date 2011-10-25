@@ -566,3 +566,19 @@ const gchar *get_club_text(struct judoka *j, gint flags)
 
     return p;
 }
+
+gboolean firstname_lastname(void)
+{
+    if (print_lang == LANG_IS)
+        return TRUE;
+
+    switch (name_layout) {
+    case NAME_LAYOUT_N_S_C:
+        return TRUE;
+    case NAME_LAYOUT_S_N_C:
+    case NAME_LAYOUT_C_S_N:
+        return FALSE;
+    }
+
+    return FALSE;
+}

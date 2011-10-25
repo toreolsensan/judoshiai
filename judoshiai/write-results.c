@@ -26,18 +26,25 @@ static void write_result(FILE *f, gint num, const gchar *first, const gchar *las
 			 const gchar *club, const gchar *country)
 {
     if (club_text == (CLUB_TEXT_CLUB|CLUB_TEXT_COUNTRY))
-	fprintf(f, "<tr><td>%d.</td><td>%s %s</td><td>%s/%s</td></tr>\r\n", 
-		num, utf8_to_html(first), utf8_to_html(last), utf8_to_html(club), utf8_to_html(country));
+        if (firstname_lastname())
+            fprintf(f, "<tr><td>%d.</td><td>%s %s</td><td>%s/%s</td></tr>\r\n", 
+                    num, utf8_to_html(first), utf8_to_html(last), utf8_to_html(club), utf8_to_html(country));
+        else
+            fprintf(f, "<tr><td>%d.</td><td>%s %s</td><td>%s/%s</td></tr>\r\n", 
+                    num, utf8_to_html(last), utf8_to_html(first), utf8_to_html(club), utf8_to_html(country));
     else {
 	struct club_name_data *data = club_name_get(club);
 	if (club_text == CLUB_TEXT_CLUB && 
 	    data && data->address && data->address[0])
 	    fprintf(f, "<tr><td>%d.</td><td>%s %s</td><td>%s, %s</td></tr>\r\n", 
-		    num, utf8_to_html(first), utf8_to_html(last), 
+		    num, utf8_to_html(firstname_lastname() ? first : last), 
+                    utf8_to_html(firstname_lastname() ? last : first), 
 		    utf8_to_html(club), utf8_to_html(data->address));
 	else
 	    fprintf(f, "<tr><td>%d.</td><td>%s %s</td><td>%s</td></tr>\r\n", 
-		    num, utf8_to_html(first), utf8_to_html(last), utf8_to_html(club_text==CLUB_TEXT_CLUB ? club : country));
+		    num, utf8_to_html(firstname_lastname() ? first : last), 
+                    utf8_to_html(firstname_lastname() ? last : first), 
+                    utf8_to_html(club_text==CLUB_TEXT_CLUB ? club : country));
     }
 
     if (create_statistics)
@@ -73,8 +80,8 @@ void write_competitor(FILE *f, const gchar *first, const gchar *last, const gcha
                     "<td><a href=\"%s.html\">%s</a></td><td align=\"center\">%s</td></tr>\r\n", 
                     member_count, member_count == 1 ? utf8_to_html(club) : "", 
                     index, 
-                    print_lang == LANG_IS ? utf8_to_html(first) : utf8_to_html(last), 
-                    print_lang == LANG_IS ? utf8_to_html(last) : utf8_to_html(first), 
+                    firstname_lastname() ? utf8_to_html(first) : utf8_to_html(last), 
+                    firstname_lastname() ? utf8_to_html(last) : utf8_to_html(first), 
                     grade_visible ? belt : "", 
                     txt2hex(category), category, buf);
         } else
@@ -82,8 +89,8 @@ void write_competitor(FILE *f, const gchar *first, const gchar *last, const gcha
                     "<tr><td>%d</td><td>%s</td><td>%s %s</td><td>%s</td>"
                     "<td><a href=\"%s.html\">%s</a></td><td>&nbsp;</td></tr>\r\n", 
                     member_count, member_count == 1 ? utf8_to_html(club) : "", 
-                    print_lang == LANG_IS ? utf8_to_html(first) : utf8_to_html(last), 
-                    print_lang == LANG_IS ? utf8_to_html(last) : utf8_to_html(first), 
+                    firstname_lastname() ? utf8_to_html(first) : utf8_to_html(last), 
+                    firstname_lastname() ? utf8_to_html(last) : utf8_to_html(first), 
                     grade_visible ? belt : "",  
                     txt2hex(category), category);
 
@@ -102,16 +109,16 @@ void write_competitor(FILE *f, const gchar *first, const gchar *last, const gcha
                     "<tr><td><a href=\"%d.html\">%s %s</a></td><td>%s</td><td>%s</td>"
                     "<td><a href=\"%s.html\">%s</a></td><td align=\"center\">%s</td></tr>\r\n", 
                     index, 
-                    print_lang == LANG_IS ? utf8_to_html(first) : utf8_to_html(last), 
-                    print_lang == LANG_IS ? utf8_to_html(last) : utf8_to_html(first), 
+                    firstname_lastname() ? utf8_to_html(first) : utf8_to_html(last), 
+                    firstname_lastname() ? utf8_to_html(last) : utf8_to_html(first), 
                     grade_visible ? belt : "", 
                     utf8_to_html(club), txt2hex(category), category, buf);
         } else
             fprintf(f, 
                     "<tr><td>%s %s</td><td>%s</td><td>%s</td>"
                     "<td><a href=\"%s.html\">%s</a></td><td>&nbsp;</td></tr>\r\n", 
-                    print_lang == LANG_IS ? utf8_to_html(first) : utf8_to_html(last), 
-                    print_lang == LANG_IS ? utf8_to_html(last) : utf8_to_html(first), 
+                    firstname_lastname() ? utf8_to_html(first) : utf8_to_html(last), 
+                    firstname_lastname() ? utf8_to_html(last) : utf8_to_html(first), 
                     grade_visible ? belt : "", utf8_to_html(club), 
                     txt2hex(category), category);
 
@@ -740,7 +747,9 @@ void write_comp_stat(gint index)
             "<tr><td class=\"cshdr\">%s<td class=\"cshdr\">%s<td class=\"cshdr\">IWYKS"
             "<td align=\"center\" class=\"cshdr\">%s<td class=\"cshdr\">IWYKS"
             "<td class=\"cshdr\">%s<td class=\"cshdr\">%s</tr>\r\n",
-            utf8_to_html(j->first), utf8_to_html(j->last), utf8_to_html(j->club),
+            utf8_to_html(firstname_lastname() ? j->first : j->last), 
+            utf8_to_html(firstname_lastname() ? j->last : j->first), 
+            utf8_to_html(j->club),
             _T(category), _T(name), _T(points), _T(name), _T(time));
 
 
@@ -773,13 +782,16 @@ void write_comp_stat(gint index)
                     "<tr><td>%s</td><td>%s %s</td><td class=\"%s\">%05x</td>"
                     "<td align=\"center\">%d - %d</td>"
                     "<td class=\"%s\">%05x</td><td>%s %s</td><td>%d:%02d</td></tr>\r\n",
-                    utf8_to_html(c->last), utf8_to_html(j1->first), utf8_to_html(j1->last),
+                    utf8_to_html(c->last), 
+                    utf8_to_html(firstname_lastname() ? j1->first : j1->last), 
+                    utf8_to_html(firstname_lastname() ? j1->last : j1->first),
                     info_white_first ? "wscore" : "bscore",
                     blue_score, blue_points,
                     white_points, 
                     info_white_first ? "bscore" : "wscore",
                     white_score, 
-                    utf8_to_html(j2->first), utf8_to_html(j2->last), mtime/60, mtime%60);
+                    utf8_to_html(firstname_lastname() ? j2->first : j2->last), 
+                    utf8_to_html(firstname_lastname() ? j2->last : j2->first), mtime/60, mtime%60);
 
     done:
         free_judoka(j1);
