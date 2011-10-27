@@ -238,9 +238,14 @@ void db_print_competitors(FILE *f)
     fprintf(print_file, "<tr><th>%s</th><th>%s</th><th><a href=\"competitors2.html\">%s</a></th><th>%s</th><th>&nbsp;%s&nbsp;</th></tr>\n", 
             _T(name), grade_visible ? _T(grade) : "", _T(club), _T(category), create_statistics ? _T(position) : "");
 
-    db_exec(db_name, "SELECT * FROM competitors ORDER BY \"last\" ASC, \"first\" ASC", 
-            (void *)PRINT_COMPETITORS, 
-            db_callback);
+    if (print_lang == LANG_IS)
+        db_exec(db_name, "SELECT * FROM competitors ORDER BY \"first\" ASC, \"last\" ASC", 
+                (void *)PRINT_COMPETITORS, 
+                db_callback);
+    else
+        db_exec(db_name, "SELECT * FROM competitors ORDER BY \"last\" ASC, \"first\" ASC", 
+                (void *)PRINT_COMPETITORS, 
+                db_callback);
 
     fprintf(print_file, "</table></td>\n");
 }
