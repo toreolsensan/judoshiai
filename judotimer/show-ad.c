@@ -1841,7 +1841,8 @@ void display_ad_window(void)
     gtk_container_add (GTK_CONTAINER (window), vbox);
     gtk_widget_show_all(GTK_WIDGET(window));
 
-    gtk_widget_hide(ok_button);
+    if (ok_button)
+        gtk_widget_hide(ok_button);
 
     g_signal_connect (G_OBJECT (window), "delete_event",
                       G_CALLBACK (delete_event_ad), NULL);
@@ -1851,7 +1852,7 @@ void display_ad_window(void)
                      "expose-event", G_CALLBACK(expose_ad), NULL);
     g_signal_connect(G_OBJECT(window),
                      "key-press-event", G_CALLBACK(close_display), window);
-    if (mode != MODE_SLAVE) 
+    if (ok_button) 
         g_signal_connect(G_OBJECT(ok_button), 
                          "clicked", G_CALLBACK(close_display_2), window);
 

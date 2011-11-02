@@ -686,6 +686,9 @@ static void create_ask_window(void)
         gtk_box_pack_start(GTK_BOX(hbox), nok, FALSE, TRUE, 5);
 
         gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 0);
+    } else {
+        lbl = gtk_label_new(_("- - -"));
+        gtk_box_pack_start(GTK_BOX(vbox), lbl, FALSE, TRUE, 5);
     }
 
     if (show_competitor_names && get_winner()) {
@@ -730,7 +733,7 @@ void display_ask_window(gchar *name, gchar *cat, gchar winner)
         st[0].whitepts[0] = 0;
         strncpy(saved_last1, last, sizeof(saved_last1)-1);
         strncpy(saved_first1, first, sizeof(saved_first1)-1);
-    } else if (winner == BLUE) {
+    } else if (winner == WHITE) {
         st[0].bluepts[0] = 0;
         st[0].whitepts[0] = 1;
         strncpy(saved_last2, last, sizeof(saved_last2)-1);
