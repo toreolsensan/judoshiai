@@ -633,10 +633,10 @@ static gboolean expose_ask(GtkWidget *widget, GdkEventExpose *event, gpointer us
     cairo_set_font_size(c, 0.6*FIRST_BLOCK_HEIGHT);
     cairo_set_source_rgb(c, 1.0, 1.0, 1.0);
     cairo_text_extents(c, wtext, &extents);
-    cairo_move_to(c, 10.0, (FIRST_BLOCK_HEIGHT - extents.height)/2.0 - extents.y_bearing);
+    cairo_move_to(c, width - 10.0 - extents.width, (FIRST_BLOCK_HEIGHT - extents.height)/2.0 - extents.y_bearing);
     cairo_show_text(c, wtext);
     cairo_text_extents(c, saved_cat, &extents);
-    cairo_move_to(c, width - 10.0 - extents.width, (FIRST_BLOCK_HEIGHT - extents.height)/2.0 - extents.y_bearing);
+    cairo_move_to(c, 10.0, (FIRST_BLOCK_HEIGHT - extents.height)/2.0 - extents.y_bearing);
     cairo_show_text(c, saved_cat);
 
     if ((winner == BLUE && white_first) || (winner == WHITE && white_first == FALSE))
