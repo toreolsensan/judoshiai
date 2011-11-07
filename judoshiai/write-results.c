@@ -1057,11 +1057,11 @@ void make_next_matches_html(void)
                     class_dl,
                     blue ? utf8_to_html(blue->first) : "?", 
                     blue ? utf8_to_html(blue->last) : "?", 
-                    blue ? utf8_to_html(blue->club) : "?", 
+                    blue ? utf8_to_html(get_club_text(blue, 0)) : "?", 
                     class_dr,
                     white ? utf8_to_html(white->first) : "?", 
                     white ? utf8_to_html(white->last) : "?", 
-                    white ? utf8_to_html(white->club) : "?");
+                    white ? utf8_to_html(get_club_text(white, 0)) : "?");
 			
             free_judoka(blue);
             free_judoka(white);
