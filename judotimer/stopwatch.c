@@ -155,6 +155,7 @@ void update_display(void)
     if (t != last_m_time) {
         last_m_time = t;
         set_timer_value(min, sec/10, sec%10);
+        set_competitor_window_rest_time(min, sec/10, sec%10, rest_time, rest_flags);
     }
 
     if (oSec != last_m_otime) {

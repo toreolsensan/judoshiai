@@ -1553,6 +1553,31 @@ static gboolean current_ad_has_one_frame(void)
     return FALSE;
 }
 
+static gint rmin, rtsec, rsec, rflags;
+static gboolean rrest;
+
+void set_competitor_window_rest_time(gint min, gint tsec, gint sec, gboolean rest, gint flags)
+{
+    if (!ad_window)
+        return;
+
+    if (rrest == rest && rsec == sec)
+        return;
+
+    rmin = min;
+    rtsec = tsec;
+    rsec = sec;
+    rrest = rest;
+    rflags = flags;
+
+    GtkWidget *widget = GTK_WIDGET(ad_window);
+    if (widget->window) {
+        GdkRegion *region = gdk_drawable_get_clip_region(widget->window);
+        gdk_window_invalidate_region(widget->window, region, TRUE);
+        gdk_window_process_updates(widget->window, TRUE);
+    }
+}
+
 static gboolean expose_ad(GtkWidget *widget, GdkEventExpose *event, gpointer userdata)
 {
     gint width, height;
@@ -1609,6 +1634,29 @@ static gboolean expose_ad(GtkWidget *widget, GdkEventExpose *event, gpointer use
         cairo_text_extents(c, category, &extents);
         cairo_move_to(c, 10.0, (FIRST_BLOCK_HEIGHT - extents.height)/2.0 - extents.y_bearing);
         cairo_show_text(c, category);
+
+        if (rrest) {
+            gchar buf[16];
+            snprintf(buf, sizeof(buf), "%d:%d%d", rmin, rtsec, rsec);
+            cairo_set_source_rgb(c, 1.0, 0, 0);
+            cairo_text_extents(c, "88:88", &extents);
+            cairo_move_to(c, width - 10.0 - extents.width, 
+                          (FIRST_BLOCK_HEIGHT - extents.height)/2.0 - extents.y_bearing);
+            cairo_show_text(c, buf);
+
+            if (white_first && (rflags & MATCH_FLAG_BLUE_REST) ||
+                white_first == FALSE && (rflags & MATCH_FLAG_WHITE_REST))
+                cairo_set_source_rgb(c, 1.0, 1.0, 1.0);
+            else if (blue_background())
+                cairo_set_source_rgb(c, 0, 0, 1.0);
+            else
+                cairo_set_source_rgb(c, 1.0, 0, 0);
+
+            cairo_rectangle(c, width - 10.0 - extents.width - 0.1*width, 
+                            (FIRST_BLOCK_HEIGHT - extents.height)/2.0, 
+                            0.1*width, extents.height);
+            cairo_fill(c);
+        }
 
         if (white_first)
             cairo_set_source_rgb(c, 0.0, 0.0, 0.0);
@@ -1684,6 +1732,8 @@ static void destroy_ad( GtkWidget *widget,
     comp_names_pending = FALSE;
     comp_names_start = 0;
     ok_button = NULL;
+    rrest = FALSE;
+    rsec = 0;
 }
 
 static gboolean refresh_frame(gpointer data)

@@ -188,6 +188,7 @@ extern gboolean blue_background(void);
 extern void close_ad_window(void);
 extern void display_ask_window(gchar *name, gchar *cat, gchar winner);
 extern void close_ask_window(void);
+extern void set_competitor_window_rest_time(gint min, gint tsec, gint sec, gboolean rest, gint flags);
 
 
 #endif

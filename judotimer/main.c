@@ -1682,6 +1682,8 @@ int main( int   argc,
         }
     }
 
+    automatic = TRUE;
+
     /* All GTK applications must have a gtk_main(). Control ends here
      * and waits for an event to occur (like a key press or
      * mouse event). */
