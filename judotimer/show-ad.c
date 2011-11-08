@@ -1652,10 +1652,12 @@ static gboolean expose_ad(GtkWidget *widget, GdkEventExpose *event, gpointer use
             else
                 cairo_set_source_rgb(c, 1.0, 0, 0);
 
-            cairo_rectangle(c, width - 10.0 - extents.width - 0.1*width, 
-                            (FIRST_BLOCK_HEIGHT - extents.height)/2.0, 
-                            0.1*width, extents.height);
-            cairo_fill(c);
+            if (rsec & 1) {
+                cairo_rectangle(c, width - 20.0 - extents.width - extents.height, 
+                                (FIRST_BLOCK_HEIGHT - extents.height)/2.0, 
+                                extents.height, extents.height);
+                cairo_fill(c);
+            }
         }
 
         if (white_first)
