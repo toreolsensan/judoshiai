@@ -114,6 +114,13 @@ void db_update_category(int num, struct judoka *j)
         return;
     }
 
+    if (j->deleted & DELETED) {
+        db_exec_str(NULL, NULL,
+                    "DELETE FROM categories WHERE \"index\"=%d",
+                    num);
+        return;
+    }
+
     struct judoka *old = get_data(num);
     if (old) {
         db_exec_str(NULL, NULL,
