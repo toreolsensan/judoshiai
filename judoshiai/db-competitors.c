@@ -243,7 +243,9 @@ void db_print_competitors(FILE *f)
             "<td><table class=\"competitors\">"
             "<tr><td colspan=\"5\" align=\"center\"><h2>%s</h2></td></tr>\n", _T(competitor));
     fprintf(print_file, "<tr><th>%s</th><th>%s</th><th><a href=\"competitors2.html\">%s</a></th><th>%s</th><th>&nbsp;%s&nbsp;</th></tr>\n", 
-            _T(name), grade_visible ? _T(grade) : "", _T(club), _T(category), create_statistics ? _T(position) : "");
+            _T(name), grade_visible ? _T(grade) : "", 
+            (club_text & CLUB_TEXT_COUNTRY) ? _T(country) :_T(club), 
+            _T(category), create_statistics ? _T(position) : "");
 
     if (print_lang == LANG_IS)
         db_exec(db_name, "SELECT * FROM competitors ORDER BY \"first\" ASC, \"last\" ASC", 
@@ -269,9 +271,19 @@ void db_print_competitors_by_club(FILE *f)
     fprintf(print_file, "<tr><th></th><th>%s</th><th><a href=\"competitors.html\">%s</a></th><th>%s</th><th>%s</th><th>&nbsp;%s&nbsp;</th></tr>\n", 
             _T(club), _T(name), grade_visible ? _T(grade) : "", _T(category), create_statistics ? _T(position) : "");
 
-    db_exec(db_name, "SELECT * FROM competitors ORDER BY \"club\" ASC, \"last\" ASC, \"first\" ASC", 
-            (void *)PRINT_COMPETITORS_BY_CLUB, 
-            db_callback);
+    if (club_text & CLUB_TEXT_COUNTRY) {
+        if (club_text & CLUB_TEXT_CLUB)
+            db_exec(db_name, "SELECT * FROM competitors ORDER BY \"country\" ASC, \"club\" ASC, \"last\" ASC, \"first\" ASC", 
+                    (void *)PRINT_COMPETITORS_BY_CLUB, 
+                    db_callback);
+        else
+            db_exec(db_name, "SELECT * FROM competitors ORDER BY \"country\" ASC, \"last\" ASC, \"first\" ASC", 
+                    (void *)PRINT_COMPETITORS_BY_CLUB, 
+                    db_callback);
+    } else
+        db_exec(db_name, "SELECT * FROM competitors ORDER BY \"club\" ASC, \"last\" ASC, \"first\" ASC", 
+                (void *)PRINT_COMPETITORS_BY_CLUB, 
+                db_callback);
 
     fprintf(print_file, "</table></td>\n");
 }

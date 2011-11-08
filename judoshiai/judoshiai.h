@@ -309,6 +309,7 @@ enum {
 
     medalstext,
     totaltext,
+    countrytext,
 
     numprinttexts
 };

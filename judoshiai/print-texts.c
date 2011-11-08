@@ -52,5 +52,6 @@ gchar *print_texts[numprinttexts][NUM_LANGS] = {
     {"Tilastot", "Statistik", "Statistics", "Estadísticas", "", "Статистика", "Tölfræði"},
 
     {"Mitalit", "Medaljer", "Medals", "Medallas", "", "Медалі", "Verðlaun"},
-    {"Yhteensä", "Totalt", "Total", "Total", "", "Підсумок", "Samtals"}
+    {"Yhteensä", "Totalt", "Total", "Total", "", "Підсумок", "Samtals"},
+    {"Maa", "Land", "Country", "País", "Riik", "Країна", "Land"}
 };
