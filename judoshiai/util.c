@@ -582,3 +582,29 @@ gboolean firstname_lastname(void)
 
     return FALSE;
 }
+
+const gchar *esc_quote(const gchar *txt)
+{
+    static gchar buffers[8][64];
+    static gint n = 0;
+    gchar *p;
+    gint i = 0;
+
+    if (!txt)
+        return NULL;
+
+    while (*txt && i < 61) {
+        if (*txt == '"')
+            buffers[n][i++] = *txt;
+
+        buffers[n][i++] = *txt++;
+    }
+
+    buffers[n][i] = 0;
+
+    p = buffers[n];
+    if (++n >= 8)
+	n = 0;
+
+    return p;
+}

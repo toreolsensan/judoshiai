@@ -11,6 +11,7 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h> 
 
+#include "sqlite3.h"
 #include "judoshiai.h"
 
 enum {
@@ -42,6 +43,7 @@ struct i_text {
     gint errors;
     gint comp_added;
     gint comp_exists;
+    gint comp_syntax;
     gboolean utf8;
 };
 
@@ -165,13 +167,22 @@ static gboolean add_competitor(gchar **tokens, gint num_cols, struct i_text *d)
     GtkTreeIter iter;
     if (find_iter_name_2(&iter, j.last, j.first, j.club, j.regcategory)) {
         d->comp_exists++;
+        shiai_log(0, 0, "Competitor exists: %s %s, %s %s", j.last, j.first, j.country, j.club);
         g_free(lastname);
         g_free(newcat);
         return FALSE;
     }
 
-    db_add_judoka(j.index, &j);
-    display_one_judoka(&j);
+    gint rc = db_add_judoka(j.index, &j);
+    if (rc == SQLITE_OK)
+        display_one_judoka(&j);
+    else {
+        d->comp_syntax++;
+        shiai_log(0, 0, "Syntax error: %s %s, %s %s", j.last, j.first, j.country, j.club);
+        g_free(lastname);
+        g_free(newcat);
+        return FALSE;
+    }
     //update_competitors_categories(j.index);
     //matches_refresh();
 
@@ -498,10 +509,11 @@ void import_txt_dialog(GtkWidget *w, gpointer arg)
 
     gtk_widget_destroy(dialog);
 
-    SHOW_MESSAGE("%d %s (%d %s, %d %s).", 
+    SHOW_MESSAGE("%d %s, %d %s (%d %s, %d %s).", 
                  data->comp_added, _("competitors added"), 
-                 data->errors-data->comp_exists, _("errors"), 
-                 data->comp_exists, _("competitors existed already"));
+                 data->errors, _("errors"),
+                 data->comp_exists, _("competitors existed already"),
+                 data->comp_syntax, _("syntax errors"));
 
     g_free(data);
     g_free(name);

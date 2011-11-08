@@ -697,6 +697,7 @@ extern gboolean valid_ascii_string(const gchar *s);
 extern const gchar *get_club_text(struct judoka *j, gint flags);
 extern const gchar *get_name_and_club_text(struct judoka *j, gint flags);
 extern gboolean firstname_lastname(void);
+extern const gchar *esc_quote(const gchar *txt);
 
 
 /* db */
@@ -723,7 +724,7 @@ extern void db_close(void);
 extern gint db_cmd(void *data, void *dbcb, gchar *format, ...);
 
 extern void db_read_judokas(void);
-extern void db_add_judoka(int num, struct judoka *j);
+extern gint db_add_judoka(int num, struct judoka *j);
 extern void db_update_judoka(int num, struct judoka *j);
 extern void db_restore_removed_competitors(void);
 
