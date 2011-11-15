@@ -238,8 +238,14 @@ static void create_new_category(GtkWidget *menuitem, gpointer userdata)
                 else
                     male = TRUE;
             }
+
             if (j->birthyear == 0 && age1 > age)
                 age = age1;
+        } else {
+            if (j->deleted & GENDER_MALE)
+                male = TRUE;
+            else if (j->deleted & GENDER_FEMALE)
+                female = TRUE;
         }
 
         if (j->weight > weight)
@@ -250,7 +256,8 @@ static void create_new_category(GtkWidget *menuitem, gpointer userdata)
 
     gint k = 0;
 
-    if (draw_system == DRAW_FINNISH) {
+    // Finnish speciality removed
+    if (0 && draw_system == DRAW_FINNISH) {
         if (age > 19 && male)
             k += sprintf(cbuf+k, "M");
         if (age > 19 && female)
