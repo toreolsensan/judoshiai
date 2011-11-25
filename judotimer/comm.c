@@ -214,6 +214,9 @@ void msg_received(struct message *input_msg)
         if (input_msg->u.next_match.minutes && automatic)
             reset(GDK_0, &input_msg->u.next_match);
 
+        if (golden_score)
+            set_comment_text(_("Golden Score"));
+
         if (current_category != input_msg->u.next_match.category ||
             current_match != input_msg->u.next_match.match) {
             /***

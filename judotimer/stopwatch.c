@@ -486,7 +486,7 @@ gboolean ask_for_golden_score(void)
     case Q_GS_3_00: gs_time = 180.0; break;
     case Q_GS_4_00: gs_time = 240.0; break;
     case Q_GS_5_00: gs_time = 300.0; break;
-    case Q_GS_AUTO: gs_time = 180.0; break;
+    case Q_GS_AUTO: gs_time = 1000.0; break;
     }
 
     if (response >= Q_GS_1_00 && response <= Q_GS_AUTO) {
@@ -897,8 +897,16 @@ void reset(guint key, struct msg_next_match *msg)
     switch (key) {
     case GDK_0:
         if (msg) {
-            //g_print("match=%d gs=%d\n", msg->match_time, msg->gs_time);
-            total   = golden_score ? msg->gs_time : msg->match_time;
+            /*g_print("gs=%d match=%d gs=%d rep=%d flags=0x%x\n", 
+              golden_score, msg->match_time, msg->gs_time, msg->rep_time, msg->flags);*/
+            if ((msg->flags & MATCH_FLAG_REPECHAGE) && msg->rep_time) {
+                total = msg->rep_time;
+                golden_score = TRUE;
+            } else if (golden_score)
+                total = msg->gs_time;
+            else 
+                total = msg->match_time;
+
             koka    = msg->pin_time_koka;
             yuko    = msg->pin_time_yuko;
             wazaari = msg->pin_time_wazaari;
@@ -1039,6 +1047,8 @@ void check_ippon(void)
 
         judotimer_log("%s: %s wins by %f s Ippon)!",
                       get_cat(), name, st[0].elap);
+    } else if (golden_score && get_winner()) {
+        beep(_("Golden Score"));
     }
 }
 

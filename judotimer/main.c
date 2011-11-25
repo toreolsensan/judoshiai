@@ -910,6 +910,9 @@ gchar *get_cat(void)
 
 void set_comment_text(gchar *txt)
 {
+    if (golden_score && (txt == NULL || txt[0] == 0))
+        txt = _("Golden Score");
+
         set_text(MY_LABEL(comment), txt);
 	expose_label(NULL, comment);
 
