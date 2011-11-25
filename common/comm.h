@@ -62,8 +62,9 @@ enum message_types {
 #define MATCH_FLAG_JUDOGI1_NOK   0x1000
 #define MATCH_FLAG_JUDOGI2_OK    0x2000
 #define MATCH_FLAG_JUDOGI2_NOK   0x4000
-#define MATCH_FLAG_JUDOGI_MASK (MATCH_FLAG_JUDOGI1_OK | MATCH_FLAG_JUDOGI1_NOK | \
-                                MATCH_FLAG_JUDOGI2_OK | MATCH_FLAG_JUDOGI2_NOK)
+#define MATCH_FLAG_JUDOGI_MASK   (MATCH_FLAG_JUDOGI1_OK | MATCH_FLAG_JUDOGI1_NOK | \
+                                  MATCH_FLAG_JUDOGI2_OK | MATCH_FLAG_JUDOGI2_NOK)
+#define MATCH_FLAG_REPECHAGE     0x8000
 
 struct msg_next_match {
     int tatami;
@@ -72,6 +73,7 @@ struct msg_next_match {
     int minutes;
     int match_time;
     int gs_time;
+    int rep_time;
     int rest_time;
     char pin_time_ippon;
     char pin_time_wazaari;

@@ -45,6 +45,7 @@ gint encode_msg(struct message *m, guchar *buf, gint buflen)
 	put32(m->u.next_match.minutes);
 	put32(m->u.next_match.match_time);
 	put32(m->u.next_match.gs_time);
+	put32(m->u.next_match.rep_time);
 	put32(m->u.next_match.rest_time);
 	put8(m->u.next_match.pin_time_ippon);
 	put8(m->u.next_match.pin_time_wazaari);
@@ -206,6 +207,7 @@ gint decode_msg(struct message *m, guchar *buf, gint buflen)
 	get32(m->u.next_match.minutes);
 	get32(m->u.next_match.match_time);
 	get32(m->u.next_match.gs_time);
+	get32(m->u.next_match.rep_time);
 	get32(m->u.next_match.rest_time);
 	get8(m->u.next_match.pin_time_ippon);
 	get8(m->u.next_match.pin_time_wazaari);
