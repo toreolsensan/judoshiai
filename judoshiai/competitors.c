@@ -69,7 +69,6 @@ static gboolean      editing_ongoing = FALSE;
 static GtkWidget     *competitor_label = NULL;
 
 void db_update_judoka(int num, struct judoka *j);
-void db_add_judoka(int num, struct judoka *j);
 gint sort_iter_compare_func(GtkTreeModel *model,
                             GtkTreeIter  *a,
                             GtkTreeIter  *b,

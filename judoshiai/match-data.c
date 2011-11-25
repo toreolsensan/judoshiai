@@ -1661,3 +1661,43 @@ gint db_position_to_real(struct compsys sys, gint pos)
 
     return pos;
 }
+
+static gboolean is_rep(gint t, gint s, gint f, gint m, gint level)
+{
+    if (++level > 20)
+        return FALSE;
+
+    if (f == 0 || m == 0)
+        return FALSE;
+
+    if (f == m)
+        return TRUE;
+
+    gint f1 = french_matches[t][s][f][0];
+    gint f2 = french_matches[t][s][f][1];
+
+    if (f1 > 0 && is_rep(t, s, f1, m, level))
+        return TRUE;
+
+    if (f2 > 0 && is_rep(t, s, f2, m, level))
+        return TRUE;
+
+    return FALSE;
+}
+
+gboolean is_repechage(struct compsys systm, gint m)
+{
+    if (!system_is_french(systm.system))
+        return FALSE;
+
+    gint sys = systm.system - SYSTEM_FRENCH_8;
+
+    gint b1 = medal_matches[systm.table][sys][0];
+    gint b2 = medal_matches[systm.table][sys][1];
+
+    if (m == b1 || m == b2)
+        return FALSE;
+
+    return (is_rep(systm.table, sys, b1, m, 0) | is_rep(systm.table, sys, b2, m, 0));
+}
+

@@ -465,6 +465,7 @@ struct cat_def {
     gint     pin_time_ippon;
     gint     rest_time;
     gint     gs_time;
+    gint     rep_time;
     struct {
         gint comp;
         gint ippons;
@@ -1019,6 +1020,7 @@ extern gint next_page(gint cat, gint page);
 extern gint num_pages(struct compsys sys);
 extern gint get_matchnum_by_pos(struct compsys systm, gint pos, gint num);
 extern gint db_position_to_real(struct compsys sys, gint pos);
+extern gboolean is_repechage(struct compsys sys, gint m);
 
 /* medal-matches */
 extern void move_medal_matches(GtkWidget *menuitem, gpointer userdata);

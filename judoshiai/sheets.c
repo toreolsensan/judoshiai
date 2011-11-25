@@ -264,6 +264,9 @@ static double paint_comp(struct paint_data *pd, struct pool_matches *unused1, in
 
         cairo_move_to(pd->c, x1+r2, y1);
 	cairo_arc(pd->c, x1, y1, r2, 0.0, 2*PI);
+        /*if (is_repechage(pd->systm, comp_num))
+          cairo_arc(pd->c, x1, y1, r2-1, 0.0, 2*PI);*/
+
 	/*
         cairo_move_to(pd->c, x1 + 2*r, y1);
         cairo_rel_line_to(pd->c, NAME_W - 2*r, 0);

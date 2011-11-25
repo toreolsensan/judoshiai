@@ -409,6 +409,7 @@ gboolean fill_in_next_match_message_data(const gchar *cat, struct msg_next_match
 
     msg->match_time = category_definitions[i].match_time;
     msg->gs_time = category_definitions[i].gs_time;
+    msg->rep_time = category_definitions[i].rep_time;
     msg->rest_time = category_definitions[i].rest_time;
     msg->pin_time_ippon = category_definitions[i].pin_time_ippon;
     msg->pin_time_wazaari = category_definitions[i].pin_time_wazaari;
@@ -543,6 +544,7 @@ static void init_cat_data(void)
             def.match_time = official_categories[i][j][k].match_time;
             def.rest_time = official_categories[i][j][k].rest_time;
             def.gs_time = official_categories[i][j][k].gs_time;
+            def.rep_time = 0;
             if (i == DRAW_FINNISH && def.age <= 10) { // E-juniors
                 def.pin_time_koka = 0;
                 def.pin_time_yuko = 5;
@@ -598,6 +600,7 @@ void read_cat_definitions(void)
         gchar *matchtimestr = db_get_data(row, "matchtime");
         gchar *resttimestr = db_get_data(row, "resttime");
         gchar *gstimestr = db_get_data(row, "gstime");
+        gchar *reptimestr = db_get_data(row, "reptime");
         gchar *pintimekokastr = db_get_data(row, "pintimekoka");
         gchar *pintimeyukostr = db_get_data(row, "pintimeyuko");
         gchar *pintimewazaaristr = db_get_data(row, "pintimewazaari");
@@ -608,6 +611,7 @@ void read_cat_definitions(void)
         gint matchtime = atoi(matchtimestr);
         gint resttime = atoi(resttimestr);
         gint gstime = atoi(gstimestr);
+        gint reptime = atoi(reptimestr);
         gint pintimekoka = atoi(pintimekokastr);
         gint pintimeyuko = atoi(pintimeyukostr);
         gint pintimewazaari = atoi(pintimewazaaristr);
@@ -633,6 +637,7 @@ void read_cat_definitions(void)
         category_definitions[i].match_time = matchtime;
         category_definitions[i].rest_time = resttime;
         category_definitions[i].gs_time = gstime;
+        category_definitions[i].rep_time = reptime;
         category_definitions[i].pin_time_koka = pintimekoka;
         category_definitions[i].pin_time_yuko = pintimeyuko;
         category_definitions[i].pin_time_wazaari = pintimewazaari;
@@ -657,7 +662,7 @@ void set_categories_dialog(GtkWidget *w, gpointer arg)
 {
     GtkWidget *dialog, *tmp, *scrolled_window, *vbox, *tables[NUM_CATEGORIES];
     struct {
-        GtkWidget *age, *agetext, *matchtime, *resttime, *gstime, *pink, *piny, *pinw, *pini;
+        GtkWidget *age, *agetext, *matchtime, *resttime, *gstime, *reptime, *pink, *piny, *pinw, *pini;
         gint gender;
         struct {
             GtkWidget *weight, *weighttext;
@@ -705,6 +710,7 @@ void set_categories_dialog(GtkWidget *w, gpointer arg)
         gtk_table_attach_defaults(GTK_TABLE(tables[i]), gtk_label_new(_("Rest time:")),        2, 3, 2, 3);
         gtk_table_attach_defaults(GTK_TABLE(tables[i]), gtk_label_new(_("Golden Score:")),     2, 3, 1, 2);
         gtk_table_attach_defaults(GTK_TABLE(tables[i]), gtk_label_new(_("Pin times (IWYK):")), 4, 8, 0, 1);
+        gtk_table_attach_defaults(GTK_TABLE(tables[i]), gtk_label_new(_("Rep. time:")),        4, 7, 2, 3);
 
         /* age */
         tmp = fields[i].age = gtk_entry_new();
@@ -735,6 +741,12 @@ void set_categories_dialog(GtkWidget *w, gpointer arg)
         gtk_entry_set_max_length(GTK_ENTRY(tmp), 3);
         gtk_entry_set_width_chars(GTK_ENTRY(tmp), 3);
         gtk_table_attach_defaults(GTK_TABLE(tables[i]), tmp, 3, 4, 1, 2);
+
+        /* repechage time */
+        tmp = fields[i].reptime = gtk_entry_new();
+        gtk_entry_set_max_length(GTK_ENTRY(tmp), 3);
+        gtk_entry_set_width_chars(GTK_ENTRY(tmp), 3);
+        gtk_table_attach_defaults(GTK_TABLE(tables[i]), tmp, 7, 8, 2, 3);
 
         /* pin time ippon */
         tmp = fields[i].pini = gtk_entry_new();
@@ -778,7 +790,7 @@ void set_categories_dialog(GtkWidget *w, gpointer arg)
     }
 
     for (i = 0; i < NUM_CATEGORIES; i++) {
-        gchar buf[32], mt[8], rt[8], gt[8], it[8], wt[8], yt[8], kt[8];
+        gchar buf[32], mt[8], rt[8], gt[8], pt[8], it[8], wt[8], yt[8], kt[8];
 
         for (j = 0; j < NUM_CAT_DEF_WEIGHTS; j++) {
             if (category_definitions[i].weights[j].weight == 0)
@@ -800,6 +812,7 @@ void set_categories_dialog(GtkWidget *w, gpointer arg)
         sprintf(mt, "%d", category_definitions[i].match_time);
         sprintf(rt, "%d", category_definitions[i].rest_time);
         sprintf(gt, "%d", category_definitions[i].gs_time);
+        sprintf(pt, "%d", category_definitions[i].rep_time);
         sprintf(it, "%d", category_definitions[i].pin_time_ippon);
         sprintf(wt, "%d", category_definitions[i].pin_time_wazaari);
         sprintf(yt, "%d", category_definitions[i].pin_time_yuko);
@@ -811,6 +824,7 @@ void set_categories_dialog(GtkWidget *w, gpointer arg)
             gtk_entry_set_text(GTK_ENTRY(fields[m].matchtime), mt);
             gtk_entry_set_text(GTK_ENTRY(fields[m].resttime), rt);
             gtk_entry_set_text(GTK_ENTRY(fields[m].gstime), gt);
+            gtk_entry_set_text(GTK_ENTRY(fields[m].reptime), pt);
             gtk_entry_set_text(GTK_ENTRY(fields[m].pini), it);
             gtk_entry_set_text(GTK_ENTRY(fields[m].pinw), wt);
             gtk_entry_set_text(GTK_ENTRY(fields[m].piny), yt);
@@ -824,6 +838,7 @@ void set_categories_dialog(GtkWidget *w, gpointer arg)
             gtk_entry_set_text(GTK_ENTRY(fields[f].matchtime), mt);
             gtk_entry_set_text(GTK_ENTRY(fields[f].resttime), rt);
             gtk_entry_set_text(GTK_ENTRY(fields[f].gstime), gt);
+            gtk_entry_set_text(GTK_ENTRY(fields[f].reptime), pt);
             gtk_entry_set_text(GTK_ENTRY(fields[f].pini), it);
             gtk_entry_set_text(GTK_ENTRY(fields[f].pinw), wt);
             gtk_entry_set_text(GTK_ENTRY(fields[f].piny), yt);
@@ -850,6 +865,7 @@ void set_categories_dialog(GtkWidget *w, gpointer arg)
             def.match_time = atoi(gtk_entry_get_text(GTK_ENTRY(fields[i].matchtime)));
             def.rest_time = atoi(gtk_entry_get_text(GTK_ENTRY(fields[i].resttime)));
             def.gs_time = atoi(gtk_entry_get_text(GTK_ENTRY(fields[i].gstime)));
+            def.rep_time = atoi(gtk_entry_get_text(GTK_ENTRY(fields[i].reptime)));
             def.pin_time_ippon = atoi(gtk_entry_get_text(GTK_ENTRY(fields[i].pini)));
             def.pin_time_wazaari = atoi(gtk_entry_get_text(GTK_ENTRY(fields[i].pinw)));
             def.pin_time_yuko = atoi(gtk_entry_get_text(GTK_ENTRY(fields[i].piny)));

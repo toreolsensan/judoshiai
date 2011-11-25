@@ -1209,6 +1209,8 @@ gint get_match_number_flag(gint category, gint number)
 	    return MATCH_FLAG_SEMIFINAL_A;
         else if (number == french_matches[table][sys][medal_matches[table][sys][2]][1])
 	    return MATCH_FLAG_SEMIFINAL_B;
+        else if (is_repechage(cat->system, number))
+            return MATCH_FLAG_REPECHAGE;
     }
 
     return 0;
@@ -1331,6 +1333,11 @@ void send_next_matches(gint category, gint tatami, struct match *nm)
     msg.u.next_match.flags = nm[0].deleted;
 
     if (nm[0].number < 1000) {
+        struct category_data *cat = avl_get_category(nm[0].category);
+
+        if (cat && is_repechage(cat->system, nm[0].number))
+            msg.u.next_match.flags |= MATCH_FLAG_REPECHAGE;
+
         if (!tatami)
             tatami = db_find_match_tatami(nm[0].category, nm[0].number);
         g = get_data(nm[0].category);

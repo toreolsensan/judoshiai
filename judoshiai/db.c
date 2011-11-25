@@ -240,7 +240,7 @@ gint db_init(const char *dbname)
         catcols    > 17 || 
         matchcols  > 13 ||
         infocols   > 2  ||
-        catdefcols > 12) {
+        catdefcols > 13) {
         SHOW_MESSAGE("%s", _("Cannot handle: Database created with newer JudoShiai version."));
         g_print("Number of columns: %d %d %d %d %d\n", compcols, catcols, matchcols, 
                 infocols, catdefcols);
@@ -596,7 +596,7 @@ void db_create_cat_def_table(void)
         "\"weight\" INTEGER, \"weighttext\" TEXT, "
         "\"matchtime\" INTEGER, \"pintimekoka\" INTEGER, "
         "\"pintimeyuko\" INTEGER, \"pintimewazaari\" INTEGER, \"pintimeippon\" INTEGER, "
-        "\"resttime\" INTEGER, \"gstime\" INTEGER)";
+        "\"resttime\" INTEGER, \"gstime\" INTEGER, \"reptime\" INTEGER)";
     db_exec(db_name, cmd, 0, 0);
 }
 
@@ -622,11 +622,11 @@ void db_insert_cat_def_table_data(struct cat_def *def)
 {
     char buf[1024];
     sprintf(buf, "INSERT INTO catdef VALUES ("
-            "%d, \"%s\", %d, %d, \"%s\", %d, %d, %d, %d, %d, %d, %d)",
+            "%d, \"%s\", %d, %d, \"%s\", %d, %d, %d, %d, %d, %d, %d, %d)",
             def->age, def->agetext, def->gender,
             def->weights[0].weight, def->weights[0].weighttext,
             def->match_time, def->pin_time_koka, def->pin_time_yuko, 
-            def->pin_time_wazaari, def->pin_time_ippon, def->rest_time, def->gs_time); 
+            def->pin_time_wazaari, def->pin_time_ippon, def->rest_time, def->gs_time, def->rep_time); 
     db_cmd(NULL, NULL, buf);
     //db_exec(db_name, buf, 0, 0);
 }
@@ -664,7 +664,7 @@ void xxdb_add_colums_to_cat_def_table(void)
             0, 0);
 }
 
-static gboolean catdef_exists, matchtime_exists, gstime_exists;
+static gboolean catdef_exists, matchtime_exists, gstime_exists, reptime_exists;
 
 static int db_callback_catdef(void *data, int argc, char **argv, char **azColName)
 {
@@ -681,6 +681,8 @@ static int db_callback_catdef(void *data, int argc, char **argv, char **azColNam
                 matchtime_exists = TRUE;
             if (strstr(argv[i], "gstime"))
                 gstime_exists = TRUE;
+            if (strstr(argv[i], "reptime"))
+                reptime_exists = TRUE;
         }
     }
 
@@ -689,7 +691,7 @@ static int db_callback_catdef(void *data, int argc, char **argv, char **azColNam
 
 gboolean catdef_needs_init(void)
 {
-    catdef_exists = matchtime_exists = gstime_exists = FALSE;
+    catdef_exists = matchtime_exists = gstime_exists = reptime_exists = FALSE;
 
     db_exec(db_name, 
             "SELECT name FROM sqlite_master WHERE type='table'", 
@@ -739,6 +741,13 @@ gboolean catdef_needs_init(void)
         db_exec(db_name, "ALTER TABLE catdef ADD \"gstime\" INTEGER", NULL, NULL);
         db_exec(db_name, "UPDATE catdef SET 'gstime'=300", NULL, NULL);
         db_exec(db_name, "UPDATE catdef SET 'gstime'=120 WHERE \"age\"<=16", NULL, NULL);
+    }
+
+    if (!reptime_exists) {
+        g_print("catdef reptime does not exist, add one\n");
+
+        db_exec(db_name, "ALTER TABLE catdef ADD \"reptime\" INTEGER", NULL, NULL);
+        db_exec(db_name, "UPDATE catdef SET 'reptime'=0", NULL, NULL);
     }
 
     return FALSE;
