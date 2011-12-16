@@ -1,15 +1,8 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-#: ../judoshiai/menus.c:398 ../judoshiai/menus.c:399
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-12-14 12:47+0200\n"
+"POT-Creation-Date: 2011-12-16 13:27+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,101 +11,63 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../judotimer/main.c:936 ../judotimer/main.c:941
 msgid "Blue won the voting"
 msgstr "Blár vann"
 
-#: ../judotimer/main.c:934 ../judotimer/main.c:943
 msgid "White won the voting"
 msgstr "Hvítur vann"
 
-#: ../judotimer/main.c:1519 ../judoshiai/matches.c:1401
-#: ../judoshiai/matches.c:1422 ../judoshiai/matches.c:2303
 msgid "Match:"
 msgstr "Keppni:"
 
 msgid "Contest:"
 msgstr "Keppnin:"
 
-#: ../judotimer/main.c:1520 ../judotimer/main.c:2388
 msgid "Next:"
 msgstr "Næst:"
 
-#: ../judotimer/menus.c:289 ../judoshiai/httpd.c:346
-#: ../judoshiai/matches.c:366 ../judoshiai/matches.c:1065
-#: ../judoshiai/matches.c:1079 ../judoshiai/matches.c:1084
-#: ../judoshiai/matches.c:1107 ../judoshiai/matches.c:1121
-#: ../judoshiai/matches.c:1126 ../judoshiai/matches.c:1380
-#: ../judoshiai/matches.c:1588 ../judoshiai/matches.c:2104
-#: ../judoshiai/matches.c:2794
 msgid "Match"
 msgstr "Keppni"
 
-#: ../judotimer/menus.c:725 ../judoshiai/menuacts.c:211
 msgid "Contest"
 msgstr "Keppnin"
 
-#: ../judotimer/menus.c:290 ../judotimer/menus.c:726 ../judoshiai/import.c:456
-#: ../judoshiai/menus.c:126 ../judoshiai/menus.c:819 ../judoinfo/menus.c:170
-#: ../judoinfo/menus.c:368 ../judoweight/menus.c:138 ../judoweight/menus.c:257
-#: ../judojudogi/menus.c:170 ../judojudogi/menus.c:375
 msgid "Preferences"
 msgstr "Stillingar"
 
-#: ../judotimer/menus.c:291 ../judotimer/menus.c:727 ../judoshiai/menus.c:127
-#: ../judoshiai/menus.c:820 ../judoshiai/sql-dialog.c:184
-#: ../judoinfo/menus.c:171 ../judoinfo/menus.c:369 ../judoweight/menus.c:139
-#: ../judoweight/menus.c:258 ../judojudogi/menus.c:171
-#: ../judojudogi/menus.c:376
 msgid "Help"
 msgstr "Hjálp"
 
-#: ../judotimer/menus.c:363 ../judotimer/menus.c:757 ../judoshiai/menus.c:179
-#: ../judoshiai/menus.c:829 ../judoinfo/menus.c:371 ../judoweight/menus.c:260
-#: ../judojudogi/menus.c:378
 msgid "Quit"
 msgstr "Hætta"
 
-#: ../judotimer/menus.c:759 ../judoinfo/menus.c:379 ../judojudogi/menus.c:386
 msgid "Red background"
 msgstr "Rauður bakgrunnur"
 
 msgid "Tatami not chosen"
 msgstr "Völlur ekki valinn"
 
-#: ../judotimer/menus.c:804 ../judoinfo/menus.c:388 ../judoweight/menus.c:262
-#: ../judojudogi/menus.c:395
 msgid "Communication node"
 msgstr "Samskiptabúnaður"
 
-#: ../judotimer/menus.c:805 ../judoinfo/menus.c:389 ../common/ip.c:389
-#: ../judoweight/menus.c:263 ../judojudogi/menus.c:396
 msgid "Own IP addresses"
 msgstr "Eigið IP vistfang"
 
-#: ../judotimer/menus.c:821 ../judoshiai/menus.c:508 ../judoshiai/menus.c:914
-#: ../judoinfo/menus.c:391 ../judoweight/menus.c:266 ../judojudogi/menus.c:398
 msgid "Manual"
 msgstr "Handbók"
 
-#: ../judotimer/menus.c:823 ../judoshiai/menus.c:509 ../judoshiai/menus.c:915
-#: ../judoinfo/menus.c:392 ../judoweight/menus.c:267 ../judojudogi/menus.c:399
 msgid "About"
 msgstr "Útgáfa"
 
-#: ../common/ip.c:351
 msgid "Address of the communication node"
 msgstr "Vistfang samskiptabúnaðar"
 
-#: ../common/ip.c:358
 msgid "IP address:"
 msgstr "IP-vistfang:"
 
-#: ../common/ip.c:367
 msgid "(Connection OK)"
 msgstr "(Tenging í lagi)"
 
-#: ../common/ip.c:369
 msgid "(Connection broken)"
 msgstr "(Tenging rofin)"
 
@@ -124,129 +79,96 @@ msgstr "Sambandi komið á %ld.%ld.%ld.%ld"
 msgid "Connection to the node broken"
 msgstr "Samband til samskiptabúnaðar rofinn"
 
-#: ../judotimer/menus.c:827 ../judoinfo/menus.c:396 ../judoweight/menus.c:271
-#: ../judojudogi/menus.c:403
 msgid "Change language to Finnish"
 msgstr "Skiptu yfir í Finnsku"
 
-#: ../judotimer/menus.c:829 ../judoinfo/menus.c:398 ../judoweight/menus.c:273
-#: ../judojudogi/menus.c:405
 msgid "Change language to Swedish"
 msgstr "Skiptu yfir í Sænsku"
 
-#: ../judotimer/menus.c:831 ../judoinfo/menus.c:400 ../judoweight/menus.c:275
-#: ../judojudogi/menus.c:407
 msgid "Change language to English"
 msgstr "Skiptu yfir í Ensku"
 
-#: ../judotimer/menus.c:842
 msgid "Contest duration automatically from JudoShiai program"
 msgstr "Keppnistími sjálfvirkur frá JudoShiai-forriti"
 
-#: ../judotimer/main.c:2387
 msgid "Fight:"
 msgstr "Viðureign:"
 
-#: ../judotimer/menus.c:345
 msgid "Match duration: automatic"
 msgstr "Lengd viðureignar: sjálfvirk"
 
-#: ../judotimer/menus.c:347
 msgid "Match duration: 2 min E-juniors"
 msgstr "Lengd viðureignar: 2 mín U-15 ára"
 
-#: ../judotimer/menus.c:348
 msgid "Match duration: 2 min"
 msgstr "Lengd viðureignar: 2 mín"
 
-#: ../judotimer/menus.c:349
 msgid "Match duration: 3 min"
 msgstr "Lengd viðureignar: 3 mín"
 
-#: ../judotimer/menus.c:350
 msgid "Match duration: 4 min"
 msgstr "Lengd viðureignar: 4 mín"
 
-#: ../judotimer/menus.c:351
 msgid "Match duration: 5 min"
 msgstr "Lengd viðureignar: 5 mín"
 
-#: ../judotimer/menus.c:730
 msgid "Contest duration: automatic"
 msgstr "Lengd viðureignar: sjálfvirk"
 
-#: ../judotimer/menus.c:731
 msgid "Contest duration: 2 min (short pin times)"
 msgstr "Lengd viðureignar: 2 mín (styttur fastatakstími)"
 
-#: ../judotimer/menus.c:732
 msgid "Contest duration: 2 min"
 msgstr "Lengd viðureignar: 2 mín"
 
-#: ../judotimer/menus.c:733
 msgid "Contest duration: 3 min"
 msgstr "Lengd viðureignar: 3 mín"
 
-#: ../judotimer/menus.c:734
 msgid "Contest duration: 4 min"
 msgstr "Lengd viðureignar: 4 mín"
 
-#: ../judotimer/menus.c:735
 msgid "Contest duration: 5 min"
 msgstr "Lengd viðureignar: 5 mín"
 
 msgid "Majority of three: blue wins"
 msgstr "Meirihluti þriggja: blár vinnur"
 
-#: ../judotimer/menus.c:354 ../judotimer/menus.c:740 ../judotimer/menus.c:742
 msgid "Hantei: blue wins"
 msgstr "Hantei: blár vinnur"
 
-#: ../judotimer/menus.c:355 ../judotimer/menus.c:739 ../judotimer/menus.c:743
 msgid "Hantei: white wins"
 msgstr "Hantei: hvítur vinnur"
 
-#: ../judotimer/menus.c:792
 msgid "Contest area not chosen"
 msgstr "Keppnisvöllur ekki valinn"
 
-#: ../judotimer/menus.c:793
 msgid "Contest area 1"
 msgstr "Keppnisvöllur 1"
 
-#: ../judotimer/menus.c:794
 msgid "Contest area 2"
 msgstr "Keppnisvöllur 2"
 
-#: ../judotimer/menus.c:795
 msgid "Contest area 3"
 msgstr "Keppnisvöllur 3"
 
-#: ../judotimer/menus.c:796
 msgid "Contest area 4"
 msgstr "Keppnisvöllur 4"
 
-#: ../judotimer/menus.c:797
 msgid "Contest area 5"
 msgstr "Keppnisvöllur 5"
 
-#: ../judotimer/menus.c:798
 msgid "Contest area 6"
 msgstr "Keppnisvöllur 6"
 
-#: ../judotimer/menus.c:799
 msgid "Contest area 7"
 msgstr "Keppnisvöllur 7"
 
-#: ../judotimer/menus.c:800
 msgid "Contest area 8"
 msgstr "Keppnisvöllur 8"
 
-#: ../judotimer/menus.c:808
 msgid "Increment time"
 msgstr "Bæta við tímann"
 
-#: ../judotimer/menus.c:809
 msgid "Decrement time"
 msgstr "Minnka tímann"
 
@@ -256,599 +178,432 @@ msgstr "Bæta við tíma í fastataki"
 msgid "Decrement osaekomi"
 msgstr "Minnka tíma í fastataki"
 
-#: ../judotimer/menus.c:765 ../judotimer/menus.c:774
 msgid "View clocks only"
 msgstr "Sýna aðeins klukkuna"
 
-#: ../judotimer/menus.c:810
 msgid "Increment pin time"
 msgstr "Lengja fastataks tímann"
 
-#: ../judotimer/menus.c:811
 msgid "Decrement pin time"
 msgstr "Stytta fastatakstímann"
 
-#: ../judotimer/stopwatch.c:1068
 msgid "Points going to blue"
 msgstr "Stigin fara á bláann"
 
-#: ../judotimer/stopwatch.c:1071
 msgid "Points going to white"
 msgstr "Stigin fara á hvítann"
 
-#: ../judotimer/menus.c:27
 msgid "About Judotimer"
 msgstr "Úgáfa"
 
-#: ../judotimer/menus.c:760 ../judoinfo/menus.c:373 ../judojudogi/menus.c:380
 msgid "Full screen mode"
 msgstr "Sýna fullann skjá"
 
-#: ../judotimer/menus.c:814
 msgid "Normal operation"
 msgstr "Venjuleg staða"
 
-#: ../judotimer/menus.c:815
 msgid "Master mode"
 msgstr "Ráðandi staða"
 
-#: ../judotimer/menus.c:816
 msgid "Slave mode"
 msgstr "Þjónustu staða"
 
-#: ../judotimer/menus.c:292 ../judotimer/menus.c:728
 msgid "Undo!"
 msgstr "Afturkalla!"
 
-#: ../judotimer/menus.c:132 ../judotimer/menus.c:812
 msgid "Set clocks"
 msgstr "Stilla klukkuna"
 
-#: ../judotimer/menus.c:156
 msgid "Clock:"
 msgstr "Klukka:"
 
-#: ../judotimer/menus.c:356 ../judotimer/menus.c:747 ../judotimer/menus.c:749
 msgid "Hansoku-make to blue"
 msgstr "Hansoku-make á bláan"
 
-#: ../judotimer/menus.c:357 ../judotimer/menus.c:746 ../judotimer/menus.c:750
 msgid "Hansoku-make to white"
 msgstr "Hansoku-make á hvítann"
 
-#: ../judotimer/menus.c:358 ../judotimer/menus.c:752
 msgid "Clear selection"
 msgstr "Hreinsa val"
 
-#: ../judotimer/menus.c:770
 msgid "Display layout 1"
 msgstr "Skjá útlit 1"
 
-#: ../judotimer/menus.c:771
 msgid "Display layout 2"
 msgstr "Skjá útlit 2"
 
-#: ../judotimer/menus.c:772
 msgid "Display layout 3"
 msgstr "Skjá útlit 3"
 
-#: ../judotimer/menus.c:773
 msgid "Display layout 4"
 msgstr "Skjá útlit 4"
 
-#: ../judotimer/menus.c:775
 msgid "Display layout 5"
 msgstr "Skjá útlit 5"
 
-#: ../judotimer/menus.c:822
 msgid "Quick guide"
 msgstr "Leiðbeiningar"
 
-#: ../judotimer/menus.c:818
 msgid "Advertise"
 msgstr "Auglýsa"
 
-#: ../judotimer/show-ad.c:1933
 msgid "Run Advertisements"
 msgstr "Keyra auglýsingar"
 
-#: ../judoshiai/competitors.c:1382 ../judoshiai/competitors.c:1907
-#: ../judoshiai/httpd.c:555 ../judoshiai/menus.c:121 ../judoshiai/menus.c:813
 msgid "Competitors"
 msgstr "Keppendur"
 
-#: ../judoshiai/category-graph.c:395 ../judoshiai/category-graph.c:580
-#: ../judoshiai/httpd.c:295 ../judoshiai/menus.c:122 ../judoshiai/menus.c:814
-#: ../judoshiai/set-categories.c:681
 msgid "Categories"
 msgstr "Flokkar"
 
-#: ../judoshiai/menus.c:123 ../judoshiai/menus.c:816
 msgid "Drawing"
 msgstr "Dráttur"
 
-#: ../judoshiai/menus.c:124 ../judoshiai/menus.c:817
 msgid "Results"
 msgstr "Úrslit"
 
-#: ../judoshiai/menus.c:125 ../judoshiai/menus.c:818
 msgid "Judotimer"
 msgstr "Júdó klukka"
 
-#: ../judoshiai/menus.c:172 ../judoshiai/menus.c:822
 msgid "New Tournament"
 msgstr "Nýtt mót"
 
-#: ../judoshiai/menus.c:173 ../judoshiai/menus.c:823
 msgid "Open Tournament"
 msgstr "Opna mót"
 
-#: ../judoshiai/menus.c:174 ../judoshiai/menus.c:824
 msgid "Open Tournament from Net"
 msgstr "Opna mót í gegnum netið"
 
-#: ../judoshiai/menus.c:175 ../judoshiai/menus.c:253 ../judoshiai/menus.c:825
-#: ../judoshiai/menus.c:849
 msgid "Properties"
 msgstr "Nánar"
 
-#: ../judoshiai/httpd.c:558 ../judoshiai/menus.c:204 ../judoshiai/menus.c:831
 msgid "New Competitor"
 msgstr "Nýr keppandi"
 
-#: ../judoshiai/menus.c:205 ../judoshiai/menus.c:832
 msgid "Search Competitor"
 msgstr "Leita að keppanda"
 
-#: ../judoshiai/menus.c:206 ../judoshiai/menus.c:833
 msgid "Select From Another Shiai"
 msgstr "Velja af öðru móti"
 
-#: ../judoshiai/menus.c:207 ../judoshiai/menus.c:834
 msgid "Add From a Text File"
 msgstr "Bæta við úr texta skrá"
 
-#: ../judoshiai/menus.c:208 ../judoshiai/menus.c:835
 msgid "Add All From Another Shiai"
 msgstr "Bæta við af öðru móti"
 
-#: ../judoshiai/menus.c:209 ../judoshiai/menus.c:836
 msgid "Add All with Weights"
 msgstr "Bæta við öllum sem hafa verið vigtaðir"
 
-#: ../judoshiai/menus.c:210 ../judoshiai/menus.c:837
 msgid "Remove Unweighted"
 msgstr "Fjarlægja óvigtaða"
 
-#: ../judoshiai/menus.c:211 ../judoshiai/menus.c:838
 msgid "Restore Removed"
 msgstr "Endurheimta fjarlægða"
 
-#: ../judoshiai/menus.c:212 ../judoshiai/menus.c:839
 msgid "Bar Code Search"
 msgstr "Strikamerkja leit"
 
-#: ../judoshiai/menus.c:213
 msgid "Print Weight Notes"
 msgstr "Prenta vigtunar lista"
 
-#: ../judoshiai/menus.c:247 ../judoshiai/menus.c:843
 msgid "New Category"
 msgstr "Nýr flokkur"
 
-#: ../judoshiai/menus.c:248 ../judoshiai/menus.c:844
 msgid "Remove Empty"
 msgstr "Fjarlægja tóma"
 
-#: ../judoshiai/menus.c:249 ../judoshiai/menus.c:845
 msgid "Create Categories"
 msgstr "Búa til flokka"
 
-#: ../judoshiai/menus.c:250 ../judoshiai/menus.c:846
 msgid "Print All"
 msgstr "Prenta allt"
 
-#: ../judoshiai/menus.c:254 ../judoshiai/menus.c:850
 msgid "Best of Three"
 msgstr "Best af þremur"
 
-#: ../judoshiai/menus.c:256 ../judoshiai/menus.c:853
 msgid "Place To"
 msgstr "Dreyfist á "
 
-#: ../judoshiai/menus.c:256 ../judoshiai/menus.c:853
 msgid "Tatamis"
 msgstr "Keppnissvæði"
 
-#: ../judoshiai/menus.c:291 ../judoshiai/menus.c:857
 msgid "Draw All Categories"
 msgstr "Draga alla flokka"
 
-#: ../judoshiai/menus.c:329 ../judoshiai/menus.c:865
 msgid "Print All (Web And PDF)"
 msgstr "Prenta allt (Web og PDF)"
 
-#: ../judoshiai/menus.c:330
 msgid "Print Schedule to Printer"
 msgstr "Prenta dagskrá"
 
-#: ../judoshiai/menus.c:331 ../judoshiai/menus.c:867
 msgid "Print Schedule to PDF"
 msgstr "Prenta dagskrá á PDF"
 
-#: ../judoshiai/menus.c:866 ../judoshiai/print.c:1395
 msgid "Print Schedule"
 msgstr "Prenta dagskrá"
 
-#: ../judoshiai/menus.c:345 ../judoshiai/menus.c:870
 msgid "Control Tatami"
 msgstr "Stjórn keppnisvalla"
 
-#: ../judoshiai/menus.c:354 ../judoshiai/menus.c:875
 msgid "Communication Node"
 msgstr "Samskiptabúnaður"
 
-#: ../judoshiai/menus.c:355 ../judoshiai/menus.c:876
 msgid "Own IP Addresses"
 msgstr "Eigið IP vistfang"
 
-#: ../judoshiai/menus.c:356 ../judoshiai/menus.c:877
 msgid "Show Attached Connections"
 msgstr "Sýna þá sem eru tengdir"
 
-#: ../judoshiai/menus.c:357 ../judoshiai/menus.c:878
 msgid "Automatic Sheet Update"
 msgstr "Sjálfvirk uppfærsla blaða"
 
-#: ../judoshiai/write-results.c:1093
 msgid "Automatic Web Page Update"
 msgstr "Sjálfvirk uppfærsla vefsíðu"
 
-#: ../judoshiai/menus.c:360 ../judoshiai/menus.c:882
 msgid "Results in Finnish"
 msgstr "Úrslit á Finnsku"
 
-#: ../judoshiai/menus.c:362 ../judoshiai/menus.c:883
 msgid "Results in Swedish"
 msgstr "Úrslit á Sænsku"
 
-#: ../judoshiai/menus.c:364 ../judoshiai/menus.c:884
 msgid "Results in English"
 msgstr "Úrslit á Ensku"
 
-#: ../judoshiai/menus.c:366 ../judoshiai/menus.c:885
 msgid "Results in Spanish"
 msgstr "Úrslit á Spænsku"
 
 msgid "Results in Estonian"
 msgstr "Úrslit á Eistnesku"
 
-#: ../judoshiai/menus.c:368 ../judoshiai/menus.c:886
 msgid "Results in Ukrainian"
 msgstr "Úrslit á Úkranísku"
 
-#: ../judoshiai/menus.c:381
 msgid "Weights Visible in Pool Sheets"
 msgstr "Þyngdir sjáanlegar á Riðla forminu"
 
-#: ../judoshiai/menus.c:392 ../judoshiai/menus.c:905
 msgid "Sheet Font"
 msgstr "Leturgerð"
 
-#: ../judoshiai/httpd.c:521 ../judoshiai/menus.c:393 ../judoshiai/menus.c:906
-#: ../judoshiai/set-password.c:22
 msgid "Password"
 msgstr "Lykilorð"
 
-#: ../judoshiai/set-password.c:29
 msgid "Password:"
 msgstr "Lykilorð:"
 
-#: ../judoshiai/another-shiai.c:425
 msgid "Competitor already exists!"
 msgstr "Keppandi þegar skráður!"
 
-#: ../judoshiai/another-shiai.c:448 ../judoshiai/competitors.c:437
-#: ../judoshiai/drawing.c:1310
 msgid "Competitor"
 msgstr "Keppandi"
 
-#: ../judoshiai/another-shiai.c:448
 msgid "copied"
 msgstr "afritað"
 
-#: ../judoshiai/another-shiai.c:461
 msgid "Category already exists!"
 msgstr "Flokkur þegar til!"
 
-#: ../judoshiai/another-shiai.c:503 ../judoshiai/competitors.c:184
-#: ../judoshiai/competitors.c:437 ../judoshiai/db-validate.c:139
-#: ../judoshiai/db-validate.c:182 ../judoshiai/db-validate.c:316
-#: ../judoshiai/matches.c:2089 ../judoshiai/matches.c:2791
-#: ../judoshiai/sheets.c:2339
 msgid "Category"
 msgstr "Flokkur"
 
-#: ../judoshiai/another-shiai.c:503
 msgid "has been copied with competitors and matches"
 msgstr "hefur verið afritaður með keppendum og viðureignum"
 
-#: ../judoshiai/another-shiai.c:533 ../judoshiai/competitors.c:1075
-#: ../judoshiai/competitors.c:1879
 msgid "Last Name"
 msgstr "Eftirnafn"
 
-#: ../judoshiai/another-shiai.c:547 ../judoshiai/competitors.c:1089
-#: ../judoshiai/competitors.c:1882
 msgid "First Name"
 msgstr "Nafn"
 
-#: ../judoshiai/another-shiai.c:562 ../judoshiai/competitors.c:1105
-#: ../judoshiai/competitors.c:1885
 msgid "Year of Birth"
 msgstr "Fæðingarár"
 
-#: ../judoshiai/another-shiai.c:577 ../judoshiai/competitors.c:1121
-#: ../judoshiai/competitors.c:1888
 msgid "Grade"
 msgstr "Gráða"
 
-#: ../judotimer/menus.c:789 ../judoshiai/another-shiai.c:591
-#: ../judoshiai/competitors.c:1135 ../judoshiai/competitors.c:1891
-#: ../judoshiai/db-validate.c:161
 msgid "Club"
 msgstr "Félag"
 
-#: ../judoshiai/another-shiai.c:621 ../judoshiai/competitors.c:1165
-#: ../judoshiai/competitors.c:1897 ../judoshiai/db-validate.c:316
 msgid "Reg. Category"
 msgstr "Skráður í fl."
 
-#: ../judoshiai/another-shiai.c:636 ../judoshiai/competitors.c:1180
-#: ../judoshiai/competitors.c:1900 ../judoshiai/db-validate.c:317
 msgid "Weight"
 msgstr "Þyngd"
 
-#: ../judoshiai/drawing.c:987
 msgid "Drawing not finished!"
 msgstr "Drætti ekki lokið!"
 
-#: ../judoshiai/drawing.c:1227
 msgid "Matches matched in category"
 msgstr "Viðureignir jafnar í flokknum"
 
-#: ../judoshiai/drawing.c:1228
 msgid "Clear the results first"
 msgstr "Hreinsa úrslitin fyrst"
 
-#: ../judoshiai/drawing.c:1288
 msgid "Move the competitors"
 msgstr "Færðu keppendurna"
 
-#: ../judoshiai/drawing.c:1309
 msgid "Number"
 msgstr "Númer"
 
-#: ../judoshiai/drawing.c:1403
 msgid "Select first a competitor and then a number."
 msgstr "Veldu fyrst keppanda og síðan númer."
 
-#: ../judoshiai/drawing.c:1458
 msgid "All the categories has been drawn"
 msgstr "Allir flokkar hafa verið dregnir"
 
-#: ../judotimer/show-ad.c:1926 ../judoshiai/menuacts.c:642
-#: ../judoshiai/write-results.c:1084
 msgid "Choose a directory"
 msgstr "Veldu skráarmöppu"
 
-#: ../judoshiai/categories.c:194
 msgid "Category drawn"
 msgstr "Flokkur dreginn"
 
-#: ../judoshiai/categories.c:296
 msgid "All the categories located to the tatamis"
 msgstr "Allir flokkarnir staðsettir á keppnisvöllunum"
 
-#: ../judoshiai/category-graph.c:259
 msgid "Unlocated"
 msgstr "Óstaðsettur"
 
-#: ../judoshiai/comm.c:774
 msgid "Connections to this node"
 msgstr "Tengingar við þennan búnað"
 
-#: ../judoshiai/competitors.c:184
 msgid "already exists!"
 msgstr "Er nú þegar til!"
 
-#: ../judoshiai/competitors.c:880 ../judoshiai/matches.c:2071
-#: ../judoshiai/matches.c:2788
 msgid "Group"
 msgstr "Hópur"
 
-#: ../judoshiai/competitors.c:619
 msgid "Group:"
 msgstr "Hópur:"
 
-#: ../judoshiai/competitors.c:462 ../judoshiai/import.c:469
 msgid "Last Name:"
 msgstr "Föðurnafn:"
 
-#: ../judoshiai/competitors.c:463 ../judoshiai/import.c:470
 msgid "First Name:"
 msgstr "Nafn:"
 
-#: ../judoshiai/competitors.c:464 ../judoshiai/import.c:471
 msgid "Year of Birth:"
 msgstr "Fæðingarár:"
 
-#: ../judoshiai/competitors.c:466 ../judoshiai/import.c:472
 msgid "Grade:"
 msgstr "Gráða:"
 
-#: ../judoshiai/competitors.c:475 ../judoshiai/import.c:473
 msgid "Club:"
 msgstr "Félag:"
 
-#: ../judoshiai/competitors.c:477
 msgid "Reg. Category:"
 msgstr "Skráður í fl.:"
 
-#: ../judoshiai/competitors.c:506 ../judoshiai/competitors.c:524
-#: ../judoshiai/import.c:476 ../judoweight/main.c:320
 msgid "Weight:"
 msgstr "Þyngd:"
 
-#: ../judoshiai/competitors.c:479 ../judoshiai/competitors.c:592
-#: ../judoshiai/import.c:475
 msgid "Category:"
 msgstr "Flokkur:"
 
-#: ../judoshiai/competitors.c:533
 msgid "No seeding"
 msgstr "Ekki forraðað"
 
-#: ../judoshiai/competitors.c:1580
 msgid "Empty categories removed"
 msgstr "Tómir flokkar fjarlægðir"
 
-#: ../judoshiai/competitors.c:1644
 msgid "Unweighted competitors removed"
 msgstr "Óvigtaðir keppendur fjarlægðir"
 
-#: ../judoshiai/competitors.c:1693
 msgid "Matches exist. Undo the drawing first."
 msgstr "Viðureignir eru til staðar. Afturkalla dráttinn fyrst."
 
-#: ../judoshiai/competitors.c:1710
 msgid "Competitors removed"
 msgstr "Keppendur fjarlægðir"
 
-#: ../judoshiai/competitors.c:1844
 msgid "Type the barcode:"
 msgstr "Skrifaðu strikamerkið:"
 
-#: ../judoshiai/competitors.c:1838
 msgid "Bar code search"
 msgstr "Leit að strikamerki"
 
-#: ../judoshiai/httpd.c:295 ../judoshiai/httpd.c:562
-#: ../judoshiai/match-graph.c:553 ../judoshiai/match-graph.c:829
-#: ../judoshiai/print.c:1754
 msgid "Matches"
 msgstr "Viðureignir"
 
-#: ../judoshiai/menuacts.c:209
 msgid "Contests"
 msgstr "Keppnir"
 
-#: ../judoshiai/httpd.c:295
 msgid "Sheet"
 msgstr "blað"
 
-#: ../judoshiai/httpd.c:314
 msgid "Previous winner"
 msgstr "Síðasti sigurvegari"
 
-#: ../judoshiai/httpd.c:318
 msgid "Cancel the match"
 msgstr "Ógilda viðureignina"
 
-#: ../judoshiai/httpd.c:370
 msgid "Select a tatami"
 msgstr "Veldu keppnisvöll"
 
-#: ../judoshiai/httpd.c:515
 msgid "Password accepted.<br>"
 msgstr "Lykilorð samþykkt.<br>"
 
-#: ../judoshiai/httpd.c:521
 msgid "User"
 msgstr "Notandi"
 
-#: ../judoshiai/httpd.c:521 ../judoshiai/httpd.c:532 ../judoshiai/httpd.c:590
 msgid "Back"
 msgstr "Til baka"
 
-#: ../judoshiai/httpd.c:532
 msgid "Wrong password"
 msgstr "Rangt lykilorð"
 
-#: ../judoshiai/httpd.c:566
 msgid "Logout"
 msgstr "Skrá út"
 
-#: ../judoshiai/httpd.c:568 ../judoshiai/httpd.c:711
 msgid "Login"
 msgstr "Skrá inn"
 
-#: ../judoshiai/httpd.c:710
 msgid "No rights to give results"
 msgstr "Enginn réttur til að gefa úrslit."
 
-#: ../judoshiai/import.c:391
 msgid "Not used"
 msgstr "Ekki notað"
 
-#: ../judoshiai/import.c:393
 msgid "Column"
 msgstr "Dálkur"
 
-#: ../judoshiai/import.c:398
 msgid "Import from file"
 msgstr "Flytja inn frá skrá"
 
-#: ../judoshiai/import.c:480
 msgid "Sex:"
 msgstr "Kyn:"
 
-#: ../judoshiai/import.c:481
 msgid "Girl Text:"
 msgstr "GirlText:"
 
-#: ../judoshiai/import.c:482
 msgid "Column Separator:"
 msgstr "Dálka aðgreinir:"
 
-#: ../judoshiai/import.c:513
 msgid "competitors added"
 msgstr "keppendum bætt við"
 
-#: ../judoshiai/import.c:514
 msgid "errors"
 msgstr "villur"
 
-#: ../judoshiai/import.c:515
 msgid "competitors existed already"
 msgstr "keppendur til staðar nú þegar"
 
-#: ../judoshiai/log.c:101 ../judoshiai/log.c:247 ../judoshiai/matches.c:2207
-#: ../judoshiai/matches.c:2809
 msgid "Time"
 msgstr "Tími"
 
-#: ../judoshiai/log.c:114 ../judoshiai/log.c:250
 msgid "Class"
 msgstr "Deild"
 
-#: ../judoshiai/log.c:137 ../judoshiai/log.c:253
 msgid "Message"
 msgstr "Skilaboð"
 
-#: ../judoshiai/log.c:175 ../judoshiai/log.c:256
 msgid "Log"
 msgstr "Atburðaskrá"
 
-#: ../judoshiai/main.c:392
 msgid "Is there another JudoShiai program running?"
 msgstr "Er annað JudoShiai forrit í gangi?"
 
-#: ../judoshiai/main.c:395
 msgid "Yes, another JudoShiai program is running"
 msgstr "Já, annað JudoShiai forrit er í gangi"
 
-#: ../judoshiai/main.c:396
 msgid ""
 "No, this the only JudoShiai program. \n"
 "Purge erroneous lock file."
@@ -856,7 +611,6 @@ msgstr ""
 "Nei, þetta er eina JudoShiaiforritið. \n"
 "Hreinsa ósanna læsta skrá."
 
-#: ../judoshiai/main.c:405
 msgid ""
 "Communication is blocked! \n"
 "You can still use the program to create categories etc."
@@ -864,347 +618,249 @@ msgstr ""
 "Samskipti eru lokuð!\n"
 "Þú getur enn notað forritið til að búa til flokka o.s.f."
 
-#: ../judoshiai/match-data.c:1363 ../judoshiai/match-data.c:1400
-#: ../judoshiai/matches.c:85
 msgid "Pool"
 msgstr "Riðill"
 
-#: ../judoshiai/matches.c:86
 msgid "Double pool"
 msgstr "Tvöfaldur riðill"
 
-#: ../judoshiai/matches.c:89
 msgid "Double repechage"
 msgstr "Tvöföld uppreisn"
 
-#: ../judoshiai/match-graph.c:680 ../judoshiai/matches.c:283
-#: ../judoshiai/matches.c:1852
 msgid "Next match"
 msgstr "Næsta viðureign"
 
 msgid "Next contest"
 msgstr "Næsta keppni"
 
-#: ../judoshiai/match-graph.c:686 ../judoshiai/matches.c:286
-#: ../judoshiai/matches.c:1459 ../judoshiai/matches.c:1464
-#: ../judoshiai/matches.c:1857
 msgid "Preparing"
 msgstr "Tilbúin"
 
-#: ../judoshiai/matches.c:1495 ../judoshiai/matches.c:2304
 msgid "Preparing:"
 msgstr "Tilbúin:"
 
-#: ../judoshiai/match-graph.c:692 ../judoshiai/matches.c:289
-#: ../judoshiai/matches.c:1862
 msgid "Delay the match"
 msgstr "Seinka viðureign"
 
-#: ../judoshiai/popup-menu.c:172
 msgid "Matches matched. Clear the results first."
 msgstr "Viðureignir jafnar. Hreinsaðu úrslitin fyrst."
 
-#: ../judoshiai/matches.c:368 ../judoshiai/matches.c:1068
-#: ../judoshiai/matches.c:1082 ../judoshiai/matches.c:1110
-#: ../judoshiai/matches.c:1124
 msgid "canceled"
 msgstr "ógilt"
 
-#: ../judoshiai/matches.c:1085 ../judoshiai/matches.c:1128
 msgid "changed"
 msgstr "breytt"
 
-#: ../judoshiai/matches.c:1590
 msgid "points"
 msgstr "stig"
 
-#: ../judoshiai/matches.c:1781 ../judoshiai/popup-menu.c:351
 msgid "Expand All"
 msgstr "Útvíkka allt"
 
-#: ../judoshiai/matches.c:1786 ../judoshiai/popup-menu.c:356
 msgid "Collapse All"
 msgstr "Draga allt saman"
 
-#: ../judoshiai/matches.c:1867
 msgid "Remove comment"
 msgstr "fjarlægja athugasemdir"
 
-#: ../judoshiai/matches.c:2117 ../judoshiai/matches.c:2191
-#: ../judoshiai/matches.c:2797 ../judoshiai/matches.c:2806
 msgid "Blue"
 msgstr "Blár"
 
-#: ../judoshiai/matches.c:2117 ../judoshiai/matches.c:2191
-#: ../judoshiai/matches.c:2797 ../judoshiai/matches.c:2806
 msgid "White"
 msgstr "Hvítur"
 
-#: ../judoshiai/matches.c:2223 ../judoshiai/matches.c:2812
 msgid "Comment"
 msgstr "Athugasemnd"
 
-#: ../judoshiai/matches.c:2149 ../judoshiai/matches.c:2162
-#: ../judoshiai/matches.c:2800 ../judoshiai/matches.c:2803
 msgid "Points"
 msgstr "Stig"
 
-#: ../judoshiai/match-graph.c:169 ../judoinfo/main.c:199
 msgid "Prev. winner:"
 msgstr "Síðasti sigurvegari:"
 
-#: ../judoshiai/match-graph.c:360
-#, c-format
 msgid "Delayed"
 msgstr "Í bið"
 
-#: ../judoshiai/match-graph.c:698
 msgid "Remove delay"
 msgstr "Fjarlægja seinkun"
 
-#: ../judoshiai/menuacts.c:68 ../judoshiai/menuacts.c:434
 msgid "Date:"
 msgstr "Dagsetning:"
 
-#: ../judoshiai/menuacts.c:69 ../judoshiai/menuacts.c:435
 msgid "Place:"
 msgstr "Staður:"
 
-#: ../judoshiai/menuacts.c:70 ../judoshiai/menuacts.c:436
 msgid "Start time:"
 msgstr "Upphafstími:"
 
-#: ../judoshiai/menuacts.c:140
 msgid "Tournament from the net"
 msgstr "Mótið af netinu"
 
-#: ../judoshiai/menuacts.c:260
 msgid "Select sheet font"
 msgstr "Veldu leturgerð á blöðin"
 
-#: ../judoshiai/another-shiai.c:734 ../judoshiai/main.c:184
-#: ../judoshiai/menuacts.c:60 ../judoshiai/menus.c:120
-#: ../judoshiai/menus.c:812
 msgid "Tournament"
 msgstr "Mót"
 
-#: ../judoshiai/menuacts.c:67 ../judoshiai/menuacts.c:433
 msgid "Tournament:"
 msgstr "Mót:"
 
-#: ../judoshiai/another-shiai.c:732 ../judoshiai/menuacts.c:487
 msgid "Tournaments"
 msgstr "Mót"
 
-#: ../judoshiai/menuacts.c:439 ../judoshiai/write-results.c:950
 msgid "Competitors:"
 msgstr "Keppendur:"
 
-#: ../judoshiai/menuacts.c:440
 msgid "Weighted:"
 msgstr "Vigtaður:"
 
-#: ../judoshiai/menuacts.c:489
 msgid "Add competitors"
 msgstr "Bæta við keppendum"
 
-#: ../judoshiai/menuacts.c:497
 msgid "Clean up duplicates and update reg. categories"
 msgstr "Hreinsa burt tvíritun og uppfæra skráða flokka"
 
-#: ../judoshiai/menuacts.c:536
 msgid "competitors added and updated"
 msgstr "Keppendum bætt við og uppfært"
 
-#: ../judoshiai/menuacts.c:536
 msgid "competitors already existed"
 msgstr "Keppendur nú þegar til staðar"
 
-#: ../judoshiai/menuacts.c:538
 msgid "competitors added unchanged"
 msgstr "Keppendum bætt við óbreyttum"
 
-#: ../judoshiai/competitors.c:296 ../judoshiai/competitors.c:299
-#: ../judoshiai/popup-menu.c:79 ../judoshiai/popup-menu.c:95
-#: ../judoshiai/popup-menu.c:301
 msgid "Remove drawing first"
 msgstr "Fjarlægja fyrst dráttinn"
 
-#: ../judoshiai/popup-menu.c:288
 msgid "already exists"
 msgstr "nú þegar til staðar"
 
-#: ../judoshiai/popup-menu.c:368
 msgid "Move Competitors to Category..."
 msgstr "Flytja keppendur í flokk..."
 
-#: ../judoshiai/popup-menu.c:392
 msgid "Move Competitors Here"
 msgstr "Flytja keppendur hingað"
 
-#: ../judoshiai/popup-menu.c:397
 msgid "Compose Unofficial Category"
 msgstr "Búa til óformlegan flokk"
 
-#: ../judoshiai/popup-menu.c:413
 msgid "Draw Manually"
 msgstr "Draga handvirkt"
 
-#: ../judoshiai/popup-menu.c:418
 msgid "Remove Drawing"
 msgstr "Fjarlægja dráttinn"
 
-#: ../judoshiai/popup-menu.c:426
 msgid "Copy Competitors"
 msgstr "Afrita  keppendur"
 
-#: ../judoshiai/popup-menu.c:432
 msgid "Remove Competitors"
 msgstr "Fjarlægja keppendur"
 
-#: ../judoshiai/popup-menu.c:440
 msgid "Show Sheet"
 msgstr "Sýna blað"
 
-#: ../judoshiai/search.c:137
 msgid "Search"
 msgstr "Leita"
 
-#: ../judoshiai/set-categories.c:700
 msgid "----- Men -----"
 msgstr "----- Karlar -----"
 
-#: ../judoshiai/set-categories.c:706
 msgid "----- Women -----"
 msgstr "----- Konur -----"
 
-#: ../judoshiai/set-categories.c:715
 msgid "Highest age:"
 msgstr "Hæsti aldur:"
 
-#: ../judoshiai/set-categories.c:716
 msgid "Age text:"
 msgstr "Aldurs fl.:"
 
-#: ../judoshiai/set-categories.c:717
 msgid "Match time:"
 msgstr "Keppnis tími:"
 
-#: ../judoshiai/set-categories.c:718
 msgid "Rest time:"
 msgstr "Hvíldar tími:"
 
-#: ../judoshiai/set-categories.c:720
 msgid "Pin times (IWYK):"
 msgstr "Fastatak (IWYK):"
 
-#: ../judoshiai/set-categories.c:784
 msgid "Highest weight (g):"
 msgstr "Mesta þyngd (g):"
 
-#: ../judoshiai/set-categories.c:785
 msgid "Weight text:"
 msgstr "Þyngdar fl.:"
 
-#: ../judoshiai/print.c:187 ../judoinfo/main.c:731 ../judojudogi/main.c:817
 msgid "Save file"
 msgstr "Vista skrá"
 
-#: ../judoshiai/util.c:381
 msgid "Which one is correct?"
 msgstr "Hvor þeirra er rétt?"
 
-#: ../judoshiai/util.c:384
 msgid "Own database"
 msgstr "Eigin gagnabanki"
 
-#: ../judoshiai/util.c:385
 msgid "Foreign database"
 msgstr "Erlendur gagnabanki"
 
-#: ../judoshiai/util.c:386
 msgid "Do not change"
 msgstr "Ekki breyta"
 
-#: ../judoshiai/util.c:387
 msgid "Stop synchronization"
 msgstr "Hætta samhæfingu"
 
-#: ../judoshiai/menuacts.c:71 ../judoshiai/menuacts.c:437
 msgid "Number of tatamis:"
 msgstr "Fjöldi valla:"
 
-#: ../judoshiai/sheets.c:2626 ../judoshiai/sheets.c:2717
 msgid "Sheets"
 msgstr "Blöð"
 
-#: ../judoinfo/main.c:213 ../judojudogi/main.c:209
 msgid "Category starts"
 msgstr "Flokkur byrjar"
 
-#: ../judoshiai/matches.c:1224 ../judoinfo/main.c:222 ../judojudogi/main.c:218
 msgid "Gold medal match"
 msgstr "Úrslitaviðureign"
 
-#: ../judoshiai/matches.c:1226 ../judoinfo/main.c:224 ../judojudogi/main.c:220
 msgid "Bronze match A"
 msgstr "Brons viðureign A"
 
-#: ../judoshiai/matches.c:1228 ../judoinfo/main.c:226 ../judojudogi/main.c:222
 msgid "Bronze match B"
 msgstr "Brons viðureign B"
 
-#: ../judoshiai/matches.c:1230 ../judoinfo/main.c:228 ../judojudogi/main.c:224
 msgid "Semifinal A"
 msgstr "Undanrásir A"
 
-#: ../judoshiai/matches.c:1232 ../judoinfo/main.c:230 ../judojudogi/main.c:226
 msgid "Semifinal B"
 msgstr "Undanrásir B"
 
-#: ../judoinfo/menus.c:384 ../judojudogi/menus.c:391
 msgid "Show Tatami"
 msgstr "Sýna keppnissvæði"
 
-#: ../judotimer/stopwatch.c:669 ../judotimer/stopwatch.c:682
-#: ../judotimer/stopwatch.c:830
 msgid "Start New Match?"
 msgstr "Byrja nýja viðureign?"
 
-#: ../judotimer/main.c:950 ../judotimer/main.c:955
 msgid "Hansokumake to blue"
 msgstr "Hansokumake á bláan"
 
-#: ../judotimer/main.c:948 ../judotimer/main.c:957
 msgid "Hansokumake to white"
 msgstr "Hansokumake á hvítan"
 
-#: ../judotimer/comm.c:218 ../judotimer/main.c:914 ../judotimer/menus.c:352
-#: ../judotimer/menus.c:736 ../judotimer/stopwatch.c:1051
 msgid "Golden Score"
 msgstr "Gullskor"
 
-#: ../judotimer/stopwatch.c:463
 msgid "Start Golden Score?"
 msgstr "Byrja Gull skor?"
 
-#: ../judotimer/stopwatch.c:510
 msgid "Hantei"
 msgstr "Hantei"
 
-#: ../judotimer/stopwatch.c:514
 msgid "Blue wins"
 msgstr "Blár vinnur"
 
-#: ../judotimer/stopwatch.c:515
 msgid "White wins"
 msgstr "Hvítur vinnur"
 
-#: ../judotimer/stopwatch.c:916
 msgid "REST TIME"
 msgstr "HVÍLDAR TÍMI"
 
-#: ../judoshiai/competitors.c:530 ../judoshiai/import.c:478
 msgid "Seeding:"
 msgstr "Forröðun:"
 
@@ -1220,407 +876,304 @@ msgstr "3"
 msgid "4"
 msgstr "4"
 
-#: ../judoshiai/match-graph.c:706
 msgid "Freeze match order"
 msgstr "Frysta viðureignar röð"
 
-#: ../judoshiai/match-graph.c:712
 msgid "Unfreeze exported"
 msgstr "Leyfa útflutning"
 
-#: ../judoshiai/match-graph.c:718
 msgid "Unfreeze imported"
 msgstr "Leyfa innflutning"
 
-#: ../judoshiai/match-graph.c:724
 msgid "Unfreeze this"
 msgstr "Leyfa þetta"
 
-#: ../judoshiai/menus.c:178 ../judoshiai/menus.c:828
 msgid "SQL Dialog"
 msgstr "SQL-samskipti"
 
-#: ../judoshiai/menus.c:251 ../judoshiai/menus.c:847
 msgid "Print All (PDF)"
 msgstr "Prenta allt (PDF)"
 
-#: ../judoshiai/set-categories.c:719
 msgid "Golden Score:"
 msgstr "Gull skor:"
 
-#: ../judoshiai/sql-dialog.c:169
 msgid "SQL"
 msgstr "SQL"
 
-#: ../judoinfo/menus.c:59
 msgid "About JudoInfo"
 msgstr "Um JudoInfo"
 
-#: ../judoshiai/drawing.c:1291
 msgid "Next"
 msgstr "Næsta"
 
-#: ../judoshiai/drawing.c:1292
 msgid "Rest"
 msgstr "Hvíld"
 
-#: ../judoshiai/menuacts.c:649
 msgid "Do Backup"
 msgstr "Taktu afrit"
 
-#: ../judoshiai/menuacts.c:717
 msgid "CANNOT OPEN BACKUP FILE"
 msgstr "Get ekki opnað afritunnar skrá"
 
-#: ../judoshiai/menus.c:176 ../judoshiai/menus.c:826
 msgid "Tournament Backup"
 msgstr "Móta afrit"
 
-#: ../judoinfo/menus.c:375 ../judojudogi/menus.c:382
 msgid "Small display"
 msgstr "Skjámynd 2"
 
-#: ../judoshiai/popup-menu.c:403
 msgid "Draw Selected"
 msgstr "Draga valda"
 
-#: ../judoshiai/popup-menu.c:408
 msgid "Draw and Print Selected"
 msgstr "Draga og Prenta valda aðila"
 
-#: ../judoshiai/popup-menu.c:445
 msgid "Print Selected Sheets (Printer)"
 msgstr "Prenta valið blað (Prentari)"
 
-#: ../judoshiai/popup-menu.c:450
 msgid "Print Selected Sheets (PDF)"
 msgstr "Prenta valið blað (PDF)"
 
-#: ../judotimer/show-ad.c:1873
 msgid "Advertisement"
 msgstr "Auglýsing"
 
-#: ../judoshiai/menuacts.c:426
 msgid "Tournament properties"
 msgstr "Tegund Móts"
 
-#: ../judoshiai/menus.c:252 ../judoshiai/menus.c:848
 msgid "Print Matches (CSV)"
 msgstr "Prenta viðureignir (CSV)"
 
-#: ../judoshiai/print.c:1756
 msgid "Match File"
 msgstr "Viðureigna skrá"
 
-#: ../judoshiai/print.c:1768
 msgid "Print Not Started Categories"
 msgstr "Prenta flokka sem eru ekki byrjaðir"
 
-#: ../judoshiai/print.c:1772
 msgid "Print Started Categories"
 msgstr "Prenta flokka sem eru byrjaðir"
 
-#: ../judoshiai/print.c:1776
 msgid "Print Finished Categories"
 msgstr "Prenta flokka sem er lokið"
 
-#: ../judoshiai/print.c:1784
 msgid "Print Result"
 msgstr "Prenta úrslit"
 
-#: ../judoshiai/print.c:1788
 msgid "Print IWYKS"
 msgstr "Prenta IWYKS"
 
-#: ../judoshiai/print.c:1792
 msgid "Print Comment"
 msgstr "Prenta  athugasemdir"
 
-#: ../judoshiai/write-results.c:1095
 msgid "Create Statistics"
 msgstr "Búa til tölfræði"
 
-#: ../judoshiai/util.c:466
 msgid "NOTE"
 msgstr "Minnispunktar"
 
-#: ../judoshiai/util.c:466
 msgid "is not a valid ASCII string!"
 msgstr "er ekki gildur ASCII strengur!"
 
-#: ../judotimer/menus.c:761
 msgid "No koka"
 msgstr "Ekki nota Koka"
 
-#: ../judotimer/menus.c:762
 msgid "Leave points for GS"
 msgstr "Punktar fylgja með í GS"
 
-#: ../judoshiai/menus.c:908
 msgid "Automatic Match Delay"
 msgstr "Sjálfvirk seinkun á viðureignum"
 
-#: ../judoshiai/categories.c:111
 msgid "Cannot move"
 msgstr "Get ekk flutt"
 
-#: ../judoshiai/menus.c:907
 msgid "Mirror Tatami Order"
 msgstr "Öfug keppnisvallaröð"
 
-#: ../judoinfo/menus.c:377 ../judojudogi/menus.c:384
 msgid "Mirror tatami order"
 msgstr "Öfug keppnisvallaröð"
 
-#: ../judotimer/menus.c:788 ../judoshiai/another-shiai.c:606
-#: ../judoshiai/competitors.c:1150 ../judoshiai/competitors.c:1894
 msgid "Country"
 msgstr "Land"
 
-#: ../judoshiai/another-shiai.c:650 ../judoshiai/competitors.c:1194
-#: ../judoshiai/competitors.c:1903
 msgid "Id"
 msgstr "Kt"
 
-#: ../judoshiai/competitors.c:476 ../judoshiai/import.c:474
 msgid "Country:"
 msgstr "Land:"
 
-#: ../judoshiai/competitors.c:545 ../judoshiai/import.c:477
 msgid "Id:"
 msgstr "Kt:"
 
-#: ../judoshiai/competitors.c:594
 msgid "System:"
 msgstr "Kerfi:"
 
-#: ../judoshiai/match-data.c:1399 ../judoshiai/print.c:1981
 msgid "Default"
 msgstr "Sjálfgildi"
 
-#: ../judoshiai/match-data.c:1404
 msgid "FIN Double Repechage"
 msgstr "FIN Tvöföld uppreisn"
 
-#: ../judoshiai/match-data.c:1405
 msgid "SWE Double Repechage"
 msgstr "SWE Tvöföld uppreisn"
 
-#: ../judoshiai/match-data.c:1406
 msgid "SWE Double Elimination"
 msgstr "SWE Tvöfaldur útsláttur"
 
-#: ../judoshiai/match-data.c:1407
 msgid "EST Double Elimination"
 msgstr "EST Tvöfaldur útsláttur"
 
-#: ../judoshiai/match-data.c:1408
 msgid "Single Elimination"
 msgstr "Einfaldur útsláttur"
 
-#: ../judoshiai/match-data.c:1409
 msgid "SWE Single Repechage"
 msgstr "SWE Einföld uppreisn"
 
-#: ../judoshiai/menus.c:374 ../judoshiai/menus.c:891
 msgid "Club Name Only"
 msgstr "Nafn félags eingöngu"
 
-#: ../judoshiai/menus.c:376 ../judoshiai/menus.c:892
 msgid "Country Name Only"
 msgstr "Nafn þjóðar eingöngu"
 
-#: ../judoshiai/menus.c:378 ../judoshiai/menus.c:893
 msgid "Both Club and Country"
 msgstr "Bæði félag og þjóð"
 
-#: ../judoshiai/menus.c:858
 msgid "International System"
 msgstr "Alþjóðlegt kerfi"
 
-#: ../judoshiai/menus.c:859
 msgid "Finnish System"
 msgstr "Finnska kerfið"
 
-#: ../judoshiai/menus.c:860
 msgid "Swedish System"
 msgstr "Sænska kerfið"
 
-#: ../judoshiai/menus.c:861
 msgid "Estonian System"
 msgstr "Eistneska kerfið"
 
-#: ../judoshiai/set-categories.c:684
 msgid "Reset to Defaults"
 msgstr "Endursetja á sjálfgildi"
 
-#: ../judotimer/menus.c:361 ../judotimer/menus.c:755
 msgid "View Log"
 msgstr "Birta atburðaskrá"
 
-#: ../judoshiai/match-data.c:1364 ../judoshiai/match-data.c:1401
 msgid "Double Pool"
 msgstr "Tvöfaldur riðill"
 
-#: ../judoshiai/db.c:244
 msgid "Cannot handle: Database created with newer JudoShiai version."
 msgstr ""
 "Get ekki unnið með þetta: Gagnagrunnur útbúinn með nýrri útgáfu af JudoShiai."
 
-#: ../judoshiai/db.c:327
 msgid "Database tables updated."
 msgstr "Gagnagrunnsskrá er uppfærð."
 
-#: ../judoshiai/main.c:158
 msgid "Cannot open"
 msgstr "Get ekki opnað"
 
-#: ../judoshiai/menus.c:379 ../judoshiai/menus.c:894
 msgid "Abbreviations in Sheets"
 msgstr "Skammstöfun á blöðum"
 
-#: ../judotimer/menus.c:769
 msgid "Display layout"
 msgstr "Skjámynda útlit"
 
-#: ../judotimer/menus.c:791
 msgid "Contest area"
 msgstr "Keppnissvæði"
 
-#: ../judotimer/menus.c:807
 msgid "Set time"
 msgstr "Stilla klukku"
 
-#: ../judotimer/menus.c:819
 msgid "Sound"
 msgstr "Hljóð"
 
-#: ../judotimer/menus.c:833 ../judoinfo/menus.c:402 ../judoweight/menus.c:277
-#: ../judojudogi/menus.c:409
 msgid "Change language to Spanish"
 msgstr "Breyta tungumáli yfir í Spænsku"
 
-#: ../judotimer/sound.c:92 ../judoshiai/menuacts.c:277
 msgid "Choose a file"
 msgstr "Velja skrá"
 
-#: ../judotimer/sound.c:104
 msgid "Sound Files"
 msgstr "Hljóð skrár"
 
-#: ../judotimer/sound.c:109
 msgid "All Files"
 msgstr "Allar skrár"
 
-#: ../judoshiai/match-data.c:1360
 msgid "Best of 3"
 msgstr "Best af 3"
 
-#: ../judoshiai/match-data.c:1361
 msgid "One match"
 msgstr "Ein viðureign"
 
-#: ../judoshiai/match-data.c:1365 ../judoshiai/match-data.c:1402
 msgid "Quad Pool"
 msgstr "Fjórir 4 manna riðlar"
 
-#: ../judoshiai/match-data.c:1371
 msgid "IJF Dbl Rep"
 msgstr "IJF Tvöföld uppreisn."
 
-#: ../judoshiai/match-data.c:1374
 msgid "FIN Dbl Repchg"
 msgstr "FIN Tvöföld Uppreisn."
 
-#: ../judoshiai/match-data.c:1375
 msgid "SWE Dubb återkv"
 msgstr "SWE Tvöföld uppreisn."
 
-#: ../judoshiai/match-data.c:1376
 msgid "SWE Dir återkv"
 msgstr "SWE Beinn útsláttur."
 
-#: ../judoshiai/match-data.c:1377
 msgid "EST D klass"
 msgstr "EST Pitkä ker."
 
-#: ../judoshiai/match-data.c:1378
 msgid "No Repechg"
 msgstr "Engin uppreisn"
 
-#: ../judoshiai/match-data.c:1379
 msgid "SWE Enkelt återkv"
 msgstr "SWE Lyhyet ker."
 
-#: ../judoshiai/match-data.c:1380
 msgid "ESP Dbl Lost"
 msgstr "ESP Pitkä ker."
 
-#: ../judoshiai/match-data.c:1382
 msgid "ESP Dbl Rep"
 msgstr "ESP Ransk."
 
-#: ../judoshiai/match-data.c:1383
 msgid "ESP Simple Rep"
 msgstr "ESP Lyh. ker."
 
-#: ../judoshiai/match-data.c:1410
 msgid "ESP Double Lost"
 msgstr "ESP Pitkä keräily"
 
-#: ../judoshiai/match-data.c:1412
 msgid "ESP Double Repechage"
 msgstr "ESP Ranskalainen"
 
-#: ../judoshiai/match-data.c:1413
 msgid "ESP Simple Repechage"
 msgstr "ESP Lyhyet keräilyt"
 
-#: ../judoshiai/matches.c:88
 msgid "Quadruple pool"
 msgstr "Neloispooli"
 
-#: ../judoshiai/match-data.c:1396
 msgid "IJF Double Repechage"
 msgstr "IJF Tvöföld uppreisn"
 
-#: ../judoshiai/menuacts.c:287
 msgid "Picture Files"
 msgstr "Myndaskrár"
 
-#: ../judoshiai/menuacts.c:290
 msgid "Print Headers"
 msgstr "Prenta haus"
 
-#: ../judoshiai/menus.c:412 ../judoshiai/menus.c:881
 msgid "Language Selection"
 msgstr "Velja tungumál"
 
-#: ../judoshiai/menus.c:862
 msgid "Spanish System"
 msgstr "Spænska kerfið"
 
-#: ../judoshiai/menus.c:874
 msgid "Communication"
 msgstr "Samskipti"
 
-#: ../judoshiai/menus.c:890
 msgid "Club Text Selection"
 msgstr "Félaga snið"
 
-#: ../judoshiai/menus.c:909
 msgid "Print Logo"
 msgstr "Prenta logo"
 
-#: ../judoshiai/menus.c:896
 msgid "Sheet Layout"
 msgstr "Útlit blaðs"
 
-#: ../judoshiai/menus.c:897
 msgid "Weights Visible"
 msgstr "Þyngd sjáanleg"
 
-#: ../judoshiai/menus.c:898
 msgid "Grade Visible"
 msgstr "Gráða sjáanleg"
 
@@ -1630,485 +1183,368 @@ msgstr "Prenta keppenda form "
 msgid "Select template"
 msgstr "Veldu form"
 
-#: ../judoshiai/print.c:670
 msgid "Line"
 msgstr "Lína"
 
-#: ../judoshiai/print.c:670
 msgid "Syntax error"
 msgstr "Syntax villa"
 
-#: ../judotimer/menus.c:763
 msgid "Stop clock on Ippon"
 msgstr "Stoppa klukku á Ippon"
 
-#: ../judotimer/menus.c:753
 msgid "Switch sides"
 msgstr "Skipta um stöðu"
 
-#: ../judotimer/menus.c:776
 msgid "Display customized layout"
 msgstr "Sýna sérútbúið útlit"
 
-#: ../judotimer/menus.c:835 ../judoinfo/menus.c:404 ../judoweight/menus.c:279
-#: ../judojudogi/menus.c:411
 msgid "Change language to Estonian"
 msgstr "Skipta yfir í Eistnesku"
 
-#: ../judotimer/menus.c:837 ../judoinfo/menus.c:406 ../judoweight/menus.c:281
-#: ../judojudogi/menus.c:413
 msgid "Change language to Ukrainan"
 msgstr "Skipta yfir í Úkranísku"
 
-#: ../judoshiai/httpd.c:772
 msgid "No competitor found!"
 msgstr "Enginn keppandi finnst!"
 
-#: ../judoshiai/match-data.c:1384
 msgid "Modified Dbl Elim"
 msgstr "Breyttur tvöfaldur útsláttur"
 
-#: ../judoshiai/match-data.c:1385
 msgid "FIN Dbl Repchg One Bronze"
 msgstr "FIN Tvöföld uppreisn (Eitt brons)"
 
-#: ../judoshiai/match-data.c:1414
 msgid "Modified Double Elimination"
 msgstr "Breyttur tvöfaldur útsláttur"
 
-#: ../judoshiai/match-data.c:1415
 msgid "FIN Double Repechage One Bronze"
 msgstr "FIN Tvöföld uppreisn (Eitt brons)"
 
-#: ../judoshiai/matches.c:1234 ../judoinfo/main.c:232 ../judojudogi/main.c:228
 msgid "Silver medal match"
 msgstr "Silfur viðureign"
 
-#: ../judoshiai/menus.c:903
 msgid "Pool Style 2"
 msgstr "Riðla kerfi 2"
 
-#: ../judoshiai/menus.c:904
 msgid "Use Belt Colors"
 msgstr "Nota Belta Liti"
 
-#: ../judoshiai/print.c:1780
 msgid "Print Unmatched"
 msgstr "Prenta óglímdar viðureignir"
 
-#: ../judotimer/menus.c:766 ../judoinfo/menus.c:378 ../judojudogi/menus.c:385
 msgid "White first"
 msgstr "Hvítur fyrst"
 
-#: ../judoshiai/httpd.c:556
 msgid "Show"
 msgstr "Sýna"
 
-#: ../judoshiai/httpd.c:557
 msgid "Show Deleted"
 msgstr "Sýna eydda"
 
-#: ../judoshiai/httpd.c:861
 msgid "Add"
 msgstr "Bæta við"
 
-#: ../judotimer/show-ad.c:1885 ../judotimer/stopwatch.c:683
-#: ../judoshiai/competitors.c:567 ../judoshiai/db-validate.c:92
-#: ../judoshiai/httpd.c:861 ../judoweight/main.c:347 ../judoweight/main.c:361
-#: ../judojudogi/main.c:677
 msgid "OK"
 msgstr "OK"
 
-#: ../judoshiai/menuacts.c:72 ../judoshiai/menuacts.c:438
 msgid "White first:"
 msgstr "Hvítur fyrst:"
 
 msgid "Scale Serial Interface"
 msgstr "Vog- Raðtengi (serial)"
 
-#: ../common/serial.c:329
 msgid "Serial Communication"
 msgstr "Raðræn samskipti (serial)"
 
-#: ../common/serial.c:357
 msgid "In Use"
 msgstr "Í notkun"
 
-#: ../common/serial.c:359
 msgid "Device"
 msgstr "Tæki"
 
-#: ../common/serial.c:361
 msgid "Baudrate"
 msgstr "Hraði (Baudrate)"
 
-#: ../judoshiai/sql-dialog.c:105
 msgid "Basic Scripts"
 msgstr "Grundvallar skriptur"
 
-#: ../judoshiai/sql-dialog.c:107
 msgid "Select Script"
 msgstr "Veldu skriptu"
 
-#: ../judoshiai/sql-dialog.c:138
 msgid "No script available"
 msgstr "Engin skripta í boði"
 
-#: ../judoshiai/sql-dialog.c:182
 msgid "Run Script"
 msgstr "Keyra skriptu"
 
-#: ../judoshiai/sql-dialog.c:183
 msgid "Repeat Script"
 msgstr "Endurtaka skriptu"
 
-#: ../judoshiai/match-data.c:1366 ../judoshiai/match-data.c:1403
 msgid "Double Pool 2"
 msgstr "Tvöfaldur riðill 2"
 
-#: ../judoshiai/matches.c:87
 msgid "Double pool 2"
 msgstr "Tvöfaldur riðill 2"
 
-#: ../judoinfo/menus.c:380 ../judojudogi/menus.c:387
 msgid "Write to file"
 msgstr "Skrifa í skrá"
 
-#: ../judotimer/main.c:873 ../judotimer/main.c:879
 msgid "White has a judogi problem."
 msgstr "Júdóbúnings vandamál hjá hvítum"
 
-#: ../judotimer/main.c:874 ../judotimer/main.c:878
 msgid "Blue has a judogi problem."
 msgstr "Júdóbúnings vandamál hjá bláum"
 
-#: ../judotimer/menus.c:362 ../judotimer/menus.c:756
 msgid "Show Competitors"
 msgstr "Sýna kepppendur"
 
-#: ../judotimer/menus.c:764
 msgid "Confirm New Match"
 msgstr "Staðfesta nýja keppni"
 
-#: ../judotimer/menus.c:767
 msgid "Show competitors"
 msgstr "Sýna kepppendur"
 
-#: ../judotimer/menus.c:778
 msgid "Name format"
 msgstr "Nafna snið"
 
-#: ../judotimer/menus.c:779 ../judoshiai/menus.c:900
 msgid "Name Surname, Country/Club"
 msgstr "Nafn Eftirnafn, Land/Félag"
 
-#: ../judotimer/menus.c:780
 msgid "Surname, Name, Country/Club"
 msgstr "Eftirnafn, Nafn, Land/Félag"
 
-#: ../judotimer/menus.c:781
 msgid "Country/Club  Surname, Name"
 msgstr "Land/Félag  Eftirnafn, Nafn"
 
-#: ../judotimer/menus.c:782
 msgid "Country  Surname, Name"
 msgstr "Land  Eftirnafn, Nafn"
 
-#: ../judotimer/menus.c:783
 msgid "Club  Surname, Name"
 msgstr "Félag  Eftirnafn, Nafn"
 
-#: ../judotimer/menus.c:784
 msgid "Country Surname"
 msgstr "Land Eftirnafn"
 
-#: ../judotimer/menus.c:785
 msgid "Club Surname"
 msgstr "Félag Eftirnafn"
 
-#: ../judotimer/menus.c:786
 msgid "Surname, Name"
 msgstr "Eftirnafn, Nafn"
 
-#: ../judotimer/menus.c:787
 msgid "Surname"
 msgstr "Eftirnafn"
 
-#: ../judotimer/menus.c:801
 msgid "Contest area 9"
 msgstr "Keppnisvöllur 9"
 
-#: ../judotimer/menus.c:802
 msgid "Contest area 10"
 msgstr "Keppnisvöllur 10"
 
-#: ../judotimer/menus.c:839 ../judoinfo/menus.c:408 ../judoweight/menus.c:283
-#: ../judojudogi/menus.c:415
 msgid "Change language to Icelandic"
 msgstr "Skipta yfir í Íslensku"
 
-#: ../judotimer/stopwatch.c:598
 msgid "WINNER"
 msgstr "Sigurvegari"
 
-#: ../judotimer/stopwatch.c:684
 msgid "Cancel"
 msgstr "Ógilda"
 
-#: ../judoshiai/competitors.c:543 ../judoshiai/import.c:479
 msgid "Club Seeding:"
 msgstr "Félagi forraðað:"
 
-#: ../judoshiai/competitors.c:547
 msgid "Gender:"
 msgstr "Kyn:"
 
-#: ../judoshiai/competitors.c:551
 msgid "Male"
 msgstr "Karl"
 
-#: ../judoshiai/competitors.c:552
 msgid "Female"
 msgstr "Kona"
 
-#: ../judoshiai/competitors.c:563 ../judoweight/main.c:342
 msgid "Control:"
 msgstr "Staðfesta:"
 
-#: ../judoshiai/competitors.c:568 ../judoweight/main.c:348
-#: ../judojudogi/main.c:678
 msgid "NOK"
 msgstr "Ekki í lagi"
 
-#: ../judoshiai/competitors.c:1206
 msgid "Seeding"
 msgstr "Forröðun"
 
-#: ../judoshiai/competitors.c:1220
 msgid "Club Seeding"
 msgstr "Félagi forraðað"
 
-#: ../judoshiai/db-validate.c:81
 msgid "Database Validation"
 msgstr "Villu prófun"
 
-#: ../judoshiai/db-validate.c:133
 msgid "Duplicate seedings:\n"
 msgstr "Tví forraðað:\n"
 
-#: ../judoshiai/db-validate.c:140 ../judoshiai/db-validate.c:162
 msgid "seeding"
 msgstr "Forraðað"
 
-#: ../judoshiai/db-validate.c:140 ../judoshiai/db-validate.c:162
-#: ../judoshiai/db-validate.c:182
 msgid "defined"
 msgstr "Skilgreining"
 
-#: ../judoshiai/db-validate.c:140 ../judoshiai/db-validate.c:162
 msgid "times"
 msgstr "Tími"
 
-#: ../judoshiai/db-validate.c:155
 msgid "Duplicate club seedings:\n"
 msgstr "Félagi tví forraðað:\n"
 
-#: ../judoshiai/db-validate.c:178
 msgid "Missing category definitions:\n"
 msgstr "Vantar skilgreiningu á flokkum:\n"
 
-#: ../judoshiai/db-validate.c:182
 msgid "is not"
 msgstr "er ekki"
 
-#: ../judoshiai/db-validate.c:205
 msgid "Typing errors:\n"
 msgstr "Innsláttar villa:\n"
 
-#: ../judoshiai/db-validate.c:210
 msgid "UTF-8 errors"
 msgstr "UTF-8 villa"
 
-#: ../judoshiai/db-validate.c:210
 msgid "Extra spaces"
 msgstr "Auka bil"
 
-#: ../judoshiai/db-validate.c:251
 msgid "Possible duplicate competitors:\n"
 msgstr "Keppandi hugsanlega tvískráður:\n"
 
-#: ../judoshiai/db-validate.c:281
 msgid "Possible duplicate club names:\n"
 msgstr "Félag hugsanlega tvískráð:\n"
 
-#: ../judoshiai/db-validate.c:308
 msgid "Suspicious weights:\n"
 msgstr "Grunsamleg þyngd:\n"
 
-#: ../judoshiai/db-validate.c:327
 msgid "warnings"
 msgstr "Aðvörun"
 
-#: ../judoshiai/medal-matches.c:78
 msgid "Move Medal Matches"
 msgstr "Færa til verðlaunaviðureignir"
 
-#: ../judoshiai/medal-matches.c:85
 msgid "Move match "
 msgstr "Fæara viðureign"
 
-#: ../judoshiai/medal-matches.c:86
 msgid "to tatami and/or"
 msgstr "á keppnisvöll og/eða"
 
-#: ../judoshiai/medal-matches.c:87
 msgid " delay"
 msgstr "seinka"
 
-#: ../judoshiai/medal-matches.c:89
 msgid "Final"
 msgstr "Úrslit"
 
-#: ../judoshiai/medal-matches.c:90
 msgid "Bronze1"
 msgstr "Brons 1"
 
-#: ../judoshiai/medal-matches.c:91
 msgid "Bronze2"
 msgstr "Brons 2"
 
-#: ../judoshiai/medal-matches.c:92
 msgid "Pool's last"
 msgstr "Síðasta í riðli"
 
-#: ../judoshiai/medal-matches.c:97
 msgid "No move"
 msgstr "Ekki færa"
 
-#: ../judoshiai/menuacts.c:499
 msgid "Weighted only"
 msgstr "Eingöngu vigtaðir"
 
-#: ../judoshiai/menuacts.c:501
 msgid "With weights"
 msgstr "Með þyngd"
 
-#: ../judoshiai/menus.c:177 ../judoshiai/menus.c:827
 msgid "Validate Database"
 msgstr "Villu prófun"
 
-#: ../judoshiai/menus.c:370 ../judoshiai/menus.c:887
 msgid "Results in Icelandic"
 msgstr "Úrslit á Íslensku"
 
-#: ../judoshiai/menus.c:840 ../judoshiai/print.c:1971
 msgid "Print Accreditation Cards"
 msgstr "Prenta skráningarspjald"
 
-#: ../judoshiai/menus.c:899
 msgid "Name Format"
 msgstr "Nafna snið"
 
-#: ../judoshiai/menus.c:901
 msgid "Surname Name, Country/Club"
 msgstr "Eftirnafn Nafn, Land/Félag"
 
-#: ../judoshiai/menus.c:902
 msgid "Country/Club,  Surname Name"
 msgstr "Land/Félag,  Eftirnafn Nafn"
 
-#: ../judoshiai/menus.c:911 ../judoweight/menus.c:264
 msgid "Scale Serial Interface..."
 msgstr "Vog- Raðtengi (serial)"
 
-#: ../judoshiai/menus.c:912
 msgid "Medal Matches..."
 msgstr "Verðlauna viðureignir"
 
-#: ../judoshiai/popup-menu.c:455
 msgid "Print Selected Accreditation Cards"
 msgstr "Prenta valin skráningarspjöld"
 
-#: ../judoshiai/print.c:1978
 msgid "Layout:"
 msgstr "Útlit:"
 
-#: ../judoshiai/print.c:1402 ../judoshiai/print.c:1979
 msgid "Print To:"
 msgstr "Prenta á:"
 
-#: ../judoshiai/print.c:1983
 msgid "Template"
 msgstr "Form"
 
-#: ../judoshiai/print.c:1404 ../judoshiai/print.c:1988
 msgid "Printer"
 msgstr "Prentari"
 
-#: ../judoshiai/print.c:1406 ../judoshiai/print.c:1990
 msgid "PDF"
 msgstr "PDF"
 
-#: ../judoshiai/print.c:1995
 msgid "One Card Per Page"
 msgstr "Eitt spjald á blaðsíðu"
 
-#: ../judoinfo/menus.c:374 ../judojudogi/menus.c:381
 msgid "Normal display"
 msgstr "Skjámynd 1"
 
-#: ../judoinfo/menus.c:376 ../judojudogi/menus.c:383
 msgid "Horizontal display"
 msgstr "Skjámynd 3"
 
-#: ../common/serial.c:363
 msgid "Type"
 msgstr "Innsláttur"
 
-#: ../judoweight/main.c:303 ../judojudogi/main.c:670
 msgid "ID:"
 msgstr "Kt.:"
 
-#: ../judoweight/main.c:311
 msgid "Name:"
 msgstr "Nafn:"
 
-#: ../judoweight/menus.c:49
 msgid "About JudoWeight"
 msgstr "Útgáfa"
 
-#: ../judojudogi/main.c:564
 msgid "No match soon! Please wait for a while."
 msgstr "Það er bið í næstu viðureign, vinsamlegast bíðið"
 
-#: ../judojudogi/menus.c:59
 msgid "About JudoJudogi"
 msgstr "Útgáfa"
 
-#: ../judoshiai/menus.c:863
 msgid "Norwegian System"
 msgstr "Norska kerfið"
 
-#: ../judoweight/main.c:367
 msgid "Confirm:"
 msgstr "Staðfesta:"
 
-#: ../judotimer/stopwatch.c:691
 msgid "- - -"
 msgstr ""
 
-#: ../judoshiai/import.c:516
 msgid "syntax errors"
 msgstr ""
 
-#: ../judoshiai/set-categories.c:721
 msgid "Rep. time:"
 msgstr ""
 
-#: ../judoshiai/menus.c:372 ../judoshiai/menus.c:888
 msgid "Results in Norwegian"
 msgstr ""
 
-#: ../judoshiai/print.c:196 ../judoshiai/print.c:1419
 msgid "Landscape"
+msgstr ""
+
+msgid "Resolution:"
+msgstr ""
+
+msgid "Running time"
+msgstr ""
+
+msgid "Resolution (min):"
 msgstr ""

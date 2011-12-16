@@ -1465,7 +1465,7 @@ void print_schedule(void)
     gtk_entry_set_text(GTK_ENTRY(start), info_time);
     gtk_table_attach_defaults(GTK_TABLE(table), start, 1, 2, 2, 3);
 
-    gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new(_("Resolution:")), 0, 1, 3, 4);
+    gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new(_("Resolution (min):")), 0, 1, 3, 4);
     resolution = gtk_entry_new();
     gtk_entry_set_max_length(GTK_ENTRY(resolution), 3);
     snprintf(buf, sizeof(buf), "%d", print_resolution);
