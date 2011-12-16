@@ -30,15 +30,15 @@ static GtkTooltips *menu_tips;
 static GtkWidget *flags[NUM_LANGS], *menu_flags[NUM_LANGS];
 
 static const gchar *flags_files[NUM_LANGS] = {
-    "finland.png", "sweden.png", "uk.png", "spain.png", "estonia.png", "ukraine.png", "iceland.png"
+    "finland.png", "sweden.png", "uk.png", "spain.png", "estonia.png", "ukraine.png", "iceland.png", "norway.png"
 };
 static const gchar *lang_names[NUM_LANGS] = {
-    "fi", "sv", "en", "es", "et", "uk", "is"
+    "fi", "sv", "en", "es", "et", "uk", "is", "no"
 };
 
 static const gchar *help_file_names[NUM_LANGS] = {
     "judoshiai-fi.pdf", "judoshiai-en.pdf", "judoshiai-en.pdf", "judoshiai-es.pdf", "judoshiai-en.pdf",
-    "judoshiai-uk.pdf", "judoshiai-en.pdf"
+    "judoshiai-uk.pdf", "judoshiai-en.pdf", "judoshiai-en.pdf"
 };
 
 static void about_judoinfo( GtkWidget *w,
@@ -160,6 +160,8 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_menu_shell_append (GTK_MENU_SHELL (menubar), help);
 
     for (i = 0; i < NUM_LANGS; i++) {
+        if (i == LANG_NO)
+            continue;
         gtk_menu_shell_append(GTK_MENU_SHELL(menubar), menu_flags[i]); 
         g_signal_connect(G_OBJECT(menu_flags[i]), "button_press_event",
                          G_CALLBACK(change_language), (gpointer)i);
