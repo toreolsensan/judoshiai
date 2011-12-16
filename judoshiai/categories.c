@@ -106,7 +106,7 @@ void create_categories(GtkWidget *w, gpointer data)
                             j->category = g_strdup("?");
                     }
 
-                    if (avl_get_category_status_by_name(j->category) & MATCH_EXISTS) {
+                    if (avl_get_category_status_by_name(j->category) & REAL_MATCH_EXISTS) {
                         SHOW_MESSAGE("%s %s %s -> %s.",
                                      _("Cannot move"),
                                      j->first, j->last, j->category);

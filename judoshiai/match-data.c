@@ -1701,3 +1701,37 @@ gboolean is_repechage(struct compsys systm, gint m)
     return (is_rep(systm.table, sys, b1, m, 0) | is_rep(systm.table, sys, b2, m, 0));
 }
 
+gint num_matches_left(gint index, gint competitors)
+{
+    struct category_data *cat = avl_get_category(index);
+    struct compsys systm = get_system_for_category(index, competitors);
+
+    if (cat && (cat->match_status & REAL_MATCH_EXISTS)) {
+        if ((cat->match_status & MATCH_UNMATCHED) == 0)
+            return 0;
+
+        if (cat->match_count > 0)
+            return cat->match_count - cat->matched_matches_count;
+    }
+
+    if (system_is_french(systm.system)) {
+        gint sys = systm.system - SYSTEM_FRENCH_8;
+        gint high = 8 << sys; // max number of competitors in this system
+        gint table = systm.table;
+        gint comp = systm.numcomp;
+        gint upper = french_num_matches[table][sys];
+        gint lower = (sys == 0) ? 0 : french_num_matches[table][sys-1];
+
+        return upper - (high - comp)*(upper - lower)*2/high;
+    }
+
+    gint n = num_matches(systm.system, systm.numcomp);
+    switch (systm.system) {
+    case SYSTEM_POOL:  return n;
+    case SYSTEM_DPOOL: return n + 3;
+    case SYSTEM_QPOOL: return n + 7;
+    case SYSTEM_DPOOL2: return n + 6;
+    }
+
+    return n;
+}

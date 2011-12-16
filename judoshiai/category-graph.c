@@ -34,7 +34,7 @@ static cairo_surface_t *get_image(const gchar *name);
 #define W(_w) ((_w)*paper_width)
 #define H(_h) ((_h)*paper_height)
 
-#define BOX_HEIGHT (1.4*extents.height > n*6.0 ? 1.4*extents.height : n*6.0)
+#define BOX_HEIGHT (1.4*extents.height > n*mt/30.0 ? 1.4*extents.height : n*mt/30.0)
 
 #define NUM_RECTANGLES 1000
 
@@ -64,7 +64,7 @@ static GtkWidget *cat_graph_label = NULL;
 
 static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointer userdata)
 {
-    gint i, matches_left;
+    gint i, matches_left, matches_time;
     cairo_text_extents_t extents;
     gdouble       y_pos = 0.0, colwidth = W(1.0/(number_of_tatamis + 1));
     gint          max_group;
@@ -108,6 +108,7 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
         }
 		
         matches_left = 0;
+        matches_time = 0;
         max_group = 0;
 
         y_pos = extents.height*1.4;
@@ -121,6 +122,10 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
         while (catdata) {
             gint n = 1;
             gdouble x;
+
+            gint mt = get_category_match_time(catdata->category);
+            if (mt < 180)
+                mt = 180;
 
             if (catdata->group != old_group) {
                 cairo_save(c);
@@ -137,7 +142,7 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
                                     extents.width, extents.height);
                     cairo_fill(c);
 
-                    secs = time(NULL) + matches_left*180;
+                    secs = time(NULL) + matches_time;
                     tm = localtime(&secs);
 				
                     cairo_set_source_rgb(c, 1.0, 1.0, 1.0);
@@ -155,20 +160,20 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
             if (catdata->group > max_group)
                 max_group = catdata->group;
 
+            x = n = 0;
+
             if (catdata->match_count > 0) {
                 x = catdata->matched_matches_count*colwidth/catdata->match_count;
-                n = catdata->match_count - catdata->matched_matches_count;
-            } else {
-                GtkTreeIter tmp_iter;
-                x = n = 0;
-                if (find_iter(&tmp_iter, catdata->index)) {
-                    gint k = gtk_tree_model_iter_n_children(current_model, &tmp_iter);
-                    n = estim_num_matches[k <= 64 ? k : 64];
-                }
+                //n = catdata->match_count - catdata->matched_matches_count;
             }
 
-            if ((catdata->match_status & MATCH_EXISTS) &&
-                (catdata->match_status & MATCH_UNMATCHED) == 0 /*n == 0*/)
+            GtkTreeIter tmp_iter;
+            if (find_iter(&tmp_iter, catdata->index)) {
+                gint k = gtk_tree_model_iter_n_children(current_model, &tmp_iter);
+                n = num_matches_left(catdata->index, k);
+            }
+
+            if (n == 0)
                 goto loop;
 
             cairo_save(c);
@@ -194,6 +199,7 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
             cairo_restore(c);
 				
             matches_left += n;//catdata->match_count - catdata->matched_matches_count;
+            matches_time += n*mt;
 
             struct judoka *j = get_data(catdata->index);
             if (j) {
@@ -236,7 +242,7 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
                             extents.width, extents.height);
             cairo_fill(c);
 
-            secs = time(NULL) + matches_left*180;
+            secs = time(NULL) + matches_time;
             tm = localtime(&secs);
 				
             cairo_set_source_rgb(c, 1.0, 1.0, 1.0);
@@ -552,7 +558,8 @@ static gboolean cannot_move_category(gint cat) {
 
     for (i = 1; i <= NUM_TATAMIS; i++) {
         struct match *m = get_cached_next_matches(i);
-        if (m[0].category == cat && m[0].number < 1000)
+        if (m[0].category == cat && m[0].number < 1000 &&
+            (m[0].blue >= COMPETITOR || m[0].white >= COMPETITOR))
             return TRUE;
     }
     return FALSE;

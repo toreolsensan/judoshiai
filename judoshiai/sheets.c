@@ -1808,6 +1808,7 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
 	bronze1 = fifth1;
 	bronze2 = fifth2;
 	fifth1 = fifth2 = 0;
+        seventh1 = seventh2 = 0;
     }
 
     if (table == TABLE_DOUBLE_REPECHAGE_ONE_BRONZE) {
@@ -1838,11 +1839,13 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
     WRITE_TABLE(result_table_2, 3, 0, "3");
     if (table != TABLE_MODIFIED_DOUBLE_ELIMINATION) {
         WRITE_TABLE(result_table_2, 4, 0, one_bronze(table, sys) ? "4" : "3");
-        WRITE_TABLE(result_table_2, 5, 0, "5");
-        WRITE_TABLE(result_table_2, 6, 0, "5");
-        if (table != TABLE_DOUBLE_REPECHAGE_ONE_BRONZE) {
-            WRITE_TABLE(result_table_2, 7, 0, "7");
-            WRITE_TABLE(result_table_2, 8, 0, "7");
+        if (table != TABLE_NO_REPECHAGE) {
+            WRITE_TABLE(result_table_2, 5, 0, "5");
+            WRITE_TABLE(result_table_2, 6, 0, "5");
+            if (table != TABLE_DOUBLE_REPECHAGE_ONE_BRONZE) {
+                WRITE_TABLE(result_table_2, 7, 0, "7");
+                WRITE_TABLE(result_table_2, 8, 0, "7");
+            }
         }
     }
 

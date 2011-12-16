@@ -75,7 +75,7 @@ static void view_popup_menu_move_judoka(GtkWidget *menuitem, gpointer userdata)
     if (!dest_category)
         return;
 
-    if (db_category_match_status(dest_category_ix) & MATCH_EXISTS) {
+    if (db_category_match_status(dest_category_ix) & REAL_MATCH_EXISTS) {
         SHOW_MESSAGE("%s: %s.", dest_category, _("Remove drawing first"));
         return;
     }
@@ -339,7 +339,6 @@ void view_popup_menu(GtkWidget *treeview,
                      gboolean visible)
 {
     GtkWidget *menu, *menuitem;
-    //gboolean matches_exist = db_match_exists((gint)userdata, 1, 0);
     gboolean matched = db_matched_matches_exist((gint)userdata);
 
     if (dest_category)

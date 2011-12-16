@@ -614,7 +614,8 @@ static const gchar *help_file_names[NUM_LANGS] = {
     "judoshiai-es.pdf", // es
     "judoshiai-en.pdf", // et
     "judoshiai-uk.pdf", // uk
-    "judoshiai-en.pdf"  // is
+    "judoshiai-en.pdf", // is
+    "judoshiai-en.pdf"  // no
 };
 
 void start_help(GtkWidget *w, gpointer data)

@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include <gtk/gtk.h>
 
 #include <cairo.h>
@@ -34,6 +35,7 @@
 #define MY_FONT "Arial"
 
 extern void get_match_data(GtkTreeModel *model, GtkTreeIter *iter, gint *group, gint *category, gint *number);
+static void select_pdf(GtkWidget *w, GdkEventButton *event, gpointer *arg);
 
 #define NUM_PAGES 200
 static struct {
@@ -43,18 +45,31 @@ static struct {
 
 static gint numpages;
 
-static double rownum1, rowheight1;
+static gint rownum1;
+static double rowheight1;
 //static gint cumulative_time;
-#define YPOS (1.2*rownum1*rowheight1 + H(0.01))
 
-static gchar *pdf_out = NULL, *template_in = NULL;
-static gint print_flags = 0;
+#define YPOS (1.2*rownum1*rowheight1 + H(0.01))
+#define ROWHEIGHT (1.3*rowheight1)
+#define YPOS_L(_n) (1.0*(_n)*ROWHEIGHT + top)
+//#define YPOS_L2 (1.3*rownum2*rowheight1 + top)
+
+static gchar *pdf_out = NULL, *schedule_pdf_out = NULL, *template_in = NULL, *schedule_start = NULL;
+static gint print_flags = 0, print_resolution = 30;
+static gboolean print_fixed = TRUE;
 
 typedef enum {
     BARCODE_PS, 
     BARCODE_PDF, 
     BARCODE_PNG
 } target_t;
+
+struct print_struct {
+    GtkWidget *layout_default, *layout_template;
+    GtkWidget *print_printer, *print_pdf;
+    GtkWidget *pdf_file, *template_file;
+};
+
 
 static void paint_surfaces(struct paint_data *pd, 
                            cairo_t *c_pdf, cairo_t *c_png, 
@@ -165,11 +180,12 @@ void write_png(GtkWidget *menuitem, gpointer userdata)
     free_judoka(ctgdata);
 }
 
-static gchar *get_save_as_name(const gchar *dflt, gboolean opendialog)
+static gchar *get_save_as_name(const gchar *dflt, gboolean opendialog, gboolean *landscape)
 {
     GtkWidget *dialog;
     gchar *filename;
     static gchar *last_dir = NULL;
+    GtkWidget *ls = NULL;
 
     dialog = gtk_file_chooser_dialog_new (_("Save file"),
                                           GTK_WINDOW(main_window),
@@ -178,6 +194,13 @@ static gchar *get_save_as_name(const gchar *dflt, gboolean opendialog)
                                           opendialog ? GTK_STOCK_OPEN : GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
                                           NULL);
     gtk_file_chooser_set_do_overwrite_confirmation (GTK_FILE_CHOOSER (dialog), TRUE);
+
+    if (landscape) {
+        ls = gtk_check_button_new_with_label(_("Landscape"));
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ls), TRUE);
+        gtk_widget_show(ls);
+        gtk_file_chooser_set_extra_widget(GTK_FILE_CHOOSER(dialog), ls);
+    }
 
     if (last_dir) {
         gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), last_dir);
@@ -200,6 +223,8 @@ static gchar *get_save_as_name(const gchar *dflt, gboolean opendialog)
         if (last_dir)
             g_free(last_dir);
         last_dir = gtk_file_chooser_get_current_folder(GTK_FILE_CHOOSER (dialog));
+        if (landscape && ls)
+            *landscape = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ls));
     } else
         filename = NULL;
 
@@ -1002,12 +1027,12 @@ static void paint_weight_notes(struct paint_data *pd, gint what, gint page)
         cairo_surface_destroy(image);        
 }
 
-static gint get_start_time(void)
+static gint get_start_time(gchar *p)
 {
     gint h = 0, m = 0, nh = 0, nm = 0, htxt = 1;
-    gchar *p;
+    
 
-    for (p = info_time; *p; p++) {
+    for (; *p; p++) {
         if (*p >= '0' && *p <= '9') {
             if (htxt && nh < 2 && h <= 2) {
                 h = 10*h + *p - '0';
@@ -1030,12 +1055,157 @@ static gint get_start_time(void)
     return (h*3600 + m*60);
 }
 
+#define NUM_TIME_SLOTS 48
+
+struct cat_time {
+    struct cat_time *next;
+    struct category_data *cat;
+    gint tim;
+};
+
+struct grp_time {
+    struct grp_time *next;
+    struct grp_time *slot;
+    struct cat_time *cats;
+    gint tim;
+};
+
+static struct grp_time *schedule[NUM_TATAMIS+1];
+static struct grp_time *time_slots[NUM_TATAMIS+1][NUM_TIME_SLOTS];
+static gint             slot_rows[NUM_TATAMIS+1][NUM_TIME_SLOTS];
+
+static void calc_schedule(void)
+{
+    gint i;
+
+    BZERO(schedule);
+    BZERO(time_slots);
+    BZERO(slot_rows);
+
+    for (i = 1; i <= number_of_tatamis; i++) {
+        gint old_group = -1, matches_time = 0;
+        struct category_data *catdata = category_queue[i].next;
+        gint start;
+        gint cumulative_time;
+        struct grp_time *gt = NULL;
+        struct grp_time *p1; 
+
+        if (schedule_start)
+            start = get_start_time(schedule_start);
+        else
+            start = get_start_time(info_time);
+
+        while (catdata) {
+            gint n = 1;
+
+            if ((catdata->match_status & REAL_MATCH_EXISTS) &&
+                (catdata->match_status & MATCH_UNMATCHED) == 0)
+                goto loop;
+
+            gint mt = get_category_match_time(catdata->category);
+            if (mt < 180)
+                mt = 180;
+
+            if (catdata->group != old_group) {
+                p1 = schedule[i]; 
+
+                gt = g_malloc0(sizeof(*gt));
+                
+                if (p1 == NULL)
+                    schedule[i] = gt;
+                else {
+                    while (p1->next)
+                        p1 = p1->next;
+                    p1->next = gt;
+                }
+
+                cumulative_time = matches_time + start;
+                gt->tim = cumulative_time;
+            }	
+            old_group = catdata->group;
+
+            struct cat_time *ct = g_malloc0(sizeof(*ct));
+            ct->cat = catdata;
+            struct cat_time *p2 = gt->cats;
+
+            if (p2 == NULL)
+                gt->cats = ct;
+            else {
+                while (p2->next)
+                    p2 = p2->next;
+                p2->next = ct;
+            }
+
+            GtkTreeIter tmp_iter;
+            n = 0;
+            if (find_iter(&tmp_iter, catdata->index)) {
+                gint k = gtk_tree_model_iter_n_children(current_model, &tmp_iter);
+                n = num_matches_left(catdata->index, k);
+            }
+
+            matches_time += n*mt;
+        loop:
+            catdata = catdata->next;
+        }
+
+        // phony group to the end
+        p1 = schedule[i]; 
+        gt = g_malloc0(sizeof(*gt));
+
+        if (p1 == NULL)
+            schedule[i] = gt;
+        else {
+            while (p1->next)
+                p1 = p1->next;
+            p1->next = gt;
+        }
+
+        cumulative_time = matches_time + start;
+        gt->tim = cumulative_time;
+    }
+}
+
+static void free_schedule(void)
+{
+    gint i;
+
+    for (i = 1; i <= number_of_tatamis; i++) {
+        struct grp_time *tmp1, *p1 = schedule[i]; 
+        while (p1) {
+            struct cat_time *p2 = p1->cats;
+            while (p2) {
+                struct cat_time *tmp2 = p2;
+                p2 = p2->next;
+                g_free(tmp2);
+            }
+            tmp1 = p1;
+            p1 = p1->next;
+            g_free(tmp1);
+        }
+    }    
+    BZERO(schedule);
+}
+
 static void paint_schedule(struct paint_data *pd)
 {
     gint i;
     gchar buf[100];
     cairo_t *c = pd->c;
     cairo_text_extents_t extents;
+    gdouble  paper_width_saved;
+    gdouble  paper_height_saved;
+
+    calc_schedule();
+
+    if (pd->rotate) {
+        paper_width_saved = pd->paper_width;
+        paper_height_saved = pd->paper_height;
+        pd->paper_width = paper_height_saved;
+        pd->paper_height = paper_width_saved;
+        cairo_translate(pd->c, paper_width_saved*0.5, paper_height_saved*0.5);
+        cairo_rotate(pd->c, -0.5*M_PI);
+        cairo_translate(pd->c, -paper_height_saved*0.5, -paper_width_saved*0.5);
+    }
 
     cairo_set_source_rgb(c, 1.0, 1.0, 1.0);
     cairo_rectangle(c, 0.0, 0.0, pd->paper_width, pd->paper_height);
@@ -1051,78 +1221,305 @@ static void paint_schedule(struct paint_data *pd)
     cairo_set_line_width(c, THIN_LINE);
     cairo_set_source_rgb(c, 0.0, 0.0, 0.0);
 
+    gint start_time = 1000000;
+    gint end_time = 0;
+    gint max_grps = 0;
+    gdouble top = H(0.1);
+    gdouble bottom = H(0.95);
+    gdouble clock = W(0.04);
+    gdouble left = W(0.10);
+    gdouble right = W(0.96);
+    gdouble width = right - left;
+    gdouble height = bottom - top;
+    gdouble colwidth = width/number_of_tatamis;
+
+    // header
+
     rownum1 = 1;
-    cairo_move_to(c, W(0.04), YPOS);
+    cairo_move_to(c, pd->rotate ? left : W(0.04), YPOS);
     cairo_show_text(c, _T(schedule));
 
     rownum1 = 2;
-    cairo_move_to(c, W(0.04), YPOS);
+    cairo_move_to(c, pd->rotate ? left : W(0.04), YPOS);
     snprintf(buf, sizeof(buf), "%s  %s  %s", 
              info_competition,
              info_date,
              info_place);
     cairo_show_text(c, buf);
 
-#if 0
-    for (i = 0; i < NUM_TATAMIS; i++) {
-        GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(match_view[i]));
-        cumulative_time = get_start_time();
-        category1 = number1 = group1 = -1;
-        rownum1 += 2;
-        cairo_move_to(c, W(0.04), YPOS);
-        sprintf(buf, "MATTO %d", i+1);
-        cairo_show_text(c, buf);
-        gtk_tree_model_foreach(model, traverse_rows, pd);
-    }
-#else
-    for (i = 1; i <= number_of_tatamis/*NUM_TATAMIS*/; i++) {
-        gint old_group = -1, matches_left = 0;
-        struct category_data *catdata = category_queue[i].next;
-        gint start = get_start_time();
-        gint cumulative_time;
 
-        rownum1 += 2;
-        cairo_move_to(c, W(0.04), YPOS);
-        sprintf(buf, "TATAMI %d", i);
-        cairo_show_text(c, buf);
+    // find max values
 
-        while (catdata) {
-            gint n = 1;
+    for (i = 1; i <= number_of_tatamis; i++) {
+        gint grps = 0;
+        struct grp_time *p1 = schedule[i]; 
 
-            if (catdata->group != old_group) {
-                cumulative_time = 180*matches_left + start;
-                rownum1++;
-                cairo_move_to(c, W(0.044), YPOS);
-                sprintf(buf, "%2d:%02d:  ", cumulative_time/3600, 
-                        (cumulative_time%3600)/60);
-                cairo_show_text(c, buf);
-            }	
-            old_group = catdata->group;
+        while (p1) {
+            grps++;
 
-            cairo_show_text(c, catdata->category);
-            cairo_show_text(c, "  ");
+            if (start_time > p1->tim)
+                start_time = p1->tim;
 
-            if (catdata->match_count > 0) {
-                n = catdata->match_count - catdata->matched_matches_count;
-            } else {
-                GtkTreeIter tmp_iter;
-                n = 0;
-                if (find_iter(&tmp_iter, catdata->index)) {
-                    gint k = gtk_tree_model_iter_n_children(current_model, &tmp_iter);
-                    n = estim_num_matches[k <= NUM_COMPETITORS ? k : NUM_COMPETITORS];
-                }
+            if (end_time < p1->tim)
+                end_time = p1->tim;
+
+            struct cat_time *p2 = p1->cats;
+            while (p2) {
+                p2 = p2->next;
+            }
+            p1 = p1->next;
+        }
+
+        if (grps > max_grps)
+            max_grps = grps;
+    }    
+
+    start_time = (start_time/(60*print_resolution))*(60*print_resolution);
+    end_time = ((end_time+(60*print_resolution))/(60*print_resolution))*(60*print_resolution);
+    gint num_slots = (end_time - start_time)/(60*print_resolution);
+    if (num_slots > NUM_TIME_SLOTS)
+        num_slots = NUM_TIME_SLOTS;
+
+    // find time slots
+
+    for (i = 1; i <= number_of_tatamis; i++) {
+        struct grp_time *p1 = schedule[i], *p2; 
+        while (p1) {
+            gint slot = (p1->tim - start_time + 30*print_resolution)/(60*print_resolution);
+            if (slot >= NUM_TIME_SLOTS)
+                slot = NUM_TIME_SLOTS - 1;
+            slot_rows[i][slot]++;
+            p2 = time_slots[i][slot];
+            if (p2 == NULL)
+                time_slots[i][slot] = p1;
+            else {
+                while (p2->slot)
+                    p2 = p2->slot;
+                p2->slot = p1;
+            }
+            p1 = p1->next;
+        }
+    }    
+
+    if (pd->rotate) {
+        rownum1 = 1;
+
+        for (i = 0; i < num_slots && YPOS_L(rownum1)+2*ROWHEIGHT < bottom; i++) {
+            gint t;
+            gint num_rows = 0;
+
+            for (t = 1; t <= NUM_TATAMIS; t++) {
+                if (slot_rows[t][i] > num_rows)
+                    num_rows = slot_rows[t][i];
             }
 
-            if ((catdata->match_status & MATCH_EXISTS) &&
-                (catdata->match_status & MATCH_UNMATCHED) == 0 /*n == 0*/)
-                goto loop;
+            if (num_rows || (print_fixed && rownum1 > 1)) {
+                gint tm = start_time + i*print_resolution*60;
 
-            matches_left += n;
-        loop:
-            catdata = catdata->next;
+                if (print_fixed && (((tm/3600) ^ (start_time/3600)) & 1)) {
+                    cairo_save(c);
+                    cairo_set_source_rgb(c, 0.9, 0.9, 0.9);
+                    cairo_rectangle(c, clock, YPOS_L(rownum1-1) + 3, right - clock, 
+                                    (num_rows ? num_rows : 1.0)*ROWHEIGHT);
+                    cairo_fill(c);
+                    cairo_restore(c);
+                }
+
+                sprintf(buf, "%2d:%02d", tm/3600, (tm%3600)/60);
+                cairo_text_extents(c, buf, &extents);
+                cairo_move_to(c, left - extents.width - extents.x_bearing - 4, YPOS_L(rownum1));
+                cairo_show_text(c, buf);
+
+                for (t = 1; t <= NUM_TATAMIS; t++) {
+                    gint rownum2 = rownum1;
+                    struct grp_time *p1 = time_slots[t][i];
+
+                    if (p1 && rownum1 > 1) {
+                        cairo_move_to(c, left + (t-1)*colwidth, YPOS_L(rownum1 - 1) + 3);
+                        cairo_rel_line_to(c, colwidth, 0);
+                        cairo_stroke(c);
+                    }
+
+                    while (p1) {
+                        cairo_move_to(c, left + (t-1)*colwidth + 4, YPOS_L(rownum2)); 
+                        struct cat_time *p2 = p1->cats;
+                        while (p2) {
+                            cairo_show_text(c, p2->cat->category);
+                            cairo_show_text(c, "  ");
+                            p2 = p2->next;
+                        }
+
+                        rownum2++;
+                        p1 = p1->slot;
+                    }
+                }
+
+                if (print_fixed && num_rows == 0)
+                    num_rows = 1;
+
+                rownum1 += num_rows;
+            }
         }
+
+        cairo_rectangle(c, left, top, width, height);
+        for (i = 1; i < number_of_tatamis; i++) {
+            cairo_move_to(c, left + i*colwidth, top);
+            cairo_rel_line_to(c, 0, height);
+        }
+        cairo_stroke(c);
     }
-#endif
+
+    for (i = 1; i <= number_of_tatamis; i++) {
+        if (pd->rotate) {
+            cairo_move_to(c, left + (i-1)*colwidth + 4, top - 4);
+            sprintf(buf, "TATAMI %d", i);
+            cairo_show_text(c, buf);
+        } else {
+            rownum1 += 2;
+            cairo_move_to(c, W(0.04), YPOS);
+            sprintf(buf, "TATAMI %d", i);
+            cairo_show_text(c, buf);
+
+            struct grp_time *p1 = schedule[i]; 
+            while (p1) {
+                rownum1++;
+                cairo_move_to(c, W(0.044), YPOS);
+                sprintf(buf, "%2d:%02d:  ", p1->tim/3600, (p1->tim%3600)/60);
+                cairo_show_text(c, buf);
+
+                struct cat_time *p2 = p1->cats;
+                while (p2) {
+                    cairo_show_text(c, p2->cat->category);
+                    cairo_show_text(c, "  ");
+                
+                    p2 = p2->next;
+                }
+                p1 = p1->next;
+            }
+        }
+    }    
+
+    if (pd->rotate) {
+        pd->paper_width = paper_width_saved;
+        pd->paper_height = paper_height_saved;
+        cairo_translate(pd->c, paper_height_saved*0.5, paper_width_saved*0.5);
+        cairo_rotate(pd->c, 0.5*M_PI);
+        cairo_translate(pd->c, -paper_width_saved*0.5, -paper_height_saved*0.5);
+    }
+
+    free_schedule();
+}
+
+static void select_schedule_pdf(GtkWidget *w, GdkEventButton *event, gpointer arg) 
+{
+    struct print_struct *s = arg;
+    gchar *file = get_save_as_name("", FALSE, NULL);    
+    if (file) {
+        g_free(schedule_pdf_out);
+        schedule_pdf_out = file;
+        gtk_button_set_label(GTK_BUTTON(s->pdf_file), schedule_pdf_out);
+    }
+}
+
+void print_schedule(void)
+{
+    GtkWidget *dialog;
+    GtkWidget *table = gtk_table_new(3, 6, FALSE);
+    //GSList *layout_group = NULL;
+    GSList *print_group = NULL;
+    GtkWidget *landscape, *start, *resolution, *fixed;
+    struct print_struct *s;
+    gchar buf[16];
+    static gint flags = PRINT_SCHEDULE | PRINT_LANDSCAPE;
+
+    s = g_malloc0(sizeof(*s));
+
+    dialog = gtk_dialog_new_with_buttons (_("Print Schedule"),
+                                          GTK_WINDOW(main_window),
+                                          GTK_DIALOG_DESTROY_WITH_PARENT,
+                                          GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                                          GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
+                                          NULL);
+
+    gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new(_("Print To:")), 0, 1, 0, 2);
+
+    s->print_printer = gtk_radio_button_new_with_label(print_group, _("Printer"));
+    print_group = gtk_radio_button_get_group(GTK_RADIO_BUTTON(s->print_printer));
+    s->print_pdf = gtk_radio_button_new_with_label(print_group, _("PDF"));
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(s->print_pdf), flags & PRINT_TO_PDF);
+
+    gtk_table_attach_defaults(GTK_TABLE(table), s->print_printer, 1, 2, 0, 1);
+    gtk_table_attach_defaults(GTK_TABLE(table), s->print_pdf, 1, 2, 1, 2);
+
+    if (!schedule_pdf_out) {
+        gchar *dirname = g_path_get_dirname(database_name);
+        schedule_pdf_out = g_build_filename(dirname, _T(schedulefile), NULL);
+        g_free(dirname);
+    }
+    s->pdf_file = gtk_button_new_with_label(schedule_pdf_out);
+    gtk_table_attach_defaults(GTK_TABLE(table), s->pdf_file, 2, 3, 1, 2);
+
+    gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new(_("Start time:")), 0, 1, 2, 3);
+    start = gtk_entry_new();
+    gtk_entry_set_max_length(GTK_ENTRY(start), 5);
+    gtk_entry_set_text(GTK_ENTRY(start), info_time);
+    gtk_table_attach_defaults(GTK_TABLE(table), start, 1, 2, 2, 3);
+
+    gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new(_("Resolution:")), 0, 1, 3, 4);
+    resolution = gtk_entry_new();
+    gtk_entry_set_max_length(GTK_ENTRY(resolution), 3);
+    snprintf(buf, sizeof(buf), "%d", print_resolution);
+    gtk_entry_set_text(GTK_ENTRY(resolution), buf);
+    gtk_table_attach_defaults(GTK_TABLE(table), resolution, 1, 2, 3, 4);
+
+    landscape = gtk_check_button_new_with_label(_("Landscape"));
+    gtk_table_attach_defaults(GTK_TABLE(table), landscape, 0, 1, 4, 5);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(landscape), flags & PRINT_LANDSCAPE);
+
+    fixed = gtk_check_button_new_with_label(_("Running time"));
+    gtk_table_attach_defaults(GTK_TABLE(table), fixed, 0, 1, 5, 6);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(fixed), print_fixed);
+
+    gtk_widget_show_all(table);
+    gtk_container_add(GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), table);
+
+    g_signal_connect(G_OBJECT(s->pdf_file), "button-press-event", G_CALLBACK(select_schedule_pdf), 
+		     (gpointer)s);
+
+    if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT) {
+        flags = PRINT_SCHEDULE;
+
+        if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(landscape)))
+            flags |=  PRINT_LANDSCAPE;
+
+        if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(s->print_pdf)))
+            flags |=  PRINT_TO_PDF;
+
+        const gchar *txt = gtk_entry_get_text(GTK_ENTRY(start));
+        if (txt && txt[0]) {
+            g_free(schedule_start);
+            schedule_start = g_strdup(txt);
+        }
+
+        print_fixed = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(fixed));
+
+        txt = gtk_entry_get_text(GTK_ENTRY(resolution));
+        if (txt && txt[0]) {
+            print_resolution = atoi(txt);
+            if (print_resolution < 5) print_resolution = 5;
+            if (print_resolution > 180) print_resolution = 180;
+        }
+
+        print_doc(NULL, (gpointer)flags);
+    }
+
+    g_free(s);
+    gtk_widget_destroy(dialog);
+}
+
+void print_schedule_cb(GtkWidget *menuitem, gpointer userdata)
+{
+    print_schedule();
 }
 
 static gint fill_in_pages(gint category, gint all)
@@ -1277,6 +1674,8 @@ static void draw_page(GtkPrintOperation *operation,
 	paint_weight_notes(&pd, ctg, page_nr+1);
 	break;	
     case PRINT_SCHEDULE:
+        if (ctg & PRINT_LANDSCAPE)
+            pd.rotate = TRUE;
         paint_schedule(&pd);
         break;
     case PRINT_SHEET:
@@ -1296,7 +1695,7 @@ static void draw_page(GtkPrintOperation *operation,
 void do_print(GtkWidget *menuitem, gpointer userdata)
 {
     GtkPrintOperation *print;
-    GtkPrintOperationResult res;
+    //GtkPrintOperationResult res;
 
     print = gtk_print_operation_new();
 
@@ -1306,8 +1705,8 @@ void do_print(GtkWidget *menuitem, gpointer userdata)
     gtk_print_operation_set_use_full_page(print, FALSE);
     gtk_print_operation_set_unit(print, GTK_UNIT_POINTS);
 
-    res = gtk_print_operation_run(print, GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG,
-                                  GTK_WINDOW (main_window), NULL);
+    /*res = */gtk_print_operation_run(print, GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG,
+                                      GTK_WINDOW (main_window), NULL);
 
     g_object_unref(print);
 }
@@ -1348,18 +1747,18 @@ void print_doc(GtkWidget *menuitem, gpointer userdata)
                 cat = get_data(data);
             if (cat) {
                 gchar *fn = g_strdup_printf("%s.pdf", cat->last);
-                filename = get_save_as_name(fn, FALSE);
+                filename = get_save_as_name(fn, FALSE, NULL);
                 free_judoka(cat);
                 g_free(fn);
             } else {
-                filename = get_save_as_name(_T(categoriesfile), FALSE);
+                filename = get_save_as_name(_T(categoriesfile), FALSE, NULL);
             }
             break;
         case PRINT_WEIGHING_NOTES:
 	    filename = g_strdup(pdf_out);
 	    break;
         case PRINT_SCHEDULE:
-            filename = get_save_as_name(_T(schedulefile), FALSE);
+	    filename = g_strdup(schedule_pdf_out);
             break;
         }
 
@@ -1405,6 +1804,8 @@ void print_doc(GtkWidget *menuitem, gpointer userdata)
             }
             break;
         case PRINT_SCHEDULE:
+            if ((gint)userdata & PRINT_LANDSCAPE)
+                pd.rotate = TRUE;
             paint_schedule(&pd);
             cairo_show_page(pd.c);
             break;
@@ -1532,7 +1933,7 @@ void print_matches(GtkWidget *menuitem, gpointer userdata)
             struct category_data *catdata = avl_get_category(cat);
             if (catdata) {
                 gboolean ok = FALSE;
-                if (nst && (catdata->match_status & MATCH_EXISTS) &&
+                if (nst && (catdata->match_status & REAL_MATCH_EXISTS) &&
                     (catdata->match_status & MATCH_MATCHED) == 0)
                     ok = TRUE;
                 if (st && (catdata->match_status & MATCH_MATCHED) &&
@@ -1594,12 +1995,6 @@ out:
     gtk_widget_destroy (dialog);
 }
 
-struct print_struct {
-    GtkWidget *layout_default, *layout_template;
-    GtkWidget *print_printer, *print_pdf;
-    GtkWidget *pdf_file, *template_file;
-};
-
 static void update_print_struct(GtkWidget *w, gpointer data)
 {
     struct print_struct *s = data;
@@ -1620,7 +2015,7 @@ static void update_print_struct(GtkWidget *w, gpointer data)
 
 static void select_pdf(GtkWidget *w, GdkEventButton *event, gpointer *arg) 
 {
-    gchar *file = get_save_as_name("", FALSE);    
+    gchar *file = get_save_as_name("", FALSE, NULL);    
     if (file) {
         g_free(pdf_out);
         pdf_out = file;
@@ -1630,7 +2025,7 @@ static void select_pdf(GtkWidget *w, GdkEventButton *event, gpointer *arg)
 
 static void select_template(GtkWidget *w, GdkEventButton *event, gpointer *arg) 
 {
-    gchar *file = get_save_as_name("", TRUE);    
+    gchar *file = get_save_as_name("", TRUE, NULL);    
     if (file) {
         g_free(template_in);
         template_in = file;

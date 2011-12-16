@@ -22,6 +22,7 @@ static gboolean match_row_found;
 static gboolean match_found;
 static gboolean matched_match_found;
 static gboolean unmatched_match_found;
+static gboolean real_match_found;
 static struct match *category_matches_p;
 static struct match m;
 
@@ -103,6 +104,10 @@ static int db_callback_matches(void *data, int argc, char **argv, char **azColNa
 
             if ((val & DELETED) == 0)
                 match_found = TRUE;
+
+            if ((val & DELETED) == 0 &&
+                m.blue >= COMPETITOR && m.white >= COMPETITOR)
+                real_match_found = TRUE;
 
             if ((val & DELETED) == 0 &&
                 (m.blue_points || m.white_points) &&
@@ -513,18 +518,6 @@ struct match *db_get_match_data(gint category, gint number)
     return NULL;
 }
 
-gboolean db_matches_exists(void)
-{
-    gchar buffer[100];
-
-    sprintf(buffer, "SELECT * FROM matches");
-                
-    match_found = match_row_found = FALSE;
-    db_exec(db_name, buffer, NULL, db_callback_matches);
-        
-    return match_found;
-}
-
 gboolean db_matched_matches_exist(gint category)
 {
     gchar buffer[100];
@@ -549,7 +542,7 @@ gint db_category_match_status(gint category)
     sprintf(buffer, "SELECT * FROM matches WHERE "
             VARVAL(category, %d), category);
                 
-    match_found = match_row_found = matched_match_found = unmatched_match_found = FALSE;
+    match_found = match_row_found = matched_match_found = unmatched_match_found = real_match_found = FALSE;
     db_exec(db_name, buffer, NULL, db_callback_matches);
         
     if (matched_matches_count > match_count) {
@@ -562,6 +555,8 @@ gint db_category_match_status(gint category)
         res |= MATCH_EXISTS;
     if (matched_match_found)
         res |= MATCH_MATCHED;
+    if (real_match_found)
+        res |= REAL_MATCH_EXISTS;
 
     if (match_count == 3 && matched_matches_count == 2 &&
         bluecomp > 0 && whitecomp > 0 && 

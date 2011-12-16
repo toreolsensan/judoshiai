@@ -1219,7 +1219,7 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
 
     g_free(catname);
 
-    if (db_category_match_status(mdata->mcategory_ix) & MATCH_EXISTS) {
+    if (db_category_match_status(mdata->mcategory_ix) & REAL_MATCH_EXISTS) {
         // Cannot draw again.
 #if 0
         struct judoka *j = get_data(mdata->mcategory_ix);
@@ -1427,31 +1427,28 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
 
 void draw_all(GtkWidget *w, gpointer data)
 {
-    GtkTreeViewColumn *col;
     GtkTreeIter iter;
-    gboolean ok;
     gint i;
 
     gint num_cats = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(current_model), NULL);
     gint cnt = 0;
-    gboolean retval = FALSE;
 
     gdk_window_set_cursor(GTK_WIDGET(main_window)->window, wait_cursor);
 
-    col = gtk_tree_view_get_column(GTK_TREE_VIEW(current_view), 0);
-    g_signal_emit_by_name(col, "clicked", NULL, &retval);
+    for (i = 1; i <= number_of_tatamis; i++) {
+        struct category_data *catdata = category_queue[i].next;
+        while (catdata) {
+            if (find_iter(&iter, catdata->index)) {
+                gint n = gtk_tree_model_iter_n_children(current_model, &iter);
+                if (n >= 1 && n <= NUM_COMPETITORS)
+                    draw_one_category(&iter, n);
 
-    ok = gtk_tree_model_get_iter_first(current_model, &iter);
-    while (ok) {
-        gint n = gtk_tree_model_iter_n_children(current_model, &iter);
-        if (n >= 1 && n <= NUM_COMPETITORS)
-            draw_one_category(&iter, n);
-
-        cnt++;
-        if (num_cats > 4)
-            progress_show(1.0*cnt/num_cats, "");
-
-        ok = gtk_tree_model_iter_next(current_model, &iter);
+                cnt++;
+                if (num_cats > 4)
+                    progress_show(1.0*cnt/num_cats, "");
+            }
+            catdata = catdata->next;
+        }
     }
 
     gdk_window_set_cursor(GTK_WIDGET(main_window)->window, NULL);

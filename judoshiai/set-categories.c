@@ -427,6 +427,14 @@ gint get_category_rest_time(const gchar *cat)
     return category_definitions[i].rest_time;
 }
 
+gint get_category_match_time(const gchar *cat)
+{
+    gint i = find_age_index(cat);
+    if (i < 0)
+        return 0;
+    return category_definitions[i].match_time;
+}
+
 gchar *find_correct_category(gint age, gint weight, gint gender, const gchar *category_now, gboolean best_match)
 {
     gint i, age_ix = 0, w_ix, weight1 = 0;

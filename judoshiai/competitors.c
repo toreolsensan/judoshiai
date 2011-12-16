@@ -292,7 +292,7 @@ static void judoka_edited_callback(GtkWidget *widget,
 
         if (!ok) {
             SHOW_MESSAGE("Error!");
-        } else if (db_category_match_status(index1) & MATCH_EXISTS) {
+        } else if (db_category_match_status(index1) & REAL_MATCH_EXISTS) {
             SHOW_MESSAGE("%s: %s", realcategory, _("Remove drawing first"));
         } else if (db_competitor_match_status(edited.index) & MATCH_EXISTS) {
             SHOW_MESSAGE("%s %s: %s.", 
@@ -741,7 +741,7 @@ void last_name_cell_data_func (GtkTreeViewColumn *col,
             defined = catdata ? catdata->defined : TRUE;
         }
 
-        if ((status & MATCH_EXISTS) && (status & MATCH_UNMATCHED) == 0)
+        if ((status & REAL_MATCH_EXISTS) && (status & MATCH_UNMATCHED) == 0)
             g_object_set(renderer, 
                          "cell-background", "Green", 
                          "cell-background-set", TRUE, 
@@ -751,7 +751,7 @@ void last_name_cell_data_func (GtkTreeViewColumn *col,
                          "cell-background", "Orange", 
                          "cell-background-set", TRUE, 
                          NULL);
-        else if (status & MATCH_EXISTS)
+        else if (status & REAL_MATCH_EXISTS)
             g_object_set(renderer, 
                          "cell-background", "Yellow", 
                          "cell-background-set", TRUE, 

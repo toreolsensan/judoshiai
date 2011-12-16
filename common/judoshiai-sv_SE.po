@@ -1,8 +1,14 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-12 10:33+0300\n"
+"POT-Creation-Date: 2011-12-14 12:47+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,6 +29,7 @@ msgstr "(Anslutningen OK)"
 msgid "(Connection broken)"
 msgstr "(Anslutningen är bruten)"
 
+#: ../judotimer/menus.c:805
 msgid "Own IP addresses"
 msgstr "Egna IP-adresser"
 
@@ -34,120 +41,156 @@ msgstr "Anslutning till %ld.%ld.%ld.%ld upprättad"
 msgid "Connection to the node broken"
 msgstr "Anslutningen förlorad"
 
+#: ../judotimer/main.c:936 ../judotimer/main.c:941
 msgid "Blue won the voting"
 msgstr "Röstning: blå vinnas"
 
+#: ../judotimer/main.c:934 ../judotimer/main.c:943
 msgid "White won the voting"
 msgstr "Röstning: vit vinnas"
 
+#: ../judotimer/main.c:1519
 msgid "Match:"
 msgstr "Match:"
 
 msgid "Contest:"
 msgstr "Match:"
 
+#: ../judotimer/main.c:1520 ../judotimer/main.c:2388
 msgid "Next:"
 msgstr "Nästa:"
 
+#: ../judotimer/main.c:2387
 msgid "Fight:"
 msgstr "Match:"
 
+#: ../judotimer/menus.c:725
 msgid "Contest"
 msgstr "Tävling"
 
+#: ../judotimer/menus.c:290 ../judotimer/menus.c:726
 msgid "Preferences"
 msgstr "Inställningar"
 
+#: ../judotimer/menus.c:291 ../judotimer/menus.c:727
 msgid "Help"
 msgstr "Hjälp"
 
+#: ../judotimer/menus.c:345
 msgid "Match duration: automatic"
 msgstr "Matchtid: automatisk"
 
+#: ../judotimer/menus.c:347
 msgid "Match duration: 2 min E-juniors"
 msgstr "Matchtid: 2 min U11"
 
+#: ../judotimer/menus.c:348
 msgid "Match duration: 2 min"
 msgstr "Matchtid: 2 min"
 
+#: ../judotimer/menus.c:349
 msgid "Match duration: 3 min"
 msgstr "Matchtid: 3 min"
 
+#: ../judotimer/menus.c:350
 msgid "Match duration: 4 min"
 msgstr "Matchtid: 4 min"
 
+#: ../judotimer/menus.c:351
 msgid "Match duration: 5 min"
 msgstr "Matchtid: 5 min"
 
+#: ../judotimer/menus.c:730
 msgid "Contest duration: automatic"
 msgstr "Matchtid: automatisk"
 
+#: ../judotimer/menus.c:731
 msgid "Contest duration: 2 min (short pin times)"
 msgstr "Matchtid: 2 min U11"
 
+#: ../judotimer/menus.c:732
 msgid "Contest duration: 2 min"
 msgstr "Matchtid: 2 min"
 
+#: ../judotimer/menus.c:733
 msgid "Contest duration: 3 min"
 msgstr "Matchtid: 3 min"
 
+#: ../judotimer/menus.c:734
 msgid "Contest duration: 4 min"
 msgstr "Matchtid: 4 min"
 
+#: ../judotimer/menus.c:735
 msgid "Contest duration: 5 min"
 msgstr "Matchtid: 5 min"
 
 msgid "Majority of three: blue wins"
 msgstr "Majoritetsbeslut: blå vinner"
 
+#: ../judotimer/menus.c:354 ../judotimer/menus.c:740 ../judotimer/menus.c:742
 msgid "Hantei: blue wins"
 msgstr "Hantei: blå vinner"
 
 msgid "Majority of three: white wins"
 msgstr "Majoritetsbeslut: vit vinner"
 
+#: ../judotimer/menus.c:355 ../judotimer/menus.c:739 ../judotimer/menus.c:743
 msgid "Hantei: white wins"
 msgstr "Hantei: vit vinner"
 
+#: ../judotimer/menus.c:363 ../judotimer/menus.c:757
 msgid "Quit"
 msgstr "Avsluta"
 
+#: ../judotimer/menus.c:759
 msgid "Red background"
 msgstr "Röd bakgrund"
 
+#: ../judotimer/menus.c:792
 msgid "Contest area not chosen"
 msgstr "Mattan inte valde"
 
+#: ../judotimer/menus.c:793
 msgid "Contest area 1"
 msgstr "Matta 1"
 
+#: ../judotimer/menus.c:794
 msgid "Contest area 2"
 msgstr "Matta 2"
 
+#: ../judotimer/menus.c:795
 msgid "Contest area 3"
 msgstr "Matta 3"
 
+#: ../judotimer/menus.c:796
 msgid "Contest area 4"
 msgstr "Matta 4"
 
+#: ../judotimer/menus.c:797
 msgid "Contest area 5"
 msgstr "Matta 5"
 
+#: ../judotimer/menus.c:798
 msgid "Contest area 6"
 msgstr "Matta 6"
 
+#: ../judotimer/menus.c:799
 msgid "Contest area 7"
 msgstr "Matta 7"
 
+#: ../judotimer/menus.c:800
 msgid "Contest area 8"
 msgstr "Matta 8"
 
+#: ../judotimer/menus.c:804
 msgid "Communication node"
 msgstr "Kommunikation nod"
 
+#: ../judotimer/menus.c:808
 msgid "Increment time"
 msgstr "Öka matchtid"
 
+#: ../judotimer/menus.c:809
 msgid "Decrement time"
 msgstr "Minska matchtid"
 
@@ -157,18 +200,23 @@ msgstr "Öka fasthållnings-tid"
 msgid "Decrement osaekomi"
 msgstr "Minska fasthållnings-tid"
 
+#: ../judotimer/menus.c:821
 msgid "Manual"
 msgstr "Hjälp"
 
+#: ../judotimer/menus.c:823
 msgid "About"
 msgstr "Om"
 
+#: ../judotimer/menus.c:827
 msgid "Change language to Finnish"
 msgstr "Byt språk till finska"
 
+#: ../judotimer/menus.c:829
 msgid "Change language to Swedish"
 msgstr "Byt språk till svenska"
 
+#: ../judotimer/menus.c:831
 msgid "Change language to English"
 msgstr "Byt språk till engelska"
 
@@ -184,6 +232,7 @@ msgstr "Byt språk till engelska"
 msgid "Match duration automatically from JudoShiai program"
 msgstr "Matchtid automatiskt från JudoShiai-program"
 
+#: ../judotimer/menus.c:842
 msgid "Contest duration automatically from JudoShiai program"
 msgstr "Matchtid automatiskt från JudoShiai-program"
 
@@ -196,45 +245,58 @@ msgstr ""
 msgid "test string"
 msgstr ""
 
+#: ../judotimer/menus.c:765 ../judotimer/menus.c:774
 msgid "View clocks only"
 msgstr "Visa bara clockor"
 
+#: ../judotimer/menus.c:810
 msgid "Increment pin time"
 msgstr "Öka fasthållnings-tid"
 
+#: ../judotimer/menus.c:811
 msgid "Decrement pin time"
 msgstr "Minska fasthållnings-tid"
 
+#: ../judotimer/stopwatch.c:1068
 msgid "Points going to blue"
 msgstr "Poäng går till blå"
 
+#: ../judotimer/stopwatch.c:1071
 msgid "Points going to white"
 msgstr "Poäng går till vit"
 
+#: ../judotimer/menus.c:27
 msgid "About Judotimer"
 msgstr "Om Judotimer"
 
 msgid "Full screen"
 msgstr "Fullskärmsläge"
 
+#: ../judotimer/menus.c:760
 msgid "Full screen mode"
 msgstr "Fullskärmsläge"
 
+#: ../judotimer/menus.c:814
 msgid "Normal operation"
 msgstr "Normal operation"
 
+#: ../judotimer/menus.c:815
 msgid "Master mode"
 msgstr "Mästare"
 
+#: ../judotimer/menus.c:816
 msgid "Slave mode"
 msgstr "Slav"
 
+#: ../judotimer/menus.c:292 ../judotimer/menus.c:728
 msgid "Undo!"
 msgstr "Ångra!"
 
+#: ../judotimer/menus.c:132 ../judotimer/menus.c:812
 msgid "Set clocks"
 msgstr "Sätta klockor"
 
+#: ../judotimer/menus.c:156
 msgid "Clock:"
 msgstr "Klockan:"
 
@@ -244,194 +306,263 @@ msgstr "2009 regler"
 msgid "Short pin times"
 msgstr "Korta fasthållnings-tider"
 
+#: ../judotimer/menus.c:356 ../judotimer/menus.c:747 ../judotimer/menus.c:749
 msgid "Hansoku-make to blue"
 msgstr "Hansoku-make till blå"
 
+#: ../judotimer/menus.c:357 ../judotimer/menus.c:746 ../judotimer/menus.c:750
 msgid "Hansoku-make to white"
 msgstr "Hansoku-make till vit"
 
+#: ../judotimer/menus.c:358 ../judotimer/menus.c:752
 msgid "Clear selection"
 msgstr "Avmarkera"
 
+#: ../judotimer/menus.c:770
 msgid "Display layout 1"
 msgstr "Layoutvy 1"
 
+#: ../judotimer/menus.c:771
 msgid "Display layout 2"
 msgstr "Layoutvy 2"
 
+#: ../judotimer/menus.c:772
 msgid "Display layout 3"
 msgstr "Layoutvy 3"
 
+#: ../judotimer/menus.c:773
 msgid "Display layout 4"
 msgstr "Layoutvy 4"
 
+#: ../judotimer/menus.c:775
 msgid "Display layout 5"
 msgstr "Layoutvy 5"
 
+#: ../judotimer/menus.c:822
 msgid "Quick guide"
 msgstr "Snabbstartguide"
 
+#: ../judotimer/stopwatch.c:669 ../judotimer/stopwatch.c:682
+#: ../judotimer/stopwatch.c:830
 msgid "Start New Match?"
 msgstr "Starta ny match?"
 
 msgid "Start New Contest?"
 msgstr "Starta ny match?"
 
+#: ../judotimer/main.c:950 ../judotimer/main.c:955
 msgid "Hansokumake to blue"
 msgstr "Hansoku-make till blå"
 
+#: ../judotimer/main.c:948 ../judotimer/main.c:957
 msgid "Hansokumake to white"
 msgstr "Hansoku-make till vit"
 
+#: ../judotimer/menus.c:289
 msgid "Match"
 msgstr "Match"
 
+#: ../judotimer/comm.c:218 ../judotimer/main.c:914 ../judotimer/menus.c:352
+#: ../judotimer/menus.c:736 ../judotimer/stopwatch.c:1051
 msgid "Golden Score"
 msgstr "Golden score"
 
+#: ../judotimer/stopwatch.c:463
 msgid "Start Golden Score?"
 msgstr "Starta golden score?"
 
+#: ../judotimer/stopwatch.c:510
 msgid "Hantei"
 msgstr "Hantei"
 
+#: ../judotimer/stopwatch.c:514
 msgid "Blue wins"
 msgstr "Blå vinner"
 
+#: ../judotimer/stopwatch.c:515
 msgid "White wins"
 msgstr "Vit vinner"
 
+#: ../judotimer/stopwatch.c:916
 msgid "REST TIME"
 msgstr "TID AT VILA"
 
+#: ../judotimer/menus.c:818
 msgid "Advertise"
 msgstr "Göra reklam"
 
+#: ../judotimer/show-ad.c:1933
 msgid "Run Advertisements"
 msgstr "Göra reklam"
 
+#: ../judotimer/show-ad.c:1873
 msgid "Advertisement"
 msgstr "Reklam"
 
+#: ../judotimer/show-ad.c:1926
 msgid "Choose a directory"
 msgstr "Välja katalog"
 
+#: ../judotimer/menus.c:761
 msgid "No koka"
 msgstr "Koka inte in bruk"
 
+#: ../judotimer/menus.c:762
 msgid "Leave points for GS"
 msgstr "Lämna påäng på tavlan"
 
+#: ../judotimer/menus.c:361 ../judotimer/menus.c:755
 msgid "View Log"
 msgstr ""
 
+#: ../judotimer/menus.c:769
 msgid "Display layout"
 msgstr ""
 
+#: ../judotimer/menus.c:791
 msgid "Contest area"
 msgstr ""
 
+#: ../judotimer/menus.c:807
 msgid "Set time"
 msgstr ""
 
+#: ../judotimer/menus.c:819
 msgid "Sound"
 msgstr ""
 
+#: ../judotimer/menus.c:833
 msgid "Change language to Spanish"
 msgstr ""
 
+#: ../judotimer/sound.c:92
 msgid "Choose a file"
 msgstr ""
 
+#: ../judotimer/sound.c:104
 msgid "Sound Files"
 msgstr ""
 
+#: ../judotimer/sound.c:109
 msgid "All Files"
 msgstr ""
 
+#: ../judotimer/menus.c:763
 msgid "Stop clock on Ippon"
 msgstr "Ippon stoppar clockan"
 
+#: ../judotimer/menus.c:753
 msgid "Switch sides"
 msgstr ""
 
+#: ../judotimer/menus.c:776
 msgid "Display customized layout"
 msgstr ""
 
+#: ../judotimer/menus.c:835
 msgid "Change language to Estonian"
 msgstr ""
 
+#: ../judotimer/menus.c:837
 msgid "Change language to Ukrainan"
 msgstr ""
 
+#: ../judotimer/menus.c:766
 msgid "White first"
 msgstr ""
 
+#: ../judotimer/menus.c:764
 msgid "Confirm New Match"
 msgstr ""
 
+#: ../judotimer/menus.c:801
 msgid "Contest area 9"
 msgstr ""
 
+#: ../judotimer/menus.c:802
 msgid "Contest area 10"
 msgstr ""
 
+#: ../judotimer/main.c:873 ../judotimer/main.c:879
 msgid "White has a judogi problem."
 msgstr ""
 
+#: ../judotimer/main.c:874 ../judotimer/main.c:878
 msgid "Blue has a judogi problem."
 msgstr ""
 
+#: ../judotimer/menus.c:362 ../judotimer/menus.c:756
 msgid "Show Competitors"
 msgstr ""
 
+#: ../judotimer/menus.c:767
 msgid "Show competitors"
 msgstr ""
 
+#: ../judotimer/menus.c:778
 msgid "Name format"
 msgstr ""
 
+#: ../judotimer/menus.c:779
 msgid "Name Surname, Country/Club"
 msgstr ""
 
+#: ../judotimer/menus.c:780
 msgid "Surname, Name, Country/Club"
 msgstr ""
 
+#: ../judotimer/menus.c:781
 msgid "Country/Club  Surname, Name"
 msgstr ""
 
+#: ../judotimer/menus.c:782
 msgid "Country  Surname, Name"
 msgstr ""
 
+#: ../judotimer/menus.c:783
 msgid "Club  Surname, Name"
 msgstr ""
 
+#: ../judotimer/menus.c:784
 msgid "Country Surname"
 msgstr ""
 
+#: ../judotimer/menus.c:785
 msgid "Club Surname"
 msgstr ""
 
+#: ../judotimer/menus.c:786
 msgid "Surname, Name"
 msgstr ""
 
+#: ../judotimer/menus.c:787
 msgid "Surname"
 msgstr ""
 
+#: ../judotimer/menus.c:788
 msgid "Country"
 msgstr ""
 
+#: ../judotimer/menus.c:789
 msgid "Club"
 msgstr ""
 
+#: ../judotimer/menus.c:839
 msgid "Change language to Icelandic"
 msgstr ""
 
+#: ../judotimer/show-ad.c:1885 ../judotimer/stopwatch.c:683
 msgid "OK"
 msgstr ""
 
+#: ../judotimer/stopwatch.c:598
 msgid "WINNER"
 msgstr ""
 
+#: ../judotimer/stopwatch.c:684
 msgid "Cancel"
+msgstr ""
+
+#: ../judotimer/stopwatch.c:691
+msgid "- - -"
 msgstr ""

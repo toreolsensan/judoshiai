@@ -37,7 +37,8 @@
 #define LANG_EE 4
 #define LANG_UK 5
 #define LANG_IS 6
-#define NUM_LANGS 7
+#define LANG_NO 7
+#define NUM_LANGS 8
 
 #if GTK_CHECK_VERSION(2,10,0)
 #define PRINT_SUPPORTED
@@ -192,6 +193,7 @@ enum special_match_types {
 #define PRINT_WEIGHING_NOTES 0x10000000
 #define PRINT_SCHEDULE       0x20000000
 #define PRINT_ALL_CATEGORIES 0x30000000
+#define PRINT_LANDSCAPE      PRINT_ONE_PER_PAGE
 
 #define IS(x) (!strcmp(azColName[i], #x))
 #define VARVAL(_var, _val) "\"" #_var "\"=\"" #_val "\""
@@ -325,10 +327,11 @@ enum {
 #define UNFREEZE_THIS     3
 #define FREEZE_THIS       4
 
-#define MATCH_EXISTS    1
-#define MATCH_MATCHED   2
-#define MATCH_UNMATCHED 4
-#define CAT_PRINTED     8
+#define MATCH_EXISTS       1
+#define MATCH_MATCHED      2
+#define MATCH_UNMATCHED    4
+#define CAT_PRINTED        8
+#define REAL_MATCH_EXISTS 16
 
 enum official_categories {
     CAT_UNKNOWN = 0,
@@ -944,6 +947,7 @@ extern gint compare_categories(gchar *cat1, gchar *cat2);
 extern gchar *find_correct_category(gint age, gint weight, gint gender, const gchar *category_now, gboolean best_match);
 extern gboolean fill_in_next_match_message_data(const gchar *cat, struct msg_next_match *msg);
 extern gint get_category_rest_time(const gchar *cat);
+extern gint get_category_match_time(const gchar *cat);
 
 /* category_graph */
 extern void set_category_graph_page(GtkWidget *notebook);
@@ -1002,6 +1006,7 @@ extern void do_print(GtkWidget *menuitem, gpointer userdata);
 extern void print_doc(GtkWidget *menuitem, gpointer userdata);
 extern void print_matches(GtkWidget *menuitem, gpointer userdata);
 extern void print_accreditation_cards(gboolean all);
+extern void print_schedule_cb(GtkWidget *menuitem, gpointer userdata);
 
 /* print_texts */
 extern gchar *print_texts[][NUM_LANGS];
@@ -1021,6 +1026,7 @@ extern gint num_pages(struct compsys sys);
 extern gint get_matchnum_by_pos(struct compsys systm, gint pos, gint num);
 extern gint db_position_to_real(struct compsys sys, gint pos);
 extern gboolean is_repechage(struct compsys sys, gint m);
+extern gint num_matches_left(gint index, gint competitors);
 
 /* medal-matches */
 extern void move_medal_matches(GtkWidget *menuitem, gpointer userdata);
