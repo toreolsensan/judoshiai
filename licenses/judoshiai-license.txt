@@ -29,3 +29,7 @@ Shiai uses the following external libraries, programs, and other copyrighted mat
   software package. Inno Setup license is included in the distribution.
 
 - AVL library by Sam Rushing (copyright notice included).
+
+- Httpp library by Jack Moffitt for HTTP parsing (copyright notice included).
+
+- MOLE BASIC by Remco Schellekens for SQL scripting (copyright notice included).

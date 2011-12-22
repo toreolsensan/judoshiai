@@ -1,0 +1,9 @@
+BinReloc - a library for creating relocatable executables
+Written by: Hongli Lai <h.lai@chello.nl>
+http://autopackage.org/
+
+This source code is public domain. You can relicense this code
+under whatever license you want.
+
+See http://autopackage.org/docs/binreloc/ for
+more information and how to use this.
