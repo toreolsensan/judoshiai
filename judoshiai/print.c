@@ -1476,9 +1476,9 @@ void print_schedule(void)
     gtk_table_attach_defaults(GTK_TABLE(table), landscape, 0, 1, 4, 5);
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(landscape), flags & PRINT_LANDSCAPE);
 
-    fixed = gtk_check_button_new_with_label(_("Running time"));
+    fixed = gtk_check_button_new_with_label(_("Compressed timeline"));
     gtk_table_attach_defaults(GTK_TABLE(table), fixed, 0, 1, 5, 6);
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(fixed), print_fixed);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(fixed), !print_fixed);
 
     gtk_widget_show_all(table);
     gtk_container_add(GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), table);
@@ -1501,7 +1501,7 @@ void print_schedule(void)
             schedule_start = g_strdup(txt);
         }
 
-        print_fixed = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(fixed));
+        print_fixed = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(fixed));
 
         txt = gtk_entry_get_text(GTK_ENTRY(resolution));
         if (txt && txt[0]) {
