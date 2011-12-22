@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-12-16 13:27+0200\n"
+"POT-Creation-Date: 2011-12-21 08:55+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -931,7 +931,7 @@ msgid "Next"
 msgstr "Siguiente"
 
 msgid "Rest"
-msgstr "Resto"
+msgstr "Descanso"
 
 msgid "Do Backup"
 msgstr "Hacer copia de seguridad"
@@ -1045,7 +1045,7 @@ msgid "EST Double Elimination"
 msgstr "EST Eliminatoria doble"
 
 msgid "Single Elimination"
-msgstr "Eliminatoria simple"
+msgstr "Eliminatoria sin repesca"
 
 msgid "SWE Single Repechage"
 msgstr "SWE Repesca simple"
@@ -1161,13 +1161,13 @@ msgid "ESP Dbl Rep"
 msgstr "ESP Rep. doble"
 
 msgid "ESP Simple Rep"
-msgstr "ESP Rep. simple"
+msgstr "ESP Rep. en cuartos"
 
 msgid "ESP Double Lost"
 msgstr "Doble pérdida"
 
 msgid "ESP Double Repechage from Beginning"
-msgstr "Repesca doble desde 1ª ronda"
+msgstr "ESP Repesca doble desde 1ª ronda"
 
 msgid "ESP Double Repechage"
 msgstr "ESP Repesca doble"
@@ -1176,7 +1176,7 @@ msgid "IJF Double Repechage"
 msgstr "IJF Repesca doble"
 
 msgid "ESP Simple Repechage"
-msgstr "ESP Repesca simple"
+msgstr "ESP Repesca en cuartos"
 
 msgid "Quadruple pool"
 msgstr "4 Ligas cruzadas"
@@ -1302,7 +1302,7 @@ msgid "Select Script"
 msgstr "Seleccionar Script"
 
 msgid "No script available"
-msgstr "Script no disponible"
+msgstr "No hay Script disponible"
 
 msgid "Run Script"
 msgstr "Ejecutar Script"
@@ -1350,7 +1350,7 @@ msgid "Bronze2"
 msgstr "Bronce2"
 
 msgid "Pool's last"
-msgstr ""
+msgstr "Último combate de la liga"
 
 msgid "No move"
 msgstr "No mover"
@@ -1434,7 +1434,7 @@ msgid "Surname"
 msgstr "Apellidos"
 
 msgid "Change language to Icelandic"
-msgstr "Cambiar el idioma a Islandes"
+msgstr "Cambiar el idioma a Islandés"
 
 msgid "WINNER"
 msgstr "GANADOR"
@@ -1455,7 +1455,7 @@ msgid "Female"
 msgstr "Femenino"
 
 msgid "Control:"
-msgstr "Contro:"
+msgstr "Control:"
 
 msgid "NOK"
 msgstr "NOK"
@@ -1479,7 +1479,7 @@ msgid "defined"
 msgstr "definido"
 
 msgid "times"
-msgstr "veces"
+msgstr "tiempos"
 
 msgid "Duplicate club seedings:\n"
 msgstr "Duplicados clubs cabezas de serie:\n"
@@ -1530,7 +1530,7 @@ msgid "Country/Club,  Surname Name"
 msgstr "País/Club,  Apellidos Nombre"
 
 msgid "Scale Serial Interface..."
-msgstr ""
+msgstr "Interface de serie para la báscula..."
 
 msgid "Type"
 msgstr "Tipo"
@@ -1560,22 +1560,25 @@ msgid "- - -"
 msgstr ""
 
 msgid "syntax errors"
-msgstr ""
+msgstr "Errores de sintaxis"
 
 msgid "Rep. time:"
-msgstr ""
+msgstr "Tiempo de rep.:"
 
 msgid "Results in Norwegian"
-msgstr ""
+msgstr "Resultados en Noruego"
 
 msgid "Landscape"
-msgstr ""
+msgstr "Apaisado"
 
 msgid "Resolution:"
-msgstr ""
+msgstr "Resolución:"
 
 msgid "Running time"
-msgstr ""
+msgstr "Tiempo corriendo"
 
 msgid "Resolution (min):"
-msgstr ""
+msgstr "Resolución (min):"
+
+msgid "Compressed timeline"
+msgstr "Linea de tiempo compimida"
