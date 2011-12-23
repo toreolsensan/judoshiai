@@ -61,6 +61,11 @@ gboolean sides_switched = FALSE;
 gboolean white_first = FALSE;
 gboolean fullscreen = FALSE;
 
+#define MY_FONT "Arial"
+static gchar font_face[32];
+static gint  font_slant = CAIRO_FONT_SLANT_NORMAL, font_weight = CAIRO_FONT_WEIGHT_NORMAL;
+static gdouble font_size = 1.0;
+
 static const gchar *num_to_str(guint num)
 {
         static gchar result[10];
@@ -1068,6 +1073,9 @@ static void expose_label(cairo_t *c, gint w)
     else
         fsize = H(labels[w].h*0.8);
 
+    if (font_face[0])
+        cairo_select_font_face(c, font_face, font_slant, font_weight);
+
     cairo_set_font_size(c, fsize);
     cairo_text_extents(c, txt1, &extents);
 
@@ -1161,7 +1169,7 @@ static gboolean expose(GtkWidget *widget, GdkEventExpose *event, gpointer userda
         paper_height = widget->allocation.height;
         paper_width = widget->allocation.width;
 
-        cairo_select_font_face(c, "serif",
+        cairo_select_font_face(c, "arial",
                                CAIRO_FONT_SLANT_NORMAL,
                                CAIRO_FONT_WEIGHT_BOLD);
 
@@ -2402,5 +2410,76 @@ gint application_type(void)
 gboolean blue_background(void)
 {
     return bgcolor == &color_blue;
+}
+
+void parse_font_text(gchar *font, gchar *face, gint *slant, gint *weight, gdouble *size)
+{
+    gchar *italic = strstr(font, "Italic");
+    gchar *bold = strstr(font, "Bold");
+    gchar *num = strrchr(font, ' ');
+
+    if (!num) {
+        g_print("ERROR: malformed font string '%s'\n", font);
+        return;
+    }
+
+    num++;
+
+    gchar *end = num;
+
+    if (italic && italic < end)
+        end = italic;
+
+    if (bold && bold < end)
+        end = bold;
+
+    end--;
+
+    gchar *p = font;
+    gchar *d = face;
+    while (p < end)
+        *d++ = *p++;
+    *d = 0;
+
+    if (italic)
+        *slant = CAIRO_FONT_SLANT_ITALIC;
+    else
+        *slant = CAIRO_FONT_SLANT_NORMAL;
+
+    if (bold)
+        *weight = CAIRO_FONT_WEIGHT_BOLD;
+    else
+        *weight = CAIRO_FONT_WEIGHT_NORMAL;
+
+    if (num && size)
+        *size = atof(num)/12.0;
+}
+
+void set_font(gchar *font)
+{
+    parse_font_text(font, font_face, &font_slant, &font_weight, &font_size);
+    g_key_file_set_string(keyfile, "preferences", "displayfont", font);
+}
+
+static gchar *get_font_face()
+{
+    static gchar buf[64];
+    snprintf(buf, sizeof(buf), "%s 12", font_face); 
+    return buf;
+}
+
+void font_dialog(GtkWidget *w, gpointer data)
+{
+    GtkWidget *dialog;
+
+    dialog = gtk_font_selection_dialog_new (_("Select font"));
+    gtk_font_selection_dialog_set_font_name(GTK_FONT_SELECTION_DIALOG(dialog), get_font_face());
+
+    if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_OK) {
+        gchar *font = gtk_font_selection_dialog_get_font_name(GTK_FONT_SELECTION_DIALOG(dialog));
+        set_font(font);
+    }
+
+    gtk_widget_destroy(dialog);
 }
 

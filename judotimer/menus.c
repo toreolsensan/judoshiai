@@ -197,6 +197,7 @@ static GtkWidget *mode_normal, *mode_master, *mode_slave;
 static GtkWidget *undo, *hansokumake_blue, *hansokumake_white, *clear_selection, *switch_sides;
 static GtkWidget *advertise, *sound, *flags[NUM_LANGS], *menu_flags[NUM_LANGS];
 static GtkWidget *name_layout, *name_layouts[NUM_NAME_LAYOUTS];
+static GtkWidget *display_font;
 
 static const gchar *flags_files[NUM_LANGS] = {
     "finland.png", "sweden.png", "uk.png", "spain.png", "estonia.png", "ukraine.png", "iceland.png", "norway.png"
@@ -454,6 +455,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     mode_slave      = gtk_radio_menu_item_new_with_label_from_widget((GtkRadioMenuItem *)mode_normal, "");
     advertise       = gtk_menu_item_new_with_label("");
     sound           = gtk_menu_item_new_with_label("");
+    display_font    = gtk_menu_item_new_with_label("");
 
 
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), red_background);
@@ -528,6 +530,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), gtk_separator_menu_item_new());
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), advertise);
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), sound);
+    gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), display_font);
 
     g_signal_connect(G_OBJECT(red_background),  "activate", G_CALLBACK(toggle_color),         (gpointer)1);
     g_signal_connect(G_OBJECT(full_screen),     "activate", G_CALLBACK(toggle_full_screen),   (gpointer)0);
@@ -571,6 +574,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     g_signal_connect(G_OBJECT(mode_slave),      "activate", G_CALLBACK(mode_selection),       (gpointer)2);
     g_signal_connect(G_OBJECT(advertise),       "activate", G_CALLBACK(toggle_advertise),     (gpointer)0);
     g_signal_connect(G_OBJECT(sound),           "activate", G_CALLBACK(select_sound),         (gpointer)0);
+    g_signal_connect(G_OBJECT(display_font),    "activate", G_CALLBACK(font_dialog),          (gpointer)0);
 
     gtk_widget_add_accelerator(full_screen,     "activate", group, GDK_F, 0, GTK_ACCEL_VISIBLE);
 
@@ -704,17 +708,22 @@ void set_preferences(void)
         show_competitor_names = TRUE;
     }
 
+    error = NULL;
+    str = g_key_file_get_string(keyfile, "preferences", "displayfont", &error);
+    if (!error) {
+        set_font(str);
+        g_free(str);
+    }
 }
 
 gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param)
 {
-    gchar *r = NULL;
     static gchar envbuf[32]; // this must be static for the putenv() function
 
     language = (gint)param;
     sprintf(envbuf, "LANGUAGE=%s", lang_names[language]);
     putenv(envbuf);
-    r = setlocale(LC_ALL, lang_names[language]);
+    setlocale(LC_ALL, lang_names[language]);
 
     gchar *dirname = g_build_filename(installation_dir, "share", "locale", NULL);
     bindtextdomain ("judoshiai", dirname);
@@ -817,6 +826,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
 
     change_menu_label(advertise,    _("Advertise"));
     change_menu_label(sound,        _("Sound"));
+    change_menu_label(display_font, _("Font"));
 
     change_menu_label(manual,       _("Manual"));
     change_menu_label(quick_guide,  _("Quick guide"));
