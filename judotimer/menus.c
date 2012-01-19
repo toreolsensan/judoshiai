@@ -204,7 +204,7 @@ static const gchar *flags_files[NUM_LANGS] = {
 };
 
 static const gchar *lang_names[NUM_LANGS] = {
-    "fi", "sv", "en", "es", "et", "uk", "is", "no"
+    "fi", "sv", "en", "es", "et", "uk", "is", "nb"
 };
 
 static const gchar *help_file_names[NUM_LANGS] = {
@@ -322,8 +322,6 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_menu_shell_append (GTK_MENU_SHELL (menubar), help);
 
     for (i = 0; i < NUM_LANGS; i++) {
-        if (i == LANG_NO)
-            continue;
         gtk_menu_shell_append(GTK_MENU_SHELL(menubar), menu_flags[i]); 
         g_signal_connect(G_OBJECT(menu_flags[i]), "button_press_event",
                          G_CALLBACK(change_language), (gpointer)i);
@@ -847,6 +845,8 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
                           _("Change language to Ukrainan"), NULL);
     gtk_tooltips_set_tip (GTK_TOOLTIPS (menu_tips), menu_flags[LANG_IS],
                           _("Change language to Icelandic"), NULL);
+    gtk_tooltips_set_tip (GTK_TOOLTIPS (menu_tips), menu_flags[LANG_NO],
+                           _("Change language to Norwegian"), NULL);
 
     gtk_tooltips_set_tip (GTK_TOOLTIPS (menu_tips), match0,
                           _("Contest duration automatically from JudoShiai program"), NULL);
