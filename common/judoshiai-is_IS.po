@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-12-23 09:43+0200\n"
+"POT-Creation-Date: 2012-01-02 16:30+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1342,6 +1342,9 @@ msgstr "Keppnisvöllur 10"
 msgid "Change language to Icelandic"
 msgstr "Skipta yfir í Íslensku"
 
+msgid "Change language to Norwegian"
+msgstr "Skipta yfir í Norska"
+
 msgid "WINNER"
 msgstr "Sigurvegari"
 
@@ -1557,3 +1560,4 @@ msgstr "Velja leturgerð"
 
 msgid "Font"
 msgstr "Letur"
+

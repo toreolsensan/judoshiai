@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-12-23 09:43+0200\n"
+"POT-Creation-Date: 2012-01-02 16:30+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -338,7 +338,7 @@ msgid "Sound"
 msgstr ""
 
 msgid "Change language to Spanish"
-msgstr ""
+msgstr "Byt språk till spanska"
 
 msgid "Choose a file"
 msgstr ""
@@ -359,10 +359,10 @@ msgid "Display customized layout"
 msgstr ""
 
 msgid "Change language to Estonian"
-msgstr ""
+msgstr "Byt språk till estniska"
 
 msgid "Change language to Ukrainan"
-msgstr ""
+msgstr "Byt språk till ukrainsk"
 
 msgid "White first"
 msgstr ""
@@ -425,7 +425,10 @@ msgid "Club"
 msgstr ""
 
 msgid "Change language to Icelandic"
-msgstr ""
+msgstr "Byt språk till isländska"
+
+msgid "Change language to Norwegian"
+msgstr "Byt språk till norska"
 
 msgid "OK"
 msgstr ""

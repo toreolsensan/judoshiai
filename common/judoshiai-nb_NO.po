@@ -1,0 +1,457 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-01-02 16:30+0100\n"
+"PO-Revision-Date: 2012-01-03 16:09+0100\n"
+"Last-Translator: Øyvind Jelstad <oyvind@jelstad.org>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "White has a judogi problem."
+msgstr "Hvit har et problem med judogi"
+
+msgid "Blue has a judogi problem."
+msgstr "Blå har et problem med judogi"
+
+msgid "White won the voting"
+msgstr "Hvit vant avstemmingen"
+
+msgid "Blue won the voting"
+msgstr "Blå vant avstemmingen"
+
+msgid "Hansokumake to white"
+msgstr "Hansokumake til hvit"
+
+msgid "Hansokumake to blue"
+msgstr "Hansokumake til blå"
+
+msgid "Match:"
+msgstr "Kamp:"
+
+msgid "Next:"
+msgstr "Neste:"
+
+msgid "Fight:"
+msgstr "Kamp:"
+
+msgid "About Judotimer"
+msgstr "Om Judotimer"
+
+msgid "Set clocks"
+msgstr "Still klokkene"
+
+msgid "Clock:"
+msgstr "Klokke:"
+
+msgid "Match"
+msgstr "Kamp"
+
+msgid "Preferences"
+msgstr "Innstillinger"
+
+msgid "Help"
+msgstr "Hjelp"
+
+msgid "Undo!"
+msgstr "Angre!"
+
+msgid "Match duration: automatic"
+msgstr "Kamptid: automatisk"
+
+msgid "Match duration: 2 min E-juniors"
+msgstr "Kamptid: 2 min E-juniors"
+
+msgid "Match duration: 2 min"
+msgstr "Kamptid: 2 min "
+
+msgid "Match duration: 3 min"
+msgstr "Kamptid: 3 min "
+
+msgid "Match duration: 4 min"
+msgstr "Kamptid: 4 min "
+
+msgid "Match duration: 5 min"
+msgstr "Kamptid: 5 min "
+
+msgid "Golden Score"
+msgstr ""
+
+msgid "Hantei: blue wins"
+msgstr "Hantei: Blå vinner"
+
+msgid "Hantei: white wins"
+msgstr "Hantei: Hvit vinner"
+
+msgid "Hansoku-make to blue"
+msgstr "Hansoku-make til blå"
+
+msgid "Hansoku-make to white"
+msgstr "Hansoku-make til hvit"
+
+msgid "Clear selection"
+msgstr "Fjern markering"
+
+msgid "View Log"
+msgstr "Vis logg"
+
+msgid "Show Competitors"
+msgstr "Vis deltakere"
+
+msgid "Quit"
+msgstr "Avslutt"
+
+msgid "Contest"
+msgstr "Konkurranse"
+
+msgid "Contest duration: automatic"
+msgstr "Kamptid: automatisk"
+
+msgid "Contest duration: 2 min (short pin times)"
+msgstr "Kamptid: 2 min (Kort holdetid)"
+
+msgid "Contest duration: 2 min"
+msgstr "Kamptid: 2 min "
+
+msgid "Contest duration: 3 min"
+msgstr "Kamptid: 3 min "
+
+msgid "Contest duration: 4 min"
+msgstr "Kamptid: 4 min "
+
+msgid "Contest duration: 5 min"
+msgstr "Kamptid: 5 min "
+
+msgid "Switch sides"
+msgstr "Bytt sider"
+
+msgid "Red background"
+msgstr "Rød bakgrunn"
+
+msgid "Full screen mode"
+msgstr "Fullskjermmode"
+
+msgid "No koka"
+msgstr "Ingen koka"
+
+msgid "Leave points for GS"
+msgstr "Behold poeng for GS"
+
+msgid "Stop clock on Ippon"
+msgstr "Stopp klokke ved Ippon"
+
+msgid "Confirm New Match"
+msgstr "Bekreft ny kamp"
+
+msgid "View clocks only"
+msgstr "Vis kun klokker"
+
+msgid "White first"
+msgstr "Hvit først"
+
+msgid "Show competitors"
+msgstr "Vis utøvere"
+
+msgid "Display layout"
+msgstr ""
+
+msgid "Display layout 1"
+msgstr ""
+
+msgid "Display layout 2"
+msgstr ""
+
+msgid "Display layout 3"
+msgstr ""
+
+msgid "Display layout 4"
+msgstr ""
+
+msgid "Display layout 5"
+msgstr ""
+
+msgid "Display customized layout"
+msgstr "Egendefinert layout"
+
+msgid "Name format"
+msgstr "Navne-format"
+
+msgid "Name Surname, Country/Club"
+msgstr "Fornavn Etternavn, Land/Klubb"
+
+msgid "Surname, Name, Country/Club"
+msgstr "Etternavn, Fornavn, Land/Klubb"
+
+msgid "Country/Club  Surname, Name"
+msgstr "Land/Klubb Etternavn, Fornavn"
+
+msgid "Country  Surname, Name"
+msgstr "Land Etternavn, Fornavn"
+
+msgid "Club  Surname, Name"
+msgstr "Klubb Etternavn, Fornavn"
+
+msgid "Country Surname"
+msgstr "Land Etternavn"
+
+msgid "Club Surname"
+msgstr "Kjubb Etternavn"
+
+msgid "Surname, Name"
+msgstr "Etternavn, Fornavn"
+
+msgid "Surname"
+msgstr "Etternavn"
+
+msgid "Country"
+msgstr "Land"
+
+msgid "Club"
+msgstr "Klubb"
+
+msgid "Contest area"
+msgstr "Matter"
+
+msgid "Contest area not chosen"
+msgstr "Matte ikke valgt"
+
+msgid "Contest area 1"
+msgstr "Matte 1"
+
+msgid "Contest area 2"
+msgstr "Matte 2"
+
+msgid "Contest area 3"
+msgstr "Matte 3"
+
+msgid "Contest area 4"
+msgstr "Matte 4"
+
+msgid "Contest area 5"
+msgstr "Matte 5"
+
+msgid "Contest area 6"
+msgstr "Matte 6"
+
+msgid "Contest area 7"
+msgstr "Matte 7"
+
+msgid "Contest area 8"
+msgstr "Matte 8"
+
+msgid "Contest area 9"
+msgstr "Matte 9"
+
+msgid "Contest area 10"
+msgstr "Matte 10"
+
+msgid "Communication node"
+msgstr "Kommunikasjonstjener"
+
+msgid "Own IP addresses"
+msgstr "Egen IP-adresse"
+
+msgid "Set time"
+msgstr "Sett tid"
+
+msgid "Increment time"
+msgstr "Øk tid"
+
+msgid "Decrement time"
+msgstr "Reduser tid"
+
+msgid "Increment pin time"
+msgstr "Øk holdetid"
+
+msgid "Decrement pin time"
+msgstr "Reduser holdetid"
+
+msgid "Normal operation"
+msgstr "Normal operasjon"
+
+msgid "Master mode"
+msgstr ""
+
+msgid "Slave mode"
+msgstr ""
+
+msgid "Advertise"
+msgstr "Reklame"
+
+msgid "Sound"
+msgstr "Lyd"
+
+msgid "Manual"
+msgstr ""
+
+msgid "Quick guide"
+msgstr ""
+
+msgid "About"
+msgstr ""
+
+msgid "Change language to Finnish"
+msgstr ""
+
+msgid "Change language to Swedish"
+msgstr ""
+
+msgid "Change language to English"
+msgstr ""
+
+msgid "Change language to Spanish"
+msgstr ""
+
+msgid "Change language to Estonian"
+msgstr ""
+
+msgid "Change language to Ukrainan"
+msgstr ""
+
+msgid "Change language to Icelandic"
+msgstr ""
+
+msgid "Contest duration automatically from JudoShiai program"
+msgstr "Kamptid automatisk fra JudoShiai"
+
+msgid "Advertisement"
+msgstr "Reklame"
+
+msgid "OK"
+msgstr ""
+
+msgid "Choose a directory"
+msgstr "Velg katalog"
+
+msgid "Run Advertisements"
+msgstr "Kjør reklame"
+
+msgid "Choose a file"
+msgstr "Velg fil"
+
+msgid "Sound Files"
+msgstr "Lydfiler"
+
+msgid "All Files"
+msgstr "Alle filer"
+
+msgid "Start Golden Score?"
+msgstr ""
+
+msgid "Hantei"
+msgstr ""
+
+msgid "Blue wins"
+msgstr "Blå vinner"
+
+msgid "White wins"
+msgstr "Hvit vinner"
+
+msgid "WINNER"
+msgstr "VINNER"
+
+msgid "Start New Match?"
+msgstr "Start ny kamp"
+
+msgid "Cancel"
+msgstr "Kanseller"
+
+msgid "REST TIME"
+msgstr "HVILETID"
+
+msgid "Points going to blue"
+msgstr "Poeng går til blå"
+
+msgid "Points going to white"
+msgstr "Poeng går til hvit"
+
+msgid "Select font"
+msgstr ""
+
+msgid "Font"
+msgstr ""
+
+msgid "Change language to Norwegian"
+msgstr ""
+
+msgid "- - -"
+msgstr ""
+
+msgid "Prev. winner:"
+msgstr "Forrige vinner:"
+
+msgid "Category starts"
+msgstr "Kategorien starter"
+
+msgid "Gold medal match"
+msgstr "Gullmedaljekamp"
+
+msgid "Bronze match A"
+msgstr "Bronsekamp"
+
+msgid "Bronze match B"
+msgstr "Bronsekamp B"
+
+msgid "Semifinal A"
+msgstr "Semifinale A"
+
+msgid "Semifinal B"
+msgstr "Semifinale B"
+
+msgid "Silver medal match"
+msgstr "Sølvmedaljekamp"
+
+msgid "Save file"
+msgstr "Lagre fil"
+
+msgid "About JudoInfo"
+msgstr "Om JudoInfo"
+
+msgid "Normal display"
+msgstr "Normal Skjerm"
+
+msgid "Small display"
+msgstr "Liten skjerm"
+
+msgid "Horizontal display"
+msgstr "Horisontal skjerm"
+
+msgid "Mirror tatami order"
+msgstr "Speil matterekkefølgen"
+
+msgid "Write to file"
+msgstr "Skriv til fil"
+
+msgid "Show Tatami"
+msgstr "Vis  matte"
+
+msgid "Address of the communication node"
+msgstr "Adresse til kommunikasjonsnoden"
+
+msgid "IP address:"
+msgstr "IP-adresse:"
+
+msgid "(Connection OK)"
+msgstr "(Forbindelse OK)"
+
+msgid "(Connection broken)"
+msgstr "(Forbindelse brudt)"
+
+msgid "Serial Communication"
+msgstr "Seriekommunikasjon"
+
+msgid "In Use"
+msgstr "I bruk"
+
+msgid "Device"
+msgstr ""
+
+msgid "Baudrate"
+msgstr ""
+
+msgid "Type"
+msgstr ""
+
