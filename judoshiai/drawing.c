@@ -1083,7 +1083,7 @@ struct compsys get_system_for_category(gint index, gint competitors)
         else
             sys = SYSTEM_FRENCH_64;
     } else if (competitors > 64) { // only 2 tables supported
-        if (wishsys != DRAW_FINNISH &&
+        if (wishsys != CAT_SYSTEM_REPECHAGE &&
             wishsys != CAT_IJF_DOUBLE_REPECHAGE) {
             if (draw_system == DRAW_FINNISH)
                 wishsys = CAT_SYSTEM_REPECHAGE;
