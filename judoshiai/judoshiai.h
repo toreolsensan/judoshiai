@@ -781,6 +781,8 @@ extern void db_print_competitors_by_club(FILE *f);
 extern gint db_get_index_by_id(const gchar *id);
 extern int db_get_table(char *command);
 extern void db_close_table(void);
+extern char **db_get_table_copy(char *command, int *tablerows1, int *tablecols1);
+extern void db_close_table_copy(char **tablep);
 extern char *db_get_data(int row, char *name);
 extern gchar *db_sql_command(const gchar *command);
 extern void db_set_info(const gchar *competition, 
