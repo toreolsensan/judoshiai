@@ -154,3 +154,44 @@ gchar *db_get_row_col_data(gint row, gint col)
     return data[(row+1)*tablecols + col];
 }
 
+char **db_get_table_copy(char *command, int *tablerows1, int *tablecols1)
+{
+    sqlite3 *db;
+    char *zErrMsg = 0;
+    int rc;
+    char **tablep1 = NULL;
+
+    G_LOCK(db);
+
+    rc = sqlite3_open(db_name, &db);
+    if (rc) {
+        fprintf(stderr, "Can't open database: %s\n", 
+                sqlite3_errmsg(db));
+        G_UNLOCK(db);
+        return NULL;
+    }
+
+    sqlite3_create_function(db, "utf8error", 1, SQLITE_UTF8, NULL, utf8error, NULL, NULL);
+    sqlite3_create_function(db, "getweight", 1, SQLITE_UTF8, NULL, getweight, NULL, NULL);
+
+    //g_print("\nSQL: %s:\n  %s\n", db_name, cmd);
+    rc = sqlite3_get_table(db, command, &tablep1, tablerows1, tablecols1, &zErrMsg);
+    if (rc != SQLITE_OK && zErrMsg) {
+        g_print("SQL error: %s\n", zErrMsg);
+        sqlite3_free(zErrMsg);
+        sqlite3_close(db);
+        G_UNLOCK(db);
+        return NULL;
+    }
+
+    sqlite3_close(db);
+    G_UNLOCK(db);
+
+    return tablep1;
+}
+
+void db_close_table_copy(char **tablep)
+{
+    sqlite3_free_table(tablep);
+}
+
