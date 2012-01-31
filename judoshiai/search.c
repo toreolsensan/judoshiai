@@ -37,11 +37,13 @@ static gboolean button_pressed(GtkWidget *button,
 
     for (i = 0; i < NUM_RESULTS && data->valid[i]; i++) {
         if (data->results[i] == button) {
-            GtkTreePath *path = gtk_tree_model_get_path(current_model, 
-                                                        &data->iter[i]);
-            view_on_row_activated((GtkTreeView *)current_view, path, NULL, NULL);
-            gtk_tree_path_free(path);
-            return TRUE;
+            GtkTreeIter iter;
+            if (find_iter(&iter, data->index[i])) {
+                GtkTreePath *path = gtk_tree_model_get_path(current_model, &iter); 
+                view_on_row_activated((GtkTreeView *)current_view, path, NULL, NULL);
+                gtk_tree_path_free(path);
+                return TRUE;
+            }
         }
     }
     return FALSE;
