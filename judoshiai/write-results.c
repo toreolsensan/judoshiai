@@ -390,6 +390,19 @@ static void french_results(FILE *f, gint category, struct judoka *ctg,
         fifth1 = loser;
         GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(systm, 5, 2));
         fifth2 = loser;
+    } else if (table == TABLE_DOUBLE_LOST) {
+        GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(systm, 3, 1));
+        bronze1 = loser;
+        GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(systm, 3, 2));
+        bronze2 = loser;
+        GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(systm, 5, 1));
+        fifth1 = loser;
+        GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(systm, 5, 2));
+        fifth2 = loser;
+        GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(systm, 7, 1));
+        seventh1 = loser;
+        GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(systm, 7, 2));
+        seventh2 = loser;
     } else {
         GET_WINNER_AND_LOSER(get_abs_matchnum_by_pos(systm, 3, 1));
         bronze1 = winner;

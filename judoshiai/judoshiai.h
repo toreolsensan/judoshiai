@@ -102,6 +102,7 @@ enum tables {
     TABLE_ESP_REPESCA_SIMPLE,
     TABLE_MODIFIED_DOUBLE_ELIMINATION,
     TABLE_DOUBLE_REPECHAGE_ONE_BRONZE,
+    TABLE_DOUBLE_LOST,
     NUM_TABLES
 };
 #define TABLE_IJF_DOUBLE_REPECHAGE TABLE_ESP_REPESCA_DOBLE
@@ -124,6 +125,7 @@ enum cat_systems {
     CAT_MODIFIED_DOUBLE_ELIMINATION,
     CAT_SYSTEM_REPECHAGE_ONE_BRONZE,
     CAT_SYSTEM_DPOOL2,
+    CAT_SYSTEM_DOUBLE_LOST,
     NUM_SYSTEMS
 };
 #define CAT_IJF_DOUBLE_REPECHAGE CAT_ESP_REPESCA_DOBLE
@@ -164,7 +166,9 @@ enum special_match_types {
     SPECIAL_MATCH_STOP,
     SPECIAL_MATCH_FLAG,
     SPECIAL_MATCH_X_Y,
-    SPECIAL_MORE_SPACE
+    SPECIAL_MORE_SPACE,
+    SPECIAL_UNCONNECTED_BLUE,
+    SPECIAL_UNCONNECTED_WHITE
 };
 
 #define SET_ACCESS_NAME(_widget, _name)                 \
@@ -781,6 +785,8 @@ extern void db_print_competitors_by_club(FILE *f);
 extern gint db_get_index_by_id(const gchar *id);
 extern int db_get_table(char *command);
 extern void db_close_table(void);
+extern char **db_get_table_copy(char *command, int *tablerows1, int *tablecols1);
+extern void db_close_table_copy(char **tablep);
 extern char *db_get_data(int row, char *name);
 extern gchar *db_sql_command(const gchar *command);
 extern void db_set_info(const gchar *competition, 
