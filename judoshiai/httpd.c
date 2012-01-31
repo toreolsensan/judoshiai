@@ -288,7 +288,8 @@ void get_categories(http_parser_t *parser)
           (h_tatami && h_tatami[0]=='7') ? style1 : style0,
           (h_tatami && h_tatami[0]=='8') ? style1 : style0);
 
-    gint numrows = 0;
+    gint numrows = 0, numcols = 0;
+    gchar **tablecopy = NULL;
 
     sendf(s, "<table border=\"1\" valign=\"top\">"
           "<tr><th>%s</th><th>%s</th><th>%s</th></tr>"
@@ -318,7 +319,7 @@ void get_categories(http_parser_t *parser)
                   _("Cancel the match"));
         sendf(s, "</td><td class=\"cpr\">%s<br>%s %s<br>&nbsp;</td>", xc, xf, xl);
 
-        g_static_mutex_lock(&next_match_mutex);
+        //g_static_mutex_lock(&next_match_mutex);
         struct match *m = get_cached_next_matches(i+1);
 
         for (k = 0; m[k].number != 1000 && k < NEXT_MATCH_NUM; k++) {
@@ -364,7 +365,7 @@ void get_categories(http_parser_t *parser)
             if (cat != &unknown_judoka)
                 free_judoka(cat);
         }
-        g_static_mutex_unlock(&next_match_mutex);
+        //g_static_mutex_unlock(&next_match_mutex);
         sendf(s, "</table>\r\n");
     } else { //!h_tatami
         sendf(s, _("Select a tatami"));
@@ -377,23 +378,23 @@ void get_categories(http_parser_t *parser)
         sprintf(buf, "select * from categories where \"tatami\"=%s and "
                 "\"deleted\"=0 order by \"category\" asc", 
                 h_tatami);
-        numrows = db_get_table(buf);
+        tablecopy = db_get_table_copy(buf, &numrows, &numcols);
 
-        if (numrows < 0)
+        if (tablecopy == NULL)
             return;
 
         sendf(s, "<table>\r\n");
 
         for (row = 0; row < numrows; row++) {
-            gchar *cat = db_get_data(row, "category");
-            gchar *id1 = db_get_data(row, "index");
+            gchar *cat = db_get_col_data(tablecopy, numcols, row, "category");
+            gchar *id1 = db_get_col_data(tablecopy, numcols, row, "index");
             sendf(s, "<tr><td><input type=\"submit\" name=\"X%s\" "
                   "value=\"%s\" %s></td></tr>\r\n",
                   id1, cat, (h_id && strcmp(h_id, id1)==0) ? style1 : style0);
         }
         sendf(s, "</table>\r\n");
 
-        db_close_table();
+        db_close_table_copy(tablecopy);
     }
     sendf(s, "</td><td valign=\"top\">");
 
@@ -674,12 +675,12 @@ void run_judotimer(http_parser_t *parser)
     if (tatami == 0)
         return;
 
-    g_static_mutex_lock(&next_match_mutex);
+    //g_static_mutex_lock(&next_match_mutex);
     struct match *m = get_cached_next_matches(tatami);
     int k;
 
     if (!m) {
-        g_static_mutex_unlock(&next_match_mutex);
+        //g_static_mutex_unlock(&next_match_mutex);
         return;
     }
 
@@ -721,14 +722,14 @@ void run_judotimer(http_parser_t *parser)
         if (cat != &unknown_judoka)
             free_judoka(cat);
     }
-    g_static_mutex_unlock(&next_match_mutex);
+    //g_static_mutex_unlock(&next_match_mutex);
     sendf(s, "\r\n");
 }
 
 static gint my_atoi(gchar *s) { return (s ? atoi(s) : 0); }
 
-#define GET_INT(_x) gint _x = new_comp ? 0 : my_atoi(db_get_data(row, #_x))
-#define GET_STR(_x) gchar *_x = new_comp ? "" : db_get_data(row, #_x)
+#define GET_INT(_x) gint _x = new_comp ? 0 : my_atoi(db_get_col_data(tablecopy, numcols, row, #_x))
+#define GET_STR(_x) gchar *_x = new_comp ? "" : db_get_col_data(tablecopy, numcols, row, #_x)
 
 #define SEARCH_FIELD "<form method=\"get\" action=\"getcompetitor\" name=\"search\">Search (bar code):<input type=\"text\" name=\"index\"></form>\r\n"
 
@@ -760,15 +761,16 @@ void get_competitor(http_parser_t *parser)
     send_html_top(parser, "onLoad=\"document.valtable.weight.focus()\"");
 
     snprintf(buf, sizeof(buf), "select * from competitors where \"id\"=\"%s\"", ix);
-    gint numrows = db_get_table(buf);
+    gint numrows, numcols;
+    gchar **tablecopy = db_get_table_copy(buf, &numrows, &numcols);
 
-    if (numrows == 0) {
-        db_close_table();
+    if (tablecopy && numrows == 0) {
+        db_close_table_copy(tablecopy);
         snprintf(buf, sizeof(buf), "select * from competitors where \"index\"=%s", ix);
-        numrows = db_get_table(buf);
+        tablecopy = db_get_table_copy(buf, &numrows, &numcols);
     }
 
-    if (numrows < 0) {
+    if (!tablecopy) {
         sendf(s, "<h1>%s</h1>", _("No competitor found!"));
         send_html_bottom(parser);
         return;
@@ -865,7 +867,7 @@ void get_competitor(http_parser_t *parser)
 
     send_html_bottom(parser);
 
-    db_close_table();
+    db_close_table_copy(tablecopy);
 }
 
 #define GET_HTML_STR(_x) \
@@ -1019,17 +1021,23 @@ void get_competitors(http_parser_t *parser, gboolean show_deleted)
         node = avl_get_next(node);
     }
 
-    gint numrows;
-    if (!strcmp(order, "club"))
-        numrows = db_get_table("select * from competitors order by \"club\",\"last\",\"first\" asc");
-    else if (!strcmp(order, "last"))
-        numrows = db_get_table("select * from competitors order by \"last\",\"first\" asc");
-    else if (!strcmp(order, "regcat"))
-        numrows = db_get_table("select * from competitors order by \"regcategory\",\"last\",\"first\" asc");
-    else
-        numrows = db_get_table("select * from competitors order by \"country\",\"club\",\"last\",\"first\" asc");
+    gint numrows, numcols;
+    gchar **tablecopy;
 
-    if (numrows < 0)
+    if (!strcmp(order, "club"))
+        tablecopy = db_get_table_copy("select * from competitors order by \"club\",\"last\",\"first\" asc", 
+                                      &numrows, &numcols);
+    else if (!strcmp(order, "last"))
+        tablecopy = db_get_table_copy("select * from competitors order by \"last\",\"first\" asc", 
+                                      &numrows, &numcols);
+    else if (!strcmp(order, "regcat"))
+        tablecopy = db_get_table_copy("select * from competitors order by \"regcategory\",\"last\",\"first\" asc", 
+                                      &numrows, &numcols);
+    else
+        tablecopy = db_get_table_copy("select * from competitors order by \"country\",\"club\",\"last\",\"first\" asc", 
+                                      &numrows, &numcols);
+
+    if (!tablecopy)
         return;
 
     send_html_top(parser, "onLoad=\"document.search.index.focus()\"");
@@ -1046,13 +1054,13 @@ void get_competitors(http_parser_t *parser, gboolean show_deleted)
           "Country", "Club", "Surname", "Name", "Reg.Category");
 
     for (row = 0; row < numrows; row++) {
-        gchar *last = db_get_data(row, "last");
-        gchar *first = db_get_data(row, "first");
-        gchar *club = db_get_data(row, "club");
-        gchar *country = db_get_data(row, "country");
-        gchar *cat = db_get_data(row, "regcategory");
-        gchar *id = db_get_data(row, "index");
-        gint   deleted = my_atoi(db_get_data(row, "deleted"));
+        gchar *last = db_get_col_data(tablecopy, numcols, row, "last");
+        gchar *first = db_get_col_data(tablecopy, numcols, row, "first");
+        gchar *club = db_get_col_data(tablecopy, numcols, row, "club");
+        gchar *country = db_get_col_data(tablecopy, numcols, row, "country");
+        gchar *cat = db_get_col_data(tablecopy, numcols, row, "regcategory");
+        gchar *id = db_get_col_data(tablecopy, numcols, row, "index");
+        gint   deleted = my_atoi(db_get_col_data(tablecopy, numcols, row, "deleted"));
 
         if (((deleted&1) && show_deleted) ||
             ((deleted&1) == 0 && show_deleted == FALSE)) {
@@ -1067,7 +1075,7 @@ void get_competitors(http_parser_t *parser, gboolean show_deleted)
     sendf(s, "</table>\r\n");
     send_html_bottom(parser);
 
-    db_close_table();
+    db_close_table_copy(tablecopy);
 }
 
 void get_file(http_parser_t *parser)
