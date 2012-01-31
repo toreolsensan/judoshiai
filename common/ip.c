@@ -627,6 +627,8 @@ gpointer client_thread(gpointer args)
     static guchar inbuf[1000];
     fd_set read_fd, fds;
     gint old_port = get_port();
+    struct message msg_out;
+    gboolean msg_out_ready;
 
     for ( ; *((gboolean *)args) ; )   /* exit loop when flag is cleared */
     {
@@ -696,14 +698,21 @@ gpointer client_thread(gpointer args)
 
             r = select(comm_fd+1, &fds, NULL, NULL, &timeout);
 
+            // Mutex may be locked for a long time if there are network problems
+            // during send. Thus we send a copy to unlock the mutex immediatelly.
+            msg_out_ready = FALSE;
             g_static_mutex_lock(&send_mutex);
-            if (msg_queue_put != msg_queue_get) {
-                send_msg(comm_fd, &msg_to_send[msg_queue_get]);
+            if (msg_queue_get != msg_queue_put) {
+                msg_out = msg_to_send[msg_queue_get];
                 msg_queue_get++;
                 if (msg_queue_get >= MSG_QUEUE_LEN)
                     msg_queue_get = 0;
+                msg_out_ready = TRUE;
             }
             g_static_mutex_unlock(&send_mutex);
+
+            if (msg_out_ready)
+                send_msg(comm_fd, &msg_out);
 
             if (r <= 0)
                 continue;
@@ -716,7 +725,6 @@ gpointer client_thread(gpointer args)
                                 
                 if ((n = recv(comm_fd, inbuf, sizeof(inbuf), 0)) > 0) {
                     gint i;
-                    g_static_mutex_lock(&rec_mutex);
                     for (i = 0; i < n; i++) {
                         guchar c = inbuf[i];
                         if (c == COMM_ESCAPE) {
@@ -731,10 +739,12 @@ gpointer client_thread(gpointer args)
                             } else if (c == COMM_END) {
 				decode_msg(&m, p, ri);
                                 if (msg_accepted(&m)) {
+                                    g_static_mutex_lock(&rec_mutex);
                                     rec_msgs[rec_msg_queue_put] = m;
                                     rec_msg_queue_put++;
                                     if (rec_msg_queue_put >= MSG_QUEUE_LEN)
                                         rec_msg_queue_put = 0;
+                                    g_static_mutex_unlock(&rec_mutex);
                                 }
                             } else {
                                 g_print("Wrong char 0x%02x after esc!\n", c);
@@ -744,7 +754,6 @@ gpointer client_thread(gpointer args)
                             p[ri++] = c;
                         }
                     }
-                    g_static_mutex_unlock(&rec_mutex);
                 } else 
                     break;
             }
