@@ -473,6 +473,8 @@ gpointer node_thread(gpointer args)
     gint reuse = 1;
     fd_set read_fd, fds;
     gint xmllen = strlen(xml);
+    struct message msg_out;
+    gboolean msg_out_ready;
 
 #ifndef WIN32
     signal(SIGPIPE, SIG_IGN);
@@ -518,33 +520,38 @@ gpointer node_thread(gpointer args)
 
         /* messages to send */
 
+        // Mutex may be locked for a long time if there are network problems
+        // during send. Thus we send a copy to unlock the mutex immediatelly.
+        msg_out_ready = FALSE;
         g_static_mutex_lock(&send_mutex);
         if (msg_queue_get != msg_queue_put) {
+            msg_out = msg_to_send[msg_queue_get];
+            msg_queue_get++;
+            if (msg_queue_get >= MSG_QUEUE_LEN)
+                msg_queue_get = 0;
+            msg_out_ready = TRUE;
+        }
+        g_static_mutex_unlock(&send_mutex);
+
+        if (msg_out_ready) {
             for (i = 0; i < NUM_CONNECTIONS; i++) {
                 if (connections[i].fd == 0)
                     continue;
 
                 // don't send unnecessary messages
-                if (msg_to_send[msg_queue_get].type < 1 ||
-                    msg_to_send[msg_queue_get].type >= NUM_MESSAGES ||
+                if (msg_out.type < 1 ||
+                    msg_out.type >= NUM_MESSAGES ||
                     connections[i].conn_type < 0 ||
                     connections[i].conn_type >= NUM_APPLICATION_TYPES ||
-                    send_message_to_application
-                    [(gint)msg_to_send[msg_queue_get].type]
-                    [connections[i].conn_type] == FALSE)
+                    (send_message_to_application[(gint)msg_out.type][connections[i].conn_type] == FALSE))
                     continue;
 
-                if (send_msg(connections[i].fd, &msg_to_send[msg_queue_get]) < 0) {
+                if (send_msg(connections[i].fd, &msg_out) < 0) {
                     perror("sendto");
                     g_print("Node cannot send: conn=%d fd=%d\n", i, connections[i].fd);
                 }
             }
-
-            msg_queue_get++;
-            if (msg_queue_get >= MSG_QUEUE_LEN)
-                msg_queue_get = 0;
         }
-        g_static_mutex_unlock(&send_mutex);
 
         if (r <= 0)
             continue;
