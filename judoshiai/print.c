@@ -1918,6 +1918,7 @@ void print_matches(GtkWidget *menuitem, gpointer userdata)
         
         if (numrows < 0) {
             fclose(f);
+            db_close_table();
             goto out;
         }
 
