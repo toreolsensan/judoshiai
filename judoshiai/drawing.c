@@ -1083,7 +1083,7 @@ struct compsys get_system_for_category(gint index, gint competitors)
         else
             sys = SYSTEM_FRENCH_64;
     } else if (competitors > 64) { // only 2 tables supported
-        if (wishsys != DRAW_FINNISH &&
+        if (wishsys != CAT_SYSTEM_REPECHAGE &&
             wishsys != CAT_IJF_DOUBLE_REPECHAGE) {
             if (draw_system == DRAW_FINNISH)
                 wishsys = CAT_SYSTEM_REPECHAGE;
@@ -1435,7 +1435,7 @@ void draw_all(GtkWidget *w, gpointer data)
 
     gdk_window_set_cursor(GTK_WIDGET(main_window)->window, wait_cursor);
 
-    for (i = 1; i <= number_of_tatamis; i++) {
+    for (i = 0; i <= number_of_tatamis; i++) {
         struct category_data *catdata = category_queue[i].next;
         while (catdata) {
             if (find_iter(&iter, catdata->index)) {
