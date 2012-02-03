@@ -546,10 +546,15 @@ gpointer node_thread(gpointer args)
                     (send_message_to_application[(gint)msg_out.type][connections[i].conn_type] == FALSE))
                     continue;
 
+                extern time_t msg_out_start_time;
+                extern gulong msg_out_addr; 
+                msg_out_addr = connections[i].addr;
+                msg_out_start_time = time(NULL);
                 if (send_msg(connections[i].fd, &msg_out) < 0) {
                     perror("sendto");
                     g_print("Node cannot send: conn=%d fd=%d\n", i, connections[i].fd);
                 }
+                msg_out_start_time = 0;
             }
         }
 

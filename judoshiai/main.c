@@ -129,8 +129,14 @@ gboolean       cleanup_import = FALSE;
 
 GdkCursor     *wait_cursor = NULL;
 
+time_t msg_out_start_time = 0, msg_out_err_time = 0;
+gulong msg_out_addr = 0; 
+gint msg_out_text_set_tmo = 0;
+
 void progress_show(gdouble progress, const gchar *text)
 {
+    msg_out_text_set_tmo = 0;
+
     if (!progress_bar)
         return;
 
@@ -142,6 +148,39 @@ void progress_show(gdouble progress, const gchar *text)
 
     //gdk_window_process_all_updates();
     refresh_window();
+}
+
+static gboolean check_for_connection_status(gpointer data)
+{
+    gchar buf[64];
+    time_t now = time(NULL);
+
+    if (msg_out_start_time && now > msg_out_start_time + 1) {
+        msg_out_err_time = now - msg_out_start_time;
+        snprintf(buf, sizeof(buf), "%s: %ld.%ld.%ld.%ld (%ld s)",
+                 _("Communication error"),
+                 (msg_out_addr)&0xff, (msg_out_addr>>8)&0xff, 
+                 (msg_out_addr>>16)&0xff, (msg_out_addr>>24)&0xff, 
+                 msg_out_err_time);
+        if (!msg_out_text_set_tmo)
+            shiai_log(2, 0, buf);
+        progress_show(now & 1 ? 1.0 : 0.0, buf);
+        msg_out_text_set_tmo = 5;
+    } else {
+        if (msg_out_err_time) {
+            snprintf(buf, sizeof(buf), "%s OK (%ld s)",
+                     _("Communication error"), msg_out_err_time);
+            msg_out_err_time = 0;
+        }
+
+        if (msg_out_text_set_tmo) {
+            msg_out_text_set_tmo--;
+            if (msg_out_text_set_tmo == 0)
+                progress_show(0.0, "");
+        }
+    }
+
+    return TRUE;
 }
 
 void open_shiai_display(void)
@@ -433,6 +472,8 @@ ok:
 #endif
         gth = g_thread_create((GThreadFunc)serial_thread,
                               (gpointer)&run_flag, FALSE, NULL); 
+
+        g_timeout_add(1000, check_for_connection_status, NULL);
 
         g_printf("Comm threads started\n");
     }
