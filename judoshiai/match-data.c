@@ -638,7 +638,7 @@ const gint repechage_start[NUM_TABLES][NUM_FRENCH][2] = {
     {{7,0}, {0,0},   {29,0},  {0,63}},  // Eliminatoria repesca simple
     {{7,0}, {0,0},   {29,0},  {0,0}},   // modified double elimination
     {{7,0}, {0,0},   {29,0},  {0,63}},  // double repechage one bronze
-    {{7,0}, {15,0},  {31,0}}, {73,81,} // double lost
+    {{7,0}, {15,0},  {31,0}, {73,81}} // double lost
 };
 
 const gint french_matches[NUM_TABLES][NUM_FRENCH][NUM_MATCHES][2] = {
@@ -1900,6 +1900,18 @@ gboolean is_repechage(struct compsys systm, gint m)
 
     if (m == b1 || m == b2)
         return FALSE;
+
+    if (systm.table == TABLE_DOUBLE_LOST) {
+        int match1 = french_matches[systm.table][sys][b1][0];
+        int match2 = french_matches[systm.table][sys][b1][1];
+        if (match1 < match2) {
+            b1 = match2;
+            b2 = french_matches[systm.table][sys][b2][1];
+        } else {
+            b1 = match1;
+            b2 = french_matches[systm.table][sys][b2][0];
+        }
+    }
 
     return (is_rep(systm.table, sys, b1, m, 0) | is_rep(systm.table, sys, b2, m, 0));
 }
