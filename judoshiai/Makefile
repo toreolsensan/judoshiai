@@ -3,56 +3,57 @@ PROF=
 
 include ../common/Makefile.inc
 
-all: judoshiai$(SUFF)
+all: $(OBJDIR)/judoshiai$(SUFF)
 
-OBJS += main.o competitors.o sheets.o set-one-judoka.o sqlite3.o \
-       popup-menu.o util.o db.o categories.o log.o matches.o \
-       names.o comm.o ip.o protocol.o set-categories.o category-graph.o \
-       completion.o another-shiai.o avl.o httpp.o httpd.o import.o set-password.o \
-       trees.o match-graph.o search.o menus.o menuacts.o \
-       sql-dialog.o drawing.o print.o print-texts.o db-competitors.o db-categories.o \
-       db-matches.o db-table.o write-results.o match-data.o serial.o \
-       basic.tab.o lex.yy.o medal-matches.o db-validate.o
+OBJS += $(OBJDIR)/main.o $(OBJDIR)/competitors.o $(OBJDIR)/sheets.o $(OBJDIR)/set-one-judoka.o \
+	$(OBJDIR)/sqlite3.o $(OBJDIR)/popup-menu.o $(OBJDIR)/util.o $(OBJDIR)/db.o \
+	$(OBJDIR)/categories.o $(OBJDIR)/log.o $(OBJDIR)/matches.o \
+	$(OBJDIR)/names.o $(OBJDIR)/comm.o $(OBJDIR)/ip.o $(OBJDIR)/protocol.o \
+	$(OBJDIR)/set-categories.o $(OBJDIR)/category-graph.o \
+	$(OBJDIR)/completion.o $(OBJDIR)/another-shiai.o $(OBJDIR)/avl.o $(OBJDIR)/httpp.o \
+	$(OBJDIR)/httpd.o $(OBJDIR)/import.o $(OBJDIR)/set-password.o \
+	$(OBJDIR)/trees.o $(OBJDIR)/match-graph.o $(OBJDIR)/search.o $(OBJDIR)/menus.o \
+	$(OBJDIR)/menuacts.o $(OBJDIR)/sql-dialog.o $(OBJDIR)/drawing.o $(OBJDIR)/print.o \
+	$(OBJDIR)/print-texts.o $(OBJDIR)/db-competitors.o $(OBJDIR)/db-categories.o \
+	$(OBJDIR)/db-matches.o $(OBJDIR)/db-table.o $(OBJDIR)/write-results.o \
+	$(OBJDIR)/match-data.o $(OBJDIR)/serial.o \
+	$(OBJDIR)/basic.tab.o $(OBJDIR)/lex.yy.o $(OBJDIR)/medal-matches.o $(OBJDIR)/db-validate.o
 
 CFLAGS += -DAPPLICATION="\"judoshiai\""
 
 ### Windows executable ###
 ifeq ($(TGT),WIN32)
-judoshiai.exe: judoshiai1.exe judoshiai-icon.res
-	$(RESHACKER) -add judoshiai1.exe, judoshiai.exe, judoshiai-icon.res, ,,
+OBJS += judoshiai-icon.res
 
 judoshiai-icon.res: judoshiai-icon.rc
-	$(WINDRES) judoshiai-icon.rc judoshiai-icon.res
+	$(WINDRES) -O coff judoshiai-icon.rc judoshiai-icon.res
 
 judoshiai-icon.rc: ../etc/judoshiai.ico
 	echo "APPICONS ICON \"../etc/judoshiai.ico\"" >judoshiai-icon.rc
 
 ### Linux executable ###
 else
-judoshiai: judoshiai1
-	cp judoshiai1 judoshiai
-
 endif
 
-judoshiai1$(SUFF): $(OBJS)
-	$(LD) $(PROF) -g -Wl,-rpath -Wl,bin $(OBJS) -o judoshiai1$(SUFF) $(LIBS)
+$(OBJDIR)/judoshiai$(SUFF): $(OBJS)
+	$(LD) $(PROF) -g -Wl,-rpath -Wl,bin $(OBJS) -o $(OBJDIR)/judoshiai$(SUFF) $(LIBS)
 
-avl.o: ../common/avl.c
+$(OBJDIR)/avl.o: ../common/avl.c
 	${CC} $(PROF) -g $(CFLAGS) -c $< -o $@
 
-ip.o: ../common/ip.c
+$(OBJDIR)/ip.o: ../common/ip.c
 	${CC} $(PROF) -g $(CFLAGS) -c $< -o $@
 
-protocol.o: ../common/protocol.c
+$(OBJDIR)/protocol.o: ../common/protocol.c
 	${CC} $(PROF) -g $(CFLAGS) -c $< -o $@
 
-binreloc.o: ../common/binreloc.c
+$(OBJDIR)/binreloc.o: ../common/binreloc.c
 	${CC} $(PROF) -g $(CFLAGS) -c $< -o $@
 
-serial.o: ../common/serial.c
+$(OBJDIR)/serial.o: ../common/serial.c
 	${CC} $(PROF) -g $(CFLAGS) -c $< -o $@
 
-%.o: %.c
+$(OBJDIR)/%.o: %.c
 	${CC} $(PROF) -g $(CFLAGS) -c $< -o $@
 
 lex.yy.c: basic.l basic.tab.h
@@ -62,5 +63,5 @@ basic.tab.c basic.tab.h: basic.y
 	bison -t -v -d basic.y
 
 clean:
-	rm -f *.o *.exe judoshiai judoshiai1 *.res *.rc *~ lex.yy.c basic.tab.c basic.tab.h
+	rm -f $(OBJDIR)/* *.res *.rc *~ lex.yy.c basic.tab.c basic.tab.h
 

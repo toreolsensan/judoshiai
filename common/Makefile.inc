@@ -28,6 +28,8 @@ SOUNDDIR=/opt/win32/fmod
 RESHACKER=wine "C:\\bin\\ResHacker.exe"
 WINDRES=wine "C:\\MinGW\\bin\\windres.exe"
 INNOSETUP=wine "C:\\Program Files\\Inno Setup 5\\ISCC.exe"
+OBJDIR=obj-win32
+RELEASEDIR=release-win32
 
 ### Windows ###
 else 
@@ -40,6 +42,8 @@ SOUNDDIR=c:/Program\ Files/FMOD\ SoundSystem/FMOD\ Programmers\ API\ Win32/api
 RESHACKER=ResHacker.exe
 WINDRES=windres.exe
 INNOSETUP="C:\\Program Files\\Inno Setup 5\\ISCC.exe"
+OBJDIR=obj-win32
+RELEASEDIR=release-win32
 
 ### Linux ###
 else
@@ -51,6 +55,8 @@ SOUNDDIR=/opt/fmodapi43004linux/api
 RESHACKER=
 WINDRES=
 INNOSETUP=
+OBJDIR=obj-linux
+RELEASEDIR=release-linux
 
 endif
 endif
@@ -105,7 +111,7 @@ LIBS += -lws2_32  -mwindows
 
 ## Linux ##
 else
-OBJS += binreloc.o
+OBJS += $(OBJDIR)/binreloc.o
 
 endif
 

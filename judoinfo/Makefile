@@ -1,46 +1,43 @@
 include ../common/Makefile.inc
 
-all: judoinfo$(SUFF)
+all: $(OBJDIR)/judoinfo$(SUFF)
 
-OBJS += main.o menus.o comm.o ip.o protocol.o trees.o avl.o
+OBJS += $(OBJDIR)/main.o $(OBJDIR)/menus.o $(OBJDIR)/comm.o $(OBJDIR)/ip.o \
+	$(OBJDIR)/protocol.o $(OBJDIR)/trees.o $(OBJDIR)/avl.o
 
 CFLAGS += -DAPPLICATION="\"judoinfo\""
 
 ### Windows executable ###
 ifeq ($(TGT),WIN32)
-judoinfo.exe: judoinfo1.exe judoinfo-icon.res
-	$(RESHACKER) -add judoinfo1.exe, judoinfo.exe, judoinfo-icon.res, ,,
+OBJS += judoinfo-icon.res
 
 judoinfo-icon.res: judoinfo-icon.rc
-	$(WINDRES) judoinfo-icon.rc judoinfo-icon.res
+	$(WINDRES) -O coff judoinfo-icon.rc judoinfo-icon.res
 
 judoinfo-icon.rc:
 	echo "APPICONS ICON \"../etc/judoinfo.ico\"" >judoinfo-icon.rc
 
 ### Linux executable ###
 else
-judoinfo: judoinfo1
-	cp judoinfo1 judoinfo
-
 endif
 
-judoinfo1$(SUFF): $(OBJS)
-	$(LD) -g -Wl,-rpath -Wl,bin $(OBJS) -o judoinfo1$(SUFF) $(LIBS)
+$(OBJDIR)/judoinfo$(SUFF): $(OBJS)
+	$(LD) -g -Wl,-rpath -Wl,bin $(OBJS) -o $(OBJDIR)/judoinfo$(SUFF) $(LIBS)
 
-avl.o: ../common/avl.c
+$(OBJDIR)/avl.o: ../common/avl.c
 	${CC} -g $(CFLAGS) -c $< -o $@
 
-ip.o: ../common/ip.c
+$(OBJDIR)/ip.o: ../common/ip.c
 	${CC} -g $(CFLAGS) -c $< -o $@
 
-protocol.o: ../common/protocol.c
+$(OBJDIR)/protocol.o: ../common/protocol.c
 	${CC} -g $(CFLAGS) -c $< -o $@
 
-binreloc.o: ../common/binreloc.c
+$(OBJDIR)/binreloc.o: ../common/binreloc.c
 	${CC} -g $(CFLAGS) -c $< -o $@
 
-%.o: %.c
+$(OBJDIR)/%.o: %.c
 	${CC} -g $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f *.o *.exe judoinfo judoinfo1 *.res *.rc *~
+	rm -f $(OBJDIR)/* *.res *.rc *~

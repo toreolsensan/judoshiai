@@ -1,8 +1,9 @@
 include ../common/Makefile.inc
 
-all: judotimer$(SUFF)
+all: $(OBJDIR)/judotimer$(SUFF)
 
-OBJS += main.o menus.o stopwatch.o comm.o ip.o protocol.o show-ad.o sound.o
+OBJS += $(OBJDIR)/main.o $(OBJDIR)/menus.o $(OBJDIR)/stopwatch.o $(OBJDIR)/comm.o \
+	$(OBJDIR)/ip.o $(OBJDIR)/protocol.o $(OBJDIR)/show-ad.o $(OBJDIR)/sound.o
 
 CFLAGS += -DAPPLICATION="\"judotimer\""
 CFLAGS += -I$(SOUNDDIR)/inc
@@ -11,12 +12,10 @@ LIBS += -L$(SOUNDDIR)/lib -lfmodex
 ### Windows executable ###
 ifeq ($(TGT),WIN32)
 RPATH =
-
-judotimer.exe: judotimer1.exe judotimer-icon.res
-	$(RESHACKER) -add judotimer1.exe, judotimer.exe, judotimer-icon.res, ,,
+OBJS += judotimer-icon.res
 
 judotimer-icon.res: judotimer-icon.rc
-	$(WINDRES) judotimer-icon.rc judotimer-icon.res
+	$(WINDRES) -O coff judotimer-icon.rc judotimer-icon.res
 
 judotimer-icon.rc:
 	echo "APPICONS ICON \"../etc/judotimer.ico\"" >judotimer-icon.rc
@@ -24,26 +23,22 @@ judotimer-icon.rc:
 ### Linux executable ###
 else
 RPATH = -Wl,-rpath,/usr/lib/judoshiai/lib
-
-judotimer: judotimer1
-	cp judotimer1 judotimer
-
 endif
 
-judotimer1$(SUFF): $(OBJS)
-	${LD} -g $(RPATH) $(OBJS) -o judotimer1$(SUFF) $(LIBS)
+$(OBJDIR)/judotimer$(SUFF): $(OBJS)
+	${LD} -g $(RPATH) $(OBJS) -o $(OBJDIR)/judotimer$(SUFF) $(LIBS)
 
-ip.o: ../common/ip.c
+$(OBJDIR)/ip.o: ../common/ip.c
 	${CC} -g $(CFLAGS) -c $< -o $@
 
-protocol.o: ../common/protocol.c
+$(OBJDIR)/protocol.o: ../common/protocol.c
 	${CC} -g $(CFLAGS) -c $< -o $@
 
-binreloc.o: ../common/binreloc.c
+$(OBJDIR)/binreloc.o: ../common/binreloc.c
 	${CC} -g $(CFLAGS) -c $< -o $@
 
-%.o: %.c
+$(OBJDIR)/%.o: %.c
 	${CC} -g $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f *.o *.exe judotimer judotimer1 *.res *.rc *~
+	rm -f $(OBJDIR)/* *.res *.rc *~

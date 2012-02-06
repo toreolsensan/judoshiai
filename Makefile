@@ -1,12 +1,11 @@
 include common/Makefile.inc
 
-JUDOSHIAIFILE=judoshiai/judoshiai$(SUFF)
-JUDOTIMERFILE=judotimer/judotimer$(SUFF)
-JUDOINFOFILE=judoinfo/judoinfo$(SUFF)
-JUDOWEIGHTFILE=judoweight/judoweight$(SUFF)
-JUDOJUDOGIFILE=judojudogi/judojudogi$(SUFF)
+JUDOSHIAIFILE=judoshiai/$(OBJDIR)/judoshiai$(SUFF)
+JUDOTIMERFILE=judotimer/$(OBJDIR)/judotimer$(SUFF)
+JUDOINFOFILE=judoinfo/$(OBJDIR)/judoinfo$(SUFF)
+JUDOWEIGHTFILE=judoweight/$(OBJDIR)/judoweight$(SUFF)
+JUDOJUDOGIFILE=judojudogi/$(OBJDIR)/judojudogi$(SUFF)
 
-RELEASEDIR=release
 RELDIR=$(RELEASEDIR)/judoshiai
 RELFILE=$(RELDIR)/bin/judoshiai$(SUFF)
 RUNDIR=$(DEVELDIR)
@@ -72,7 +71,6 @@ endif
 	cp etc/*.mp3 $(RELDIR)/etc/
 	cp etc/*.shi $(RELDIR)/etc/
 	cp -r etc/flags-ioc $(RELDIR)/etc/
-	#cp flash/judo*.swf flash/judo*.html $(RELDIR)/etc/
 	cp licenses/* $(RELDIR)/licenses
 	@echo
 	@echo "To make a setup executable run" 
@@ -126,7 +124,7 @@ debian:
 	cp gnome/*-pak .
 	checkinstall -D --install=no --pkgname=judoshiai --pkgversion=$(SHIAI_VER_NUM) \
 	--maintainer=oh2ncp@kolumbus.fi --nodoc 
-	mv *.deb release/
+	mv *.deb release-linux/
 	rm description-pak postinstall-pak postremove-pak
 
 clean:
@@ -137,5 +135,4 @@ clean:
 	make -C judoweight clean
 	make -C judojudogi clean
 	make -C doc clean
-	#make -C flash clean
 	rm -rf $(RELEASEDIR)
