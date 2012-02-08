@@ -260,6 +260,10 @@ static void pool_results(FILE *f, gint category, struct judoka *ctg, gint num_ju
             db_set_category_positions(category, pm.j[pm.c[i]]->index, i);
         } else if (i <= 3 && 
             (pm.j[pm.c[i]]->deleted & HANSOKUMAKE) == 0) {
+            // Need a victory in Norwegian system to get a result.
+            if(draw_system == DRAW_NORWEGIAN && pm.wins[pm.c[i]] == 0)
+                continue;
+
             write_result(f, i, pm.j[pm.c[i]]->first, 
                          pm.j[pm.c[i]]->last, pm.j[pm.c[i]]->club, pm.j[pm.c[i]]->country);
             avl_set_competitor_position(pm.j[pm.c[i]]->index, i);
