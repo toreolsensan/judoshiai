@@ -60,6 +60,7 @@ GdkCursor *cursor = NULL;
 gboolean sides_switched = FALSE;
 gboolean white_first = FALSE;
 gboolean fullscreen = FALSE;
+gboolean menu_hidden = FALSE;
 
 #define MY_FONT "Arial"
 static gchar font_face[32];
@@ -370,6 +371,7 @@ gchar *program_path;
 
 GtkWidget     *main_vbox = NULL;
 GtkWidget     *main_window = NULL;
+GtkWidget     *menubar = NULL;
 gchar          current_directory[1024] = {0};
 gint           my_address;
 gboolean       clocks_only = FALSE;
@@ -1215,21 +1217,33 @@ static gboolean button_pressed(GtkWidget *widget,
 
 static gboolean key_press(GtkWidget *widget, GdkEventKey *event, gpointer userdata)
 {
-        if (event->type != GDK_KEY_PRESS)
-                return FALSE;
+    gboolean ctl = event->state & 4;
 
-        if (event->keyval == GDK_D && (event->state & 5) == 5)
-                demo = 1;
-        else if (event->keyval == GDK_F && (event->state & 5) == 5)
-                demo = 2;
-        else
-                demo = 0;
-
-        //g_print("key=%x stat=%x\n", event->keyval, event->state);
-	if (event->keyval < GDK_0 || event->keyval > GDK_9 || event->keyval == GDK_6)
-		clock_key(event->keyval, event->state);
-
+    if (event->type != GDK_KEY_PRESS)
         return FALSE;
+
+    if (event->keyval == GDK_m && ctl) {
+        if (menu_hidden) {
+            gtk_widget_show(menubar);
+            menu_hidden = FALSE;
+        } else {
+            gtk_widget_hide(menubar);
+            menu_hidden = TRUE;
+        }
+    }
+
+    if (event->keyval == GDK_D && (event->state & 5) == 5)
+        demo = 1;
+    else if (event->keyval == GDK_F && (event->state & 5) == 5)
+        demo = 2;
+    else
+        demo = 0;
+
+    //g_print("key=%x stat=%x\n", event->keyval, event->state);
+    if (event->keyval < GDK_0 || event->keyval > GDK_9 || event->keyval == GDK_6)
+        clock_key(event->keyval, event->state);
+
+    return FALSE;
 }
 
 gboolean undo_func(GtkWidget *menu_item, GdkEventButton *event, gpointer data)
@@ -1398,7 +1412,6 @@ int main( int   argc,
 {
     /* GtkWidget is the storage type for widgets */
     GtkWidget *window;
-    GtkWidget *menubar;
     GdkColor   fg, bg;
     time_t     now;
     struct tm *tm;
@@ -1474,10 +1487,10 @@ int main( int   argc,
     g_signal_connect (G_OBJECT (window), "destroy",
                       G_CALLBACK (destroy), NULL);
 
-    gtk_container_set_border_width (GTK_CONTAINER (window), 10);
+    gtk_container_set_border_width (GTK_CONTAINER (window), 0);
 
     main_vbox = gtk_vbox_new(FALSE, 0);
-    gtk_container_set_border_width (GTK_CONTAINER (main_vbox), 1);
+    gtk_container_set_border_width (GTK_CONTAINER (main_vbox), 0);
     gtk_container_add (GTK_CONTAINER (window), main_vbox);
     gtk_widget_show(main_vbox);
 

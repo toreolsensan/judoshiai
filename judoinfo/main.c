@@ -31,6 +31,7 @@ static gboolean button_pressed(GtkWidget *sheet_page,
 gchar         *program_path;
 GtkWidget     *main_vbox = NULL;
 GtkWidget     *main_window = NULL;
+GtkWidget     *menubar = NULL;
 gchar          current_directory[1024] = {0};
 gint           my_address;
 gchar         *installation_dir = NULL;
@@ -47,6 +48,7 @@ gint           display_type = NORMAL_DISPLAY;
 gboolean       mirror_display = FALSE;
 gboolean       white_first = FALSE;
 gboolean       red_background = FALSE;
+gboolean       menu_hidden = FALSE;
 gchar         *filename = NULL;
 
 #define MY_FONT "Arial"
@@ -527,12 +529,31 @@ void toggle_redbackground(GtkWidget *menu_item, gpointer data)
     expose(darea, 0, 0);
 }
 
+static gboolean key_press(GtkWidget *widget, GdkEventKey *event, gpointer userdata)
+{
+    gboolean ctl = event->state & 4;
+
+    if (event->type != GDK_KEY_PRESS)
+        return FALSE;
+
+    if (event->keyval == GDK_m && ctl) {
+        if (menu_hidden) {
+            gtk_widget_show(menubar);
+            menu_hidden = FALSE;
+        } else {
+            gtk_widget_hide(menubar);
+            menu_hidden = TRUE;
+        }
+    }
+
+    return FALSE;
+}
+
 int main( int   argc,
           char *argv[] )
 {
     /* GtkWidget is the storage type for widgets */
     GtkWidget *window;
-    GtkWidget *menubar;
     time_t     now;
     struct tm *tm;
     GThread   *gth = NULL;         /* thread id */
@@ -588,11 +609,14 @@ int main( int   argc,
     
     g_signal_connect (G_OBJECT (window), "destroy",
                       G_CALLBACK (destroy), NULL);
-    
-    gtk_container_set_border_width (GTK_CONTAINER (window), 10);
+
+    g_signal_connect(G_OBJECT(window),
+                     "key-press-event", G_CALLBACK(key_press), NULL);
+   
+    gtk_container_set_border_width (GTK_CONTAINER (window), 0);
 
     main_vbox = gtk_vbox_new(FALSE, 0);
-    gtk_container_set_border_width (GTK_CONTAINER (main_vbox), 1);
+    gtk_container_set_border_width (GTK_CONTAINER (main_vbox), 0);
     gtk_container_add (GTK_CONTAINER (window), main_vbox);
     gtk_widget_show(main_vbox);
 

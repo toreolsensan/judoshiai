@@ -170,6 +170,7 @@ static gboolean check_for_connection_status(gpointer data)
         if (msg_out_err_time) {
             snprintf(buf, sizeof(buf), "%s OK (%ld s)",
                      _("Communication error"), msg_out_err_time);
+            shiai_log(2, 0, buf);
             msg_out_err_time = 0;
         }
 
