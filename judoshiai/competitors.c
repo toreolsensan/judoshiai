@@ -37,7 +37,9 @@ GtkWindow *bcdialog = NULL;
 
 char *belts[] = {
     "?", "6.kyu", "5.kyu", "4.kyu", "3.kyu", "2.kyu", "1.kyu",
-    "1.dan", "2.dan", "3.dan", "4.dan", "5.dan", "6.dan", "7.dan", 0
+    "1.dan", "2.dan", "3.dan", "4.dan", "5.dan", "6.dan", "7.dan", "8.dan", "9.dan",
+    "5.mon", "4.mon", "3.mon", "2.mon", "1.mon",
+    0
 };
 
 struct judoka_widget {
@@ -898,7 +900,7 @@ void belt_cell_data_func (GtkTreeViewColumn *col,
     strcpy(buf, "?");
   
     if (visible) {
-        if (belt >= 0 && belt < 14) {
+        if (belt >= 0 && belt < 21) {
             g_snprintf(buf, sizeof(buf), "%s", belts[belt]);
             g_object_set(renderer, "foreground-set", FALSE, NULL); /* print this normal */
         }

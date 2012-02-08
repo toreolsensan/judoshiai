@@ -96,7 +96,7 @@ static int db_callback(void *data, int argc, char **argv, char **azColName)
         if (print_file == NULL)
             return 1;
         const gchar *b = "?";
-        if (j.belt >= 0 && j.belt < 14)
+        if (j.belt >= 0 && j.belt < 21)
             b = belts[j.belt];
         write_competitor(print_file, j.first, j.last, b, 
                          get_club_text(&j, CLUB_TEXT_ADDRESS), 

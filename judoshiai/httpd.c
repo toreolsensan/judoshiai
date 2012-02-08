@@ -344,7 +344,7 @@ void get_categories(http_parser_t *parser)
                 cat = &unknown_judoka;
 
             sendf(s, "<tr><td %s><b>%s %d:</b></td><td %s><b>%s</b></td></tr>", 
-                  class_ul, _("Match"), k+1, class_ur, cat->last);
+                  class_ul, _("Match"), m[k].number, class_ur, cat->last);
 
             if (k == 0 && is_accepted(parser->address)) {
                 sendf(s, "<tr><td %s>", class_cl);

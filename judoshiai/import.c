@@ -103,15 +103,21 @@ static gboolean add_competitor(gchar **tokens, gint num_cols, struct i_text *d)
     if (valid_data(TXT_BELT, tokens, num_cols, d)) {
         gchar *b = tokens[d->columns[TXT_BELT] - 1];
         gboolean kyu = strchr(b, 'k') != NULL || strchr(b, 'K') != NULL;
+        gboolean mon = strchr(b, 'm') != NULL || strchr(b, 'M') != NULL;
         while (*b && (*b < '0' || *b > '9'))
             b++;
 
         gint grade = atoi(b);
+        if (grade) {
+            if (mon)
+                j.belt = 21 - grade;
+            else if (kyu)
+                j.belt = 7 - grade;
+            else
+                j.belt = 6 + grade;
+        }
 
-        if (grade)
-            j.belt = kyu ? 7 - grade : 6 + grade;
-
-        if (j.belt < 0 || j.belt > 13)
+        if (j.belt < 0 || j.belt > 20)
             j.belt = 0;
     }
 
