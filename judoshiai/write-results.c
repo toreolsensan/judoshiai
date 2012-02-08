@@ -496,12 +496,12 @@ static void write_cat_result(FILE *f, gint category)
     if (ctg == NULL)
         return;
 
-    fprintf(f, "<tr><td colspan=\"3\"><b><a href=\"%s.html\">%s</a></b></td></tr>\r\n", 
-            txt2hex(ctg->last), utf8_to_html(ctg->last));
-
     /* find system */
     sys = db_get_system(category);
     num_judokas = sys.numcomp;
+
+    fprintf(f, "<tr><td colspan=\"3\"><b><a href=\"%s.html\">%s</a></b> (%d) </td></tr>\r\n", 
+            txt2hex(ctg->last), utf8_to_html(ctg->last), num_judokas);
 
     switch (sys.system) {
     case SYSTEM_POOL:
