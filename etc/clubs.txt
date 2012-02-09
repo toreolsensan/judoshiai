@@ -14,13 +14,14 @@ Espoon Urheilijat=ESU
 Finndai=FND>Helsinki
 Fojudo
 Forssan Alku
-Fudoshin=FUD>Pori
+Fudoshin=FUD
 Fuguda=FUG>Karjaa
 Hämeenkosken Judo
 Hämeenlinnan JS=HÄM
 Hachigatsu
 Haminan Judoseura=HAM
 Hauve-kan=HAU>Haukipudas
+Helsingin JudoSport
 Holjutai=HOL>Hollola
 Hontai Judo=HON>Helsinki
 Hyrysalmen Judokat
