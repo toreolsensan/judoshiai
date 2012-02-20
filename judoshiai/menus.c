@@ -253,7 +253,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     category_properties      = gtk_menu_item_new_with_label(_("Properties"));
     category_best_of_three   = gtk_check_menu_item_new_with_label(_("Best of Three"));
     for (i = 0; i < NUM_TATAMIS; i++) {
-        sprintf(buf, "%s %d %s", _("Place To"), i+1, _("Tatamis"));
+        SPRINTF(buf, "%s %d %s", _("Place To"), i+1, _("Tatamis"));
         category_to_tatamis[i] = gtk_menu_item_new_with_label(buf);
     }
 
@@ -342,7 +342,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
 
     /* Create the Judotimer menu content. */
     for (i = 0; i < NUM_TATAMIS; i++) {
-        sprintf(buf, "%s %d", _("Control Tatami"), i+1);
+        SPRINTF(buf, "%s %d", _("Control Tatami"), i+1);
         judotimer_control[i] = gtk_check_menu_item_new_with_label(buf);
         gtk_menu_shell_append(GTK_MENU_SHELL(judotimer_menu), judotimer_control[i]);
         g_signal_connect(G_OBJECT(judotimer_control[i]), "activate", G_CALLBACK(set_tatami_state), 
@@ -850,7 +850,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(category_best_of_three  , _("Best of Three"));
 
     for (i = 0; i < NUM_TATAMIS; i++) {
-        sprintf(buf, "%s %d %s", _("Place To"), i+1, _("Tatamis"));
+        SPRINTF(buf, "%s %d %s", _("Place To"), i+1, _("Tatamis"));
         change_menu_label(category_to_tatamis[i], buf);
     }
 
@@ -867,7 +867,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(results_print_schedule_pdf    , _("Print Schedule to PDF"));
 
     for (i = 0; i < NUM_TATAMIS; i++) {
-        sprintf(buf, "%s %d", _("Control Tatami"), i+1);
+        SPRINTF(buf, "%s %d", _("Control Tatami"), i+1);
         change_menu_label(judotimer_control[i], buf);
     }
 

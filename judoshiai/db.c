@@ -339,7 +339,7 @@ void db_new(const char *dbname,
 	    const gchar *num_tatamis,
             const gboolean whitefirst)
 {
-    gchar buf[100];
+    gchar buf[256];
     FILE *f;
 
     char *cmd1 = "CREATE TABLE competitors ("

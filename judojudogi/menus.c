@@ -387,8 +387,8 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(writefile, _("Write to file"));
 
     for (i = 0; i < NUM_TATAMIS; i++) {
-        gchar buf[32];
-        sprintf(buf, "%s %d", _("Show Tatami"), i+1);
+        gchar buf[64];
+        SPRINTF(buf, "%s %d", _("Show Tatami"), i+1);
         change_menu_label(tatami_show[i], buf);
     }
 
