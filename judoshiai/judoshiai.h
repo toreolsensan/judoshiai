@@ -593,7 +593,7 @@ extern GdkCursor     *wait_cursor;
 extern char *belts[];
 
 extern const guint pools[11][32][2];
-extern const guint poolsd[11][32][2];
+extern const guint poolsd[13][32][2];
 extern const guint poolsq[21][48][2];
 //extern guint competitors_1st_match[8][8][2];
 //extern const guint french_size[NUM_FRENCH];

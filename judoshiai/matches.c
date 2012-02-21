@@ -444,7 +444,7 @@ void get_pool_winner(gint num, gint c[21], gboolean yes[21],
 }
 
 static gint num_matches_table[] =   {0,0,1,3,6,10,15,21};
-static gint num_matches_table_d[] = {0,0,0,0,0,0,6,9,12,16,20};
+static gint num_matches_table_d[] = {0,0,0,0,0,0,6,9,12,16,20,25,30};
 static gint num_matches_table_q[] = {0,0,0,0,0,0,0,0,4,6,8, // 0 - 10
                                      10,12,15,18,21,24,28,32,36,40}; // 11 - 20
 
@@ -666,6 +666,9 @@ static void update_pool_matches(gint category, gint num)
 
     /* Read matches in. */
     fill_pool_struct(category, num, &pm, FALSE);
+
+    if (pm.j[1] == NULL) // category not drawn
+        goto out;
 
     if (num_pools == 1) {
         if (pm.finished)
