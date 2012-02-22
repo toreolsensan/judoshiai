@@ -1099,7 +1099,7 @@ struct compsys get_system_for_category(gint index, gint competitors)
         sys = SYSTEM_POOL;
     } else if (competitors > 5 && competitors <= 12 && wishsys == CAT_SYSTEM_DPOOL) {
         sys = SYSTEM_DPOOL;
-    } else if (competitors > 5 && competitors <= 10 && wishsys == CAT_SYSTEM_DPOOL2) {
+    } else if (competitors > 5 && competitors <= 12 && wishsys == CAT_SYSTEM_DPOOL2) {
         sys = SYSTEM_DPOOL2;
     } else if (competitors >= 8 && competitors <= 20 && wishsys == CAT_SYSTEM_QPOOL) {
         sys = SYSTEM_QPOOL;
