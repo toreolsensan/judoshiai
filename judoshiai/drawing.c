@@ -750,25 +750,33 @@ static gboolean draw_one_comp(struct mdata *mdata)
                 getmask = 0x12; // 2 and 5
                 break;
             case 6:
-                if (mdata->drawn == 1 || mdata->drawn == 2 ) {
-                    if (mdata->seeded1 <= 3)
-                        getmask = 0x30;
-                    else 
-                        getmask = 0x06;
-                    break;
-                } else
-                    getmask = 0x36;
+                if (sys == SYSTEM_POOL) {
+                    getmask = 0x22; // 2 and 6
+                } else {
+                    if (mdata->drawn == 1 || mdata->drawn == 2 ) {
+                        if (mdata->seeded1 <= 3)
+                            getmask = 0x30;
+                        else 
+                            getmask = 0x06;
+                        break;
+                    } else
+                        getmask = 0x36;
+                }
                 break;
             case 7:
             case 8:
-                if (mdata->drawn == 1 || mdata->drawn == 2 ) {
-                    if (mdata->seeded1 <= 4)
-                        getmask = 0x60;
-                    else 
-                        getmask = 0x06;
-                    break;
-                } else
-                    getmask = 0x66;
+                if (sys == SYSTEM_POOL && mdata->mpositions == 7) {
+                    getmask = 0x50; // 5 and 7
+                } else {
+                    if (mdata->drawn == 1 || mdata->drawn == 2 ) {
+                        if (mdata->seeded1 <= 4)
+                            getmask = 0x60;
+                        else 
+                            getmask = 0x06;
+                        break;
+                    } else
+                        getmask = 0x66;
+                }
                 break;
             case 9:
                 if (mdata->drawn == 1 || mdata->drawn == 2 ) {
@@ -790,6 +798,26 @@ static gboolean draw_one_comp(struct mdata *mdata)
                 } else
                     getmask = 0x252;
                 break;
+            case 11:
+                if (mdata->drawn == 1 || mdata->drawn == 2 ) {
+                    if (mdata->seeded1 <= 6)
+                        getmask = 0x480;
+                    else 
+                        getmask = 0x22;
+                    break;
+                } else
+                    getmask = 0x4a2;
+                break;
+            case 12:
+                if (mdata->drawn == 1 || mdata->drawn == 2 ) {
+                    if (mdata->seeded1 <= 6)
+                        getmask = 0x880;
+                    else 
+                        getmask = 0x22;
+                    break;
+                } else
+                    getmask = 0x8a2;
+                break;
             }
             found = get_free_pos_by_mask((mask ^ getmask) & getmask, mdata);
         } else {
@@ -798,7 +826,45 @@ static gboolean draw_one_comp(struct mdata *mdata)
             mask = get_club_mask(mdata);
             gint clubmask = get_club_only_mask(mdata);
 
-            if (mdata->mpositions >= 6) { // double pool
+            if (sys == SYSTEM_POOL) {
+                switch (mdata->mpositions) {
+                case 2:
+                    getmask = 0x3;
+                    break;
+                case 3:
+                    if (mask & 0x6)
+                        getmask = 0x1;
+                    else
+                        getmask = 0x7;
+                    break;
+                case 4:
+                    if (mask & 0x6)
+                        getmask = 0x9;
+                    else
+                        getmask = 0xf;
+                    break;
+                case 5:
+                    if (mask & 0x12)
+                        getmask = 0x0d;
+                    else
+                        getmask = 0x1f;
+                    break;
+                case 6:
+                    if (mask & 0x22)
+                        getmask = 0x1d;
+                    else
+                        getmask = 0x3f;
+                    break;
+                case 7:
+                    if (mask & 0x50)
+                        getmask = 0x2f;
+                    else
+                        getmask = 0x7f;
+                    break;
+                default:
+                    getmask = 0xfff;
+                }
+            } else { // double pool
                 gint i;
                 for (i = 0; i < mdata->mpositions; i++) { // count mates in a and b pool
                     if (mask & (1<<i)) {
@@ -820,35 +886,7 @@ static gboolean draw_one_comp(struct mdata *mdata)
                     else
                         b_mask |= 1<<i;
                 }
-            }
 
-            switch (mdata->mpositions) {
-            case 2:
-                getmask = 0x3;
-                break;
-            case 3:
-                if (mask & 0x6)
-                    getmask = 0x1;
-                else
-                    getmask = 0x7;
-                break;
-            case 4:
-                if (mask & 0x6)
-                    getmask = 0x9;
-                else
-                    getmask = 0xf;
-                break;
-            case 5:
-                if (mask & 0x12)
-                    getmask = 0x0d;
-                else
-                    getmask = 0x1f;
-                break;
-            case 6:
-            case 7:
-            case 8:
-            case 9:
-            case 10:
                 if (a_pool_club < b_pool_club)
                     getmask = a_mask;
                 else if (a_pool_club > b_pool_club)
@@ -859,13 +897,13 @@ static gboolean draw_one_comp(struct mdata *mdata)
                     getmask = b_mask;
                 else
                     getmask = a_mask | b_mask;
-                break;
             }
+
             found = get_free_pos_by_mask(getmask, mdata);
         }
 
         if (!found)
-            found = get_free_pos_by_mask(0x3ff, mdata);
+            found = get_free_pos_by_mask(0xfff, mdata);
     } else { // QPOOL
         gint getmask;
 
@@ -1059,9 +1097,9 @@ struct compsys get_system_for_category(gint index, gint competitors)
         sys = SYSTEM_POOL;
     } else if (competitors <= 7 && wishsys == CAT_SYSTEM_POOL) {
         sys = SYSTEM_POOL;
-    } else if (competitors > 5 && competitors <= 10 && wishsys == CAT_SYSTEM_DPOOL) {
+    } else if (competitors > 5 && competitors <= 12 && wishsys == CAT_SYSTEM_DPOOL) {
         sys = SYSTEM_DPOOL;
-    } else if (competitors > 5 && competitors <= 10 && wishsys == CAT_SYSTEM_DPOOL2) {
+    } else if (competitors > 5 && competitors <= 12 && wishsys == CAT_SYSTEM_DPOOL2) {
         sys = SYSTEM_DPOOL2;
     } else if (competitors >= 8 && competitors <= 20 && wishsys == CAT_SYSTEM_QPOOL) {
         sys = SYSTEM_QPOOL;

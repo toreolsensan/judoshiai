@@ -68,7 +68,7 @@ static void tatami_selection(GtkWidget *w,
 {
     gchar buf[32];
     gint tatami = (gint)data;
-    sprintf(buf, "tatami%d", tatami);
+    SPRINTF(buf, "tatami%d", tatami);
     show_tatami[tatami-1] = GTK_CHECK_MENU_ITEM(w)->active;
     g_key_file_set_boolean(keyfile, "preferences", buf, 
                            GTK_CHECK_MENU_ITEM(w)->active);
@@ -320,7 +320,7 @@ void set_preferences(void)
 
     for (i = 1; i <= NUM_TATAMIS; i++) {
         gchar t[10];
-        sprintf(t, "tatami%d", i);
+        SPRINTF(t, "tatami%d", i);
         error = NULL;
         b = g_key_file_get_boolean(keyfile, "preferences", t, &error);
         if (b && !error) {
@@ -378,8 +378,8 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(writefile, _("Write to file"));
 
     for (i = 0; i < NUM_TATAMIS; i++) {
-        gchar buf[32];
-        sprintf(buf, "%s %d", _("Show Tatami"), i+1);
+        gchar buf[64];
+        SPRINTF(buf, "%s %d", _("Show Tatami"), i+1);
         change_menu_label(tatami_show[i], buf);
     }
 

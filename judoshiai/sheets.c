@@ -838,11 +838,12 @@ static void paint_pool_2(struct paint_data *pd, gint category, struct judoka *ct
 }
 
 
-static gdouble row_height[11] = {
-    1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.9, 0.8, 0.7
+static gdouble row_height[13] = {
+    1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.9, 0.8, 0.7, 0.8, 0.8
 };
 
-static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg, gint num_judokas, gboolean dpool2)
+static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg, gint num_judokas, 
+                        gboolean dpool2)
 {
     struct pool_matches pm;
     gint i;
@@ -851,6 +852,13 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
     double pos_match_a, pos_match_b, pos_match_f, x1, x2, pos_judoka_a, pos_judoka_b;
     gboolean yes_a[21], yes_b[21];
     gint c_a[21], c_b[21];
+    gboolean twopages = FALSE, page1 = TRUE, page2 = TRUE;
+
+    if (num_judokas > 10 || dpool2) {
+        twopages = TRUE;
+        if (pd->page == 0)      page2 = FALSE;
+        else if (pd->page == 1) page1 = FALSE;
+    }
 
     pd->row_height = 1;
 
@@ -866,148 +874,153 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
     pos_judoka_b = pos_match_a + (num_matches(SYSTEM_POOL, num_pool_a) + 3) * ROW_HEIGHT;
     pos_match_b = pos_judoka_b + (num_pool_b + 3) * ROW_HEIGHT;
 
-    /* competitor table A */
-    judoka_table.position_y = judoka_2_table.position_y = pos_judoka_a;
-    judoka_table.num_rows = judoka_2_table.num_rows = num_pool_a;
-    judoka_table.num_cols = num_pool_a + 4;
-    judoka_2_table.num_cols = num_pool_a + 3;
-    if (grade_visible)
-        create_table(pd, &judoka_table);
-    else
-        create_table(pd, &judoka_2_table);
-
-    write_table_title(pd, &judoka_table, _T(competitora));
-    write_table(pd, &judoka_table, 0, 0, _T(number));
-    write_table(pd, &judoka_table, 0, 1, _T(name));
-    if (grade_visible)
-        write_table(pd, &judoka_table, 0, 2, _T(grade));
-    write_table(pd, &judoka_table, 0, 3, _T(club));
-    for (i = 1; i <= num_pool_a; i++) {
-        WRITE_TABLE(judoka_table, 0, 3 + i, "%d", i);
-    }
-
-    for (i = 1; i <= num_pool_a; i++) {
-        if (pm.j[i] == NULL)
-            continue;
-        WRITE_TABLE(judoka_table, i, 0, "%d", i);
-        if (weights_in_sheets)
-            WRITE_TABLE_H(judoka_table, i, 1, pm.j[i]->deleted, "%s  (%d,%02d)", 
-                          get_name_and_club_text(pm.j[i], CLUB_TEXT_NO_CLUB),
-                          pm.j[i]->weight/1000, (pm.j[i]->weight%1000)/10);
-        else
-            WRITE_TABLE_H(judoka_table, i, 1, pm.j[i]->deleted, "%s", 
-                          get_name_and_club_text(pm.j[i], CLUB_TEXT_NO_CLUB));
-
+    if (page1) {
+        /* competitor table A */
+        judoka_table.position_y = judoka_2_table.position_y = pos_judoka_a;
+        judoka_table.num_rows = judoka_2_table.num_rows = num_pool_a;
+        judoka_table.num_cols = num_pool_a + 4;
+        judoka_2_table.num_cols = num_pool_a + 3;
         if (grade_visible)
-            WRITE_TABLE(judoka_table, i, 2, "%s", belts[pm.j[i]->belt]);
-        WRITE_TABLE(judoka_table, i, 3, "%s", get_club_text(pm.j[i], 0));
-    }
-
-    /* competitor table B */
-    judoka_table.position_y = judoka_2_table.position_y = pos_judoka_b;
-    judoka_table.num_rows = judoka_2_table.num_rows = num_pool_b;
-    judoka_table.num_cols = num_pool_b + 4;
-    judoka_2_table.num_cols = num_pool_b + 3;
-    if (grade_visible)
-        create_table(pd, &judoka_table);
-    else
-        create_table(pd, &judoka_2_table);
-
-    write_table_title(pd, &judoka_table, _T(competitorb));
-    write_table(pd, &judoka_table, 0, 0, _T(number));
-    write_table(pd, &judoka_table, 0, 1, _T(name));
-    if (grade_visible)
-        write_table(pd, &judoka_table, 0, 2, _T(grade));
-    write_table(pd, &judoka_table, 0, 3, _T(club));
-    for (i = num_pool_a+1; i <= num_judokas; i++) {
-        WRITE_TABLE(judoka_table, 0, 3 + i - num_pool_a, "%d", i);
-    }
-
-    for (i = num_pool_a+1; i <= num_judokas; i++) {
-        if (pm.j[i] == NULL)
-            continue;
-
-        WRITE_TABLE(judoka_table, i - num_pool_a, 0, "%d", i);
-        if (weights_in_sheets)
-            WRITE_TABLE_H(judoka_table, i - num_pool_a, 1, pm.j[i]->deleted, "%s  (%d,%02d)", 
-                          get_name_and_club_text(pm.j[i], CLUB_TEXT_NO_CLUB),
-                          pm.j[i]->weight/1000, (pm.j[i]->weight%1000)/10);
+            create_table(pd, &judoka_table);
         else
-            WRITE_TABLE_H(judoka_table, i - num_pool_a, 1, pm.j[i]->deleted, "%s", 
-                          get_name_and_club_text(pm.j[i], CLUB_TEXT_NO_CLUB));
+            create_table(pd, &judoka_2_table);
 
+        write_table_title(pd, &judoka_table, _T(competitora));
+        write_table(pd, &judoka_table, 0, 0, _T(number));
+        write_table(pd, &judoka_table, 0, 1, _T(name));
         if (grade_visible)
-            WRITE_TABLE(judoka_table, i - num_pool_a, 2, "%s", belts[pm.j[i]->belt]);
-
-        WRITE_TABLE(judoka_table, i - num_pool_a, 3, "%s", 
-		    get_club_text(pm.j[i], 0));
-    }
-
-    /* match table A */
-    match_table.num_rows = num_matches(SYSTEM_POOL, num_pool_a);
-    match_table.position_y = pos_match_a;
-    create_table(pd, &match_table);
-    write_table_title(pd, &match_table, _T(matchesa));
-
-    WRITE_TABLE(match_table, 0, 0, "%s", _T(match));
-    WRITE_TABLE(match_table, 0, 1, "%s", info_white_first ? _T(white) : _T(blue));
-    WRITE_TABLE(match_table, 0, 4, "%s", info_white_first ? _T(blue) : _T(white));
-    WRITE_TABLE(match_table, 0, 5, "%s", _T(result));
-    WRITE_TABLE(match_table, 0, 6, "%s", _T(time));
-
-    /* match table B */
-    match_table.num_rows = num_matches(SYSTEM_POOL, num_pool_b);
-    match_table.position_y = pos_match_b;
-    create_table(pd, &match_table);
-    write_table_title(pd, &match_table, _T(matchesb));
-
-    WRITE_TABLE(match_table, 0, 0, "%s", _T(match));
-    WRITE_TABLE(match_table, 0, 1, "%s", info_white_first ? _T(white) : _T(blue));
-    WRITE_TABLE(match_table, 0, 4, "%s", info_white_first ? _T(blue) : _T(white));
-    WRITE_TABLE(match_table, 0, 5, "%s", _T(result));
-    WRITE_TABLE(match_table, 0, 6, "%s", _T(time));
-
-    /* matches */
-    pos_a = pos_b = 1;
-
-    for (i = 1; i <= num_matches(pd->systm.system, num_judokas) ; i++) {
-        gint blue = poolsd[num_judokas][i-1][0];
-        gint white = poolsd[num_judokas][i-1][1];
-        gint ix = blue > num_pool_a ? pos_b++ : pos_a++;
-
-        if (blue > num_pool_a) {
-            judoka_table.position_y = pos_judoka_b;
-            match_table.position_y = pos_match_b;
-        } else {
-            judoka_table.position_y = pos_judoka_a;
-            match_table.position_y = pos_match_a;
+            write_table(pd, &judoka_table, 0, 2, _T(grade));
+        write_table(pd, &judoka_table, 0, 3, _T(club));
+        for (i = 1; i <= num_pool_a; i++) {
+            WRITE_TABLE(judoka_table, 0, 3 + i, "%d", i);
         }
+
+        for (i = 1; i <= num_pool_a; i++) {
+            if (pm.j[i] == NULL)
+                continue;
+            WRITE_TABLE(judoka_table, i, 0, "%d", i);
+            if (weights_in_sheets)
+                WRITE_TABLE_H(judoka_table, i, 1, pm.j[i]->deleted, "%s  (%d,%02d)", 
+                              get_name_and_club_text(pm.j[i], CLUB_TEXT_NO_CLUB),
+                              pm.j[i]->weight/1000, (pm.j[i]->weight%1000)/10);
+            else
+                WRITE_TABLE_H(judoka_table, i, 1, pm.j[i]->deleted, "%s", 
+                              get_name_and_club_text(pm.j[i], CLUB_TEXT_NO_CLUB));
+
+            if (grade_visible)
+                WRITE_TABLE(judoka_table, i, 2, "%s", belts[pm.j[i]->belt]);
+            WRITE_TABLE(judoka_table, i, 3, "%s", get_club_text(pm.j[i], 0));
+        }
+
+        /* competitor table B */
+        judoka_table.position_y = judoka_2_table.position_y = pos_judoka_b;
+        judoka_table.num_rows = judoka_2_table.num_rows = num_pool_b;
+        judoka_table.num_cols = num_pool_b + 4;
+        judoka_2_table.num_cols = num_pool_b + 3;
+        if (grade_visible)
+            create_table(pd, &judoka_table);
+        else
+            create_table(pd, &judoka_2_table);
+
+        write_table_title(pd, &judoka_table, _T(competitorb));
+        write_table(pd, &judoka_table, 0, 0, _T(number));
+        write_table(pd, &judoka_table, 0, 1, _T(name));
+        if (grade_visible)
+            write_table(pd, &judoka_table, 0, 2, _T(grade));
+        write_table(pd, &judoka_table, 0, 3, _T(club));
+        for (i = num_pool_a+1; i <= num_judokas; i++) {
+            WRITE_TABLE(judoka_table, 0, 3 + i - num_pool_a, "%d", i);
+        }
+
+        for (i = num_pool_a+1; i <= num_judokas; i++) {
+            if (pm.j[i] == NULL)
+                continue;
+
+            WRITE_TABLE(judoka_table, i - num_pool_a, 0, "%d", i);
+            if (weights_in_sheets)
+                WRITE_TABLE_H(judoka_table, i - num_pool_a, 1, pm.j[i]->deleted, "%s  (%d,%02d)", 
+                              get_name_and_club_text(pm.j[i], CLUB_TEXT_NO_CLUB),
+                              pm.j[i]->weight/1000, (pm.j[i]->weight%1000)/10);
+            else
+                WRITE_TABLE_H(judoka_table, i - num_pool_a, 1, pm.j[i]->deleted, "%s", 
+                              get_name_and_club_text(pm.j[i], CLUB_TEXT_NO_CLUB));
+
+            if (grade_visible)
+                WRITE_TABLE(judoka_table, i - num_pool_a, 2, "%s", belts[pm.j[i]->belt]);
+
+            WRITE_TABLE(judoka_table, i - num_pool_a, 3, "%s", 
+                        get_club_text(pm.j[i], 0));
+        }
+
+        /* match table A */
+        match_table.num_rows = num_matches(SYSTEM_POOL, num_pool_a);
+        match_table.position_y = pos_match_a;
+        create_table(pd, &match_table);
+        write_table_title(pd, &match_table, _T(matchesa));
+
+        WRITE_TABLE(match_table, 0, 0, "%s", _T(match));
+        WRITE_TABLE(match_table, 0, 1, "%s", info_white_first ? _T(white) : _T(blue));
+        WRITE_TABLE(match_table, 0, 4, "%s", info_white_first ? _T(blue) : _T(white));
+        WRITE_TABLE(match_table, 0, 5, "%s", _T(result));
+        WRITE_TABLE(match_table, 0, 6, "%s", _T(time));
+
+        /* match table B */
+        match_table.num_rows = num_matches(SYSTEM_POOL, num_pool_b);
+        match_table.position_y = pos_match_b;
+        create_table(pd, &match_table);
+        write_table_title(pd, &match_table, _T(matchesb));
+
+        WRITE_TABLE(match_table, 0, 0, "%s", _T(match));
+        WRITE_TABLE(match_table, 0, 1, "%s", info_white_first ? _T(white) : _T(blue));
+        WRITE_TABLE(match_table, 0, 4, "%s", info_white_first ? _T(blue) : _T(white));
+        WRITE_TABLE(match_table, 0, 5, "%s", _T(result));
+        WRITE_TABLE(match_table, 0, 6, "%s", _T(time));
+
+        /* matches */
+        pos_a = pos_b = 1;
+
+        for (i = 1; i <= num_matches(pd->systm.system, num_judokas) ; i++) {
+            gint blue = poolsd[num_judokas][i-1][0];
+            gint white = poolsd[num_judokas][i-1][1];
+            gint ix = blue > num_pool_a ? pos_b++ : pos_a++;
+
+            if (blue > num_pool_a) {
+                judoka_table.position_y = pos_judoka_b;
+                match_table.position_y = pos_match_b;
+            } else {
+                judoka_table.position_y = pos_judoka_a;
+                match_table.position_y = pos_match_a;
+            }
                                 
-        WRITE_TABLE(match_table, ix, 2, "%d", blue);
-        WRITE_TABLE(match_table, ix, 3, "%d", white);
+            WRITE_TABLE(match_table, ix, 2, "%d", blue);
+            WRITE_TABLE(match_table, ix, 3, "%d", white);
 
-        if (pm.j[blue] && pm.j[white]) {
-            WRITE_TABLE(match_table, ix, 0, "%d", i);
-            WRITE_TABLE(match_table, ix, 1, "%s", get_name_and_club_text(pm.j[blue], CLUB_TEXT_NO_CLUB));
-            WRITE_TABLE(match_table, ix, 4, "%s", get_name_and_club_text(pm.j[white], CLUB_TEXT_NO_CLUB));
-            if (pm.m[i].blue_points || pm.m[i].white_points)
-                WRITE_TABLE(match_table, ix, 5, "%d - %d", pm.m[i].blue_points, pm.m[i].white_points);
-            if (pm.m[i].blue_points || pm.m[i].white_points)
-                WRITE_TABLE(match_table, ix, 6, "%d:%02d", pm.m[i].match_time/60, pm.m[i].match_time%60);
+            if (pm.j[blue] && pm.j[white]) {
+                WRITE_TABLE(match_table, ix, 0, "%d", i);
+                WRITE_TABLE(match_table, ix, 1, "%s", get_name_and_club_text(pm.j[blue], CLUB_TEXT_NO_CLUB));
+                WRITE_TABLE(match_table, ix, 4, "%s", get_name_and_club_text(pm.j[white], CLUB_TEXT_NO_CLUB));
+                if (pm.m[i].blue_points || pm.m[i].white_points)
+                    WRITE_TABLE(match_table, ix, 5, "%d - %d", pm.m[i].blue_points, pm.m[i].white_points);
+                if (pm.m[i].blue_points || pm.m[i].white_points)
+                    WRITE_TABLE(match_table, ix, 6, "%d:%02d", pm.m[i].match_time/60, pm.m[i].match_time%60);
+            }
+
+            if (blue > num_pool_a) {
+                blue -= num_pool_a;
+                white -= num_pool_a;
+            }
+            if (pm.m[i].blue_points)
+                WRITE_TABLE(judoka_table, blue, white + 3, "%d", pm.m[i].blue_points);
+            else if (pm.m[i].white_points)
+                WRITE_TABLE(judoka_table, white, blue + 3, "%d", pm.m[i].white_points);
         }
+    } // page1
 
-        if (blue > num_pool_a) {
-            blue -= num_pool_a;
-            white -= num_pool_a;
-        }
-        if (pm.m[i].blue_points)
-            WRITE_TABLE(judoka_table, blue, white + 3, "%d", pm.m[i].blue_points);
-        else if (pm.m[i].white_points)
-            WRITE_TABLE(judoka_table, white, blue + 3, "%d", pm.m[i].white_points);
-    }
-
-    if (!dpool2) {
-        pos_match_f = pos_match_b + (num_matches(SYSTEM_POOL, num_pool_b) + 3) * ROW_HEIGHT;
+    if (page2) {
+        if (twopages)
+            pos_match_f = POOL_JUDOKAS_Y;
+        else
+            pos_match_f = pos_match_b + (num_matches(SYSTEM_POOL, num_pool_b) + 3) * ROW_HEIGHT;
 
         i = num_matches(pd->systm.system, num_judokas) + 1;
 
@@ -1030,11 +1043,6 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
                         pm.m[i].blue, pm.m[i].white,
                         pm.m[i].blue_points, pm.m[i].white_points, SYSTEM_DPOOL, 0, 0, i);
 
-        if (pm.m[i].blue_points)
-            bronze1 = pm.m[i].white;
-        else
-            bronze1 = pm.m[i].blue;
-
         i++;
 
         /* second semifinal */
@@ -1042,11 +1050,6 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
                         pos_match_f + 2*NAME_S, pos_match_f + 3*NAME_S, 
                         pm.m[i].blue, pm.m[i].white,
                         pm.m[i].blue_points, pm.m[i].white_points, SYSTEM_DPOOL, 0, 0, i);
-
-        if (pm.m[i].blue_points)
-            bronze2 = pm.m[i].white;
-        else
-            bronze2 = pm.m[i].blue;
 
         i++;
 
@@ -1056,6 +1059,26 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
                         pm.m[i].blue, pm.m[i].white,
                         pm.m[i].blue_points, pm.m[i].white_points, SYSTEM_DPOOL, 0, 0, i);
 
+        x2 = paint_comp(pd, &pm, 2, 
+                        x2, 0,
+                        pm.m[i].blue, pm.m[i].white,
+                        pm.m[i].blue_points, pm.m[i].white_points, SYSTEM_DPOOL, 0, 0, i);
+
+    }
+
+    if (!dpool2) {
+        i = num_matches(pd->systm.system, num_judokas) + 1;
+    
+        if (pm.m[i].blue_points)
+            bronze1 = pm.m[i].white;
+        else
+            bronze1 = pm.m[i].blue;
+        i++;
+        if (pm.m[i].blue_points)
+            bronze2 = pm.m[i].white;
+        else
+            bronze2 = pm.m[i].blue;
+        i++;
         if (pm.m[i].blue_points || pm.m[i].white == GHOST) {
             gold = pm.m[i].blue;
             silver = pm.m[i].white;
@@ -1063,12 +1086,6 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
             gold = pm.m[i].white;
             silver = pm.m[i].blue;
         }
-
-        x2 = paint_comp(pd, &pm, 2, 
-                        x2, 0,
-                        pm.m[i].blue, pm.m[i].white,
-                        pm.m[i].blue_points, pm.m[i].white_points, SYSTEM_DPOOL, 0, 0, i);
-
     }
 
     /* win table */
@@ -1088,47 +1105,52 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
     get_pool_winner(num_pool_a, c_a, yes_a, pm.wins, pm.pts, pm.mw, pm.j, pm.all_matched);
     get_pool_winner(num_pool_b, c_b, yes_b, pm.wins, pm.pts, pm.mw, pm.j, pm.all_matched);
 
-    win_table.position_y = pos_judoka_a;
-    win_table.num_rows = num_pool_a;
-    win_table.position_x = colpos(pd, &judoka_table, num_pool_a + 4) + judoka_table.position_x;
-    create_table(pd, &win_table);
+    if (page1) {
+        win_table.position_y = pos_judoka_a;
+        win_table.num_rows = num_pool_a;
+        win_table.position_x = colpos(pd, &judoka_table, num_pool_a + 4) + judoka_table.position_x;
+        create_table(pd, &win_table);
 
-    WRITE_TABLE(win_table, 0, 0, "%s", _T(win));
-    WRITE_TABLE(win_table, 0, 1, "%s", _T(points));
-    WRITE_TABLE(win_table, 0, 2, "%s", _T(position));
+        WRITE_TABLE(win_table, 0, 0, "%s", _T(win));
+        WRITE_TABLE(win_table, 0, 1, "%s", _T(points));
+        WRITE_TABLE(win_table, 0, 2, "%s", _T(position));
 
-    for (i = 1; i <= num_pool_a; i++) {
-        if (pm.wins[i] || pm.finished)
-            WRITE_TABLE(win_table, i, 0, "%d", pm.wins[i]);
-        if (pm.pts[i] || pm.finished)
-            WRITE_TABLE(win_table, i, 1, "%d", pm.pts[i]);
-        if (pm.finished && c_a[i] <= num_pool_a)
-            WRITE_TABLE(win_table, c_a[i], 2, "%d", i);
+        for (i = 1; i <= num_pool_a; i++) {
+            if (pm.wins[i] || pm.finished)
+                WRITE_TABLE(win_table, i, 0, "%d", pm.wins[i]);
+            if (pm.pts[i] || pm.finished)
+                WRITE_TABLE(win_table, i, 1, "%d", pm.pts[i]);
+            if (pm.finished && c_a[i] <= num_pool_a)
+                WRITE_TABLE(win_table, c_a[i], 2, "%d", i);
+        }
+
+        win_table.position_y = pos_judoka_b;
+        win_table.num_rows = num_pool_b;
+        win_table.position_x = colpos(pd, &judoka_table, num_pool_b + 4) + judoka_table.position_x;
+        create_table(pd, &win_table);
+
+        WRITE_TABLE(win_table, 0, 0, "%s", _T(win));
+        WRITE_TABLE(win_table, 0, 1, "%s", _T(points));
+        WRITE_TABLE(win_table, 0, 2, "%s", _T(position));
+
+        for (i = num_pool_a+1; i <= num_judokas; i++) {
+            gint line = c_b[i-num_pool_a]-num_pool_a;
+            if (pm.wins[i] || pm.finished)
+                WRITE_TABLE(win_table, i-num_pool_a, 0, "%d", pm.wins[i]);
+            if (pm.pts[i] || pm.finished)
+                WRITE_TABLE(win_table, i-num_pool_a, 1, "%d", pm.pts[i]);
+            if (pm.finished && line >= 1 && line <= num_pool_b)
+                WRITE_TABLE(win_table, line, 2, "%d", i-num_pool_a);
+        }
     }
 
-    win_table.position_y = pos_judoka_b;
-    win_table.num_rows = num_pool_b;
-    win_table.position_x = colpos(pd, &judoka_table, num_pool_b + 4) + judoka_table.position_x;
-    create_table(pd, &win_table);
-
-    WRITE_TABLE(win_table, 0, 0, "%s", _T(win));
-    WRITE_TABLE(win_table, 0, 1, "%s", _T(points));
-    WRITE_TABLE(win_table, 0, 2, "%s", _T(position));
-
-    for (i = num_pool_a+1; i <= num_judokas; i++) {
-        gint line = c_b[i-num_pool_a]-num_pool_a;
-        if (pm.wins[i] || pm.finished)
-            WRITE_TABLE(win_table, i-num_pool_a, 0, "%d", pm.wins[i]);
-        if (pm.pts[i] || pm.finished)
-            WRITE_TABLE(win_table, i-num_pool_a, 1, "%d", pm.pts[i]);
-        if (pm.finished && line >= 1 && line <= num_pool_b)
-            WRITE_TABLE(win_table, line, 2, "%d", i-num_pool_a);
-    }
-
-    if (!dpool2) {
+    if (page2) {
         /* results */
         result_table.num_rows = 4;
-        result_table.position_y = pos_match_b + (num_matches(SYSTEM_POOL, num_pool_b) + 5) * ROW_HEIGHT + 3*NAME_S;
+        if (twopages)
+            result_table.position_y = POOL_JUDOKAS_Y + 5*ROW_HEIGHT + 3*NAME_S;
+        else
+            result_table.position_y = pos_match_b + (num_matches(SYSTEM_POOL, num_pool_b) + 5) * ROW_HEIGHT + 3*NAME_S;
         create_table(pd, &result_table);
         write_table_title(pd, &result_table, _T(results));
 
