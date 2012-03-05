@@ -857,11 +857,12 @@ void reset(guint key, struct msg_next_match *msg)
     rest_time = FALSE;
 
     if (key != GDK_0 && golden_score == FALSE) {
-        if (sides_switched)
+        if (sides_switched) {
             send_result(st[0].whitepts, st[0].bluepts,
                         white_wins_voting, blue_wins_voting,
                         hansokumake_to_white, hansokumake_to_blue);
-        else
+            clear_switch_sides();
+        } else
             send_result(st[0].bluepts, st[0].whitepts,
                         blue_wins_voting, white_wins_voting,
                         hansokumake_to_blue, hansokumake_to_white);
@@ -888,10 +889,6 @@ void reset(guint key, struct msg_next_match *msg)
 
         memset(&(st[i].stackval), 0, sizeof(st[i].stackval));
         st[i].stackdepth = 0;
-    }
-
-    if (golden_score == FALSE && sides_switched) {
-        clear_switch_sides();
     }
 
     switch (key) {

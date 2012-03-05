@@ -1880,11 +1880,18 @@ void toggle_show_comp(GtkWidget *menu_item, gpointer data)
     g_key_file_set_boolean(keyfile, "preferences", "showcompetitornames", show_competitor_names);
 }
 
+#define SWITCH_TEXTS(_a, _b) \
+    do { gchar _s[32]; strncpy(_s, _a, sizeof(_s)-1); \
+        strncpy(_a, _b, sizeof(_a)-1); strncpy(_b, _s, sizeof(_b)-1); } while (0)
+
 void toggle_switch_sides(GtkWidget *menu_item, gpointer data)
 {
     gchar *tmp;
 
     sides_switched = GTK_CHECK_MENU_ITEM(menu_item)->active;
+
+    SWITCH_TEXTS(saved_last1, saved_last2);
+    SWITCH_TEXTS(saved_first1, saved_first2);
 
     tmp = labels[blue_name_1].text;
     labels[blue_name_1].text = labels[white_name_1].text;
