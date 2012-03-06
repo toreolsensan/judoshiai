@@ -56,6 +56,13 @@ void set_display(struct msg_edit_competitor *msg)
 {
     gchar buf[128];
 
+    if (!saved_id)
+        return;
+
+    if (atoi(saved_id) != msg->index && 
+        strcmp(saved_id, msg->id))
+        return;
+
     gdk_window_set_cursor(GTK_WIDGET(main_window)->window, NULL);
 
     if (msg->operation == EDIT_OP_CONFIRM) {
@@ -68,13 +75,6 @@ void set_display(struct msg_edit_competitor *msg)
         return;
     }
 
-    if (!saved_id)
-        return;
-
-    if (atoi(saved_id) != msg->index && 
-        strcmp(saved_id, msg->id))
-        return;
-
     saved.u.edit_competitor = *msg;
 
     snprintf(buf, sizeof(buf), "%s %s, %s/%s: %s", 
@@ -82,6 +82,7 @@ void set_display(struct msg_edit_competitor *msg)
     gtk_label_set_label(GTK_LABEL(name_box), buf);
     snprintf(buf, sizeof(buf), "%d.%02d", msg->weight/1000, (msg->weight%1000)/10);
     gtk_entry_set_text(GTK_ENTRY(weight_box), buf);
+    gtk_widget_grab_focus(weight_box);
 
 #ifdef JUDOGI_STATUS
     if (msg->deleted & JUDOGI_OK)
