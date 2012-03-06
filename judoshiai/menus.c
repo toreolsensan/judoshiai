@@ -70,14 +70,13 @@ static GtkWidget *menubar,
     *category_new, *category_remove_empty, *category_create_official, 
     *category_print_all, *category_print_all_pdf, *category_print_matches,
     *category_properties, *category_best_of_three, *category_to_tatamis[NUM_TATAMIS],
-    *draw_all_categories, *draw_international, *draw_finnish, 
-    *draw_swedish, *draw_estonian, *draw_spanish, *draw_norwegian,
+    *draw_all_categories, 
     *results_print_all, *results_print_schedule_printer, *results_print_schedule_pdf,
     *preference_comm, *preference_comm_node, *preference_own_ip_addr, *preference_show_connections,
     *preference_auto_sheet_update/*, *preference_auto_web_update*/, *preference_results_in_finnish, 
     *preference_langsel, *preference_results_in_swedish, *preference_results_in_english, 
     *preference_results_in_spanish, *preference_results_in_ukrainian, *preference_results_in_icelandic, 
-    *preference_results_in_norwegian, 
+    *preference_results_in_norwegian, *draw_systems[NUM_DRAWS], 
     *preference_weights_to_pool_sheets, 
     *preference_grade_visible, *preference_name_layout, *preference_name_layout_0, *preference_name_layout_1, *preference_name_layout_2, 
     *preference_layout, *preference_pool_style, *preference_belt_colors,
@@ -98,6 +97,10 @@ static const gchar *flags_files[NUM_LANGS] = {
 static const gchar *lang_names[NUM_LANGS] = {
     "fi", "sv", "en", "es", "et", "uk", "is", "no"
 };
+
+static const gchar *draw_system_names[NUM_DRAWS] = 
+    {"International System", "Finnish System", "Swedish System", "Estonian System", "Spanish System", 
+     "Norwegian System", "British System", "Australian System"};
 
 static GtkWidget *get_picture(const gchar *name)
 {
@@ -292,38 +295,14 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_menu_shell_append(GTK_MENU_SHELL(drawing_menu), draw_all_categories);
     g_signal_connect(G_OBJECT(draw_all_categories), "activate", G_CALLBACK(draw_all), 0);
 
-    draw_international = gtk_radio_menu_item_new_with_label(draw_group, "");
-    draw_group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(draw_international));
-    draw_finnish = gtk_radio_menu_item_new_with_label(draw_group, "");
-    draw_group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(draw_finnish));
-    draw_swedish = gtk_radio_menu_item_new_with_label(draw_group, "");
-    draw_group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(draw_swedish));
-    draw_estonian = gtk_radio_menu_item_new_with_label(draw_group, "");
-    draw_group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(draw_estonian));
-    draw_spanish = gtk_radio_menu_item_new_with_label(draw_group, "");
-    draw_group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(draw_spanish));
-    draw_norwegian = gtk_radio_menu_item_new_with_label(draw_group, "");
-
     gtk_menu_shell_append(GTK_MENU_SHELL(drawing_menu), gtk_separator_menu_item_new());
-    gtk_menu_shell_append(GTK_MENU_SHELL(drawing_menu), draw_international);
-    gtk_menu_shell_append(GTK_MENU_SHELL(drawing_menu), draw_finnish);
-    gtk_menu_shell_append(GTK_MENU_SHELL(drawing_menu), draw_swedish);
-    gtk_menu_shell_append(GTK_MENU_SHELL(drawing_menu), draw_estonian);
-    gtk_menu_shell_append(GTK_MENU_SHELL(drawing_menu), draw_spanish);
-    gtk_menu_shell_append(GTK_MENU_SHELL(drawing_menu), draw_norwegian);
-    g_signal_connect(G_OBJECT(draw_international), "activate", G_CALLBACK(set_draw_system), 
-		     (gpointer)DRAW_INTERNATIONAL);
-    g_signal_connect(G_OBJECT(draw_finnish),       "activate", G_CALLBACK(set_draw_system), 
-		     (gpointer)DRAW_FINNISH);
-    g_signal_connect(G_OBJECT(draw_swedish),       "activate", G_CALLBACK(set_draw_system), 
-		     (gpointer)DRAW_SWEDISH);
-    g_signal_connect(G_OBJECT(draw_estonian),      "activate", G_CALLBACK(set_draw_system), 
-		     (gpointer)DRAW_ESTONIAN);
-    g_signal_connect(G_OBJECT(draw_spanish),      "activate", G_CALLBACK(set_draw_system), 
-		     (gpointer)DRAW_SPANISH);
-    g_signal_connect(G_OBJECT(draw_norwegian),      "activate", G_CALLBACK(set_draw_system), 
-		     (gpointer)DRAW_NORWEGIAN);
-
+    for (i = 0; i < NUM_DRAWS; i++) {
+        draw_systems[i] = gtk_radio_menu_item_new_with_label(draw_group, "");
+        draw_group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(draw_systems[i]));
+        gtk_menu_shell_append(GTK_MENU_SHELL(drawing_menu), draw_systems[i]);
+        g_signal_connect(G_OBJECT(draw_systems[i]), "activate", G_CALLBACK(set_draw_system), 
+                         (gpointer)i);
+    }
 
     /* Create the Results menu content. */
     results_print_all              = gtk_menu_item_new_with_label(_("Print All (Web And PDF)"));
@@ -695,19 +674,7 @@ void set_preferences(void)
         draw_system = x1;
     else
         draw_system = DRAW_INTERNATIONAL;
-
-    if (draw_system == DRAW_INTERNATIONAL)
-        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(draw_international), TRUE);
-    else if (draw_system == DRAW_FINNISH)
-        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(draw_finnish), TRUE);
-    else if (draw_system == DRAW_SWEDISH)
-        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(draw_swedish), TRUE);
-    else if (draw_system == DRAW_ESTONIAN)
-        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(draw_estonian), TRUE);
-    else if (draw_system == DRAW_SPANISH)
-        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(draw_spanish), TRUE);
-    else if (draw_system == DRAW_NORWEGIAN)
-        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(draw_norwegian), TRUE);
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(draw_systems[draw_system]), TRUE);
 
     error = NULL;
     str = g_key_file_get_string(keyfile, "preferences", "logofile", &error);
@@ -855,12 +822,9 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     }
 
     change_menu_label(draw_all_categories, _("Draw All Categories"));
-    change_menu_label(draw_international,  _("International System"));
-    change_menu_label(draw_finnish,        _("Finnish System"));
-    change_menu_label(draw_swedish,        _("Swedish System"));
-    change_menu_label(draw_estonian,       _("Estonian System"));
-    change_menu_label(draw_spanish,        _("Spanish System"));
-    change_menu_label(draw_norwegian,      _("Norwegian System"));
+
+    for (i = 0; i < NUM_DRAWS; i++)
+        change_menu_label(draw_systems[i], _(draw_system_names[i]));
 
     change_menu_label(results_print_all             , _("Print All (Web And PDF)"));
     change_menu_label(results_print_schedule_printer, _("Print Schedule"));

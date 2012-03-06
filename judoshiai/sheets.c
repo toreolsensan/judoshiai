@@ -1556,7 +1556,8 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
     case FRENCH_64:
 	if ((table == TABLE_EST_D_KLASS || 
              table == TABLE_SWE_DIREKT_AATERKVAL ||
-             table == TABLE_MODIFIED_DOUBLE_ELIMINATION) && 
+             table == TABLE_MODIFIED_DOUBLE_ELIMINATION ||
+             table == TABLE_GBR_KNOCK_OUT) && 
 	    pagenum == 2)
 	    space = NAME_S*0.25;
 	else
@@ -1622,6 +1623,9 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
 
         special_match = is_special_match(systm, i, &intval, &doubleval, &doubleval2);
         special_flags = 0;
+
+        if (special_match == SPECIAL_MATCH_INC_Y)
+            pos_y += H(doubleval);
 
         if (special_match == SPECIAL_MATCH_X_Y) {
             blue_pos = H(doubleval);

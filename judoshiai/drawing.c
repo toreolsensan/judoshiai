@@ -1167,6 +1167,9 @@ struct compsys get_system_for_category(gint index, gint competitors)
             case DRAW_NORWEGIAN:
                 wishsys = CAT_SYSTEM_DUBBELT_AATERKVAL;
                 break;
+            case DRAW_BRITISH:
+                wishsys = CAT_SYSTEM_GBR_KNOCK_OUT;
+                break;
             }
         }
 
