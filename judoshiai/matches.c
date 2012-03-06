@@ -742,6 +742,27 @@ static void update_pool_matches(gint category, gint num)
             } else {
                 ma.blue = winners[pools[4][i][0]]->index;
                 ma.white = winners[pools[4][i][1]]->index;
+
+                if (draw_system == DRAW_AUSTRALIAN) { // preserve old results
+                    gint k;
+                    for (k = 1; k <= last_match; k++) {
+                        if ((pm.m[k].blue == ma.blue && pm.m[k].white == ma.white) ||
+                            (pm.m[k].blue == ma.white && pm.m[k].white == ma.blue)) {
+                            if (pm.m[k].blue == ma.blue) {
+                                ma.blue_score = pm.m[k].blue_score;
+                                ma.blue_points = pm.m[k].blue_points;
+                                ma.white_score = pm.m[k].white_score;
+                                ma.white_points = pm.m[k].white_points;
+                            } else {
+                                ma.blue_score = pm.m[k].white_score;
+                                ma.blue_points = pm.m[k].white_points;
+                                ma.white_score = pm.m[k].blue_score;
+                                ma.white_points = pm.m[k].blue_points;
+                            }
+                            ma.match_time = pm.m[k].match_time;
+                        }
+                    }
+                }
             }
             set_match(&ma);
             db_set_match(&ma);
