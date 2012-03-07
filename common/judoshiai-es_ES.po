@@ -383,7 +383,7 @@ msgid "Results in Estonian"
 msgstr "Resultados en Estonio"
 
 msgid "Results in Ukrainian"
-msgstr "Resultados en Ucrania"
+msgstr "Resultados en Ucraniano"
 
 msgid "Weights Visible in Pool Sheets"
 msgstr "Pesos visibles en las ligas"
@@ -625,16 +625,16 @@ msgstr ""
 "Puedes serguir usando el programa para crear categorías, etc..."
 
 msgid "Pool"
-msgstr "Liga"
+msgstr "ESP Liga"
 
 msgid "Double pool"
-msgstr "Dos ligas cruzadas"
+msgstr "ESP Dos ligas cruzadas"
 
 msgid "Quad pool"
-msgstr "Cuatro ligas cruzadas"
+msgstr "ESP Cuatro ligas cruzadas"
 
 msgid "Double repechage"
-msgstr "Doble repesca"
+msgstr "ESP Repesca Doble"
 
 msgid "Next match"
 msgstr "Siguiente combate"
@@ -1036,7 +1036,7 @@ msgid "Default"
 msgstr "Por defecto"
 
 msgid "FIN Double Repechage"
-msgstr "Repesca doble desde 1ª ronda"
+msgstr "ESP Repesca doble desde 1ª ronda"
 
 msgid "SWE Double Repechage"
 msgstr "SWE Repesca doble"
@@ -1048,7 +1048,7 @@ msgid "EST Double Elimination"
 msgstr "EST Eliminatoria doble"
 
 msgid "Single Elimination"
-msgstr "Eliminatoria sin repesca"
+msgstr "ESP Eliminatoria sin repesca"
 
 msgid "SWE Single Repechage"
 msgstr "SWE Repesca simple"
@@ -1084,7 +1084,7 @@ msgid "View Log"
 msgstr "Ver Log"
 
 msgid "Double Pool"
-msgstr "Dos ligas cruzadas"
+msgstr "ESP Dos ligas cruzadas"
 
 msgid "Cannot handle: Database created with newer JudoShiai version."
 msgstr ""
@@ -1101,7 +1101,7 @@ msgid "Abbreviations in Sheets"
 msgstr "Abreviaturas en las Hojas"
 
 msgid "One match"
-msgstr "Final directa"
+msgstr "ESP Final directa"
 
 msgid "FIN Dbl Repchg"
 msgstr "ESP Rep. doble ini."
@@ -1149,13 +1149,13 @@ msgid "EST D klass"
 msgstr "EST Doble pérdida"
 
 msgid "No Repechg"
-msgstr "Sin repesca"
+msgstr "ESP Sin repesca"
 
 msgid "SWE Enkelt återkv"
 msgstr "SWE. Rep simple"
 
 msgid "ESP Dbl Lost"
-msgstr "Dbl. per."
+msgstr "ESP Dbl. per."
 
 msgid "ESP Dbl Rep/Bgn"
 msgstr "ESP Rep. doble ini."
@@ -1167,7 +1167,7 @@ msgid "ESP Simple Rep"
 msgstr "ESP Rep. en cuartos"
 
 msgid "ESP Double Lost"
-msgstr "Doble pérdida"
+msgstr "ESP Doble pérdida"
 
 msgid "ESP Double Repechage from Beginning"
 msgstr "ESP Repesca doble desde 1ª ronda"
@@ -1182,7 +1182,7 @@ msgid "ESP Simple Repechage"
 msgstr "ESP Repesca en cuartos"
 
 msgid "Quadruple pool"
-msgstr "4 Ligas cruzadas"
+msgstr "ESP 4 Ligas cruzadas"
 
 msgid "Picture Files"
 msgstr "Archivos de imágenes"
@@ -1245,13 +1245,13 @@ msgid "No competitor found!"
 msgstr "¡Competidor no encontrado!"
 
 msgid "Modified Dbl Elim"
-msgstr "Modificado Dbl Elim"
+msgstr "Dbl. Elim. Modificada"
 
 msgid "FIN Dbl Repchg One Bronze"
 msgstr "FIN Repesca doble Un Bronce"
 
 msgid "Modified Double Elimination"
-msgstr "Modificado Doble Eliminatoria"
+msgstr "Doble Eliminatoria Modificada"
 
 msgid "FIN Double Repechage One Bronze"
 msgstr "FIN Repesca doble Un Bronce"
@@ -1560,7 +1560,7 @@ msgid "Confirm:"
 msgstr "Confirmar:"
 
 msgid "- - -"
-msgstr ""
+msgstr "- - -"
 
 msgid "syntax errors"
 msgstr "Errores de sintaxis"
@@ -1596,4 +1596,4 @@ msgid "Communication error"
 msgstr "Error de comunicación"
 
 msgid "Double Lost"
-msgstr ""
+msgstr "Doble pérdida"
