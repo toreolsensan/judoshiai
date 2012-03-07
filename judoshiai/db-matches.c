@@ -1075,6 +1075,7 @@ struct match *db_next_match(gint category, gint tatami)
      next_match[_m1].blue == next_match[_m2].white ||             \
      next_match[_m1].white == next_match[_m2].blue)
     
+#if 0  // can change order of bronze and gold fights   
     for (i = 0; i < next_match_num-2; i++) {
         gint j;
 
@@ -1097,6 +1098,7 @@ struct match *db_next_match(gint category, gint tatami)
             }
         }
     }
+#endif
 
     /* check for rest times */
     if (auto_arrange &&
