@@ -42,6 +42,7 @@ all:
 ifeq ($(TGT),WIN32)
 	cp $(RUNDIR)/bin/*.dll $(RELDIR)/bin/
 	cp $(SOUNDDIR)/fmodex.dll $(RELDIR)/bin/
+	cp $(RSVGDIR)/bin/*.dll $(RELDIR)/bin/
 	cp -r $(RUNDIR)/lib/gtk-2.0 $(RELDIR)/lib/
 	cp -r $(RUNDIR)/share/locale/fi $(RELDIR)/share/locale/
 	cp -r $(RUNDIR)/share/locale/sv $(RELDIR)/share/locale/

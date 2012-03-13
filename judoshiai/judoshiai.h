@@ -159,6 +159,7 @@ enum french_systems {
 #define JUDOGI_NOK    0x40
 #define GENDER_MALE   0x80
 #define GENDER_FEMALE 0x100
+#define POOL_TIE3     0x200
 
 #define NEXT_MATCH_NUM 10
 #define WAITING_MATCH_NUM 40
@@ -441,6 +442,7 @@ struct pool_matches {
     gboolean yes[21];
     gboolean finished;
     gboolean all_matched[21];
+    gboolean tie[21];
     gint num_matches;
 };
 
@@ -865,7 +867,7 @@ extern void fill_pool_struct(gint category, gint num, struct pool_matches *pm, g
 extern void empty_pool_struct(struct pool_matches *pm);
 extern void get_pool_winner(gint num, gint c[21], gboolean yes[21], 
                             gint wins[21], gint pts[21], 
-                            gboolean mw[21][21], struct judoka *ju[21], gboolean all_matched[21]);
+                            gboolean mw[21][21], struct judoka *ju[21], gboolean all_matched[21], gboolean tie[21]);
 extern void update_competitors_categories(gint competitor);
 extern void set_points_and_score(struct message *msg);
 extern void set_comment_from_net(struct message *msg);
@@ -1028,6 +1030,7 @@ extern gint get_system_number_by_menu_pos(gint num);
 extern gint get_system_menu_selection(gint active);
 extern gboolean system_is_french(gint sys);
 extern gboolean system_wish_is_french(gint wish);
+extern struct compsys wish_to_system(gint sys, gint numcomp);
 extern gint is_special_match(struct compsys sys, gint match, gint *intval, double *doubleval, double *doubleval2);
 extern gchar *get_system_description(gint index, gint competitors);
 extern gboolean print_landscape(gint cat);
@@ -1041,5 +1044,14 @@ extern gint num_matches_left(gint index, gint competitors);
 
 /* medal-matches */
 extern void move_medal_matches(GtkWidget *menuitem, gpointer userdata);
+
+/* svg */
+extern gchar *svg_directory;
+extern void read_svg_files(gboolean ok);
+extern void select_svg_dir(GtkWidget *menu_item, gpointer data);
+extern gboolean get_svg_page_size(gint index, gint pagenum, gint *width, gint *height);
+extern gboolean svg_landscape(gint ctg, gint page);
+extern gint get_num_svg_pages(struct compsys systm);
+
 
 #endif

@@ -245,7 +245,7 @@ static void pool_results(FILE *f, gint category, struct judoka *ctg, gint num_ju
         num_judokas = 4;
 
     if (pm.finished)
-        get_pool_winner(num_judokas, pm.c, pm.yes, pm.wins, pm.pts, pm.mw, pm.j, pm.all_matched);
+        get_pool_winner(num_judokas, pm.c, pm.yes, pm.wins, pm.pts, pm.mw, pm.j, pm.all_matched, pm.tie);
 
     for (i = 1; i <= num_judokas; i++) {
         if (pm.finished == FALSE || pm.j[pm.c[i]] == NULL)

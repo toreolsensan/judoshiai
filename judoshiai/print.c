@@ -140,11 +140,19 @@ void write_png(GtkWidget *menuitem, gpointer userdata)
     struct paint_data pd;
     memset(&pd, 0, sizeof(pd));
 
-    //XXXpd.row_height = 1;
-    if (print_landscape(ctg)) {
+    gint svgw, svgh;
+    if (get_svg_page_size(ctg, 0, &svgw, &svgh)) {
+        if (svgw < svgh) {
+            pd.paper_height = SIZEY;
+            pd.paper_width = SIZEX;
+        } else {
+            pd.paper_height = SIZEX;
+            pd.paper_width = SIZEY;
+            pd.landscape = TRUE;
+        }
+    } else if (print_landscape(ctg)) {
         pd.paper_height = SIZEX;
         pd.paper_width = SIZEY;
-        //XXXpd.row_height = 2;
         pd.landscape = TRUE;
     } else {
         pd.paper_height = SIZEY;
@@ -1682,7 +1690,7 @@ static void draw_page(GtkPrintOperation *operation,
     case PRINT_ALL_CATEGORIES:
         pd.category = pages_to_print[page_nr].cat;
         pd.page = pages_to_print[page_nr].pagenum;
-        if (print_landscape(pd.category))
+        if (svg_landscape(pd.category, pd.page) || print_landscape(pd.category))
             pd.rotate = TRUE;
         paint_category(&pd);
         break;
@@ -1773,7 +1781,7 @@ void print_doc(GtkWidget *menuitem, gpointer userdata)
         case PRINT_SHEET:
             for (i = 0; i < numpages; i++) {
                 pd.category = pages_to_print[i].cat;
-                if (print_landscape(pd.category))
+                if (svg_landscape(pd.category, i) || print_landscape(pd.category))
                     pd.rotate = TRUE;
                 else
                     pd.rotate = FALSE;

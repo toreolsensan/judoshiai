@@ -552,7 +552,7 @@ static void paint_pool(struct paint_data *pd, gint category, struct judoka *ctg,
         num_judokas = 4;
 
     if (pm.finished)
-        get_pool_winner(num_judokas, pm.c, pm.yes, pm.wins, pm.pts, pm.mw, pm.j, pm.all_matched);
+        get_pool_winner(num_judokas, pm.c, pm.yes, pm.wins, pm.pts, pm.mw, pm.j, pm.all_matched, pm.tie);
 
     /* competitor table */
     judoka_table.position_y = judoka_2_table.position_y = POOL_JUDOKAS_Y;
@@ -594,6 +594,7 @@ static void paint_pool(struct paint_data *pd, gint category, struct judoka *ctg,
             continue;
 
         snprintf(num, sizeof(num), "%d", i);
+
         if (weights_in_sheets)
             snprintf(name, sizeof(name), "%s  (%d,%02d)", 
                         get_name_and_club_text(pm.j[i], CLUB_TEXT_NO_CLUB),
@@ -601,11 +602,16 @@ static void paint_pool(struct paint_data *pd, gint category, struct judoka *ctg,
         else
             snprintf(name, sizeof(name), "%s", get_name_and_club_text(pm.j[i], CLUB_TEXT_NO_CLUB));
 
+        cairo_save(pd->c);
+        if (pm.tie[i])
+            cairo_set_source_rgb(pd->c, 1.0, 0.0, 0.0);
+
         write_table(pd, &judoka_table, i, 0, num);
         write_table_h(pd, &judoka_table, i, 1, pm.j[i]->deleted, name);
         if (grade_visible)
             write_table(pd, &judoka_table, i, 2, belts[pm.j[i]->belt]);
         write_table(pd, &judoka_table, i, 3, (char *)get_club_text(pm.j[i], 0));
+        cairo_restore(pd->c);
     }
 
     /* match table */
@@ -726,7 +732,7 @@ static void paint_pool_2(struct paint_data *pd, gint category, struct judoka *ct
     fill_pool_struct(category, num_judokas, &pm, FALSE);
 
     if (pm.finished)
-        get_pool_winner(num_judokas, pm.c, pm.yes, pm.wins, pm.pts, pm.mw, pm.j, pm.all_matched);
+        get_pool_winner(num_judokas, pm.c, pm.yes, pm.wins, pm.pts, pm.mw, pm.j, pm.all_matched, pm.tie);
 
     pool_table_2.position_x = POOL_JUDOKAS_X;
     pool_table_2.position_y = POOL_JUDOKAS_Y;
@@ -1102,8 +1108,8 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
             yes_b[i] = TRUE;
     }
     
-    get_pool_winner(num_pool_a, c_a, yes_a, pm.wins, pm.pts, pm.mw, pm.j, pm.all_matched);
-    get_pool_winner(num_pool_b, c_b, yes_b, pm.wins, pm.pts, pm.mw, pm.j, pm.all_matched);
+    get_pool_winner(num_pool_a, c_a, yes_a, pm.wins, pm.pts, pm.mw, pm.j, pm.all_matched, pm.tie);
+    get_pool_winner(num_pool_b, c_b, yes_b, pm.wins, pm.pts, pm.mw, pm.j, pm.all_matched, pm.tie);
 
     if (page1) {
         win_table.position_y = pos_judoka_a;
@@ -1286,7 +1292,7 @@ static void paint_qpool(struct paint_data *pd, gint category, struct judoka *ctg
                 }
             }
     
-            get_pool_winner(pool_size[pool], c[pool], yes[pool], pm.wins, pm.pts, pm.mw, pm.j, pm.all_matched);
+            get_pool_winner(pool_size[pool], c[pool], yes[pool], pm.wins, pm.pts, pm.mw, pm.j, pm.all_matched, pm.tie);
             gboolean pool_done = pool_finished(num_judokas, num_matches(pd->systm.system, num_judokas), 
                                                SYSTEM_QPOOL, yes[pool], &pm);
 
@@ -1981,6 +1987,9 @@ void paint_category(struct paint_data *pd)
     pd->systm = sys;
     num_judokas = sys.numcomp;
 
+    if (paint_svg(pd))
+        return;
+
     ROW_HEIGHT = NAME_H;
 	
     if (font_face[0] == 0)
@@ -2309,6 +2318,16 @@ static gdouble zoom_x_offset = 0.0, zoom_y_offset = 0.0, orig_x_offset, orig_y_o
 static gdouble button_start_x, button_start_y;
 static gboolean button_drag = FALSE;
 
+__inline__ guint64 rdtsc(void) {
+    guint32 lo, hi;
+    __asm__ __volatile__ (      // serialize
+    "xorl %%eax,%%eax \n        cpuid"
+    ::: "%rax", "%rbx", "%rcx", "%rdx");
+    /* We cannot use "=A", since this would use %rax on x86_64 and return only the lower 32bits of the TSC */
+    __asm__ __volatile__ ("rdtsc" : "=a" (lo), "=d" (hi));
+    return (guint64)hi << 32 | lo;
+}
+
 
 static gboolean expose_cat(GtkWidget *widget, GdkEventExpose *event, gpointer userdata)
 {
@@ -2338,7 +2357,10 @@ static gboolean expose_cat(GtkWidget *widget, GdkEventExpose *event, gpointer us
     }
 
     pd->c = gdk_cairo_create(widget->window);
+    guint64 start = rdtsc();
     paint_category(pd);
+    guint64 stop = rdtsc();
+    //g_print("TIME = %lld\n", stop - start);
 
     cairo_set_source_surface(pd->c, print_icon, 0, 0);
     cairo_paint(pd->c);

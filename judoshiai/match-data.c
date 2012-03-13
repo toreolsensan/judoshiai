@@ -1595,6 +1595,36 @@ const gint cat_system_to_table[NUM_SYSTEMS] = {
     TABLE_GBR_KNOCK_OUT
 };
 
+struct compsys wish_to_system(gint sys, gint numcomp)
+{
+    struct compsys ret;
+
+    ret.numcomp = numcomp;
+    ret.wishsys = sys;
+
+    if (system_wish_is_french(sys)) {
+        if (numcomp <= 8) ret.system = SYSTEM_FRENCH_8;
+        else if (numcomp <= 16) ret.system = SYSTEM_FRENCH_16;
+        else if (numcomp <= 32) ret.system = SYSTEM_FRENCH_32;
+        else if (numcomp <= 64) ret.system = SYSTEM_FRENCH_64;
+        else if (numcomp <= 128) ret.system = SYSTEM_FRENCH_128;
+        else ret.system = SYSTEM_FRENCH_256;
+        
+        ret.table = cat_system_to_table[sys];
+    } else {
+        ret.table = 0;
+
+        switch (sys) {
+        case CAT_SYSTEM_POOL: ret.system = SYSTEM_POOL; break;
+        case CAT_SYSTEM_DPOOL: ret.system = SYSTEM_DPOOL; break;
+        case CAT_SYSTEM_QPOOL: ret.system = SYSTEM_QPOOL; break;
+        case CAT_SYSTEM_DPOOL2: ret.system = SYSTEM_DPOOL2; break;
+        }
+    }
+
+    return ret;
+}
+
 gchar *get_system_description(gint index, gint competitors)
 {
     struct compsys sys = get_system_for_category(index, competitors);
@@ -1989,6 +2019,11 @@ gint next_page(gint cat, gint page)
 
 gint num_pages(struct compsys sys)
 {
+    gint pages = get_num_svg_pages(sys);
+
+    if (pages)
+        return pages;
+
     if (sys.system == SYSTEM_FRENCH_128)
         return 5;
     if (sys.table == TABLE_MODIFIED_DOUBLE_ELIMINATION &&

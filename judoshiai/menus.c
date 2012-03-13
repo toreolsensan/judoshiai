@@ -80,11 +80,11 @@ static GtkWidget *menubar,
     *preference_weights_to_pool_sheets, 
     *preference_grade_visible, *preference_name_layout, *preference_name_layout_0, *preference_name_layout_1, *preference_name_layout_2, 
     *preference_layout, *preference_pool_style, *preference_belt_colors,
-    *preference_sheet_font, *preference_password, *judotimer_control[NUM_TATAMIS],
+    *preference_sheet_font, *preference_svg, *preference_password, *judotimer_control[NUM_TATAMIS],
     *preference_mirror, *preference_auto_arrange, *preference_club_text,
     *preference_club_text_club, *preference_club_text_country, *preference_club_text_both,
     *preference_club_text_abbr, *preference_use_logo,
-    *preference_serial, *preference_medal_matches,
+    *preference_serial, *preference_medal_matches;
     *help_manual, *help_about, *flags[NUM_LANGS], *menu_flags[NUM_LANGS];
 
 static GSList *lang_group = NULL, *club_group = NULL, *draw_group = NULL;
@@ -369,6 +369,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     preference_pool_style             = gtk_check_menu_item_new_with_label("");
     preference_belt_colors            = gtk_check_menu_item_new_with_label("");
     preference_sheet_font             = gtk_menu_item_new_with_label(_("Sheet Font"));
+    preference_svg                    = gtk_menu_item_new_with_label(_("SVG Templates"));
     preference_password               = gtk_menu_item_new_with_label(_("Password"));
     preference_mirror                 = gtk_check_menu_item_new_with_label("");
     preference_auto_arrange           = gtk_check_menu_item_new_with_label("");
@@ -433,6 +434,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_menu_shell_append(GTK_MENU_SHELL(submenu), preference_belt_colors);
     gtk_menu_shell_append(GTK_MENU_SHELL(submenu), preference_use_logo);
     gtk_menu_shell_append(GTK_MENU_SHELL(submenu), preference_sheet_font);
+    gtk_menu_shell_append(GTK_MENU_SHELL(submenu), preference_svg);
 
     gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), gtk_separator_menu_item_new());
 
@@ -475,6 +477,8 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     g_signal_connect(G_OBJECT(preference_pool_style),             "activate", G_CALLBACK(toggle_pool_style), 0);
     g_signal_connect(G_OBJECT(preference_belt_colors),            "activate", G_CALLBACK(toggle_belt_colors), 0);
     g_signal_connect(G_OBJECT(preference_sheet_font),             "activate", G_CALLBACK(font_dialog), 0);
+    g_signal_connect(G_OBJECT(preference_svg),                    "activate", G_CALLBACK(select_svg_dir), 0);
+
     g_signal_connect(G_OBJECT(preference_password),               "activate", G_CALLBACK(set_webpassword_dialog), 0);
     g_signal_connect(G_OBJECT(preference_mirror),                 "activate", G_CALLBACK(toggle_mirror), 0);
     g_signal_connect(G_OBJECT(preference_auto_arrange),           "activate", G_CALLBACK(toggle_auto_arrange), 0);
@@ -706,6 +710,17 @@ void set_preferences(void)
     x1 = g_key_file_get_integer(keyfile, "preferences", "serialtype", &error);
     if (!error)
         serial_set_type(x1);
+
+    error = NULL;
+    str = g_key_file_get_string(keyfile, "preferences", "svgdir", &error);
+    if (!error) {
+        if (str[0]) {
+            svg_directory = str;
+            read_svg_files(TRUE);
+        } else
+            g_free(str);
+    }
+
 }
 
 static void change_menu_label(GtkWidget *item, const gchar *new_text)
@@ -867,6 +882,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(preference_pool_style            , _("Pool Style 2"));
     change_menu_label(preference_belt_colors           , _("Use Belt Colors"));
     change_menu_label(preference_sheet_font            , _("Sheet Font"));
+    change_menu_label(preference_svg                   , _("SVG Templates"));
     change_menu_label(preference_password              , _("Password"));
     change_menu_label(preference_mirror                , _("Mirror Tatami Order"));
     change_menu_label(preference_auto_arrange          , _("Automatic Match Delay"));

@@ -334,7 +334,7 @@ void free_judoka(struct judoka *j)
     FREE(country);
     FREE(id);
 
-    free(j);
+    g_free(j);
 }
 
 void show_message(gchar *msg)
