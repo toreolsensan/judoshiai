@@ -311,6 +311,12 @@ static void comment_cell_data_func (GtkTreeViewColumn *col,
 
 #define SWAP(_a,_b) do { gint tmp = c[_a]; c[_a] = c[_b]; c[_b] = tmp; } while (0)
 
+#define SET_TIE3(_a) do {ju[c[_a]]->deleted |= POOL_TIE3;   \
+        ju[c[_a+1]]->deleted |= POOL_TIE3;                  \
+        ju[c[_a+2]]->deleted |= POOL_TIE3;                  \
+        tie[c[_a]] = tie[c[_a+1]] = tie[c[_a+2]] = TRUE;             \
+    } while (0)
+
 #define WEIGHT(_a) (ju[c[_a]]->weight)
 
 #define MATCHED(_a) (m[_a].blue_points || m[_a].white_points)
@@ -373,12 +379,13 @@ static void comment_cell_data_func (GtkTreeViewColumn *col,
 
 void get_pool_winner(gint num, gint c[21], gboolean yes[21], 
                      gint wins[21], gint pts[21], 
-                     gboolean mw[21][21], struct judoka *ju[21], gboolean all[21])
+                     gboolean mw[21][21], struct judoka *ju[21], gboolean all[21], gboolean tie[21])
 {
     gint i, j;
         
     for (i = 0; i <= 20; i++) {
         c[i] = i;
+        tie[i] = FALSE;
     }
 
     // check for not defined competitors
@@ -416,6 +423,7 @@ void get_pool_winner(gint num, gint c[21], gboolean yes[21],
         if (WEIGHT(2) > WEIGHT(3)) SWAP(2,3);
         if (WEIGHT(1) == WEIGHT(2) && mw[c[2]][c[1]]) SWAP(1,2);
         if (WEIGHT(2) == WEIGHT(3) && mw[c[3]][c[2]]) SWAP(2,3);
+        SET_TIE3(1);
     }
     if (num >= 4 && TIE3(2,3,4)) {
         /* weight matters */
@@ -424,6 +432,7 @@ void get_pool_winner(gint num, gint c[21], gboolean yes[21],
         if (WEIGHT(3) > WEIGHT(4)) SWAP(3,4);
         if (WEIGHT(2) == WEIGHT(3) && mw[c[3]][c[2]]) SWAP(2,3);
         if (WEIGHT(3) == WEIGHT(4) && mw[c[4]][c[3]]) SWAP(3,4);
+        SET_TIE3(2);
     }
     if (num >= 5 && TIE3(3,4,5)) {
         /* weight matters */
@@ -432,6 +441,25 @@ void get_pool_winner(gint num, gint c[21], gboolean yes[21],
         if (WEIGHT(4) > WEIGHT(5)) SWAP(4,5);
         if (WEIGHT(3) == WEIGHT(4) && mw[c[4]][c[3]]) SWAP(3,4);
         if (WEIGHT(4) == WEIGHT(5) && mw[c[5]][c[4]]) SWAP(4,5);
+        SET_TIE3(3);
+    }
+    if (num >= 6 && TIE3(4,5,6)) {
+        /* weight matters */
+        if (WEIGHT(4) > WEIGHT(5)) SWAP(4,5);
+        if (WEIGHT(4) > WEIGHT(6)) SWAP(4,6);
+        if (WEIGHT(5) > WEIGHT(6)) SWAP(5,6);
+        if (WEIGHT(4) == WEIGHT(5) && mw[c[5]][c[4]]) SWAP(4,5);
+        if (WEIGHT(5) == WEIGHT(6) && mw[c[6]][c[5]]) SWAP(5,6);
+        SET_TIE3(4);
+    }
+    if (num >= 7 && TIE3(5,6,7)) {
+        /* weight matters */
+        if (WEIGHT(5) > WEIGHT(6)) SWAP(5,6);
+        if (WEIGHT(5) > WEIGHT(7)) SWAP(5,7);
+        if (WEIGHT(6) > WEIGHT(7)) SWAP(6,7);
+        if (WEIGHT(5) == WEIGHT(6) && mw[c[6]][c[5]]) SWAP(5,6);
+        if (WEIGHT(6) == WEIGHT(7) && mw[c[7]][c[6]]) SWAP(6,7);
+        SET_TIE3(5);
     }
 
 #if 0
@@ -672,7 +700,7 @@ static void update_pool_matches(gint category, gint num)
 
     if (num_pools == 1) {
         if (pm.finished)
-            get_pool_winner(num, pm.c, pm.yes, pm.wins, pm.pts, pm.mw, pm.j, pm.all_matched);
+            get_pool_winner(num, pm.c, pm.yes, pm.wins, pm.pts, pm.mw, pm.j, pm.all_matched, pm.tie);
         goto out;
     } 
 
@@ -713,7 +741,7 @@ static void update_pool_matches(gint category, gint num)
     }
     
     for (i = 0; i < num_pools; i++) {
-        get_pool_winner(pool_size[i], c[i], yes[i], pm.wins, pm.pts, pm.mw, pm.j, pm.all_matched);
+        get_pool_winner(pool_size[i], c[i], yes[i], pm.wins, pm.pts, pm.mw, pm.j, pm.all_matched, pm.tie);
         pool_done[i] = pool_finished(num, last_match, sys.system, yes[i], &pm);
     }
 
