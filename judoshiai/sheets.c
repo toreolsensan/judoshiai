@@ -498,6 +498,11 @@ static void write_table_h(struct paint_data *pd, struct table *t, int row, int c
         cairo_select_font_face(pd->c, font_face,
                                font_slant,
                                CAIRO_FONT_WEIGHT_BOLD);
+
+    /*
+    if (use_weights == FALSE && (del & POOL_TIE3))
+            cairo_set_source_rgb(pd->c, 1.0, 0.0, 0.0);
+    */
     cairo_show_text(pd->c, txt);
     cairo_restore(pd->c);
 }
@@ -602,16 +607,11 @@ static void paint_pool(struct paint_data *pd, gint category, struct judoka *ctg,
         else
             snprintf(name, sizeof(name), "%s", get_name_and_club_text(pm.j[i], CLUB_TEXT_NO_CLUB));
 
-        cairo_save(pd->c);
-        if (pm.tie[i])
-            cairo_set_source_rgb(pd->c, 1.0, 0.0, 0.0);
-
         write_table(pd, &judoka_table, i, 0, num);
         write_table_h(pd, &judoka_table, i, 1, pm.j[i]->deleted, name);
         if (grade_visible)
             write_table(pd, &judoka_table, i, 2, belts[pm.j[i]->belt]);
         write_table(pd, &judoka_table, i, 3, (char *)get_club_text(pm.j[i], 0));
-        cairo_restore(pd->c);
     }
 
     /* match table */
@@ -791,6 +791,7 @@ static void paint_pool_2(struct paint_data *pd, gint category, struct judoka *ct
         write_table_h(pd, &pool_table_2, 2*i-1, 1, pm.j[i]->deleted, name);
         sprintf(name, "%s", get_club_text(pm.j[i], 0));
         write_table(pd, &pool_table_2, 2*i, 1, name);
+
         /*if (grade_visible)
           write_table(pd, &pool_table_2, i, 2, belts[pm.j[i]->belt]);
           write_table(pd, &pool_table_2, i, 3, (char *)get_club_text(pm.j[i], 0));*/

@@ -402,47 +402,55 @@ struct offial_category official_categories[NUM_DRAWS][2][10] = {
     }, { // australian
         { // men
             {
-                "Men", 1000, 300, 180, 600, // name, max age, match gs rest times 
+                "Men", 1000, 300, 180, 300, // name, max age, match gs rest times 
                 {{60000, "60"}, {66000, "66"}, {73000, "73"}, 
                  {81000, "81"}, {90000, "90"}, {100000, "100"}, {0, NULL}}
             }, {
-                "BoysU19", 18, 240, 120, 600, // name, max age, match gs rest times 
+                "Junior Men", 19, 240, 120, 300, // name, max age, match gs rest times 
                 {{55000, "55"}, {60000, "60"}, {66000, "66"}, {73000, "73"}, 
                  {81000, "81"}, {90000, "90"}, {100000, "100"}, {0, NULL}}
             }, {
-                "BoysU16", 15, 180, 120, 600, // name, max age, match gs rest times 
-                {{38000, "38"}, {42000, "42"}, {46000, "46"}, {50000, "50"}, {55000, "55"}, {60000, "60"}, 
+                "Cadet Men", 16, 240, 120, 300, // name, max age, match gs rest times 
+                {{50000, "50"}, {55000, "55"}, {60000, "60"}, 
                  {66000, "66"}, {73000, "73"}, {81000, "81"}, {90000, "90"}, {0, NULL}}
             }, {
-                "BoysU14", 13, 180, 120, 600, // name, max age, match gs rest times 
-                {{30000, "30"}, {34000, "34"}, {38000, "38"}, {42000, "42"}, {46000, "46"}, 
+                "Senior Boys", 14, 180, 60, 180, // name, max age, match gs rest times 
+                {{36000, "36"}, {40000, "40"}, {45000, "45"}, 
                  {50000, "50"}, {55000, "55"}, {60000, "60"}, {66000, "66"}, {0, NULL}}
             },{
-                "BoysU12", 11, 120, 60, 180, // name, max age, match gs rest times
+                "Junior Boys", 11, 180, 60, 180, // name, max age, match gs rest times
                 {{27000, "27"}, {30000, "30"}, {34000, "34"},
-                 {38000, "38"}, {42000, "42"}, {46000, "46"}, {0, NULL}}
+                 {38000, "38"}, {42000, "42"}, {46000, "46"}, {50000, "50"}, {0, NULL}}
+            },{
+                "Mons Boys", 8, 90, 60, 180, // name, max age, match gs rest times
+                {{21000, "21"}, {24000, "24"}, {27000, "27"}, {30000, "30"}, {34000, "34"},
+                 {38000, "38"}, {42000, "42"}, {0, NULL}}
             }, { NULL, 0, 0, 0, 0, {{0, NULL}}}
         }, { // women
             {
-                "Women", 1000, 300, 180, 600, // name, max age, match gs rest times 
+                "Women", 1000, 300, 180, 300, // name, max age, match gs rest times 
                 {{48000, "48"}, {52000, "52"}, {57000, "57"}, 
                  {63000, "63"}, {70000, "70"}, {78000, "78"}, {0, NULL}}
             }, {
-                "GirlsU19", 18, 240, 120, 600, // name, max age, match gs rest times 
+                "Junior Women", 19, 240, 120, 240, // name, max age, match gs rest times 
                 {{44000, "44"}, {48000, "48"}, {52000, "52"}, {57000, "57"}, 
                  {63000, "63"}, {70000, "70"}, {78000, "78"}, {0, NULL}}
             }, {
-                "GirlsU16", 15, 180, 120, 600, // name, max age, match gs rest times 
+                "Cadet Women", 16, 240, 120, 240, // name, max age, match gs rest times 
                 {{40000, "40"}, {44000, "44"}, {48000, "48"}, {52000, "52"}, {57000, "57"}, 
                  {63000, "63"}, {70000, "70"}, {0, NULL}}
             }, {
-                "GirlsU14", 13, 180, 120, 600, // name, max age, match gs rest times 
-                {{32000, "32"}, {36000, "36"}, {40000, "40"}, {44000, "44"}, 
+                "Senior Girls", 14, 180, 60, 180, // name, max age, match gs rest times 
+                {{36000, "36"}, {40000, "40"}, {44000, "44"}, 
                  {48000, "48"}, {52000, "52"}, {57000, "57"}, {63000, "63"}, {0, NULL}}
             },{
-                "GirlsU12", 11, 120, 60, 180, // name, max age, match gs rest times
-                {{28000, "28"}, {32000, "32"}, {36000, "36"}, {40000, "40"},
-                 {44000, "44"}, {48000, "48"}, {0, NULL}}
+                "Junior Girls", 11, 180, 60, 180, // name, max age, match gs rest times
+                {{29000, "29"}, {32000, "32"}, {36000, "36"}, {40000, "40"},
+                 {44000, "44"}, {48000, "48"}, {52000, "52"}, {0, NULL}}
+            },{
+                "Mons Girls", 8, 90, 60, 180, // name, max age, match gs rest times
+                {{20000, "20"}, {23000, "23"}, {26000, "26"}, {29000, "29"},
+                 {32000, "32"}, {36000, "36"}, {40000, "40"}, {0, NULL}}
             }, { NULL, 0, 0, 0, 0, {{0, NULL}}}
         }
     }
@@ -678,6 +686,11 @@ static void init_cat_data(void)
                 def.pin_time_yuko = 5;
                 def.pin_time_wazaari = 10;
                 def.pin_time_ippon = 15;
+            } else if (i == DRAW_AUSTRALIAN && def.age <= 8) {
+                def.pin_time_koka = 5;
+                def.pin_time_yuko = 10;
+                def.pin_time_wazaari = 15;
+                def.pin_time_ippon = 20;
             } else {
                 def.pin_time_koka = 10;
                 def.pin_time_yuko = 15;

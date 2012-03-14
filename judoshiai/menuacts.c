@@ -408,6 +408,12 @@ void toggle_auto_arrange(GtkWidget *menu_item, gpointer data)
     }
 }
 
+void toggle_use_weights(GtkWidget *menu_item, gpointer data)
+{
+    use_weights = GTK_CHECK_MENU_ITEM(menu_item)->active;
+    g_key_file_set_boolean(keyfile, "preferences", "useweights", use_weights);
+}
+
 void properties(GtkWidget *w, gpointer data)
 {
     GtkWidget *dialog;

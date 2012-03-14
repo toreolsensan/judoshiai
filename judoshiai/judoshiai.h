@@ -515,6 +515,7 @@ struct category_data {
     gint rest_time;
     gboolean defined;
     gboolean deleted;
+    gboolean tie;
     struct category_data *prev, *next;
 };
 
@@ -639,6 +640,7 @@ extern gboolean belt_colors;
 extern gboolean cleanup_import;
 extern gboolean create_statistics;
 extern gint webpwcrc32;
+extern gboolean use_weights;
 
 const char *db_name;
 

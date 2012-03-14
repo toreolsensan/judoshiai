@@ -47,6 +47,7 @@ extern void backup_shiai(GtkWidget *w, gpointer data);
 extern void db_validation(GtkWidget *w, gpointer data);
 extern void toggle_mirror(GtkWidget *menu_item, gpointer data);
 extern void toggle_auto_arrange(GtkWidget *menu_item, gpointer data);
+extern void toggle_use_weights(GtkWidget *menu_item, gpointer data);
 extern void select_use_logo(GtkWidget *w, gpointer data);
 extern void set_serial_dialog(GtkWidget *w, gpointer data);
 extern void serial_set_device(gchar *dev);
@@ -81,10 +82,10 @@ static GtkWidget *menubar,
     *preference_grade_visible, *preference_name_layout, *preference_name_layout_0, *preference_name_layout_1, *preference_name_layout_2, 
     *preference_layout, *preference_pool_style, *preference_belt_colors,
     *preference_sheet_font, *preference_svg, *preference_password, *judotimer_control[NUM_TATAMIS],
-    *preference_mirror, *preference_auto_arrange, *preference_club_text,
+    *preference_mirror, *preference_auto_arrange, *preference_use_weights, *preference_club_text,
     *preference_club_text_club, *preference_club_text_country, *preference_club_text_both,
     *preference_club_text_abbr, *preference_use_logo,
-    *preference_serial, *preference_medal_matches;
+    *preference_serial, *preference_medal_matches,
     *help_manual, *help_about, *flags[NUM_LANGS], *menu_flags[NUM_LANGS];
 
 static GSList *lang_group = NULL, *club_group = NULL, *draw_group = NULL;
@@ -373,6 +374,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     preference_password               = gtk_menu_item_new_with_label(_("Password"));
     preference_mirror                 = gtk_check_menu_item_new_with_label("");
     preference_auto_arrange           = gtk_check_menu_item_new_with_label("");
+    preference_use_weights            = gtk_check_menu_item_new_with_label("");
     preference_use_logo               = gtk_menu_item_new_with_label("");
 
     preference_serial                 = gtk_menu_item_new_with_label(_(""));
@@ -441,6 +443,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_auto_sheet_update);
     gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_mirror);
     gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_auto_arrange);
+    gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_use_weights);
     gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_password);
 
     gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_serial);
@@ -482,6 +485,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     g_signal_connect(G_OBJECT(preference_password),               "activate", G_CALLBACK(set_webpassword_dialog), 0);
     g_signal_connect(G_OBJECT(preference_mirror),                 "activate", G_CALLBACK(toggle_mirror), 0);
     g_signal_connect(G_OBJECT(preference_auto_arrange),           "activate", G_CALLBACK(toggle_auto_arrange), 0);
+    g_signal_connect(G_OBJECT(preference_use_weights),            "activate", G_CALLBACK(toggle_use_weights), 0);
     g_signal_connect(G_OBJECT(preference_use_logo),               "activate", G_CALLBACK(select_use_logo), 0);
     g_signal_connect(G_OBJECT(preference_serial),                 "activate", G_CALLBACK(set_serial_dialog), 0);
     g_signal_connect(G_OBJECT(preference_medal_matches),          "activate", G_CALLBACK(move_medal_matches), 0);
@@ -607,6 +611,11 @@ void set_preferences(void)
     error = NULL;
     if (g_key_file_get_boolean(keyfile, "preferences", "autoarrange", &error) || error) {
         gtk_menu_item_activate(GTK_MENU_ITEM(preference_auto_arrange));
+    }
+
+    error = NULL;
+    if (g_key_file_get_boolean(keyfile, "preferences", "useweights", &error) || error) {
+        gtk_menu_item_activate(GTK_MENU_ITEM(preference_use_weights));
     }
 
     error = NULL;
@@ -886,6 +895,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(preference_password              , _("Password"));
     change_menu_label(preference_mirror                , _("Mirror Tatami Order"));
     change_menu_label(preference_auto_arrange          , _("Automatic Match Delay"));
+    change_menu_label(preference_use_weights           , _("Use Weights to Solve 3-Way Tie"));
     change_menu_label(preference_use_logo              , _("Print Logo"));
 
     change_menu_label(preference_serial                , _("Scale Serial Interface..."));

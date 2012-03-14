@@ -311,10 +311,11 @@ static void comment_cell_data_func (GtkTreeViewColumn *col,
 
 #define SWAP(_a,_b) do { gint tmp = c[_a]; c[_a] = c[_b]; c[_b] = tmp; } while (0)
 
-#define SET_TIE3(_a) do {ju[c[_a]]->deleted |= POOL_TIE3;   \
-        ju[c[_a+1]]->deleted |= POOL_TIE3;                  \
-        ju[c[_a+2]]->deleted |= POOL_TIE3;                  \
+#define SET_TIE3(_a) do {ju[c[_a]]->deleted |= POOL_TIE3;            \
+        ju[c[_a+1]]->deleted |= POOL_TIE3;                           \
+        ju[c[_a+2]]->deleted |= POOL_TIE3;                           \
         tie[c[_a]] = tie[c[_a+1]] = tie[c[_a+2]] = TRUE;             \
+        tie[0] = TRUE;                                               \
     } while (0)
 
 #define WEIGHT(_a) (ju[c[_a]]->weight)
@@ -679,6 +680,10 @@ static void update_pool_matches(gint category, gint num)
     gint i, j;
     struct compsys sys = get_cat_system(category);
     gint num_pools = 1, num_knockouts = 0;
+    struct category_data *catdata = avl_get_category(category);
+
+    if (catdata)
+        catdata->tie = FALSE;
 
     /* Number of pools and matches after the pools are finished.  */
     switch (sys.system) {
@@ -699,8 +704,11 @@ static void update_pool_matches(gint category, gint num)
         goto out;
 
     if (num_pools == 1) {
-        if (pm.finished)
+        if (pm.finished) {
             get_pool_winner(num, pm.c, pm.yes, pm.wins, pm.pts, pm.mw, pm.j, pm.all_matched, pm.tie);
+            if (catdata)
+                catdata->tie = pm.tie[0];
+        }
         goto out;
     } 
 
@@ -743,6 +751,8 @@ static void update_pool_matches(gint category, gint num)
     for (i = 0; i < num_pools; i++) {
         get_pool_winner(pool_size[i], c[i], yes[i], pm.wins, pm.pts, pm.mw, pm.j, pm.all_matched, pm.tie);
         pool_done[i] = pool_finished(num, last_match, sys.system, yes[i], &pm);
+        if (catdata && pool_done[i])
+            catdata->tie = catdata->tie || pm.tie[0];
     }
 
     if (sys.system == SYSTEM_DPOOL2) {
@@ -764,7 +774,8 @@ static void update_pool_matches(gint category, gint num)
             memset(&ma, 0, sizeof(ma));
             ma.category = category;
             ma.number = last_match+i+1;
-            if (pool_done[0] == FALSE || pool_done[1] == FALSE) {
+            if (pool_done[0] == FALSE || pool_done[1] == FALSE || 
+                (catdata && catdata->tie && use_weights == FALSE)) {
                 ma.blue = 0;
                 ma.white = 0;
             } else {
@@ -807,12 +818,14 @@ static void update_pool_matches(gint category, gint num)
             ma.category = category;
             ma.number = last_match+i+1;
 
-            if (pool_done[i])
-                ma.blue = (pm.j[c[i][1]]->deleted & HANSOKUMAKE) ? GHOST : pm.j[c[i][1]]->index;
+            if (catdata == NULL || catdata->tie == FALSE || use_weights) {
+                if (pool_done[i])
+                    ma.blue = (pm.j[c[i][1]]->deleted & HANSOKUMAKE) ? GHOST : pm.j[c[i][1]]->index;
 
-            if (pool_done[num_pools-i-1])
-                ma.white = (pm.j[c[num_pools-i-1][2]]->deleted & HANSOKUMAKE) ? 
-                    GHOST : pm.j[c[num_pools-i-1][2]]->index;
+                if (pool_done[num_pools-i-1])
+                    ma.white = (pm.j[c[num_pools-i-1][2]]->deleted & HANSOKUMAKE) ? 
+                        GHOST : pm.j[c[num_pools-i-1][2]]->index;
+            }
 
             set_match(&ma);
             db_set_match(&ma);
@@ -2368,8 +2381,33 @@ void set_match_pages(GtkWidget *notebook)
 
     db_read_matches();
 
-    for (i = 0; i < NUM_TATAMIS; i++) {
-        update_matches(0, (struct compsys){0,0,0,0}, i+1);
+    for (i = 0; i <= NUM_TATAMIS; i++) {
+        struct category_data *catdata = category_queue[i].next;
+
+        while (catdata) {
+            struct compsys sys = db_get_system(catdata->index);
+
+            switch (sys.system) {
+            case SYSTEM_POOL:
+            case SYSTEM_DPOOL:
+            case SYSTEM_DPOOL2:
+            case SYSTEM_QPOOL:
+                update_pool_matches(catdata->index, sys.numcomp);
+                break;
+            case SYSTEM_FRENCH_8:
+            case SYSTEM_FRENCH_16:
+            case SYSTEM_FRENCH_32:
+            case SYSTEM_FRENCH_64:
+            case SYSTEM_FRENCH_128:
+                update_french_matches(catdata->index, sys);
+                break;
+            }
+            
+            catdata = catdata->next;
+        }
+
+        if (i)
+            update_matches(0, (struct compsys){0,0,0,0}, i);
         /******
                g_static_mutex_lock(&next_match_mutex);
                nm = db_next_match(0, i+1);

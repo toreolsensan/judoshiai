@@ -735,15 +735,22 @@ void last_name_cell_data_func (GtkTreeViewColumn *col,
     } else {
         gint status = 0;
         gboolean defined = TRUE;
+        gboolean tie = FALSE;
 		
         if (user_data == NULL) {
             //status = weight;
             struct category_data *catdata = avl_get_category(index);
             status = catdata ? catdata->match_status : 0;
             defined = catdata ? catdata->defined : TRUE;
+            tie = catdata ? catdata->tie : FALSE;
         }
 
-        if ((status & REAL_MATCH_EXISTS) && (status & MATCH_UNMATCHED) == 0)
+        if (tie && use_weights == FALSE)
+            g_object_set(renderer, 
+                         "cell-background", "Red", 
+                         "cell-background-set", TRUE, 
+                         NULL);
+        else if ((status & REAL_MATCH_EXISTS) && (status & MATCH_UNMATCHED) == 0)
             g_object_set(renderer, 
                          "cell-background", "Green", 
                          "cell-background-set", TRUE, 
