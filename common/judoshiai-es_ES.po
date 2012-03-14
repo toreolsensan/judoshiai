@@ -1134,7 +1134,7 @@ msgid "Best of 3"
 msgstr "Al mejor de 3"
 
 msgid "Quad Pool"
-msgstr "4 Ligas cruzadas"
+msgstr "ESP 4 Ligas cruzadas"
 
 msgid "IJF Dbl Rep"
 msgstr "IJF Rep. doble"
