@@ -561,6 +561,7 @@ struct paint_data {
     gboolean landscape;
     gboolean rotate;
     gint     row_height;
+    gchar   *filename;
 };
 
 extern avl_tree *categories_tree;

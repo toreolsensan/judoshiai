@@ -895,7 +895,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(preference_password              , _("Password"));
     change_menu_label(preference_mirror                , _("Mirror Tatami Order"));
     change_menu_label(preference_auto_arrange          , _("Automatic Match Delay"));
-    change_menu_label(preference_use_weights           , _("Use Weights to Solve 3-Way Tie"));
+    change_menu_label(preference_use_weights           , _("Resolve 3-Way Ties by Weights"));
     change_menu_label(preference_use_logo              , _("Print Logo"));
 
     change_menu_label(preference_serial                , _("Scale Serial Interface..."));

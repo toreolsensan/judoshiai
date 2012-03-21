@@ -35,19 +35,32 @@
 #define MATCHED(_a) (m[_a].blue_points || m[_a].white_points)
 
 static gboolean debug = TRUE;
-static FILE *dfile = NULL;
 
-#define WRITE(_a)                                                       \
-    do { if (dfile) fwrite(_a, 1, strlen(_a), dfile);                   \
-        if (!rsvg_handle_write(handle, (guchar *)_a, strlen(_a), &err)) { \
+#define WRITE2(_s, _l)                                                     \
+    do { if (dfile) fwrite(_s, 1, _l, dfile);                            \
+        if (!rsvg_handle_write(handle, (guchar *)_s, _l, &err)) {        \
             g_print("\nERROR %s: %s %d\n",                              \
                     err->message, __FUNCTION__, __LINE__); err = NULL; return TRUE; } } while (0)
 
 #define WRITE1(_s, _l)                                                  \
-    do { if (dfile) fwrite(_s, 1, _l, dfile);                           \
-        if (!rsvg_handle_write(handle, (guchar *)_s, _l, &err)) {       \
+    do { gint _i; for (_i = 0; _i < _l; _i++) {                         \
+        if (_s[_i] == '&')                                              \
+            WRITE2("&amp;", 5);                                         \
+        else if (_s[_i] == '<')                                         \
+            WRITE2("&lt;", 4);                                          \
+        else if (_s[_i] == '>')                                         \
+            WRITE2("&gt;", 4);                                          \
+        else                                                            \
+            WRITE2(&_s[_i], 1);                                         \
+        }} while (0)
+
+#define WRITE(_a) WRITE1(_a, strlen(_a))
+#if 0
+    do { if (dfile) fwrite(_a, 1, strlen(_a), dfile);                   \
+        if (!rsvg_handle_write(handle, (guchar *)_a, strlen(_a), &err)) { \
             g_print("\nERROR %s: %s %d\n",                              \
                     err->message, __FUNCTION__, __LINE__); err = NULL; return TRUE; } } while (0)
+#endif
 
 #define IS_LABEL_CHAR(_x) ((_x >= 'a' && _x <= 'z') || _x == 'C' || _x == 'M' || _x == '#' || _x == '=')
 #define IS_VALUE_CHAR(_x) (_x >= '0' && _x <= '9')
@@ -68,7 +81,7 @@ static gint cnt = 0;
 static struct svg_cache {
     gint key;
     gchar *data;
-    gint datalen;
+    guint datalen;
     gint width;
     gint height;
 } svg_data[NUM_SVG];
@@ -116,7 +129,7 @@ static struct svg_cache *get_cache(gint key)
 
 gboolean get_svg_page_size(gint index, gint pagenum, gint *width, gint *height)
 {
-    gint key, i, pages = 0;
+    gint key;
     struct compsys systm = get_cat_system(index);
 
     key = make_key(systm, pagenum);
@@ -152,13 +165,13 @@ gint get_num_svg_pages(struct compsys systm)
     return pages;
 }
 
-gint write_judoka(RsvgHandle *handle, gint start, struct judoka *j)
+gint write_judoka(RsvgHandle *handle, gint start, struct judoka *j, FILE *dfile)
 {
     gint i;
     GError *err = NULL;
     gchar buf[64];
 
-    WRITE("<tspan>");
+    WRITE2("<tspan>", 7);
 
     for (i = start; i < cnt; i++) {
         if (attr[i].code[0] == '\'') {
@@ -180,13 +193,13 @@ gint write_judoka(RsvgHandle *handle, gint start, struct judoka *j)
         } else if (IS_SAME(attr[i].code, "hm")) {
             if (j->deleted & HANSOKUMAKE) {
                 if (attr[i].value == 1)
-                    WRITE("</tspan><tspan style='text-decoration:strikethrough'>");
+                    WRITE2("</tspan><tspan style='text-decoration:strikethrough'>", 53);
                 else if (attr[i].value == 2)
                     goto out; // stop writing
                 else 
-                    WRITE("</tspan><tspan>");
+                    WRITE2("</tspan><tspan>", 15);
             } else if (j->deleted & POOL_TIE3) {
-                WRITE("</tspan><tspan style='fill:red'>");
+                WRITE2("</tspan><tspan style='fill:red'>", 32);
             }
         } else if (IS_SAME(attr[i].code, "s")) {
             WRITE(" ");
@@ -194,7 +207,7 @@ gint write_judoka(RsvgHandle *handle, gint start, struct judoka *j)
     }
 
  out:
-    WRITE("</tspan>");
+    WRITE2("</tspan>", 8);
 
     return 0;
 }
@@ -214,6 +227,7 @@ gint paint_svg(struct paint_data *pd)
     GError *err = NULL;
     gint i;
     
+    //gint pos[4];
     gboolean yes[4][21];
     gboolean pool_done[4];
     gint c[4][21];
@@ -222,36 +236,21 @@ gint paint_svg(struct paint_data *pd)
     gint size = num_judokas/4;
     gint rem = num_judokas - size*4;
     gint start = 0;
-    gint pos[4];
-
     gint num_pool_a, num_pool_b;
     gboolean yes_a[21], yes_b[21];
     gint c_a[21], c_b[21];
-    gint key, svgwidth, svgheight;
-
-    gchar svgfilename[64];
-
-#if 0
-    if (systm.system == SYSTEM_POOL || systm.system == SYSTEM_DPOOL) {
-        key = (systm.system<<24)|(num_judokas<<8)|pagenum;
-        //sprintf(svgfilename, "%d-0-%d-%d.svg", systm.system, num_judokas, pagenum);
-    } else {
-        key = (systm.system<<24)|(systm.table<<16)|pagenum;
-        //sprintf(svgfilename, "%d-%d-0-%d.svg", systm.system, systm.table, pagenum);
-    }
-#endif
-
+    gint key, svgwidth;
+    FILE *dfile = NULL;
     gchar *svgdata = NULL;
-    gsize svgdatalen = 0;
 
     key = make_key(systm, pagenum);
 
     for (i = 0; i < num_svg; i++) {
         if (svg_data[i].key == key) {
             svgdata = svg_data[i].data;
-            svgdatalen = svg_data[i].datalen;
+            //svgdatalen = svg_data[i].datalen;
             svgwidth = svg_data[i].width;
-            svgheight = svg_data[i].height;
+            //svgheight = svg_data[i].height;
             break;
         } 
     }
@@ -303,7 +302,7 @@ gint paint_svg(struct paint_data *pd)
     case SYSTEM_QPOOL:
         for (i = 0; i < 4; i++) {
             pool_size[i] = size;
-            pos[i] = 1;
+            //pos[i] = 1;
         }
 
         for (i = 0; i < rem; i++)
@@ -350,7 +349,12 @@ gint paint_svg(struct paint_data *pd)
         break;
     }
 
-    if (debug)
+    if (pd->filename) {
+        dfile = fopen(pd->filename, "w");
+        if (!dfile)
+            perror("svgout");
+        g_print("filename='%s', dfile =%p\n", pd->filename, dfile);
+    } else if (debug)
         dfile = fopen("debug.svg", "w");
 
     guchar *p = (guchar *)svgdata;
@@ -426,7 +430,7 @@ gint paint_svg(struct paint_data *pd)
                     j = get_data(ix);
 
                     if (j) {
-                            write_judoka(handle, 2, j);
+                        write_judoka(handle, 2, j, dfile);
                             free_judoka(j);
                     }
                 } else if (attr[1].code[0] == 'p') {
@@ -462,7 +466,7 @@ gint paint_svg(struct paint_data *pd)
                 } else if (IS_SAME(attr[1].code, "winner")) {
                     struct judoka *j = get_data(WINNER(fight));
                     if (j) {
-                        write_judoka(handle, 2, j);
+                        write_judoka(handle, 2, j, dfile);
                         free_judoka(j);
                     }
                 }
@@ -550,7 +554,7 @@ gint paint_svg(struct paint_data *pd)
                         }
                     }
                 } else { // strings
-                    write_judoka(handle, 1, j);
+                    write_judoka(handle, 1, j, dfile);
                 }
             } else if (attr[0].code[0] == 'r') { // results
                 gint res = attr[0].value;
@@ -558,11 +562,11 @@ gint paint_svg(struct paint_data *pd)
                 if (systm.system == SYSTEM_POOL) {
                     struct judoka *j = pm.j[pm.c[res]];
                     if (j)
-                        write_judoka(handle, 1, j);
+                        write_judoka(handle, 1, j, dfile);
                 } else if (systm.system == SYSTEM_DPOOL2) {
                     struct judoka *j = pm2.j[pm2.c[res]];
                     if (j)
-                        write_judoka(handle, 1, j);
+                        write_judoka(handle, 1, j, dfile);
                 } else if (systm.system == SYSTEM_DPOOL || systm.system == SYSTEM_QPOOL) {
                     gint ix = 0;
                     gint mnum = num_matches(systm.system, num_judokas);
@@ -575,7 +579,7 @@ gint paint_svg(struct paint_data *pd)
                     }
                     struct judoka *j = get_data(ix);
                     if (j) {
-                        write_judoka(handle, 1, j);
+                        write_judoka(handle, 1, j, dfile);
                         free_judoka(j);
                     }
                 } else {
@@ -642,7 +646,7 @@ gint paint_svg(struct paint_data *pd)
 
                     struct judoka *j = get_data(ix);
                     if (j) {
-                        write_judoka(handle, 1, j);
+                        write_judoka(handle, 1, j, dfile);
                         free_judoka(j);
                     }
                 }
@@ -680,7 +684,7 @@ gint paint_svg(struct paint_data *pd)
                 WRITE1(">", 1);
         } else {
             //g_print("%c", *p);
-            WRITE1(p, 1);
+            WRITE2(p, 1);
             p++;
         }
     }
@@ -716,17 +720,13 @@ gint paint_svg(struct paint_data *pd)
 
     gdouble  paper_width_saved;
     gdouble  paper_height_saved;
-    gdouble  total_width_saved;
-    gboolean landscape_saved;
 
     if (pd->rotate) {
         paper_width_saved = pd->paper_width;
         paper_height_saved = pd->paper_height;
-        total_width_saved = pd->total_width;
         pd->paper_width = paper_height_saved;
         pd->paper_height = paper_width_saved;
         pd->total_width = pd->paper_width;
-        landscape_saved = pd->landscape;
         pd->landscape = TRUE;
         cairo_translate(pd->c, paper_width_saved*0.5, paper_height_saved*0.5);
         cairo_rotate(pd->c, -0.5*M_PI);
@@ -747,7 +747,6 @@ void select_svg_dir(GtkWidget *menu_item, gpointer data)
 {
     GtkWidget *dialog, *do_svg;
     gboolean ok;
-    gint i;
 
     dialog = gtk_file_chooser_dialog_new(_("Choose a directory"),
                                          NULL,
@@ -811,7 +810,7 @@ void read_svg_files(gboolean ok)
         while (fname) {
             gchar *fullname = g_build_filename(svg_directory, fname, NULL);
             if (strstr(fname, ".svg") && num_svg < NUM_SVG) {
-                gint a, b, c, d;
+                gint a, b, c;
                 gint n = sscanf(fname, "%d-%d-%d.svg", &a, &b, &c);
                 if (n == 3) {
                     if (!g_file_get_contents(fullname, &svg_data[num_svg].data, &svg_data[num_svg].datalen, NULL))
@@ -820,7 +819,7 @@ void read_svg_files(gboolean ok)
                         struct compsys systm = wish_to_system(a, b);
                         gint key = make_key(systm, c-1);
                         svg_data[num_svg].key = key;
-                        RsvgHandle *h = rsvg_handle_new_from_data(svg_data[num_svg].data, 
+                        RsvgHandle *h = rsvg_handle_new_from_data((guchar *)svg_data[num_svg].data, 
                                                                   svg_data[num_svg].datalen, NULL);
                         RsvgDimensionData dim;
                         rsvg_handle_get_dimensions(h, &dim);
