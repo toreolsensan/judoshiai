@@ -94,6 +94,12 @@ static void display_competitors(GtkWidget *w,
     display_comp_window(saved_cat, saved_last1, saved_last2);
 }
 
+static void display_video( GtkWidget *w,
+                           gpointer   data )
+{
+    clock_key(GDK_v, 0);
+}
+
 static GtkWidget *clock_min, *clock_sec, *osaekomi;
 
 static void set_timers(GtkWidget *widget,
@@ -182,13 +188,13 @@ static void change_menu_label(GtkWidget *item, const gchar *new_text)
 #define NUM_NAME_LAYOUTS 11
 
 static GtkWidget *menubar, *match, *preferences, *help, *matchmenu, *preferencesmenu, *helpmenu;
-static GtkWidget *separator1, *separator2, *quit, *viewlog, *showcomp_act;
+static GtkWidget *separator1, *separator2, *quit, *viewlog, *showcomp_act, *show_video;
 static GtkWidget *match0, *match1, *match2, *match3, *match4, *match5, *gs;
 static GtkWidget *blue_wins, *white_wins, *red_background, *full_screen, *rules_no_koka;
 static GtkWidget *rules_leave_points, *rules_stop_ippon, *whitefirst, *showcomp, *confirm_match;
 static GtkWidget *tatami_sel, *tatami_sel_none, *tatami_sel_1,  *tatami_sel_2,  *tatami_sel_3,  *tatami_sel_4;
 static GtkWidget *tatami_sel_5, *tatami_sel_6, *tatami_sel_7, *tatami_sel_8, *tatami_sel_9, *tatami_sel_10;
-static GtkWidget *node_ip, *my_ip, *manual, *about, *quick_guide;
+static GtkWidget *node_ip, *my_ip, *video_ip, *manual, *about, *quick_guide;
 static GtkWidget *light, *menu_light, *menu_switched, *timeset;
 static GtkWidget *inc_time, *dec_time, *inc_osaekomi, *dec_osaekomi, *clock_only, *set_time, *layout_sel;
 static GtkWidget *layout_sel_1, *layout_sel_2, *layout_sel_3, *layout_sel_4, *layout_sel_5, *layout_sel_6, *layout_sel_7;
@@ -359,6 +365,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     separator2 = gtk_separator_menu_item_new();
     viewlog = gtk_menu_item_new_with_label(_("View Log"));
     showcomp_act = gtk_menu_item_new_with_label(_("Show Competitors"));
+    show_video = gtk_menu_item_new_with_label("");
     quit = gtk_menu_item_new_with_label(_("Quit"));
 
     gtk_menu_shell_append (GTK_MENU_SHELL (matchmenu), match0);
@@ -378,6 +385,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_menu_shell_append (GTK_MENU_SHELL (matchmenu), separator2);
     gtk_menu_shell_append (GTK_MENU_SHELL (matchmenu), viewlog);
     gtk_menu_shell_append (GTK_MENU_SHELL (matchmenu), showcomp_act);
+    gtk_menu_shell_append (GTK_MENU_SHELL (matchmenu), show_video);
     gtk_menu_shell_append (GTK_MENU_SHELL (matchmenu), gtk_separator_menu_item_new());
     gtk_menu_shell_append (GTK_MENU_SHELL (matchmenu), quit);
 
@@ -397,6 +405,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
 
     g_signal_connect(G_OBJECT(viewlog),     "activate", G_CALLBACK(start_log_view), NULL);
     g_signal_connect(G_OBJECT(showcomp_act),"activate", G_CALLBACK(display_competitors), NULL);
+    g_signal_connect(G_OBJECT(show_video),  "activate", G_CALLBACK(display_video), NULL);
     g_signal_connect(G_OBJECT(quit),        "activate", G_CALLBACK(destroy/*gtk_main_quit*/), NULL);
 
     gtk_widget_add_accelerator(quit, "activate", group, GDK_Q, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
@@ -407,6 +416,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_widget_add_accelerator(match4, "activate", group, GDK_4, 0, GTK_ACCEL_VISIBLE);
     gtk_widget_add_accelerator(match5, "activate", group, GDK_5, 0, GTK_ACCEL_VISIBLE);
     gtk_widget_add_accelerator(gs,     "activate", group, GDK_9, 0, GTK_ACCEL_VISIBLE);
+    gtk_widget_add_accelerator(show_video, "activate", group, GDK_V, 0, GTK_ACCEL_VISIBLE);
 
     /* Create the Preferences menu content. */
     red_background  = gtk_check_menu_item_new_with_label("Red background");
@@ -443,6 +453,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     tatami_sel_10   = gtk_radio_menu_item_new_with_label_from_widget((GtkRadioMenuItem *)tatami_sel_none, "");
     node_ip         = gtk_menu_item_new_with_label("Communication node");
     my_ip           = gtk_menu_item_new_with_label("Own IP addresses");
+    video_ip        = gtk_menu_item_new_with_label("");
     inc_time        = gtk_menu_item_new_with_label("");
     dec_time        = gtk_menu_item_new_with_label("");
     inc_osaekomi    = gtk_menu_item_new_with_label("");
@@ -508,6 +519,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), gtk_separator_menu_item_new());
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), node_ip);
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), my_ip);
+    gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), video_ip);
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), gtk_separator_menu_item_new());
 
     timeset = gtk_menu_item_new_with_label("");
@@ -562,6 +574,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     g_signal_connect(G_OBJECT(tatami_sel_10),    "activate", G_CALLBACK(tatami_selection),    (gpointer)10);
     g_signal_connect(G_OBJECT(node_ip),         "activate", G_CALLBACK(ask_node_ip_address),  (gpointer)0);
     g_signal_connect(G_OBJECT(my_ip),           "activate", G_CALLBACK(show_my_ip_addresses), (gpointer)0);
+    g_signal_connect(G_OBJECT(video_ip),        "activate", G_CALLBACK(ask_video_ip_address), (gpointer)0);
     g_signal_connect(G_OBJECT(inc_time),        "activate", G_CALLBACK(manipulate_time),      (gpointer)0);
     g_signal_connect(G_OBJECT(dec_time),        "activate", G_CALLBACK(manipulate_time),      (gpointer)1);
     g_signal_connect(G_OBJECT(inc_osaekomi),    "activate", G_CALLBACK(manipulate_time),      (gpointer)2);
@@ -600,6 +613,9 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
 
 void set_preferences(void)
 {
+    extern gulong video_http_addr;
+    extern guint  video_http_port;
+    extern gchar  video_http_path[128];
     GError *error = NULL;
     gchar  *str;
     gint    i;
@@ -712,6 +728,31 @@ void set_preferences(void)
         set_font(str);
         g_free(str);
     }
+
+    error = NULL;
+    str = g_key_file_get_string(keyfile, "preferences", "videoipaddress", &error);
+    if (!error) {
+        gulong a,b,c,d;
+        sscanf(str, "%ld.%ld.%ld.%ld", &a, &b, &c, &d);
+        video_http_addr = host2net((a << 24) | (b << 16) | (c << 8) | d);
+        g_free(str);
+    } else
+        video_http_addr = host2net((127 << 24) | (0 << 16) | (0 << 8) | 1);
+
+    error = NULL;
+    i = g_key_file_get_integer(keyfile, "preferences", "videoipport", &error);
+    if (!error)
+        video_http_port = i;
+    else
+        video_http_port = 0;
+
+    error = NULL;
+    str = g_key_file_get_string(keyfile, "preferences", "videoippath", &error);
+    if (!error) {
+        snprintf(video_http_path, sizeof(video_http_path), "%s", str);
+        g_free(str);
+    } else
+        snprintf(video_http_path, sizeof(video_http_path), "");
 }
 
 gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param)
@@ -761,6 +802,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
 
     change_menu_label(viewlog,      _("View Log"));
     change_menu_label(showcomp_act, _("Show Competitors"));
+    change_menu_label(show_video,   _("Show Video"));
     change_menu_label(quit,         _("Quit"));
 
     change_menu_label(red_background, _("Red background"));
@@ -810,6 +852,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
 
     change_menu_label(node_ip,      _("Communication node"));
     change_menu_label(my_ip,        _("Own IP addresses"));
+    change_menu_label(video_ip,     _("Video server"));
 
     change_menu_label(timeset,      _("Set time"));
     change_menu_label(inc_time,     _("Increment time"));

@@ -1232,6 +1232,9 @@ static gboolean key_press(GtkWidget *widget, GdkEventKey *event, gpointer userda
         }
     }
 
+    if (event->keyval == GDK_v) // V is a menu accelerator
+        return FALSE;
+
     if (event->keyval == GDK_D && (event->state & 5) == 5)
         demo = 1;
     else if (event->keyval == GDK_F && (event->state & 5) == 5)
@@ -1689,6 +1692,8 @@ int main( int   argc,
     gth = g_thread_create((GThreadFunc)client_thread,
                           (gpointer)&run_flag, FALSE, NULL);
     gth = g_thread_create((GThreadFunc)master_thread,
+                          (gpointer)&run_flag, FALSE, NULL);
+    gth = g_thread_create((GThreadFunc)video_thread,
                           (gpointer)&run_flag, FALSE, NULL);
 
     gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER_ALWAYS);

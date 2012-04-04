@@ -385,6 +385,7 @@ static void toggle(void)
             st[0].score = 0;
         }
         update_display();
+        video_save();
     } else if (!st[0].running) {
         if (total > 600) // don't let clock run if dashes in display '-:--'
             return;
@@ -1180,6 +1181,11 @@ void clock_key(guint key, guint event_state)
 
     lastkey = key;
     lasttime = now;
+
+    if (key == GDK_v) {
+        create_video_window();
+        return;
+    }
 
     if (key == GDK_t) {
         display_comp_window(saved_cat, saved_last1, saved_last2);

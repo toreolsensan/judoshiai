@@ -3,11 +3,12 @@ include ../common/Makefile.inc
 all: $(OBJDIR)/judotimer$(SUFF)
 
 OBJS += $(OBJDIR)/main.o $(OBJDIR)/menus.o $(OBJDIR)/stopwatch.o $(OBJDIR)/comm.o \
-	$(OBJDIR)/ip.o $(OBJDIR)/protocol.o $(OBJDIR)/show-ad.o $(OBJDIR)/sound.o
+	$(OBJDIR)/ip.o $(OBJDIR)/protocol.o $(OBJDIR)/show-ad.o $(OBJDIR)/sound.o \
+	 $(OBJDIR)/video.o
 
 CFLAGS += -DAPPLICATION="\"judotimer\""
 CFLAGS += -I$(SOUNDDIR)/inc
-LIBS += -L$(SOUNDDIR)/lib -lfmodex
+LIBS += -L$(SOUNDDIR)/lib -lfmodex -lvlc
 
 ### Windows executable ###
 ifeq ($(TGT),WIN32)

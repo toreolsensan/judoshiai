@@ -147,6 +147,7 @@ extern gboolean set_osaekomi_winner(gint who);
 extern void display_big(gchar *txt, gint tmo_sec);
 extern void ask_node_ip_address( GtkWidget *w, gpointer data);
 extern void show_my_ip_addresses( GtkWidget *w, gpointer data);
+extern void ask_video_ip_address( GtkWidget *w, gpointer data);
 extern void open_comm_socket(void);
 extern void change_language_1(void);
 extern gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param);
@@ -173,6 +174,7 @@ extern void toggle_advertise(GtkWidget *menu_item, gpointer data);
 extern void display_ad_window(void);
 extern void send_label_msg(struct message *msg);
 extern gpointer master_thread(gpointer args);
+extern gpointer video_thread(gpointer args);
 extern void update_label(struct msg_update_label *msg);
 extern gboolean send_label(gint bigdsp);
 extern void open_sound(void);
@@ -192,6 +194,7 @@ extern void close_ask_window(void);
 extern void set_competitor_window_rest_time(gint min, gint tsec, gint sec, gboolean rest, gint flags);
 extern void set_font(gchar *font);
 extern void font_dialog(GtkWidget *w, gpointer data);
-
+extern void create_video_window(void);
+extern void video_save(void);
 
 #endif
