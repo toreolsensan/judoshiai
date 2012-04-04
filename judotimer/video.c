@@ -66,8 +66,6 @@
 #endif
 
 #include <gtk/gtk.h>
-#include <gdk/gdkx.h>
-#include <vlc/vlc.h>
 
 #include "judotimer.h"
 

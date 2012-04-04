@@ -802,7 +802,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
 
     change_menu_label(viewlog,      _("View Log"));
     change_menu_label(showcomp_act, _("Show Competitors"));
-    change_menu_label(show_video,   _("Show Video"));
+    change_menu_label(show_video,   _("Replay Video"));
     change_menu_label(quit,         _("Quit"));
 
     change_menu_label(red_background, _("Red background"));

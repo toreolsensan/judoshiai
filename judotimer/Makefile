@@ -8,7 +8,7 @@ OBJS += $(OBJDIR)/main.o $(OBJDIR)/menus.o $(OBJDIR)/stopwatch.o $(OBJDIR)/comm.
 
 CFLAGS += -DAPPLICATION="\"judotimer\""
 CFLAGS += -I$(SOUNDDIR)/inc
-LIBS += -L$(SOUNDDIR)/lib -lfmodex -lvlc
+LIBS += -L$(SOUNDDIR)/lib -lfmodex
 
 ### Windows executable ###
 ifeq ($(TGT),WIN32)
