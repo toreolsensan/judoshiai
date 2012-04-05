@@ -613,9 +613,6 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
 
 void set_preferences(void)
 {
-    extern gulong video_http_addr;
-    extern guint  video_http_port;
-    extern gchar  video_http_path[128];
     GError *error = NULL;
     gchar  *str;
     gint    i;
@@ -732,12 +729,10 @@ void set_preferences(void)
     error = NULL;
     str = g_key_file_get_string(keyfile, "preferences", "videoipaddress", &error);
     if (!error) {
-        gulong a,b,c,d;
-        sscanf(str, "%ld.%ld.%ld.%ld", &a, &b, &c, &d);
-        video_http_addr = host2net((a << 24) | (b << 16) | (c << 8) | d);
+        snprintf(video_http_host, sizeof(video_http_host), "%s", str);
         g_free(str);
     } else
-        video_http_addr = host2net((127 << 24) | (0 << 16) | (0 << 8) | 1);
+        video_http_host[0] = 0;
 
     error = NULL;
     i = g_key_file_get_integer(keyfile, "preferences", "videoipport", &error);
@@ -752,7 +747,40 @@ void set_preferences(void)
         snprintf(video_http_path, sizeof(video_http_path), "%s", str);
         g_free(str);
     } else
-        snprintf(video_http_path, sizeof(video_http_path), "");
+        video_http_path[0] = 0;
+
+    error = NULL;
+    str = g_key_file_get_string(keyfile, "preferences", "videoproxyaddress", &error);
+    if (!error) {
+        snprintf(video_proxy_host, sizeof(video_proxy_host), "%s", str);
+        g_free(str);
+    } else
+        video_proxy_host[0] = 0;
+
+    error = NULL;
+    i = g_key_file_get_integer(keyfile, "preferences", "videoproxyport", &error);
+    if (!error)
+        video_proxy_port = i;
+    else
+        video_proxy_port = 0;
+
+    error = NULL;
+    str = g_key_file_get_string(keyfile, "preferences", "videouser", &error);
+    if (!error) {
+        snprintf(video_http_user, sizeof(video_http_user), "%s", str);
+        g_free(str);
+    } else
+        video_http_user[0] = 0;
+
+    error = NULL;
+    str = g_key_file_get_string(keyfile, "preferences", "videopassword", &error);
+    if (!error) {
+        snprintf(video_http_password, sizeof(video_http_password), "%s", str);
+        g_free(str);
+    } else
+        video_http_password[0] = 0;
+
+    video_update = TRUE;
 }
 
 gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param)

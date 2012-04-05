@@ -101,6 +101,15 @@ extern gboolean show_competitor_names;
 extern gchar saved_first1[32], saved_first2[32], saved_last1[32], saved_last2[32], saved_cat[16];
 extern gboolean fullscreen;
 
+extern gboolean video_update;
+extern gchar  video_http_host[128];
+extern guint  video_http_port;
+extern gchar  video_http_path[128];
+extern gchar  video_http_user[32];
+extern gchar  video_http_password[32];
+extern gchar  video_proxy_host[128];
+extern guint  video_proxy_port;
+
 extern gboolean this_is_shiai(void);
 extern void copy_packet(struct message *msg); // not used
 
@@ -196,5 +205,6 @@ extern void set_font(gchar *font);
 extern void font_dialog(GtkWidget *w, gpointer data);
 extern void create_video_window(void);
 extern void video_save(void);
+extern glong hostname_to_addr(gchar *str);
 
 #endif

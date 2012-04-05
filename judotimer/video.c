@@ -82,6 +82,8 @@ static gchar *find_frame(gchar c, gint *len, struct find_frame_internals *vars);
 #define VIDEO_BUF_LEN (1<<20)
 #define NUM_VIDEO_BUFFERS 2
 
+#define USE_PROXY (video_proxy_host[0] && video_proxy_port)
+
 enum {
     PREVIOUS,
     REWIND,
@@ -100,9 +102,15 @@ static struct video_buffer {
 } video_buffers[NUM_VIDEO_BUFFERS];
 static gint current = 0;
 
-gulong video_http_addr;
-guint  video_http_port;
-gchar  video_http_path[128];
+gboolean video_update = FALSE;
+gchar  video_http_host[128] = {0};
+guint  video_http_port = 0;
+gchar  video_http_path[128] = {0};
+gchar  video_http_user[32] = {0};
+gchar  video_http_password[32] = {0};
+gchar  video_proxy_host[128] = {0};
+guint  video_proxy_port = 0;
+static glong  video_http_addr = 0;
 static gboolean connection_ok = FALSE;
 static gboolean record = TRUE;
 
@@ -119,6 +127,39 @@ static gchar *frame_now;
 static gint length_now;
 static gboolean view = FALSE;
 
+glong hostname_to_addr(gchar *str)
+{
+#if 1
+    struct hostent *hp = gethostbyname(str);
+    if (!hp)
+        return 0;
+
+    return *(glong *)(hp->h_addr_list[0]);
+
+#else // cannot use, doesn't cross compile for windows
+    struct addrinfo hints;
+    struct addrinfo *list = NULL;
+    struct sockaddr_in *addr = NULL;
+    int retVal;
+
+    memset(&hints, 0, sizeof(hints));
+    hints.ai_family = AF_INET;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_protocol = IPPROTO_TCP;    
+    if ((retVal = getaddrinfo(str, NULL, &hints, &list)) != 0) {
+        g_print("getaddrinfo() failed for %s.\n", str);    
+    } else {
+        addr = (struct sockaddr_in *)list->ai_addr;
+        freeaddrinfo(list);
+    }
+
+    if (addr)
+        return addr->sin_addr.s_addr;
+
+    return 0;
+#endif
+}
+
 gpointer video_thread(gpointer args)
 {
     SOCKET comm_fd;
@@ -126,8 +167,7 @@ gpointer video_thread(gpointer args)
     struct sockaddr_in node;
     static guchar buf[1000];
     fd_set read_fd, fds;
-    gulong http_addr1;
-    guint  http_port1;
+    guint  http_port;
     struct video_buffer *vb;
 
     for (n = 0; n < NUM_VIDEO_BUFFERS; n++)
@@ -135,8 +175,20 @@ gpointer video_thread(gpointer args)
 
     for ( ; *((gboolean *)args) ; )   /* exit loop when flag is cleared */
     {
-        while (video_http_addr == 0 || video_http_port == 0)
+        video_update = FALSE;
+
+        do {
             g_usleep(1000000);
+            if (video_http_host[0] && video_http_port) {
+                if (USE_PROXY) {
+                    video_http_addr = hostname_to_addr(video_proxy_host);
+                    http_port = video_proxy_port;
+                } else {
+                    video_http_addr = hostname_to_addr(video_http_host);
+                    http_port = video_http_port;
+                }
+            }
+        } while (video_http_addr == 0 || http_port == 0 || video_http_port == 0);
 
         if ((comm_fd = socket(AF_INET, SOCK_STREAM, 0)) == INVALID_SOCKET) {
             perror("video socket");
@@ -145,12 +197,9 @@ gpointer video_thread(gpointer args)
             return NULL;
         }
 
-        http_addr1 = video_http_addr;
-        http_port1 = video_http_port;
-
         memset(&node, 0, sizeof(node));
         node.sin_family      = AF_INET;
-        node.sin_port        = htons(video_http_port);
+        node.sin_port        = htons(http_port);
         node.sin_addr.s_addr = video_http_addr;
 
         if (connect(comm_fd, (struct sockaddr *)&node, sizeof(node))) {
@@ -168,10 +217,26 @@ gpointer video_thread(gpointer args)
         g_print("Video connection OK.\n");
 
         /* send http request */
-        n = snprintf((gchar *)buf, sizeof(buf), 
-                     "GET /%s HTTP/1.0\r\n"
-                     "User-Agent: JudoTimer\r\n"
-                     "Connection: Close\r\n\r\n", video_http_path);
+        if (USE_PROXY)
+            n = snprintf((gchar *)buf, sizeof(buf), 
+                         "GET http://%s:%d/%s HTTP/1.0\r\n"
+                         "User-Agent: JudoTimer\r\n", 
+                         video_http_host, video_http_port, video_http_path);
+        else
+            n = snprintf((gchar *)buf, sizeof(buf), 
+                         "GET /%s HTTP/1.0\r\n"
+                         "User-Agent: JudoTimer\r\n", video_http_path);
+
+        if (video_http_user[0]) {
+            gchar auth[64];
+            snprintf(auth, sizeof(auth), "%s:%s", video_http_user, video_http_password);
+            gchar *base64 = g_base64_encode((guchar *)auth, strlen(auth));
+            n += snprintf((gchar *)buf + n, sizeof(buf) - n, "Authorization: Basic %s\r\n", base64);
+            g_free(base64);
+        }
+
+        n += snprintf((gchar *)buf + n, sizeof(buf) - n, "\r\n");
+
         send(comm_fd, buf, n, 0);
 
         connection_ok = TRUE;
@@ -179,7 +244,7 @@ gpointer video_thread(gpointer args)
         FD_ZERO(&read_fd);
         FD_SET(comm_fd, &read_fd);
 
-        while (video_http_addr == http_addr1 && video_http_port == http_port1) {
+        while (video_update == FALSE) {
             struct timeval timeout;
             gint r;
 			
@@ -201,6 +266,13 @@ gpointer video_thread(gpointer args)
                 if (record) {
                     vb = &video_buffers[current];
                     if ((n = recv(comm_fd, vb->buffer + vb->offset, VIDEO_BUF_LEN - vb->offset, 0)) > 0) {
+#if 0
+                        FILE *f = fopen("get.log", "a");
+                        if (f) {
+                            fwrite(vb->buffer + vb->offset, 1, n, f);
+                            fclose(f);
+                        }
+#endif
                         if (view) {
                             // find frames in real time
                             gint i;
@@ -280,26 +352,39 @@ extern GKeyFile *keyfile;
 
 struct url {
     GtkWidget *address, *port, *path, *start;
+    GtkWidget *user, *password, *proxy_address, *proxy_port;
 };
 
 static void video_ip_address_callback(GtkWidget *widget, 
                                      GdkEvent *event,
                                      GtkWidget *data)
 {
-    gulong a,b,c,d;
     struct url *uri = (struct url *)data;
 
     if ((gulong)event == GTK_RESPONSE_OK) {
-        sscanf(gtk_entry_get_text(GTK_ENTRY(uri->address)), "%ld.%ld.%ld.%ld", &a, &b, &c, &d);
-        video_http_addr = htonl((a << 24) | (b << 16) | (c << 8) | d);
-        g_key_file_set_string(keyfile, "preferences", "videoipaddress", 
-                              gtk_entry_get_text(GTK_ENTRY(uri->address)));
+        snprintf(video_http_host, sizeof(video_http_host), "%s", gtk_entry_get_text(GTK_ENTRY(uri->address))); 
+        g_key_file_set_string(keyfile, "preferences", "videoipaddress", video_http_host);
+        video_http_addr = hostname_to_addr(video_http_host);
 
         video_http_port = atoi(gtk_entry_get_text(GTK_ENTRY(uri->port)));
         g_key_file_set_integer(keyfile, "preferences", "videoipport", video_http_port);
 
         snprintf(video_http_path, sizeof(video_http_path), "%s", gtk_entry_get_text(GTK_ENTRY(uri->path))); 
         g_key_file_set_string(keyfile, "preferences", "videoippath", video_http_path);
+
+        snprintf(video_proxy_host, sizeof(video_proxy_host), "%s", gtk_entry_get_text(GTK_ENTRY(uri->proxy_address))); 
+        g_key_file_set_string(keyfile, "preferences", "videoproxyaddress", video_proxy_host);
+
+        video_proxy_port = atoi(gtk_entry_get_text(GTK_ENTRY(uri->proxy_port)));
+        g_key_file_set_integer(keyfile, "preferences", "videoproxyport", video_proxy_port);
+
+        snprintf(video_http_user, sizeof(video_http_user), "%s", gtk_entry_get_text(GTK_ENTRY(uri->user))); 
+        g_key_file_set_string(keyfile, "preferences", "videouser", video_http_user);
+
+        snprintf(video_http_password, sizeof(video_http_password), "%s", gtk_entry_get_text(GTK_ENTRY(uri->password))); 
+        g_key_file_set_string(keyfile, "preferences", "videopassword", video_http_password);
+
+        video_update = TRUE;
     }
 
     g_free(uri);
@@ -309,10 +394,8 @@ static void video_ip_address_callback(GtkWidget *widget,
 void ask_video_ip_address( GtkWidget *w,
                            gpointer   data )
 {
-    gchar buf[20];
-    gulong myaddr = ntohl(video_http_addr);
-    gint myport = video_http_port; 
-    GtkWidget *dialog, *hbox, *label;
+    gchar buf[128];
+    GtkWidget *dialog, *hbox, *hbox1, *hbox2, *label;
     struct url *uri = g_malloc0(sizeof(*uri));
 
     dialog = gtk_dialog_new_with_buttons (_("Video server URL"),
@@ -322,43 +405,74 @@ void ask_video_ip_address( GtkWidget *w,
                                           GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
                                           NULL);
 
-    sprintf(buf, "%ld.%ld.%ld.%ld", 
-            (myaddr>>24)&0xff, (myaddr>>16)&0xff, 
-            (myaddr>>8)&0xff, (myaddr)&0xff);
     uri->address = gtk_entry_new();
-    gtk_entry_set_text(GTK_ENTRY(uri->address), buf);
-    gtk_entry_set_width_chars(GTK_ENTRY(uri->address), 15);
+    gtk_entry_set_text(GTK_ENTRY(uri->address), video_http_host);
+    gtk_entry_set_width_chars(GTK_ENTRY(uri->address), 20);
 
-    sprintf(buf, "%d", myport); 
+    sprintf(buf, "%d", video_http_port); 
     uri->port = gtk_entry_new();
     gtk_entry_set_text(GTK_ENTRY(uri->port), buf);
     gtk_entry_set_width_chars(GTK_ENTRY(uri->port), 4);
 
     uri->path = gtk_entry_new();
     gtk_entry_set_text(GTK_ENTRY(uri->path), video_http_path);
-    gtk_entry_set_width_chars(GTK_ENTRY(uri->path), 6);
+    gtk_entry_set_width_chars(GTK_ENTRY(uri->path), 16);
 
+    uri->proxy_address = gtk_entry_new();
+    gtk_entry_set_text(GTK_ENTRY(uri->proxy_address), video_proxy_host);
+    gtk_entry_set_width_chars(GTK_ENTRY(uri->proxy_address), 20);
+
+    sprintf(buf, "%d", video_proxy_port);
+    uri->proxy_port = gtk_entry_new();
+    gtk_entry_set_text(GTK_ENTRY(uri->proxy_port), buf);
+    gtk_entry_set_width_chars(GTK_ENTRY(uri->proxy_port), 4);
+
+    uri->user = gtk_entry_new();
+    gtk_entry_set_text(GTK_ENTRY(uri->user), video_http_user);
+    gtk_entry_set_width_chars(GTK_ENTRY(uri->user), 20);
+
+    uri->password = gtk_entry_new();
+    gtk_entry_set_text(GTK_ENTRY(uri->password), video_http_password);
+    gtk_entry_set_width_chars(GTK_ENTRY(uri->password), 20);
+
+
+#if 0
     uri->start = gtk_entry_new();
-    gtk_entry_set_text(GTK_ENTRY(uri->path), "5");
-    gtk_entry_set_width_chars(GTK_ENTRY(uri->path), 1);
+    gtk_entry_set_text(GTK_ENTRY(uri->start), "5");
+    gtk_entry_set_width_chars(GTK_ENTRY(uri->start), 1);
+#endif
 
-    hbox = gtk_hbox_new(FALSE, 0);
     //gtk_container_set_border_width(GTK_CONTAINER(hbox), 10);
 
-    gtk_box_pack_start_defaults(GTK_BOX(hbox), gtk_label_new("http://"));
-    gtk_box_pack_start_defaults(GTK_BOX(hbox), uri->address);
-    gtk_box_pack_start_defaults(GTK_BOX(hbox), gtk_label_new(":"));
-    gtk_box_pack_start_defaults(GTK_BOX(hbox), uri->port);
-    gtk_box_pack_start_defaults(GTK_BOX(hbox), gtk_label_new("/"));
-    gtk_box_pack_start_defaults(GTK_BOX(hbox), uri->path);
+    hbox = gtk_hbox_new(FALSE, 4);
+    gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new("http://"), FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox), uri->address, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new(":"), FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox), uri->port, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new("/"), FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox), uri->path, FALSE, FALSE, 0);
+
+    hbox2 = gtk_hbox_new(FALSE, 4);
+    gtk_box_pack_start(GTK_BOX(hbox2), gtk_label_new(_("User:")), FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox2), uri->user, FALSE, FALSE, 5);
+    gtk_box_pack_start(GTK_BOX(hbox2), gtk_label_new(_("Password:")), FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox2), uri->password, FALSE, FALSE, 0);
+
+    hbox1 = gtk_hbox_new(FALSE, 4);
+    gtk_box_pack_start(GTK_BOX(hbox1), gtk_label_new(_("Proxy:")), FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox1), uri->proxy_address, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox1), gtk_label_new(":"), FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox1), uri->proxy_port, FALSE, FALSE, 0);
 
     if (connection_ok)
         label = gtk_label_new(_("(Connection OK)"));
     else
         label = gtk_label_new(_("(Connection broken)"));
-    gtk_box_pack_start_defaults(GTK_BOX(hbox), label);
 
-    gtk_box_pack_start_defaults(GTK_BOX(GTK_DIALOG(dialog)->vbox), hbox);
+    gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), hbox, FALSE, FALSE, 4);
+    gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), hbox2, FALSE, FALSE, 4);
+    gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), hbox1, FALSE, FALSE, 4);
+    gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), label, FALSE, FALSE, 4);
     gtk_widget_show_all(dialog);
 
     g_signal_connect(G_OBJECT(dialog), "response",
@@ -432,6 +546,7 @@ static gchar *find_frame(gchar c, gint *len, struct find_frame_internals *vars)
             vars->length = 10*vars->length + c - '0';
         else if (c != ' ') {
             if (vars->length > 100000) vars->state = 0;
+            else if (c == '\r') vars->state = 17;
             else vars->state = 16;
         }
         break;
