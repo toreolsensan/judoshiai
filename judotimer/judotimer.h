@@ -121,7 +121,7 @@ extern int clock_running(void);
 extern void show_message(char *cat1, char *blue1, char *white1,
                          char *cat2, char *blue2, char *white2, gint flags);
 extern void send_result(int bluepts[4], int whitepts[4], char blue_vote, char white_vote,
-			char blue_hansokumake, char white_hansokumake);
+			char blue_hansokumake, char white_hansokumake, gint legend);
 extern void update_status(void);
 extern void reset(guint key, struct msg_next_match *msg);
 extern int get_match_time(void);

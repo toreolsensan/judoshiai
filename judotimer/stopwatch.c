@@ -293,7 +293,7 @@ void update_clock(void)
 
             if (last_cat != current_category || last_num != current_match) {
                 gint ix = (current_category + current_match) & 7;
-                send_result(res[ix][0], res[ix][1], 0, 0, 0, 0);
+                send_result(res[ix][0], res[ix][1], 0, 0, 0, 0, 0);
                 last_cat = current_category;
                 last_num = current_match;
             }
@@ -552,6 +552,8 @@ static gint get_winner(void)
 }
 
 static GtkWindow *ask_window = NULL;
+static GtkWidget *legend_widget;
+static gint legend;
 
 static gboolean delete_event_ask( GtkWidget *widget, GdkEvent  *event, gpointer   data )
 {
@@ -567,6 +569,7 @@ static void destroy_ask( GtkWidget *widget, gpointer   data )
         msg.u.update_label.label_num = STOP_WINNER;
         send_label_msg(&msg);
     }
+    legend_widget = NULL;
     ask_area = NULL;
     asking = FALSE;
     ask_window = NULL;
@@ -574,6 +577,11 @@ static void destroy_ask( GtkWidget *widget, gpointer   data )
 
 static gboolean close_ask_ok(GtkWidget *widget, gpointer userdata)
 {
+    if (legend_widget)
+        legend = gtk_combo_box_get_active(legend_widget);
+    else
+        legend = 0;
+
     reset(ASK_OK, NULL);
     gtk_widget_destroy(userdata);
     return FALSE;
@@ -581,6 +589,7 @@ static gboolean close_ask_ok(GtkWidget *widget, gpointer userdata)
 
 static gboolean close_ask_nok(GtkWidget *widget, gpointer userdata)
 {
+    legend = 0;
     reset(ASK_NOK, NULL);
     gtk_widget_destroy(userdata);
     return FALSE;
@@ -659,6 +668,9 @@ static gboolean expose_ask(GtkWidget *widget, GdkEventExpose *event, gpointer us
     return FALSE;
 }
 
+static gchar *legends[] = 
+    {"?", "(T)", "(H)", "(C)", "(L)", "SG", "HM", "KG", "T", "H", "S", "/P\\", "FG", NULL};
+
 static void create_ask_window(void)
 {
     GtkWidget *vbox, *hbox, *ok, *nok, *lbl;
@@ -683,9 +695,16 @@ static void create_ask_window(void)
         lbl = gtk_label_new(_("Start New Match?"));
         ok = gtk_button_new_with_label(_("OK"));
         nok = gtk_button_new_with_label(_("Cancel"));
+
+        gint i;
+        legend_widget = gtk_combo_box_new_text();
+        for (i = 0; legends[i]; i++)
+            gtk_combo_box_append_text(GTK_COMBO_BOX(legend_widget), legends[i]);
+
         gtk_box_pack_start(GTK_BOX(hbox), lbl, FALSE, TRUE, 5);
         gtk_box_pack_start(GTK_BOX(hbox), ok, FALSE, TRUE, 5);
         gtk_box_pack_start(GTK_BOX(hbox), nok, FALSE, TRUE, 5);
+        gtk_box_pack_start(GTK_BOX(hbox), legend_widget, FALSE, TRUE, 5);
 
         gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 0);
     } else {
@@ -861,12 +880,12 @@ void reset(guint key, struct msg_next_match *msg)
         if (sides_switched) {
             send_result(st[0].whitepts, st[0].bluepts,
                         white_wins_voting, blue_wins_voting,
-                        hansokumake_to_white, hansokumake_to_blue);
+                        hansokumake_to_white, hansokumake_to_blue, legend);
             clear_switch_sides();
         } else
             send_result(st[0].bluepts, st[0].whitepts,
                         blue_wins_voting, white_wins_voting,
-                        hansokumake_to_blue, hansokumake_to_white);
+                        hansokumake_to_blue, hansokumake_to_white, legend);
         st[0].match_time = 0;
     }
 

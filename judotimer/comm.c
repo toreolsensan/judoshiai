@@ -98,7 +98,7 @@ void cancel_rest_time(gboolean blue, gboolean white)
 }
 
 void send_result(int bluepts[4], int whitepts[4], char blue_vote, char white_vote, 
-		 char blue_hansokumake, char white_hansokumake)
+		 char blue_hansokumake, char white_hansokumake, gint legend)
 {
     memset(&msgout, 0, sizeof(msgout));
 
@@ -110,6 +110,7 @@ void send_result(int bluepts[4], int whitepts[4], char blue_vote, char white_vot
     msgout.u.result.category = current_category;
     msgout.u.result.match = current_match;
     msgout.u.result.minutes = get_match_time();
+    msgout.u.result.legend = legend;
 
     msgout.u.result.blue_score = array2int(bluepts); 
     msgout.u.result.white_score = array2int(whitepts);
