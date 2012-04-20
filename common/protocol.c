@@ -70,6 +70,7 @@ gint encode_msg(struct message *m, guchar *buf, gint buflen)
 	put8(m->u.result.white_vote);
 	put8(m->u.result.blue_hansokumake);
 	put8(m->u.result.white_hansokumake);
+	put32(m->u.result.legend);
 	break;
     case MSG_ACK:
 	put32(m->u.ack.tatami);
@@ -232,6 +233,7 @@ gint decode_msg(struct message *m, guchar *buf, gint buflen)
 	get8(m->u.result.white_vote);
 	get8(m->u.result.blue_hansokumake);
 	get8(m->u.result.white_hansokumake);
+	get32(m->u.result.legend);
 	break;
     case MSG_ACK:
 	get32(m->u.ack.tatami);

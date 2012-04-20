@@ -102,6 +102,7 @@ struct msg_result {
     char white_vote;
     char blue_hansokumake;
     char white_hansokumake;
+    int legend;
 };
 
 struct msg_set_comment {
