@@ -459,6 +459,7 @@ struct match {
     gint  flags; // defined in comm.h
     gint  forcedtatami;
     gint  forcednumber;
+    gint  legend;
 };
 
 struct pool_matches {
@@ -792,7 +793,7 @@ extern gint db_category_match_status(gint category);
 extern gint db_competitor_match_status(gint competitor);
 extern void db_remove_matches(guint category);
 extern void db_set_points(gint category, gint number, gint minutes, 
-                          gint blue, gint white, gint blue_score, gint white_score);
+                          gint blue, gint white, gint blue_score, gint white_score, gint legend);
 extern void db_read_match(gint category, gint number);
 extern void db_read_matches_of_category(gint category);
 extern struct match *db_next_match(gint category, gint tatami);

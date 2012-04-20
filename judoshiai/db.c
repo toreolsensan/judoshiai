@@ -148,7 +148,7 @@ static int db_info_cb(void *data, int argc, char **argv, char **azColName)
 }
 
 static gboolean tatami_exists, number_exists, country_exists, 
-    id_exists, numcomp_exists, seeding_exists;
+    id_exists, numcomp_exists, seeding_exists, comp_comment_exists, match_date_exists;
 
 static int db_callback_tables(void *data, int argc, char **argv, char **azColName)
 {
@@ -160,6 +160,8 @@ static int db_callback_tables(void *data, int argc, char **argv, char **azColNam
                 tatami_exists = TRUE;
             if (strstr(argv[i], "matches") && strstr(argv[i], "forcednumber"))
                 number_exists = TRUE;
+            if (strstr(argv[i], "matches") && strstr(argv[i], "date"))
+                match_date_exists = TRUE;
             if (strstr(argv[i], "competitors") && strstr(argv[i], "country"))
                 country_exists = TRUE;
             if (strstr(argv[i], "competitors") && strstr(argv[i], "\"id\""))
@@ -168,6 +170,8 @@ static int db_callback_tables(void *data, int argc, char **argv, char **azColNam
                 numcomp_exists = TRUE;
             if (strstr(argv[i], "competitors") && strstr(argv[i], "seeding"))
                 seeding_exists = TRUE;
+            if (strstr(argv[i], "competitors") && strstr(argv[i], "comment"))
+                comp_comment_exists = TRUE;
         }
     }
 
@@ -210,9 +214,9 @@ gint db_init(const char *dbname)
 
     sqlite3_close(db);
 
-    if (compcols   > 15 ||
+    if (compcols   > 16 ||
         catcols    > 17 || 
-        matchcols  > 13 ||
+        matchcols  > 15 ||
         infocols   > 2  ||
         catdefcols > 13) {
         SHOW_MESSAGE("%s", _("Cannot handle: Database created with newer JudoShiai version."));
@@ -246,7 +250,7 @@ gint db_init(const char *dbname)
     read_cat_definitions();
 
     tatami_exists = number_exists = country_exists = id_exists = 
-        numcomp_exists = seeding_exists = FALSE;
+        numcomp_exists = seeding_exists = comp_comment_exists = match_date_exists = FALSE;
 
     db_exec(db_name, 
             "SELECT sql FROM sqlite_master", 
@@ -298,7 +302,19 @@ gint db_init(const char *dbname)
         db_exec(db_name, "ALTER TABLE categories ADD \"pos8\" INTEGER", NULL, NULL);
     }
 
-    if (!tatami_exists || !number_exists || !country_exists || !id_exists || !numcomp_exists || !seeding_exists)
+    if (!comp_comment_exists) {
+        g_print("comment does not exist, add one\n");
+        db_exec(db_name, "ALTER TABLE competitors ADD \"comment\" TEXT", NULL, NULL);
+    }
+
+    if (!match_date_exists) {
+        g_print("date and legend do not exist, add one\n");
+        db_exec(db_name, "ALTER TABLE matches ADD \"date\" INTEGER", NULL, NULL);
+        db_exec(db_name, "ALTER TABLE matches ADD \"legend\" INTEGER", NULL, NULL);
+    }
+
+    if (!tatami_exists || !number_exists || !country_exists || !id_exists || !numcomp_exists || !seeding_exists ||
+        !comp_comment_exists || !match_date_exists)
         SHOW_MESSAGE("%s", _("Database tables updated."));
 
     set_menu_active();
@@ -315,7 +331,8 @@ void db_new(const char *dbname)
         "\"belt\" INTEGER, \"club\" TEXT, \"regcategory\" TEXT, "
         "\"weight\" INTEGER, \"visible\" INTEGER, "
         "\"category\" TEXT, \"deleted\" INTEGER, "
-        "\"country\" TEXT, \"id\" TEXT, \"seeding\" INTEGER, \"clubseeding\" INTEGER )";
+        "\"country\" TEXT, \"id\" TEXT, \"seeding\" INTEGER, \"clubseeding\" INTEGER, "
+        "\"comment\" TEXT )";
     char *cmd3 = "CREATE TABLE categories ("
         "\"index\" INTEGER, \"category\" TEXT, \"tatami\" INTEGER, "
         "\"deleted\" INTEGER, \"group\" INTEGER, \"system\" INTEGER, "
@@ -329,7 +346,8 @@ void db_new(const char *dbname)
         "\"blue_score\" INTEGER, \"white_score\" INTEGER, "
         "\"blue_points\" INTEGER, \"white_points\" INTEGER, "
         "\"time\" INTEGER, \"comment\" INTEGER, \"deleted\" INTEGER, "
-        "\"forcedtatami\" INTEGER, \"forcednumber\" INTEGER)";
+        "\"forcedtatami\" INTEGER, \"forcednumber\" INTEGER "
+        "\"date\" INTEGER, \"legend\" INTEGER )";
     char *cmd5 = "CREATE TABLE \"info\" ("
         "\"item\" TEXT, \"value\" TEXT )";
 	
@@ -513,6 +531,7 @@ static int db_callback_catdef(void *data, int argc, char **argv, char **azColNam
 gboolean catdef_needs_init(void)
 {
     catdef_exists = matchtime_exists = gstime_exists = reptime_exists = FALSE;
+    
 
     db_exec(db_name, 
             "SELECT name FROM sqlite_master WHERE type='table'", 

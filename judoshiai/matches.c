@@ -1684,7 +1684,7 @@ void set_points(GtkWidget *menuitem, gpointer userdata)
 
     db_set_points(category, number, 0, 
                   is_blue ? points : 0,
-                  is_blue ? 0 : points, 0, 0);
+                  is_blue ? 0 : points, 0, 0, 0);
 
     db_read_match(category, number);
         
@@ -1717,7 +1717,7 @@ void set_points_from_net(struct message *msg)
                   0, 
                   msg->u.set_points.blue_points,
                   msg->u.set_points.white_points,
-                  0, 0);
+                  0, 0, 0);
 
     db_read_match(msg->u.set_points.category, msg->u.set_points.number);
         
@@ -1787,7 +1787,7 @@ void set_points_and_score(struct message *msg)
     }
 
     db_set_points(category, number, minutes,
-                  blue_pts, white_pts, msg->u.result.blue_score, msg->u.result.white_score); 
+                  blue_pts, white_pts, msg->u.result.blue_score, msg->u.result.white_score, msg->u.result.legend); 
 
     db_read_match(category, number);
         

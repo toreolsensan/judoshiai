@@ -368,7 +368,7 @@ void reset_props_1(GtkWidget *button, void *data, gboolean if_unset)
     gint i;
     GtkComboBox *combo = data;
     gchar buf[512];
-    g_print("***********jihaa\n");
+
     if (combo)
         draw_system = gtk_combo_box_get_active(combo);
 
@@ -466,7 +466,6 @@ void reset_props_1(GtkWidget *button, void *data, gboolean if_unset)
             if (belts[i]) g_strlcat(buf, belts[i], sizeof(buf));
         }
         set_val(PROP_GRADE_NAMES, buf, 0);
-        g_print("reset prop: %s\n", buf);
     }
 
     g_key_file_set_integer(keyfile, "preferences", "drawsystem", draw_system);

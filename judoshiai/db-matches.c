@@ -99,6 +99,8 @@ static int db_callback_matches(void *data, int argc, char **argv, char **azColNa
             m.forcedtatami = val;
         else if (IS(forcednumber))
             m.forcednumber = val;
+        else if (IS(legend))
+            m.legend = val;
         else if (IS(deleted)) {
             m.deleted = val;
             match_row_found = TRUE;
@@ -461,11 +463,11 @@ void db_add_match(struct match *m)
             VALINT ", " VALINT ", " VALINT ", " VALINT ", " 
             VALINT ", " VALINT ", " 
             VALINT ", " VALINT ", " VALINT ", " VALINT ", " VALINT ", " 
-            VALINT ", " VALINT " )",
+            VALINT ", " VALINT ", " VALINT ", " VALINT " )",
             m->category, m->number,
             m->blue, m->white, m->blue_score, m->white_score,
             m->blue_points, m->white_points,
-            m->match_time, m->comment, m->deleted, 0, 0);
+            m->match_time, m->comment, m->deleted, 0, 0, 0, 0);
         
     //g_print("%s\n", buffer);
     db_exec(db_name, buffer, NULL, db_callback_matches);
@@ -652,16 +654,16 @@ void db_remove_matches(guint category)
 }
 
 void db_set_points(gint category, gint number, gint minutes, 
-                   gint blue, gint white, gint blue_score, gint white_score)
+                   gint blue, gint white, gint blue_score, gint white_score, gint legend)
 {
     gchar buffer[200];
 
     if (blue_score || white_score || minutes) // full information available
         sprintf(buffer, 
                 "UPDATE matches SET \"blue_points\"=%d, \"white_points\"=%d, "
-                "\"blue_score\"=%d, \"white_score\"=%d, \"time\"=%d "
+                "\"blue_score\"=%d, \"white_score\"=%d, \"time\"=%d, \"date\"=%ld, \"legend\"=%d "
                 "WHERE \"category\"=%d AND \"number\"=%d", 
-                blue, white, blue_score, white_score, minutes, category, number);
+                blue, white, blue_score, white_score, minutes, time(NULL), legend, category, number);
     else // correct points but leave other info as is
         sprintf(buffer, 
                 "UPDATE matches SET \"blue_points\"=%d, \"white_points\"=%d "

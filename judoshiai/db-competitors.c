@@ -165,7 +165,7 @@ gint db_add_judoka(int num, struct judoka *j)
             "%d, \"%s\", \"%s\", \"%d\", "
             "%d, \"%s\", \"%s\", "
             "%d, %d, \"%s\", %d, \"%s\", \"%s\","
-            "%d, %d"
+            "%d, %d, \"\" "
             ")", 
             num, esc_quote(j->last), esc_quote(j->first), j->birthyear,
             j->belt, esc_quote(j->club), esc_quote(j->regcategory),
