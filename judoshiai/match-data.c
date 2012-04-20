@@ -1634,7 +1634,7 @@ gchar *get_system_description(gint index, gint competitors)
         if (competitors == 1)
             return "";
         if (competitors == 2) {
-            if (three_matches_for_two)
+            if (prop_get_int_val(PROP_THREE_MATCHES_FOR_TWO))
                 return _("Best of 3");
             return _("One match");
         }

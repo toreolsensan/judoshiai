@@ -95,7 +95,7 @@ static void paint_surfaces(struct paint_data *pd,
 
     pd->c = c_pdf;
     paint_category(pd);
-        
+
     if (pd->page)
         sprintf(p, "-%d.png", pd->page);
     else
@@ -1101,7 +1101,7 @@ static void calc_schedule(void)
         if (schedule_start)
             start = get_start_time(schedule_start);
         else
-            start = get_start_time(info_time);
+            start = get_start_time(prop_get_str_val(PROP_TIME));
 
         while (catdata) {
             gint n = 1;
@@ -1250,9 +1250,9 @@ static void paint_schedule(struct paint_data *pd)
     rownum1 = 2;
     cairo_move_to(c, pd->rotate ? left : W(0.04), YPOS);
     snprintf(buf, sizeof(buf), "%s  %s  %s", 
-             info_competition,
-             info_date,
-             info_place);
+             prop_get_str_val(PROP_NAME),
+             prop_get_str_val(PROP_DATE),
+             prop_get_str_val(PROP_PLACE));
     cairo_show_text(c, buf);
 
 
@@ -1470,7 +1470,7 @@ void print_schedule(void)
     gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new(_("Start time:")), 0, 1, 2, 3);
     start = gtk_entry_new();
     gtk_entry_set_max_length(GTK_ENTRY(start), 5);
-    gtk_entry_set_text(GTK_ENTRY(start), info_time);
+    gtk_entry_set_text(GTK_ENTRY(start), prop_get_str_val(PROP_TIME));
     gtk_table_attach_defaults(GTK_TABLE(table), start, 1, 2, 2, 3);
 
     gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new(_("Resolution (min):")), 0, 1, 3, 4);

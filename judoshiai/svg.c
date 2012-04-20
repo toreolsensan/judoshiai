@@ -652,11 +652,11 @@ gint paint_svg(struct paint_data *pd)
                 }
             } else if (attr[0].code[0] == 'i') {
                 if (IS_SAME(attr[1].code, "competition"))
-                    WRITE(info_competition);
+                    WRITE(prop_get_str_val(PROP_NAME));
                 else if (IS_SAME(attr[1].code, "date"))
-                    WRITE(info_date);
+                    WRITE(prop_get_str_val(PROP_DATE));
                 else if (IS_SAME(attr[1].code, "place"))
-                    WRITE(info_place);
+                    WRITE(prop_get_str_val(PROP_PLACE));
                 else if (IS_SAME(attr[1].code, "catname")) {
                     struct judoka *ctg = get_data(category);
                     if (ctg) {

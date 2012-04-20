@@ -142,8 +142,8 @@ static void make_top_frame_1(FILE *f, gchar *meta)
             "<td colspan=\"2\" align=\"center\" class=\"tournamentheader\"><h1>%s  %s  %s</h1></td></tr><tr>\r\n", 
             meta,
             SHIAI_VERSION,
-            utf8_to_html(info_competition), utf8_to_html(info_date), utf8_to_html(info_place),
-            utf8_to_html(info_competition), utf8_to_html(info_date), utf8_to_html(info_place));
+            prop_get_str_val(PROP_NAME), prop_get_str_val(PROP_DATE), prop_get_str_val(PROP_PLACE),
+            prop_get_str_val(PROP_NAME), prop_get_str_val(PROP_DATE), prop_get_str_val(PROP_PLACE));
 }
 
 static void make_top_frame(FILE *f)
@@ -802,10 +802,10 @@ void write_comp_stat(gint index)
                     utf8_to_html(c->last), 
                     utf8_to_html(firstname_lastname() ? j1->first : j1->last), 
                     utf8_to_html(firstname_lastname() ? j1->last : j1->first),
-                    info_white_first ? "wscore" : "bscore",
+                    prop_get_int_val(PROP_WHITE_FIRST) ? "wscore" : "bscore",
                     blue_score, blue_points,
                     white_points, 
-                    info_white_first ? "bscore" : "wscore",
+                    prop_get_int_val(PROP_WHITE_FIRST) ? "bscore" : "wscore",
                     white_score, 
                     utf8_to_html(firstname_lastname() ? j2->first : j2->last), 
                     utf8_to_html(firstname_lastname() ? j2->last : j2->first), mtime/60, mtime%60);

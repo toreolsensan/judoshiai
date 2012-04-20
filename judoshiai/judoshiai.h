@@ -226,6 +226,8 @@ enum special_match_types {
 #define NUM_CATEGORIES 32
 #define NUM_SEEDED 8
 
+#define NUM_BELTS 64
+
 enum {
     COL_INDEX = 0,
     COL_LAST_NAME,
@@ -391,6 +393,30 @@ enum default_drawing_system {
     DRAW_BRITISH,
     DRAW_AUSTRALIAN,
     NUM_DRAWS
+};
+
+// Properties
+enum {
+    PROP_NAME,
+    PROP_DATE,
+    PROP_PLACE,
+    PROP_TIME,
+    PROP_NUM_TATAMIS,
+    PROP_WHITE_FIRST,
+    PROP_THREE_MATCHES_FOR_TWO,
+    PROP_WIN_NEEDED_FOR_MEDAL,
+    PROP_SEEDED_TO_FIXED_PLACES,
+    PROP_DEFAULT_CAT_1,
+    PROP_DEFAULT_CAT_2,
+    PROP_DEFAULT_CAT_3,
+    PROP_DEFAULT_CAT_4,
+    PROP_DEFAULT_CAT_5,
+    PROP_DEFAULT_CAT_6,
+    PROP_DPOOL2_WITH_CARRIED_FORWARD_POINTS,
+    PROP_TWO_POOL_BRONZES,
+    PROP_RESOLVE_3_WAY_TIES_BY_WEIGHTS,
+    PROP_GRADE_NAMES,
+    NUM_PROPERTIES
 };
 
 struct judoka {
@@ -590,7 +616,6 @@ extern gchar          info_time[];
 extern gchar          info_place[];
 extern gchar          info_num_tatamis[];
 extern gboolean       info_white_first;
-extern gboolean       three_matches_for_two;
 extern gboolean       serial_used;
 extern GtkWidget     *weight_entry;
 
@@ -603,7 +628,8 @@ extern GtkWidget     *main_window;
 extern gint           my_address;
 extern GdkCursor     *wait_cursor;
 
-extern char *belts[];
+extern gchar *belts_defaults[];
+extern gchar *belts[NUM_BELTS];
 
 extern const guint pools[11][32][2];
 extern const guint poolsd[13][32][2];
@@ -724,13 +750,7 @@ extern const gchar *esc_quote(const gchar *txt);
 #define DB_MATCH_ROW 1
 extern GStaticMutex next_match_mutex;
 
-extern void db_new(const char *dbname, 
-                   const gchar *competition, 
-                   const gchar *date,
-                   const gchar *place,
-		   const gchar *start_time,
-		   const gchar *num_tatamis,
-                   const gboolean whitefirst);
+extern void db_new(const char *dbname);
 extern gint db_init(const char *db);
 extern void db_matches_init(void);
 extern void db_save_config(void);
@@ -799,12 +819,7 @@ extern char **db_get_table_copy(char *command, int *tablerows1, int *tablecols1)
 extern void db_close_table_copy(char **tablep);
 extern char *db_get_data(int row, char *name);
 extern gchar *db_sql_command(const gchar *command);
-extern void db_set_info(const gchar *competition, 
-			const gchar *date, 
-			const gchar *place,
-			const gchar *start_time,
-			const gchar *num_tatamis,
-                        const gboolean whitefirst);
+extern void db_set_info(gchar *name, gchar *value);
 extern void db_create_cat_def_table(void);
 extern void db_delete_cat_def_table_data(void);
 extern void db_insert_cat_def_table_data(struct cat_def *line);
@@ -1056,5 +1071,15 @@ extern gboolean get_svg_page_size(gint index, gint pagenum, gint *width, gint *h
 extern gboolean svg_landscape(gint ctg, gint page);
 extern gint get_num_svg_pages(struct compsys systm);
 
+/* properties */
+extern void init_property(gchar *prop, gchar *val);
+extern void properties(GtkWidget *w, gpointer data);
+extern gint prop_get_int_val(gint name);
+extern const gchar *prop_get_str_val(gint name);
+extern void reset_props(GtkWidget *button, void *data);
+extern void reset_props_1(GtkWidget *button, void *data, gboolean if_unset);
+extern void props_save_to_db(void);
+extern gint props_get_default_wishsys(gint age, gint competitors);
+extern gint props_get_grade(gchar *b);
 
 #endif

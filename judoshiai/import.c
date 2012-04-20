@@ -102,23 +102,7 @@ static gboolean add_competitor(gchar **tokens, gint num_cols, struct i_text *d)
     /* belt */
     if (valid_data(TXT_BELT, tokens, num_cols, d)) {
         gchar *b = tokens[d->columns[TXT_BELT] - 1];
-        gboolean kyu = strchr(b, 'k') != NULL || strchr(b, 'K') != NULL;
-        gboolean mon = strchr(b, 'm') != NULL || strchr(b, 'M') != NULL;
-        while (*b && (*b < '0' || *b > '9'))
-            b++;
-
-        gint grade = atoi(b);
-        if (grade) {
-            if (mon)
-                j.belt = 21 - grade;
-            else if (kyu)
-                j.belt = 7 - grade;
-            else
-                j.belt = 6 + grade;
-        }
-
-        if (j.belt < 0 || j.belt > 20)
-            j.belt = 0;
+        j.belt = props_get_grade(b);
     }
 
     if (valid_data(TXT_CLUB, tokens, num_cols, d))

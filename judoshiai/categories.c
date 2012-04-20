@@ -142,15 +142,6 @@ void create_categories(GtkWidget *w, gpointer data)
     progress_show(0.0, "");
 }
 
-void toggle_three_matches(GtkWidget *menu_item, gpointer data)
-{
-    three_matches_for_two = GTK_CHECK_MENU_ITEM(menu_item)->active;
-    db_save_config();
-    if (current_category)
-        matches_refresh();
-}
-
-
 void view_popup_menu_draw_category(GtkWidget *menuitem, gpointer userdata)
 {
     gint n, num_selected = 0;

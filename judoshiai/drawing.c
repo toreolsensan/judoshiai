@@ -1093,6 +1093,17 @@ struct compsys get_system_for_category(gint index, gint competitors)
     if (systm.system)
         return systm;
 
+    if (wishsys == CAT_SYSTEM_DEFAULT) {
+        cat = avl_get_category(index);
+        if (cat) {
+            gint age = 0;
+            gint aix = find_age_index(cat->category);
+            if (aix >= 0)
+                age = category_definitions[aix].age;
+            wishsys = props_get_default_wishsys(age, competitors);
+        }
+    }
+
     if (competitors <= 5 && (wishsys == CAT_SYSTEM_POOL || wishsys == CAT_SYSTEM_DEFAULT)) {
         sys = SYSTEM_POOL;
     } else if (competitors <= 7 && wishsys == CAT_SYSTEM_POOL) {

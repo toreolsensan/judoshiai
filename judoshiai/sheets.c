@@ -563,7 +563,7 @@ static void paint_pool(struct paint_data *pd, gint category, struct judoka *ctg,
     judoka_table.position_y = judoka_2_table.position_y = POOL_JUDOKAS_Y;
     judoka_table.num_rows = judoka_2_table.num_rows = num_judokas;
 
-    if (num_judokas == 2 && three_matches_for_two) {
+    if (num_judokas == 2 && prop_get_int_val(PROP_THREE_MATCHES_FOR_TWO)) {
         judoka_table.num_cols = 10;
         judoka_2_table.num_cols = 9;
     } else {
@@ -586,7 +586,7 @@ static void paint_pool(struct paint_data *pd, gint category, struct judoka *ctg,
         char num[5];
         sprintf(num, "%d", i);
         write_table(pd, &judoka_table, 0, 3 + i, num);
-        if (num_judokas == 2 && three_matches_for_two) {
+        if (num_judokas == 2 && prop_get_int_val(PROP_THREE_MATCHES_FOR_TWO)) {
             write_table(pd, &judoka_table, 0, 5 + i, num);
             write_table(pd, &judoka_table, 0, 7 + i, num);
         }
@@ -622,8 +622,8 @@ static void paint_pool(struct paint_data *pd, gint category, struct judoka *ctg,
     write_table_title(pd, &match_table, _T(matches));
 
     WRITE_TABLE(match_table, 0, 0, "%s", _T(match));
-    WRITE_TABLE(match_table, 0, 1, "%s", info_white_first ? _T(white) : _T(blue));
-    WRITE_TABLE(match_table, 0, 4, "%s", info_white_first ? _T(blue) : _T(white));
+    WRITE_TABLE(match_table, 0, 1, "%s", prop_get_int_val(PROP_WHITE_FIRST) ? _T(white) : _T(blue));
+    WRITE_TABLE(match_table, 0, 4, "%s", prop_get_int_val(PROP_WHITE_FIRST) ? _T(blue) : _T(white));
     WRITE_TABLE(match_table, 0, 5, "%s", _T(result));
     WRITE_TABLE(match_table, 0, 6, "%s", _T(time));
 
@@ -649,7 +649,7 @@ static void paint_pool(struct paint_data *pd, gint category, struct judoka *ctg,
 #ifdef ONE_MATCH
             WRITE_TABLE(judoka_table, blue, white + 3, "%d", pm.m[i].blue_points);
 #else
-            if (num_judokas == 2 && three_matches_for_two) {
+            if (num_judokas == 2 && prop_get_int_val(PROP_THREE_MATCHES_FOR_TWO)) {
                 WRITE_TABLE(judoka_table, blue, white + 1 + i*2, "%d", pm.m[i].blue_points);
             } else {
                 WRITE_TABLE(judoka_table, blue, white + 3, "%d", pm.m[i].blue_points);
@@ -659,7 +659,7 @@ static void paint_pool(struct paint_data *pd, gint category, struct judoka *ctg,
 #ifdef ONE_MATCH
             WRITE_TABLE(judoka_table, white, blue + 3, "%d", pm.m[i].white_points);
 #else
-            if (num_judokas == 2 && three_matches_for_two)
+            if (num_judokas == 2 && prop_get_int_val(PROP_THREE_MATCHES_FOR_TWO))
                 WRITE_TABLE(judoka_table, white, blue + 1 + i*2, "%d", pm.m[i].white_points);
             else
                 WRITE_TABLE(judoka_table, white, blue + 3, "%d", pm.m[i].white_points);
@@ -674,7 +674,7 @@ static void paint_pool(struct paint_data *pd, gint category, struct judoka *ctg,
     win_table.position_x = colpos(pd, &judoka_table, num_judokas + 4) + judoka_table.position_x;
 #else
     win_table.position_x = colpos(pd, &judoka_table, 
-                                  (num_judokas==2 && three_matches_for_two)?10:(num_judokas + 4)) 
+                                  (num_judokas==2 && prop_get_int_val(PROP_THREE_MATCHES_FOR_TWO))?10:(num_judokas + 4)) 
         + judoka_table.position_x;
 #endif
     create_table(pd, &win_table);
@@ -966,8 +966,8 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
         write_table_title(pd, &match_table, _T(matchesa));
 
         WRITE_TABLE(match_table, 0, 0, "%s", _T(match));
-        WRITE_TABLE(match_table, 0, 1, "%s", info_white_first ? _T(white) : _T(blue));
-        WRITE_TABLE(match_table, 0, 4, "%s", info_white_first ? _T(blue) : _T(white));
+        WRITE_TABLE(match_table, 0, 1, "%s", prop_get_int_val(PROP_WHITE_FIRST) ? _T(white) : _T(blue));
+        WRITE_TABLE(match_table, 0, 4, "%s", prop_get_int_val(PROP_WHITE_FIRST) ? _T(blue) : _T(white));
         WRITE_TABLE(match_table, 0, 5, "%s", _T(result));
         WRITE_TABLE(match_table, 0, 6, "%s", _T(time));
 
@@ -978,8 +978,8 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
         write_table_title(pd, &match_table, _T(matchesb));
 
         WRITE_TABLE(match_table, 0, 0, "%s", _T(match));
-        WRITE_TABLE(match_table, 0, 1, "%s", info_white_first ? _T(white) : _T(blue));
-        WRITE_TABLE(match_table, 0, 4, "%s", info_white_first ? _T(blue) : _T(white));
+        WRITE_TABLE(match_table, 0, 1, "%s", prop_get_int_val(PROP_WHITE_FIRST) ? _T(white) : _T(blue));
+        WRITE_TABLE(match_table, 0, 4, "%s", prop_get_int_val(PROP_WHITE_FIRST) ? _T(blue) : _T(white));
         WRITE_TABLE(match_table, 0, 5, "%s", _T(result));
         WRITE_TABLE(match_table, 0, 6, "%s", _T(time));
 
@@ -1325,8 +1325,8 @@ static void paint_qpool(struct paint_data *pd, gint category, struct judoka *ctg
             write_table_title(pd, &match_table, print_texts[matchesatext+pool][print_lang]);
 
             WRITE_TABLE(match_table, 0, 0, "%s", _T(match));
-            WRITE_TABLE(match_table, 0, 1, "%s", info_white_first ? _T(white) : _T(blue));
-            WRITE_TABLE(match_table, 0, 4, "%s", info_white_first ? _T(blue) : _T(white));
+            WRITE_TABLE(match_table, 0, 1, "%s", prop_get_int_val(PROP_WHITE_FIRST) ? _T(white) : _T(blue));
+            WRITE_TABLE(match_table, 0, 4, "%s", prop_get_int_val(PROP_WHITE_FIRST) ? _T(blue) : _T(white));
             WRITE_TABLE(match_table, 0, 5, "%s", _T(result));
             WRITE_TABLE(match_table, 0, 6, "%s", _T(time));
 
@@ -2056,9 +2056,9 @@ void paint_category(struct paint_data *pd)
     } else {
         gdouble textw, texth;
         snprintf(buf, sizeof(buf)-1, "%s  %s  %s   %s", 
-                 info_competition,
-                 info_date,
-                 info_place,
+                 prop_get_str_val(PROP_NAME),
+                 prop_get_str_val(PROP_DATE),
+                 prop_get_str_val(PROP_PLACE),
                  ctg->last);
         cairo_select_font_face(pd->c, font_face,
                                font_slant,
@@ -2152,8 +2152,8 @@ static void paint_point_box(struct paint_data *pd, gdouble horpos, gdouble verpo
 
     if (points == 0)
         cairo_set_source_rgb(pd->c, 0.0, 0.0, 0.0);
-    else if ((blue && info_white_first == FALSE) || 
-             (blue == FALSE && info_white_first))
+    else if ((blue && prop_get_int_val(PROP_WHITE_FIRST) == FALSE) || 
+             (blue == FALSE && prop_get_int_val(PROP_WHITE_FIRST)))
         cairo_set_source_rgb(pd->c, 0.0, 0.0, 1.0);
     else
         cairo_set_source_rgb(pd->c, 1.0, 1.0, 1.0);
@@ -2163,8 +2163,8 @@ static void paint_point_box(struct paint_data *pd, gdouble horpos, gdouble verpo
 
     if (points == 0)
         cairo_set_source_rgb(pd->c, 1.0, 1.0, 0.0);
-    else if ((blue && info_white_first == FALSE) || 
-             (blue == FALSE && info_white_first))
+    else if ((blue && prop_get_int_val(PROP_WHITE_FIRST) == FALSE) || 
+             (blue == FALSE && prop_get_int_val(PROP_WHITE_FIRST)))
         cairo_set_source_rgb(pd->c, 1.0, 1.0, 1.0);
     else
         cairo_set_source_rgb(pd->c, 0.0, 0.0, 0.0);

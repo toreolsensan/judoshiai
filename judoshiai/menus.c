@@ -22,7 +22,6 @@ extern void font_dialog(GtkWidget *w, gpointer data);
 extern void set_lang(gpointer data, guint action, GtkWidget *w);
 extern void set_club_text(gpointer data, guint action, GtkWidget *w);
 extern void set_club_abbr(GtkWidget *menu_item, gpointer data);
-extern void set_draw_system(gpointer data, guint action, GtkWidget *w);
 extern void toggle_automatic_sheet_update(gpointer callback_data, 
 					  guint callback_action, GtkWidget *menu_item);
 extern void toggle_automatic_web_page_update(gpointer callback_data, 
@@ -47,7 +46,6 @@ extern void backup_shiai(GtkWidget *w, gpointer data);
 extern void db_validation(GtkWidget *w, gpointer data);
 extern void toggle_mirror(GtkWidget *menu_item, gpointer data);
 extern void toggle_auto_arrange(GtkWidget *menu_item, gpointer data);
-extern void toggle_use_weights(GtkWidget *menu_item, gpointer data);
 extern void select_use_logo(GtkWidget *w, gpointer data);
 extern void set_serial_dialog(GtkWidget *w, gpointer data);
 extern void serial_set_device(gchar *dev);
@@ -70,25 +68,25 @@ static GtkWidget *menubar,
     *competitor_restore_removed, *competitor_bar_code_search, *competitor_print_weigh_notes, *competitor_print_with_template,
     *category_new, *category_remove_empty, *category_create_official, 
     *category_print_all, *category_print_all_pdf, *category_print_matches,
-    *category_properties, *category_best_of_three, *category_to_tatamis[NUM_TATAMIS],
+    *category_properties, *category_to_tatamis[NUM_TATAMIS],
     *draw_all_categories, 
     *results_print_all, *results_print_schedule_printer, *results_print_schedule_pdf,
     *preference_comm, *preference_comm_node, *preference_own_ip_addr, *preference_show_connections,
-    *preference_auto_sheet_update/*, *preference_auto_web_update*/, *preference_results_in_finnish, 
+    *preference_auto_sheet_update, *preference_results_in_finnish, 
     *preference_langsel, *preference_results_in_swedish, *preference_results_in_english, 
     *preference_results_in_spanish, *preference_results_in_ukrainian, *preference_results_in_icelandic, 
-    *preference_results_in_norwegian, *draw_systems[NUM_DRAWS], 
+    *preference_results_in_norwegian, 
     *preference_weights_to_pool_sheets, 
     *preference_grade_visible, *preference_name_layout, *preference_name_layout_0, *preference_name_layout_1, *preference_name_layout_2, 
     *preference_layout, *preference_pool_style, *preference_belt_colors,
     *preference_sheet_font, *preference_svg, *preference_password, *judotimer_control[NUM_TATAMIS],
-    *preference_mirror, *preference_auto_arrange, *preference_use_weights, *preference_club_text,
+    *preference_mirror, *preference_auto_arrange, *preference_club_text,
     *preference_club_text_club, *preference_club_text_country, *preference_club_text_both,
     *preference_club_text_abbr, *preference_use_logo,
     *preference_serial, *preference_medal_matches,
     *help_manual, *help_about, *flags[NUM_LANGS], *menu_flags[NUM_LANGS];
 
-static GSList *lang_group = NULL, *club_group = NULL, *draw_group = NULL;
+static GSList *lang_group = NULL, *club_group = NULL;
 
 static GtkTooltips *menu_tips;
 
@@ -98,10 +96,6 @@ static const gchar *flags_files[NUM_LANGS] = {
 static const gchar *lang_names[NUM_LANGS] = {
     "fi", "sv", "en", "es", "et", "uk", "is", "no"
 };
-
-static const gchar *draw_system_names[NUM_DRAWS] = 
-    {"International System", "Finnish System", "Swedish System", "Estonian System", "Spanish System", 
-     "Norwegian System", "British System", "Australian System"};
 
 static GtkWidget *get_picture(const gchar *name)
 {
@@ -255,7 +249,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     category_print_all_pdf   = gtk_menu_item_new_with_label(_("Print All (PDF)"));
     category_print_matches   = gtk_menu_item_new_with_label(_("Print Matches (CSV)"));
     category_properties      = gtk_menu_item_new_with_label(_("Properties"));
-    category_best_of_three   = gtk_check_menu_item_new_with_label(_("Best of Three"));
+
     for (i = 0; i < NUM_TATAMIS; i++) {
         SPRINTF(buf, "%s %d %s", _("Place To"), i+1, _("Tatamis"));
         category_to_tatamis[i] = gtk_menu_item_new_with_label(buf);
@@ -271,7 +265,6 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_menu_shell_append(GTK_MENU_SHELL(categories_menu), category_print_matches);
     gtk_menu_shell_append(GTK_MENU_SHELL(categories_menu), gtk_separator_menu_item_new());
     gtk_menu_shell_append(GTK_MENU_SHELL(categories_menu), category_properties);
-    gtk_menu_shell_append(GTK_MENU_SHELL(categories_menu), category_best_of_three);
     gtk_menu_shell_append(GTK_MENU_SHELL(categories_menu), gtk_separator_menu_item_new());
     for (i = 0; i < NUM_TATAMIS; i++)
         gtk_menu_shell_append(GTK_MENU_SHELL(categories_menu), category_to_tatamis[i]);
@@ -286,7 +279,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     g_signal_connect(G_OBJECT(category_print_matches),   "activate", G_CALLBACK(print_matches), 
                      (gpointer)(PRINT_ALL_CATEGORIES | PRINT_TO_PDF));
     g_signal_connect(G_OBJECT(category_properties),      "activate", G_CALLBACK(set_categories_dialog), 0);
-    g_signal_connect(G_OBJECT(category_best_of_three),   "activate", G_CALLBACK(toggle_three_matches), (gpointer)1);
+
     for (i = 0; i < NUM_TATAMIS; i++)
         g_signal_connect(G_OBJECT(category_to_tatamis[i]), "activate", G_CALLBACK(locate_to_tatamis), 
                          (gpointer)(i+1));
@@ -295,15 +288,6 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     draw_all_categories = gtk_menu_item_new_with_label(_("Draw All Categories"));
     gtk_menu_shell_append(GTK_MENU_SHELL(drawing_menu), draw_all_categories);
     g_signal_connect(G_OBJECT(draw_all_categories), "activate", G_CALLBACK(draw_all), 0);
-
-    gtk_menu_shell_append(GTK_MENU_SHELL(drawing_menu), gtk_separator_menu_item_new());
-    for (i = 0; i < NUM_DRAWS; i++) {
-        draw_systems[i] = gtk_radio_menu_item_new_with_label(draw_group, "");
-        draw_group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(draw_systems[i]));
-        gtk_menu_shell_append(GTK_MENU_SHELL(drawing_menu), draw_systems[i]);
-        g_signal_connect(G_OBJECT(draw_systems[i]), "activate", G_CALLBACK(set_draw_system), 
-                         (gpointer)i);
-    }
 
     /* Create the Results menu content. */
     results_print_all              = gtk_menu_item_new_with_label(_("Print All (Web And PDF)"));
@@ -374,7 +358,6 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     preference_password               = gtk_menu_item_new_with_label(_("Password"));
     preference_mirror                 = gtk_check_menu_item_new_with_label("");
     preference_auto_arrange           = gtk_check_menu_item_new_with_label("");
-    preference_use_weights            = gtk_check_menu_item_new_with_label("");
     preference_use_logo               = gtk_menu_item_new_with_label("");
 
     preference_serial                 = gtk_menu_item_new_with_label(_(""));
@@ -443,7 +426,6 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_auto_sheet_update);
     gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_mirror);
     gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_auto_arrange);
-    gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_use_weights);
     gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_password);
 
     gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_serial);
@@ -485,7 +467,6 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     g_signal_connect(G_OBJECT(preference_password),               "activate", G_CALLBACK(set_webpassword_dialog), 0);
     g_signal_connect(G_OBJECT(preference_mirror),                 "activate", G_CALLBACK(toggle_mirror), 0);
     g_signal_connect(G_OBJECT(preference_auto_arrange),           "activate", G_CALLBACK(toggle_auto_arrange), 0);
-    g_signal_connect(G_OBJECT(preference_use_weights),            "activate", G_CALLBACK(toggle_use_weights), 0);
     g_signal_connect(G_OBJECT(preference_use_logo),               "activate", G_CALLBACK(select_use_logo), 0);
     g_signal_connect(G_OBJECT(preference_serial),                 "activate", G_CALLBACK(set_serial_dialog), 0);
     g_signal_connect(G_OBJECT(preference_medal_matches),          "activate", G_CALLBACK(move_medal_matches), 0);
@@ -511,8 +492,6 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
 
 void set_configuration(void)
 {
-    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(category_best_of_three),
-                                   three_matches_for_two);
 }
 
 void set_preferences(void)
@@ -614,11 +593,6 @@ void set_preferences(void)
     }
 
     error = NULL;
-    if (g_key_file_get_boolean(keyfile, "preferences", "useweights", &error) || error) {
-        gtk_menu_item_activate(GTK_MENU_ITEM(preference_use_weights));
-    }
-
-    error = NULL;
     x1 = g_key_file_get_integer(keyfile, "preferences", "printlanguage", &error);
     if (!error)
         print_lang = x1;
@@ -687,7 +661,6 @@ void set_preferences(void)
         draw_system = x1;
     else
         draw_system = DRAW_INTERNATIONAL;
-    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(draw_systems[draw_system]), TRUE);
 
     error = NULL;
     str = g_key_file_get_string(keyfile, "preferences", "logofile", &error);
@@ -770,7 +743,6 @@ void set_menu_active(void)
     SET_SENSITIVE(category_print_all_pdf  , DB_OK);
     SET_SENSITIVE(category_print_matches  , DB_OK);
     SET_SENSITIVE(category_properties     , DB_OK);
-    SET_SENSITIVE(category_best_of_three  , DB_OK);
 
     for (i = 0; i < NUM_TATAMIS; i++)
         SET_SENSITIVE(category_to_tatamis[i], DB_OK);
@@ -785,14 +757,13 @@ void set_menu_active(void)
 gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param)
 {
     gint i;
-    gchar *r = NULL;
     gchar buf[64];
     static gchar envbuf[32]; // this must be static for the putenv() function
 
     language = (gint)param;
     sprintf(envbuf, "LANGUAGE=%s", lang_names[language]);
     putenv(envbuf);
-    r = setlocale(LC_ALL, lang_names[language]);
+    setlocale(LC_ALL, lang_names[language]);
 
     gchar *dirname = g_build_filename(installation_dir, "share", "locale", NULL);
     bindtextdomain ("judoshiai", dirname);
@@ -838,7 +809,6 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(category_print_all_pdf  , _("Print All (PDF)"));
     change_menu_label(category_print_matches  , _("Print Matches (CSV)"));
     change_menu_label(category_properties     , _("Properties"));
-    change_menu_label(category_best_of_three  , _("Best of Three"));
 
     for (i = 0; i < NUM_TATAMIS; i++) {
         SPRINTF(buf, "%s %d %s", _("Place To"), i+1, _("Tatamis"));
@@ -846,9 +816,6 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     }
 
     change_menu_label(draw_all_categories, _("Draw All Categories"));
-
-    for (i = 0; i < NUM_DRAWS; i++)
-        change_menu_label(draw_systems[i], _(draw_system_names[i]));
 
     change_menu_label(results_print_all             , _("Print All (Web And PDF)"));
     change_menu_label(results_print_schedule_printer, _("Print Schedule"));
@@ -895,7 +862,6 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(preference_password              , _("Password"));
     change_menu_label(preference_mirror                , _("Mirror Tatami Order"));
     change_menu_label(preference_auto_arrange          , _("Automatic Match Delay"));
-    change_menu_label(preference_use_weights           , _("Resolve 3-Way Ties by Weights"));
     change_menu_label(preference_use_logo              , _("Print Logo"));
 
     change_menu_label(preference_serial                , _("Scale Serial Interface..."));

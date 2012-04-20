@@ -35,7 +35,9 @@ struct model_iter {
 GtkWidget *competitor_dialog = NULL; 
 GtkWindow *bcdialog = NULL;
 
-char *belts[] = {
+gchar *belts[NUM_BELTS] = {0};
+
+gchar *belts_defaults[] = {
     "?", "6.kyu", "5.kyu", "4.kyu", "3.kyu", "2.kyu", "1.kyu",
     "1.dan", "2.dan", "3.dan", "4.dan", "5.dan", "6.dan", "7.dan", "8.dan", "9.dan",
     "5.mon", "4.mon", "3.mon", "2.mon", "1.mon",
@@ -468,7 +470,7 @@ void view_on_row_activated(GtkTreeView        *treeview,
         tmp = gtk_label_new(_("Grade:"));
         gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, row, row+1);
         judoka_tmp->belt = tmp = gtk_combo_box_new_text();
-        for (i = 0; belts[i]; i++)
+        for (i = 0; belts[i] && belts[i][0]; i++)
             gtk_combo_box_append_text((GtkComboBox *)tmp, belts[i]);
         gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, row, row+1);
         gtk_combo_box_set_active((GtkComboBox *)tmp, belt);
@@ -745,7 +747,7 @@ void last_name_cell_data_func (GtkTreeViewColumn *col,
             tie = catdata ? catdata->tie : FALSE;
         }
 
-        if (tie && use_weights == FALSE)
+        if (tie && prop_get_int_val(PROP_RESOLVE_3_WAY_TIES_BY_WEIGHTS) == FALSE)
             g_object_set(renderer, 
                          "cell-background", "Red", 
                          "cell-background-set", TRUE, 
@@ -1365,7 +1367,8 @@ void set_judokas_page(GtkWidget *notebook)
     GtkWidget *view;
     GtkTreeViewColumn *col;
     gboolean retval = FALSE;
-
+    gint i;
+    
 #if 0
     GtkSettings *settings = gtk_settings_get_default();
     gtk_settings_set_long_property(settings ,"gtk-tooltip-timeout", 500, NULL);

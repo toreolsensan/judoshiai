@@ -479,7 +479,7 @@ static gint num_matches_table_q[] = {0,0,0,0,0,0,0,0,4,6,8, // 0 - 10
 
 gint num_matches(gint sys, gint num_judokas)
 {
-    if (num_judokas == 2 && three_matches_for_two)
+    if (num_judokas == 2 && prop_get_int_val(PROP_THREE_MATCHES_FOR_TWO))
         return 3;
     else if (sys == SYSTEM_DPOOL)
         return num_matches_table_d[num_judokas]; 
@@ -775,7 +775,7 @@ static void update_pool_matches(gint category, gint num)
             ma.category = category;
             ma.number = last_match+i+1;
             if (pool_done[0] == FALSE || pool_done[1] == FALSE || 
-                (catdata && catdata->tie && use_weights == FALSE)) {
+                (catdata && catdata->tie && prop_get_int_val(PROP_RESOLVE_3_WAY_TIES_BY_WEIGHTS) == FALSE)) {
                 ma.blue = 0;
                 ma.white = 0;
             } else {
@@ -818,7 +818,7 @@ static void update_pool_matches(gint category, gint num)
             ma.category = category;
             ma.number = last_match+i+1;
 
-            if (catdata == NULL || catdata->tie == FALSE || use_weights) {
+            if (catdata == NULL || catdata->tie == FALSE || prop_get_int_val(PROP_RESOLVE_3_WAY_TIES_BY_WEIGHTS)) {
                 if (pool_done[i])
                     ma.blue = (pm.j[c[i][1]]->deleted & HANSOKUMAKE) ? GHOST : pm.j[c[i][1]]->index;
 
@@ -2179,7 +2179,7 @@ static GtkWidget *create_view_and_model(void)
     renderer = gtk_cell_renderer_text_new();
     g_object_set(renderer, "xalign", 0.0, NULL);
     col_offset = gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(view),
-                                                             -1, info_white_first ? _("White") : _("Blue"),
+                                                             -1, prop_get_int_val(PROP_WHITE_FIRST) ? _("White") : _("Blue"),
                                                              renderer, "text",
                                                              COL_MATCH_BLUE,
                                                              /*"visible",
@@ -2253,7 +2253,7 @@ static GtkWidget *create_view_and_model(void)
     renderer = gtk_cell_renderer_text_new();
     g_object_set(renderer, "xalign", 0.0, NULL);
     col_offset = gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(view),
-                                                             -1, info_white_first ? _("Blue") : _("White"),
+                                                             -1, prop_get_int_val(PROP_WHITE_FIRST) ? _("Blue") : _("White"),
                                                              renderer, "text",
                                                              COL_MATCH_WHITE,
                                                              "visible",
@@ -2884,7 +2884,7 @@ void set_match_col_titles(void)
         gtk_tree_view_column_set_title(col, _("Match"));
 
         col = gtk_tree_view_get_column(GTK_TREE_VIEW(match_view[i]), COL_MATCH_BLUE);
-        gtk_tree_view_column_set_title(col, info_white_first ? _("White") : _("Blue"));
+        gtk_tree_view_column_set_title(col, prop_get_int_val(PROP_WHITE_FIRST) ? _("White") : _("Blue"));
 
         col = gtk_tree_view_get_column(GTK_TREE_VIEW(match_view[i]), COL_MATCH_BLUE_POINTS);
         gtk_tree_view_column_set_title(col, _("Points"));
@@ -2893,7 +2893,7 @@ void set_match_col_titles(void)
         gtk_tree_view_column_set_title(col, _("Points"));
 
         col = gtk_tree_view_get_column(GTK_TREE_VIEW(match_view[i]), COL_MATCH_WHITE);
-        gtk_tree_view_column_set_title(col, info_white_first ? _("Blue") : _("White"));
+        gtk_tree_view_column_set_title(col, prop_get_int_val(PROP_WHITE_FIRST) ? _("Blue") : _("White"));
 
         col = gtk_tree_view_get_column(GTK_TREE_VIEW(match_view[i]), COL_MATCH_TIME);
         gtk_tree_view_column_set_title(col, _("Time"));
