@@ -385,7 +385,7 @@ static void toggle(void)
             st[0].score = 0;
         }
         update_display();
-        video_save();
+        video_record(FALSE);
     } else if (!st[0].running) {
         if (total > 600) // don't let clock run if dashes in display '-:--'
             return;
@@ -401,6 +401,7 @@ static void toggle(void)
             set_comment_text("");
         }
         update_display();
+        video_record(TRUE);
     }
 }
 

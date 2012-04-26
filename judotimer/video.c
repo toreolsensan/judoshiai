@@ -66,41 +66,39 @@
 #endif
 
 #include <gtk/gtk.h>
+#include <librsvg/rsvg.h>
+#include <librsvg/rsvg-cairo.h>
 
 #include "judotimer.h"
 
-struct find_frame_internals {
-    gchar *data;
-    gint n, state, length;
-};
+struct find_frame_internals;
 
 static void open_media(gint num);
 static void close_media(void);
 static gboolean refresh_video(gpointer data);
 static gchar *find_frame(gchar c, gint *len, struct find_frame_internals *vars);
+static void on_button(GtkWidget *widget, gpointer data);
 
-#define VIDEO_BUF_LEN (1<<20)
-#define NUM_VIDEO_BUFFERS 2
+#define VIDEO_BUF_LEN (1<<22)
+#define NUM_VIDEO_BUFFERS 1
 
 #define USE_PROXY (video_proxy_host[0] && video_proxy_port)
 
-enum {
-    PREVIOUS,
-    REWIND,
-    STOP,
-    PLAY_PAUSE,
-    FORWARD,
-    NEXT,
-    VIEW
+struct find_frame_internals {
+    gchar *data;
+    gint n, state, length;
+    gint bstate, estate;
+    gboolean header, body;
 };
 
 static struct video_buffer {
     gchar *buffer;
     gint offset;
     gboolean full;
-    glong start, end, duration;
 } video_buffers[NUM_VIDEO_BUFFERS];
 static gint current = 0;
+
+G_LOCK_DEFINE(video);
 
 gboolean video_update = FALSE;
 gchar  video_http_host[128] = {0};
@@ -113,11 +111,30 @@ guint  video_proxy_port = 0;
 static glong  video_http_addr = 0;
 static gboolean connection_ok = FALSE;
 static gboolean record = TRUE;
+static gboolean header_found = FALSE;
+static gint header_state = 0, end_state = 0;
+static gchar boundary[64];
+static gint bytecount = 0, bps = 0;
+
+//xxxxxx
 
 #define play_img gtk_image_new_from_stock(GTK_STOCK_MEDIA_PLAY, GTK_ICON_SIZE_BUTTON)
 #define pause_img gtk_image_new_from_stock(GTK_STOCK_MEDIA_PAUSE, GTK_ICON_SIZE_BUTTON)
 
-static GtkWidget *playpause_button;
+enum {
+    BUTTON_CAMERA, BUTTON_REVERSE, BUTTON_PAUSE, 
+    BUTTON_SLOW, BUTTON_PLAY, BUTTON_EXIT, NUM_BUTTONS
+};
+
+static gchar *button_names[NUM_BUTTONS] = {"#camera", "#reverse", "#pause", "#slow", "#play", "#exit"};
+static gchar *button_names1[NUM_BUTTONS] = {"#camera1", "#reverse1", "#pause1", "#slow1", "#play1", "#exit"};
+
+//static gchar *button_icons[NUM_BUTTONS] = {"camera.png", "reverse.png", "pause.png", "slow.png", "play.png", "exit.png"};
+//static gchar *button_icons1[NUM_BUTTONS] = {"camera1.png", "reverse1.png", "pause1.png", "slow1.png", "play1.png", "exit.png"};
+static GtkWidget *button_pics[NUM_BUTTONS];
+static GtkWidget *button_pics1[NUM_BUTTONS];
+static GtkWidget *button_w[NUM_BUTTONS];
+
 static GtkWidget *slider;
 static gint current_media = 1;
 static gint direction = 1;
@@ -126,6 +143,64 @@ static gint fps = 10, framecnt, curpos, view_fps;
 static gchar *frame_now;
 static gint length_now;
 static gboolean view = FALSE;
+
+#define BSIZEX 24
+#define BSIZEY 24
+
+static GtkWidget *get_image_from_svg(RsvgHandle *h, const gchar *pic)
+{
+    RsvgPositionData position;
+    RsvgDimensionData dimensions;
+    rsvg_handle_get_position_sub(h, &position, pic);
+    rsvg_handle_get_dimensions_sub(h, &dimensions, pic);
+
+    GdkPixbuf *pb = rsvg_handle_get_pixbuf_sub(h, pic);
+    if (!pb) return NULL;
+
+    gdouble scalex = 1.0*BSIZEX/dimensions.width;
+    gdouble scaley = 1.0*BSIZEY/dimensions.height;
+    GdkPixbuf *pb1 = gdk_pixbuf_new(GDK_COLORSPACE_RGB, TRUE, 8, BSIZEX, BSIZEY);
+
+    gdk_pixbuf_scale(pb, pb1, 0, 0, BSIZEX, BSIZEY, 
+                     -scalex*position.x, -scaley*position.y,
+                     scalex, scaley,
+                     GDK_INTERP_BILINEAR);
+    return gtk_image_new_from_pixbuf(pb1);
+}
+
+void video_init(void)
+{
+    gint i;
+    gchar *file = g_build_filename(installation_dir, "etc", "buttons.svg", NULL);
+    RsvgHandle *h = rsvg_handle_new_from_file(file, NULL);
+    g_free(file);
+
+    if (!h)
+        return;
+
+    for (i = 0; i < NUM_BUTTONS; i++) {
+        button_pics[i] = get_image_from_svg(h, button_names[i]);
+        if (button_pics[i]) g_object_ref(button_pics[i]);
+
+        button_pics1[i] = get_image_from_svg(h, button_names1[i]);
+        if (button_pics1[i]) g_object_ref(button_pics1[i]);
+    }
+
+    g_object_unref(h);
+
+#if 0
+    for (i = 0; i < NUM_BUTTONS; i++) {
+        gchar *file = g_build_filename(installation_dir, "etc", button_icons[i], NULL);
+        button_pics[i] = gtk_image_new_from_file(file);
+        g_object_ref(button_pics[i]);
+        g_free(file);
+        file = g_build_filename(installation_dir, "etc", button_icons1[i], NULL);
+        button_pics1[i] = gtk_image_new_from_file(file);
+        g_object_ref(button_pics1[i]);
+        g_free(file);
+    }
+#endif
+}
 
 glong hostname_to_addr(gchar *str)
 {
@@ -165,7 +240,7 @@ gpointer video_thread(gpointer args)
     SOCKET comm_fd;
     gint n;
     struct sockaddr_in node;
-    static guchar buf[1000];
+    static guchar buf[2048];
     fd_set read_fd, fds;
     guint  http_port;
     struct video_buffer *vb;
@@ -212,20 +287,26 @@ gpointer video_thread(gpointer args)
         vb = &video_buffers[current];
         vb->offset = 0;
         vb->full = FALSE;
-        vb->start = time(NULL);
 
         g_print("Video connection OK.\n");
 
         /* send http request */
         if (USE_PROXY)
             n = snprintf((gchar *)buf, sizeof(buf), 
-                         "GET http://%s:%d/%s HTTP/1.0\r\n"
+                         "GET http://%s:%d/%s HTTP/1.1\r\n"
+                         "Host: %s:%d\r\n"
+                         "Connection: keep-alive\r\nAccept: */*\r\n"
                          "User-Agent: JudoTimer\r\n", 
-                         video_http_host, video_http_port, video_http_path);
+                         video_http_host, video_http_port, video_http_path,
+                         video_http_host, video_http_port);
         else
             n = snprintf((gchar *)buf, sizeof(buf), 
-                         "GET /%s HTTP/1.0\r\n"
-                         "User-Agent: JudoTimer\r\n", video_http_path);
+                         "GET /%s HTTP/1.1\r\n"
+                         "Host: %s:%d\r\n"
+                         "Connection: keep-alive\r\nAccept: */*\r\n"
+                         "User-Agent: JudoTimer\r\n",
+                         video_http_path,
+                         video_http_host, video_http_port);
 
         if (video_http_user[0]) {
             gchar auth[64];
@@ -240,6 +321,11 @@ gpointer video_thread(gpointer args)
         send(comm_fd, buf, n, 0);
 
         connection_ok = TRUE;
+        header_found = FALSE;
+        header_state = 0;
+        end_state = 0;
+        memset(boundary, 0, sizeof(boundary));
+        bytecount = 0;
 
         FD_ZERO(&read_fd);
         FD_SET(comm_fd, &read_fd);
@@ -259,58 +345,124 @@ gpointer video_thread(gpointer args)
 
             if (FD_ISSET(comm_fd, &fds)) {
                 glong now = time(NULL);
+                static glong last_time;
                 static glong view_start = 0;
                 static gint view_frames = 0;
                 static struct find_frame_internals view_vars;
 
-                if (record) {
-                    vb = &video_buffers[current];
-                    if ((n = recv(comm_fd, vb->buffer + vb->offset, VIDEO_BUF_LEN - vb->offset, 0)) > 0) {
-#if 0
-                        FILE *f = fopen("get.log", "a");
-                        if (f) {
-                            fwrite(vb->buffer + vb->offset, 1, n, f);
-                            fclose(f);
-                        }
-#endif
-                        if (view) {
-                            // find frames in real time
-                            gint i;
-                            for (i = 0; i < n; i++) {
-                                gint len;
-                                gchar *fr = find_frame(*(vb->buffer + vb->offset + i), &len, &view_vars);
-                                if (fr) {
-                                    if (frame_now) g_free(frame_now);
-                                    frame_now = fr;
-                                    length_now = len;
+                vb = &video_buffers[current];
+                n = recv(comm_fd, vb->buffer + vb->offset, VIDEO_BUF_LEN - vb->offset, 0);
 
-                                    view_frames++;
-                                    if (view_start == 0) view_start = now;
-                                    if (now > view_start + 3) {
-                                        view_fps = view_frames/(now - view_start);
-                                        view_frames = 0;
-                                        view_start = now;
-                                    }
-                                }
+                G_LOCK(video);
+
+                bytecount += n;
+                if (now > last_time + 3) {
+                    bps = bytecount/(now - last_time);
+                    bytecount = 0;
+                    last_time = now;
+                }
+#if 0
+                FILE *f = fopen("get.log", "a");
+                if (f) {
+                    fwrite(vb->buffer + vb->offset, 1, n, f);
+                    fclose(f);
+                }
+#endif
+                if (n > 0 && header_found == FALSE) {
+                    static gchar *boundary_text1 = "boundary=";
+                    static gchar *boundary_text2 = "BOUNDARY=";
+                    
+                    gint i;
+                    for (i = 0; i < n; i++) {
+                        gchar c = *(vb->buffer + vb->offset + i);
+                        
+                        if (header_state < 9) {
+                            if (boundary_text1[header_state] == c ||
+                                boundary_text2[header_state] == c)
+                                header_state++;
+                            else 
+                                header_state = 0;
+                        } else if (c <= ' ' || c == ';') {
+                            header_found = TRUE;
+                            g_print("found boundary='%s'\n", boundary);
+                            break;
+                        } else {
+                            if (header_state - 9 < sizeof(boundary) - 1) {
+                                boundary[header_state - 9] = c;
+                                header_state++;
+                            }
+                        }
+                        
+                        if (end_state == 0) { 
+                            if (c == '\n') end_state = 1;
+                        } else if (end_state == 1) {
+                            if (c == '\n') end_state = 2;
+                            else if (c != '\r') end_state = 0;
+                        } else if (end_state == 2) {
+                            if (c != '\r' && c != '\n') {
+                                end_state = 3;
+                                boundary[0] = c;
                             }
                         } else {
-                            view_frames = 0;
-                            view_start = 0;
+                            if (c > ' ' && c != ';') {
+                                if (end_state - 2 < sizeof(boundary) - 1) {
+                                    boundary[end_state - 2] = c;
+                                    end_state++;
+                                }
+                            } else {
+                                end_state = 0;
+                                header_found = TRUE;
+                                g_print("found boundary2='%s'\n", boundary);
+                                break;
+                            }
                         }
+                    } // for
+                } // if (header_found == FALSE)
 
+                if (n > 0 && header_found) {
+                    if (view) {
+                        // find frames in real time
+                        gint i;
+                        for (i = 0; i < n; i++) {
+                            gint len;
+                            gchar *fr = find_frame(*(vb->buffer + vb->offset + i), &len, &view_vars);
+                            if (fr) {
+                                if (frame_now) g_free(frame_now);
+                                frame_now = fr;
+                                length_now = len;
+
+                                view_frames++;
+                                if (view_start == 0) view_start = now;
+                                if (now > view_start + 3) {
+                                    view_fps = view_frames/(now - view_start);
+                                    view_frames = 0;
+                                    view_start = now;
+                                }
+                            }
+                        }
+                    } else {
+                        view_frames = 0;
+                        view_start = 0;
+                    }
+
+                    if (record) {
                         vb->offset += n;
                         if (vb->offset >= VIDEO_BUF_LEN) {
                             vb->offset = 0;
                             vb->full = TRUE;
-                            vb->duration = now - vb->start;
-                            vb->start = now;
+                            //vb->duration = now - vb->start;
+                            //vb->start = now;
                             //g_print("current=%d video buf len=%d\n", current, VIDEO_BUF_LEN);
                         }
-                    } else 
-                        break;
-                } 
-            }
-        }
+                    } // if record 
+                } // if (n > 0 && header_found)
+
+                G_UNLOCK(video);
+
+                if (n <= 0)
+                    break;
+            } // if (FD_ISSET(comm_fd, &fds))
+        } // while (video_update == FALSE)
 
         connection_ok = FALSE;
         closesocket(comm_fd);
@@ -325,12 +477,13 @@ gpointer video_thread(gpointer args)
     return NULL;
 }
 
-void video_save(void)
+void video_record(gboolean yes)
 {
+    record = yes;
+
+    /*
     if (!connection_ok)
         return;
-
-    record = FALSE;
 
     video_buffers[current].end = time(NULL);
     if (video_buffers[current].full == FALSE)
@@ -345,6 +498,7 @@ void video_save(void)
     video_buffers[current].start = time(NULL);
 
     record = TRUE;
+    */
 }
 
 
@@ -508,70 +662,95 @@ static void close_media(void)
 
 static gchar *find_frame(gchar c, gint *len, struct find_frame_internals *vars)
 {
-    switch (vars->state) {
-    case 16: // after length found
-        if (c == '\r') vars->state++;
-        break;
-    case 17: // after cr
-        if (c == '\n') vars->state++;
-        else if (c != '\r') vars->state = 16;
-        break;
-    case 18: // after cr nl
-        if (c == '\r') vars->state++;
-        else vars->state = 16;
-        break;
-    case 19: // after cr nl cr
-        if (c == '\n') {
-            // start reading data
+    if (header_found == FALSE)
+        return NULL;
+
+    // look for boundary text
+    if (boundary[vars->bstate] == c)
+        vars->bstate++;
+    else
+        vars->bstate = 0;
+
+    if (boundary[vars->bstate] == 0) {
+        gchar *f = vars->data;
+        if (vars->n > vars->bstate)
+            *len = vars->n - vars->bstate;
+        else
+            *len = 0;
+        vars->n = 0;
+        vars->state = 0;
+        vars->data = NULL;
+        vars->header = TRUE;
+        vars->body = FALSE;
+        vars->bstate = 0;
+        vars->length = 0;
+        return f;
+    }
+
+    // look for content length
+    if (vars->header) {
+        if (vars->state == 15) {
+            if (c >= '0' && c <= '9')
+                vars->length = 10*vars->length + c - '0';
+            else if (c != ' ') {
+                vars->state = 0;
+            }
+        } else if (vars->state < 15 && 
+                   (c == contlen1[vars->state] || c == contlen2[vars->state])) {
             vars->state++;
-            vars->data = g_malloc(vars->length);
-            vars->n = 0;
-        } else if (c == '\r') vars->state = 17;
-        else vars->state = 16;
-        break;
-    case 20: // reading data
+            if (vars->state == 15)
+                vars->length = 0;
+        } else vars->state = 0;
+
+        if (vars->estate == 0) { 
+            if (c == '\n')
+                vars->estate = 1;
+        } else {
+            if (c == '\n') {
+                vars->estate = 0;
+                vars->header = FALSE;
+                vars->body = TRUE;
+                if (vars->length < 100 || vars->length > 100000)
+                    vars->length = 60000;
+                if (vars->data)
+                    g_free(vars->data);
+                vars->data = g_malloc(vars->length);
+                vars->n = 0;
+            } else if (c != '\r')
+                vars->estate = 0;
+        }
+    } else if (vars->body) {
         if (vars->length) {
             vars->data[vars->n++] = c;
             vars->length--;
         }
         if (vars->length == 0) {
+            gchar *f = vars->data;
             *len = vars->n;
             vars->n = 0;
             vars->state = 0;
-            return vars->data;
+            vars->body = FALSE;
+            vars->header = FALSE;
+            vars->data = NULL;
+            return f;
         }
-        break;
-    case 15:
-        if (c >= '0' && c <= '9')
-            vars->length = 10*vars->length + c - '0';
-        else if (c != ' ') {
-            if (vars->length > 100000) vars->state = 0;
-            else if (c == '\r') vars->state = 17;
-            else vars->state = 16;
-        }
-        break;
-    default:
-        if (vars->state < 15 && (c == contlen1[vars->state] || c == contlen2[vars->state])) {
-            vars->state++;
-            if (vars->state == 15) {
-                vars->length = 0;
-            }                
-        } else vars->state = 0;
-    } // switch
+    }
 
     return NULL;
 }
 
 static void open_media(gint num) 
 {
-    gint last = (current + NUM_VIDEO_BUFFERS - num) % NUM_VIDEO_BUFFERS;
-    struct video_buffer *vb = &video_buffers[last];
-    gint ix = 0, length;
+    //gint last = (current + NUM_VIDEO_BUFFERS - num) % NUM_VIDEO_BUFFERS;
+    struct video_buffer *vb = &video_buffers[current];
+    gint ix = 0, length, tot_length = 0;
     struct frame *f = NULL, *p = NULL;
     struct find_frame_internals media_vars;
 
     memset(&media_vars, 0, sizeof(media_vars));
     framecnt = 0;
+
+    G_LOCK(video);
 
     if (vb->full) ix = vb->offset+1;
 
@@ -583,6 +762,7 @@ static void open_media(gint num)
             f = g_malloc0(sizeof(*f));
             f->data = fr;
             f->length = length;
+            tot_length += length;
             p = &frames;
             while (p->next) p = p->next;
             p->next = f;
@@ -593,16 +773,16 @@ static void open_media(gint num)
         ix++;
     }
 
-    if (vb->duration)    
-        fps = framecnt/vb->duration;
-    else
-        fps = 10;
+    G_UNLOCK(video);
 
+    if (tot_length)
+        fps = (bps*framecnt)/tot_length;
+    else
+        fps = 5;
+
+    //g_print("framecnt=%d tot=%d bps=%d fps=%d\n", framecnt, tot_length, bps, fps);
     fp = frames.next;
-    direction = 1;
-    play = TRUE;
     curpos = 1;
-    gtk_button_set_image(GTK_BUTTON(playpause_button), pause_img);
 
     // find position 5 sec before end
     gint targetpos = framecnt - 5*fps;
@@ -610,17 +790,23 @@ static void open_media(gint num)
         fp = fp->next;
         curpos++;
     }
+
+    on_button(NULL, (gpointer)BUTTON_SLOW);
 }
 
 static void on_button(GtkWidget *widget, gpointer data) 
 {
     gint button = (gint)data;
+    gint i;
 
     view = FALSE;
 
+    for (i = 0; i < NUM_BUTTONS; i++)
+        gtk_button_set_image(GTK_BUTTON(button_w[i]), i == button ? button_pics1[i] : button_pics[i]);
+
     switch (button) {
+#if 0
     case PREVIOUS:
-        gtk_button_set_image(GTK_BUTTON(playpause_button), play_img);
         direction = 1;
         play = FALSE;
         gtk_range_set_value(GTK_RANGE(slider), 0.0);
@@ -632,27 +818,26 @@ static void on_button(GtkWidget *widget, gpointer data)
         }
 #endif
         break;
-    case REWIND:
-        gtk_button_set_image(GTK_BUTTON(playpause_button), pause_img);
-        direction = -2;
+#endif
+    case BUTTON_CAMERA:
+        view = TRUE;
+        break;
+    case BUTTON_REVERSE:
+        direction = -1;
         play = TRUE;
         break;
-    case STOP:
-    case PLAY_PAUSE:
-        if (play) {
-            gtk_button_set_image(GTK_BUTTON(playpause_button), play_img);
-            play = FALSE;
-        } else {
-            gtk_button_set_image(GTK_BUTTON(playpause_button), pause_img);
-            direction = 1;
-            play = TRUE;
-        }
+    case BUTTON_PAUSE:
+        play = FALSE;
         break;
-    case FORWARD:
-        gtk_button_set_image(GTK_BUTTON(playpause_button), pause_img);
-        direction = 2;
+    case BUTTON_SLOW:
+        direction = 3;
         play = TRUE;
         break;
+    case BUTTON_PLAY:
+        direction = 1;
+        play = TRUE;
+        break;
+#if 0
     case NEXT:
         gtk_button_set_image(GTK_BUTTON(playpause_button), play_img);
         direction = 1;
@@ -666,9 +851,7 @@ static void on_button(GtkWidget *widget, gpointer data)
         }
 #endif
         break;
-    case VIEW:
-        view = TRUE;
-        break;
+#endif
     }
 }
 
@@ -755,6 +938,9 @@ static gboolean expose_video(GtkWidget *widget, GdkEventExpose *event, gpointer 
         cairo_move_to(c, 30.0/scale, 50.0/scale);
         snprintf(buf, sizeof(buf), "%d fps", view_fps);
         cairo_show_text(c, buf);
+        cairo_move_to(c, 30.0/scale, 70.0/scale);
+        snprintf(buf, sizeof(buf), "%d bits/s", bps*8);
+        cairo_show_text(c, buf);
     }
     
     g_object_unref(pb);
@@ -807,29 +993,27 @@ static gboolean refresh_video(gpointer data)
 
     if (direction > 0) {
         if (fp->next && fp->next->length > 100) {
-            fp = fp->next;
-            curpos++;
-        }
-        if (direction == 2 && fp->next && fp->next->length > 100) {
-            fp = fp->next;
-            curpos++;
+            static gint cnt = 0;
+            if (++cnt >= direction) {
+                fp = fp->next;
+                curpos++;
+                cnt = 0;
+            }
         }
         if (fp->next == NULL || fp->next->length < 100) {
-            play = FALSE;
-            gtk_button_set_image(GTK_BUTTON(playpause_button), play_img);
+            on_button(NULL, (gpointer)BUTTON_PAUSE);
         }
     } else if (direction < 0) {
         if (fp->prev && fp->prev->length > 100) {
-            fp = fp->prev;
-            curpos--;
-        }
-        if (direction == 2 && fp->prev && fp->prev->length > 100) {
-            fp = fp->prev;
-            curpos--;
+            static gint cnt = 0;
+            if (--cnt <= direction) {
+                fp = fp->prev;
+                curpos--;
+                cnt = 0;
+            }
         }
         if (fp->prev == NULL || fp->prev->length < 100) {
-            play = FALSE;
-            gtk_button_set_image(GTK_BUTTON(playpause_button), play_img);
+            on_button(NULL, (gpointer)BUTTON_PAUSE);
         }
     }
 
@@ -851,15 +1035,10 @@ void create_video_window(void)
     GtkWidget
         *vbox,
         *player_widget,
-        *hbuttonbox,
-        *stop_button,
-        *forward_button,
-        *next_button,
-        *rewind_button,
-        *previous_button,
-        *view_button;
+        *hbuttonbox;
     gint width;
     gint height;
+    gint i;
 
     gtk_window_get_size(GTK_WINDOW(main_window), &width, &height);
 
@@ -886,50 +1065,21 @@ void create_video_window(void)
 
     //setup controls
     //playpause_button = gtk_button_new_from_stock(GTK_STOCK_MEDIA_PLAY);
-    playpause_button = gtk_button_new();
-    gtk_button_set_image(GTK_BUTTON(playpause_button), pause_img);
-
-    stop_button = gtk_button_new();
-    gtk_button_set_image(GTK_BUTTON(stop_button), 
-                         gtk_image_new_from_stock(GTK_STOCK_CLOSE, GTK_ICON_SIZE_BUTTON));
-
-    previous_button = gtk_button_new();
-    gtk_button_set_image(GTK_BUTTON(previous_button), 
-                         gtk_image_new_from_stock(GTK_STOCK_MEDIA_PREVIOUS, GTK_ICON_SIZE_BUTTON));
-
-    forward_button = gtk_button_new();
-    gtk_button_set_image(GTK_BUTTON(forward_button), 
-                         gtk_image_new_from_stock(GTK_STOCK_MEDIA_FORWARD, GTK_ICON_SIZE_BUTTON));
-
-    next_button = gtk_button_new();
-    gtk_button_set_image(GTK_BUTTON(next_button), 
-                         gtk_image_new_from_stock(GTK_STOCK_MEDIA_NEXT, GTK_ICON_SIZE_BUTTON));
-
-    rewind_button = gtk_button_new();
-    gtk_button_set_image(GTK_BUTTON(rewind_button), 
-                         gtk_image_new_from_stock(GTK_STOCK_MEDIA_REWIND, GTK_ICON_SIZE_BUTTON));
-
-    view_button = gtk_button_new();
-    gtk_button_set_image(GTK_BUTTON(view_button), gtk_image_new_from_stock(GTK_STOCK_DIALOG_INFO, GTK_ICON_SIZE_BUTTON));
-
-    g_signal_connect(stop_button, "clicked", G_CALLBACK(close_video), window);
-    g_signal_connect(playpause_button, "clicked", G_CALLBACK(on_button), (gpointer)PLAY_PAUSE);
-    g_signal_connect(previous_button, "clicked", G_CALLBACK(on_button), (gpointer)PREVIOUS);
-    g_signal_connect(forward_button, "clicked", G_CALLBACK(on_button), (gpointer)FORWARD);
-    g_signal_connect(next_button, "clicked", G_CALLBACK(on_button), (gpointer)NEXT);
-    g_signal_connect(rewind_button, "clicked", G_CALLBACK(on_button), (gpointer)REWIND);
-    g_signal_connect(view_button, "clicked", G_CALLBACK(on_button), (gpointer)VIEW);
 
     hbuttonbox = gtk_hbutton_box_new();
     gtk_container_set_border_width(GTK_CONTAINER(hbuttonbox), 5);
     gtk_button_box_set_layout(GTK_BUTTON_BOX(hbuttonbox), GTK_BUTTONBOX_START);
-    gtk_box_pack_start(GTK_BOX(hbuttonbox), view_button, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(hbuttonbox), previous_button, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(hbuttonbox), rewind_button, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(hbuttonbox), playpause_button, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(hbuttonbox), forward_button, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(hbuttonbox), next_button, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(hbuttonbox), stop_button, FALSE, FALSE, 0);
+
+    for (i = 0; i < NUM_BUTTONS; i++) {
+        button_w[i] = gtk_button_new();
+        gtk_button_set_image(GTK_BUTTON(button_w[i]), button_pics[i]);
+        if (i == BUTTON_EXIT)
+            g_signal_connect(button_w[i], "clicked", G_CALLBACK(close_video), window);
+        else
+            g_signal_connect(button_w[i], "clicked", G_CALLBACK(on_button), (gpointer)i);
+        gtk_box_pack_start(GTK_BOX(hbuttonbox), button_w[i], FALSE, FALSE, 0);
+    }
+
     gtk_box_pack_start(GTK_BOX(vbox), hbuttonbox, FALSE, FALSE, 0);
 
     g_signal_connect(G_OBJECT(player_widget), 

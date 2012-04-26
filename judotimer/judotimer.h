@@ -204,7 +204,8 @@ extern void set_competitor_window_rest_time(gint min, gint tsec, gint sec, gbool
 extern void set_font(gchar *font);
 extern void font_dialog(GtkWidget *w, gpointer data);
 extern void create_video_window(void);
-extern void video_save(void);
+extern void video_record(gboolean yes);
 extern glong hostname_to_addr(gchar *str);
+extern void video_init(void);
 
 #endif

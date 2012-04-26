@@ -788,7 +788,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     static gchar envbuf[32]; // this must be static for the putenv() function
 
     language = (gint)param;
-    sprintf(envbuf, "LANGUAGE=%s", lang_names[language]);
+    snprintf(envbuf, sizeof(envbuf), "LANGUAGE=%s", lang_names[language]);
     putenv(envbuf);
     setlocale(LC_ALL, lang_names[language]);
 
