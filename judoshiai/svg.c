@@ -34,7 +34,7 @@
 
 #define MATCHED(_a) (m[_a].blue_points || m[_a].white_points)
 
-static gboolean debug = TRUE;
+static gboolean debug = FALSE;
 
 #define WRITE2(_s, _l)                                                     \
     do { if (dfile) fwrite(_s, 1, _l, dfile);                            \
@@ -50,6 +50,10 @@ static gboolean debug = TRUE;
             WRITE2("&lt;", 4);                                          \
         else if (_s[_i] == '>')                                         \
             WRITE2("&gt;", 4);                                          \
+        else if (_s[_i] == '\'')                                         \
+            WRITE2("&apos;", 6);                                          \
+        else if (_s[_i] == '"')                                         \
+            WRITE2("&quot;", 6);                                          \
         else                                                            \
             WRITE2(&_s[_i], 1);                                         \
         }} while (0)
@@ -95,6 +99,12 @@ static struct svg_props {
 
 gchar *svg_directory = NULL;
 static gint num_svg, num_svg_info;
+
+#define NUM_LEGENDS 20
+static struct {
+    cairo_surface_t *cs;
+    gint width, height;
+} legends[NUM_LEGENDS];
 
 static struct svg_props *find_svg_info(gint key)
 {
@@ -366,6 +376,7 @@ gint paint_svg(struct paint_data *pd)
             p++;
         }
 #endif
+
         if (*p == '%') {
             memset(attr, 0, sizeof(attr));
             cnt = 0;
@@ -685,6 +696,41 @@ gint paint_svg(struct paint_data *pd)
         } else {
             //g_print("%c", *p);
             WRITE2(p, 1);
+
+            static const gchar *look_match_str = "id=\"match";
+            static gint look_match_state = 0;
+            static gint look_match_num = 0;
+
+            if (look_match_state == 9) {
+                if (*p >= '0' && *p <= '9')
+                    look_match_num = 10*look_match_num + *p - '0';
+                else
+                    look_match_state = 0;
+            } else {
+                if (look_match_state < 9 && *p == look_match_str[look_match_state])
+                    look_match_state++;
+                else
+                    look_match_state = 0;
+
+                if (look_match_state == 9)
+                    look_match_num = 0;
+            }
+
+            static const gchar *look_legend_str = "href=\"#lgnd";
+            static gint look_legend_state = 0;
+
+            if (look_legend_state < 11 && *p == look_legend_str[look_legend_state])
+                look_legend_state++;
+            else
+                look_legend_state = 0;
+            
+            if (look_legend_state == 11) {
+                gchar buf[16];
+                snprintf(buf, sizeof(buf), "%d", m[look_match_num].legend);
+                WRITE(buf);
+                look_legend_state = 0;
+            }
+
             p++;
         }
     }
@@ -736,6 +782,30 @@ gint paint_svg(struct paint_data *pd)
     cairo_save(pd->c);
     cairo_scale(pd->c, pd->paper_width/svgwidth, pd->paper_width/svgwidth);
     rsvg_handle_render_cairo(handle, pd->c);
+
+    // Legends
+    gint f;
+
+    for (f = 1; m[f].number == f; f++) {
+        snprintf(buf, sizeof(buf), "#m%dl", f);
+        if (rsvg_handle_has_sub(handle, buf)) {
+            gint l = m[f].legend;
+            RsvgPositionData position;
+            RsvgDimensionData dimensions;
+            rsvg_handle_get_position_sub(handle, &position, buf);
+            rsvg_handle_get_dimensions_sub(handle, &dimensions, buf);
+
+            if (legends[l].cs && legends[l].height && dimensions.height) {
+                cairo_save(pd->c);
+                gdouble scale = 1.0*dimensions.height/legends[l].height;
+                cairo_scale(pd->c, scale, scale);
+                cairo_set_source_surface(pd->c, legends[l].cs, position.x/scale, position.y/scale);
+                cairo_paint(pd->c);
+                cairo_restore(pd->c);
+            }
+        }
+    }            
+    
     cairo_restore(pd->c);
 
     rsvg_handle_free(handle);
@@ -789,6 +859,7 @@ void select_svg_dir(GtkWidget *menu_item, gpointer data)
 void read_svg_files(gboolean ok)
 {
     gint i;
+    gchar *fullname;
 
     // free old data
     for (i = 0; i < NUM_SVG; i++) {
@@ -808,7 +879,7 @@ void read_svg_files(gboolean ok)
     if (dir) {
         const gchar *fname = g_dir_read_name(dir);
         while (fname) {
-            gchar *fullname = g_build_filename(svg_directory, fname, NULL);
+            fullname = g_build_filename(svg_directory, fname, NULL);
             if (strstr(fname, ".svg") && num_svg < NUM_SVG) {
                 gint a, b, c;
                 gint n = sscanf(fname, "%d-%d-%d.svg", &a, &b, &c);
@@ -846,6 +917,37 @@ void read_svg_files(gboolean ok)
             fname = g_dir_read_name(dir);
         }
         g_dir_close(dir);
-    }
+
+        fullname = g_build_filename(svg_directory, "legends.svg", NULL);
+        RsvgHandle *legends_h = rsvg_handle_new_from_file(fullname, NULL);
+        g_free(fullname);
+
+        gchar buf[32];
+        gint l = 0;
+
+        snprintf(buf, sizeof(buf), "#legend%d", l);
+
+        while (rsvg_handle_has_sub(legends_h, buf) && l < NUM_LEGENDS) {
+            RsvgPositionData position;
+            RsvgDimensionData dimensions;
+            rsvg_handle_get_position_sub(legends_h, &position, buf);
+            rsvg_handle_get_dimensions_sub(legends_h, &dimensions, buf);
+            legends[l].width = dimensions.width;
+            legends[l].height = dimensions.height;
+            if (legends[l].cs) cairo_surface_destroy(legends[l].cs);
+            legends[l].cs = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 
+                                                       dimensions.width+1, dimensions.height+1);
+            cairo_t *c = cairo_create(legends[l].cs);
+            cairo_translate(c, -position.x, -position.y);
+            gboolean r = rsvg_handle_render_cairo_sub(legends_h, c, buf);
+            cairo_show_page(c);
+            cairo_destroy(c);
+
+            l++;
+            snprintf(buf, sizeof(buf), "#legend%d", l);
+        }            
+
+        rsvg_handle_free(legends_h);
+    } // if dir
 }
 

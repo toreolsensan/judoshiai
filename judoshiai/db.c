@@ -305,12 +305,14 @@ gint db_init(const char *dbname)
     if (!comp_comment_exists) {
         g_print("comment does not exist, add one\n");
         db_exec(db_name, "ALTER TABLE competitors ADD \"comment\" TEXT", NULL, NULL);
+        db_exec(db_name, "UPDATE competitors SET \"comment\"=\"\" ", NULL, NULL);
     }
 
     if (!match_date_exists) {
         g_print("date and legend do not exist, add one\n");
         db_exec(db_name, "ALTER TABLE matches ADD \"date\" INTEGER", NULL, NULL);
         db_exec(db_name, "ALTER TABLE matches ADD \"legend\" INTEGER", NULL, NULL);
+        db_exec(db_name, "UPDATE matches SET \"date\"=0, \"legend\"=0 ", NULL, NULL);
     }
 
     if (!tatami_exists || !number_exists || !country_exists || !id_exists || !numcomp_exists || !seeding_exists ||
