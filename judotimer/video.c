@@ -179,27 +179,16 @@ void video_init(void)
         return;
 
     for (i = 0; i < NUM_BUTTONS; i++) {
+        if (button_pics[i]) g_object_unref(button_pics[i]);
         button_pics[i] = get_image_from_svg(h, button_names[i]);
         if (button_pics[i]) g_object_ref(button_pics[i]);
 
+        if (button_pics1[i]) g_object_unref(button_pics1[i]);
         button_pics1[i] = get_image_from_svg(h, button_names1[i]);
         if (button_pics1[i]) g_object_ref(button_pics1[i]);
     }
 
     g_object_unref(h);
-
-#if 0
-    for (i = 0; i < NUM_BUTTONS; i++) {
-        gchar *file = g_build_filename(installation_dir, "etc", button_icons[i], NULL);
-        button_pics[i] = gtk_image_new_from_file(file);
-        g_object_ref(button_pics[i]);
-        g_free(file);
-        file = g_build_filename(installation_dir, "etc", button_icons1[i], NULL);
-        button_pics1[i] = gtk_image_new_from_file(file);
-        g_object_ref(button_pics1[i]);
-        g_free(file);
-    }
-#endif
 }
 
 glong hostname_to_addr(gchar *str)
@@ -801,8 +790,10 @@ static void on_button(GtkWidget *widget, gpointer data)
 
     view = FALSE;
 
-    for (i = 0; i < NUM_BUTTONS; i++)
-        gtk_button_set_image(GTK_BUTTON(button_w[i]), i == button ? button_pics1[i] : button_pics[i]);
+    for (i = 0; i < NUM_BUTTONS; i++) {
+        gtk_button_set_image(GTK_BUTTON(button_w[i]), 
+                             i == button ? button_pics1[i] : button_pics[i]);
+    }
 
     switch (button) {
 #if 0
@@ -1069,6 +1060,8 @@ void create_video_window(void)
     hbuttonbox = gtk_hbutton_box_new();
     gtk_container_set_border_width(GTK_CONTAINER(hbuttonbox), 5);
     gtk_button_box_set_layout(GTK_BUTTON_BOX(hbuttonbox), GTK_BUTTONBOX_START);
+
+    video_init();
 
     for (i = 0; i < NUM_BUTTONS; i++) {
         button_w[i] = gtk_button_new();

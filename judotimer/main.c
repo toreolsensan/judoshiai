@@ -1702,7 +1702,7 @@ int main( int   argc,
     gdk_window_set_cursor(GTK_WIDGET(main_window)->window, cursor);
 
     open_sound();
-    video_init();
+    //video_init();
 
     for (i = 1; i < argc; i++) {
         if (argv[i][0] == '-' && argv[i][1] == 'd') {
