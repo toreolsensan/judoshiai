@@ -2138,3 +2138,22 @@ gint num_matches_left(gint index, gint competitors)
 
     return n;
 }
+
+gint num_matches_estimate(gint index)
+{
+    struct compsys systm = get_cat_system(index);
+
+    if (system_is_french(systm.system)) {
+        return french_num_matches[systm.table][systm.system - SYSTEM_FRENCH_8];
+    }
+
+    gint n = num_matches(systm.system, systm.numcomp);
+    switch (systm.system) {
+    case SYSTEM_POOL:  return n;
+    case SYSTEM_DPOOL: return n + 3;
+    case SYSTEM_QPOOL: return n + 7;
+    case SYSTEM_DPOOL2: return n + 6;
+    }
+
+    return 1;
+}

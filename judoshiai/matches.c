@@ -1358,7 +1358,7 @@ void send_matches(gint tatami)
                                                       next_matches_info[t][0].won_matchnum);
     send_packet(&msg);
 
-    for (k = 0; k < NEXT_MATCH_NUM; k++) {
+    for (k = 0; k < INFO_MATCH_NUM; k++) {
         send_match(tatami, k+1, &(m[k]));
     }
 }

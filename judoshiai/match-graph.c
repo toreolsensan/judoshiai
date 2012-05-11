@@ -535,7 +535,7 @@ void set_match_graph_page(GtkWidget *notebook)
     gtk_container_set_border_width(GTK_CONTAINER(w.scrolled_window), 10);
 
     w.darea = gtk_drawing_area_new();
-    gtk_widget_set_size_request(w.darea, 600, 1000);
+    gtk_widget_set_size_request(w.darea, 600, 2000);
 
     GTK_WIDGET_SET_FLAGS(w.darea, GTK_CAN_FOCUS);
     gtk_widget_add_events(w.darea, 

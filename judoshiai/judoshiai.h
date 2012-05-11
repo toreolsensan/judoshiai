@@ -161,7 +161,8 @@ enum french_systems {
 #define GENDER_FEMALE 0x100
 #define POOL_TIE3     0x200
 
-#define NEXT_MATCH_NUM 10
+#define NEXT_MATCH_NUM 20
+#define INFO_MATCH_NUM 10
 #define WAITING_MATCH_NUM 40
 
 enum special_match_types {
@@ -1065,6 +1066,7 @@ extern gint get_matchnum_by_pos(struct compsys systm, gint pos, gint num);
 extern gint db_position_to_real(struct compsys sys, gint pos);
 extern gboolean is_repechage(struct compsys sys, gint m);
 extern gint num_matches_left(gint index, gint competitors);
+extern gint num_matches_estimate(gint index);
 
 /* medal-matches */
 extern void move_medal_matches(GtkWidget *menuitem, gpointer userdata);

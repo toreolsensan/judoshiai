@@ -1030,7 +1030,7 @@ void make_next_matches_html(void)
 
     // next matches
     g_static_mutex_lock(&next_match_mutex);
-    for (k = 0; k < NEXT_MATCH_NUM; k++) {
+    for (k = 0; k < INFO_MATCH_NUM; k++) {
         //gchar *bgcolor = (k & 1) ? "bgcolor=\"#a0a0a0\"" : "bgcolor=\"#f0f0f0\"";
         gchar *class_ul = (k & 1) ? "class=\"cul1\"" : "class=\"cul2\"";
         gchar *class_ur = (k & 1) ? "class=\"cur1\"" : "class=\"cur2\"";

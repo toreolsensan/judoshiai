@@ -217,13 +217,16 @@ static int db_callback_matches(void *data, int argc, char **argv, char **azColNa
                     (next_match[i].forcednumber > m.forcednumber))
                     insert = TRUE;
             } else if (next_match[i].forcednumber == 0) {
-                if ((next_match[i].group > m.group)     ||
-                    (next_match[i].group == m.group && 
-                     next_match[i].number > m.number)   ||
-                    (next_match[i].group == m.group && 
-                     next_match[i].number == m.number &&
-                     next_match[i].category > m.category))
-                    insert = TRUE;
+                if (next_match[i].group > m.group) insert = TRUE;
+                else if (next_match[i].group == m.group) {
+                    gint a = (100000*m.number)/num_matches_estimate(m.category);
+                    gint b = (100000*next_match[i].number)/num_matches_estimate(next_match[i].category);
+                    if (b > a) insert = TRUE;
+                    else if (b == a) {
+                        if (next_match[i].category > m.category)
+                            insert = TRUE;
+                    }
+                }
             }
             if (insert) {
                 INSERT_SPACE(i);
