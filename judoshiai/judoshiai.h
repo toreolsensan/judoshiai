@@ -1078,6 +1078,7 @@ extern void select_svg_dir(GtkWidget *menu_item, gpointer data);
 extern gboolean get_svg_page_size(gint index, gint pagenum, gint *width, gint *height);
 extern gboolean svg_landscape(gint ctg, gint page);
 extern gint get_num_svg_pages(struct compsys systm);
+extern gint paint_svg(struct paint_data *pd);
 
 /* properties */
 extern void init_property(gchar *prop, gchar *val);
