@@ -162,6 +162,8 @@ gint encode_msg(struct message *m, guchar *buf, gint buflen)
 	put32(m->u.edit_competitor.seeding);
 	put32(m->u.edit_competitor.clubseeding);
 	put32(m->u.edit_competitor.matchflags);
+	putstr(m->u.edit_competitor.comment);
+	putstr(m->u.edit_competitor.coachid);
 	break;
     }
 
@@ -325,6 +327,8 @@ gint decode_msg(struct message *m, guchar *buf, gint buflen)
 	get32(m->u.edit_competitor.seeding);
 	get32(m->u.edit_competitor.clubseeding);
 	get32(m->u.edit_competitor.matchflags);
+	getstr(m->u.edit_competitor.comment);
+	getstr(m->u.edit_competitor.coachid);
 	break;
     }
 

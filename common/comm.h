@@ -215,6 +215,8 @@ struct msg_edit_competitor {
     gint seeding;
     gint clubseeding;
     gint matchflags;
+    gchar comment[20];
+    gchar coachid[20];
 };
 
 struct msg_scale {
