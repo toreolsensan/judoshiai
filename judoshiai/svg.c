@@ -382,7 +382,7 @@ gint paint_svg(struct paint_data *pd)
             cnt = 0;
             p++;
 
-            while (IS_LABEL_CHAR(*p) || IS_VALUE_CHAR(*p) || *p == '-' || *p == '\'') {
+            while (IS_LABEL_CHAR(*p) || IS_VALUE_CHAR(*p) || *p == '-' || *p == '\'' || *p == '|') {
                 while (IS_LABEL_CHAR(*p))
                     attr[cnt].code[attr[cnt].codecnt++] = *p++;
                 
@@ -393,17 +393,17 @@ gint paint_svg(struct paint_data *pd)
 
                 if (*p == '-') p++;
 
-                if (*p == '\'') {
+                if (*p == '\'' || *p == '|') {
                     cnt++;
                     p++;
                     attr[cnt].code[0] = '\'';
                     attr[cnt].codecnt = 1;
-                    while (*p && *p != '\'') {
+                    while (*p && *p != '\'' && *p != '|') {
                         attr[cnt].code[attr[cnt].codecnt] = *p++;
                         if (attr[cnt].codecnt < CODE_LEN)
                             attr[cnt].codecnt++;
                     }
-                    if (*p == '\'')
+                    if (*p == '\'' || *p == '|')
                         p++;
                 }
 
@@ -700,10 +700,16 @@ gint paint_svg(struct paint_data *pd)
             static const gchar *look_match_str = "id=\"match";
             static gint look_match_state = 0;
             static gint look_match_num = 0;
+            static gint look_match_comp = 0;
 
-            if (look_match_state == 9) {
+            if (look_match_state == 10) {
+                look_match_comp = *p - '0';
+                look_match_state = 0;
+            } else if (look_match_state == 9) {
                 if (*p >= '0' && *p <= '9')
                     look_match_num = 10*look_match_num + *p - '0';
+                else if (*p == '-')
+                    look_match_state = 10;
                 else
                     look_match_state = 0;
             } else {
@@ -712,8 +718,10 @@ gint paint_svg(struct paint_data *pd)
                 else
                     look_match_state = 0;
 
-                if (look_match_state == 9)
+                if (look_match_state == 9) {
                     look_match_num = 0;
+                    look_match_comp = 3;
+                }
             }
 
             static const gchar *look_legend_str = "href=\"#lgnd";
@@ -725,9 +733,12 @@ gint paint_svg(struct paint_data *pd)
                 look_legend_state = 0;
             
             if (look_legend_state == 11) {
-                gchar buf[16];
-                snprintf(buf, sizeof(buf), "%d", m[look_match_num].legend);
-                WRITE(buf);
+                if ((m[look_match_num].blue_points && (look_match_comp & 1)) ||
+                    (m[look_match_num].white_points && (look_match_comp & 2))) {
+                    gchar buf[16];
+                    snprintf(buf, sizeof(buf), "%d", m[look_match_num].legend);
+                    WRITE(buf);
+                }
                 look_legend_state = 0;
             }
 
@@ -784,27 +795,39 @@ gint paint_svg(struct paint_data *pd)
     rsvg_handle_render_cairo(handle, pd->c);
 
     // Legends
-    gint f;
+    if (legends[0].cs) { // at least the first legend must be defined
+        gint f, a;
 
-    for (f = 1; m[f].number == f; f++) {
-        snprintf(buf, sizeof(buf), "#m%dl", f);
-        if (rsvg_handle_has_sub(handle, buf)) {
-            gint l = m[f].legend;
-            RsvgPositionData position;
-            RsvgDimensionData dimensions;
-            rsvg_handle_get_position_sub(handle, &position, buf);
-            rsvg_handle_get_dimensions_sub(handle, &dimensions, buf);
+        for (f = 1; m[f].number == f; f++) {
+            for (a = 0; a < 3; a++) {
+                if (a == 0)
+                    snprintf(buf, sizeof(buf), "#m%dl", f);
+                else if (a == 1 && m[f].blue_points)
+                    snprintf(buf, sizeof(buf), "#m%dl-1", f);
+                else if (a == 2 && m[f].white_points)
+                    snprintf(buf, sizeof(buf), "#m%dl-2", f);
+                else
+                    continue;
 
-            if (legends[l].cs && legends[l].height && dimensions.height) {
-                cairo_save(pd->c);
-                gdouble scale = 1.0*dimensions.height/legends[l].height;
-                cairo_scale(pd->c, scale, scale);
-                cairo_set_source_surface(pd->c, legends[l].cs, position.x/scale, position.y/scale);
-                cairo_paint(pd->c);
-                cairo_restore(pd->c);
-            }
-        }
-    }            
+                if (rsvg_handle_has_sub(handle, buf)) {
+                    gint l = m[f].legend;
+                    RsvgPositionData position;
+                    RsvgDimensionData dimensions;
+                    rsvg_handle_get_position_sub(handle, &position, buf);
+                    rsvg_handle_get_dimensions_sub(handle, &dimensions, buf);
+
+                    if (legends[l].cs && legends[l].height && dimensions.height) {
+                        cairo_save(pd->c);
+                        gdouble scale = 1.0*dimensions.height/legends[l].height;
+                        cairo_scale(pd->c, scale, scale);
+                        cairo_set_source_surface(pd->c, legends[l].cs, position.x/scale, position.y/scale);
+                        cairo_paint(pd->c);
+                        cairo_restore(pd->c);
+                    }
+                }
+            } // for a
+        } // for f
+    }
     
     cairo_restore(pd->c);
 
