@@ -186,6 +186,8 @@ static gboolean check_for_connection_status(gpointer data)
 
 void open_shiai_display(void)
 {
+    gint r;
+
     if (notebook)
         gtk_widget_destroy(notebook);
     notebook = NULL;
@@ -194,7 +196,8 @@ void open_shiai_display(void)
     current_category_index = 10000;
     current_category = 0;
 
-    if (db_init(database_name)) {
+    r = db_init(database_name);
+    if (r != 0 && r != 55555) {
         SHOW_MESSAGE("%s: %s", _("Cannot open"), database_name);
         return;
     }
@@ -222,6 +225,9 @@ void open_shiai_display(void)
     update_match_pages_visibility();
 
     SYS_LOG_INFO("%s %s", _("Tournament"), database_name);
+
+    if (r == 55555)
+        properties(NULL, NULL);
 }
 
 #if 0

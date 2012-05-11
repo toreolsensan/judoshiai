@@ -217,6 +217,8 @@ struct judoka *get_data_by_iter(GtkTreeIter *iter)
                        COL_ID, &j->id, 
                        COL_SEEDING, &j->seeding, 
                        COL_CLUBSEEDING, &j->clubseeding, 
+                       COL_COMMENT, &j->comment, 
+                       COL_COACHID, &j->coachid, 
                        -1);
     return j;
 }
@@ -241,6 +243,8 @@ struct judoka *get_data_by_iter_model(GtkTreeIter *iter, GtkTreeModel *model)
                        COL_ID, &j->id, 
                        COL_SEEDING, &j->seeding, 
                        COL_CLUBSEEDING, &j->clubseeding, 
+                       COL_COMMENT, &j->comment, 
+                       COL_COACHID, &j->coachid, 
                        -1);
     return j;
 }
@@ -278,6 +282,8 @@ void put_data_by_iter(struct judoka *j, GtkTreeIter *iter)
                        COL_ID,         j->id ? j->id : "",
                        COL_SEEDING,    j->seeding, 
                        COL_CLUBSEEDING,j->clubseeding, 
+                       COL_COMMENT,    j->comment ? j->comment : "", 
+                       COL_COACHID,    j->coachid ? j->coachid : "", 
                        -1);
 }
 
@@ -306,6 +312,8 @@ void put_data_by_iter_model(struct judoka *j, GtkTreeIter *iter, GtkTreeModel *m
                        COL_ID,         j->id ? j->id : "",
                        COL_SEEDING,    j->seeding, 
                        COL_CLUBSEEDING,j->clubseeding, 
+                       COL_COMMENT,    j->comment ? j->comment : "", 
+                       COL_COACHID,    j->coachid ? j->coachid : "", 
                        -1);
 }
 
@@ -333,6 +341,8 @@ void free_judoka(struct judoka *j)
     FREE(category);
     FREE(country);
     FREE(id);
+    FREE(comment);
+    FREE(coachid);
 
     g_free(j);
 }
@@ -585,7 +595,7 @@ gboolean firstname_lastname(void)
 
 const gchar *esc_quote(const gchar *txt)
 {
-    static gchar buffers[8][64];
+    static gchar buffers[16][64];
     static gint n = 0;
     gchar *p;
     gint i = 0;
@@ -603,7 +613,7 @@ const gchar *esc_quote(const gchar *txt)
     buffers[n][i] = 0;
 
     p = buffers[n];
-    if (++n >= 8)
+    if (++n >= 16)
 	n = 0;
 
     return p;

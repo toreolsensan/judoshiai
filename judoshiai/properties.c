@@ -269,7 +269,7 @@ void init_property(gchar *prop, gchar *val)
                 for (k = 0; k < NUM_BELTS && b[k]; k++)
                     belts[k] = g_strdup(b[k]);
                 g_strfreev(b);
-                g_print("init prop: %s\n", props[i].value);
+                //g_print("init prop: %s\n", props[i].value);
             }
 
             if (i == PROP_NUM_TATAMIS)
@@ -496,9 +496,11 @@ void properties(GtkWidget *w, gpointer data)
     GtkWidget *table3 = gtk_table_new(3, 8, FALSE);
     GtkWidget *table4 = gtk_table_new(1, 3, FALSE);
     GtkWidget *table5 = gtk_table_new(8, 4, FALSE);
+    GtkWidget *table6 = gtk_table_new(2, 2, FALSE);
     gint       num_comp, num_weighted;
     gint       row[NUM_TBLS] = {0}, col[NUM_TBLS] = {0}, i;
     gint       tbl = 0;
+    gchar      buf[16];
 
     for (i = 0; i < NUM_TBLS; i++)
         tables[i] = gtk_table_new(1, 1, FALSE);
@@ -594,6 +596,17 @@ void properties(GtkWidget *w, gpointer data)
 
     frame = gtk_frame_new(_("Pool settings"));
     gtk_container_add(GTK_CONTAINER(frame), tables[1]);
+    gtk_box_pack_start_defaults(GTK_BOX(vbox2), frame);
+
+    // table6 -- statistics
+    gtk_table_attach_defaults(GTK_TABLE(table6), gtk_label_new(_("Competitors:")), 0, 1, 0, 1);
+    gtk_table_attach_defaults(GTK_TABLE(table6), gtk_label_new(_("Weighted:")), 0, 1, 1, 2);
+    sprintf(buf, "%d", num_comp);
+    gtk_table_attach_defaults(GTK_TABLE(table6), gtk_label_new(buf), 1, 2, 0, 1);
+    sprintf(buf, "%d", num_weighted);
+    gtk_table_attach_defaults(GTK_TABLE(table6), gtk_label_new(buf), 1, 2, 1, 2);
+    frame = gtk_frame_new(_("Statistics"));
+    gtk_container_add(GTK_CONTAINER(frame), table6);
     gtk_box_pack_start_defaults(GTK_BOX(vbox2), frame);
 
     gtk_box_pack_start(GTK_BOX(hbox), vbox2, FALSE, FALSE, 0);

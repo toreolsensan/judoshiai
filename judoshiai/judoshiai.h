@@ -244,6 +244,8 @@ enum {
     COL_ID,
     COL_SEEDING,
     COL_CLUBSEEDING,
+    COL_COMMENT,
+    COL_COACHID,
     NUM_COLS
 };
 
@@ -438,6 +440,8 @@ struct judoka {
     gint          seeding;
     gint          clubseeding;
     gint          gender;
+    const gchar  *comment;
+    const gchar  *coachid;
 };
 
 struct match {
@@ -459,6 +463,7 @@ struct match {
     gint  flags; // defined in comm.h
     gint  forcedtatami;
     gint  forcednumber;
+    gint  date;
     gint  legend;
 };
 

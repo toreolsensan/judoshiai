@@ -237,6 +237,8 @@ void msg_received(struct message *input_msg)
 		CP2MSG_STR(id);
 		CP2MSG_INT(seeding);
 		CP2MSG_INT(clubseeding);
+		CP2MSG_STR(comment);
+		CP2MSG_STR(coachid);
                 output_msg.u.edit_competitor.matchflags = get_judogi_status(j->index);
 		free_judoka(j);
 	    }
@@ -286,6 +288,8 @@ void msg_received(struct message *input_msg)
 	    SET_J(id);
 	    SET_J(seeding);
 	    SET_J(clubseeding);
+	    SET_J(comment);
+	    SET_J(coachid);
 	    if (j2.index) { // edit old competitor 
 		j = get_data(j2.index);
 		if (j) {

@@ -99,6 +99,8 @@ static int db_callback_matches(void *data, int argc, char **argv, char **azColNa
             m.forcedtatami = val;
         else if (IS(forcednumber))
             m.forcednumber = val;
+        else if (IS(date))
+            m.date = val;
         else if (IS(legend))
             m.legend = val;
         else if (IS(deleted)) {
@@ -467,7 +469,7 @@ void db_add_match(struct match *m)
             m->category, m->number,
             m->blue, m->white, m->blue_score, m->white_score,
             m->blue_points, m->white_points,
-            m->match_time, m->comment, m->deleted, 0, 0, 0, 0);
+            m->match_time, m->comment, m->deleted, 0, 0, m->date, m->legend);
         
     //g_print("%s\n", buffer);
     db_exec(db_name, buffer, NULL, db_callback_matches);
@@ -622,7 +624,9 @@ void db_set_match(struct match *m1)
             m.match_time != m1->match_time ||
             m.comment != m1->comment ||
             m.forcedtatami != m1->forcedtatami ||
-            m.forcednumber != m1->forcednumber)
+            m.forcednumber != m1->forcednumber ||
+            m.date != m1->date ||
+            m.legend != m1->legend)
             db_update_match(m1);
     } else
         db_add_match(m1);
@@ -656,7 +660,7 @@ void db_remove_matches(guint category)
 void db_set_points(gint category, gint number, gint minutes, 
                    gint blue, gint white, gint blue_score, gint white_score, gint legend)
 {
-    gchar buffer[200];
+    gchar buffer[256];
 
     if (blue_score || white_score || minutes) // full information available
         sprintf(buffer, 

@@ -180,6 +180,8 @@ static int db_callback_tables(void *data, int argc, char **argv, char **azColNam
 
 gint db_init(const char *dbname)
 {
+    gint r = 0;
+    
     // try to open db
     FILE *f = fopen(dbname, "rb");
     if (f)
@@ -214,7 +216,7 @@ gint db_init(const char *dbname)
 
     sqlite3_close(db);
 
-    if (compcols   > 16 ||
+    if (compcols   > 17 ||
         catcols    > 17 || 
         matchcols  > 15 ||
         infocols   > 2  ||
@@ -305,7 +307,8 @@ gint db_init(const char *dbname)
     if (!comp_comment_exists) {
         g_print("comment does not exist, add one\n");
         db_exec(db_name, "ALTER TABLE competitors ADD \"comment\" TEXT", NULL, NULL);
-        db_exec(db_name, "UPDATE competitors SET \"comment\"=\"\" ", NULL, NULL);
+        db_exec(db_name, "ALTER TABLE competitors ADD \"coachid\" TEXT", NULL, NULL);
+        db_exec(db_name, "UPDATE competitors SET \"comment\"=\"\", \"coachid\"=\"\" ", NULL, NULL);
     }
 
     if (!match_date_exists) {
@@ -316,12 +319,14 @@ gint db_init(const char *dbname)
     }
 
     if (!tatami_exists || !number_exists || !country_exists || !id_exists || !numcomp_exists || !seeding_exists ||
-        !comp_comment_exists || !match_date_exists)
+        !comp_comment_exists || !match_date_exists) {
+        r = 55555;
         SHOW_MESSAGE("%s", _("Database tables updated."));
+    }
 
     set_menu_active();
 
-    return 0;
+    return r;
 }
 
 void db_new(const char *dbname)
@@ -334,7 +339,7 @@ void db_new(const char *dbname)
         "\"weight\" INTEGER, \"visible\" INTEGER, "
         "\"category\" TEXT, \"deleted\" INTEGER, "
         "\"country\" TEXT, \"id\" TEXT, \"seeding\" INTEGER, \"clubseeding\" INTEGER, "
-        "\"comment\" TEXT )";
+        "\"comment\" TEXT, \"coachid\" TEXT )";
     char *cmd3 = "CREATE TABLE categories ("
         "\"index\" INTEGER, \"category\" TEXT, \"tatami\" INTEGER, "
         "\"deleted\" INTEGER, \"group\" INTEGER, \"system\" INTEGER, "
@@ -348,7 +353,7 @@ void db_new(const char *dbname)
         "\"blue_score\" INTEGER, \"white_score\" INTEGER, "
         "\"blue_points\" INTEGER, \"white_points\" INTEGER, "
         "\"time\" INTEGER, \"comment\" INTEGER, \"deleted\" INTEGER, "
-        "\"forcedtatami\" INTEGER, \"forcednumber\" INTEGER "
+        "\"forcedtatami\" INTEGER, \"forcednumber\" INTEGER, "
         "\"date\" INTEGER, \"legend\" INTEGER )";
     char *cmd5 = "CREATE TABLE \"info\" ("
         "\"item\" TEXT, \"value\" TEXT )";

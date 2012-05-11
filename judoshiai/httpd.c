@@ -67,7 +67,9 @@ struct judoka unknown_judoka = {
     .country = "",
     .regcategory = "?",
     .category = "?",
-    .id = ""
+    .id = "",
+    .comment = "",
+    .coachid = ""
 };
 
 #define NUM_CONNECTIONS 16

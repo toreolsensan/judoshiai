@@ -24,9 +24,11 @@ enum {
     TXT_REGCAT,
     TXT_WEIGHT,
     TXT_ID,
+    TXT_COACHID,
     TXT_SEEDING,
     TXT_CLUBSEEDING,
     TXT_GENDER,
+    TXT_COMMENT,
     TXT_GIRLSTR,
     TXT_SEPARATOR,
     NUM_TXTS
@@ -89,6 +91,8 @@ static gboolean add_competitor(gchar **tokens, gint num_cols, struct i_text *d)
     j.club = "";
     j.country = "";
     j.id = "";
+    j.comment = "";
+    j.coachid = "";
 
     lastname = g_utf8_strup(tokens[d->columns[TXT_LAST] - 1], -1);
     j.last = lastname;
@@ -113,6 +117,9 @@ static gboolean add_competitor(gchar **tokens, gint num_cols, struct i_text *d)
 
     if (valid_data(TXT_ID, tokens, num_cols, d))
         j.id = tokens[d->columns[TXT_ID] - 1];
+
+    if (valid_data(TXT_COACHID, tokens, num_cols, d))
+        j.coachid = tokens[d->columns[TXT_COACHID] - 1];
 
     if (valid_data(TXT_REGCAT, tokens, num_cols, d))
         j.regcategory = tokens[d->columns[TXT_REGCAT] - 1];
@@ -153,6 +160,9 @@ static gboolean add_competitor(gchar **tokens, gint num_cols, struct i_text *d)
 
     if (valid_data(TXT_CLUBSEEDING, tokens, num_cols, d))
         j.clubseeding = atoi(tokens[d->columns[TXT_CLUBSEEDING] - 1]);
+
+    if (valid_data(TXT_COMMENT, tokens, num_cols, d))
+        j.comment = tokens[d->columns[TXT_COMMENT] - 1];
 
     GtkTreeIter iter;
     if (find_iter_name_2(&iter, j.last, j.first, j.club, j.regcategory)) {
@@ -239,7 +249,7 @@ static void import_txt(gchar *fname, gboolean test, struct i_text *d)
         }
 
         if (test) {
-            for (i = 0; i <= TXT_GENDER; i++) {
+            for (i = 0; i <= TXT_COMMENT; i++) {
                 print_item(i, tokens, num_cols, d);
             }
         } else {
@@ -433,11 +443,13 @@ void import_txt_dialog(GtkWidget *w, gpointer arg)
     get_preferences_int("importtxtcolclub",   &data->columns[TXT_CLUB]);
     get_preferences_int("importtxtcolcountry",&data->columns[TXT_COUNTRY]);
     get_preferences_int("importtxtcolid",     &data->columns[TXT_ID]);
+    get_preferences_int("importtxtcolcoachid",&data->columns[TXT_COACHID]);
     get_preferences_int("importtxtcolregcat", &data->columns[TXT_REGCAT]);
     get_preferences_int("importtxtcolweight", &data->columns[TXT_WEIGHT]);
     get_preferences_int("importtxtcolgender", &data->columns[TXT_GENDER]);
     get_preferences_int("importtxtcolseeding",&data->columns[TXT_SEEDING]);
     get_preferences_int("importtxtcolclubseeding",&data->columns[TXT_CLUBSEEDING]);
+    get_preferences_int("importtxtcolcomment",&data->columns[TXT_COMMENT]);
     get_preferences_str("importtxtgirlstr",    data->girlstr);
     get_preferences_str("importtxtseparator",  data->separator);
     if (data->separator[0] == 0)
@@ -453,7 +465,7 @@ void import_txt_dialog(GtkWidget *w, gpointer arg)
     data->lineread = gtk_label_new("");
     gtk_container_add(GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), data->lineread);
 
-    table = gtk_table_new(3, 9, FALSE);
+    table = gtk_table_new(3, 16, FALSE);
     gtk_container_add(GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), table);
 
     data->fields[TXT_LAST]      = set_col_entry (table, 0, _("Last Name:"),        data->columns[TXT_LAST],   data);
@@ -465,11 +477,13 @@ void import_txt_dialog(GtkWidget *w, gpointer arg)
     data->fields[TXT_REGCAT]    = set_col_entry (table, 6, _("Category:"),         data->columns[TXT_REGCAT], data);
     data->fields[TXT_WEIGHT]    = set_col_entry (table, 7, _("Weight:"),           data->columns[TXT_WEIGHT], data);
     data->fields[TXT_ID]        = set_col_entry (table, 8, _("Id:"),               data->columns[TXT_ID],     data);
-    data->fields[TXT_SEEDING]   = set_col_entry (table, 9, _("Seeding:"),          data->columns[TXT_SEEDING],data);
-    data->fields[TXT_CLUBSEEDING] = set_col_entry (table,10, _("Club Seeding:"),   data->columns[TXT_CLUBSEEDING],data);
-    data->fields[TXT_GENDER]    = set_col_entry (table,11, _("Sex:"),              data->columns[TXT_GENDER], data);
-    data->fields[TXT_GIRLSTR]   = set_text_entry(table,12, _("Girl Text:"),        data->girlstr,             data);
-    data->fields[TXT_SEPARATOR] = set_text_entry(table,13, _("Column Separator:"), data->separator,           data);
+    data->fields[TXT_COACHID]   = set_col_entry (table, 9, _("Coach Id:"),         data->columns[TXT_COACHID],data);
+    data->fields[TXT_SEEDING]   = set_col_entry (table,10, _("Seeding:"),          data->columns[TXT_SEEDING],data);
+    data->fields[TXT_CLUBSEEDING] = set_col_entry (table,11, _("Club Seeding:"),   data->columns[TXT_CLUBSEEDING],data);
+    data->fields[TXT_GENDER]    = set_col_entry (table,12, _("Sex:"),              data->columns[TXT_GENDER], data);
+    data->fields[TXT_COMMENT]   = set_col_entry (table,13, _("Comment:"),          data->columns[TXT_COMMENT],data);
+    data->fields[TXT_GIRLSTR]   = set_text_entry(table,14, _("Girl Text:"),        data->girlstr,             data);
+    data->fields[TXT_SEPARATOR] = set_text_entry(table,15, _("Column Separator:"), data->separator,           data);
 
     gtk_widget_show_all(dialog);
 
@@ -488,6 +502,7 @@ void import_txt_dialog(GtkWidget *w, gpointer arg)
         set_preferences_int("importtxtcolclub",   data->columns[TXT_CLUB]);
         set_preferences_int("importtxtcolcountry",data->columns[TXT_COUNTRY]);
         set_preferences_int("importtxtcolid",     data->columns[TXT_ID]);
+        set_preferences_int("importtxtcolcoachid",data->columns[TXT_COACHID]);
         set_preferences_int("importtxtcolregcat", data->columns[TXT_REGCAT]);
         set_preferences_int("importtxtcolweight", data->columns[TXT_WEIGHT]);
         set_preferences_int("importtxtcolgender", data->columns[TXT_GENDER]);
@@ -495,6 +510,7 @@ void import_txt_dialog(GtkWidget *w, gpointer arg)
         set_preferences_int("importtxtcolclubseeding",data->columns[TXT_CLUBSEEDING]);
         set_preferences_str("importtxtgirlstr",   data->girlstr);
         set_preferences_str("importtxtseparator", data->separator);
+        set_preferences_int("importtxtcolcomment",data->columns[TXT_COMMENT]);
     }
 
     gtk_widget_destroy(dialog);

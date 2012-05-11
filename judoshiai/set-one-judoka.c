@@ -44,6 +44,8 @@ gint set_category(GtkTreeIter *iter, guint index,
     j.id = "";
     j.seeding = 0;
     j.clubseeding = 0;
+    j.comment = "";
+    j.coachid = "";
 
     put_data_by_iter(&j, iter);
 

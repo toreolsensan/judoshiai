@@ -65,6 +65,8 @@ struct judoka_widget {
     GtkWidget *realcategory;
     GtkWidget *gender;
     GtkWidget *judogi;
+    GtkWidget *comment;
+    GtkWidget *coachid;
 };
 
 GtkWidget *weight_entry = NULL;
@@ -169,6 +171,12 @@ static void judoka_edited_callback(GtkWidget *widget,
     if (judoka_tmp->system)
         system.wishsys = get_system_number_by_menu_pos(gtk_combo_box_get_active
                                                        (GTK_COMBO_BOX(judoka_tmp->system)));
+
+    if (judoka_tmp->comment)
+        edited.comment = g_strdup(gtk_entry_get_text(GTK_ENTRY(judoka_tmp->comment)));
+
+    if (judoka_tmp->coachid)
+        edited.coachid = g_strdup(gtk_entry_get_text(GTK_ENTRY(judoka_tmp->coachid)));
 
     if ((event_id != GTK_RESPONSE_OK && event_id != RESPONSE_PRINT) || 
         edited.last == NULL || 
@@ -338,6 +346,8 @@ out:
     g_free((gpointer)edited.country);
     g_free((gpointer)edited.regcategory);
     g_free((gpointer)edited.id);
+    g_free((gpointer)edited.comment);
+    g_free((gpointer)edited.coachid);
     g_free(data);
     g_free(realcategory);
 
@@ -385,7 +395,9 @@ void view_on_row_activated(GtkTreeView        *treeview,
         *regcategory = NULL,
         *category = NULL,
 	*country = NULL,
-	*id = NULL;
+	*id = NULL,
+        *comment = NULL,
+        *coachid = NULL;
     guint belt, index, birthyear;
     gint weight, seeding = 0, clubseeding = 0;
     gboolean visible;
@@ -417,6 +429,8 @@ void view_on_row_activated(GtkTreeView        *treeview,
 			       COL_ID, &id,
 			       COL_SEEDING, &seeding,
 			       COL_CLUBSEEDING, &clubseeding,
+			       COL_COMMENT, &comment,
+			       COL_COACHID, &coachid,
                                -1);
             snprintf(weight_s, sizeof(weight_s), "%d,%02d", weight/1000, (weight%1000)/10);
             snprintf(birthyear_s, sizeof(birthyear_s), "%d", birthyear);
@@ -548,6 +562,8 @@ void view_on_row_activated(GtkTreeView        *treeview,
 
         judoka_tmp->id = set_entry(table, row++, _("Id:"), id);
 
+        judoka_tmp->coachid = set_entry(table, row++, _("Coach Id:"), coachid);
+
         tmp = gtk_label_new(_("Gender:"));
         gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, row, row+1);
         judoka_tmp->gender = tmp = gtk_combo_box_new_text();
@@ -589,6 +605,9 @@ void view_on_row_activated(GtkTreeView        *treeview,
         g_signal_connect(G_OBJECT(judoka_tmp->club), "key-press-event", 
                          G_CALLBACK(complete_cb), club_completer);
         row++;
+
+        judoka_tmp->comment = set_entry(table, row++, _("Comment:"), comment);
+        gtk_entry_set_max_length(GTK_ENTRY(judoka_tmp->comment), 100);
     } else {
         struct category_data *catdata = NULL;
         catdata = avl_get_category(index);
@@ -630,6 +649,8 @@ void view_on_row_activated(GtkTreeView        *treeview,
     g_free(category);
     g_free(country);
     g_free(id);
+    g_free(comment);
+    g_free(coachid);
 
     gtk_widget_show_all(dialog);
     editing_ongoing = TRUE;
@@ -669,7 +690,9 @@ static GtkTreeModel *create_and_fill_model (void)
                                       G_TYPE_UINT,   /* deleted */
 				      G_TYPE_STRING, /* id */
                                       G_TYPE_UINT,   /* seeding */
-                                      G_TYPE_UINT    /* clubseeding */
+                                      G_TYPE_UINT,   /* clubseeding */
+				      G_TYPE_STRING, /* comment */
+				      G_TYPE_STRING  /* coachid */
         );
     current_model = (GtkTreeModel *)td.treestore;
     sortable = GTK_TREE_SORTABLE(current_model);
@@ -702,6 +725,7 @@ void last_name_cell_data_func (GtkTreeViewColumn *col,
     guint  index;
     guint  weight;
     gint   seeding;
+    gchar *comment = NULL;
 
     gtk_tree_model_get(model, iter, 
                        COL_INDEX, &index,
@@ -709,13 +733,15 @@ void last_name_cell_data_func (GtkTreeViewColumn *col,
                        COL_VISIBLE, &visible, 
                        COL_WEIGHT, &weight,
                        COL_SEEDING, &seeding,
-                       COL_DELETED, &deleted, -1);
+                       COL_DELETED, &deleted, 
+                       COL_COMMENT, &comment, -1);
 
     if (visible) {
         if (seeding)
-            g_snprintf(buf, sizeof(buf), "%s (%d)", last, seeding);
+            g_snprintf(buf, sizeof(buf), "%s (%d)%s", last, seeding,
+                       comment && comment[0] ? " *" : "");
         else
-            g_snprintf(buf, sizeof(buf), "%s", last);
+            g_snprintf(buf, sizeof(buf), "%s%s", last, comment && comment[0] ? " *" : "");
 
         if (deleted & HANSOKUMAKE)
             g_object_set(renderer, "strikethrough", TRUE, "cell-background-set", FALSE, NULL);
@@ -787,6 +813,7 @@ void last_name_cell_data_func (GtkTreeViewColumn *col,
 
     g_object_set(renderer, "text", buf, NULL);
     g_free(last);
+    g_free(comment);
 }
 
 void first_name_cell_data_func (GtkTreeViewColumn *col,
@@ -1320,40 +1347,51 @@ static gboolean compare_search_key(GtkTreeModel *model,
 }
 #endif
 
-#if 0
+#if 1
 gboolean query_tooltip (GtkWidget  *widget, gint x, gint y, gboolean keyboard_mode,
                         GtkTooltip *tooltip, gpointer user_data)
 {
-    GtkTreePath* path;
-    GtkTreePath* path2;
-    GtkTreeViewDropPosition pos;
-    GtkTreeViewColumn* col;
-    gint cx, cy;
+    GtkTreePath* path = NULL;
+    GtkTreeViewColumn *col, *last_col;
+    gint cx, cy, bx, by;
+    gboolean r = FALSE;
 
-    gtk_tree_view_get_path_at_pos((GtkTreeView*)widget, x, y, &path,
-                                  &col, &cx, &cy);
-    gtk_tree_view_get_dest_row_at_pos((GtkTreeView*)widget, x, y, &path2, &pos);
+    if (keyboard_mode)
+        gtk_tree_view_convert_widget_to_tree_coords(GTK_TREE_VIEW(widget), x, y, &bx, &by);
+    else
+        gtk_tree_view_convert_widget_to_bin_window_coords(GTK_TREE_VIEW(widget), x, y, &bx, &by);
 
-    if (path2) {
+    if (!gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(widget), bx, by, &path,
+                                       &col, &cx, &cy))
+        goto out;
+
+    last_col = gtk_tree_view_get_column(GTK_TREE_VIEW(widget), 0);
+
+    if (col != last_col)
+        goto out;
+
+    if (path) {
         GtkTreeIter iter;
-        gtk_tree_model_get_iter(current_model, &iter, path2);
+        gtk_tree_model_get_iter(current_model, &iter, path);
+#if 0
+        printf("INFO: get_path_at_pos: %s -- x,y: %d/%d %d/%d %d/%d\n",
+               (path == NULL ? "NULL" : gtk_tree_path_to_string(path)),
+               x, y, bx, by, cx, cy);
+#endif
         struct judoka *j = get_data_by_iter(&iter);
         if (j) {
-            gtk_tooltip_set_text(tooltip, j->last);
+            if (j->comment && j->comment[0]) {
+                r = TRUE;
+                gtk_tooltip_set_text(tooltip, j->comment);
+            }
             free_judoka(j);
-            return x < 40;
         }
     }
 
+ out:
+    if (path) gtk_tree_path_free(path);
 
-    printf("INFO: get_path_at_pos: %s -- get_dest_row_at_pos: %s -- x,y: %d/%d\n",
-           (path == NULL ? "NULL" : gtk_tree_path_to_string(path)),
-           (path2 == NULL ? "NULL" : gtk_tree_path_to_string(path2)),
-           x, y);
-
-    gtk_tooltip_set_text(tooltip, "Testing");
-    
-    return x < 40;
+    return r;
 }
 #endif
 
@@ -1367,7 +1405,6 @@ void set_judokas_page(GtkWidget *notebook)
     GtkWidget *view;
     GtkTreeViewColumn *col;
     gboolean retval = FALSE;
-    gint i;
     
 #if 0
     GtkSettings *settings = gtk_settings_get_default();
@@ -1381,10 +1418,11 @@ void set_judokas_page(GtkWidget *notebook)
     gtk_container_set_border_width(GTK_CONTAINER(judokas_scrolled_window), 10);
 
     view = create_view_and_model();
-#if 0
+#if 1
     /* TESTING CODE */
     gtk_widget_set_has_tooltip(view, TRUE);
-    g_signal_connect (view, "query-tooltip", query_tooltip, NULL);
+    //gtk_tree_view_set_tooltip_column(view, COL_COMMENT);
+    g_signal_connect (view, "query-tooltip", G_CALLBACK(query_tooltip), NULL);
     /****/
 #endif
     /* pack the table into the scrolled window */

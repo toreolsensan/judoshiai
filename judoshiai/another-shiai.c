@@ -88,6 +88,8 @@ static gint set_one_category(GtkTreeModel *model, GtkTreeIter *iter, guint index
     j.category = "";
     j.deleted = 0;
     j.id = "";
+    j.comment = "";
+    j.coachid = "";
 
     put_data_by_iter_model(&j, iter, model);
 
@@ -189,6 +191,10 @@ static int db_competitor_callback(void *data, int argc, char **argv, char **azCo
             j.seeding = argv[i] ? atoi(argv[i]) : 0;
         else if (IS(clubseeding))
             j.clubseeding = argv[i] ? atoi(argv[i]) : 0;
+        else if (IS(comment))
+            j.comment = argv[i] ? argv[i] : "";
+        else if (IS(coachid))
+            j.coachid = argv[i] ? argv[i] : "";
     }
 
     if ((j.deleted & DELETED))
@@ -289,6 +295,10 @@ static int db_match_callback(void *data, int argc, char **argv, char **azColName
             m.match_time = val;
         else if (IS(comment))
             m.comment = val;
+        else if (IS(date))
+            m.date = val;
+        else if (IS(legend))
+            m.legend = val;
         else if (IS(deleted)) {
             m.deleted = val;
         }
@@ -325,7 +335,9 @@ static GtkTreeModel *create_and_fill_model(gchar *dbname)
                                    G_TYPE_UINT,   /* deleted */
                                    G_TYPE_STRING, /* id */
                                    G_TYPE_INT,    /* seeding */
-                                   G_TYPE_INT     /* clubseeding */
+                                   G_TYPE_INT,    /* clubseeding */
+                                   G_TYPE_STRING, /* comment */
+                                   G_TYPE_STRING  /* coachid */
         );
 
     model = GTK_TREE_MODEL(treestore);
