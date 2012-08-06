@@ -895,21 +895,24 @@ void make_png_all(GtkWidget *w, gpointer data)
     /* make competitor positions = 0. write_results() will recalculate them. */
     avl_init_competitor_position();
 
-    /* copy style.css */
-    f = open_write("style.css");
-    if (f) {
-        gint n;
-        gchar *stylefile = g_build_filename(installation_dir, "etc", "style.css", NULL);
-        FILE *sf = fopen(stylefile, "r");
-        g_free(stylefile);
+    /* copy files */
+    gchar *files_to_copy[] = {"style.css", "coach.html", "coach.js", NULL};
+    for (i = 0; files_to_copy[i]; i++) {
+        f = open_write(files_to_copy[i]);
+        if (f) {
+            gint n;
+            gchar *src = g_build_filename(installation_dir, "etc", files_to_copy[i], NULL);
+            FILE *sf = fopen(src, "r");
+            g_free(src);
 
-        if (sf) {
-            while ((n = fread(fname, 1, sizeof(fname), sf)) > 0) {
-                fwrite(fname, 1, n, f);
+            if (sf) {
+                while ((n = fread(fname, 1, sizeof(fname), sf)) > 0) {
+                    fwrite(fname, 1, n, f);
+                }
+                fclose(sf);
             }
-            fclose(sf);
+            fclose(f);
         }
-        fclose(f);
     }
 
     /* index.html */

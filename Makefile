@@ -72,6 +72,8 @@ endif
 	cp etc/*.mp3 $(RELDIR)/etc/
 	cp etc/*.shi $(RELDIR)/etc/
 	cp etc/*.svg $(RELDIR)/etc/
+	cp etc/*.html $(RELDIR)/etc/
+	cp etc/*.js $(RELDIR)/etc/
 	cp -r etc/flags-ioc $(RELDIR)/etc/
 	cp licenses/* $(RELDIR)/licenses
 	@echo
