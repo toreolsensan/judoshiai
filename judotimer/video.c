@@ -868,11 +868,54 @@ static gboolean close_video(GtkWidget *widget, gpointer userdata)
     return FALSE;
 }
 
+#define SUB(a,b) (a > b ? 4*(a - b) : 4*(b - a))
+//#define SUB(a,b) (a != b ? 100 : 0)
+
+static GdkPixbuf *sub_pixbufs(GdkPixbuf *pixbuf1, GdkPixbuf *pixbuf2)
+{
+    GdkPixbuf *pixbuf;
+    gint width, height, rowstride;
+    gint width1, height1, rowstride1, n_channels1;
+    gint width2, height2, rowstride2, n_channels2;
+    guchar *pixels, *pixels1, *pixels2, *p, *p1, *p2;
+    gint x, y;
+
+    n_channels1 = gdk_pixbuf_get_n_channels(pixbuf1);
+    n_channels2 = gdk_pixbuf_get_n_channels(pixbuf2);
+    width1 = gdk_pixbuf_get_width (pixbuf1);
+    width2 = gdk_pixbuf_get_width (pixbuf2);
+    height1 = gdk_pixbuf_get_height (pixbuf1);
+    height2 = gdk_pixbuf_get_height (pixbuf2);
+    width = width1 < width2 ? width1 : width2;
+    height = height1 < height2 ? height1 : height2;
+    rowstride1 = gdk_pixbuf_get_rowstride(pixbuf1);
+    rowstride2 = gdk_pixbuf_get_rowstride(pixbuf2);
+    pixels1 = gdk_pixbuf_get_pixels (pixbuf1);
+    pixels2 = gdk_pixbuf_get_pixels (pixbuf2);
+
+    pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, width, height);
+    pixels = gdk_pixbuf_get_pixels (pixbuf);
+    rowstride = gdk_pixbuf_get_rowstride(pixbuf);
+
+    for (x = 0; x < width; x++) {
+        for (y = 0; y < height; y++) {
+            p = pixels + y * rowstride + x * 3;
+            p1 = pixels1 + y * rowstride1 + x * n_channels1;
+            p2 = pixels2 + y * rowstride2 + x * n_channels2;
+            p[0] = SUB(p1[0], p2[0]);
+            p[1] = SUB(p1[1], p2[1]);
+            p[2] = SUB(p1[2], p2[2]);
+        }
+    }
+
+    return pixbuf;
+}
+
 static gboolean expose_video(GtkWidget *widget, GdkEventExpose *event, gpointer userdata)
 {
     gint width, height;
     GError *err = NULL;
-    GdkPixbuf *pb;
+    static GdkPixbuf *pb, *pb1, *pb2;
 
     width = widget->allocation.width;
     height = widget->allocation.height;
@@ -890,17 +933,23 @@ static gboolean expose_video(GtkWidget *widget, GdkEventExpose *event, gpointer 
         if (fp == NULL || fp->length < 100)
             return FALSE;
 
+        if (pb2) g_object_unref(pb2);
+        pb2 = pb1;
         GInputStream *stream = g_memory_input_stream_new_from_data(fp->data, fp->length, NULL);
-        pb = gdk_pixbuf_new_from_stream(stream, NULL, &err);
+        pb1 = gdk_pixbuf_new_from_stream(stream, NULL, &err);
         g_input_stream_close(stream, NULL, NULL);
+        if (pb1 && pb2)
+            pb = sub_pixbufs(pb1, pb2);
+        else
+            pb = NULL;
         //pb = gdk_pixbuf_new_from_inline(fp->length, fp->data, TRUE, &err);
         //g_file_set_contents("test.jpg", fp->data, fp->length, NULL);
     }
 
     //GdkPixbuf *pb = gdk_pixbuf_new_from_file("test.jpg", &err);
     if (!pb) {
-        g_print("\nERROR %s: %s %d\n",
-                err->message, __FUNCTION__, __LINE__);
+        //g_print("\nERROR %s: %s %d\n",
+        //        err->message, __FUNCTION__, __LINE__);
         //g_file_set_contents("err.jpg", fp->data, fp->length, NULL);
         return FALSE;
     }
