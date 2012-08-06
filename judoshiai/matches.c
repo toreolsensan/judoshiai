@@ -32,6 +32,36 @@ struct next_match_info next_matches_info[NUM_TATAMIS][2];
 
 #define NULL_MATCH_INFO(_what, _tatami, _which) next_matches_info[_tatami-1][_which]._what[0] = 0
 
+static gchar competitor_positions[10000];
+
+void set_competitor_position(gint ix, gint status)
+{
+    if (ix < 0 || ix >= 10000)
+        return;
+
+    competitor_positions[ix] = status;
+}
+
+void write_competitor_positions(void)
+{
+    gint i;
+
+    if (automatic_web_page_update == FALSE)
+        return;
+
+    FILE *f;
+    gchar *file = g_build_filename(current_directory, "c-winners.txt", NULL);
+    f = fopen(file, "w");
+    g_free(file);
+    if (!f)
+        return;
+
+    for (i = 0; i < 10000; i++)
+        fprintf(f, "%c", competitor_positions[i] + ' ');
+
+    fclose(f);
+}
+
 static gint sort_iter_compare_func_1(GtkTreeModel *model,
                                      GtkTreeIter  *a,
                                      GtkTreeIter  *b,
@@ -81,14 +111,7 @@ static void name_cell_data_func (GtkTreeViewColumn *col,
             return;
         }
 
-        switch (data->system.system) {
-        case SYSTEM_POOL: sys = _("Pool"); break;
-        case SYSTEM_DPOOL: sys = _("Double pool"); break;
-        case SYSTEM_DPOOL2: sys = _("Double pool 2"); break;
-        case SYSTEM_QPOOL: sys = _("Quadruple pool"); break;
-        default: sys = _("Double repechage");
-        }
-
+        sys = get_system_description(category, data->system.numcomp);
         g_object_set(renderer, 
                      "cell-background-set", FALSE, 
                      NULL);
@@ -782,7 +805,7 @@ static void update_pool_matches(gint category, gint num)
                 ma.blue = winners[pools[4][i][0]]->index;
                 ma.white = winners[pools[4][i][1]]->index;
 
-                if (draw_system == DRAW_AUSTRALIAN) { // preserve old results
+                if (prop_get_int_val(PROP_DPOOL2_WITH_CARRIED_FORWARD_POINTS)) { // preserve old results
                     gint k;
                     for (k = 1; k <= last_match; k++) {
                         if ((pm.m[k].blue == ma.blue && pm.m[k].white == ma.white) ||
@@ -888,7 +911,7 @@ static void update_pool_matches(gint category, gint num)
         set_match(&ma);
         db_set_match(&ma);
     }
-    
+
  out:
     empty_pool_struct(&pm);
 }
@@ -1599,13 +1622,8 @@ void update_matches(guint category, struct compsys sys, gint tatami)
 
     g_static_mutex_lock(&next_match_mutex);
     nm = db_next_match(tatami ? 0 : category, tatami);
-
-    if (nm == NULL) {
-        g_static_mutex_unlock(&next_match_mutex);
-        return;
-    }
-
-    send_next_matches(category, tatami, nm);
+    if (nm)
+        send_next_matches(category, tatami, nm);
     g_static_mutex_unlock(&next_match_mutex);
 
     if (category)
@@ -2348,6 +2366,9 @@ void set_match_pages(GtkWidget *notebook)
 
     int        i;
     char       buffer[20];
+
+    for (i = 0; i < 10000; i++)
+        competitor_positions[i] = 0;
 
     for (i = 0; i < NUM_TATAMIS; i++) {
         match_pages[i] = vbox = gtk_vbox_new(FALSE, 1);

@@ -252,7 +252,7 @@ static void pool_results(FILE *f, gint category, struct judoka *ctg, gint num_ju
             continue;
 
         // Spanish have two bronzes in pool system
-        if (i <= 4 && draw_system == DRAW_SPANISH &&
+        if (i <= 4 && prop_get_int_val(PROP_TWO_POOL_BRONZES) &&
             (pm.j[pm.c[i]]->deleted & HANSOKUMAKE) == 0) {
             write_result(f, i == 4 ? 3 : i, pm.j[pm.c[i]]->first, 
                          pm.j[pm.c[i]]->last, pm.j[pm.c[i]]->club, pm.j[pm.c[i]]->country);
@@ -261,7 +261,7 @@ static void pool_results(FILE *f, gint category, struct judoka *ctg, gint num_ju
         } else if (i <= 3 && 
             (pm.j[pm.c[i]]->deleted & HANSOKUMAKE) == 0) {
             // Need a victory in Norwegian system to get a result.
-            if(draw_system == DRAW_NORWEGIAN && pm.wins[pm.c[i]] == 0)
+            if (prop_get_int_val(PROP_WIN_NEEDED_FOR_MEDAL) && pm.wins[pm.c[i]] == 0)
                 continue;
 
             write_result(f, i, pm.j[pm.c[i]]->first, 
@@ -885,6 +885,12 @@ void make_png_all(GtkWidget *w, gpointer data)
 
     if (get_output_directory() < 0)
         return;
+
+    // init coach info stuff
+    if (automatic_web_page_update) {
+        update_category_status_info_all();
+        update_next_matches_coach_info();
+    }
 
     /* make competitor positions = 0. write_results() will recalculate them. */
     avl_init_competitor_position();

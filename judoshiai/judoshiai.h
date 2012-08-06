@@ -229,6 +229,11 @@ enum special_match_types {
 
 #define NUM_BELTS 64
 
+#define COMP_POS_DRAWN    0x10
+#define COMP_POS_FINISHED 0x20
+#define COMP_POS_MASK     0x0f
+
+
 enum {
     COL_INDEX = 0,
     COL_LAST_NAME,
@@ -704,6 +709,7 @@ extern void view_popup_menu(GtkWidget *treeview,
                             gpointer userdata,
                             gchar *regcategory,
                             gboolean visible);
+extern void view_popup_menu_print_cards(GtkWidget *menuitem, gpointer userdata);
 extern void remove_empty_regcategories(GtkWidget *w, gpointer data);
 extern void remove_unweighed_competitors(GtkWidget *w, gpointer data);
 extern gint sort_by_name(const gchar *name1, const gchar *name2);
@@ -815,11 +821,13 @@ extern void db_set_forced_tatami_number_delay(gint category, gint matchnumber, g
 extern void set_judogi_status(gint index, gint flags);
 extern gint get_judogi_status(gint index);
 extern gint db_force_match_number(gint category);
+extern void update_next_matches_coach_info(void);
 
 extern void db_synchronize(char *name_2);
 extern void db_print_competitors(FILE *f);
 extern void db_print_competitors_by_club(FILE *f);
-extern gint db_get_index_by_id(const gchar *id);
+extern gint db_get_index_by_id(const gchar *id, gboolean *coach);
+extern void write_competitor_for_coach_display(struct judoka *j);
 extern int db_get_table(char *command);
 extern void db_close_table(void);
 extern char **db_get_table_copy(char *command, int *tablerows1, int *tablecols1);
@@ -890,6 +898,8 @@ extern void matches_clear(void);
 extern void set_match(struct match *m);
 extern void fill_pool_struct(gint category, gint num, struct pool_matches *pm, gboolean final_pool);
 extern void empty_pool_struct(struct pool_matches *pm);
+extern void set_competitor_position(gint ix, gint status);
+extern void write_competitor_positions(void);
 extern void get_pool_winner(gint num, gint c[21], gboolean yes[21], 
                             gint wins[21], gint pts[21], 
                             gboolean mw[21][21], struct judoka *ju[21], gboolean all_matched[21], gboolean tie[21]);
@@ -998,7 +1008,7 @@ extern void avl_set_category(gint index, const gchar *category, gint tatami,
 extern void avl_set_category_rest_times(void);
 extern gint avl_get_category_status_by_name(const gchar *name);
 extern void set_category_to_queue(struct category_data *data);
-extern void avl_set_competitor(gint index, const gchar *first, const gchar *last);
+extern void avl_set_competitor(gint index, struct judoka *j);
 extern gint avl_get_competitor_hash(gint index);
 extern void avl_set_competitor_last_match_time(gint index);
 extern void avl_reset_competitor_last_match_time(gint index);

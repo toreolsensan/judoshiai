@@ -25,12 +25,14 @@ extern void write_competitor(FILE *f, const gchar *first, const gchar *last, con
 #define PRINT_COMPETITORS_BY_CLUB    32
 #define FIND_COMPETITOR_BY_ID        64
 #define CLEANUP                     128
+#define FIND_COMPETITOR_BY_COACHID  256
 
 static FILE *print_file = NULL;
 static gint num_competitors;
 static gint num_weighted_competitors;
 static gint competitors_not_added, competitors_added;
 static gint competitor_by_id;
+static gboolean competitor_by_coach;
 
 static int db_callback(void *data, int argc, char **argv, char **azColName)
 {
@@ -84,8 +86,8 @@ static int db_callback(void *data, int argc, char **argv, char **azColName)
                 current_index = j.index + 1;
             display_one_judoka(&j);
 
-            avl_set_competitor(j.index, j.first, j.last);
-            avl_set_competitor_status(j.index, j.deleted);
+            avl_set_competitor(j.index, &j);
+            //avl_set_competitor_status(j.index, j.deleted);
         }
         return 0;
     }
@@ -105,11 +107,17 @@ static int db_callback(void *data, int argc, char **argv, char **azColName)
         write_competitor(print_file, j.first, j.last, b, 
                          get_club_text(&j, CLUB_TEXT_ADDRESS), 
                          j.category, j.index, flags & PRINT_COMPETITORS_BY_CLUB);
+        write_competitor_for_coach_display(&j);
         return 0;
     }
 
     if (flags & FIND_COMPETITOR_BY_ID) {
         competitor_by_id = j.index;
+        return 1;
+    }
+
+    if (flags & FIND_COMPETITOR_BY_COACHID) {
+        competitor_by_coach = TRUE;
         return 1;
     }
 
@@ -152,8 +160,8 @@ static int db_callback(void *data, int argc, char **argv, char **azColName)
     display_one_judoka(&j);
     g_free(newcat);
 
-    avl_set_competitor(j.index, j.first, j.last);
-    avl_set_competitor_status(j.index, j.deleted);
+    avl_set_competitor(j.index, &j);
+    //avl_set_competitor_status(j.index, j.deleted);
 
     //find_gender(j.first);
 
@@ -180,8 +188,8 @@ gint db_add_judoka(int num, struct judoka *j)
     gint rc = db_exec(db_name, buffer, NULL, db_callback);
 
     if (rc == SQLITE_OK) {
-        avl_set_competitor(num, j->first, j->last);
-        avl_set_competitor_status(num, j->deleted);
+        avl_set_competitor(num, j);
+        //avl_set_competitor_status(num, j->deleted);
     } else
         g_print("Error = %d (%s:%d)\n", rc, __FUNCTION__, __LINE__);
 
@@ -218,8 +226,8 @@ void db_update_judoka(int num, struct judoka *j)
                     j->weight, j->visible, j->deleted, esc_quote(j->country), esc_quote(j->id), 
                     j->seeding, j->clubseeding, esc_quote(j->comment), esc_quote(j->coachid), num);
 
-    avl_set_competitor(num, j->first, j->last);
-    avl_set_competitor_status(num, j->deleted);
+    avl_set_competitor(num, j);
+    //avl_set_competitor_status(num, j->deleted);
 }
 
 void db_restore_removed_competitors(void)
@@ -250,6 +258,8 @@ void db_print_competitors(FILE *f)
             _T(name), grade_visible ? _T(grade) : "", 
             (club_text & CLUB_TEXT_COUNTRY) ? _T(country) :_T(club), 
             _T(category), create_statistics ? _T(position) : "");
+
+    write_competitor_for_coach_display(NULL); // init file
 
     if (print_lang == LANG_IS)
         db_exec(db_name, "SELECT * FROM competitors ORDER BY \"first\" ASC, \"last\" ASC", 
@@ -394,10 +404,82 @@ void db_set_match_hansokumake(gint category, gint number, gint blue, gint white)
     }
 }
 
-gint db_get_index_by_id(const gchar *id)
+gint db_get_index_by_id(const gchar *id, gboolean *coach)
 {
     competitor_by_id = 0;
+    competitor_by_coach = FALSE;
+
     db_exec_str((gpointer)FIND_COMPETITOR_BY_ID, db_callback,
                 "SELECT * FROM competitors WHERE \"id\"=\"%s\"", id);
+    db_exec_str((gpointer)FIND_COMPETITOR_BY_COACHID, db_callback,
+                "SELECT * FROM competitors WHERE \"coachid\"=\"%s\"", id);
+
+    *coach = competitor_by_coach;
+
     return competitor_by_id;
 }
+
+
+void write_competitor_for_coach_display(struct judoka *j)
+{
+    if (automatic_web_page_update == FALSE)
+        return;
+
+    gint i;
+    FILE *f;
+    gchar buf[32];
+    gchar *file = g_build_filename(current_directory, "c-ids.txt", NULL);
+
+    if (j == NULL) { // initialize file
+        f = fopen(file, "w");
+        g_free(file);
+        if (!f)
+            return;
+        for (i = 0; i < 10000; i++)
+            fprintf(f, "\t\t%32s\n", " ");
+        fclose(f);
+        return;
+    }
+
+    // list of ids
+    f = fopen(file, "r+");
+    g_free(file);
+    if (!f)
+        return;
+
+    const gchar *id = j->id ? j->id : "";
+    const gchar *cid = j->coachid ? j->coachid : "";
+    gint dummy = 32 - strlen(id) - strlen(cid);
+
+    if (fseek(f, j->index*35, SEEK_SET) == 0) {
+        fprintf(f, "%s\t%s\t", id, cid);
+        for (i = 0; i < dummy; i++) 
+            fprintf(f, ".");
+        fprintf(f, "\n");
+    }
+    fclose(f);
+
+    // individual file for competitor
+    snprintf(buf, sizeof(buf), "c-%d.txt", j->index);
+    file = g_build_filename(current_directory, buf, NULL);
+    f = fopen(file, "w");
+    g_free(file);
+    if (!f)
+        return;
+
+#define X(_x) (_x ? _x : "")
+
+    fprintf(f, "%s\n%s\n%d\n%s\n%s\n%s\n%d\n"
+            "%s\n%d\n%s\n%s\n%d\n%d\n%s\n%s",
+            X(j->last), X(j->first), j->birthyear,
+            belts[j->belt], X(j->club), X(j->regcategory),
+            j->weight, X(j->category), j->deleted,
+            X(j->country), X(j->id), j->seeding, j->clubseeding,
+            X(j->comment), X(j->coachid));
+
+
+    fclose(f);
+
+    //snprintf(buf, sizeof(buf), "c-%d.txt", j->index);
+}
+

@@ -209,7 +209,8 @@ void msg_received(struct message *input_msg)
 
     case MSG_EDIT_COMPETITOR:
 	if (input_msg->u.edit_competitor.operation == EDIT_OP_GET_BY_ID) {
-	    gint indx = db_get_index_by_id(input_msg->u.edit_competitor.id);
+            gboolean coach;
+	    gint indx = db_get_index_by_id(input_msg->u.edit_competitor.id, &coach);
 	    if (indx)
 		j = get_data(indx);
 	    else
@@ -313,8 +314,8 @@ void msg_received(struct message *input_msg)
 
 		    display_one_judoka(&j2);
                 
-		    avl_set_competitor(j2.index, j2.first, j2.last);
-		    avl_set_competitor_status(j2.index, j2.deleted);
+		    avl_set_competitor(j2.index, &j2);
+		    //avl_set_competitor_status(j2.index, j2.deleted);
 		}
 	    } else { // add new competitor
 		j2.index = current_index++;

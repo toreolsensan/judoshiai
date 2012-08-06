@@ -429,6 +429,9 @@ gint paint_svg(struct paint_data *pd)
 
                 if (dp2)
                     m = pm2.m;
+
+                set_competitor_position(m[fight].blue, COMP_POS_DRAWN);
+                set_competitor_position(m[fight].white, COMP_POS_DRAWN);
                 
                 if (attr[1].code[0] == 0) { // name
                     gint who = attr[1].value;
@@ -501,6 +504,8 @@ gint paint_svg(struct paint_data *pd)
                     continue;
                 }
 
+                set_competitor_position(j->index, COMP_POS_DRAWN);
+
                 if (attr[1].code[0] && attr[1].code[1] == 0) { // one letter codes
                     if (attr[1].code[0] == 'w') { // number of wins
                         if (pmp->wins[comp] || pmp->finished) {
@@ -572,12 +577,16 @@ gint paint_svg(struct paint_data *pd)
 
                 if (systm.system == SYSTEM_POOL) {
                     struct judoka *j = pm.j[pm.c[res]];
-                    if (j)
+                    if (j) {
                         write_judoka(handle, 1, j, dfile);
+                        set_competitor_position(j->index, COMP_POS_DRAWN | res);
+                    }
                 } else if (systm.system == SYSTEM_DPOOL2) {
                     struct judoka *j = pm2.j[pm2.c[res]];
-                    if (j)
+                    if (j) {
                         write_judoka(handle, 1, j, dfile);
+                        set_competitor_position(j->index, COMP_POS_DRAWN | res);
+                    }
                 } else if (systm.system == SYSTEM_DPOOL || systm.system == SYSTEM_QPOOL) {
                     gint ix = 0;
                     gint mnum = num_matches(systm.system, num_judokas);
@@ -591,6 +600,7 @@ gint paint_svg(struct paint_data *pd)
                     struct judoka *j = get_data(ix);
                     if (j) {
                         write_judoka(handle, 1, j, dfile);
+                        set_competitor_position(j->index, COMP_POS_DRAWN | res);
                         free_judoka(j);
                     }
                 } else {
@@ -658,6 +668,7 @@ gint paint_svg(struct paint_data *pd)
                     struct judoka *j = get_data(ix);
                     if (j) {
                         write_judoka(handle, 1, j, dfile);
+                        set_competitor_position(j->index, COMP_POS_DRAWN | res);
                         free_judoka(j);
                     }
                 }

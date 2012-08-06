@@ -70,6 +70,63 @@ struct print_struct {
     GtkWidget *pdf_file, *template_file;
 };
 
+#if defined(__WIN32__) || defined(WIN32)
+
+void print_trace(void)
+{
+    guint32 ebp, eip;
+    /* greg_t ebp, eip; GNU type for a general register */
+    /*
+     * GNU flavored inline assembly.
+     *Fetch the frame pointer for this frame
+     *it _points_ to the saved base pointer that
+     *we really want (our caller).
+     */
+    asm("movl %%ebp, %0" : "=r" (ebp) : );
+    /*
+     * We want the information for the calling frame, the frame for
+     *"dumpstack" need not be in the trace.
+     */
+    while (ebp) {
+        /* the return address is 1 word past the saved base pointer */
+        eip = *( (guint32 *)ebp + 1 );
+        g_print("- ebp=%p eip=%p\n", (void *)ebp, (void *)eip);
+        ebp = *(guint32 *)ebp;
+    }
+}
+
+#else
+
+#include <execinfo.h>
+
+void print_trace(void)
+{
+    void *array[16];
+    size_t size;
+    char **strings;
+    size_t i;
+     
+    size = backtrace (array, 16);
+    strings = backtrace_symbols(array, size);
+
+    g_print("--- Obtained %zd stack frames.", size);
+     
+    char name_buf[512];
+    name_buf[readlink("/proc/self/exe", name_buf, 511)] = 0;
+
+    for (i = 0; i < size; i++) {
+        if (strncmp(strings[i], "judoshiai", 4)) continue;
+        g_print("\n%d\n%s\n", i, strings[i]);
+
+        char syscom[256];
+        sprintf(syscom, "addr2line %p -e %s", array[i], name_buf);
+        system(syscom);
+    }
+    g_print("---\n");
+
+    free (strings);
+}
+#endif
 
 static void paint_surfaces(struct paint_data *pd, 
                            cairo_t *c_pdf, cairo_t *c_png, 
@@ -186,6 +243,8 @@ void write_png(GtkWidget *menuitem, gpointer userdata)
     //cairo_surface_flush(cs_pdf);
 
     free_judoka(ctgdata);
+
+    write_competitor_positions();
 }
 
 static gchar *get_save_as_name(const gchar *dflt, gboolean opendialog, gboolean *landscape)

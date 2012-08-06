@@ -43,6 +43,15 @@ static gint bluecomp, whitecomp, bluepts, whitepts;
 /* Use mutex when calling db_next_match(). */
 GStaticMutex next_match_mutex = G_STATIC_MUTEX_INIT;
 
+// data for coach info
+static struct {
+    gint tatami;
+    gint waittime;
+    gint matchnum;
+    gint round;
+} coach_info[10000];
+static gint current_round = 0;
+
 struct match *get_cached_next_matches(gint tatami)
 {
     return next_matches[tatami];
@@ -178,6 +187,30 @@ static int db_callback_matches(void *data, int argc, char **argv, char **azColNa
             free_judoka(cat);
         }
 #endif
+        // coach info
+        if (m.blue > 0 && m.blue < 10000) {
+            if (current_round != coach_info[m.blue].round) {
+                coach_info[m.blue].matchnum = 0;
+                coach_info[m.blue].round = current_round;
+                coach_info[m.blue].waittime = -1;
+            }
+            if ((m.number < coach_info[m.blue].matchnum) || (coach_info[m.blue].matchnum == 0)) {
+                coach_info[m.blue].matchnum = m.number;
+                coach_info[m.blue].tatami = m.tatami;
+            }
+        }
+        if (m.white > 0 && m.white < 10000) {
+            if (current_round != coach_info[m.white].round) {
+                coach_info[m.white].matchnum = 0;
+                coach_info[m.white].round = current_round;
+                coach_info[m.white].waittime = -1;
+            }
+            if ((m.number < coach_info[m.white].matchnum) || (coach_info[m.white].matchnum == 0)) {
+                coach_info[m.white].matchnum = m.number;
+                coach_info[m.white].tatami = m.tatami;
+            }
+        }
+
         if (m.comment == COMMENT_MATCH_1) {
 #ifdef TATAMI_DEBUG
             if (m.tatami == TATAMI_DEBUG) {
@@ -583,6 +616,28 @@ gint db_category_match_status(gint category)
             catdata->defined = FALSE;
         else
             catdata->defined = TRUE;
+
+        // data for coach
+        if (automatic_web_page_update) {
+            gint i, n = 0;
+            gchar buf[80];
+
+            n = sprintf(buf, "c-");
+            for (i = 0; i < (sizeof(catdata->category)-1) && catdata->category[i]; i++)
+                n += sprintf(buf + n, "%02x", (guchar)catdata->category[i]);
+            n += sprintf(buf + n, ".txt");
+
+            gchar *file = g_build_filename(current_directory, buf, NULL);
+            FILE *f = fopen(file, "w");
+            g_free(file);
+            if (f) {
+                fprintf(f, "%d\n%d\n%d\n%d\n%d\n%d\n%d\n%d\n%d\n%d\n", 
+                        catdata->index, catdata->tatami, catdata->group,
+                        catdata->system.system, catdata->system.numcomp, catdata->system.table, catdata->system.wishsys, 
+                        catdata->match_status, catdata->match_count, catdata->matched_matches_count);
+                fclose(f);
+            }
+        }
     }
 
     return res;
@@ -633,6 +688,19 @@ void db_set_match(struct match *m1)
             db_update_match(m1);
     } else
         db_add_match(m1);
+
+
+    // clear coach info
+    if (m1->blue > 0 && m1->blue < 10000) {
+        coach_info[m1->blue].tatami = 0;
+        coach_info[m1->blue].waittime = -1;
+        coach_info[m1->blue].matchnum = 0;
+    }
+    if (m1->white > 0 && m1->white < 10000) {
+        coach_info[m1->white].tatami = 0;
+        coach_info[m1->white].waittime = -1;
+        coach_info[m1->white].matchnum = 0;
+    }
 }
 
 void db_read_category_matches(gint category, struct match *m)
@@ -986,6 +1054,8 @@ struct match *db_next_match(gint category, gint tatami)
 {
     gint i;
 
+    current_round++;
+
     if (category) {
         tatami = db_get_tatami(category);
         /*** BUG
@@ -1222,6 +1292,33 @@ struct match *db_next_match(gint category, gint tatami)
         g_print("\n");
     }
 #endif
+    // coach info
+    if (automatic_web_page_update) {
+        for (i = 0; i < NEXT_MATCH_NUM; i++) {
+            if (next_match[i].number == INVALID_MATCH)
+                continue;
+
+            gint blue = next_match[i].blue;
+            gint white = next_match[i].white;
+
+            if (blue > 0 && blue < 10000 && coach_info[blue].waittime < 0)
+                coach_info[blue].waittime = i;
+            if (white > 0 && white < 10000 && coach_info[white].waittime < 0)
+                coach_info[white].waittime = i;
+        }		
+
+        gchar *file = g_build_filename(current_directory, "c-matches.txt", NULL);
+        FILE *f = fopen(file, "w");
+        g_free(file);
+
+        if (f) {
+            for (i = 0; i < 10000; i++)
+                fprintf(f, "%d\t%d\n", coach_info[i].tatami, coach_info[i].waittime);
+
+            fclose(f);
+        }
+    }
+
     return next_match;
 }
 
@@ -1420,8 +1517,7 @@ static gint medalmatchexists;
 
 static int db_callback_match_num(void *data, int argc, char **argv, char **azColName)
 {
-    guint flags = (int)data;
-    gint i, val;
+    gint i;
 
     for (i = 0; i < argc; i++) {
         if (!strcmp(azColName[i], "MAX(number)"))
@@ -1490,3 +1586,47 @@ gint db_force_match_number(gint category)
 
     return medalmatchexists;
 }
+
+void update_next_matches_coach_info(void)
+{
+    if (automatic_web_page_update == FALSE)
+        return;
+
+    gint tatami, i;
+
+    // clear all
+    for (i = 0; i < 10000; i++) {
+        coach_info[i].tatami = 0;
+        coach_info[i].waittime = -1;
+        coach_info[i].matchnum = 0;
+        coach_info[i].round = 0;
+    }
+
+    for (tatami = 1; tatami <= number_of_tatamis; tatami++) {
+        struct match *m = get_cached_next_matches(tatami);
+        for (i = 0; i < NEXT_MATCH_NUM; i++) {
+            if (m[i].number == INVALID_MATCH)
+                continue;
+
+            gint blue = m[i].blue;
+            gint white = m[i].white;
+
+            if (blue > 0 && blue < 10000)
+                coach_info[blue].waittime = i;
+            if (white > 0 && white < 10000)
+                coach_info[white].waittime = i;
+        }		
+    }
+
+    gchar *file = g_build_filename(current_directory, "c-matches.txt", NULL);
+    FILE *f = fopen(file, "w");
+    g_free(file);
+
+    if (f) {
+        for (i = 0; i < 10000; i++)
+            fprintf(f, "%d\t%d\n", coach_info[i].tatami, coach_info[i].waittime);
+        
+        fclose(f);
+    }
+}
+

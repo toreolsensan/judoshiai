@@ -15,6 +15,7 @@
 #include "judoshiai.h"
 
 #define RESPONSE_PRINT 1000
+#define RESPONSE_COACH 1001
 #define JUDOGI_CONTROL
 
 struct treedata {
@@ -178,7 +179,8 @@ static void judoka_edited_callback(GtkWidget *widget,
     if (judoka_tmp->coachid)
         edited.coachid = g_strdup(gtk_entry_get_text(GTK_ENTRY(judoka_tmp->coachid)));
 
-    if ((event_id != GTK_RESPONSE_OK && event_id != RESPONSE_PRINT) || 
+    if ((event_id != GTK_RESPONSE_OK && event_id != RESPONSE_PRINT && 
+         event_id != RESPONSE_COACH) || 
         edited.last == NULL || 
         edited.last[0] == 0 || 
         (edited.last[0] == '?' && edited.last[1] == 0))
@@ -325,7 +327,9 @@ static void judoka_edited_callback(GtkWidget *widget,
             selected_judokas[0] = edited.index;
             num_selected_judokas = 1;
             print_accreditation_cards(FALSE);
-        } 
+        } else if (event_id == RESPONSE_COACH) {
+            view_popup_menu_print_cards(NULL, NULL);
+        }
     }
 
     //matches_refresh();
@@ -458,6 +462,16 @@ void view_on_row_activated(GtkTreeView        *treeview,
                                               GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
                                               GTK_STOCK_PRINT, RESPONSE_PRINT,
                                               NULL);
+
+    if (treeview && userdata) {
+        // coach dialog
+        GtkWidget *coach_button = gtk_dialog_add_button (GTK_DIALOG (dialog),
+                                                         GTK_STOCK_PRINT,
+                                                         RESPONSE_COACH);
+        gtk_button_set_label(GTK_BUTTON(coach_button), _("Competitors"));
+        gtk_button_set_image(GTK_BUTTON(coach_button), 
+                             gtk_image_new_from_stock(GTK_STOCK_PRINT, GTK_ICON_SIZE_BUTTON));
+    }
 
     GtkWidget *ok_button = gtk_dialog_add_button (GTK_DIALOG (dialog),
                                                   GTK_STOCK_OK,
@@ -1762,21 +1776,20 @@ void remove_competitors(GtkWidget *w, gpointer data)
 
 /* barcode stuff */
 
-static GtkWidget *barcode = NULL;
-
 static gboolean foreach_comp_dsp(GtkTreeModel *model,
                                  GtkTreePath  *path,
                                  GtkTreeIter  *iter,
                                  void         *indx)
 {
     gint   id;
+    gint   lookfor = (gint)indx & 0xffff;
 
     gtk_tree_model_get(model, iter,
                        COL_INDEX, &id,
                        -1);
 
-    if (id == (gint)indx) {
-        view_on_row_activated(GTK_TREE_VIEW(current_view), path, NULL, NULL);
+    if (id == lookfor) {
+        view_on_row_activated(GTK_TREE_VIEW(current_view), path, NULL, (gpointer)((gint)indx & 0x10000));
 
         return TRUE;
     }
@@ -1791,6 +1804,7 @@ static void display_competitor(gint indx)
                            (void *)indx);
 }
 
+#if 0
 static gboolean key_press(GtkWidget *widget, GdkEventKey *event, gpointer userdata)
 {
     static gchar keys[6] = {0};
@@ -1852,14 +1866,47 @@ static gboolean key_press(GtkWidget *widget, GdkEventKey *event, gpointer userda
 
     return FALSE;
 }
+#endif
+
+static gboolean foreach_select_coach(GtkTreeModel *model,
+                                     GtkTreePath  *path,
+                                     GtkTreeIter  *iter,
+                                     void         *arg)
+{
+    gchar *coachid = arg;
+    gchar *cid = NULL;
+    GtkTreeSelection *selection = 
+        gtk_tree_view_get_selection(GTK_TREE_VIEW(current_view));
+
+    gtk_tree_model_get(model, iter,
+                       COL_COACHID, &cid,
+                       -1);
+
+    if (!strcmp(cid, coachid))
+        gtk_tree_selection_select_iter(selection, iter);        
+    else
+        gtk_tree_selection_unselect_iter(selection, iter);        
+
+    g_free(cid);
+
+    return FALSE; /* do not stop walking the store, call us with next row */
+}
 
 static void on_enter(GtkEntry *entry, gpointer user_data)  { 
     const gchar *the_text;
     gint indx;
-    the_text = gtk_entry_get_text(GTK_ENTRY(entry)); 
-    indx = db_get_index_by_id(the_text);
+    gboolean coach;
 
-    if (indx)
+    the_text = gtk_entry_get_text(GTK_ENTRY(entry)); 
+    indx = db_get_index_by_id(the_text, &coach);
+
+    if (coach) {
+        gtk_tree_model_foreach(GTK_TREE_MODEL(current_model),
+                               (GtkTreeModelForeachFunc) foreach_select_coach,
+                               the_text);
+        if (indx)
+            display_competitor(indx | 0x10000);
+    } else if (indx)
         display_competitor(indx);
     else
         display_competitor(atoi(the_text));
@@ -1867,11 +1914,13 @@ static void on_enter(GtkEntry *entry, gpointer user_data)  {
     //gtk_widget_grab_focus(GTK_WIDGET(entry));
 }
 
+#if 0
 static void on_expose(GtkEntry *dialog, gpointer user_data)  { 
     //g_print("expose\n");
     //gtk_window_present(GTK_WINDOW(dialog));
     //gtk_widget_grab_focus(GTK_WIDGET(dialog));
 }
+#endif
 
 static void barcode_delete_callback(GtkWidget *widget, 
                                     GdkEvent *event,

@@ -134,7 +134,7 @@ static void view_popup_menu_copy_judoka(GtkWidget *menuitem, gpointer userdata)
     }
 }
 
-static void view_popup_menu_print_cards(GtkWidget *menuitem, gpointer userdata)
+void view_popup_menu_print_cards(GtkWidget *menuitem, gpointer userdata)
 {
     int i;
 

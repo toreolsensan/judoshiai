@@ -274,7 +274,8 @@ struct category_data *avl_get_category(gint index)
     return NULL;
 }
 
-struct category_data *avl_get_competitor(gint index)
+#if 0
+struct category_dataxxx!!! *avl_get_competitor(gint index)
 {
     struct competitor_data data;
     void *data1;
@@ -290,6 +291,7 @@ struct category_data *avl_get_competitor(gint index)
     //assert(0);
     return NULL;
 }
+#endif
 
 gint avl_get_competitor_hash(gint index)
 {
@@ -311,8 +313,10 @@ gint avl_get_competitor_hash(gint index)
     return 0;
 }
 
-void avl_set_competitor(gint index, const gchar *first, const gchar *last)
+void avl_set_competitor(gint index, struct judoka *j)
 {
+    const gchar *first = j->first;
+    const gchar *last = j->last;
     struct competitor_data *data;
     struct competitor_hash_data *datah;
     void *data1;
@@ -330,6 +334,7 @@ void avl_set_competitor(gint index, const gchar *first, const gchar *last)
     memset(datah, 0, sizeof(*datah));
 	
     data->index = index;
+    data->status = j->deleted;
     gint crc1 = pwcrc32((guchar *)last, strlen(last));
     gint crc2 = pwcrc32((guchar *)first, strlen(first));
     data->hash = crc1 ^ crc2;
@@ -349,6 +354,9 @@ void avl_set_competitor(gint index, const gchar *first, const gchar *last)
     } else {
         avl_insert(competitors_hash_tree, datah);
     }
+
+    // data for coach display
+    write_competitor_for_coach_display(j);
 }
 
 void avl_set_competitor_last_match_time(gint index)
@@ -598,6 +606,7 @@ static void init_html_tree(void)
     }
 }
 
+#if 0
 static gchar *avl_get_html(gint utf8)
 {
     struct html_data data, *data1;
@@ -614,15 +623,10 @@ static gchar *avl_get_html(gint utf8)
     sprintf(buf, "|%04x|", utf8);
     return buf;
 }
+#endif
 
 const gchar *utf8_to_html(const gchar *txt)
 {
-    static gchar buffers[16][64];
-    static gint sel = 0;
-    gint n = 0;
-    guchar *p = (guchar *)txt;
-    gchar *ret;
-
     if (!txt)
         return "";
 

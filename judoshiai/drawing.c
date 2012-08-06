@@ -679,7 +679,7 @@ static gboolean draw_one_comp(struct mdata *mdata)
         return 0;
 
     if (mdata->mfrench_sys >= 0) {
-        if (draw_system == DRAW_SPANISH &&
+        if (prop_get_int_val(PROP_SEEDED_TO_FIXED_PLACES) &&
             mdata->mcomp[comp].seeded > 0 && mdata->mcomp[comp].seeded <= NUM_SEEDED) {
             gint x;
             switch (mdata->mcomp[comp].seeded) {
