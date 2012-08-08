@@ -34,10 +34,11 @@ judoshiai-icon.rc: ../etc/judoshiai.ico
 
 ### Linux executable ###
 else
+PROF += -rdynamic
 endif
 
 $(OBJDIR)/judoshiai$(SUFF): $(OBJS)
-	$(LD) $(PROF) -rdynamic -g -Wl,-rpath -Wl,bin $(OBJS) -o $(OBJDIR)/judoshiai$(SUFF) $(LIBS)
+	$(LD) $(PROF) -g -Wl,-rpath -Wl,bin $(OBJS) -o $(OBJDIR)/judoshiai$(SUFF) $(LIBS)
 
 $(OBJDIR)/avl.o: ../common/avl.c
 	${CC} $(PROF) -g $(CFLAGS) -c $< -o $@

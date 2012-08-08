@@ -510,7 +510,7 @@ static struct wn_data_s wn_texts_default[] = {
     {60.0, 44.0, 0.0, 0.0, 0.0, 12.0, -1.0, 0.0, 0.0, 0.0, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD, 0, "Arial", "%INDEX%"},
     {55.0, 34.0, 0.0, 0.0, 0.0, 12.0, -1.0, 0.0, 0.0, 0.0, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD, 0, "Arial", "%BARCODE%"},
     {22.0, 30.0, 0.0, 0.0, 0.0, 12.0, -1.0, 0.0, 0.0, 0.0, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD, 0, "Arial", "%WEIGHTTEXT%"},
-    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0.0, 0.0, 0.0, 0, NULL, NULL}
+    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, NULL, NULL}
 };
 static struct wn_data_s wn_texts[NUM_WN_TEXTS] = {{0}};
 static gint num_wn_texts = 0;
@@ -1094,7 +1094,7 @@ static void paint_weight_notes(struct paint_data *pd, gint what, gint page)
         cairo_surface_destroy(image);        
 }
 
-static gint get_start_time(gchar *p)
+static gint get_start_time(const gchar *p)
 {
     gint h = 0, m = 0, nh = 0, nm = 0, htxt = 1;
     

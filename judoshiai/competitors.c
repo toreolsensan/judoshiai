@@ -75,6 +75,11 @@ GtkWidget *weight_entry = NULL;
 static gboolean      editing_ongoing = FALSE;
 static GtkWidget     *competitor_label = NULL;
 
+static void display_competitor(gint indx);
+static gboolean foreach_select_coach(GtkTreeModel *model,
+                                     GtkTreePath  *path,
+                                     GtkTreeIter  *iter,
+                                     void         *arg);
 void db_update_judoka(int num, struct judoka *j);
 gint sort_iter_compare_func(GtkTreeModel *model,
                             GtkTreeIter  *a,
@@ -328,7 +333,11 @@ static void judoka_edited_callback(GtkWidget *widget,
             num_selected_judokas = 1;
             print_accreditation_cards(FALSE);
         } else if (event_id == RESPONSE_COACH) {
-            view_popup_menu_print_cards(NULL, NULL);
+            num_selected_judokas = 0;
+            gtk_tree_model_foreach(GTK_TREE_MODEL(current_model),
+                                   (GtkTreeModelForeachFunc) foreach_select_coach,
+                                   (gpointer)edited.id);
+            print_accreditation_cards(FALSE);
         }
     }
 
@@ -678,6 +687,94 @@ void new_judoka(GtkWidget *w, gpointer data)
 void new_regcategory(GtkWidget *w, gpointer data)
 {
     view_on_row_activated(NULL, NULL, NULL, (gpointer)NEW_WCLASS);
+}
+
+static void print_competitors_callback(GtkWidget *widget, 
+                                       GdkEvent *event,
+                                       gpointer data)
+{
+    gint event_id = (gint)event;
+
+    if (event_id == RESPONSE_COACH) {
+        num_selected_judokas = 0;
+        gtk_tree_model_foreach(GTK_TREE_MODEL(current_model),
+                               (GtkTreeModelForeachFunc) foreach_select_coach,
+                               data);
+        print_accreditation_cards(FALSE);
+    }
+
+    g_free(data);
+    gtk_widget_destroy(widget);
+}
+
+static gboolean display_coach(GtkWidget *treeview, 
+                              GdkEventButton *event, 
+                              gpointer userdata)
+{
+    display_competitor((gint)userdata | 0x10000);
+    return TRUE;
+}
+
+void print_competitors_dialog(const gchar *cid, gint ix)
+{
+    gint i;
+    GtkWidget *tmp;
+    struct judoka *j;
+    gchar buf[128];
+
+    num_selected_judokas = 0;
+    gtk_tree_model_foreach(GTK_TREE_MODEL(current_model),
+                           (GtkTreeModelForeachFunc) foreach_select_coach,
+                           (gpointer)cid);
+
+    GtkWidget *dialog = gtk_dialog_new_with_buttons (_("Competitor"),
+                                                     GTK_WINDOW(main_window),
+                                                     GTK_DIALOG_DESTROY_WITH_PARENT,
+                                                     GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                                                     GTK_STOCK_PRINT, RESPONSE_COACH,
+                                                     NULL);
+
+    if (ix) {
+        tmp = gtk_button_new_with_label("");
+        j = get_data(ix);
+        if (j) {
+            snprintf(buf, sizeof(buf), "%s %s: %s %s",
+                     _("Coach"), cid, j->first, j->last);
+            gtk_button_set_label(GTK_BUTTON(tmp), buf);
+            free_judoka(j);
+        }
+
+        g_signal_connect(G_OBJECT(tmp), "button-press-event", 
+                         (GCallback) display_coach, (gpointer)ix);
+        g_signal_connect(G_OBJECT(tmp), "key-press-event", 
+                         (GCallback) display_coach, (gpointer)ix);
+    } else {
+        tmp = gtk_label_new("");
+        gchar *markup = g_markup_printf_escaped ("<b>%s %s</b>", _("Coach"), cid);
+        gtk_label_set_markup(GTK_LABEL(tmp), markup);
+        g_free (markup);
+        g_object_set(tmp, "xalign", 0.0, NULL);
+    }
+
+    gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), tmp);
+
+    for (i = 0; i < num_selected_judokas; i++) {
+        j = get_data(selected_judokas[i]);
+        if (j) {
+            snprintf(buf, sizeof(buf), "    %s %s", j->first, j->last);
+            tmp = gtk_label_new(buf);
+            g_object_set(tmp, "xalign", 0.0, NULL);
+            gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), tmp);
+            free_judoka(j);
+        }
+    }
+
+    g_signal_connect(G_OBJECT(dialog), "response",
+                     G_CALLBACK(print_competitors_callback), g_strdup(cid));
+    
+    gtk_widget_show_all(dialog);
+
+    num_selected_judokas = 0;
 }
 
 /*
@@ -1875,17 +1972,17 @@ static gboolean foreach_select_coach(GtkTreeModel *model,
 {
     gchar *coachid = arg;
     gchar *cid = NULL;
-    GtkTreeSelection *selection = 
-        gtk_tree_view_get_selection(GTK_TREE_VIEW(current_view));
+    gint   index;
 
     gtk_tree_model_get(model, iter,
+                       COL_INDEX, &index,
                        COL_COACHID, &cid,
                        -1);
 
-    if (!strcmp(cid, coachid))
-        gtk_tree_selection_select_iter(selection, iter);        
-    else
-        gtk_tree_selection_unselect_iter(selection, iter);        
+    if (coachid && coachid[0] && cid && cid[0] && strcmp(cid, coachid) == 0) {
+        if (num_selected_judokas < TOTAL_NUM_COMPETITORS - 1)
+            selected_judokas[num_selected_judokas++] = index;
+    }
 
     g_free(cid);
 
@@ -1901,11 +1998,8 @@ static void on_enter(GtkEntry *entry, gpointer user_data)  {
     indx = db_get_index_by_id(the_text, &coach);
 
     if (coach) {
-        gtk_tree_model_foreach(GTK_TREE_MODEL(current_model),
-                               (GtkTreeModelForeachFunc) foreach_select_coach,
-                               the_text);
-        if (indx)
-            display_competitor(indx | 0x10000);
+        print_competitors_dialog(the_text, indx);
+        // if (indx) display_competitor(indx | 0x10000);
     } else if (indx)
         display_competitor(indx);
     else
