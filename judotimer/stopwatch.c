@@ -579,7 +579,7 @@ static void destroy_ask( GtkWidget *widget, gpointer   data )
 static gboolean close_ask_ok(GtkWidget *widget, gpointer userdata)
 {
     if (legend_widget)
-        legend = gtk_combo_box_get_active(legend_widget);
+        legend = gtk_combo_box_get_active(GTK_COMBO_BOX(legend_widget));
     else
         legend = 0;
 
