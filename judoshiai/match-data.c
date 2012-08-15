@@ -140,6 +140,7 @@ gint get_matchnum_by_pos(struct compsys systm, gint pos, gint num)
 
     switch (systm.system) {
     case SYSTEM_POOL:
+    case SYSTEM_BEST_OF_3:
         return num_matches(systm.system, systm.numcomp) + 1 - pos;
 
     case SYSTEM_DPOOL:
@@ -879,7 +880,7 @@ const gint french_matches[NUM_TABLES][NUM_FRENCH][NUM_MATCHES][2] = {
 	    /*  51,        52,        53,        54,        55,        56,        57,       58,       59,       60 */
 	    { 5, 6},   { 7, 8},   { 9, 10},  { 11, 12}, { 13, 14}, { 15, 16}, { 17, 18},{ 19, 20},{ 21, 22},{ 23, 24},
 	    /*  61,        62,        63,        64,        65,        66,        67,       68,       69,       70 */
-	    { 25, 26}, { 27, 28}, { 29, 30}, { 31, 32}, {33,-50},  {34,-49},  {35,-52}, {36,-51}, {37,-54}, {38,-54},
+	    { 25, 26}, { 27, 28}, { 29, 30}, { 31, 32}, {33,-50},  {34,-49},  {35,-52}, {36,-51}, {37,-54}, {38,-53},
 	    /*  71,        72,        73,        74,        75,        76,        77,       78,       79        80  */
 	    {39,-56},  {40,-55},  {41,-58},  {42,-57},  {43,-60},  {44,-59},  {45,-62}, {46,-61}, {47,-64}, {48,-63},
 	    /*  81,        82,        83,        84,        85,        86,        87,       88,       89,       90  */
@@ -1555,6 +1556,7 @@ const gint french_matches[NUM_TABLES][NUM_FRENCH][NUM_MATCHES][2] = {
 
 static const gint system_menu_order[NUM_SYSTEMS] = {
     CAT_SYSTEM_DEFAULT,
+    CAT_SYSTEM_BEST_OF_3,
     CAT_SYSTEM_POOL,
     CAT_SYSTEM_DPOOL,
     CAT_SYSTEM_DPOOL2,
@@ -1592,7 +1594,8 @@ const gint cat_system_to_table[NUM_SYSTEMS] = {
     TABLE_DOUBLE_REPECHAGE_ONE_BRONZE,
     0,
     TABLE_DOUBLE_LOST,
-    TABLE_GBR_KNOCK_OUT
+    TABLE_GBR_KNOCK_OUT,
+    0
 };
 
 struct compsys wish_to_system(gint sys, gint numcomp)
@@ -1619,6 +1622,7 @@ struct compsys wish_to_system(gint sys, gint numcomp)
         case CAT_SYSTEM_DPOOL: ret.system = SYSTEM_DPOOL; break;
         case CAT_SYSTEM_QPOOL: ret.system = SYSTEM_QPOOL; break;
         case CAT_SYSTEM_DPOOL2: ret.system = SYSTEM_DPOOL2; break;
+        case CAT_SYSTEM_BEST_OF_3: ret.system = SYSTEM_BEST_OF_3; break;
         }
     }
 
@@ -1642,6 +1646,7 @@ gchar *get_system_description(gint index, gint competitors)
     case SYSTEM_DPOOL: return _("Double Pool");
     case SYSTEM_QPOOL: return _("Quad Pool");
     case SYSTEM_DPOOL2: return _("Double Pool 2");
+    case SYSTEM_BEST_OF_3: return _("Best of 3");
     }
 
     if (system_is_french(sys.system)) {
@@ -1695,6 +1700,7 @@ static gchar *get_system_name(gint num)
     case CAT_SYSTEM_REPECHAGE_ONE_BRONZE: return _("FIN Double Repechage One Bronze");
     case CAT_SYSTEM_DOUBLE_LOST: return _("Double Lost");
     case CAT_SYSTEM_GBR_KNOCK_OUT: return _("GBR Knock Out");
+    case CAT_SYSTEM_BEST_OF_3: return _("Best of 3");
     }
     return "";
 }
@@ -1726,6 +1732,7 @@ gboolean system_is_french(gint sys)
     case SYSTEM_DPOOL:
     case SYSTEM_QPOOL:
     case SYSTEM_DPOOL2:
+    case SYSTEM_BEST_OF_3:
         return FALSE;
     }
 
@@ -1739,6 +1746,7 @@ gboolean system_wish_is_french(gint wish)
     case CAT_SYSTEM_DPOOL:
     case CAT_SYSTEM_QPOOL:
     case CAT_SYSTEM_DPOOL2:
+    case CAT_SYSTEM_BEST_OF_3:
         return FALSE;
     }
 
@@ -2041,7 +2049,7 @@ gint num_pages(struct compsys sys)
 
 gint db_position_to_real(struct compsys sys, gint pos)
 {
-    if (sys.system == SYSTEM_POOL || sys.system == SYSTEM_DPOOL2)
+    if (sys.system == SYSTEM_POOL || sys.system == SYSTEM_DPOOL2|| sys.system == SYSTEM_BEST_OF_3)
         return pos;
 
     if (pos == 1 || pos == 2 || pos == 3 || pos == 5 || pos == 7)
@@ -2134,6 +2142,7 @@ gint num_matches_left(gint index, gint competitors)
     case SYSTEM_DPOOL: return n + 3;
     case SYSTEM_QPOOL: return n + 7;
     case SYSTEM_DPOOL2: return n + 6;
+    case SYSTEM_BEST_OF_3: return n;
     }
 
     return n;
@@ -2153,6 +2162,7 @@ gint num_matches_estimate(gint index)
     case SYSTEM_DPOOL: return n + 3;
     case SYSTEM_QPOOL: return n + 7;
     case SYSTEM_DPOOL2: return n + 6;
+    case SYSTEM_BEST_OF_3: return 3;
     }
 
     return 1;
