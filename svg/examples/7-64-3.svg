@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns="http://www.w3.org/2000/svg"   width="630px"
+   height="891px"
+   id="judoshiai"
+   version="1.1"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape">
+<sodipodi:namedview
+id="base"
+pagecolor="#ffffff"
+bordercolor="#666666"
+borderopacity="1.0"
+inkscape:pageopacity="0.0"
+inkscape:pageshadow="2"
+inkscape:zoom="1"
+inkscape:cx="185.84668"
+inkscape:cy="880.85263"
+inkscape:document-units="px"
+inkscape:current-layer="layer1"
+inkscape:window-width="877"
+inkscape:window-height="739"
+inkscape:window-x="177"
+inkscape:window-y="31"
+showgrid="false"
+inkscape:window-maximized="0" />
+   <g
+      id="layer1"
+      style="opacity:1">
+<rect x='0.00' y='0.00' width='630.00' height='891.00' style='fill:white;stroke:none'/>
+<text style="font-size:21.38px;font-style:normal;font-weight:bold;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center"
+x='315.00' y='44.55'><tspan>%i-competition  %i-date  %i-place   %i-catname</tspan></text>
+<text style="font-size:10.69px;font-style:normal;font-weight:bold;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:end;text-align:left"
+x='598.50' y='63.97'><tspan>Competitors: 64</tspan></text>
+<path d="M 100.96,0.00 l 57.39,0.00 a4.02,4.02 0 0,1 4.02,4.02 l 0.00,-nan M 100.96,-nan l 57.39,0.00 a4.02,4.02 0 0,0 4.02,-4.02 l 0.00,-nan" style="fill:none; stroke:black; stroke-width:1"/>
+<circle cx="162.37" cy="-nan" r="8.05" stroke="black" stroke-width="1" fill="white"/><text x='162.37' y='-nan' style='font-size:10px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>61</tspan></text>
+<text x='107.26' y='-6.77' font-family='Arial' font-size='10' fill='black'><tspan>%m61-1-hm1-last</tspan></text>
+<text x='107.26' y='-nan' font-family='Arial' font-size='10' fill='black'><tspan>%m61-2-hm1-last</tspan></text>
+<text x='163.91' y='7.26' font-family='Arial' font-size='10' fill='black'><tspan>%m61p1-1</tspan></text>
+<text x='163.91' y='-nan' font-family='Arial' font-size='10' fill='black'><tspan>%m61p2-1</tspan></text>
+<path d="M 100.96,0.00 l 63.00,0.00"
+style="fill:none; stroke:black; stroke-width:1"/>
+<text x='107.26' y='-6.77' font-family='Arial' font-size='10' fill='black'><tspan>%m62-winner-last</tspan></text>
+<path d="M 170.41,-nan l 63.00,0.00"
+style="fill:none; stroke:black; stroke-width:1"/>
+<text x='176.72' y='-nan' font-family='Arial' font-size='10' fill='black'><tspan>%m63-winner-last</tspan></text>
+<path d="M 271.21,-nan l 63.00,0.00"
+style="fill:none; stroke:black; stroke-width:1"/>
+<text x='277.51' y='-nan' font-family='Arial' font-size='10' fill='black'><tspan>%m61-winner-last</tspan></text>
+<path d="M 271.21,0.00 l 63.00,0.00"
+style="fill:none; stroke:black; stroke-width:1"/>
+<text x='277.51' y='-6.77' font-family='Arial' font-size='10' fill='black'><tspan>%m62-winner-last</tspan></text>
+<path d="M 271.21,190.14 l 57.39,0.00 a4.02,4.02 0 0,1 4.02,4.02 l 0.00,13.19 M 271.21,240.66 l 57.39,0.00 a4.02,4.02 0 0,0 4.02,-4.02 l 0.00,-13.19" style="fill:none; stroke:black; stroke-width:1"/>
+<circle cx="332.63" cy="215.40" r="8.05" stroke="black" stroke-width="1" fill="white"/><text x='332.63' y='219.42' style='font-size:10px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>63</tspan></text>
+<text x='277.51' y='183.37' font-family='Arial' font-size='10' fill='black'><tspan>%m63-1-hm1-last</tspan></text>
+<text x='277.51' y='233.89' font-family='Arial' font-size='10' fill='black'><tspan>%m63-2-hm1-last</tspan></text>
+<text x='333.42' y='197.61' font-family='Arial' font-size='10' fill='black'><tspan>%m63p1-1</tspan></text>
+<text x='334.17' y='244.11' font-family='Arial' font-size='10' fill='black'><tspan>%m63p2-1</tspan></text>
+<path d="M 340.67,215.40 l 63.00,0.00"
+style="fill:none; stroke:black; stroke-width:1"/>
+<text x='346.97' y='208.63' font-family='Arial' font-size='10' fill='black'><tspan>%m63-winner-last</tspan></text>
+<path d="M 415.80,677.16 l 189.00,0.00 l 0.00,160.38 l -189.00,0.00 z" style="fill:none; stroke:black; stroke-width:2"/>
+<path d="M 415.80,694.98 l 189.00,0.00" style="fill:none; stroke:black; stroke-width:1"/>
+<path d="M 415.80,712.80 l 189.00,0.00" style="fill:none; stroke:black; stroke-width:1"/>
+<path d="M 415.80,730.62 l 189.00,0.00" style="fill:none; stroke:black; stroke-width:1"/>
+<path d="M 415.80,748.44 l 189.00,0.00" style="fill:none; stroke:black; stroke-width:1"/>
+<path d="M 415.80,766.26 l 189.00,0.00" style="fill:none; stroke:black; stroke-width:1"/>
+<path d="M 415.80,784.08 l 189.00,0.00" style="fill:none; stroke:black; stroke-width:1"/>
+<path d="M 415.80,801.90 l 189.00,0.00" style="fill:none; stroke:black; stroke-width:1"/>
+<path d="M 415.80,819.72 l 189.00,0.00" style="fill:none; stroke:black; stroke-width:1"/>
+<path d="M 447.30,694.98 l 0.00,142.56" style="fill:none; stroke:black; stroke-width:1"/>
+<text x='487.87' y='670.70' style='font-size:12.83px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>Results</tspan></text>
+<text x='431.55' y='689.94' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>Pos</tspan></text>
+<text x='526.05' y='689.94' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>Name</tspan></text>
+<text x='431.55' y='707.84' style='font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>1</tspan></text>
+<text x='431.55' y='725.66' style='font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>2</tspan></text>
+<text x='431.55' y='743.41' style='font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>3</tspan></text>
+<text x='431.55' y='761.23' style='font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>3</tspan></text>
+<text x='453.60' y='707.75' style='font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial'><tspan>%r1hm2-first-s-last-s-club</tspan></text>
+<text x='453.60' y='725.57' style='font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial'><tspan>%r2hm2-first-s-last-s-club</tspan></text>
+<text x='453.60' y='743.39' style='font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial'><tspan>%r3hm2-first-s-last-s-club</tspan></text>
+<text x='453.60' y='761.21' style='font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial'><tspan>%r4hm2-first-s-last-s-club</tspan></text>
+<text x='453.60' y='779.03' style='font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial'><tspan>%r5hm2-first-s-last-s-club</tspan></text>
+<text x='453.60' y='796.85' style='font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial'><tspan>%r6hm2-first-s-last-s-club</tspan></text>
+<text x='453.60' y='814.67' style='font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial'><tspan>%r7hm2-first-s-last-s-club</tspan></text>
+<text x='453.60' y='832.49' style='font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial'><tspan>%r8hm2-first-s-last-s-club</tspan></text>
+   </g>
+</svg>
