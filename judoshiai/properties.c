@@ -86,6 +86,7 @@ struct property {
         .label = N_("Best two out of three matches:"),
         .type = PROP_TYPE_CHECK,
         .table = 1,
+        .row = -1, .col = -1,
     },
     {
         .name = "WinNeededForMedal",
@@ -376,7 +377,7 @@ void reset_props_1(GtkWidget *button, void *data, gboolean if_unset)
         if (props[i].value == NULL) set_val(i, "", 0);
 
     SET_VAL(PROP_WHITE_FIRST, "1", 1);
-    SET_VAL(PROP_THREE_MATCHES_FOR_TWO, "1", 1);
+    SET_VAL(PROP_THREE_MATCHES_FOR_TWO, "0", 0);
 
     if (number_of_tatamis == 0)
         number_of_tatamis = 3;
@@ -407,41 +408,42 @@ void reset_props_1(GtkWidget *button, void *data, gboolean if_unset)
         SET_VAL(PROP_RESOLVE_3_WAY_TIES_BY_WEIGHTS, "0", 0);
 
     // default catsystems
-    memset(default_cats, 0, sizeof(default_cats));
-    default_cats[0] = (struct default_cat){0, 1, 5, CAT_SYSTEM_POOL};
-    default_cats[1] = (struct default_cat){0, 6, 7, CAT_SYSTEM_DPOOL};
-    default_cats[2] = (struct default_cat){0, 8, 0, CAT_SYSTEM_REPECHAGE};
-
-    switch (draw_system) {
-    case DRAW_INTERNATIONAL:
-        default_cats[1] = (struct default_cat){0, 6, 0, CAT_IJF_DOUBLE_REPECHAGE};
-        break;
-    case DRAW_FINNISH:
-        break;
-    case DRAW_SWEDISH:
-        default_cats[2] = (struct default_cat){0, 8, 0, CAT_SYSTEM_DIREKT_AATERKVAL};
-        break;
-    case DRAW_ESTONIAN:
-        default_cats[2] = (struct default_cat){10, 6, 0, CAT_SYSTEM_EST_D_KLASS};
-        default_cats[3] = (struct default_cat){0, 6, 0, CAT_SYSTEM_REPECHAGE};
-        break;
-    case DRAW_SPANISH:
-        default_cats[1] = (struct default_cat){0, 6, 10, CAT_SYSTEM_DPOOL};
-        default_cats[2] = (struct default_cat){10, 8, 16, CAT_ESP_DOBLE_PERDIDA};
-        default_cats[3] = (struct default_cat){0, 8, 0, CAT_ESP_REPESCA_DOBLE};
-        break;
-    case DRAW_NORWEGIAN:
-        default_cats[1] = (struct default_cat){0, 6, 10, CAT_SYSTEM_DPOOL};
-        default_cats[2] = (struct default_cat){0, 8, 0, CAT_SYSTEM_DUBBELT_AATERKVAL};
-        break;
-    case DRAW_BRITISH:
-        default_cats[2] = (struct default_cat){0, 8, 0, CAT_SYSTEM_GBR_KNOCK_OUT};
-        break;
-    case DRAW_AUSTRALIAN:
-        break;
-    }
-
     if (if_unset==FALSE || props[PROP_DEFAULT_CAT_1].value[0]==0) {
+        memset(default_cats, 0, sizeof(default_cats));
+        default_cats[0] = (struct default_cat){0, 1, 2, CAT_SYSTEM_BEST_OF_3};
+        default_cats[1] = (struct default_cat){0, 3, 5, CAT_SYSTEM_POOL};
+        default_cats[2] = (struct default_cat){0, 6, 7, CAT_SYSTEM_DPOOL};
+        default_cats[3] = (struct default_cat){0, 8, 0, CAT_SYSTEM_REPECHAGE};
+
+        switch (draw_system) {
+        case DRAW_INTERNATIONAL:
+            default_cats[2] = (struct default_cat){0, 6, 0, CAT_IJF_DOUBLE_REPECHAGE};
+            break;
+        case DRAW_FINNISH:
+            break;
+        case DRAW_SWEDISH:
+            default_cats[3] = (struct default_cat){0, 8, 0, CAT_SYSTEM_DIREKT_AATERKVAL};
+            break;
+        case DRAW_ESTONIAN:
+            default_cats[3] = (struct default_cat){10, 6, 0, CAT_SYSTEM_EST_D_KLASS};
+            default_cats[4] = (struct default_cat){0, 6, 0, CAT_SYSTEM_REPECHAGE};
+            break;
+        case DRAW_SPANISH:
+            default_cats[2] = (struct default_cat){0, 6, 10, CAT_SYSTEM_DPOOL};
+            default_cats[3] = (struct default_cat){10, 8, 16, CAT_ESP_DOBLE_PERDIDA};
+            default_cats[4] = (struct default_cat){0, 8, 0, CAT_ESP_REPESCA_DOBLE};
+            break;
+        case DRAW_NORWEGIAN:
+            default_cats[2] = (struct default_cat){0, 6, 10, CAT_SYSTEM_DPOOL};
+            default_cats[3] = (struct default_cat){0, 8, 0, CAT_SYSTEM_DUBBELT_AATERKVAL};
+            break;
+        case DRAW_BRITISH:
+            default_cats[3] = (struct default_cat){0, 8, 0, CAT_SYSTEM_GBR_KNOCK_OUT};
+            break;
+        case DRAW_AUSTRALIAN:
+            break;
+        }
+
         for (i = 0; i < NUM_DEFAULT_CATS; i++) {
             snprintf(buf, sizeof(buf), "%d %d %d %d", 
                      default_cats[i].max_age,

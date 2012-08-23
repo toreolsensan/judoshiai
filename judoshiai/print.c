@@ -128,53 +128,6 @@ void print_trace(void)
 }
 #endif
 
-static void paint_surfaces(struct paint_data *pd, 
-                           cairo_t *c_pdf, cairo_t *c_png, 
-                           cairo_surface_t *cs_pdf, cairo_surface_t *cs_png,
-                           gchar *fname)
-{
-    gdouble w = pd->paper_width;
-    gdouble h = pd->paper_height;
-    gchar *p = strrchr(fname, '.');
-    if (!p)
-        return;
-
-    cairo_surface_t *cs = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 
-                                                     2*pd->paper_width, 2*pd->paper_height);
-    cairo_t *c = pd->c = cairo_create(cs);
-
-    pd->paper_width *= 2;
-    pd->paper_height *= 2;
-    paint_category(pd);
-    pd->paper_width = w;
-    pd->paper_height = h;
-    pd->write_results = FALSE;
-
-    pd->c = c_pdf;
-    paint_category(pd);
-
-    if (pd->page)
-        sprintf(p, "-%d.png", pd->page);
-    else
-        strcpy(p, ".png");
-
-    cairo_scale(c_png, 0.6, 0.6);
-    cairo_set_source_surface(c_png, cs, 0, 0);
-    cairo_pattern_set_filter(cairo_get_source(c_png), CAIRO_FILTER_BEST);
-    cairo_paint(c_png);
-    cairo_scale(c_png, 1.0/0.6, 1.0/0.6);
-
-    cairo_show_page(c);
-    cairo_show_page(c_pdf);
-    cairo_show_page(c_png);
-    cairo_surface_write_to_png(cs_png, fname);
-
-    strcpy(p, ".");
-
-    cairo_destroy(c);
-    cairo_surface_destroy(cs);
-}
-
 void write_png(GtkWidget *menuitem, gpointer userdata)
 {
     gint ctg = (gint)userdata, i;
@@ -183,6 +136,7 @@ void write_png(GtkWidget *menuitem, gpointer userdata)
     cairo_t *c_pdf, *c_png;
     struct judoka *ctgdata = NULL;
     struct compsys sys;
+    gchar *pngname, *pdfname;
 
     if (strlen(current_directory) <= 1) {
         return;
@@ -218,32 +172,121 @@ void write_png(GtkWidget *menuitem, gpointer userdata)
     pd.total_width = 0;
     pd.category = ctg;
 
-    snprintf(buf, sizeof(buf)-10, "%s/%s.pdf", current_directory, txt2hex(ctgdata->last));
+    if (print_svg && automatic_web_page_update) {
+        // only svg files are printed
+        snprintf(buf, sizeof(buf), "%s.svg", txt2hex(ctgdata->last));
+        pd.filename = g_build_filename(current_directory, buf, NULL);
+        paint_category(&pd);
+        g_free(pd.filename);
+        for (i = 1; i < num_pages(sys); i++) { // print other pages
+            pd.page = i;
+            snprintf(buf, sizeof(buf), "%s-%d.svg", txt2hex(ctgdata->last), pd.page);
+            pd.filename = g_build_filename(current_directory, buf, NULL);
+            paint_category(&pd);
+            g_free(pd.filename);
+        }
+    } else if (print_svg) {
+        // print pdf and svg files
+        snprintf(buf, sizeof(buf), "%s.pdf", txt2hex(ctgdata->last));
+        pdfname = g_build_filename(current_directory, buf, NULL);
+        cs_pdf = cairo_pdf_surface_create(pdfname, pd.paper_width, pd.paper_height);
+        g_free(pdfname);
 
-    cs_pdf = cairo_pdf_surface_create(buf, pd.paper_width, pd.paper_height);
-    cs_png = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 
-                                        1.2*pd.paper_width, 1.2*pd.paper_height);
+        c_pdf = cairo_create(cs_pdf);
+        pd.c = c_pdf;
 
-    c_pdf = cairo_create(cs_pdf);
-    c_png = cairo_create(cs_png);
+        snprintf(buf, sizeof(buf), "%s.svg", txt2hex(ctgdata->last));
+        pd.filename = g_build_filename(current_directory, buf, NULL);
+        paint_category(&pd);
+        g_free(pd.filename);
 
-    paint_surfaces(&pd, c_pdf, c_png, cs_pdf, cs_png, buf);
+        cairo_show_page(c_pdf);
+        for (i = 1; i < num_pages(sys); i++) { // print other pages
+            pd.page = i;
+            snprintf(buf, sizeof(buf), "%s-%d.svg", txt2hex(ctgdata->last), pd.page);
+            pd.filename = g_build_filename(current_directory, buf, NULL);
+            paint_category(&pd);
+            g_free(pd.filename);
+            cairo_show_page(c_pdf);
+        }
 
-    for (i = 1; i < num_pages(sys); i++) { // print other pages
-        pd.page = i;
-        paint_surfaces(&pd, c_pdf, c_png, cs_pdf, cs_png, buf);
+        cairo_destroy(c_pdf);
+        cairo_surface_destroy(cs_pdf);
+    } else if (automatic_web_page_update) {
+        // print png
+        cs_png = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 
+                                            pd.paper_width, pd.paper_height);
+        c_png = cairo_create(cs_png);
+
+        pd.c = c_png;
+        paint_category(&pd);
+        cairo_show_page(c_png);
+
+        snprintf(buf, sizeof(buf), "%s.png", txt2hex(ctgdata->last));
+        pngname = g_build_filename(current_directory, buf, NULL);
+        cairo_surface_write_to_png(cs_png, pngname);
+        g_free(pngname);
+
+        for (i = 1; i < num_pages(sys); i++) { // print other pages
+            pd.page = i;
+            paint_category(&pd);
+            cairo_show_page(c_png);
+
+            snprintf(buf, sizeof(buf), "%s-%d.png", txt2hex(ctgdata->last), pd.page);
+            pngname = g_build_filename(current_directory, buf, NULL);
+            cairo_surface_write_to_png(cs_png, pngname);
+            g_free(pngname);
+        }
+
+        cairo_destroy(c_png);
+        cairo_surface_destroy(cs_png);
+    } else {
+        // print pdf and png
+        snprintf(buf, sizeof(buf), "%s.pdf", txt2hex(ctgdata->last));
+        pdfname = g_build_filename(current_directory, buf, NULL);
+        cs_pdf = cairo_pdf_surface_create(pdfname, pd.paper_width, pd.paper_height);
+        g_free(pdfname);
+        c_pdf = cairo_create(cs_pdf);
+
+        cs_png = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 
+                                            pd.paper_width, pd.paper_height);
+        c_png = cairo_create(cs_png);
+
+        pd.c = c_pdf;
+        paint_category(&pd);
+        cairo_show_page(c_pdf);
+
+        pd.c = c_png;
+        paint_category(&pd);
+        cairo_show_page(c_png);
+
+        snprintf(buf, sizeof(buf), "%s.png", txt2hex(ctgdata->last));
+        pngname = g_build_filename(current_directory, buf, NULL);
+        cairo_surface_write_to_png(cs_png, pngname);
+        g_free(pngname);
+
+        for (i = 1; i < num_pages(sys); i++) { // print other pages
+            pd.page = i;
+            pd.c = c_pdf;
+            paint_category(&pd);
+            cairo_show_page(c_pdf);
+
+            pd.c = c_png;
+            paint_category(&pd);
+            cairo_show_page(c_png);
+            snprintf(buf, sizeof(buf), "%s-%d.png", txt2hex(ctgdata->last), pd.page);
+            pngname = g_build_filename(current_directory, buf, NULL);
+            cairo_surface_write_to_png(cs_png, pngname);
+            g_free(pngname);
+        }
+
+        cairo_destroy(c_pdf);
+        cairo_surface_destroy(cs_pdf);
+        cairo_destroy(c_png);
+        cairo_surface_destroy(cs_png);
     }
 
-    cairo_destroy(c_pdf);
-    cairo_destroy(c_png);
-
-    cairo_surface_destroy(cs_pdf);
-    cairo_surface_destroy(cs_png);
-
-    //cairo_surface_flush(cs_pdf);
-
     free_judoka(ctgdata);
-
     write_competitor_positions();
 }
 

@@ -240,6 +240,7 @@ void msg_received(struct message *input_msg)
 		CP2MSG_INT(clubseeding);
 		CP2MSG_STR(comment);
 		CP2MSG_STR(coachid);
+                strncpy(output_msg.u.edit_competitor.beltstr, belts[j->belt], sizeof(output_msg.u.edit_competitor.beltstr)-1);
                 output_msg.u.edit_competitor.matchflags = get_judogi_status(j->index);
 		free_judoka(j);
 	    }
@@ -261,6 +262,7 @@ void msg_received(struct message *input_msg)
                     CP2MSG_STR(first);
                     CP2MSG_STR(club);
                     CP2MSG_STR(country);
+                    CP2MSG_STR(id);
                     CP2MSG_STR(regcategory);
                     CP2MSG_INT(weight);
                     CP2MSG_INT(deleted);

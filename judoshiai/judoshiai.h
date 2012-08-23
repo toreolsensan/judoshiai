@@ -76,6 +76,7 @@
 #define SYSTEM_FRENCH_256  8
 #define SYSTEM_QPOOL       9
 #define SYSTEM_DPOOL2     10
+#define SYSTEM_BEST_OF_3  11
 
 #if 0
 #define SYSTEM_POOL_Z         (SYSTEM_POOL<<SYSTEM_MASK_SHIFT)
@@ -128,6 +129,7 @@ enum cat_systems {
     CAT_SYSTEM_DPOOL2,
     CAT_SYSTEM_DOUBLE_LOST,
     CAT_SYSTEM_GBR_KNOCK_OUT,
+    CAT_SYSTEM_BEST_OF_3,
     NUM_SYSTEMS
 };
 #define CAT_IJF_DOUBLE_REPECHAGE CAT_ESP_REPESCA_DOBLE
@@ -671,6 +673,7 @@ extern struct message hello_message;
 
 extern gboolean automatic_sheet_update;
 extern gboolean automatic_web_page_update;
+extern gboolean print_svg;
 extern gboolean weights_in_sheets;
 extern gboolean grade_visible;
 extern gint     name_layout;
@@ -736,6 +739,8 @@ extern gboolean find_iter_model(GtkTreeIter *iter, guint index, GtkTreeModel *mo
 extern gboolean find_iter_name(GtkTreeIter *iter, const gchar *last, const gchar *first, const gchar *club);
 extern gboolean find_iter_name_2(GtkTreeIter *iter, const gchar *last, const gchar *first, 
 				 const gchar *club, const gchar *category);
+extern gboolean find_iter_name_id(GtkTreeIter *iter, const gchar *last, const gchar *first, 
+                                  const gchar *club, const gchar *category, const gchar *id);
 extern gboolean find_iter_category(GtkTreeIter *iter, const gchar *category);
 extern gboolean find_iter_category_model(GtkTreeIter *iter, const gchar *category, GtkTreeModel *model);
 extern void put_data(struct judoka *j, guint index);
@@ -792,6 +797,7 @@ extern gint db_get_competitors_position(gint competitor, gint *catindex);
 extern void db_read_competitor_statistics(gint *numcomp, gint *numweighted);
 extern void db_add_competitors(const gchar *competition, gboolean with_weight, gboolean weighted, 
 			       gboolean cleanup, gint *added, gint *not_added);
+extern void db_update_weights(const gchar *competition, gint *updated);
 extern void db_set_match(struct match *m);
 extern void db_reset_last_match_times(gint category, gint number, gboolean blue, gboolean white);
 extern void db_set_match_hansokumake(gint category, gint number, gint blue, gint white);
@@ -1089,6 +1095,7 @@ extern gboolean get_svg_page_size(gint index, gint pagenum, gint *width, gint *h
 extern gboolean svg_landscape(gint ctg, gint page);
 extern gint get_num_svg_pages(struct compsys systm);
 extern gint paint_svg(struct paint_data *pd);
+extern gboolean svg_in_use(void);
 
 /* properties */
 extern void init_property(gchar *prop, gchar *val);

@@ -506,6 +506,7 @@ static void write_cat_result(FILE *f, gint category)
     switch (sys.system) {
     case SYSTEM_POOL:
     case SYSTEM_DPOOL2:
+    case SYSTEM_BEST_OF_3:
         pool_results(f, category, ctg, num_judokas, sys.system == SYSTEM_DPOOL2);
         break;
 
@@ -592,12 +593,22 @@ void write_html(gint cat)
 
     hextext = txt2hex(j->last);
 
-    fprintf(f, "<td valign=\"top\"><table><tr class=\"cattr1\"><td>"
-            "<div class=\"catdiv\"><img src=\"%s.png\" class=\"catimg\"/></div></td></tr>\r\n", hextext);
+     
+    if (print_svg) {
+        fprintf(f, "<td valign=\"top\"><table><tr class=\"cattr1\"><td>"
+                "<div class=\"catdiv\"><embed src=\"%s.svg\" type=\"image/svg+xml\" class=\"catimg\"/></div></td></tr>\r\n", hextext);
 
-    for (i = 1; i < num_pages(sys); i++)
-        fprintf(f, "  <tr class=\"cattr2\"><td><div class=\"catdiv\">"
-                "<img src=\"%s-%d.png\" class=\"catimg\"/></div></td></tr>\r\n", hextext, i);
+        for (i = 1; i < num_pages(sys); i++)
+            fprintf(f, "  <tr class=\"cattr2\"><td><div class=\"catdiv\">"
+                    "<embed src=\"%s-%d.svg\" type=\"image/svg+xml\" class=\"catimg\"/></div></td></tr>\r\n", hextext, i);
+    } else {
+        fprintf(f, "<td valign=\"top\"><table><tr class=\"cattr1\"><td>"
+                "<div class=\"catdiv\"><img src=\"%s.png\" class=\"catimg\"/></div></td></tr>\r\n", hextext);
+
+        for (i = 1; i < num_pages(sys); i++)
+            fprintf(f, "  <tr class=\"cattr2\"><td><div class=\"catdiv\">"
+                    "<img src=\"%s-%d.png\" class=\"catimg\"/></div></td></tr>\r\n", hextext, i);
+    }
 
     fprintf(f, "  </table></td>\r\n");
 
@@ -896,7 +907,8 @@ void make_png_all(GtkWidget *w, gpointer data)
     avl_init_competitor_position();
 
     /* copy files */
-    gchar *files_to_copy[] = {"style.css", "coach.html", "coach.js", NULL};
+    gchar *files_to_copy[] = {"style.css", "coach.html", "coach.js", "asc.png", "desc.png", "bg.png", "refresh.png", "clear.png", 
+                              "jquery.js", "jquery.tablesorter.js", NULL};
     for (i = 0; files_to_copy[i]; i++) {
         f = open_write(files_to_copy[i]);
         if (f) {
@@ -1104,8 +1116,9 @@ void make_next_matches_html(void)
 
 int get_output_directory(void)
 {
-    GtkWidget *dialog, *auto_update, *statistics, *vbox;
+    GtkWidget *dialog, *auto_update, *statistics, *vbox, *svg = NULL;
     gchar *name;
+    GError *error = NULL;
 
     dialog = gtk_file_chooser_dialog_new(_("Choose a directory"),
                                          NULL,
@@ -1120,8 +1133,16 @@ int get_output_directory(void)
     gtk_widget_show(auto_update);
     statistics = gtk_check_button_new_with_label(_("Create Statistics"));
     gtk_widget_show(statistics);
+    if (svg_in_use()) {
+        svg = gtk_check_button_new_with_label(_("Print SVG"));
+        gtk_toggle_button_set_active(GTK_CHECK_BUTTON(svg), 
+                                     g_key_file_get_boolean(keyfile, "preferences", "printsvg", &error));
+        gtk_widget_show(svg);
+    }
     gtk_box_pack_start(GTK_BOX(vbox), statistics, FALSE, TRUE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), auto_update, FALSE, TRUE, 0);
+    if (svg)
+        gtk_box_pack_start(GTK_BOX(vbox), svg, FALSE, TRUE, 0);
 
     gtk_file_chooser_set_extra_widget(GTK_FILE_CHOOSER(dialog), vbox);
 
@@ -1150,7 +1171,12 @@ int get_output_directory(void)
 
     automatic_web_page_update = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(auto_update));
     create_statistics = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(statistics));
+    if (svg)
+        print_svg = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(svg));
+    else
+        print_svg = FALSE;
 
+    g_key_file_set_boolean(keyfile, "preferences", "printsvg", print_svg);
     gtk_widget_destroy(dialog);
 
     return 0;

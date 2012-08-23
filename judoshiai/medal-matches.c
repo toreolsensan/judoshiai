@@ -37,6 +37,7 @@ void update_medal_matches(gint category)
         num = 0;
 
         if (catdata->system.system == SYSTEM_POOL ||
+            catdata->system.system == SYSTEM_BEST_OF_3 ||
             catdata->system.system == SYSTEM_DPOOL2) {
             if (j != MATCH_TYPE_POOLS_LAST)
                 continue;

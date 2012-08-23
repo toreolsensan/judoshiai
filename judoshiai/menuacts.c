@@ -22,7 +22,7 @@ extern gboolean mirror_display;
 extern gboolean auto_arrange;
 
 void get_from_old_competition(GtkWidget *w, gpointer data);
-void get_from_old_competition_with_weight(GtkWidget *w, gpointer data);
+void get_weights_from_old_competition(GtkWidget *w, gpointer data);
 void start_help(GtkWidget *w, gpointer data);
 
 static gchar *backup_directory = NULL;
@@ -389,7 +389,7 @@ static void get_competitors(void)
     vbox = gtk_vbox_new(FALSE, 0);
     cleanup = gtk_check_button_new_with_label(_("Clean up duplicates and update reg. categories"));
     gtk_widget_show(cleanup);
-    only_weighted = gtk_check_button_new_with_label(_("Weighted only"));
+    only_weighted = gtk_check_button_new_with_label(_("Weighed only"));
     gtk_widget_show(only_weighted);
     with_weights = gtk_check_button_new_with_label(_("With weights"));
     gtk_widget_show(with_weights);
@@ -432,7 +432,6 @@ static void get_competitors(void)
     }
 
     gtk_widget_destroy (dialog);        
-
 }
 
 
@@ -442,10 +441,46 @@ void get_from_old_competition(GtkWidget *w, gpointer data)
     get_competitors();
 }
 
-void get_from_old_competition_with_weight(GtkWidget *w, gpointer data)
+void get_weights_from_old_competition(GtkWidget *w, gpointer data)
 {
-    with_weight = TRUE;
-    get_competitors();
+    GtkWidget *dialog;
+    GtkFileFilter *filter = gtk_file_filter_new();
+    gint weight_updated = 0;
+
+    gtk_file_filter_add_pattern(filter, "*.shi");
+    gtk_file_filter_set_name(filter, _("Tournaments"));
+
+    dialog = gtk_file_chooser_dialog_new (_("Copy Weights"),
+                                          NULL,
+                                          GTK_FILE_CHOOSER_ACTION_OPEN,
+                                          GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                                          GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+                                          NULL);
+
+    gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter);
+
+    if (database_name[0] == 0) {
+        if (current_directory[0] != '.')
+            gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), current_directory);
+        else
+            gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), g_get_home_dir());
+    } else {
+        gchar *dirname = g_path_get_dirname(database_name);
+        gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), dirname);
+        g_free(dirname);
+    }
+
+    if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
+    {
+        gchar *name = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+        db_update_weights(name, &weight_updated);
+        valid_ascii_string(name);
+        g_free (name);
+
+        SHOW_MESSAGE("%d %s.", weight_updated, _("weights updated"));
+    }
+
+    gtk_widget_destroy (dialog);        
 }
 
 #ifdef WIN32

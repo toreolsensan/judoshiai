@@ -26,6 +26,7 @@ extern void write_competitor(FILE *f, const gchar *first, const gchar *last, con
 #define FIND_COMPETITOR_BY_ID        64
 #define CLEANUP                     128
 #define FIND_COMPETITOR_BY_COACHID  256
+#define UPDATE_WEIGHTS              512
 
 static FILE *print_file = NULL;
 static gint num_competitors;
@@ -33,6 +34,7 @@ static gint num_weighted_competitors;
 static gint competitors_not_added, competitors_added;
 static gint competitor_by_id;
 static gboolean competitor_by_coach;
+static gint weights_updated;
 
 static int db_callback(void *data, int argc, char **argv, char **azColName)
 {
@@ -125,6 +127,29 @@ static int db_callback(void *data, int argc, char **argv, char **azColName)
         num_competitors++;
         if (j.weight)
             num_weighted_competitors++;
+    }
+
+    if (flags & UPDATE_WEIGHTS) {
+        GtkTreeIter iter;
+        if (find_iter_name_id(&iter, j.last, j.first, j.club, j.regcategory, j.id)) {
+            struct judoka *j1 = get_data_by_iter(&iter);
+            if (j1) {
+                if (j1->weight == 0 && j.weight) {
+                    GtkTreeSelection *selection = 
+                        gtk_tree_view_get_selection(GTK_TREE_VIEW(current_view));
+                    gtk_tree_selection_select_iter(selection, &iter);
+                    j1->weight = j.weight;
+                    put_data_by_iter(j1, &iter);
+                    db_update_judoka(j1->index, j1);
+                    weights_updated++;
+                } else if (j1->weight && j.weight && j1->weight != j.weight) {
+                    SHOW_MESSAGE("%s %s: %s!", j1->first, j1->last, _("Weights do not match"));
+                }
+
+                free_judoka(j1);
+            }
+        }
+        return 0;
     }
 
     if ((flags & ADD_COMPETITORS_WITH_WEIGHTS) ||
@@ -343,6 +368,13 @@ void db_add_competitors(const gchar *competition, gboolean with_weight,
     *not_added = competitors_not_added;
 }
 
+void db_update_weights(const gchar *competition, gint *updated)
+{
+    weights_updated = 0;
+    db_exec(competition, "SELECT * FROM competitors WHERE \"weight\">0", (gpointer)UPDATE_WEIGHTS, db_callback);
+    *updated = weights_updated;
+}
+
 static gboolean has_hansokumake;
  
 static int db_hansokumake_cb(void *data, int argc, char **argv, char **azColName)
@@ -431,18 +463,19 @@ void write_competitor_for_coach_display(struct judoka *j)
     gchar *file = g_build_filename(current_directory, "c-ids.txt", NULL);
 
     if (j == NULL) { // initialize file
-        f = fopen(file, "w");
+        f = fopen(file, "wb");
         g_free(file);
         if (!f)
             return;
-        for (i = 0; i < 10000; i++)
+        for (i = 0; i < 10000; i++) {
             fprintf(f, "\t\t%32s\n", " ");
+        }
         fclose(f);
         return;
     }
 
     // list of ids
-    f = fopen(file, "r+");
+    f = fopen(file, "r+b");
     g_free(file);
     if (!f)
         return;
@@ -462,7 +495,7 @@ void write_competitor_for_coach_display(struct judoka *j)
     // individual file for competitor
     snprintf(buf, sizeof(buf), "c-%d.txt", j->index);
     file = g_build_filename(current_directory, buf, NULL);
-    f = fopen(file, "w");
+    f = fopen(file, "wb");
     g_free(file);
     if (!f)
         return;

@@ -1651,7 +1651,7 @@ gchar *get_system_description(gint index, gint competitors)
 
     if (system_is_french(sys.system)) {
         if (sys.table == TABLE_IJF_DOUBLE_REPECHAGE)
-            return _("IJF Dbl Rep");
+            return _("IJF Qrt Final Rep");
 
         switch (sys.table) {
         case TABLE_DOUBLE_REPECHAGE: return _("FIN Dbl Repchg");
@@ -1678,7 +1678,7 @@ gchar *get_system_description(gint index, gint competitors)
 static gchar *get_system_name(gint num)
 {
     if (num == CAT_IJF_DOUBLE_REPECHAGE)
-        return _("IJF Double Repechage");
+        return _("IJF Quarter Final Repechage");
 
     switch (num) {
     case CAT_SYSTEM_DEFAULT: return _("Default");

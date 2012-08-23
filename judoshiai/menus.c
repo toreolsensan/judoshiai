@@ -38,7 +38,7 @@ extern void toggle_belt_colors(gpointer callback_data,
                                guint callback_action, GtkWidget *menu_item);
 extern void properties(GtkWidget *w, gpointer data);
 extern void get_from_old_competition(GtkWidget *w, gpointer data);
-extern void get_from_old_competition_with_weight(GtkWidget *w, gpointer data);
+extern void get_weights_from_old_competition(GtkWidget *w, gpointer data);
 extern void start_help(GtkWidget *w, gpointer data);
 extern void locate_to_tatamis(GtkWidget *w, gpointer data);
 extern void set_tatami_state(GtkWidget *menu_item, gpointer data);
@@ -64,7 +64,7 @@ static GtkWidget *menubar,
     *tournament_new, *tournament_choose, *tournament_choose_net, *tournament_properties, 
     *tournament_quit, *tournament_backup, *tournament_validation,
     *competitor_new, *competitor_search, *competitor_select_from_tournament, *competitor_add_from_text_file,
-    *competitor_add_all_from_shiai, *competitor_add_all_with_weights, *competitor_remove_unweighted,
+    *competitor_add_all_from_shiai, *competitor_update_weights, *competitor_remove_unweighted,
     *competitor_restore_removed, *competitor_bar_code_search, *competitor_print_weigh_notes, *competitor_print_with_template,
     *category_new, *category_remove_empty, *category_create_official, 
     *category_print_all, *category_print_all_pdf, *category_print_matches,
@@ -204,7 +204,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     competitor_select_from_tournament  = gtk_menu_item_new_with_label(_("Select From Another Shiai"));
     competitor_add_from_text_file   = gtk_menu_item_new_with_label(_("Add From a Text File"));
     competitor_add_all_from_shiai   = gtk_menu_item_new_with_label(_("Add All From Another Shiai"));
-    competitor_add_all_with_weights = gtk_menu_item_new_with_label(_("Add All with Weights"));
+    competitor_update_weights       = gtk_menu_item_new_with_label(_("Update Weights From Another Shiai"));
     competitor_remove_unweighted    = gtk_menu_item_new_with_label(_("Remove Unweighted"));
     competitor_restore_removed      = gtk_menu_item_new_with_label(_("Restore Removed"));
     competitor_bar_code_search      = gtk_menu_item_new_with_label(_("Bar Code Search"));
@@ -217,7 +217,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_menu_shell_append(GTK_MENU_SHELL(competitors_menu), competitor_select_from_tournament);
     gtk_menu_shell_append(GTK_MENU_SHELL(competitors_menu), competitor_add_from_text_file);
     gtk_menu_shell_append(GTK_MENU_SHELL(competitors_menu), competitor_add_all_from_shiai);
-    //gtk_menu_shell_append(GTK_MENU_SHELL(competitors_menu), competitor_add_all_with_weights);
+    gtk_menu_shell_append(GTK_MENU_SHELL(competitors_menu), competitor_update_weights);
     gtk_menu_shell_append(GTK_MENU_SHELL(competitors_menu), gtk_separator_menu_item_new());
     gtk_menu_shell_append(GTK_MENU_SHELL(competitors_menu), competitor_remove_unweighted);
     gtk_menu_shell_append(GTK_MENU_SHELL(competitors_menu), competitor_restore_removed);
@@ -232,7 +232,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     g_signal_connect(G_OBJECT(competitor_select_from_tournament), "activate", G_CALLBACK(set_old_shiai_display), 0);
     g_signal_connect(G_OBJECT(competitor_add_from_text_file),  "activate", G_CALLBACK(import_txt_dialog), 0);
     g_signal_connect(G_OBJECT(competitor_add_all_from_shiai),  "activate", G_CALLBACK(get_from_old_competition), 0);
-    g_signal_connect(G_OBJECT(competitor_add_all_with_weights),"activate", G_CALLBACK(get_from_old_competition_with_weight), 0);
+    g_signal_connect(G_OBJECT(competitor_update_weights),      "activate", G_CALLBACK(get_weights_from_old_competition), 0);
     g_signal_connect(G_OBJECT(competitor_remove_unweighted),   "activate", G_CALLBACK(remove_unweighed_competitors), 0);
     g_signal_connect(G_OBJECT(competitor_restore_removed),     "activate", G_CALLBACK(db_restore_removed_competitors), 0);
     g_signal_connect(G_OBJECT(competitor_bar_code_search),     "activate", G_CALLBACK(barcode_search), 0);
@@ -729,7 +729,7 @@ void set_menu_active(void)
     SET_SENSITIVE(competitor_select_from_tournament, DB_OK);
     SET_SENSITIVE(competitor_add_from_text_file  , DB_OK);
     SET_SENSITIVE(competitor_add_all_from_shiai  , DB_OK);
-    SET_SENSITIVE(competitor_add_all_with_weights, DB_OK);
+    SET_SENSITIVE(competitor_update_weights      ,DB_OK);
     SET_SENSITIVE(competitor_remove_unweighted   , DB_OK);
     SET_SENSITIVE(competitor_restore_removed     , DB_OK);
     SET_SENSITIVE(competitor_bar_code_search     , DB_OK);
@@ -795,7 +795,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(competitor_select_from_tournament , _("Select From Another Shiai"));
     change_menu_label(competitor_add_from_text_file  , _("Add From a Text File"));
     change_menu_label(competitor_add_all_from_shiai  , _("Add All From Another Shiai"));
-    change_menu_label(competitor_add_all_with_weights, _("Add All with Weights"));
+    change_menu_label(competitor_update_weights      , _("Update Weights From Another Shiai"));
     change_menu_label(competitor_remove_unweighted   , _("Remove Unweighted"));
     change_menu_label(competitor_restore_removed     , _("Restore Removed"));
     change_menu_label(competitor_bar_code_search     , _("Bar Code Search"));

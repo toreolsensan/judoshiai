@@ -51,7 +51,7 @@ void write_competitor_positions(void)
 
     FILE *f;
     gchar *file = g_build_filename(current_directory, "c-winners.txt", NULL);
-    f = fopen(file, "w");
+    f = fopen(file, "wb");
     g_free(file);
     if (!f)
         return;
@@ -504,6 +504,8 @@ gint num_matches(gint sys, gint num_judokas)
 {
     if (num_judokas == 2 && prop_get_int_val(PROP_THREE_MATCHES_FOR_TWO))
         return 3;
+    else if (sys == SYSTEM_BEST_OF_3)
+        return 3;
     else if (sys == SYSTEM_DPOOL)
         return num_matches_table_d[num_judokas]; 
     else if (sys == SYSTEM_DPOOL2)
@@ -710,6 +712,7 @@ static void update_pool_matches(gint category, gint num)
 
     /* Number of pools and matches after the pools are finished.  */
     switch (sys.system) {
+    case SYSTEM_BEST_OF_3:
     case SYSTEM_POOL: num_pools = 1; num_knockouts = 0; break;
     case SYSTEM_DPOOL: num_pools = 2; num_knockouts = 3; break;
     case SYSTEM_QPOOL: num_pools = 4; num_knockouts = 7; break;
@@ -1264,6 +1267,7 @@ gint get_match_number_flag(gint category, gint number)
     case SYSTEM_POOL:
     case SYSTEM_DPOOL2:
     case SYSTEM_QPOOL:
+    case SYSTEM_BEST_OF_3:
 	return 0;
 
     case SYSTEM_DPOOL:
@@ -1396,6 +1400,7 @@ void update_matches_small(guint category, struct compsys sys_or_tatami)
     case SYSTEM_DPOOL:
     case SYSTEM_DPOOL2:
     case SYSTEM_QPOOL:
+    case SYSTEM_BEST_OF_3:
         update_pool_matches(category, sys_or_tatami.numcomp);
         break;
     case SYSTEM_FRENCH_8:
@@ -1608,6 +1613,7 @@ void update_matches(guint category, struct compsys sys, gint tatami)
         case SYSTEM_DPOOL:
         case SYSTEM_DPOOL2:
         case SYSTEM_QPOOL:
+        case SYSTEM_BEST_OF_3:
             update_pool_matches(category, sys.numcomp);
             break;
         case SYSTEM_FRENCH_8:
@@ -2413,6 +2419,7 @@ void set_match_pages(GtkWidget *notebook)
             case SYSTEM_DPOOL:
             case SYSTEM_DPOOL2:
             case SYSTEM_QPOOL:
+            case SYSTEM_BEST_OF_3:
                 update_pool_matches(catdata->index, sys.numcomp);
                 break;
             case SYSTEM_FRENCH_8:

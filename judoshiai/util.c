@@ -71,7 +71,7 @@ static gboolean traverse_rows_for_name(GtkTreeModel *model,
 				       gpointer data)
 {
     gchar **names = data;
-    gchar *lastname = NULL, *firstname = NULL, *clubname = NULL, *regcat = NULL;
+    gchar *lastname = NULL, *firstname = NULL, *clubname = NULL, *regcat = NULL, *id = NULL;
     gboolean result = FALSE;
 	
     gtk_tree_model_get(model, iter,
@@ -79,8 +79,11 @@ static gboolean traverse_rows_for_name(GtkTreeModel *model,
                        COL_FIRST_NAME, &firstname, 
                        COL_CLUB, &clubname, 
                        COL_WCLASS, &regcat,
+                       COL_ID, &id,
                        -1);
 
+    if (names[4] && id && id[0] && (strcmp(id, names[4]) == 0))
+        goto ok;
     if (names[0] && (lastname == NULL || strcmp(lastname, names[0])))
         goto out;
     if (names[1] && (firstname == NULL || strcmp(firstname, names[1])))
@@ -89,20 +92,22 @@ static gboolean traverse_rows_for_name(GtkTreeModel *model,
         goto out;
     if (names[3] && (regcat == NULL || strcmp(regcat, names[3])))
         goto out;
+ ok:
     name_found = TRUE;
     found_iter_name = *iter;
     result = TRUE;
-out:
+ out:
     g_free(lastname);
     g_free(firstname);
     g_free(clubname);
     g_free(regcat);
+    g_free(id);
     return result;
 }
 
 gboolean find_iter_name(GtkTreeIter *iter, const gchar *last, const gchar *first, const gchar *club)
 {
-    const gchar *names[4];
+    const gchar *names[5];
 
     if (!current_model)
         return FALSE;
@@ -110,7 +115,7 @@ gboolean find_iter_name(GtkTreeIter *iter, const gchar *last, const gchar *first
     names[0] = last;
     names[1] = first;
     names[2] = club;
-    names[3] = NULL;
+    names[3] = names[4] = NULL;
     name_found = FALSE;
     gtk_tree_model_foreach(current_model, traverse_rows_for_name, (gpointer)names);
     if (name_found) {
@@ -123,7 +128,7 @@ gboolean find_iter_name(GtkTreeIter *iter, const gchar *last, const gchar *first
 gboolean find_iter_name_2(GtkTreeIter *iter, const gchar *last, const gchar *first, 
 			  const gchar *club, const gchar *category)
 {
-    const gchar *names[4];
+    const gchar *names[5];
 
     if (!current_model)
         return FALSE;
@@ -132,6 +137,29 @@ gboolean find_iter_name_2(GtkTreeIter *iter, const gchar *last, const gchar *fir
     names[1] = first;
     names[2] = club;
     names[3] = category;
+    names[4] = NULL;
+    name_found = FALSE;
+    gtk_tree_model_foreach(current_model, traverse_rows_for_name, (gpointer)names);
+    if (name_found) {
+        *iter = found_iter_name;
+        return TRUE;
+    }
+    return FALSE;
+}
+
+gboolean find_iter_name_id(GtkTreeIter *iter, const gchar *last, const gchar *first, 
+                           const gchar *club, const gchar *category, const gchar *id)
+{
+    const gchar *names[5];
+
+    if (!current_model)
+        return FALSE;
+
+    names[0] = last;
+    names[1] = first;
+    names[2] = club;
+    names[3] = category;
+    names[4] = id;
     name_found = FALSE;
     gtk_tree_model_foreach(current_model, traverse_rows_for_name, (gpointer)names);
     if (name_found) {

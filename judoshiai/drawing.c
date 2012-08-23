@@ -826,7 +826,7 @@ static gboolean draw_one_comp(struct mdata *mdata)
             mask = get_club_mask(mdata);
             gint clubmask = get_club_only_mask(mdata);
 
-            if (sys == SYSTEM_POOL) {
+            if (sys == SYSTEM_POOL || sys == SYSTEM_BEST_OF_3) {
                 switch (mdata->mpositions) {
                 case 2:
                     getmask = 0x3;
@@ -1104,7 +1104,9 @@ struct compsys get_system_for_category(gint index, gint competitors)
         }
     }
 
-    if (competitors <= 5 && (wishsys == CAT_SYSTEM_POOL || wishsys == CAT_SYSTEM_DEFAULT)) {
+    if (competitors == 2 && (wishsys == CAT_SYSTEM_BEST_OF_3 || wishsys == CAT_SYSTEM_DEFAULT)) {
+        sys = SYSTEM_BEST_OF_3;
+    } else if (competitors <= 5 && (wishsys == CAT_SYSTEM_POOL || wishsys == CAT_SYSTEM_DEFAULT)) {
         sys = SYSTEM_POOL;
     } else if (competitors <= 7 && wishsys == CAT_SYSTEM_POOL) {
         sys = SYSTEM_POOL;
@@ -1237,6 +1239,7 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
     case SYSTEM_DPOOL:
     case SYSTEM_DPOOL2:
     case SYSTEM_QPOOL:
+    case SYSTEM_BEST_OF_3:
         mdata->mpositions = competitors;
         mdata->mfrench_sys = -1;
         break;

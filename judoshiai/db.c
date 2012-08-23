@@ -324,6 +324,17 @@ gint db_init(const char *dbname)
         SHOW_MESSAGE("%s", _("Database tables updated."));
     }
 
+    if (prop_get_int_val(PROP_THREE_MATCHES_FOR_TWO)) {
+        init_property("three_matches_for_two", "0");
+        props_save_to_db();
+
+        db_exec_str(NULL, NULL, "UPDATE categories SET \"system\"=%d, \"wishsys\"=%d WHERE "
+                    "\"system\"=%d AND \"numcomp\"=2", 
+                    SYSTEM_BEST_OF_3, CAT_SYSTEM_BEST_OF_3,
+                    SYSTEM_POOL);
+    }
+    
+
     set_menu_active();
 
     return r;

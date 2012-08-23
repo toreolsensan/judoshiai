@@ -120,6 +120,7 @@ gint           my_address;
 GtkWidget     *notes = NULL;
 gboolean       automatic_sheet_update = FALSE;
 gboolean       automatic_web_page_update = FALSE;
+gboolean       print_svg = FALSE;
 gboolean       weights_in_sheets = FALSE;
 gboolean       grade_visible = FALSE;
 gint           name_layout = 0;

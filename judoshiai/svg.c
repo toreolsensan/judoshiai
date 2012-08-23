@@ -122,7 +122,8 @@ static gint make_key(struct compsys systm, gint pagenum)
     if (systm.system == SYSTEM_POOL || 
         systm.system == SYSTEM_DPOOL ||
         systm.system == SYSTEM_QPOOL ||
-        systm.system == SYSTEM_DPOOL2)
+        systm.system == SYSTEM_DPOOL2 ||
+        systm.system == SYSTEM_BEST_OF_3)
         return (systm.system<<24)|(systm.numcomp<<8)|pagenum;
 
     return (systm.system<<24)|(systm.table<<16)|pagenum;
@@ -133,7 +134,7 @@ static struct svg_cache *get_cache(gint key)
     gint i;
     for (i = 0; i < num_svg; i++)
         if ((svg_data[i].key) == key)
-            return & svg_data[i];
+            return &svg_data[i];
     return NULL;
 }
 
@@ -268,14 +269,17 @@ gint paint_svg(struct paint_data *pd)
     if (!svgdata)
         return FALSE;
 
-    cairo_set_source_rgb(pd->c, 1.0, 1.0, 1.0);
-    cairo_rectangle(pd->c, 0.0, 0.0, pd->paper_width, pd->paper_height);
-    cairo_fill(pd->c);
+    if (pd->c) {
+        cairo_set_source_rgb(pd->c, 1.0, 1.0, 1.0);
+        cairo_rectangle(pd->c, 0.0, 0.0, pd->paper_width, pd->paper_height);
+        cairo_fill(pd->c);
+    }
 
     RsvgHandle *handle = rsvg_handle_new();
 
     switch (systm.system) {
     case SYSTEM_POOL:
+    case SYSTEM_BEST_OF_3:
         fill_pool_struct(category, num_judokas, &pm, FALSE);
         m = pm.m;
         if (pm.finished)
@@ -363,7 +367,6 @@ gint paint_svg(struct paint_data *pd)
         dfile = fopen(pd->filename, "w");
         if (!dfile)
             perror("svgout");
-        g_print("filename='%s', dfile =%p\n", pd->filename, dfile);
     } else if (debug)
         dfile = fopen("debug.svg", "w");
 
@@ -494,7 +497,8 @@ gint paint_svg(struct paint_data *pd)
                 if (systm.system == SYSTEM_POOL || 
                     systm.system == SYSTEM_QPOOL ||
                     systm.system == SYSTEM_DPOOL ||
-                    systm.system == SYSTEM_DPOOL2)
+                    systm.system == SYSTEM_DPOOL2 ||
+                    systm.system == SYSTEM_BEST_OF_3)
                     j = pmp->j[comp];
 
                 if (!j || j->index >= 10000) {
@@ -518,7 +522,7 @@ gint paint_svg(struct paint_data *pd)
                             WRITE(buf);
                         }
                     } else if (attr[1].code[0] == 'r') { // pool result
-                        if (systm.system == SYSTEM_POOL || dp2) {
+                        if (systm.system == SYSTEM_POOL || systm.system == SYSTEM_BEST_OF_3 || dp2) {
                             if (pmp->finished) {
                                 gint k;
                                 for (k = 1; k <= dp2 ? 4 : num_judokas; k++) { 
@@ -575,7 +579,7 @@ gint paint_svg(struct paint_data *pd)
             } else if (attr[0].code[0] == 'r') { // results
                 gint res = attr[0].value;
 
-                if (systm.system == SYSTEM_POOL) {
+                if (systm.system == SYSTEM_POOL || systm.system == SYSTEM_BEST_OF_3) {
                     struct judoka *j = pm.j[pm.c[res]];
                     if (j) {
                         write_judoka(handle, 1, j, dfile);
@@ -767,6 +771,7 @@ gint paint_svg(struct paint_data *pd)
     case SYSTEM_DPOOL:
     case SYSTEM_DPOOL2:
     case SYSTEM_QPOOL:
+    case SYSTEM_BEST_OF_3:
         /* clean up */
         empty_pool_struct(&pm);
 
@@ -796,14 +801,18 @@ gint paint_svg(struct paint_data *pd)
         pd->paper_height = paper_width_saved;
         pd->total_width = pd->paper_width;
         pd->landscape = TRUE;
-        cairo_translate(pd->c, paper_width_saved*0.5, paper_height_saved*0.5);
-        cairo_rotate(pd->c, -0.5*M_PI);
-        cairo_translate(pd->c, -paper_height_saved*0.5, -paper_width_saved*0.5);
+        if (pd->c) {
+            cairo_translate(pd->c, paper_width_saved*0.5, paper_height_saved*0.5);
+            cairo_rotate(pd->c, -0.5*M_PI);
+            cairo_translate(pd->c, -paper_height_saved*0.5, -paper_width_saved*0.5);
+        }
     }
 
-    cairo_save(pd->c);
-    cairo_scale(pd->c, pd->paper_width/svgwidth, pd->paper_width/svgwidth);
-    rsvg_handle_render_cairo(handle, pd->c);
+    if (pd->c) {
+        cairo_save(pd->c);
+        cairo_scale(pd->c, pd->paper_width/svgwidth, pd->paper_width/svgwidth);
+        rsvg_handle_render_cairo(handle, pd->c);
+    }
 
     // Legends
     if (legends[0].cs) { // at least the first legend must be defined
@@ -828,19 +837,22 @@ gint paint_svg(struct paint_data *pd)
                     rsvg_handle_get_dimensions_sub(handle, &dimensions, buf);
 
                     if (legends[l].cs && legends[l].height && dimensions.height) {
-                        cairo_save(pd->c);
-                        gdouble scale = 1.0*dimensions.height/legends[l].height;
-                        cairo_scale(pd->c, scale, scale);
-                        cairo_set_source_surface(pd->c, legends[l].cs, position.x/scale, position.y/scale);
-                        cairo_paint(pd->c);
-                        cairo_restore(pd->c);
+                        if (pd->c) {
+                            cairo_save(pd->c);
+                            gdouble scale = 1.0*dimensions.height/legends[l].height;
+                            cairo_scale(pd->c, scale, scale);
+                            cairo_set_source_surface(pd->c, legends[l].cs, position.x/scale, position.y/scale);
+                            cairo_paint(pd->c);
+                            cairo_restore(pd->c);
+                        }
                     }
                 }
             } // for a
         } // for f
     }
     
-    cairo_restore(pd->c);
+    if (pd->c)
+        cairo_restore(pd->c);
 
     rsvg_handle_free(handle);
 
@@ -868,6 +880,11 @@ void select_svg_dir(GtkWidget *menu_item, gpointer data)
     if (svg_directory)
         gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog),
                                             svg_directory);
+    else {
+        gchar *dirname = g_build_filename(installation_dir, "svg", NULL);
+        gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), dirname);
+        g_free(dirname);
+    }
 
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(do_svg), num_svg);
 
@@ -956,32 +973,38 @@ void read_svg_files(gboolean ok)
         RsvgHandle *legends_h = rsvg_handle_new_from_file(fullname, NULL);
         g_free(fullname);
 
-        gchar buf[32];
-        gint l = 0;
+        if (legends_h) {
+            gchar buf[32];
+            gint l = 0;
 
-        snprintf(buf, sizeof(buf), "#legend%d", l);
-
-        while (rsvg_handle_has_sub(legends_h, buf) && l < NUM_LEGENDS) {
-            RsvgPositionData position;
-            RsvgDimensionData dimensions;
-            rsvg_handle_get_position_sub(legends_h, &position, buf);
-            rsvg_handle_get_dimensions_sub(legends_h, &dimensions, buf);
-            legends[l].width = dimensions.width;
-            legends[l].height = dimensions.height;
-            if (legends[l].cs) cairo_surface_destroy(legends[l].cs);
-            legends[l].cs = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 
-                                                       dimensions.width+1, dimensions.height+1);
-            cairo_t *c = cairo_create(legends[l].cs);
-            cairo_translate(c, -position.x, -position.y);
-            gboolean r = rsvg_handle_render_cairo_sub(legends_h, c, buf);
-            cairo_show_page(c);
-            cairo_destroy(c);
-
-            l++;
             snprintf(buf, sizeof(buf), "#legend%d", l);
-        }            
 
-        rsvg_handle_free(legends_h);
+            while (rsvg_handle_has_sub(legends_h, buf) && l < NUM_LEGENDS) {
+                RsvgPositionData position;
+                RsvgDimensionData dimensions;
+                rsvg_handle_get_position_sub(legends_h, &position, buf);
+                rsvg_handle_get_dimensions_sub(legends_h, &dimensions, buf);
+                legends[l].width = dimensions.width;
+                legends[l].height = dimensions.height;
+                if (legends[l].cs) cairo_surface_destroy(legends[l].cs);
+                legends[l].cs = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 
+                                                           dimensions.width+1, dimensions.height+1);
+                cairo_t *c = cairo_create(legends[l].cs);
+                cairo_translate(c, -position.x, -position.y);
+                gboolean r = rsvg_handle_render_cairo_sub(legends_h, c, buf);
+                cairo_show_page(c);
+                cairo_destroy(c);
+
+                l++;
+                snprintf(buf, sizeof(buf), "#legend%d", l);
+            }            
+
+            rsvg_handle_free(legends_h);
+        }
     } // if dir
 }
 
+gboolean svg_in_use(void)
+{
+    return num_svg > 0;
+}

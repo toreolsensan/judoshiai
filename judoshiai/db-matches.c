@@ -628,7 +628,7 @@ gint db_category_match_status(gint category)
             n += sprintf(buf + n, ".txt");
 
             gchar *file = g_build_filename(current_directory, buf, NULL);
-            FILE *f = fopen(file, "w");
+            FILE *f = fopen(file, "wb");
             g_free(file);
             if (f) {
                 fprintf(f, "%d\n%d\n%d\n%d\n%d\n%d\n%d\n%d\n%d\n%d\n", 
@@ -1308,7 +1308,7 @@ struct match *db_next_match(gint category, gint tatami)
         }		
 
         gchar *file = g_build_filename(current_directory, "c-matches.txt", NULL);
-        FILE *f = fopen(file, "w");
+        FILE *f = fopen(file, "wb");
         g_free(file);
 
         if (f) {
@@ -1619,7 +1619,7 @@ void update_next_matches_coach_info(void)
     }
 
     gchar *file = g_build_filename(current_directory, "c-matches.txt", NULL);
-    FILE *f = fopen(file, "w");
+    FILE *f = fopen(file, "wb");
     g_free(file);
 
     if (f) {
