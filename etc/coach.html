@@ -2,12 +2,19 @@
 <html>
 <head> 
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <link rel="stylesheet" href="style.css" type="text/css" media="print, projection, screen" />
+  <script type="text/javascript" src="jquery.js" charset="utf-8"></script>
+  <script type="text/javascript" src="jquery.tablesorter.js" charset="utf-8"></script>
   <script type="text/javascript" src="coach.js" charset="utf-8"></script>
 </head>
 <body onload="initialize()">
 <h1>Coach Display</h1>
 
-<input type="text" id="competitor" onkeypress="{if (event.keyCode==13) checkCompetitor()}">
+<table><tr>
+<td><input type="text" id="competitor" onkeypress="{if (event.keyCode==13) checkCompetitor()}">
+<td><img src="refresh.png" class="button" onclick="refresh()" />
+<td><img src="clear.png" class="button" onclick="clearx()" />
+</tr></table>
 
 <p id="result"></p>
 

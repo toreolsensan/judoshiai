@@ -10,10 +10,6 @@ var current_competitor = "";
 
 function getPositions()
 {
-    /*var sURL = "http://"
-        + self.location.hostname
-        + "/tulokset/c-winners.txt?" + date.getTime();*/
-
     var oRequest = new XMLHttpRequest();
     oRequest.open("GET", "c-winners.txt?" + new Date().getTime(), false);
     oRequest.send(null)
@@ -27,9 +23,9 @@ function getPositions()
 function getIds()
 {
     var oRequest = new XMLHttpRequest();
-    oRequest.open("GET", "c-ids.txt?" + new Date().getTime(), true);
-
-    oRequest.onload = function (oEvent) {  
+    oRequest.open("GET", "c-ids.txt?" + new Date().getTime(), false);
+    oRequest.send(null)
+    if (oRequest.status == 200) {
 	var r = oRequest.responseText;
 	var lines = new Array();
 	lines = r.split("\n");
@@ -40,17 +36,16 @@ function getIds()
 	    competitor = lines[line].split("\t");
 	    competitors[line] = competitor;
 	}
-    };  
-
-    oRequest.send(null)
+    }
 }
 
 function getMatches()
 {
     var oRequest = new XMLHttpRequest();
-    oRequest.open("GET", "c-matches.txt?" + new Date().getTime(), true);
+    oRequest.open("GET", "c-matches.txt?" + new Date().getTime(), false);
+    oRequest.send(null)
 
-    oRequest.onload = function (oEvent) {  
+    if (oRequest.status == 200) {
 	var r = oRequest.responseText;
 	var lines = new Array();
 	lines = r.split("\n");
@@ -61,9 +56,45 @@ function getMatches()
 	    info = lines[line].split("\t");
 	    matches[line] = info;
 	}
-    };  
+    }
+}
 
-    oRequest.send(null)
+function GetOffset (object, offset) {
+    if (!object)
+        return;
+    offset.x += object.offsetLeft;
+    offset.y += object.offsetTop;
+    
+    GetOffset (object.offsetParent, offset);
+}
+
+function GetScrolled (object, scrolled) {
+    if (!object)
+        return;
+    scrolled.x += object.scrollLeft;
+    scrolled.y += object.scrollTop;
+    
+    if (object.tagName.toLowerCase () != "html") {
+        GetScrolled (object.parentNode, scrolled);
+    }
+}
+
+function scrolldown() {
+    var div = document.getElementById ("sheet1");
+    
+    var offset = {x : 0, y : 0};
+    GetOffset (div, offset);
+    
+    var scrolled = {x : 0, y : 0};
+    GetScrolled (div.parentNode, scrolled);
+    
+    var posX = offset.x - scrolled.x;
+    var posY = offset.y - scrolled.y;
+    
+    if (posY > 40) {
+	window.scrollBy(0, 40);
+	setTimeout("scrolldown()", 50);
+    }
 }
 
 function getSheet(name)
@@ -79,24 +110,26 @@ function getSheet(name)
 
     var file = escape_utf8(name);
 
-    var file0 = file + ".png?" + new Date().getTime();
-    console.log("file="+file0);
-    var oRequest = new XMLHttpRequest();
-    oRequest.open('HEAD', file0, true);
-    oRequest.onreadystatechange = function() {
-        if (oRequest.readyState == 4) {
-            if (oRequest.status == 200 || oRequest.status == 304) {
-		document.getElementById("sheet1").innerHTML = "<img src=\""+file0+"\" class=\"catimg\"/>";
-            } else {
-		for (var i = 1; i <= 5; i++) {
-		    var f = file + "-" + i + ".png?" + new Date().getTime();
-		    document.getElementById("sheet" + i).innerHTML = "<img src=\""+f+"\" class=\"catimg\"/>";
-		}
-            }
-        }
+    for (var i = 1; i <= 5; i++) {
+	var f;
+	if (i == 1) {
+	    f = file + ".png?" + new Date().getTime();
+	} else {
+	    f = file + "-" + (i-1) + ".png?" + new Date().getTime();
+	}
+	oRequest = new XMLHttpRequest();
+	oRequest.open('HEAD', f, false);
+	oRequest.send(null)
+	if (oRequest.status == 200 || oRequest.status == 304) {
+	    var src = "<img src=\""+f+"\" class=\"catimg\"";
+	    if (i == 1) {
+		src += " onload=\"scrolldown()\"";
+	    }
+	    src += " onclick=\"window.scrollTo(0,0)\"/>";
+	    document.getElementById("sheet"+i).innerHTML = src;
+	}
     }
-    oRequest.send();
-
+	
     document.getElementById("competitor").focus();
 }
 
@@ -143,7 +176,12 @@ function getJudokaLine(judoka, sheet)
 	if (sheet == false) {
 	    r += " onclick=\"getSheet('"+c[7]+"')\"";
 	}
-	r += "><td>"+c[1]+"<td><b>"+c[0]+"</b><td>"+gramsToKg(c[6])+"<td>"+c[7]+"<td>";
+	var kg = gramsToKg(c[6]);
+	if (kg == 0) {
+	    r += "><td>"+c[1]+"<td><b>"+c[0]+"</b><td style=\"background-color:orange\">"+kg+"<td>"+c[7]+"<td>";
+	} else {
+	    r += "><td>"+c[1]+"<td><b>"+c[0]+"</b><td>"+kg+"<td>"+c[7]+"<td>";
+	}
 
 	if (typeof(matches) != "undefined") {
 	    if (matches[judoka][0] != "0") {
@@ -162,14 +200,14 @@ function getJudokaLine(judoka, sheet)
 	if (typeof(positions) != "undefined") {
 	    var p = positions.charCodeAt(judoka);
 	    p -= 0x20;
-	    r += "[p=0x"+p.toString(16)+"]";
+	    //r += "[p=0x"+p.toString(16)+"]";
 	    if ((p & 0x0f) > 0) {
 		r += "Finished, place " + (p & 0x0f).toString();
 	    } else if (p == 0) {
 		r += "Not drawn"
 	    } else {
 		if (typeof(matches) != "undefined") {
-		    r += "[m="+matches[judoka][0]+":"+matches[judoka][1]+"]";
+		    //r += "[m="+matches[judoka][0]+":"+matches[judoka][1]+"]";
 		    if (matches[judoka][0] > 0 && matches[judoka][1] == "0") {
 			r += "Match ongoing";
 		    } else if (matches[judoka][0] > 0 && matches[judoka][1] != "-1") {
@@ -183,7 +221,7 @@ function getJudokaLine(judoka, sheet)
 		    }
 		}
 	    }
-	    r += "[s=0x"+matchStat.toString(16)+"]";
+	    //r += "[s=0x"+matchStat.toString(16)+"]";
 	}
 	r += "</tr>\n";
 
@@ -196,10 +234,15 @@ function getJudokaLine(judoka, sheet)
 
 function checkCompetitor()
 {
-    getSheet("empty");
 
     //document.getElementById("result").innerHTML=document.getElementById("competitor").value;
     var v = document.getElementById("competitor").value;
+    if (v.length < 1) { 
+	v = current_competitor;
+	getSheet(current_sheet);
+    } else {
+	getSheet("empty");
+    }
     if (v.length < 1) { return; }
 
     getFiles();
@@ -212,6 +255,8 @@ function checkCompetitor()
 
 function checkCompetitor1(v)
 {
+    //console.log("ID='"+v+"'");
+
     idFound = 0;
     numJudokas = 0;
 
@@ -233,29 +278,33 @@ function checkCompetitor1(v)
     if (idFound > 0 && numJudokas > 0) {
 	var c = getCompetitor(idFound);
 	if (typeof(c) != "undefined") {
-	    r += "<b>Coach:</b> "+c[1]+" "+c[0]+"<br>";
+	    r += "<b>Coach:</b> "+c[1]+" "+c[0]+" ("+c[10]+")<br>";
 	}
     }
 
-    r += "<table border=\"1\">\n";
-    r += "  <tr bgcolor='#c8d7e6'><th>Name<th>Surname<th>Weight<th>Category<th>Tatami<th>Status</tr>";    
+    r += "<table id=\"judokas\" class=\"tablesorter\" >\n";
+    r += "<thead><tr bgcolor='#c8d7e6'><th>Name<th>Surname<th>Weight<th>Category<th>Tatami<th>Status</tr></thead><tbody>";    
 
     if (numJudokas > 0) { // coach id
 	for (var i = 0; i < numJudokas; i++) {
 	    r += getJudokaLine(judokas[i], false);
 	}
 
-	r += "</table>\n";
+	r += "</tbody></table>\n";
 	document.getElementById("result").innerHTML = r;
     } else if (idFound > 0) { // competitor
 	r += getJudokaLine(idFound, true);
-	r += "</table>\n";
+	r += "</tbody></table>\n";
 	document.getElementById("result").innerHTML = r;
     } else { // no hit
 	r += getJudokaLine(v, true);
-	r += "</table>\n";
+	r += "</tbody></table>\n";
 	document.getElementById("result").innerHTML = r;
     }
+
+    $("#judokas").tablesorter({ 
+        sortList: [[1,0]] 
+    });
 }
 
 function doFocus()
@@ -280,6 +329,20 @@ function update()
 	getSheet(current_sheet);
     }
 */
+}
+
+function refresh() {
+    checkCompetitor();
+}
+
+function clearx() {
+    current_competitor = "";
+    current_sheet = "empty";
+    document.getElementById("competitor").value = "";
+    document.getElementById("result").innerHTML = "";
+    for (var i = 1; i <= 5; i++) {
+	document.getElementById("sheet"+i).innerHTML = "";
+    }
 }
 
 function initialize()
