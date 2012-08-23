@@ -164,6 +164,7 @@ gint encode_msg(struct message *m, guchar *buf, gint buflen)
 	put32(m->u.edit_competitor.matchflags);
 	putstr(m->u.edit_competitor.comment);
 	putstr(m->u.edit_competitor.coachid);
+	putstr(m->u.edit_competitor.beltstr);
 	break;
     }
 
@@ -329,6 +330,7 @@ gint decode_msg(struct message *m, guchar *buf, gint buflen)
 	get32(m->u.edit_competitor.matchflags);
 	getstr(m->u.edit_competitor.comment);
 	getstr(m->u.edit_competitor.coachid);
+	getstr(m->u.edit_competitor.beltstr);
 	break;
     }
 

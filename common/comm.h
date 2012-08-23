@@ -217,6 +217,7 @@ struct msg_edit_competitor {
     gint matchflags;
     gchar comment[20];
     gchar coachid[20];
+    gchar beltstr[16];
 };
 
 struct msg_scale {
