@@ -76,6 +76,7 @@ endif
 	cp etc/*.js $(RELDIR)/etc/
 	cp -r etc/flags-ioc $(RELDIR)/etc/
 	cp licenses/* $(RELDIR)/licenses
+	cp -r svg $(RELDIR)/
 	@echo
 	@echo "To make a setup executable run" 
 	@echo "  make setup"
