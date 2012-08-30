@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-02 14:15+0200\n"
+"POT-Creation-Date: 2012-08-23 09:40+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -516,10 +516,10 @@ msgstr "Не старше:"
 msgid "Highest weight (g):"
 msgstr "Найвища вага (г):"
 
-msgid "IJF Dbl Rep"
+msgid "IJF Qrt Final Rep"
 msgstr "Подв. втіш. IJF "
 
-msgid "IJF Double Repechage"
+msgid "IJF Quarter Final Repechage"
 msgstr "Подвійне втішення IJF "
 
 msgid "IP address:"
@@ -1105,7 +1105,7 @@ msgstr "Вагова кат.:"
 msgid "Weight:"
 msgstr "Вага:"
 
-msgid "Weighted:"
+msgid "Weighed:"
 msgstr "Вага:"
 
 msgid "Weights Visible"
@@ -1468,7 +1468,7 @@ msgstr "Підозріла вага:\n"
 msgid "warnings"
 msgstr "попередження"
 
-msgid "Weighted only"
+msgid "Weighed only"
 msgstr "Лише зважені"
 
 msgid "With weights"
@@ -1547,4 +1547,123 @@ msgid "Communication error"
 msgstr "Помилка зв'язку"
 
 msgid "Double Lost"
+msgstr ""
+
+msgid "Replay Video"
+msgstr ""
+
+msgid "Video server"
+msgstr ""
+
+msgid "Video server URL"
+msgstr ""
+
+msgid "User:"
+msgstr ""
+
+msgid "Proxy:"
+msgstr ""
+
+msgid "Show Video"
+msgstr ""
+
+msgid "GBR Knock Out"
+msgstr ""
+
+msgid "SVG Templates"
+msgstr ""
+
+msgid "Resolve 3-Way Ties by Weights"
+msgstr ""
+
+msgid "General"
+msgstr ""
+
+msgid "Reset to"
+msgstr ""
+
+msgid "Initialize"
+msgstr ""
+
+msgid "Players"
+msgstr ""
+
+msgid "Max age"
+msgstr ""
+
+msgid "Min"
+msgstr ""
+
+msgid "Max"
+msgstr ""
+
+msgid "System"
+msgstr ""
+
+msgid "Default systems"
+msgstr ""
+
+msgid "Use SVG Templates"
+msgstr ""
+
+msgid "Best of three:"
+msgstr ""
+
+msgid "Win needed for a medal:"
+msgstr ""
+
+msgid "Seeded to fixed places:"
+msgstr ""
+
+msgid "Double Pool 2 with carried forward points:"
+msgstr ""
+
+msgid "Two pool bronzes:"
+msgstr ""
+
+msgid "Resolve 3-way ties by weights:"
+msgstr ""
+
+msgid "Coach Id:"
+msgstr ""
+
+msgid "Comment:"
+msgstr ""
+
+msgid "Best two out of three matches:"
+msgstr ""
+
+msgid ""
+"Medal will be awarded \n"
+"only if a contest was won:"
+msgstr ""
+
+msgid "Pool settings"
+msgstr ""
+
+msgid "Statistics"
+msgstr ""
+
+msgid "Grade names"
+msgstr ""
+
+msgid "Coach"
+msgstr ""
+
+msgid "Weights do not match"
+msgstr ""
+
+msgid "Copy Weights"
+msgstr ""
+
+msgid "weights updated"
+msgstr ""
+
+msgid "Update Weights From Another Shiai"
+msgstr ""
+
+msgid "Weighted:"
+msgstr ""
+
+msgid "Print SVG"
 msgstr ""

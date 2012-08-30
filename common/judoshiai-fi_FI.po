@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-02 14:15+0200\n"
+"POT-Creation-Date: 2012-08-23 09:40+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -716,7 +716,7 @@ msgstr "Kilpailut"
 msgid "Competitors:"
 msgstr "Ottelijoita:"
 
-msgid "Weighted:"
+msgid "Weighed:"
 msgstr "Punnittuja:"
 
 msgid "Add competitors"
@@ -1108,7 +1108,7 @@ msgstr "Ottelu"
 msgid "Quad Pool"
 msgstr "Neloispooli"
 
-msgid "IJF Dbl Rep"
+msgid "IJF Qrt Final Rep"
 msgstr "IJF Ransk."
 
 msgid "FIN Dbl Repchg"
@@ -1150,7 +1150,7 @@ msgstr "ESP Lyhyet keräilyt"
 msgid "Quadruple pool"
 msgstr "Neloispooli"
 
-msgid "IJF Double Repechage"
+msgid "IJF Quarter Final Repechage"
 msgstr "IJF Ranskalainen"
 
 msgid "Picture Files"
@@ -1483,7 +1483,7 @@ msgstr "Epäilyttäviä painoja:\n"
 msgid "warnings"
 msgstr "varoitusta"
 
-msgid "Weighted only"
+msgid "Weighed only"
 msgstr "Vain punnitut"
 
 msgid "With weights"
@@ -1560,3 +1560,115 @@ msgstr "Tietoliikennevirhe"
 
 msgid "Double Lost"
 msgstr ""
+
+msgid "Replay Video"
+msgstr "Näytä video uusintana"
+
+msgid "Video server"
+msgstr "Videopalvelin"
+
+msgid "Video server URL"
+msgstr "Videopalvelimen URL"
+
+msgid "User:"
+msgstr "Käyttäjä:"
+
+msgid "Proxy:"
+msgstr "Välityspalvelin:"
+
+msgid "Show Video"
+msgstr "Näytä video"
+
+msgid "GBR Knock Out"
+msgstr "GBR Ranskalainen"
+
+msgid "SVG Templates"
+msgstr "SVG-mallineet"
+
+msgid "General"
+msgstr "Yleiset asetukset"
+
+msgid "Reset to"
+msgstr "Aseta"
+
+msgid "Initialize"
+msgstr "Alusta"
+
+msgid "Players"
+msgstr "Ottelijat"
+
+msgid "Max age"
+msgstr "Suurin ikä"
+
+msgid "Min"
+msgstr "Min"
+
+msgid "Max"
+msgstr "Max"
+
+msgid "System"
+msgstr "Järjestelmä"
+
+msgid "Default systems"
+msgstr "Oletusjärjestelmät"
+
+msgid "Use SVG Templates"
+msgstr "Käytä SVG-mallineita"
+
+msgid "Seeded to fixed places:"
+msgstr "Sijoitetut kiinteille paikoille:"
+
+msgid "Double Pool 2 with carried forward points:"
+msgstr "Tuplapooli 2:n tulokset finaalipooliin:"
+
+msgid "Two pool bronzes:"
+msgstr "Kaksi poolipronssia:"
+
+msgid "Resolve 3-way ties by weights:"
+msgstr "Paino ratkaisee ristiin voitetut:"
+
+msgid "Coach Id:"
+msgstr "Valmentajatunnus:"
+
+msgid "Comment:"
+msgstr "Kommentti:"
+
+msgid "Best two out of three matches:"
+msgstr "Paras kaksi kolmesta:"
+
+msgid ""
+"Medal will be awarded \n"
+"only if a contest was won:"
+msgstr ""
+"Mitali vain, jos\n"
+"ottelu voitettu:"
+
+msgid "Pool settings"
+msgstr "Poolin asetukset"
+
+msgid "Statistics"
+msgstr "Tilastot"
+
+msgid "Grade names"
+msgstr "Vyöarvojen nimet"
+
+msgid "Coach"
+msgstr "Valmentaja"
+
+msgid "Weights do not match"
+msgstr "Painot eivät täsmää"
+
+msgid "Copy Weights"
+msgstr "Kopioi painot"
+
+msgid "weights updated"
+msgstr "painoa kopioitu"
+
+msgid "Update Weights From Another Shiai"
+msgstr "Kopioi painot toisesta tietokannasta"
+
+msgid "Weighted:"
+msgstr "Punnitut:"
+
+msgid "Print SVG"
+msgstr "Tulosta SVG"
