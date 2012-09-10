@@ -1041,7 +1041,7 @@ msgstr "ESP Repesca doble desde 1ª ronda"
 msgid "SWE Double Repechage"
 msgstr "SWE Repesca doble"
 
-msgid "SWE Double Elimination"
+msgid "SWE Direct Repechage"
 msgstr "SWE Eliminatoria doble"
 
 msgid "EST Double Elimination"

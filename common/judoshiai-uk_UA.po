@@ -916,8 +916,8 @@ msgstr "SQL Dialog"
 msgid "SWE Dir återkv"
 msgstr "SWE Dir återkv"
 
-msgid "SWE Double Elimination"
-msgstr "SWE Double Elimination"
+msgid "SWE Direct Repechage"
+msgstr "SWE Direct Repechage"
 
 msgid "SWE Double Repechage"
 msgstr "SWE Double Repechage"

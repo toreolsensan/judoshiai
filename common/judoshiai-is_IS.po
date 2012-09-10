@@ -1014,7 +1014,7 @@ msgstr "FIN Tvöföld uppreisn"
 msgid "SWE Double Repechage"
 msgstr "SWE Tvöföld uppreisn"
 
-msgid "SWE Double Elimination"
+msgid "SWE Direct Repechage"
 msgstr "SWE Tvöfaldur útsláttur"
 
 msgid "EST Double Elimination"

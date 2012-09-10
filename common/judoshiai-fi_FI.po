@@ -1021,7 +1021,7 @@ msgstr "FIN Ranskalainen"
 msgid "SWE Double Repechage"
 msgstr "SWE Ranskalainen"
 
-msgid "SWE Double Elimination"
+msgid "SWE Direct Repechage"
 msgstr "SWE Pitkä keräily"
 
 msgid "EST Double Elimination"
