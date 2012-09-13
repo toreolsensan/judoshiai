@@ -182,10 +182,15 @@ static gint make_left_frame(FILE *f)
                 "<a href=\"statistics.html\">%s</a></td></tr></table>\r\n", _T(statistics));
     }
 
-    if (automatic_web_page_update)
+    if (automatic_web_page_update) {
         fprintf(f, 
                 "<table class=\"nextmatcheslink\"><tr><td class=\"nextmatcheslink\">"
                 "<a href=\"nextmatches.html\">%s</a></td></tr></table>\r\n", _T(nextmatch2));
+        
+        fprintf(f, 
+                "<table class=\"nextmatcheslink\"><tr><td class=\"nextmatcheslink\">"
+                "<a href=\"coach.html\">%s</a></td></tr></table>\r\n", _T(coach));
+    }
 
     fprintf(f,
             "<table class=\"categorieshdr\"><tr><td class=\"categorieshdr\">"
@@ -562,7 +567,7 @@ void write_results(FILE *f)
 static FILE *open_write(gchar *filename)
 {
     gchar *file = g_build_filename(current_directory, filename, NULL);
-    FILE *f = fopen(file, "w");
+    FILE *f = fopen(file, "wb");
     g_free(file);
     return f;
 }
@@ -907,14 +912,15 @@ void make_png_all(GtkWidget *w, gpointer data)
     avl_init_competitor_position();
 
     /* copy files */
-    gchar *files_to_copy[] = {"style.css", "coach.html", "coach.js", "asc.png", "desc.png", "bg.png", "refresh.png", "clear.png", 
+    gchar *files_to_copy[] = {"style.css", "coach.html", "coach.js", 
+                              "asc.png", "desc.png", "bg.png", "refresh.png", "clear.png", 
                               "jquery.js", "jquery.tablesorter.js", NULL};
     for (i = 0; files_to_copy[i]; i++) {
         f = open_write(files_to_copy[i]);
         if (f) {
             gint n;
             gchar *src = g_build_filename(installation_dir, "etc", files_to_copy[i], NULL);
-            FILE *sf = fopen(src, "r");
+            FILE *sf = fopen(src, "rb");
             g_free(src);
 
             if (sf) {
@@ -925,6 +931,23 @@ void make_png_all(GtkWidget *w, gpointer data)
             }
             fclose(f);
         }
+    }
+
+    /* dictionary file for javascripts */
+    f = open_write("words.js");
+    if (f) {
+        gint txts[] = {notdrawntext, finishedtext, matchongoingtext, startedtext,
+                       drawingreadytext, coachtext, nametext, surnametext, weighttext, 
+                       categorytext, statustext, positiontext, displaytext,
+                       matchafter1text, matchafter2text, -1};
+        gchar *vars[] = {"not_drawn", "finished", "match_ongoing", "started", 
+                         "drawing_ready", "coach", "firstname", "lastname", "weight", 
+                         "category", "status", "place", "display",
+                         "match_after_1", "match_after_2", NULL};
+
+        for (i = 0; txts[i] >= 0; i++)
+            fprintf(f, "var txt_%s = \"%s\";\n", vars[i], print_texts[txts[i]][print_lang]);
+        fclose(f);
     }
 
     /* index.html */
@@ -1135,7 +1158,7 @@ int get_output_directory(void)
     gtk_widget_show(statistics);
     if (svg_in_use()) {
         svg = gtk_check_button_new_with_label(_("Print SVG"));
-        gtk_toggle_button_set_active(GTK_CHECK_BUTTON(svg), 
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(svg), 
                                      g_key_file_get_boolean(keyfile, "preferences", "printsvg", &error));
         gtk_widget_show(svg);
     }

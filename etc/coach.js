@@ -164,7 +164,15 @@ function getCategory(name)
 
 function gramsToKg(grams)
 {
-    return (grams/1000).toString();
+    var s = (grams/1000).toString();
+    var k = s.length;
+    var i = s.indexOf(".");
+
+    if (grams == 0) { return "0"; }
+    if (i == -1) { s += ".00"; }
+    else if (k == (i + 2)) { s += "0"; }
+
+    return s;
 }
 
 function getJudokaLine(judoka, sheet)
@@ -176,19 +184,23 @@ function getJudokaLine(judoka, sheet)
 	if (sheet == false) {
 	    r += " onclick=\"getSheet('"+c[7]+"')\"";
 	}
+	// weight
 	var kg = gramsToKg(c[6]);
 	if (kg == 0) {
 	    r += "><td>"+c[1]+"<td><b>"+c[0]+"</b><td style=\"background-color:orange\">"+kg+"<td>"+c[7]+"<td>";
 	} else {
 	    r += "><td>"+c[1]+"<td><b>"+c[0]+"</b><td>"+kg+"<td>"+c[7]+"<td>";
+	    //           first         last           weight     category
 	}
 
+	// tatami
 	if (typeof(matches) != "undefined") {
 	    if (matches[judoka][0] != "0") {
 		r += matches[judoka][0];
 	    }
 	}
 
+	// status
 	r += "<td>";
 
 	var matchStat = 0;
@@ -202,26 +214,31 @@ function getJudokaLine(judoka, sheet)
 	    p -= 0x20;
 	    //r += "[p=0x"+p.toString(16)+"]";
 	    if ((p & 0x0f) > 0) {
-		r += "Finished, place " + (p & 0x0f).toString();
+		r += txt_finished;
 	    } else if (p == 0) {
-		r += "Not drawn"
+		r += txt_not_drawn;
 	    } else {
 		if (typeof(matches) != "undefined") {
 		    //r += "[m="+matches[judoka][0]+":"+matches[judoka][1]+"]";
 		    if (matches[judoka][0] > 0 && matches[judoka][1] == "0") {
-			r += "Match ongoing";
+			r += txt_match_ongoing;
 		    } else if (matches[judoka][0] > 0 && matches[judoka][1] != "-1") {
-			r += "Match after "+matches[judoka][1]+" matches";
+			r += txt_match_after_1 + " " + matches[judoka][1] + " " + txt_match_after_2;
 		    } else if ((matchStat & 16) && ((matchStat & 4) == 0)) {
-			r += "Finished";
+			r += txt_finished;
 		    } else if (matchStat & 2) {
-			r += "Started";
+			r += txt_started;
 		    } else if (matchStat & 16) {
-			r += "Drawing ready";
+			r += txt_drawing_ready;
 		    }
 		}
 	    }
 	    //r += "[s=0x"+matchStat.toString(16)+"]";
+	    // position
+	    r += "<td>";
+	    if ((p & 0x0f) > 0) {
+		r += (p & 0x0f).toString();
+	    }
 	}
 	r += "</tr>\n";
 
@@ -278,12 +295,14 @@ function checkCompetitor1(v)
     if (idFound > 0 && numJudokas > 0) {
 	var c = getCompetitor(idFound);
 	if (typeof(c) != "undefined") {
-	    r += "<b>Coach:</b> "+c[1]+" "+c[0]+" ("+c[10]+")<br>";
+	    r += "<b>"+txt_coach+":</b> "+c[1]+" "+c[0]+" ("+c[10]+")<br>";
 	}
     }
 
     r += "<table id=\"judokas\" class=\"tablesorter\" >\n";
-    r += "<thead><tr bgcolor='#c8d7e6'><th>Name<th>Surname<th>Weight<th>Category<th>Tatami<th>Status</tr></thead><tbody>";    
+    r += "<thead><tr bgcolor='#c8d7e6'><th>"+txt_firstname+"<th>"+txt_lastname+
+	"<th>"+txt_weight+"<th>"+txt_category+"<th>Tatami<th>"+txt_status+"<th>"+txt_place+
+	"</tr></thead><tbody>";    
 
     if (numJudokas > 0) { // coach id
 	for (var i = 0; i < numJudokas; i++) {
@@ -347,6 +366,7 @@ function clearx() {
 
 function initialize()
 {
+    document.getElementById("coachhdr").innerHTML = txt_coach + txt_display;
     getFiles();
     document.getElementById("competitor").value = "";
     document.getElementById("competitor").focus();

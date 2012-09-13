@@ -41,7 +41,7 @@ gchar *print_texts[numprinttexts][NUM_LANGS] = {
     {"Ed. voit", "Föregående vinnare", "Previous winner", "Ganador anterior", "", "Previous winner", "Fyrri sigurvegari", "Forrige Vinner"},
 
     {"Valmistautuvat", "Därefter", "Next", "Siguiente", "", "Наступні", "Næsta", "Neste"},
-    {"Paino:", "Vikt:", "Weight:", "Peso:", "", "Вага", "Þyngd", "Vekt"},
+    {"Paino", "Vikt", "Weight", "Peso", "", "Вага", "Þyngd", "Vekt"},
     {"ALUSTAVA AIKATAULU", "PRELIMINÄR TIDTABELL", "PRELIMINARY SCHEDULE", "AGENDA PRELIMINAR", "", "ПОПЕРЕДНІЙ РОЗКЛАД", "Bráðabirgða áætlun", "FORELØPIG TIDSSKJEMA"},
     {"punnituslaput.pdf", "viktlappor.pdf", "weighin-notes.pdf", "notas-pesaje.pdf", "weighin-notes.pdf", "weighin-notes.pdf","vigtunnar-listi", "veielapper.pdf"},
     {"aikataulu.pdf", "tidtabell.pdf", "schedule.pdf", "agenda.pdf", "schedule.pdf", "schedule.pdf", "áætlun", "tidsskjema.pdf"},
@@ -53,5 +53,18 @@ gchar *print_texts[numprinttexts][NUM_LANGS] = {
 
     {"Mitalit", "Medaljer", "Medals", "Medallas", "", "Медалі", "Verðlaun", "Medaljer"},
     {"Yhteensä", "Totalt", "Total", "Total", "", "Підсумок", "Samtals", "Total"},
-    {"Maa", "Land", "Country", "País", "Riik", "Країна", "Land", "Land"}
+    {"Maa", "Land", "Country", "País", "Riik", "Країна", "Land", "Land"},
+
+    // Coach display texts
+    {"Ei arvottu", "Not drawn", "Not drawn", "Not drawn", "Not drawn", "Not drawn", "Not drawn", "Not drawn"},
+    {"Loppunut", "Finished", "Finished", "Finished", "Finished", "Finished", "Finished", "Finished"},
+    {"Ottelu käynnissä", "Match ongoing", "Match ongoing", "Match ongoing", "Match ongoing", "Match ongoing", "Match ongoing", "Match ongoing"},
+    {"Sarja alkanut", "Started", "Started", "Started", "Started", "Started", "Started", "Started"},
+    {"Arvonta valmis", "Drawing ready", "Drawing ready", "Drawing ready", "Drawing ready", "Drawing ready", "Drawing ready", "Drawing ready"},
+    {"Valmentaja", "Coach", "Coach", "Coach", "Coach", "Coach", "Coach", "Coach"},
+    {"Sukunimi", "Surname", "Surname", "Surname", "Surname", "Surname", "Surname", "Surname"},
+    {"Tilanne", "Status", "Status", "Status", "Status", "Status", "Status", "Status"},
+    {"näyttö", "Display", "Display", "Display", "Display", "Display", "Display", "Display"},
+    {"Ottelu", "Match after", "Match after", "Match after", "Match after", "Match after", "Match after", "Match after"},
+    {"ottelun jälkeen", "matches", "matches", "matches", "matches", "matches", "matches", "matches"},
 };

@@ -333,6 +333,18 @@ enum {
     totaltext,
     countrytext,
 
+    notdrawntext,
+    finishedtext,
+    matchongoingtext,
+    startedtext,
+    drawingreadytext,
+    coachtext,
+    surnametext,
+    statustext,
+    displaytext,
+    matchafter1text,
+    matchafter2text,
+
     numprinttexts
 };
 
@@ -815,6 +827,7 @@ extern void db_set_points(gint category, gint number, gint minutes,
 extern void db_read_match(gint category, gint number);
 extern void db_read_matches_of_category(gint category);
 extern struct match *db_next_match(gint category, gint tatami);
+extern void db_write_c_matches(void);
 extern struct match *db_matches_waiting(void);
 extern struct match *get_cached_next_matches(gint tatami);
 extern void db_freeze_matches(gint tatami, gint category, gint number, gint arg);

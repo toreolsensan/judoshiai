@@ -5,10 +5,11 @@
   <link rel="stylesheet" href="style.css" type="text/css" media="print, projection, screen" />
   <script type="text/javascript" src="jquery.js" charset="utf-8"></script>
   <script type="text/javascript" src="jquery.tablesorter.js" charset="utf-8"></script>
+  <script type="text/javascript" src="words.js" charset="utf-8"></script>
   <script type="text/javascript" src="coach.js" charset="utf-8"></script>
 </head>
 <body onload="initialize()">
-<h1>Coach Display</h1>
+<h1 id="coachhdr"></h1>
 
 <table><tr>
 <td><input type="text" id="competitor" onkeypress="{if (event.keyCode==13) checkCompetitor()}">

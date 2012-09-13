@@ -1293,31 +1293,20 @@ struct match *db_next_match(gint category, gint tatami)
     }
 #endif
     // coach info
-    if (automatic_web_page_update) {
-        for (i = 0; i < NEXT_MATCH_NUM; i++) {
-            if (next_match[i].number == INVALID_MATCH)
-                continue;
+    for (i = 0; i < NEXT_MATCH_NUM; i++) {
+        if (next_match[i].number == INVALID_MATCH)
+            continue;
 
-            gint blue = next_match[i].blue;
-            gint white = next_match[i].white;
+        gint blue = next_match[i].blue;
+        gint white = next_match[i].white;
 
-            if (blue > 0 && blue < 10000 && coach_info[blue].waittime < 0)
-                coach_info[blue].waittime = i;
-            if (white > 0 && white < 10000 && coach_info[white].waittime < 0)
-                coach_info[white].waittime = i;
-        }		
+        if (blue > 0 && blue < 10000 && coach_info[blue].waittime < 0)
+            coach_info[blue].waittime = i;
+        if (white > 0 && white < 10000 && coach_info[white].waittime < 0)
+            coach_info[white].waittime = i;
+    }		
 
-        gchar *file = g_build_filename(current_directory, "c-matches.txt", NULL);
-        FILE *f = fopen(file, "wb");
-        g_free(file);
-
-        if (f) {
-            for (i = 0; i < 10000; i++)
-                fprintf(f, "%d\t%d\n", coach_info[i].tatami, coach_info[i].waittime);
-
-            fclose(f);
-        }
-    }
+    update_next_matches_coach_info();
 
     return next_match;
 }
@@ -1589,34 +1578,10 @@ gint db_force_match_number(gint category)
 
 void update_next_matches_coach_info(void)
 {
+    gint i;
+
     if (automatic_web_page_update == FALSE)
         return;
-
-    gint tatami, i;
-
-    // clear all
-    for (i = 0; i < 10000; i++) {
-        coach_info[i].tatami = 0;
-        coach_info[i].waittime = -1;
-        coach_info[i].matchnum = 0;
-        coach_info[i].round = 0;
-    }
-
-    for (tatami = 1; tatami <= number_of_tatamis; tatami++) {
-        struct match *m = get_cached_next_matches(tatami);
-        for (i = 0; i < NEXT_MATCH_NUM; i++) {
-            if (m[i].number == INVALID_MATCH)
-                continue;
-
-            gint blue = m[i].blue;
-            gint white = m[i].white;
-
-            if (blue > 0 && blue < 10000)
-                coach_info[blue].waittime = i;
-            if (white > 0 && white < 10000)
-                coach_info[white].waittime = i;
-        }		
-    }
 
     gchar *file = g_build_filename(current_directory, "c-matches.txt", NULL);
     FILE *f = fopen(file, "wb");
@@ -1625,7 +1590,7 @@ void update_next_matches_coach_info(void)
     if (f) {
         for (i = 0; i < 10000; i++)
             fprintf(f, "%d\t%d\n", coach_info[i].tatami, coach_info[i].waittime);
-        
+
         fclose(f);
     }
 }

@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-08-23 09:40+0300\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2012-09-10 16:55+0200\n"
+"Last-Translator: Oleh Koshel <kapitel_bc@ukr.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
@@ -916,8 +916,8 @@ msgstr "SQL Dialog"
 msgid "SWE Dir återkv"
 msgstr "SWE Dir återkv"
 
-msgid "SWE Direct Repechage"
-msgstr "SWE Direct Repechage"
+msgid "SWE Double Elimination"
+msgstr "SWE Double Elimination"
 
 msgid "SWE Double Repechage"
 msgstr "SWE Double Repechage"
@@ -1058,7 +1058,7 @@ msgid "Tournament from the net"
 msgstr "Турнір з мережі"
 
 msgid "Tournament properties"
-msgstr "Властивості турніру"
+msgstr "Умови турніру"
 
 msgid "Tournament:"
 msgstr "Турнір:"
@@ -1514,7 +1514,7 @@ msgid "Confirm:"
 msgstr "Підтвердити:"
 
 msgid "- - -"
-msgstr ""
+msgstr "- - -"
 
 msgid "syntax errors"
 msgstr "синтаксичних помилок"
@@ -1547,73 +1547,73 @@ msgid "Communication error"
 msgstr "Помилка зв'язку"
 
 msgid "Double Lost"
-msgstr ""
+msgstr "До двох поразок"
 
 msgid "Replay Video"
-msgstr ""
+msgstr "Відеоповтор"
 
 msgid "Video server"
-msgstr ""
+msgstr "Відеосервер"
 
 msgid "Video server URL"
-msgstr ""
+msgstr " URL відеосерверу"
 
 msgid "User:"
-msgstr ""
+msgstr "Користувач:"
 
 msgid "Proxy:"
-msgstr ""
+msgstr "Проксі:"
 
 msgid "Show Video"
-msgstr ""
+msgstr "Відеоролик"
 
 msgid "GBR Knock Out"
 msgstr ""
 
 msgid "SVG Templates"
-msgstr ""
+msgstr "Шаблони SVG"
 
 msgid "Resolve 3-Way Ties by Weights"
 msgstr ""
 
 msgid "General"
-msgstr ""
+msgstr "Загальні положення"
 
 msgid "Reset to"
-msgstr ""
+msgstr "Скинути"
 
 msgid "Initialize"
-msgstr ""
+msgstr "Ініціалізувати"
 
 msgid "Players"
-msgstr ""
+msgstr "Учасників"
 
 msgid "Max age"
-msgstr ""
+msgstr "Максимальний вік"
 
 msgid "Min"
-msgstr ""
+msgstr "Мін."
 
 msgid "Max"
-msgstr ""
+msgstr "Макс."
 
 msgid "System"
-msgstr ""
+msgstr "Система"
 
 msgid "Default systems"
-msgstr ""
+msgstr "Визначена система"
 
 msgid "Use SVG Templates"
-msgstr ""
+msgstr "Власний шаблон SVG"
 
 msgid "Best of three:"
-msgstr ""
+msgstr "Кращий з трьох:"
 
 msgid "Win needed for a medal:"
-msgstr ""
+msgstr "Кількість необхідних перемог:"
 
 msgid "Seeded to fixed places:"
-msgstr ""
+msgstr "Сіяні з фіксованими місцями"
 
 msgid "Double Pool 2 with carried forward points:"
 msgstr ""
@@ -1625,45 +1625,48 @@ msgid "Resolve 3-way ties by weights:"
 msgstr ""
 
 msgid "Coach Id:"
-msgstr ""
+msgstr "Id Тренера"
 
 msgid "Comment:"
-msgstr ""
+msgstr "Кометар:"
 
 msgid "Best two out of three matches:"
-msgstr ""
+msgstr "Двоє кращих у трьох сутичках"
 
 msgid ""
 "Medal will be awarded \n"
 "only if a contest was won:"
 msgstr ""
+"Медаль буде вручена \n"
+"тільки переможцю сутички"
 
 msgid "Pool settings"
-msgstr ""
+msgstr "Умови кругової системи"
 
 msgid "Statistics"
-msgstr ""
+msgstr "Статистика"
 
 msgid "Grade names"
-msgstr ""
+msgstr "Ступінь"
 
 msgid "Coach"
-msgstr ""
+msgstr "Тренер"
 
 msgid "Weights do not match"
-msgstr ""
+msgstr "Вага не відповідає"
 
 msgid "Copy Weights"
-msgstr ""
+msgstr "Копіювати вагу"
 
 msgid "weights updated"
-msgstr ""
+msgstr "оновити вагу"
 
 msgid "Update Weights From Another Shiai"
-msgstr ""
+msgstr "Оновлення ваги з іншого турніру"
 
 msgid "Weighted:"
-msgstr ""
+msgstr "Зважування:"
 
 msgid "Print SVG"
-msgstr ""
+msgstr "Друкувати SVG"
+
