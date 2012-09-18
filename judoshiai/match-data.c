@@ -1688,7 +1688,7 @@ static gchar *get_system_name(gint num)
     case CAT_SYSTEM_DPOOL2: return _("Double Pool 2");
     case CAT_SYSTEM_REPECHAGE: return _("FIN Double Repechage");
     case CAT_SYSTEM_DUBBELT_AATERKVAL: return _("SWE Double Repechage");
-    case CAT_SYSTEM_DIREKT_AATERKVAL: return _("SWE Double Elimination");
+    case CAT_SYSTEM_DIREKT_AATERKVAL: return _("SWE Direct Repechage");
     case CAT_SYSTEM_EST_D_KLASS: return _("EST Double Elimination");
     case CAT_SYSTEM_NO_REPECHAGE: return _("Single Elimination");
     case CAT_SYSTEM_ENKELT_AATERKVAL: return _("SWE Single Repechage");

@@ -324,6 +324,49 @@ void db_validation(GtkWidget *w, gpointer data)
     if (rows >= 0)
         db_close_table();
 
+    // find corrupted competitors
+    rows = db_get_table("select * from competitors where \"belt\"<0 or \"index\">=10000 or "
+                        "\"birthyear\"<0 or \"weight\"<0 or \"visible\"<>1 or \"seeding\"<0 or "
+                        "\"clubseeding\"<0");
+
+    if (rows > 0) {
+        insert_tag(buffer, _("Corrupted competitor data:\n"), "bold", 1);
+        for (row = 0; row < rows; row++) {
+            gchar *club = db_get_data(row, "club");
+            gchar *first = db_get_data(row, "first");
+            gchar *last = db_get_data(row, "last");
+            gchar *txt = g_strdup_printf("  %s, %s (%s).\n", last, first, club );
+
+            gtk_text_buffer_insert_at_cursor(buffer, txt, -1);
+            g_free(txt);
+            warnings++;
+        }
+    }
+    if (rows >= 0)
+        db_close_table();
+
+    // find corrupted categories
+    rows = db_get_table("select * from competitors where 'index'<10000 or \"tatami\"<0 or "
+                        "\"group\"<0 or \"system\"<0 or "
+                        "\"numcomp\"<0 or \"table\"<0 or \"wishsys\"<0 or "
+                        "\"pos1\"<0 or \"pos2\"<0 or \"pos3\"<0 or \"pos4\"<0 or "
+                        "\"pos5\"<0 or \"pos6\"<0 or \"pos7\"<0 or \"pos8\"<0");
+
+    if (rows > 0) {
+        insert_tag(buffer, _("Corrupted category data:\n"), "bold", 1);
+        for (row = 0; row < rows; row++) {
+            gchar *cat = db_get_data(row, "category");
+            gchar *txt = g_strdup_printf("  %s.\n", cat);
+
+            gtk_text_buffer_insert_at_cursor(buffer, txt, -1);
+            g_free(txt);
+            warnings++;
+        }
+    }
+    if (rows >= 0)
+        db_close_table();
+
+
     gchar *txt = g_strdup_printf("\n* %d %s. *\n", warnings, _("warnings")); 
     insert_tag(buffer, txt, "bold", 1);
     g_free(txt);

@@ -140,6 +140,8 @@ static void judoka_edited_callback(GtkWidget *widget,
 
     if (judoka_tmp->belt)
         edited.belt = gtk_combo_box_get_active(GTK_COMBO_BOX(judoka_tmp->belt));
+    if (edited.belt < 0 || edited.belt >= NUM_BELTS)
+        edited.belt = 0;
 
     if (judoka_tmp->weight)
         edited.weight = weight_grams(gtk_entry_get_text(GTK_ENTRY(judoka_tmp->weight)));
@@ -507,7 +509,7 @@ void view_on_row_activated(GtkTreeView        *treeview,
         tmp = gtk_label_new(_("Grade:"));
         gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, row, row+1);
         judoka_tmp->belt = tmp = gtk_combo_box_new_text();
-        for (i = 0; belts[i] && belts[i][0]; i++)
+        for (i = 0; (belts[i] && belts[i][0]) || (i == 0 && belts[i]); i++)
             gtk_combo_box_append_text((GtkComboBox *)tmp, belts[i]);
         gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, row, row+1);
         gtk_combo_box_set_active((GtkComboBox *)tmp, belt);
