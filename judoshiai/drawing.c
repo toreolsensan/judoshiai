@@ -1328,7 +1328,7 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
 	    snprintf(buf, sizeof(buf), "%s %s, %s", 
 		     j->first, j->last, j->country);
 	else
-	    snprintf(buf, sizeof(buf), "???");
+	    snprintf(buf, sizeof(buf), "%s %s", j->first, j->last);
 
         mdata->mcomp[i+1].label = gtk_label_new(buf);
         mdata->mcomp[i+1].index = index;
