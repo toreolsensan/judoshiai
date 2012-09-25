@@ -418,6 +418,7 @@ void reset_props_1(GtkWidget *button, void *data, gboolean if_unset)
         switch (draw_system) {
         case DRAW_INTERNATIONAL:
             default_cats[2] = (struct default_cat){0, 6, 0, CAT_IJF_DOUBLE_REPECHAGE};
+            default_cats[3] = (struct default_cat){0, 0, 0, 0};
             break;
         case DRAW_FINNISH:
             break;
