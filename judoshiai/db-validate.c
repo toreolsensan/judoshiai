@@ -127,6 +127,7 @@ void db_validation(GtkWidget *w, gpointer data)
 
     // find double seedings
     rows = db_get_table("select category,seeding,count(*) from competitors "
+                        "where deleted&1=0 "
                         "group by category,seeding having seeding>0 and count(*)>1");
 
     if (rows > 0) {
@@ -149,6 +150,7 @@ void db_validation(GtkWidget *w, gpointer data)
         
     // find double club seedings
     rows = db_get_table("select club,clubseeding,count(*) from competitors "
+                        "where deleted&1=0 "
                         "group by club,clubseeding having clubseeding>0 and count(*)>1");
 
     if (rows > 0) {
@@ -190,7 +192,7 @@ void db_validation(GtkWidget *w, gpointer data)
         db_close_table();
         
     // badly written names
-    rows = db_get_table("select * from competitors");
+    rows = db_get_table("select * from competitors where deleted&1=0");
 
     if (rows > 0) {
         gboolean hdr_printed = FALSE;
@@ -266,7 +268,7 @@ void db_validation(GtkWidget *w, gpointer data)
         db_close_table();
 
     // differently written club names
-    rows = db_get_table("select distinct club from competitors");
+    rows = db_get_table("select distinct club from competitors where deleted&1=0");
 
     if (rows > 1) {
         gboolean hdr_printed = FALSE;
