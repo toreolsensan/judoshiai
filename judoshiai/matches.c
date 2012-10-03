@@ -381,6 +381,20 @@ static void comment_cell_data_func (GtkTreeViewColumn *col,
 
 #define GET_PREV(_x) (_x < 0 ? (m[-_x].blue_points ? PREV_WHITE(-_x) : PREV_BLUE(-_x)) : GET_PREV1(_x))
 
+#define GET_PREV_OTHER(_x) ((m[_x].blue_points || m[_x].white == GHOST) ? PREV_WHITE(_x) : \
+                            ((m[_x].white_points || m[_x].blue == GHOST) ? PREV_BLUE(_x) : \
+                             (db_has_hansokumake(m[_x].white) ? PREV_WHITE(_x) : PREV_BLUE(_x))))
+
+#define GET_PREV_MATCHES(_x, _w, _l)                                    \
+    do { gboolean b = FALSE;                                            \
+        if (m[_x].blue_points || m[_x].white == GHOST) b = TRUE;        \
+        else if (m[_x].white_points || m[_x].blue == GHOST) b = FALSE;  \
+        else if (db_has_hansokumake(m[_x].white)) b = TRUE;             \
+        if (b) { _w = french_matches[table][sys][_x][0]; _l = french_matches[table][sys][_x][1];} \
+        else { _w = french_matches[table][sys][_x][1]; _l = french_matches[table][sys][_x][0];} \
+    } while (0)
+
+
 #define CAN_WIN_H (yes[c[j]] && (ju[c[j]]->deleted & HANSOKUMAKE) == 0)
 #define CAN_WIN (yes[c[j]])
 
@@ -400,6 +414,11 @@ static void comment_cell_data_func (GtkTreeViewColumn *col,
             m[_to].blue_points = m[_to].white_points = 0;               \
         }                                                               \
     } while (0)
+
+#define COPY_AND_SET(_to, _which, _who) do {                    \
+        COPY_PLAYER(_to, _which, _who);                  \
+        set_match(&m[_to]); db_set_match(&m[_to]); } while (0)
+
 
 void get_pool_winner(gint num, gint c[21], gboolean yes[21], 
                      gint wins[21], gint pts[21], 
@@ -919,7 +938,6 @@ static void update_pool_matches(gint category, gint num)
     empty_pool_struct(&pm);
 }
 
-
 static void set_repechage_16(struct match m[], gint table, gint i)
 {
     gint p;
@@ -943,6 +961,19 @@ static void set_repechage_16(struct match m[], gint table, gint i)
 	p = GET_PREV(p);
 	COPY_PLAYER((15+i), blue, LOSER(p));
 	set_match(&m[15+i]); db_set_match(&m[15+i]);
+    } else if (table == TABLE_DEN_DOUBLE_ELIMINATION) {
+        const gint reps[] = {15, 16, 13, 14};
+        gint pw, pl;
+	if (!MATCHED_FRENCH(9+i))
+	    return;
+
+        GET_PREV_MATCHES(9+i, pw, pl);
+
+	COPY_PLAYER((13+i), blue, LOSER(pw));
+	set_match(&m[13+i]); db_set_match(&m[13+i]);
+
+        COPY_PLAYER((reps[i]), white, LOSER(pl));
+	set_match(&m[reps[i]]); db_set_match(&m[reps[i]]);
     } else {
 	if (!MATCHED_FRENCH(9+i))
 	    return;
@@ -988,6 +1019,31 @@ static void set_repechage_32(struct match m[], gint table, gint i)
 	p = GET_PREV(p);
 	COPY_PLAYER((31+i), blue, LOSER(p));
 	set_match(&m[31+i]); db_set_match(&m[31+i]);
+    } else if (table == TABLE_DEN_DOUBLE_ELIMINATION) {
+	if (!MATCHED_FRENCH(25+i))
+	    return;
+        gint pw, pl, pww, pwl, plw, pll;
+        gint o1 = 29+i*2;
+        gint o2 = (i <= 1) ? (33+i*2) : (29+(i-2)*2);
+
+        GET_PREV_MATCHES(25+i, pw, pl); // matches 17, 18
+        GET_PREV_MATCHES(pw, pww, pwl); // matches 17, 18
+        GET_PREV_MATCHES(pl, plw, pll); // matches 17, 18
+
+	COPY_PLAYER(o1+8, white, LOSER(pw));
+	set_match(&m[o1+8]); db_set_match(&m[o1+8]);
+	COPY_PLAYER(o2+8+1, white, LOSER(pl));
+	set_match(&m[o2+8+1]); db_set_match(&m[o2+8+1]);
+        
+	COPY_PLAYER(o1, blue, LOSER(pww));
+	set_match(&m[o1]); db_set_match(&m[o1]);
+	COPY_PLAYER((o2), white, LOSER(pwl));
+	set_match(&m[o2]); db_set_match(&m[o2]);
+
+	COPY_PLAYER((o2+1), white, LOSER(plw));
+	set_match(&m[o2+1]); db_set_match(&m[o2+1]);
+	COPY_PLAYER((o1+1), blue, LOSER(pll));
+	set_match(&m[o1+1]); db_set_match(&m[o1+1]);
     } else {
 	if (!MATCHED_FRENCH(25+i))
 	    return;
@@ -1039,6 +1095,39 @@ static void set_repechage_64(struct match m[], gint table, gint i)
 	p = GET_PREV(p);
 	COPY_PLAYER((63+i), blue, LOSER(p));
 	set_match(&m[63+i]); db_set_match(&m[63+i]);
+    } else if (table == TABLE_DEN_DOUBLE_ELIMINATION) {
+	if (!MATCHED_FRENCH(57+i))
+	    return;
+        gint pw, pl, pww, pwl, plw, pll, pwww, pwwl, pwlw, pwll, plww, plwl, pllw, plll;
+        gint o1 = 61+i*4;
+        gint o2 = (i <= 1) ? (69+i*4) : (61+(i-2)*4);
+        gint o3 = 101+i*2;
+        gint o4 = (i <= 1) ? (105+i*2) : (101+(i-2)*2);
+
+        GET_PREV_MATCHES(57+i, pw, pl); // matches 49, 50
+        GET_PREV_MATCHES(pw, pww, pwl); // matches 33, 34
+        GET_PREV_MATCHES(pl, plw, pll); // matches 35, 36
+        GET_PREV_MATCHES(pww, pwww, pwwl);
+        GET_PREV_MATCHES(pwl, pwlw, pwll);
+        GET_PREV_MATCHES(plw, plww, plwl);
+        GET_PREV_MATCHES(pll, pllw, plll);
+
+        COPY_AND_SET(o3, white, LOSER(pw));
+        COPY_AND_SET(o4+1, white, LOSER(pl));
+        
+        COPY_AND_SET(o1+16, white, LOSER(pww));
+        COPY_AND_SET(o2+16+1, white, LOSER(pwl));
+        COPY_AND_SET(o2+16+3, white, LOSER(plw));
+        COPY_AND_SET(o1+16+2, white, LOSER(pll));
+
+        COPY_AND_SET(o1, blue, LOSER(pwww));
+        COPY_AND_SET(o2, white, LOSER(pwwl));
+        COPY_AND_SET(o2+1, white, LOSER(pwlw));
+        COPY_AND_SET(o1+1, blue, LOSER(pwll));
+        COPY_AND_SET(o2+2, white, LOSER(plww));
+        COPY_AND_SET(o1+2, blue, LOSER(plwl));
+        COPY_AND_SET(o1+3, blue, LOSER(pllw));
+        COPY_AND_SET(o2+3, white, LOSER(plll));
     } else {
 	if (!MATCHED_FRENCH(57+i))
 	    return;
@@ -1100,6 +1189,7 @@ static void update_french_matches(gint category, struct compsys systm)
 	table == TABLE_SWE_ENKELT_AATERKVAL ||
         /*table == TABLE_ESP_REPESCA_DOBLE_INICIO ||*/
         table == TABLE_ESP_REPESCA_SIMPLE ||
+        table == TABLE_DEN_DOUBLE_ELIMINATION ||
         table == TABLE_DOUBLE_REPECHAGE_ONE_BRONZE) {
 	/* Repechage */
 	if (sys == FRENCH_16) {

@@ -1572,6 +1572,7 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
         break;
     case FRENCH_64:
 	if ((table == TABLE_EST_D_KLASS || 
+             table == TABLE_DEN_DOUBLE_ELIMINATION ||
              table == TABLE_SWE_DIREKT_AATERKVAL ||
              table == TABLE_MODIFIED_DOUBLE_ELIMINATION ||
              table == TABLE_GBR_KNOCK_OUT) && 

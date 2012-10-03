@@ -443,6 +443,9 @@ void reset_props_1(GtkWidget *button, void *data, gboolean if_unset)
             break;
         case DRAW_AUSTRALIAN:
             break;
+        case DRAW_DANISH:
+            default_cats[3] = (struct default_cat){0, 8, 0, CAT_SYSTEM_DEN_DOUBLE_ELIMINATION};
+            break;
         }
 
         for (i = 0; i < NUM_DEFAULT_CATS; i++) {
@@ -483,7 +486,7 @@ static void reset_props1(GtkWidget *button, void *data)
 
 static const gchar *draw_system_names[NUM_DRAWS] = 
     {"International System", "Finnish System", "Swedish System", "Estonian System", "Spanish System", 
-     "Norwegian System", "British System", "Australian System"};
+     "Norwegian System", "British System", "Australian System", "Danish System"};
 
 #define NUM_TBLS 2
 
