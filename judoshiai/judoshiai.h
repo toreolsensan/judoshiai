@@ -1112,6 +1112,7 @@ extern gboolean svg_landscape(gint ctg, gint page);
 extern gint get_num_svg_pages(struct compsys systm);
 extern gint paint_svg(struct paint_data *pd);
 extern gboolean svg_in_use(void);
+extern gint get_svg_size(struct compsys systm, gint pagenum, gint *width, gint *height);
 
 /* properties */
 extern void init_property(gchar *prop, gchar *val);

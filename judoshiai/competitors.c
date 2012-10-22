@@ -911,7 +911,11 @@ void last_name_cell_data_func (GtkTreeViewColumn *col,
                          "cell-background-set", FALSE, 
                          NULL);
 
-        if (defined)
+        if (last[0] == '_')
+            g_object_set(renderer, 
+                         "foreground", "Gray", FALSE, 
+                         NULL);
+        else if (defined)
             g_object_set(renderer, 
                          "foreground", "Black", FALSE, 
                          NULL);

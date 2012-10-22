@@ -696,8 +696,8 @@ const gint result_y_position[NUM_TABLES][NUM_FRENCH] = {
     {4, 16, 48, 0},
     {4, 12, 28, 0},
     {7, 12, 23, 0},
-    {4, 12, 54, 0},
-    {4, 12, 54, 0},
+    {4, 22, 54, 0},
+    {4, 22, 54, 0}
 };
 
 const gint repechage_start[NUM_TABLES][NUM_FRENCH][2] = {
