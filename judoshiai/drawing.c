@@ -832,31 +832,69 @@ static gboolean draw_one_comp(struct mdata *mdata)
                     getmask = 0x3;
                     break;
                 case 3:
-                    if (mask & 0x6)
-                        getmask = 0x1;
+                    if (mdata->mcomp[comp].num_mates &&
+                        mdata->mpos[1].judoka == 0 && mdata->mpos[2].judoka == 0)
+                        getmask = 0x3;
+                    else if (mask & 0x3)
+                        getmask = 0x3;
                     else
                         getmask = 0x7;
                     break;
                 case 4:
-                    if (mask & 0x6)
+                    if (mdata->mcomp[comp].num_mates && 
+                        ((mdata->mpos[1].judoka == 0 && mdata->mpos[2].judoka == 0) ||
+                         ((mdata->mpos[1].judoka == 0 || mdata->mpos[2].judoka == 0) &&
+                          (mask & 0x3))))
+                        getmask = 0x3;
+                    else if (mask & 0x6)
                         getmask = 0x9;
                     else
                         getmask = 0xf;
                     break;
                 case 5:
-                    if (mask & 0x12)
+                    if (mdata->mcomp[comp].num_mates && 
+                        ((mdata->mpos[4].judoka == 0 && mdata->mpos[5].judoka == 0) ||
+                         ((mdata->mpos[4].judoka == 0 || mdata->mpos[5].judoka == 0) &&
+                          (mask & 0x18))))
+                        getmask = 0x18;
+                    else if (mdata->mcomp[comp].num_mates && 
+                        ((mdata->mpos[1].judoka == 0 && mdata->mpos[2].judoka == 0) ||
+                         ((mdata->mpos[1].judoka == 0 || mdata->mpos[2].judoka == 0) &&
+                          (mask & 0x3))))
+                        getmask = 0x3;
+                    else if (mask & 0x12)
                         getmask = 0x0d;
                     else
                         getmask = 0x1f;
                     break;
                 case 6:
-                    if (mask & 0x22)
+                    if (mdata->mcomp[comp].num_mates && 
+                        ((mdata->mpos[1].judoka == 0 && mdata->mpos[2].judoka == 0) ||
+                         ((mdata->mpos[1].judoka == 0 || mdata->mpos[2].judoka == 0) &&
+                          (mask & 0x3))))
+                        getmask = 0x3;
+                    else if (mdata->mcomp[comp].num_mates && 
+                        ((mdata->mpos[3].judoka == 0 && mdata->mpos[5].judoka == 0) ||
+                         ((mdata->mpos[3].judoka == 0 || mdata->mpos[5].judoka == 0) &&
+                          (mask & 0x14))))
+                        getmask = 0x14;
+                    else if (mask & 0x22)
                         getmask = 0x1d;
                     else
                         getmask = 0x3f;
                     break;
                 case 7:
-                    if (mask & 0x50)
+                    if (mdata->mcomp[comp].num_mates && 
+                        ((mdata->mpos[1].judoka == 0 && mdata->mpos[2].judoka == 0) ||
+                         ((mdata->mpos[1].judoka == 0 || mdata->mpos[2].judoka == 0) &&
+                          (mask & 0x3))))
+                        getmask = 0x3;
+                    else if (mdata->mcomp[comp].num_mates && 
+                        ((mdata->mpos[3].judoka == 0 && mdata->mpos[5].judoka == 0) ||
+                         ((mdata->mpos[3].judoka == 0 || mdata->mpos[5].judoka == 0) &&
+                          (mask & 0x14))))
+                        getmask = 0x14;
+                    else if (mask & 0x50)
                         getmask = 0x2f;
                     else
                         getmask = 0x7f;
@@ -1265,7 +1303,7 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
         break;
     }
 
-    if (catname && catname[0] == '?') {
+    if (catname && (catname[0] == '?' || catname[0] == '_')) {
         //SHOW_MESSAGE("Cannot draw %s", catname);
         g_free(catname);
         g_free(mdata);
