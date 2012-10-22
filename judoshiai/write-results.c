@@ -58,6 +58,9 @@ void write_competitor(FILE *f, const gchar *first, const gchar *last, const gcha
     static gint last_crc = 0;
     static gint member_count = 0;
 
+    if (category == NULL || category[0] == '?' || category[0] == '_')
+        return;
+
     if (by_club) {
         gchar buf[16], buf2[16];
         gint crc = pwcrc32((guchar *)club, strlen(club));
@@ -77,22 +80,24 @@ void write_competitor(FILE *f, const gchar *first, const gchar *last, const gcha
 
             fprintf(f, 
                     "<tr><td>%d</td><td>%s</td><td><a href=\"%d.html\">%s %s</a></td><td>%s</td>"
-                    "<td><a href=\"%s.html\">%s</a></td><td align=\"center\">%s</td></tr>\r\n", 
+                    "<td onclick=\"openCatWindow('%s','%d')\">"
+                    "<a href=\"competitors2.html\">%s</a></td><td align=\"center\">%s</td></tr>\r\n", 
                     member_count, member_count == 1 ? utf8_to_html(club) : "", 
                     index, 
                     firstname_lastname() ? utf8_to_html(first) : utf8_to_html(last), 
                     firstname_lastname() ? utf8_to_html(last) : utf8_to_html(first), 
                     grade_visible ? belt : "", 
-                    txt2hex(category), category, buf);
+                    category, index, category, buf);
         } else
             fprintf(f, 
                     "<tr><td>%d</td><td>%s</td><td>%s %s</td><td>%s</td>"
-                    "<td><a href=\"%s.html\">%s</a></td><td>&nbsp;</td></tr>\r\n", 
+                    "<td onclick=\"openCatWindow('%s','%d')\">"
+                    "<a href=\"competitors2.html\">%s</a></td><td>&nbsp;</td></tr>\r\n", 
                     member_count, member_count == 1 ? utf8_to_html(club) : "", 
                     firstname_lastname() ? utf8_to_html(first) : utf8_to_html(last), 
                     firstname_lastname() ? utf8_to_html(last) : utf8_to_html(first), 
                     grade_visible ? belt : "",  
-                    txt2hex(category), category);
+                    category, index, category);
 
         last_crc = crc;
     } else {
@@ -107,20 +112,22 @@ void write_competitor(FILE *f, const gchar *first, const gchar *last, const gcha
 
             fprintf(f, 
                     "<tr><td><a href=\"%d.html\">%s %s</a></td><td>%s</td><td>%s</td>"
-                    "<td><a href=\"%s.html\">%s</a></td><td align=\"center\">%s</td></tr>\r\n", 
+                    "<td onclick=\"openCatWindow('%s','%d')\">"
+                    "<a href=\"competitors.html\">%s</a></td><td align=\"center\">%s</td></tr>\r\n", 
                     index, 
                     firstname_lastname() ? utf8_to_html(first) : utf8_to_html(last), 
                     firstname_lastname() ? utf8_to_html(last) : utf8_to_html(first), 
                     grade_visible ? belt : "", 
-                    utf8_to_html(club), txt2hex(category), category, buf);
+                    utf8_to_html(club), category, index, category, buf);
         } else
             fprintf(f, 
                     "<tr><td>%s %s</td><td>%s</td><td>%s</td>"
-                    "<td><a href=\"%s.html\">%s</a></td><td>&nbsp;</td></tr>\r\n", 
+                    "<td onclick=\"openCatWindow('%s','%d')\">"
+                    "<a href=\"competitors.html\">%s</a></td><td>&nbsp;</td></tr>\r\n", 
                     firstname_lastname() ? utf8_to_html(first) : utf8_to_html(last), 
                     firstname_lastname() ? utf8_to_html(last) : utf8_to_html(first), 
                     grade_visible ? belt : "", utf8_to_html(club), 
-                    txt2hex(category), category);
+                    category, index, category);
 
         saved_competitors[saved_competitor_cnt] = index;
         if (saved_competitor_cnt < SAVED_COMP_SIZE)
@@ -214,19 +221,20 @@ static gint make_left_frame(FILE *f)
                                -1);
             j = get_data(index);
             if (j) {
-                if (!automatic_web_page_update) {
-                    fprintf(f, 
-                            "<tr><td class=\"categorylinksleft\"><a href=\"%s.html\">%s</a></td>"
-                            "<td class=\"categorylinksright\">"
-                            "<a href=\"%s.pdf\" target=\"_blank\"> "
-                            "(PDF)</a></td></tr>\r\n", 
-                            txt2hex(j->last), utf8_to_html(j->last), 
-                            txt2hex(j->last));
-                } else {
-                    fprintf(f, "<tr><td class=\"categorylinksonly\"><a href=\"%s.html\">%s</a></td></tr>\r\n", 
-                            txt2hex(j->last), utf8_to_html(j->last));
+                if (j->last && j->last[0] != '?' && j->last[0] != '_') {
+                    if (!automatic_web_page_update) {
+                        fprintf(f, 
+                                "<tr><td class=\"categorylinksleft\"><a href=\"%s.html\">%s</a></td>"
+                                "<td class=\"categorylinksright\">"
+                                "<a href=\"%s.pdf\" target=\"_blank\"> "
+                                "(PDF)</a></td></tr>\r\n", 
+                                txt2hex(j->last), utf8_to_html(j->last), 
+                                txt2hex(j->last));
+                    } else {
+                        fprintf(f, "<tr><td class=\"categorylinksonly\"><a href=\"%s.html\">%s</a></td></tr>\r\n", 
+                                txt2hex(j->last), utf8_to_html(j->last));
+                    }
                 }
-
                 free_judoka(j);
             }
         }
@@ -498,7 +506,7 @@ static void write_cat_result(FILE *f, gint category)
 
     ctg = get_data(category);
 
-    if (ctg == NULL)
+    if (ctg == NULL || ctg->last == NULL || ctg->last[0] == '?' || ctg->last[0] == '_')
         return;
 
     /* find system */
@@ -572,6 +580,53 @@ static FILE *open_write(gchar *filename)
     return f;
 }
 
+static void print_embedded_text(FILE *f, gchar *name, struct compsys systm, gint pagenum)
+{
+    gint w, h;
+    if (get_svg_size(systm, pagenum, &w, &h) < 0) {
+        return;
+    }
+
+    if (pagenum)
+        fprintf(f, 
+                "<object data=\"%s-%d.svg\" type=\"image/svg+xml\" width=\"%d\" height=\"%d\"></object>\r\n",
+                name, pagenum, w, h);
+    else
+        fprintf(f, 
+                "<object data=\"%s.svg\" type=\"image/svg+xml\" width=\"%d\" height=\"%d\"></object>\r\n",
+                name, w, h);
+
+#if 0
+    if (pagenum)
+        fprintf(f, 
+                "\r\n<!--[if !IE]>-->\r\n"
+                "<object data=\"%s-%d.svg\" type=\"image/svg+xml\" class=\"catimg\"\r\n"
+                "width=\"%d\" height=\"%d\" id=\"svgobj%d\"> <!--<![endif]-->\r\n"
+                "<!--[if lt IE 9]>\r\n"
+                "<object src=\"%s-%d.svg\" classid=\"image/svg+xml\"\r\n"
+                "width=\"%d\" height=\"%d\" id=\"svgobj%d\"> <![endif]-->\r\n"
+                "<!--[if gte IE 9]>\r\n"
+                "<object data=\"%s-%d.svg\" type=\"image/svg+xml\"\r\n"
+                "width=\"%d\" height=\"%d\" id=\"svgobj%d\"> <![endif]-->\r\n"
+                "</object>\r\n", name, pagenum, w, h, pagenum,
+                name, pagenum, w, h, pagenum, name, pagenum, w, h, pagenum);
+    else
+        fprintf(f, 
+                "\r\n<!--[if !IE]>-->\r\n"
+                "<object data=\"%s.svg\" type=\"image/svg+xml\" class=\"catimg\"\r\n"
+                "width=\"%d\" height=\"%d\" id=\"svgobj%d\"> <!--<![endif]-->\r\n"
+                "<!--[if lt IE 9]>\r\n"
+                "<object src=\"%s.svg\" classid=\"image/svg+xml\"\r\n"
+                "width=\"%d\" height=\"%d\" id=\"svgobj%d\"> <![endif]-->\r\n"
+                "<!--[if gte IE 9]>\r\n"
+                "<object data=\"%s.svg\" type=\"image/svg+xml\"\r\n"
+                "width=\"%d\" height=\"%d\" id=\"svgobj%d\"> <![endif]-->\r\n"
+                "</object>\r\n", name, w, h, pagenum,
+                name, w, h, pagenum, name, w, h, pagenum);
+    // <embed src=\"%s.svg\" type=\"image/svg+xml\" class=\"catimg\"/>
+#endif
+}
+
 void write_html(gint cat)
 {
     gchar buf[64];
@@ -593,19 +648,23 @@ void write_html(gint cat)
     if (!f)
         goto out;
 
-    make_top_frame(f);
+    make_top_frame_1(f, "<script defer=\"defer\" type=\"text/javascript\" src=\"sie.js\"></script>\r\n"
+                     "<script type=\"text/javascript\" src=\"coach.js\" charset=\"utf-8\"></script>\r\n");
     make_left_frame(f);
 
     hextext = txt2hex(j->last);
 
-     
     if (print_svg) {
         fprintf(f, "<td valign=\"top\"><table><tr class=\"cattr1\"><td>"
-                "<div class=\"catdiv\"><embed src=\"%s.svg\" type=\"image/svg+xml\" class=\"catimg\"/></div></td></tr>\r\n", hextext);
+                "<div class=\"catdiv\">");
+        print_embedded_text(f, hextext, sys, 0);
+        fprintf(f, "</div></td></tr>\r\n");
 
-        for (i = 1; i < num_pages(sys); i++)
-            fprintf(f, "  <tr class=\"cattr2\"><td><div class=\"catdiv\">"
-                    "<embed src=\"%s-%d.svg\" type=\"image/svg+xml\" class=\"catimg\"/></div></td></tr>\r\n", hextext, i);
+        for (i = 1; i < num_pages(sys); i++) {
+            fprintf(f, "  <tr class=\"cattr2\"><td><div class=\"catdiv\">");
+            print_embedded_text(f, hextext, sys, i);
+            fprintf(f, "</div></td></tr>\r\n");
+        }
     } else {
         fprintf(f, "<td valign=\"top\"><table><tr class=\"cattr1\"><td>"
                 "<div class=\"catdiv\"><img src=\"%s.png\" class=\"catimg\"/></div></td></tr>\r\n", hextext);
@@ -812,17 +871,29 @@ void write_comp_stat(gint index)
         gint mtime = atoi(db_get_data(i, "time"));
         if (blue_points || white_points)
             fprintf(f, 
-                    "<tr><td>%s</td><td>%s %s</td><td class=\"%s\">%05x</td>"
+                    "<tr><td "
+                    "onclick=\"top.location.href='%s.html'\" "
+                    "style=\"cursor: pointer\""
+                    ">%s</td><td "
+                    "onclick=\"top.location.href='%d.html'\" "
+                    "style=\"cursor: pointer\""
+                    ">%s %s</td><td class=\"%s\">%05x</td>"
                     "<td align=\"center\">%d - %d</td>"
-                    "<td class=\"%s\">%05x</td><td>%s %s</td><td>%d:%02d</td></tr>\r\n",
-                    utf8_to_html(c->last), 
+                    "<td class=\"%s\">%05x</td><td "
+                    "onclick=\"top.location.href='%d.html'\" "
+                    "style=\"cursor: pointer\""
+                    ">%s %s</td><td>%d:%02d</td></tr>\r\n",
+                    txt2hex(c->last),
+                    utf8_to_html(c->last),
+                    j1->index,
                     utf8_to_html(firstname_lastname() ? j1->first : j1->last), 
                     utf8_to_html(firstname_lastname() ? j1->last : j1->first),
                     prop_get_int_val(PROP_WHITE_FIRST) ? "wscore" : "bscore",
                     blue_score, blue_points,
                     white_points, 
                     prop_get_int_val(PROP_WHITE_FIRST) ? "bscore" : "wscore",
-                    white_score, 
+                    white_score,
+                    j2->index,
                     utf8_to_html(firstname_lastname() ? j2->first : j2->last), 
                     utf8_to_html(firstname_lastname() ? j2->last : j2->first), mtime/60, mtime%60);
 
@@ -914,7 +985,8 @@ void make_png_all(GtkWidget *w, gpointer data)
     /* copy files */
     gchar *files_to_copy[] = {"style.css", "coach.html", "coach.js", 
                               "asc.png", "desc.png", "bg.png", "refresh.png", "clear.png", 
-                              "jquery.js", "jquery.tablesorter.js", NULL};
+                              "jquery.js", "jquery.tablesorter.js", 
+                              "sie.js", NULL};
     for (i = 0; files_to_copy[i]; i++) {
         f = open_write(files_to_copy[i]);
         if (f) {
@@ -973,7 +1045,7 @@ void make_png_all(GtkWidget *w, gpointer data)
     /* competitors */
     f = open_write("competitors.html");
     if (f) {
-        make_top_frame(f);
+        make_top_frame_1(f, "<script type=\"text/javascript\" src=\"coach.js\" charset=\"utf-8\"></script>");
         make_left_frame(f);
         saved_competitor_cnt = 0;
         db_print_competitors(f);
@@ -983,7 +1055,7 @@ void make_png_all(GtkWidget *w, gpointer data)
 
     f = open_write("competitors2.html");
     if (f) {
-        make_top_frame(f);
+        make_top_frame_1(f, "<script type=\"text/javascript\" src=\"coach.js\" charset=\"utf-8\"></script>");
         make_left_frame(f);
         db_print_competitors_by_club(f);
         make_bottom_frame(f);

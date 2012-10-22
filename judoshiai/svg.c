@@ -34,7 +34,7 @@
 
 #define MATCHED(_a) (m[_a].blue_points || m[_a].white_points)
 
-static gboolean debug = FALSE;
+static gboolean debug = TRUE;
 
 #define WRITE2(_s, _l)                                                     \
     do { if (dfile) fwrite(_s, 1, _l, dfile);                            \
@@ -129,6 +129,20 @@ static gint make_key(struct compsys systm, gint pagenum)
     return (systm.system<<24)|(systm.table<<16)|pagenum;
 }
 
+gint get_svg_size(struct compsys systm, gint pagenum, gint *width, gint *height)
+{
+    gint i, key = make_key(systm, pagenum);
+
+    for (i = 0; i < num_svg; i++) {
+        if (svg_data[i].key == key) {
+            *width = svg_data[i].width;
+            *height = svg_data[i].height;
+            return 0;
+        } 
+    }
+    return -1;
+}
+
 static struct svg_cache *get_cache(gint key)
 {
     gint i;
@@ -176,13 +190,33 @@ gint get_num_svg_pages(struct compsys systm)
     return pages;
 }
 
+static gchar *last_country = NULL;
+extern gboolean create_statistics;
+
+static void reset_last_country(void)
+{
+    g_free(last_country);
+    last_country = NULL;
+}
+
 gint write_judoka(RsvgHandle *handle, gint start, struct judoka *j, FILE *dfile)
 {
     gint i;
     GError *err = NULL;
-    gchar buf[64];
+    gchar buf[256];
 
-    WRITE2("<tspan>", 7);
+    g_free(last_country);
+    last_country = g_strdup(j->country ? j->country : "empty");
+
+    if (create_statistics && dfile)
+        snprintf(buf, sizeof(buf), "<tspan class=\"cmp%d\" "
+                 "onclick=\"top.location.href='%d.html'\" "
+                 "style=\"cursor: pointer\""
+                 " >", j->index, j->index);
+    else
+        snprintf(buf, sizeof(buf), "<tspan class=\"cmp%d\" >", j->index);
+
+    WRITE2(buf, strlen(buf));
 
     for (i = start; i < cnt; i++) {
         if (attr[i].code[0] == '\'') {
@@ -385,7 +419,7 @@ gint paint_svg(struct paint_data *pd)
             cnt = 0;
             p++;
 
-            while (IS_LABEL_CHAR(*p) || IS_VALUE_CHAR(*p) || *p == '-' || *p == '\'' || *p == '|') {
+            while (IS_LABEL_CHAR(*p) || IS_VALUE_CHAR(*p) || *p == '-' || *p == '\'' || *p == '|' || *p == '!') {
                 while (IS_LABEL_CHAR(*p))
                     attr[cnt].code[attr[cnt].codecnt++] = *p++;
                 
@@ -411,6 +445,11 @@ gint paint_svg(struct paint_data *pd)
                 }
 
                 cnt++;
+
+                if (*p == '!') {
+                    p++;
+                    break;
+                }
             }
 
 #if 0
@@ -437,6 +476,7 @@ gint paint_svg(struct paint_data *pd)
                 set_competitor_position(m[fight].white, COMP_POS_DRAWN);
                 
                 if (attr[1].code[0] == 0) { // name
+                    reset_last_country();
                     gint who = attr[1].value;
                     gint ix;
                     struct judoka *j = NULL;
@@ -472,6 +512,30 @@ gint paint_svg(struct paint_data *pd)
                     
                     if ((ifmatched == FALSE || MATCHED(fight)) && buf[0])
                         WRITE(buf);
+                } else if (attr[1].code[0] == 's') {
+                    gint who = attr[1].value;
+                    gboolean ifmatched = FALSE;
+                    gint points = who == 1 ? m[fight].blue_score : m[fight].white_score;
+                    gint next = 2;
+                    if ((cnt > next) && attr[next].code[0] == 0) {
+                        if (attr[next].value & 1)
+                            ifmatched = TRUE;
+                        next++;
+                    }
+                    if ((cnt > next) && attr[next].code[0] == '=') {
+                        if (attr[next].value == points)
+                            snprintf(buf, sizeof(buf), "%s", attr[next+1].code + 1);
+                        else if (attr[next+2].value == 0)
+                            snprintf(buf, sizeof(buf), "%d%d%d%d", 
+                                     (points>>16)&0xf, (points>>12)&0xf, (points>>8)&0xf, points&0xf);
+                        else
+                            buf[0] = 0;
+                    } else
+                        snprintf(buf, sizeof(buf), "%d%d%d%d", 
+                                 (points>>16)&0xf, (points>>12)&0xf, (points>>8)&0xf, points&0xf);
+
+                    if ((ifmatched == FALSE || MATCHED(fight)) && buf[0])
+                        WRITE(buf);
                 } else if (attr[1].code[0] == 't') {
                     if (m[fight].match_time) {
                         snprintf(buf, sizeof(buf), "%d:%02d", m[fight].match_time/60, m[fight].match_time%60);
@@ -481,6 +545,7 @@ gint paint_svg(struct paint_data *pd)
                     sprintf(buf, "%d", fight);
                     WRITE(buf);
                 } else if (IS_SAME(attr[1].code, "winner")) {
+                    reset_last_country();
                     struct judoka *j = get_data(WINNER(fight));
                     if (j) {
                         write_judoka(handle, 2, j, dfile);
@@ -489,6 +554,7 @@ gint paint_svg(struct paint_data *pd)
                 }
             } else if (attr[0].code[0] == 'c' ||
                        attr[0].code[0] == 'C') {
+                reset_last_country();
                 gboolean dp2 = attr[0].code[0] == 'C';
                 gint comp = attr[0].value;
                 struct judoka *j = NULL;
@@ -577,6 +643,7 @@ gint paint_svg(struct paint_data *pd)
                     write_judoka(handle, 1, j, dfile);
                 }
             } else if (attr[0].code[0] == 'r') { // results
+                reset_last_country();
                 gint res = attr[0].value;
 
                 if (systm.system == SYSTEM_POOL || systm.system == SYSTEM_BEST_OF_3) {
@@ -672,7 +739,8 @@ gint paint_svg(struct paint_data *pd)
                     struct judoka *j = get_data(ix);
                     if (j) {
                         write_judoka(handle, 1, j, dfile);
-                        set_competitor_position(j->index, COMP_POS_DRAWN | res);
+                        set_competitor_position(j->index, COMP_POS_DRAWN | 
+                                                (res == 4 ? 3 : (res == 6 ? 5 : (res == 8 ? 7 : res))));
                         free_judoka(j);
                     }
                 }
@@ -708,8 +776,36 @@ gint paint_svg(struct paint_data *pd)
 
             if (delayed)
                 WRITE1(">", 1);
-        } else {
+        } else { // *p != '%'
             //g_print("%c", *p);
+            if (strncmp(p, "xlink:href=\"flag", 16) == 0) {
+                p += 16;
+                while (*p && *p != '"') p++;
+                if (*p == '"') p++;
+                WRITE2("xlink:href=\"data:image/png;base64,", 34);
+                gint state = 0, save = 0;
+                guchar in[256];
+                gchar out[400];
+
+                gchar flagfile[32];
+                snprintf(flagfile, sizeof(flagfile), "%s.png", last_country ? last_country : "empty");
+                gchar *file = g_build_filename(installation_dir, "etc", "flags-ioc", flagfile, NULL);
+                FILE *f = fopen(file, "rb");
+                g_free(file);
+                if (f) {
+                    gint n, k;
+                    while ((n = fread(in, 1, sizeof(in), f)) > 0) {
+                        k = g_base64_encode_step(in, n, TRUE, out, &state, &save);
+                        WRITE2(out, k);
+                    }
+                    k = g_base64_encode_close(TRUE, out, &state, &save);
+                    WRITE2(out, k);
+
+                    fclose(f);
+                }
+                WRITE2("\"", 1);
+            }
+
             WRITE2(p, 1);
 
             static const gchar *look_match_str = "id=\"match";
@@ -943,24 +1039,28 @@ void read_svg_files(gboolean ok)
                         svg_data[num_svg].key = key;
                         RsvgHandle *h = rsvg_handle_new_from_data((guchar *)svg_data[num_svg].data, 
                                                                   svg_data[num_svg].datalen, NULL);
-                        RsvgDimensionData dim;
-                        rsvg_handle_get_dimensions(h, &dim);
-                        svg_data[num_svg].width = dim.width;
-                        svg_data[num_svg].height = dim.height;
-                        rsvg_handle_free(h);
+                        if (h) {
+                            RsvgDimensionData dim;
+                            rsvg_handle_get_dimensions(h, &dim);
+                            svg_data[num_svg].width = dim.width;
+                            svg_data[num_svg].height = dim.height;
+                            rsvg_handle_free(h);
 
-                        g_print("read key=0x%x pos=%d file=%s w=%d h=%d\n", 
-                                key, num_svg, fname, svg_data[num_svg].width, svg_data[num_svg].height);
-                        num_svg++;
+                            g_print("read key=0x%x pos=%d file=%s w=%d h=%d\n", 
+                                    key, num_svg, fname, svg_data[num_svg].width, svg_data[num_svg].height);
+                            num_svg++;
 
-                        struct svg_props *info = find_svg_info(key);
-                        if (!info) {
-                            info = &svg_info[num_svg_info];
-                            if (num_svg_info < NUM_SVG)
-                                num_svg_info++;
-                            info->key = key;
+                            struct svg_props *info = find_svg_info(key);
+                            if (!info) {
+                                info = &svg_info[num_svg_info];
+                                if (num_svg_info < NUM_SVG)
+                                    num_svg_info++;
+                                info->key = key;
+                            }
+                            info->pages++;
+                        } else {
+                            g_print("Cannot open SVG file %s\n", fullname);
                         }
-                        info->pages++;
                     }
                 }
             }
