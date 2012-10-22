@@ -332,6 +332,16 @@ img.catimg {
 img.button {
     cursor: pointer;
 }
+div.catdiv {
+    cursor: n-resize;
+}
+
+/* tooltip */
+.hotspot {color:#900; padding-bottom:1px; border-bottom:1px dotted #900; cursor:pointer}
+#tt {position:absolute; display:block; background:url(tt_left.png) top left no-repeat}
+#tttop {display:block; height:5px; margin-left:5px; background:url(tt_top.png) top right no-repeat; overflow:hidden}
+#ttcont {display:block; padding:2px 12px 3px 7px; margin-left:5px; background:#666; color:#FFF}
+#ttbot {display:block; height:5px; margin-left:5px; background:url(tt_bottom.png) top right no-repeat; overflow:hidden}
 
 @media print {
 .nextmatcheslink, .medalslink, .statisticslink, .tournamentheader, .categorylinks, .categorieshdr, 
