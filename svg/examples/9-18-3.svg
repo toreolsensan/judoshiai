@@ -32,7 +32,7 @@ inkscape:window-maximized="0" />
 <text style="font-size:21.38px;font-style:normal;font-weight:bold;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center"
 x='315.00' y='44.55'><tspan>%i-competition  %i-date  %i-place   %i-catname</tspan></text>
 <text style="font-size:10.69px;font-style:normal;font-weight:bold;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:end;text-align:left"
-x='598.50' y='63.97'><tspan>Competitors: 18</tspan></text>
+x='598.50' y='63.97'><tspan>%t0: %n</tspan></text>
 <text x='31.50' y='98.59' style='font-size:6.42px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial'>A1</text>
 <text x='31.50' y='146.70' style='font-size:6.42px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial'>D2</text>
 <text x='31.50' y='194.82' style='font-size:6.42px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial'>B1</text>
@@ -92,9 +92,9 @@ style="fill:none; stroke:black; stroke-width:1"/>
 <path d="M 31.50,527.47 l 283.50,0.00" style="fill:none; stroke:black; stroke-width:1"/>
 <path d="M 31.50,545.29 l 283.50,0.00" style="fill:none; stroke:black; stroke-width:1"/>
 <path d="M 63.00,491.83 l 0.00,71.28" style="fill:none; stroke:black; stroke-width:1"/>
-<text x='150.82' y='467.56' style='font-size:12.83px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>Results</tspan></text>
-<text x='47.25' y='486.80' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>Pos</tspan></text>
-<text x='189.00' y='486.80' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>Name</tspan></text>
+<text x='150.82' y='467.56' style='font-size:12.83px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>%t18</tspan></text>
+<text x='47.25' y='486.80' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>%t22</tspan></text>
+<text x='189.00' y='486.80' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>%t6</tspan></text>
 <text x='47.25' y='504.70' style='font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>1</tspan></text>
 <text x='47.25' y='522.52' style='font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>2</tspan></text>
 <text x='47.25' y='540.26' style='font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>3</tspan></text>

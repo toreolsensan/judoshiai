@@ -32,7 +32,7 @@ inkscape:window-maximized="0" />
 <text style="font-size:15.12px;font-style:normal;font-weight:bold;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center"
 x='445.50' y='31.50'><tspan>%i-competition  %i-date  %i-place   %i-catname</tspan></text>
 <text style="font-size:7.56px;font-style:normal;font-weight:bold;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:end;text-align:left"
-x='846.45' y='45.38'><tspan>Competitors: 6</tspan></text>
+x='846.45' y='45.38'><tspan>%t0: %n</tspan></text>
 <path d="M 44.55,63.00 l 623.70,0.00 l 0.00,231.66 l -623.70,0.00 z" style="fill:none; stroke:black; stroke-width:2"/>
 <path d="M 44.55,80.82 l 623.70,0.00" style="fill:none; stroke:black; stroke-width:1"/>
 <path d="M 44.55,116.46 l 623.70,0.00" style="fill:none; stroke:black; stroke-width:1"/>
@@ -60,10 +60,10 @@ x='846.45' y='45.38'><tspan>Competitors: 6</tspan></text>
 <path d="M 632.61,80.82 l 0.00,213.84" style="fill:none; stroke:black; stroke-width:1"/>
 <path d="M 650.43,80.82 l 0.00,213.84" style="fill:none; stroke:black; stroke-width:1"/>
 <text x='53.46' y='74.78' style='font-size:7.56px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>#</tspan></text>
-<text x='115.83' y='74.73' style='font-size:7.56px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>Name</tspan></text>
+<text x='115.83' y='74.73' style='font-size:7.56px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>%t6</tspan></text>
 <text x='623.70' y='74.73' style='font-size:7.56px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>Wins</tspan></text>
 <text x='641.52' y='74.73' style='font-size:7.56px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>Pts</tspan></text>
-<text x='659.34' y='74.73' style='font-size:7.56px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>Pos</tspan></text>
+<text x='659.34' y='74.73' style='font-size:7.56px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>%t22</tspan></text>
 <text x='184.14' y='74.78' style='font-size:7.56px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>1</tspan></text>
 <rect x='169.29' y='152.10' width='29.70' height='17.82' style='fill:rgb(102,102,102);stroke:none'/>
 <rect x='169.29' y='169.92' width='29.70' height='17.82' style='fill:rgb(102,102,102);stroke:none'/>
@@ -258,9 +258,9 @@ x='846.45' y='45.38'><tspan>Competitors: 6</tspan></text>
 <path d="M 31.50,467.10 l 400.95,0.00" style="fill:none; stroke:black; stroke-width:1"/>
 <path d="M 31.50,484.92 l 400.95,0.00" style="fill:none; stroke:black; stroke-width:1"/>
 <path d="M 76.05,395.82 l 0.00,106.92" style="fill:none; stroke:black; stroke-width:1"/>
-<text x='216.14' y='368.98' style='font-size:9.07px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>Results</tspan></text>
-<text x='53.77' y='389.73' style='font-size:7.56px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>Pos</tspan></text>
-<text x='254.25' y='389.73' style='font-size:7.56px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>Name</tspan></text>
+<text x='216.14' y='368.98' style='font-size:9.07px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>%t18</tspan></text>
+<text x='53.77' y='389.73' style='font-size:7.56px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>%t22</tspan></text>
+<text x='254.25' y='389.73' style='font-size:7.56px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>%t6</tspan></text>
 <text x='53.77' y='407.61' style='font-size:7.56px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>1</tspan></text>
 <text x='84.96' y='407.07' style='font-size:7.56px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial'><tspan>Ronald CLARK, BUR</tspan></text>
 <text x='53.77' y='425.43' style='font-size:7.56px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>2</tspan></text>

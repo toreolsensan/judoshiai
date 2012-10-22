@@ -32,7 +32,7 @@ inkscape:window-maximized="0" />
 <text style="font-size:21.38px;font-style:normal;font-weight:bold;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center"
 x='315.00' y='44.55'><tspan>%i-competition  %i-date  %i-place   %i-catname</tspan></text>
 <text style="font-size:10.69px;font-style:normal;font-weight:bold;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:end;text-align:left"
-x='598.50' y='63.97'><tspan>Competitors: 9</tspan></text>
+x='598.50' y='63.97'><tspan>%t0: %n</tspan></text>
 <path d="M 31.50,89.10 l 447.30,0.00 l 0.00,85.54 l -447.30,0.00 z" style="fill:none; stroke:black; stroke-width:2"/>
 <path d="M 31.50,103.36 l 447.30,0.00" style="fill:none; stroke:black; stroke-width:1"/>
 <path d="M 31.50,117.61 l 447.30,0.00" style="fill:none; stroke:black; stroke-width:1"/>
@@ -46,10 +46,10 @@ x='598.50' y='63.97'><tspan>Competitors: 9</tspan></text>
 <path d="M 422.10,103.36 l 0.00,71.28" style="fill:none; stroke:black; stroke-width:1"/>
 <path d="M 441.00,103.36 l 0.00,71.28" style="fill:none; stroke:black; stroke-width:1"/>
 <path d="M 459.90,103.36 l 0.00,71.28" style="fill:none; stroke:black; stroke-width:1"/>
-<text x='211.23' y='80.24' style='font-size:12.83px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>Competitors A</tspan></text>
+<text x='211.23' y='80.24' style='font-size:12.83px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>%t0 A</tspan></text>
 <text x='40.95' y='100.17' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>#</tspan></text>
-<text x='129.15' y='100.10' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>Name</tspan></text>
-<text x='321.30' y='100.17' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>Club</tspan></text>
+<text x='129.15' y='100.10' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>%t6</tspan></text>
+<text x='321.30' y='100.17' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>%t8</tspan></text>
 <text x='393.75' y='100.18' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>1</tspan></text>
 <text x='412.65' y='100.18' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>2</tspan></text>
 <text x='431.55' y='100.11' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>3</tspan></text>
@@ -81,10 +81,10 @@ x='598.50' y='63.97'><tspan>Competitors: 9</tspan></text>
 <path d="M 403.20,402.73 l 0.00,57.02" style="fill:none; stroke:black; stroke-width:1"/>
 <path d="M 422.10,402.73 l 0.00,57.02" style="fill:none; stroke:black; stroke-width:1"/>
 <path d="M 441.00,402.73 l 0.00,57.02" style="fill:none; stroke:black; stroke-width:1"/>
-<text x='202.07' y='379.61' style='font-size:12.83px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>Competitors B</tspan></text>
+<text x='202.07' y='379.61' style='font-size:12.83px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>%t0 B</tspan></text>
 <text x='40.95' y='399.54' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>#</tspan></text>
-<text x='129.15' y='399.48' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>Name</tspan></text>
-<text x='321.30' y='399.54' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>Club</tspan></text>
+<text x='129.15' y='399.48' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>%t6</tspan></text>
+<text x='321.30' y='399.54' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>%t8</tspan></text>
 <text x='393.75' y='399.49' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>6</tspan></text>
 <text x='412.65' y='399.49' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>7</tspan></text>
 <text x='431.55' y='399.49' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>8</tspan></text>
@@ -118,12 +118,12 @@ x='598.50' y='63.97'><tspan>Competitors: 9</tspan></text>
 <path d="M 283.50,217.40 l 0.00,142.56" style="fill:none; stroke:black; stroke-width:1"/>
 <path d="M 472.50,217.40 l 0.00,142.56" style="fill:none; stroke:black; stroke-width:1"/>
 <path d="M 516.60,217.40 l 0.00,142.56" style="fill:none; stroke:black; stroke-width:1"/>
-<text x='264.44' y='196.69' style='font-size:12.83px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>Matches A</tspan></text>
-<text x='44.10' y='214.15' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>Match</tspan></text>
-<text x='151.20' y='214.15' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>White</tspan></text>
-<text x='378.00' y='214.15' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>Blue</tspan></text>
-<text x='494.55' y='214.15' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>Result</tspan></text>
-<text x='538.65' y='214.15' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>Time</tspan></text>
+<text x='264.44' y='196.69' style='font-size:12.83px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>%t9 A</tspan></text>
+<text x='44.10' y='214.15' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>%t14</tspan></text>
+<text x='151.20' y='214.15' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>%t16</tspan></text>
+<text x='378.00' y='214.15' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>%t15</tspan></text>
+<text x='494.55' y='214.15' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>%t17</tspan></text>
+<text x='538.65' y='214.15' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>%t19</tspan></text>
 <path d="M 31.50,488.27 l 529.20,0.00 l 0.00,99.79 l -529.20,0.00 z" style="fill:none; stroke:black; stroke-width:2"/>
 <path d="M 31.50,502.52 l 529.20,0.00" style="fill:none; stroke:black; stroke-width:1"/>
 <path d="M 31.50,516.78 l 529.20,0.00" style="fill:none; stroke:black; stroke-width:1"/>
@@ -137,12 +137,12 @@ x='598.50' y='63.97'><tspan>Competitors: 9</tspan></text>
 <path d="M 283.50,502.52 l 0.00,85.54" style="fill:none; stroke:black; stroke-width:1"/>
 <path d="M 472.50,502.52 l 0.00,85.54" style="fill:none; stroke:black; stroke-width:1"/>
 <path d="M 516.60,502.52 l 0.00,85.54" style="fill:none; stroke:black; stroke-width:1"/>
-<text x='264.74' y='481.81' style='font-size:12.83px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>Matches B</tspan></text>
-<text x='44.10' y='499.27' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>Match</tspan></text>
-<text x='151.20' y='499.27' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>White</tspan></text>
-<text x='378.00' y='499.27' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>Blue</tspan></text>
-<text x='494.55' y='499.27' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>Result</tspan></text>
-<text x='538.65' y='499.27' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>Time</tspan></text>
+<text x='264.74' y='481.81' style='font-size:12.83px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>%t9 B</tspan></text>
+<text x='44.10' y='499.27' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>%t14</tspan></text>
+<text x='151.20' y='499.27' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>%t16</tspan></text>
+<text x='378.00' y='499.27' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>%t15</tspan></text>
+<text x='494.55' y='499.27' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>%t17</tspan></text>
+<text x='538.65' y='499.27' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>%t19</tspan></text>
 <text x='255.15' y='228.47' style='font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>4</tspan></text>
 <text x='274.05' y='228.34' style='font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>5</tspan></text>
 <text x='44.10' y='228.49' style='font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>1</tspan></text>
@@ -318,7 +318,7 @@ style="fill:none; stroke:black; stroke-width:1"/>
 <path d="M 529.20,103.36 l 0.00,71.28" style="fill:none; stroke:black; stroke-width:1"/>
 <text x='491.40' y='100.10' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>Wins</tspan></text>
 <text x='516.60' y='100.10' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>Pts</tspan></text>
-<text x='541.80' y='100.10' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>Pos</tspan></text>
+<text x='541.80' y='100.10' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>%t22</tspan></text>
 <text x='491.40' y='114.34' style='font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>%c1w</tspan></text>
 <text x='516.60' y='113.40' style='font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>%c1p</tspan></text>
 <text x='541.80' y='114.34' style='font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>%c1r</tspan></text>
@@ -343,7 +343,7 @@ style="fill:none; stroke:black; stroke-width:1"/>
 <path d="M 510.30,402.73 l 0.00,57.02" style="fill:none; stroke:black; stroke-width:1"/>
 <text x='472.50' y='399.48' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>Wins</tspan></text>
 <text x='497.70' y='399.48' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>Pts</tspan></text>
-<text x='522.90' y='399.48' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>Pos</tspan></text>
+<text x='522.90' y='399.48' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>%t22</tspan></text>
 <text x='472.50' y='413.72' style='font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>%c6w</tspan></text>
 <text x='497.70' y='412.77' style='font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>%c6p</tspan></text>
 <text x='522.90' y='413.72' style='font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>%c6r</tspan></text>
@@ -362,9 +362,9 @@ style="fill:none; stroke:black; stroke-width:1"/>
 <path d="M 31.50,832.19 l 283.50,0.00" style="fill:none; stroke:black; stroke-width:1"/>
 <path d="M 31.50,846.45 l 283.50,0.00" style="fill:none; stroke:black; stroke-width:1"/>
 <path d="M 63.00,803.68 l 0.00,57.02" style="fill:none; stroke:black; stroke-width:1"/>
-<text x='150.82' y='782.97' style='font-size:12.83px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>Results</tspan></text>
-<text x='47.25' y='800.43' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>Pos</tspan></text>
-<text x='189.00' y='800.43' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>Name</tspan></text>
+<text x='150.82' y='782.97' style='font-size:12.83px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>%t18</tspan></text>
+<text x='47.25' y='800.43' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>%t22</tspan></text>
+<text x='189.00' y='800.43' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>%t6</tspan></text>
 <text x='47.25' y='814.76' style='font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>1</tspan></text>
 <text x='47.25' y='829.02' style='font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>2</tspan></text>
 <text x='47.25' y='843.20' style='font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>3</tspan></text>

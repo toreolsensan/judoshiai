@@ -1,147 +1,1179 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   xmlns="http://www.w3.org/2000/svg"   width="630px"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   onload="init(evt)"
+   width="630px"
    height="891px"
    id="judoshiai"
    version="1.1"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape">
-<style type="text/css"> <![CDATA[ tspan.cmpx { fill: red; } ]]> </style>
-<sodipodi:namedview
-id="base"
-pagecolor="#ffffff"
-bordercolor="#666666"
-borderopacity="1.0"
-inkscape:pageopacity="0.0"
-inkscape:pageshadow="2"
-inkscape:zoom="1"
-inkscape:cx="185.84668"
-inkscape:cy="880.85263"
-inkscape:document-units="px"
-inkscape:current-layer="layer1"
-inkscape:window-width="877"
-inkscape:window-height="739"
-inkscape:window-x="177"
-inkscape:window-y="31"
-showgrid="false"
-inkscape:window-maximized="0" />
-   <g
-      id="layer1"
-      style="opacity:1">
-<rect x='0.00' y='0.00' width='630.00' height='891.00' style='fill:white;stroke:none'/>
-<text style="font-size:21.38px;font-style:normal;font-weight:bold;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center"
-x='315.00' y='44.55'><tspan>%i-competition  %i-date  %i-place   %i-catname</tspan></text>
-<text style="font-size:10.69px;font-style:normal;font-weight:bold;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:end;text-align:left"
-x='598.50' y='63.97'><tspan>Competitors: 8</tspan></text>
-<path d="M 31.50,89.10 l 181.34,0.00 a4.02,4.02 0 0,1 4.02,4.02 l 0.00,11.99 M 31.50,137.21 l 181.34,0.00 a4.02,4.02 0 0,0 4.02,-4.02 l 0.00,-11.99" style="fill:none; stroke:black; stroke-width:1"/>
-<circle cx="216.86" cy="113.16" r="8.05" stroke="black" stroke-width="1" fill="white"/><text x='216.86' y='117.18' style='font-size:10px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>1</tspan></text>
-<text x='37.80' y='82.33' font-family='Arial' font-size='10' fill='black'><tspan>1. %m1-1-hm1-first-s-last-s-club</tspan></text>
-<text x='37.80' y='130.45' font-family='Arial' font-size='10' fill='black'><tspan>5. %m1-2-hm1-first-s-last-s-club</tspan></text>
-<text x='217.66' y='95.15' font-family='Arial' font-size='10' fill='black'><tspan>%m1p1-1</tspan></text>
-<text x='218.41' y='138.62' font-family='Arial' font-size='10' fill='black'><tspan>%m1p2-1</tspan></text>
-<path d="M 31.50,185.33 l 181.34,0.00 a4.02,4.02 0 0,1 4.02,4.02 l 0.00,11.99 M 31.50,233.44 l 181.34,0.00 a4.02,4.02 0 0,0 4.02,-4.02 l 0.00,-11.99" style="fill:none; stroke:black; stroke-width:1"/>
-<circle cx="216.86" cy="209.39" r="8.05" stroke="black" stroke-width="1" fill="white"/><text x='216.86' y='213.41' style='font-size:10px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>2</tspan></text>
-<text x='37.80' y='178.56' font-family='Arial' font-size='10' fill='black'><tspan>3. %m2-1-hm1-first-s-last-s-club</tspan></text>
-<text x='37.80' y='226.67' font-family='Arial' font-size='10' fill='black'><tspan>7. %m2-2-hm1-first-s-last-s-club</tspan></text>
-<text x='217.66' y='191.38' font-family='Arial' font-size='10' fill='black'><tspan>%m2p1-1</tspan></text>
-<text x='218.41' y='234.72' font-family='Arial' font-size='10' fill='black'><tspan>%m2p2-1</tspan></text>
-<path d="M 31.50,281.56 l 181.34,0.00 a4.02,4.02 0 0,1 4.02,4.02 l 0.00,11.99 M 31.50,329.67 l 181.34,0.00 a4.02,4.02 0 0,0 4.02,-4.02 l 0.00,-11.99" style="fill:none; stroke:black; stroke-width:1"/>
-<circle cx="216.86" cy="305.61" r="8.05" stroke="black" stroke-width="1" fill="white"/><text x='216.86' y='309.64' style='font-size:10px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>3</tspan></text>
-<text x='37.80' y='274.79' font-family='Arial' font-size='10' fill='black'><tspan>2. %m3-1-hm1-first-s-last-s-club</tspan></text>
-<text x='37.80' y='322.90' font-family='Arial' font-size='10' fill='black'><tspan>6. %m3-2-hm1-first-s-last-s-club</tspan></text>
-<text x='218.41' y='287.61' font-family='Arial' font-size='10' fill='black'><tspan>%m3p1-1</tspan></text>
-<text x='218.35' y='331.42' font-family='Arial' font-size='10' fill='black'><tspan>%m3p2-1</tspan></text>
-<path d="M 31.50,377.78 l 181.34,0.00 a4.02,4.02 0 0,1 4.02,4.02 l 0.00,11.99 M 31.50,425.90 l 181.34,0.00 a4.02,4.02 0 0,0 4.02,-4.02 l 0.00,-11.99" style="fill:none; stroke:black; stroke-width:1"/>
-<circle cx="216.86" cy="401.84" r="8.05" stroke="black" stroke-width="1" fill="white"/><text x='216.86' y='405.86' style='font-size:10px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>4</tspan></text>
-<text x='37.80' y='371.02' font-family='Arial' font-size='10' fill='black'><tspan>4. %m4-1-hm1-first-s-last-s-club</tspan></text>
-<text x='37.80' y='419.13' font-family='Arial' font-size='10' fill='black'><tspan>8. %m4-2-hm1-first-s-last-s-club</tspan></text>
-<text x='218.41' y='383.84' font-family='Arial' font-size='10' fill='black'><tspan>%m4p1-1</tspan></text>
-<text x='218.41' y='427.79' font-family='Arial' font-size='10' fill='black'><tspan>%m4p2-1</tspan></text>
-<path d="M 224.91,113.16 l 80.54,0.00 a4.02,4.02 0 0,1 4.02,4.02 l 0.00,36.04 M 224.91,209.39 l 80.54,0.00 a4.02,4.02 0 0,0 4.02,-4.02 l 0.00,-36.04" style="fill:none; stroke:black; stroke-width:1"/>
-<circle cx="309.47" cy="161.27" r="8.05" stroke="black" stroke-width="1" fill="white"/><text x='309.47' y='165.29' style='font-size:10px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>5</tspan></text>
-<text x='231.21' y='106.39' font-family='Arial' font-size='10' fill='black'><tspan>%m5-1-hm1-last</tspan></text>
-<text x='231.21' y='202.62' font-family='Arial' font-size='10' fill='black'><tspan>%m5-2-hm1-last</tspan></text>
-<text x='310.27' y='120.63' font-family='Arial' font-size='10' fill='black'><tspan>%m5p1-1</tspan></text>
-<text x='311.02' y='212.84' font-family='Arial' font-size='10' fill='black'><tspan>%m5p2-1</tspan></text>
-<path d="M 224.91,305.61 l 80.54,0.00 a4.02,4.02 0 0,1 4.02,4.02 l 0.00,36.04 M 224.91,401.84 l 80.54,0.00 a4.02,4.02 0 0,0 4.02,-4.02 l 0.00,-36.04" style="fill:none; stroke:black; stroke-width:1"/>
-<circle cx="309.47" cy="353.73" r="8.05" stroke="black" stroke-width="1" fill="white"/><text x='309.47' y='357.75' style='font-size:10px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>6</tspan></text>
-<text x='231.21' y='298.85' font-family='Arial' font-size='10' fill='black'><tspan>%m6-1-hm1-last</tspan></text>
-<text x='231.21' y='395.07' font-family='Arial' font-size='10' fill='black'><tspan>%m6-2-hm1-last</tspan></text>
-<text x='311.02' y='313.09' font-family='Arial' font-size='10' fill='black'><tspan>%m6p1-1</tspan></text>
-<text x='310.96' y='405.01' font-family='Arial' font-size='10' fill='black'><tspan>%m6p2-1</tspan></text>
-<path d="M 31.50,546.18 l 80.54,0.00 a4.02,4.02 0 0,1 4.02,4.02 l 0.00,24.02 M 31.50,618.35 l 80.54,0.00 a4.02,4.02 0 0,0 4.02,-4.02 l 0.00,-24.02" style="fill:none; stroke:black; stroke-width:1"/>
-<circle cx="116.06" cy="582.27" r="8.05" stroke="black" stroke-width="1" fill="white"/><text x='116.06' y='586.29' style='font-size:10px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>7</tspan></text>
-<text x='31.50' y='551.50' style='font-size:6.42px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial'>1</text>
-<text x='31.50' y='623.67' style='font-size:6.42px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial'>2</text>
-<text x='37.80' y='539.42' font-family='Arial' font-size='10' fill='black'><tspan>%m7-1-hm1-last</tspan></text>
-<text x='37.80' y='611.59' font-family='Arial' font-size='10' fill='black'><tspan>%m7-2-hm1-last</tspan></text>
-<text x='116.86' y='553.66' font-family='Arial' font-size='10' fill='black'><tspan>%m7p1-1</tspan></text>
-<text x='117.61' y='621.81' font-family='Arial' font-size='10' fill='black'><tspan>%m7p2-1</tspan></text>
-<path d="M 31.50,690.53 l 80.54,0.00 a4.02,4.02 0 0,1 4.02,4.02 l 0.00,24.02 M 31.50,762.70 l 80.54,0.00 a4.02,4.02 0 0,0 4.02,-4.02 l 0.00,-24.02" style="fill:none; stroke:black; stroke-width:1"/>
-<circle cx="116.06" cy="726.61" r="8.05" stroke="black" stroke-width="1" fill="white"/><text x='116.06' y='730.63' style='font-size:10px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>8</tspan></text>
-<text x='31.50' y='695.84' style='font-size:6.42px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial'>3</text>
-<text x='31.50' y='767.99' style='font-size:6.42px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial'>4</text>
-<text x='37.80' y='683.76' font-family='Arial' font-size='10' fill='black'><tspan>%m8-1-hm1-last</tspan></text>
-<text x='37.80' y='755.93' font-family='Arial' font-size='10' fill='black'><tspan>%m8-2-hm1-last</tspan></text>
-<text x='117.61' y='697.79' font-family='Arial' font-size='10' fill='black'><tspan>%m8p1-1</tspan></text>
-<text x='117.61' y='766.15' font-family='Arial' font-size='10' fill='black'><tspan>%m8p2-1</tspan></text>
-<path d="M 124.11,582.27 l 80.54,0.00 a4.02,4.02 0 0,1 4.02,4.02 l 0.00,24.02 M 124.11,654.44 l 80.54,0.00 a4.02,4.02 0 0,0 4.02,-4.02 l 0.00,-24.02" style="fill:none; stroke:black; stroke-width:1"/>
-<circle cx="208.67" cy="618.35" r="8.05" stroke="black" stroke-width="1" fill="white"/><text x='208.67' y='622.38' style='font-size:10px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>9</tspan></text>
-<text x='124.11' y='659.75' style='font-size:6.42px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial'>6</text>
-<text x='130.41' y='575.50' font-family='Arial' font-size='10' fill='black'><tspan>%m9-1-hm1-last</tspan></text>
-<text x='130.41' y='647.67' font-family='Arial' font-size='10' fill='black'><tspan>%m9-2-hm1-last</tspan></text>
-<text x='209.47' y='589.74' font-family='Arial' font-size='10' fill='black'><tspan>%m9p1-1</tspan></text>
-<text x='210.22' y='657.89' font-family='Arial' font-size='10' fill='black'><tspan>%m9p2-1</tspan></text>
-<path d="M 124.11,726.61 l 80.54,0.00 a4.02,4.02 0 0,1 4.02,4.02 l 0.00,24.02 M 124.11,798.78 l 80.54,0.00 a4.02,4.02 0 0,0 4.02,-4.02 l 0.00,-24.02" style="fill:none; stroke:black; stroke-width:1"/>
-<circle cx="208.67" cy="762.70" r="8.05" stroke="black" stroke-width="1" fill="white"/><text x='208.67' y='766.72' style='font-size:10px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>10</tspan></text>
-<text x='124.11' y='804.02' style='font-size:6.42px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial'>5</text>
-<text x='130.41' y='719.84' font-family='Arial' font-size='10' fill='black'><tspan>%m10-1-hm1-last</tspan></text>
-<text x='130.41' y='792.01' font-family='Arial' font-size='10' fill='black'><tspan>%m10-2-hm1-last</tspan></text>
-<text x='209.47' y='734.09' font-family='Arial' font-size='10' fill='black'><tspan>%m10p1-1</tspan></text>
-<text x='210.22' y='802.23' font-family='Arial' font-size='10' fill='black'><tspan>%m10p2-1</tspan></text>
-<path d="M 317.52,161.27 l 80.54,0.00 a4.02,4.02 0 0,1 4.02,4.02 l 0.00,84.16 M 317.52,353.73 l 80.54,0.00 a4.02,4.02 0 0,0 4.02,-4.02 l 0.00,-84.16" style="fill:none; stroke:black; stroke-width:1"/>
-<circle cx="402.08" cy="257.50" r="8.05" stroke="black" stroke-width="1" fill="white"/><text x='402.08' y='261.52' style='font-size:10px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>11</tspan></text>
-<text x='323.82' y='154.50' font-family='Arial' font-size='10' fill='black'><tspan>%m11-1-hm1-last</tspan></text>
-<text x='323.82' y='346.96' font-family='Arial' font-size='10' fill='black'><tspan>%m11-2-hm1-last</tspan></text>
-<text x='403.63' y='168.75' font-family='Arial' font-size='10' fill='black'><tspan>%m11p1-1</tspan></text>
-<text x='403.57' y='356.90' font-family='Arial' font-size='10' fill='black'><tspan>%m11p2-1</tspan></text>
-<path d="M 216.72,618.35 l 63.00,0.00"
-style="fill:none; stroke:black; stroke-width:1"/>
-<text x='223.02' y='611.59' font-family='Arial' font-size='10' fill='black'><tspan>%m9-winner-last</tspan></text>
-<path d="M 216.72,762.70 l 63.00,0.00"
-style="fill:none; stroke:black; stroke-width:1"/>
-<text x='223.02' y='755.93' font-family='Arial' font-size='10' fill='black'><tspan>%m10-winner-last</tspan></text>
-<path d="M 410.13,257.50 l 63.00,0.00"
-style="fill:none; stroke:black; stroke-width:1"/>
-<text x='416.43' y='250.73' font-family='Arial' font-size='10' fill='black'><tspan>%m11-winner-last</tspan></text>
-<path d="M 415.80,428.57 l 189.00,0.00 l 0.00,160.38 l -189.00,0.00 z" style="fill:none; stroke:black; stroke-width:2"/>
-<path d="M 415.80,446.39 l 189.00,0.00" style="fill:none; stroke:black; stroke-width:1"/>
-<path d="M 415.80,464.21 l 189.00,0.00" style="fill:none; stroke:black; stroke-width:1"/>
-<path d="M 415.80,482.03 l 189.00,0.00" style="fill:none; stroke:black; stroke-width:1"/>
-<path d="M 415.80,499.85 l 189.00,0.00" style="fill:none; stroke:black; stroke-width:1"/>
-<path d="M 415.80,517.67 l 189.00,0.00" style="fill:none; stroke:black; stroke-width:1"/>
-<path d="M 415.80,535.49 l 189.00,0.00" style="fill:none; stroke:black; stroke-width:1"/>
-<path d="M 415.80,553.31 l 189.00,0.00" style="fill:none; stroke:black; stroke-width:1"/>
-<path d="M 415.80,571.13 l 189.00,0.00" style="fill:none; stroke:black; stroke-width:1"/>
-<path d="M 447.30,446.39 l 0.00,142.56" style="fill:none; stroke:black; stroke-width:1"/>
-<text x='487.87' y='422.11' style='font-size:12.83px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>Results</tspan></text>
-<text x='431.55' y='441.36' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>Pos</tspan></text>
-<text x='526.05' y='441.36' style='font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>Name</tspan></text>
-<text x='431.55' y='459.25' style='font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>1</tspan></text>
-<text x='431.55' y='477.07' style='font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>2</tspan></text>
-<text x='431.55' y='494.82' style='font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>3</tspan></text>
-<text x='431.55' y='512.64' style='font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>3</tspan></text>
-<text x='431.55' y='530.39' style='font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>5</tspan></text>
-<text x='431.55' y='548.21' style='font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>5</tspan></text>
-<text x='431.55' y='566.10' style='font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>7</tspan></text>
-<text x='431.55' y='583.92' style='font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center'><tspan>7</tspan></text>
-<text x='453.60' y='459.16' style='font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial'><tspan>%r1hm2-first-s-last-s-club</tspan></text>
-<text x='453.60' y='476.98' style='font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial'><tspan>%r2hm2-first-s-last-s-club</tspan></text>
-<text x='453.60' y='494.80' style='font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial'><tspan>%r3hm2-first-s-last-s-club</tspan></text>
-<text x='453.60' y='512.62' style='font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial'><tspan>%r4hm2-first-s-last-s-club</tspan></text>
-<text x='453.60' y='530.44' style='font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial'><tspan>%r5hm2-first-s-last-s-club</tspan></text>
-<text x='453.60' y='548.26' style='font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial'><tspan>%r6hm2-first-s-last-s-club</tspan></text>
-<text x='453.60' y='566.08' style='font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial'><tspan>%r7hm2-first-s-last-s-club</tspan></text>
-<text x='453.60' y='583.90' style='font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial'><tspan>%r8hm2-first-s-last-s-club</tspan></text>
-   </g>
+   inkscape:version="0.48.3.1 r9886"
+   sodipodi:docname="3-8-1.svg">
+  <metadata
+     id="metadata417">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs415" />
+  <style
+     type="text/css"
+     id="style3"> tspan.cmpx { fill: red; } </style>
+  <script
+     type="text/javascript"
+     id="script4399">
+  var tooltips = new Array();
+  var tooltip_bgs = new Array();
+  var tooltip_dx = new Array();
+  var tooltip_dy = new Array();
+  var tooltip_bg_dx = new Array();
+  var tooltip_bg_dy = new Array();
+  var x0, y0, h0;
+
+  function init(evt) { 
+    if ( window.svgDocument == null ) {
+      svgDocument = evt.target.ownerDocument;
+    }
+    tooltip_names = ['tooltip', 'tooltip2', 'tooltip3'];
+    tooltip_bg_names = ['tooltip_bg', 'tooltip_bg2'];
+    for (x in tooltip_names) {
+      tooltips[x] = svgDocument.getElementById(tooltip_names[x]);
+    }
+    for (x in tooltip_bg_names) {
+      tooltip_bgs[x] = svgDocument.getElementById(tooltip_bg_names[x]);
+    }
+    h(null);
+    x0 = tooltip_bgs[0].getAttributeNS(null,&quot;x&quot;);
+    y0 = tooltip_bgs[0].getAttributeNS(null,&quot;y&quot;);
+    h0 = tooltip_bgs[0].getAttributeNS(null,&quot;height&quot;);
+    for (i in tooltips) {
+      x1 = tooltips[i].getAttributeNS(null,&quot;x&quot;);
+      y1 = tooltips[i].getAttributeNS(null,&quot;y&quot;);
+      tooltip_dx[i] = x1 - x0;
+      tooltip_dy[i] = y1 - y0;
+    }
+    for (i in tooltip_bgs) {
+      x1 = tooltip_bgs[i].getAttributeNS(null,&quot;x&quot;);
+      y1 = tooltip_bgs[i].getAttributeNS(null,&quot;y&quot;);
+      tooltip_bg_dx[i] = x1 - x0;
+      tooltip_bg_dy[i] = y1 - y0;
+    }
+  }
+
+  function s(evt, t1, t2, t3) {
+    var posx = 0;
+    var posy = 0;
+    if (!evt) var e = window.event;
+    if (evt.pageX || evt.pageY) {
+      posx = evt.pageX;
+      posy = evt.pageY;
+    } else if (e.clientX || e.clientY) {
+      posx = evt.clientX + document.body.scrollLeft
+        + document.documentElement.scrollLeft;
+      posy = evt.clientY + document.body.scrollTop
+        + document.documentElement.scrollTop;
+    }
+    tooltips[0].firstChild.data = t1;
+    tooltips[1].firstChild.data = t3;
+    tooltips[2].firstChild.data = t2;
+    //length = tooltips[0].getComputedTextLength();
+
+    for (i in tooltips) {
+      tooltips[i].setAttributeNS(null,&quot;x&quot;, posx + tooltip_dx[i]);
+      tooltips[i].setAttributeNS(null,&quot;y&quot;, posy + tooltip_dy[i] - h0);
+      tooltips[i].setAttributeNS(null,&quot;visibility&quot;,&quot;visible&quot;);
+    }
+    for (i in tooltip_bgs) {
+      tooltip_bgs[i].setAttributeNS(null,&quot;x&quot;, posx + tooltip_bg_dx[i]);
+      tooltip_bgs[i].setAttributeNS(null,&quot;y&quot;, posy + tooltip_bg_dy[i] - h0);
+      tooltip_bgs[i].setAttributeNS(null,&quot;visibility&quot;,&quot;visibile&quot;);        
+    }
+  }
+
+  function h(evt) {
+    for (i in tooltips) {
+      tooltips[i].setAttributeNS(null,&quot;visibility&quot;,&quot;hidden&quot;);
+    }
+    for (i in tooltip_bgs) {
+      tooltip_bgs[i].setAttributeNS(null,&quot;visibility&quot;,&quot;hidden&quot;);
+    }
+  }
+
+  function g(evt, locus_tag) {
+    window.open(&quot;http://www.ncbi.nlm.nih.gov/gene?term=&quot; + locus_tag);
+  }
+
+  function m(evt, txt) {
+    if (evt.type == &quot;click&quot; &amp;&amp; evt.detail == 2) {          
+      window.open(&quot;http://www.ncbi.nlm.nih.gov/gene?term=&quot; + txt);
+    } 
+  }
+  </script>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1"
+     inkscape:cx="153.69664"
+     inkscape:cy="430.00792"
+     inkscape:document-units="px"
+     inkscape:current-layer="judoshiai"
+     inkscape:window-width="1920"
+     inkscape:window-height="1147"
+     inkscape:window-x="1200"
+     inkscape:window-y="31"
+     showgrid="false"
+     inkscape:window-maximized="1" />
+  <g
+     id="layer1"
+     style="opacity:1">
+    <rect
+       x="0.00"
+       y="0.00"
+       width="630.00"
+       height="891.00"
+       style="fill:white;stroke:none"
+       id="rect9" />
+    <text
+       style="font-size:21.38px;font-style:normal;font-weight:bold;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center"
+       x="315.00"
+       y="44.55"
+       id="text11">
+      <tspan
+         id="tspan13">%i-competition  %i-date  %i-place   %i-catname</tspan>
+    </text>
+    <text
+       style="font-size:10.69px;font-style:normal;font-weight:bold;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:end;text-align:left"
+       x="598.50"
+       y="63.97"
+       id="text15">
+      <tspan
+         id="tspan17">%t0: %n</tspan>
+    </text>
+    <path
+       d="M 31.50,89.10 l 181.34,0.00 a4.02,4.02 0 0,1 4.02,4.02 l 0.00,11.99 M 31.50,137.21 l 181.34,0.00 a4.02,4.02 0 0,0 4.02,-4.02 l 0.00,-11.99"
+       style="fill:none; stroke:black; stroke-width:1"
+       id="path19" />
+    <g
+       onmouseout="h(evt)"
+       onmousemove="s(evt,'%m1s1!', '%m1s2!', '%m1t!')">
+      <circle
+         cx="216.86"
+         cy="113.16"
+         r="8.05"
+         stroke="black"
+         stroke-width="1"
+         fill="white"
+         id="circle23" />
+      <text
+         x="216.86"
+         y="117.18"
+         style="font-size:10px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center"
+         id="text25">
+        <tspan
+           id="tspan27">1</tspan>
+      </text>
+    </g>
+    <text
+       x="37.80"
+       y="82.33"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text29">
+      <tspan
+         id="tspan31">1. %m1-1-hm1-first-s-last-s-club</tspan>
+    </text>
+    <text
+       x="37.80"
+       y="130.45"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text33">
+      <tspan
+         id="tspan35">5. %m1-2-hm1-first-s-last-s-club</tspan>
+    </text>
+    <text
+       x="217.66"
+       y="95.15"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text37">
+      <tspan
+         id="tspan39">%m1p1-1</tspan>
+    </text>
+    <text
+       x="218.41"
+       y="138.62"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text41">
+      <tspan
+         id="tspan43">%m1p2-1</tspan>
+    </text>
+    <path
+       d="M 31.50,185.33 l 181.34,0.00 a4.02,4.02 0 0,1 4.02,4.02 l 0.00,11.99 M 31.50,233.44 l 181.34,0.00 a4.02,4.02 0 0,0 4.02,-4.02 l 0.00,-11.99"
+       style="fill:none; stroke:black; stroke-width:1"
+       id="path45" />
+    <g
+       onmouseout="h(evt)"
+       onmousemove="s(evt,'%m2s1!', '%m2s2!', '%m2t!')">
+    <circle
+       cx="216.86"
+       cy="209.39"
+       r="8.05"
+       stroke="black"
+       stroke-width="1"
+       fill="white"
+       id="circle47" />
+    <text
+       x="216.86"
+       y="213.41"
+       style="font-size:10px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center"
+       id="text49">
+      <tspan
+         id="tspan51">2</tspan>
+    </text></g>
+    <text
+       x="37.80"
+       y="178.56"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text53">
+      <tspan
+         id="tspan55">3. %m2-1-hm1-first-s-last-s-club</tspan>
+    </text>
+    <text
+       x="37.80"
+       y="226.67"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text57">
+      <tspan
+         id="tspan59">7. %m2-2-hm1-first-s-last-s-club</tspan>
+    </text>
+    <text
+       x="217.66"
+       y="191.38"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text61">
+      <tspan
+         id="tspan63">%m2p1-1</tspan>
+    </text>
+    <text
+       x="218.41"
+       y="234.72"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text65">
+      <tspan
+         id="tspan67">%m2p2-1</tspan>
+    </text>
+    <path
+       d="M 31.50,281.56 l 181.34,0.00 a4.02,4.02 0 0,1 4.02,4.02 l 0.00,11.99 M 31.50,329.67 l 181.34,0.00 a4.02,4.02 0 0,0 4.02,-4.02 l 0.00,-11.99"
+       style="fill:none; stroke:black; stroke-width:1"
+       id="path69" />
+    <g
+       onmouseout="h(evt)"
+       onmousemove="s(evt,'%m3s1!', '%m3s2!', '%m3t!')">
+    <circle
+       cx="216.86"
+       cy="305.61"
+       r="8.05"
+       stroke="black"
+       stroke-width="1"
+       fill="white"
+       id="circle71" />
+    <text
+       x="216.86"
+       y="309.64"
+       style="font-size:10px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center"
+       id="text73">
+      <tspan
+         id="tspan75">3</tspan>
+    </text></g>
+    <text
+       x="37.80"
+       y="274.79"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text77">
+      <tspan
+         id="tspan79">2. %m3-1-hm1-first-s-last-s-club</tspan>
+    </text>
+    <text
+       x="37.80"
+       y="322.90"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text81">
+      <tspan
+         id="tspan83">6. %m3-2-hm1-first-s-last-s-club</tspan>
+    </text>
+    <text
+       x="218.41"
+       y="287.61"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text85">
+      <tspan
+         id="tspan87">%m3p1-1</tspan>
+    </text>
+    <text
+       x="218.35"
+       y="331.42"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text89">
+      <tspan
+         id="tspan91">%m3p2-1</tspan>
+    </text>
+    <path
+       d="M 31.50,377.78 l 181.34,0.00 a4.02,4.02 0 0,1 4.02,4.02 l 0.00,11.99 M 31.50,425.90 l 181.34,0.00 a4.02,4.02 0 0,0 4.02,-4.02 l 0.00,-11.99"
+       style="fill:none; stroke:black; stroke-width:1"
+       id="path93" />
+    <g
+       onmouseout="h(evt)"
+       onmousemove="s(evt,'%m4s1!', '%m4s2!', '%m4t!')">
+    <circle
+       cx="216.86"
+       cy="401.84"
+       r="8.05"
+       stroke="black"
+       stroke-width="1"
+       fill="white"
+       id="circle95" />
+    <text
+       x="216.86"
+       y="405.86"
+       style="font-size:10px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center"
+       id="text97">
+      <tspan
+         id="tspan99">4</tspan>
+    </text></g>
+    <text
+       x="37.80"
+       y="371.02"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text101">
+      <tspan
+         id="tspan103">4. %m4-1-hm1-first-s-last-s-club</tspan>
+    </text>
+    <text
+       x="37.80"
+       y="419.13"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text105">
+      <tspan
+         id="tspan107">8. %m4-2-hm1-first-s-last-s-club</tspan>
+    </text>
+    <text
+       x="218.41"
+       y="383.84"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text109">
+      <tspan
+         id="tspan111">%m4p1-1</tspan>
+    </text>
+    <text
+       x="218.41"
+       y="427.79"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text113">
+      <tspan
+         id="tspan115">%m4p2-1</tspan>
+    </text>
+    <path
+       d="M 224.91,113.16 l 80.54,0.00 a4.02,4.02 0 0,1 4.02,4.02 l 0.00,36.04 M 224.91,209.39 l 80.54,0.00 a4.02,4.02 0 0,0 4.02,-4.02 l 0.00,-36.04"
+       style="fill:none; stroke:black; stroke-width:1"
+       id="path117" />
+    <g
+       onmouseout="h(evt)"
+       onmousemove="s(evt,'%m5s1!', '%m5s2!', '%m5t!')">
+    <circle
+       cx="309.47"
+       cy="161.27"
+       r="8.05"
+       stroke="black"
+       stroke-width="1"
+       fill="white"
+       id="circle119" />
+    <text
+       x="309.47"
+       y="165.29"
+       style="font-size:10px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center"
+       id="text121">
+      <tspan
+         id="tspan123">5</tspan>
+    </text></g>
+    <text
+       x="231.21"
+       y="106.39"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text125">
+      <tspan
+         id="tspan127">%m5-1-hm1-last</tspan>
+    </text>
+    <text
+       x="231.21"
+       y="202.62"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text129">
+      <tspan
+         id="tspan131">%m5-2-hm1-last</tspan>
+    </text>
+    <text
+       x="310.27"
+       y="120.63"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text133">
+      <tspan
+         id="tspan135">%m5p1-1</tspan>
+    </text>
+    <text
+       x="311.02"
+       y="212.84"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text137">
+      <tspan
+         id="tspan139">%m5p2-1</tspan>
+    </text>
+    <path
+       d="M 224.91,305.61 l 80.54,0.00 a4.02,4.02 0 0,1 4.02,4.02 l 0.00,36.04 M 224.91,401.84 l 80.54,0.00 a4.02,4.02 0 0,0 4.02,-4.02 l 0.00,-36.04"
+       style="fill:none; stroke:black; stroke-width:1"
+       id="path141" />
+    <g
+       onmouseout="h(evt)"
+       onmousemove="s(evt,'%m6s1!', '%m6s2!', '%m6t!')">
+    <circle
+       cx="309.47"
+       cy="353.73"
+       r="8.05"
+       stroke="black"
+       stroke-width="1"
+       fill="white"
+       id="circle143" />
+    <text
+       x="309.47"
+       y="357.75"
+       style="font-size:10px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center"
+       id="text145">
+      <tspan
+         id="tspan147">6</tspan>
+    </text></g>
+    <text
+       x="231.21"
+       y="298.85"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text149">
+      <tspan
+         id="tspan151">%m6-1-hm1-last</tspan>
+    </text>
+    <text
+       x="231.21"
+       y="395.07"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text153">
+      <tspan
+         id="tspan155">%m6-2-hm1-last</tspan>
+    </text>
+    <text
+       x="311.02"
+       y="313.09"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text157">
+      <tspan
+         id="tspan159">%m6p1-1</tspan>
+    </text>
+    <text
+       x="310.96"
+       y="405.01"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text161">
+      <tspan
+         id="tspan163">%m6p2-1</tspan>
+    </text>
+    <path
+       d="M 31.50,546.18 l 80.54,0.00 a4.02,4.02 0 0,1 4.02,4.02 l 0.00,24.02 M 31.50,618.35 l 80.54,0.00 a4.02,4.02 0 0,0 4.02,-4.02 l 0.00,-24.02"
+       style="fill:none; stroke:black; stroke-width:1"
+       id="path165" />
+    <g
+       onmouseout="h(evt)"
+       onmousemove="s(evt,'%m7s1!', '%m7s2!', '%m7t!')">
+    <circle
+       cx="116.06"
+       cy="582.27"
+       r="8.05"
+       stroke="black"
+       stroke-width="1"
+       fill="white"
+       id="circle167" />
+    <text
+       x="116.06"
+       y="586.29"
+       style="font-size:10px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center"
+       id="text169">
+      <tspan
+         id="tspan171">7</tspan>
+    </text></g>
+    <text
+       x="31.50"
+       y="551.50"
+       style="font-size:6.42px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
+       id="text173">1</text>
+    <text
+       x="31.50"
+       y="623.67"
+       style="font-size:6.42px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
+       id="text175">2</text>
+    <text
+       x="37.80"
+       y="539.42"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text177">
+      <tspan
+         id="tspan179">%m7-1-hm1-last</tspan>
+    </text>
+    <text
+       x="37.80"
+       y="611.59"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text181">
+      <tspan
+         id="tspan183">%m7-2-hm1-last</tspan>
+    </text>
+    <text
+       x="116.86"
+       y="553.66"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text185">
+      <tspan
+         id="tspan187">%m7p1-1</tspan>
+    </text>
+    <text
+       x="117.61"
+       y="621.81"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text189">
+      <tspan
+         id="tspan191">%m7p2-1</tspan>
+    </text>
+    <path
+       d="M 31.50,690.53 l 80.54,0.00 a4.02,4.02 0 0,1 4.02,4.02 l 0.00,24.02 M 31.50,762.70 l 80.54,0.00 a4.02,4.02 0 0,0 4.02,-4.02 l 0.00,-24.02"
+       style="fill:none; stroke:black; stroke-width:1"
+       id="path193" />
+    <g
+       onmouseout="h(evt)"
+       onmousemove="s(evt,'%m8s1!', '%m8s2!', '%m8t!')">
+    <circle
+       cx="116.06"
+       cy="726.61"
+       r="8.05"
+       stroke="black"
+       stroke-width="1"
+       fill="white"
+       id="circle195" />
+    <text
+       x="116.06"
+       y="730.63"
+       style="font-size:10px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center"
+       id="text197">
+      <tspan
+         id="tspan199">8</tspan>
+    </text></g>
+    <text
+       x="31.50"
+       y="695.84"
+       style="font-size:6.42px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
+       id="text201">3</text>
+    <text
+       x="31.50"
+       y="767.99"
+       style="font-size:6.42px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
+       id="text203">4</text>
+    <text
+       x="37.80"
+       y="683.76"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text205">
+      <tspan
+         id="tspan207">%m8-1-hm1-last</tspan>
+    </text>
+    <text
+       x="37.80"
+       y="755.93"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text209">
+      <tspan
+         id="tspan211">%m8-2-hm1-last</tspan>
+    </text>
+    <text
+       x="117.61"
+       y="697.79"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text213">
+      <tspan
+         id="tspan215">%m8p1-1</tspan>
+    </text>
+    <text
+       x="117.61"
+       y="766.15"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text217">
+      <tspan
+         id="tspan219">%m8p2-1</tspan>
+    </text>
+    <path
+       d="M 124.11,582.27 l 80.54,0.00 a4.02,4.02 0 0,1 4.02,4.02 l 0.00,24.02 M 124.11,654.44 l 80.54,0.00 a4.02,4.02 0 0,0 4.02,-4.02 l 0.00,-24.02"
+       style="fill:none; stroke:black; stroke-width:1"
+       id="path221" />
+    <g
+       onmouseout="h(evt)"
+       onmousemove="s(evt,'%m9s1!', '%m9s2!', '%m9t!')">
+    <circle
+       cx="208.67"
+       cy="618.35"
+       r="8.05"
+       stroke="black"
+       stroke-width="1"
+       fill="white"
+       id="circle223" />
+    <text
+       x="208.67"
+       y="622.38"
+       style="font-size:10px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center"
+       id="text225">
+      <tspan
+         id="tspan227">9</tspan>
+    </text></g>
+    <text
+       x="124.11"
+       y="659.75"
+       style="font-size:6.42px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
+       id="text229">6</text>
+    <text
+       x="130.41"
+       y="575.50"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text231">
+      <tspan
+         id="tspan233">%m9-1-hm1-last</tspan>
+    </text>
+    <text
+       x="130.41"
+       y="647.67"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text235">
+      <tspan
+         id="tspan237">%m9-2-hm1-last</tspan>
+    </text>
+    <text
+       x="209.47"
+       y="589.74"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text239">
+      <tspan
+         id="tspan241">%m9p1-1</tspan>
+    </text>
+    <text
+       x="210.22"
+       y="657.89"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text243">
+      <tspan
+         id="tspan245">%m9p2-1</tspan>
+    </text>
+    <path
+       d="M 124.11,726.61 l 80.54,0.00 a4.02,4.02 0 0,1 4.02,4.02 l 0.00,24.02 M 124.11,798.78 l 80.54,0.00 a4.02,4.02 0 0,0 4.02,-4.02 l 0.00,-24.02"
+       style="fill:none; stroke:black; stroke-width:1"
+       id="path247" />
+    <g
+       onmouseout="h(evt)"
+       onmousemove="s(evt,'%m10s1!', '%m10s2!', '%m10t!')">
+    <circle
+       cx="208.67"
+       cy="762.70"
+       r="8.05"
+       stroke="black"
+       stroke-width="1"
+       fill="white"
+       id="circle249" />
+    <text
+       x="208.67"
+       y="766.72"
+       style="font-size:10px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center"
+       id="text251">
+      <tspan
+         id="tspan253">10</tspan>
+    </text></g>
+    <text
+       x="124.11"
+       y="804.02"
+       style="font-size:6.42px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
+       id="text255">5</text>
+    <text
+       x="130.41"
+       y="719.84"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text257">
+      <tspan
+         id="tspan259">%m10-1-hm1-last</tspan>
+    </text>
+    <text
+       x="130.41"
+       y="792.01"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text261">
+      <tspan
+         id="tspan263">%m10-2-hm1-last</tspan>
+    </text>
+    <text
+       x="209.47"
+       y="734.09"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text265">
+      <tspan
+         id="tspan267">%m10p1-1</tspan>
+    </text>
+    <text
+       x="210.22"
+       y="802.23"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text269">
+      <tspan
+         id="tspan271">%m10p2-1</tspan>
+    </text>
+    <path
+       d="M 317.52,161.27 l 80.54,0.00 a4.02,4.02 0 0,1 4.02,4.02 l 0.00,84.16 M 317.52,353.73 l 80.54,0.00 a4.02,4.02 0 0,0 4.02,-4.02 l 0.00,-84.16"
+       style="fill:none; stroke:black; stroke-width:1"
+       id="path273" />
+    <g
+       onmouseout="h(evt)"
+       onmousemove="s(evt,'%m11s1!', '%m11s2!', '%m11t!')">
+    <circle
+       cx="402.08"
+       cy="257.50"
+       r="8.05"
+       stroke="black"
+       stroke-width="1"
+       fill="white"
+       id="circle275" />
+    <text
+       x="402.08"
+       y="261.52"
+       style="font-size:10px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center"
+       id="text277">
+      <tspan
+         id="tspan279">11</tspan>
+    </text></g>
+    <text
+       x="323.82"
+       y="154.50"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text281">
+      <tspan
+         id="tspan283">%m11-1-hm1-last</tspan>
+    </text>
+    <text
+       x="323.82"
+       y="346.96"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text285">
+      <tspan
+         id="tspan287">%m11-2-hm1-last</tspan>
+    </text>
+    <text
+       x="403.63"
+       y="168.75"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text289">
+      <tspan
+         id="tspan291">%m11p1-1</tspan>
+    </text>
+    <text
+       x="403.57"
+       y="356.90"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text293">
+      <tspan
+         id="tspan295">%m11p2-1</tspan>
+    </text>
+    <path
+       d="M 216.72,618.35 l 63.00,0.00"
+       style="fill:none; stroke:black; stroke-width:1"
+       id="path297" />
+    <text
+       x="223.02"
+       y="611.59"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text299">
+      <tspan
+         id="tspan301">%m9-winner-last</tspan>
+    </text>
+    <path
+       d="M 216.72,762.70 l 63.00,0.00"
+       style="fill:none; stroke:black; stroke-width:1"
+       id="path303" />
+    <text
+       x="223.02"
+       y="755.93"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text305">
+      <tspan
+         id="tspan307">%m10-winner-last</tspan>
+    </text>
+    <path
+       d="M 410.13,257.50 l 63.00,0.00"
+       style="fill:none; stroke:black; stroke-width:1"
+       id="path309" />
+    <text
+       x="416.43"
+       y="250.73"
+       font-family="Arial"
+       font-size="10"
+       fill="black"
+       id="text311">
+      <tspan
+         id="tspan313">%m11-winner-last</tspan>
+    </text>
+    <path
+       d="M 415.80,428.57 l 189.00,0.00 l 0.00,160.38 l -189.00,0.00 z"
+       style="fill:none; stroke:black; stroke-width:2"
+       id="path315" />
+    <path
+       d="M 415.80,446.39 l 189.00,0.00"
+       style="fill:none; stroke:black; stroke-width:1"
+       id="path317" />
+    <path
+       d="M 415.80,464.21 l 189.00,0.00"
+       style="fill:none; stroke:black; stroke-width:1"
+       id="path319" />
+    <path
+       d="M 415.80,482.03 l 189.00,0.00"
+       style="fill:none; stroke:black; stroke-width:1"
+       id="path321" />
+    <path
+       d="M 415.80,499.85 l 189.00,0.00"
+       style="fill:none; stroke:black; stroke-width:1"
+       id="path323" />
+    <path
+       d="M 415.80,517.67 l 189.00,0.00"
+       style="fill:none; stroke:black; stroke-width:1"
+       id="path325" />
+    <path
+       d="M 415.80,535.49 l 189.00,0.00"
+       style="fill:none; stroke:black; stroke-width:1"
+       id="path327" />
+    <path
+       d="M 415.80,553.31 l 189.00,0.00"
+       style="fill:none; stroke:black; stroke-width:1"
+       id="path329" />
+    <path
+       d="M 415.80,571.13 l 189.00,0.00"
+       style="fill:none; stroke:black; stroke-width:1"
+       id="path331" />
+    <path
+       d="M 447.30,446.39 l 0.00,142.56"
+       style="fill:none; stroke:black; stroke-width:1"
+       id="path333" />
+    <text
+       x="487.87"
+       y="422.11"
+       style="font-size:12.83px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center"
+       id="text335">
+      <tspan
+         id="tspan337">%t18</tspan>
+    </text>
+    <text
+       x="431.55"
+       y="441.36"
+       style="font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center"
+       id="text339">
+      <tspan
+         id="tspan341">%t22</tspan>
+    </text>
+    <text
+       x="526.05"
+       y="441.36"
+       style="font-size:10.69px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center"
+       id="text343">
+      <tspan
+         id="tspan345">%t6</tspan>
+    </text>
+    <text
+       x="431.55"
+       y="459.25"
+       style="font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center"
+       id="text347">
+      <tspan
+         id="tspan349">1</tspan>
+    </text>
+    <text
+       x="431.55"
+       y="477.07"
+       style="font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center"
+       id="text351">
+      <tspan
+         id="tspan353">2</tspan>
+    </text>
+    <text
+       x="431.55"
+       y="494.82"
+       style="font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center"
+       id="text355">
+      <tspan
+         id="tspan357">3</tspan>
+    </text>
+    <text
+       x="431.55"
+       y="512.64"
+       style="font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center"
+       id="text359">
+      <tspan
+         id="tspan361">3</tspan>
+    </text>
+    <text
+       x="431.55"
+       y="530.39"
+       style="font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center"
+       id="text363">
+      <tspan
+         id="tspan365">5</tspan>
+    </text>
+    <text
+       x="431.55"
+       y="548.21"
+       style="font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center"
+       id="text367">
+      <tspan
+         id="tspan369">5</tspan>
+    </text>
+    <text
+       x="431.55"
+       y="566.10"
+       style="font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center"
+       id="text371">
+      <tspan
+         id="tspan373">7</tspan>
+    </text>
+    <text
+       x="431.55"
+       y="583.92"
+       style="font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;text-anchor:middle;text-align:center"
+       id="text375">
+      <tspan
+         id="tspan377">7</tspan>
+    </text>
+    <text
+       x="453.60"
+       y="459.16"
+       style="font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
+       id="text379">
+      <tspan
+         id="tspan381">%r1hm2-first-s-last-s-club</tspan>
+    </text>
+    <text
+       x="453.60"
+       y="476.98"
+       style="font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
+       id="text383">
+      <tspan
+         id="tspan385">%r2hm2-first-s-last-s-club</tspan>
+    </text>
+    <text
+       x="453.60"
+       y="494.80"
+       style="font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
+       id="text387">
+      <tspan
+         id="tspan389">%r3hm2-first-s-last-s-club</tspan>
+    </text>
+    <text
+       x="453.60"
+       y="512.62"
+       style="font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
+       id="text391">
+      <tspan
+         id="tspan393">%r4hm2-first-s-last-s-club</tspan>
+    </text>
+    <text
+       x="453.60"
+       y="530.44"
+       style="font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
+       id="text395">
+      <tspan
+         id="tspan397">%r5hm2-first-s-last-s-club</tspan>
+    </text>
+    <text
+       x="453.60"
+       y="548.26"
+       style="font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
+       id="text399">
+      <tspan
+         id="tspan401">%r6hm2-first-s-last-s-club</tspan>
+    </text>
+    <text
+       x="453.60"
+       y="566.08"
+       style="font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
+       id="text403">
+      <tspan
+         id="tspan405">%r7hm2-first-s-last-s-club</tspan>
+    </text>
+    <text
+       x="453.60"
+       y="583.90"
+       style="font-size:10.69px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
+       id="text407">
+      <tspan
+         id="tspan409">%r8hm2-first-s-last-s-club</tspan>
+    </text>
+  </g>
+  <g
+     id="g4611">
+    <rect
+       class="tooltip_bg"
+       id="tooltip_bg"
+       x="0"
+       y="0"
+       rx="2.5999999"
+       ry="4.3125"
+       width="45.5"
+       height="34.5"
+       style="fill:#ffff00;" />
+    <rect
+       class="tooltip_bg2"
+       id="tooltip_bg2"
+       style="opacity:0.75221240000000000;fill:#808000;fill-opacity:1;stroke:none;stroke-width:0.95431352000000003;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       width="38.25"
+       height="11.25"
+       x="3.5"
+       y="10.999999"
+       rx="2.367857"
+       ry="4.3125" />
+    <text
+       style="font-size:10px;fill:#000000;font-family:Arial;text-anchor:middle;text-align:center"
+       font-size="10"
+       y="9"
+       x="22.683594"
+       id="tooltip"
+       class="tooltip">0000</text>
+    <text
+       style="font-size:10px;text-align:center;text-anchor:middle;fill:#ffffff;font-family:Arial"
+       font-size="10"
+       y="20.5"
+       x="23.320312"
+       class="tooltip2"
+       id="tooltip2">
+      00:00
+    </text>
+    <text
+       style="font-size:10px;fill:#000000;font-family:Arial;text-anchor:middle;text-align:center"
+       font-size="10"
+       y="31.75"
+       x="23.183594"
+       id="tooltip3"
+       class="tooltip3">0000</text>
+  </g>
+  <rect
+     style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none"
+     id="rect14293"
+     width="54"
+     height="46"
+     x="-5"
+     y="-7" />
 </svg>
