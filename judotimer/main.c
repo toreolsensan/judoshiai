@@ -1709,6 +1709,8 @@ int main( int   argc,
             demo = atoi(&argv[i][2]);
         } else if (argv[i][0] == '-' && argv[i][1] == 't') {
             tatami = atoi(&argv[i][2]);
+        } else if (argv[i][0] == '-' && argv[i][1] == 'm') {
+            matchlist = &argv[i][2];
         }
     }
 

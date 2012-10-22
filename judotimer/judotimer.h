@@ -84,6 +84,7 @@ extern gchar *installation_dir;
 extern gulong my_ip_address, node_ip_addr;
 extern gboolean automatic;
 extern gint demo;
+extern gchar *matchlist;
 extern GKeyFile *keyfile;
 extern gboolean rules_no_koka_dsp;
 extern gboolean rules_leave_score;

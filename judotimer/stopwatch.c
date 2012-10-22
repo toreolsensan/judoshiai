@@ -113,6 +113,7 @@ gboolean         short_pin_times = FALSE;
 gboolean         golden_score = FALSE;
 gboolean         rest_time = FALSE;
 static gint      rest_flags = 0;
+gchar           *matchlist = NULL;
 
 static void log_scores(gchar *txt, gint who)
 {
@@ -292,8 +293,18 @@ void update_clock(void)
             };
 
             if (last_cat != current_category || last_num != current_match) {
-                gint ix = (current_category + current_match) & 7;
-                send_result(res[ix][0], res[ix][1], 0, 0, 0, 0, 0);
+                if (matchlist) {
+                    gint len = strlen(matchlist);
+                    if (current_match <= len) {
+                        if (matchlist[current_match-1] == '1')
+                            send_result(res[0][0], res[0][1], 0, 0, 0, 0, 0);
+                        else
+                            send_result(res[1][0], res[1][1], 0, 0, 0, 0, 0);
+                    }
+                } else {
+                    gint ix = (current_category + current_match) & 7;
+                    send_result(res[ix][0], res[ix][1], 0, 0, 0, 0, 0);
+                }
                 last_cat = current_category;
                 last_num = current_match;
             }
@@ -407,6 +418,9 @@ static void toggle(void)
 
 int get_match_time(void)
 {
+    if (demo >= 2)
+        return (10 + rand()%200);
+
     return st[0].elap + st[0].match_time;
 }
 
