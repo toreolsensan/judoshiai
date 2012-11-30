@@ -1867,26 +1867,37 @@ void set_points_and_score(struct message *msg)
         msg->u.result.white_score = 0;
     }
 
-    if ((msg->u.result.blue_score & 0xffff0) > (msg->u.result.white_score & 0xffff0)) {
-        winscore = msg->u.result.blue_score & 0xffff0;
-        losescore = msg->u.result.white_score & 0xffff0;
-    } else if ((msg->u.result.blue_score & 0xffff0) < (msg->u.result.white_score & 0xffff0)) {
-        winscore = msg->u.result.white_score & 0xffff0;
-        losescore = msg->u.result.blue_score & 0xffff0;
-    } else if (msg->u.result.blue_vote == msg->u.result.white_vote)
-        return;
+    if (prop_get_int_val(PROP_SCORE_WINS_WARNING)) {
+        if (msg->u.result.blue_score > msg->u.result.white_score) {
+            winscore = msg->u.result.blue_score;
+            losescore = msg->u.result.white_score;
+        } else if (msg->u.result.blue_score < msg->u.result.white_score) {
+            winscore = msg->u.result.white_score;
+            losescore = msg->u.result.blue_score;
+        } else if (msg->u.result.blue_vote == msg->u.result.white_vote)
+            return;
+    } else {
+        if ((msg->u.result.blue_score & 0xffff0) > (msg->u.result.white_score & 0xffff0)) {
+            winscore = msg->u.result.blue_score & 0xffff0;
+            losescore = msg->u.result.white_score & 0xffff0;
+        } else if ((msg->u.result.blue_score & 0xffff0) < (msg->u.result.white_score & 0xffff0)) {
+            winscore = msg->u.result.white_score & 0xffff0;
+            losescore = msg->u.result.blue_score & 0xffff0;
+        } else if (msg->u.result.blue_vote == msg->u.result.white_vote)
+            return;
+    }
 
     if (winscore != losescore) {
         if ((winscore & 0xf0000) && (losescore & 0xf0000) == 0) points = 10;
         else if ((winscore & 0xf000) && (losescore & 0xf000) == 0) points = 7;
         else if ((winscore & 0xf00) > (losescore & 0xf00)) points = 5;
         else if ((winscore & 0xf0) > (losescore & 0xf0)) points = 3;
+        else points = 2; //XXXXXXXXXXXXXXX
                 
-        if ((msg->u.result.blue_score & 0xffff0) > (msg->u.result.white_score & 0xffff0))
+        if ((msg->u.result.blue_score) > (msg->u.result.white_score))
             blue_pts = points;
         else
             white_pts = points;
-                        
     } else {
         if (msg->u.result.blue_vote > msg->u.result.white_vote)
             blue_pts = 1;
