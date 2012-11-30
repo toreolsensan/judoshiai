@@ -52,6 +52,7 @@ extern void serial_set_device(gchar *dev);
 extern void serial_set_baudrate(gint baud);
 extern void serial_set_type(gint type);
 extern void print_weight_notes(GtkWidget *menuitem, gpointer userdata);
+extern void ftp_to_server(GtkWidget *w, gpointer data);
 
 
 static GtkWidget *menubar, 
@@ -70,7 +71,7 @@ static GtkWidget *menubar,
     *category_print_all, *category_print_all_pdf, *category_print_matches,
     *category_properties, *category_to_tatamis[NUM_TATAMIS],
     *draw_all_categories, 
-    *results_print_all, *results_print_schedule_printer, *results_print_schedule_pdf,
+    *results_print_all, *results_print_schedule_printer, *results_print_schedule_pdf, *results_ftp,
     *preference_comm, *preference_comm_node, *preference_own_ip_addr, *preference_show_connections,
     *preference_auto_sheet_update, *preference_results_in_finnish, 
     *preference_langsel, *preference_results_in_swedish, *preference_results_in_english, 
@@ -293,15 +294,18 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     results_print_all              = gtk_menu_item_new_with_label(_("Print All (Web And PDF)"));
     results_print_schedule_printer = gtk_menu_item_new_with_label(_("Print Schedule to Printer"));
     results_print_schedule_pdf     = gtk_menu_item_new_with_label(_("Print Schedule to PDF"));
+    results_ftp                    = gtk_menu_item_new_with_label(_("Copy to Server"));
 
     gtk_menu_shell_append(GTK_MENU_SHELL(results_menu), results_print_all);
     gtk_menu_shell_append(GTK_MENU_SHELL(results_menu), results_print_schedule_printer);
+    gtk_menu_shell_append(GTK_MENU_SHELL(results_menu), results_ftp);
     //gtk_menu_shell_append(GTK_MENU_SHELL(results_menu), results_print_schedule_pdf);
 
     g_signal_connect(G_OBJECT(results_print_all),              "activate", G_CALLBACK(make_png_all), 0);
     g_signal_connect(G_OBJECT(results_print_schedule_printer), "activate", G_CALLBACK(print_schedule_cb), NULL);
     g_signal_connect(G_OBJECT(results_print_schedule_pdf),      "activate", G_CALLBACK(print_doc),
                      (gpointer)(PRINT_SCHEDULE | PRINT_TO_PDF));
+    g_signal_connect(G_OBJECT(results_ftp),                    "activate", G_CALLBACK(ftp_to_server), 0);
 
 
     /* Create the Judotimer menu content. */
@@ -752,6 +756,7 @@ void set_menu_active(void)
     SET_SENSITIVE(results_print_all             , DB_OK);
     SET_SENSITIVE(results_print_schedule_printer, DB_OK);
     SET_SENSITIVE(results_print_schedule_pdf    , DB_OK);
+    SET_SENSITIVE(results_ftp                   , DB_OK && (current_directory != NULL));
 }
 
 gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param)
@@ -820,6 +825,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(results_print_all             , _("Print All (Web And PDF)"));
     change_menu_label(results_print_schedule_printer, _("Print Schedule"));
     change_menu_label(results_print_schedule_pdf    , _("Print Schedule to PDF"));
+    change_menu_label(results_ftp                   , _("Copy to Server"));
 
     for (i = 0; i < NUM_TATAMIS; i++) {
         SPRINTF(buf, "%s %d", _("Control Tatami"), i+1);
