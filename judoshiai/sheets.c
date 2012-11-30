@@ -130,6 +130,8 @@ static void init_tables(struct paint_data *pd)
 
 #define PI 3.14159265
 
+void breaknow(void) { }
+
 static double paint_comp(struct paint_data *pd, struct pool_matches *unused1, int pos, 
                          double blue_y, double white_y, 
                          int blue, int white, int blue_pts, int white_pts, 
@@ -157,6 +159,8 @@ static double paint_comp(struct paint_data *pd, struct pool_matches *unused1, in
     special_match = is_special_match(pd->systm, 1000+comp_num, &intval, &doubleval, &doubleval2);
     if (special_match == SPECIAL_MATCH_FLAG)
         flags |= intval;
+
+    if (comp_num == 124) breaknow();
 
     snprintf(numbuf, sizeof(numbuf), "%d", comp_num);
     cairo_text_extents(pd->c, numbuf, &extents1);
@@ -1575,7 +1579,8 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
              table == TABLE_DEN_DOUBLE_ELIMINATION ||
              table == TABLE_SWE_DIREKT_AATERKVAL ||
              table == TABLE_MODIFIED_DOUBLE_ELIMINATION ||
-             table == TABLE_GBR_KNOCK_OUT) && 
+             table == TABLE_GBR_KNOCK_OUT ||
+             table == TABLE_EST_D_KLASS_ONE_BRONZE) && 
 	    pagenum == 2)
 	    space = NAME_S*0.25;
 	else
@@ -1826,10 +1831,11 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
                            m[gold_match].blue, 
                            m[gold_match].white,
                            m[gold_match].blue_points, 
-                           m[gold_match].white_points, 0, 0, 0, 
+                           m[gold_match].white_points, F_REPECHAGE, 0, 0, 
                            gold_match);
             level[gold_match] = 2;
-
+            
+            special_flags = F_REPECHAGE;
             PAINT_GOLD(gold_match);
             GET_FIFTH1(get_abs_matchnum_by_pos(systm, 5, 1));
             GET_FIFTH2(get_abs_matchnum_by_pos(systm, 5, 2));
@@ -1898,14 +1904,16 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
         seventh1 = seventh2 = 0;
     }
 
-    if (table == TABLE_DOUBLE_REPECHAGE_ONE_BRONZE) {
+    if (table == TABLE_DOUBLE_REPECHAGE_ONE_BRONZE ||
+        table == TABLE_EST_D_KLASS_ONE_BRONZE) {
         seventh1 = seventh2 = 0;
     }
 
     /* results */
     if (table == TABLE_MODIFIED_DOUBLE_ELIMINATION)
         result_table_2.num_rows = 3;
-    else if (table == TABLE_DOUBLE_REPECHAGE_ONE_BRONZE)
+    else if (table == TABLE_DOUBLE_REPECHAGE_ONE_BRONZE ||
+             table == TABLE_EST_D_KLASS_ONE_BRONZE)
         result_table_2.num_rows = 6;
     else
         result_table_2.num_rows = 8;
@@ -1929,7 +1937,8 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
         if (table != TABLE_NO_REPECHAGE) {
             WRITE_TABLE(result_table_2, 5, 0, "5");
             WRITE_TABLE(result_table_2, 6, 0, "5");
-            if (table != TABLE_DOUBLE_REPECHAGE_ONE_BRONZE) {
+            if (table != TABLE_DOUBLE_REPECHAGE_ONE_BRONZE &&
+                table != TABLE_EST_D_KLASS_ONE_BRONZE) {
                 WRITE_TABLE(result_table_2, 7, 0, "7");
                 WRITE_TABLE(result_table_2, 8, 0, "7");
             }
