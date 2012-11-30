@@ -53,7 +53,7 @@ gchar *print_texts[numprinttexts][NUM_LANGS] = {
 
     {"Mitalit", "Medaljer", "Medals", "Medallas", "", "Медалі", "Verðlaun", "Medaljer", "Medale"},
     {"Yhteensä", "Totalt", "Total", "Total", "", "Підсумок", "Samtals", "Total", "Suma"},
-    {"Maa", "Land", "Country", "País", "Riik", "Країна", "Land", "Land", "Kraj"}
+    {"Maa", "Land", "Country", "País", "Riik", "Країна", "Land", "Land", "Kraj"},
 
     // Coach display texts
     {"Ei arvottu", "Not drawn", "Not drawn", "Not drawn", "Not drawn", "Not drawn", "Not drawn", "Not drawn", "Not drawn"},

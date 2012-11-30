@@ -38,7 +38,8 @@
 #define LANG_UK 5
 #define LANG_IS 6
 #define LANG_NO 7
-#define NUM_LANGS 8
+#define LANG_PO 8
+#define NUM_LANGS 9
 
 #if GTK_CHECK_VERSION(2,10,0)
 #define PRINT_SUPPORTED

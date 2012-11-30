@@ -92,10 +92,11 @@ static GSList *lang_group = NULL, *club_group = NULL;
 static GtkTooltips *menu_tips;
 
 static const gchar *flags_files[NUM_LANGS] = {
-    "finland.png", "sweden.png", "uk.png", "spain.png", "estonia.png", "ukraine.png", "iceland.png", "norway.png"
+    "finland.png", "sweden.png", "uk.png", "spain.png", "estonia.png", "ukraine.png", "iceland.png", 
+    "norway.png", "poland.png"
 };
 static const gchar *lang_names[NUM_LANGS] = {
-    "fi", "sv", "en", "es", "et", "uk", "is", "no"
+    "fi", "sv", "en", "es", "et", "uk", "is", "nb", "pl"
 };
 
 static GtkWidget *get_picture(const gchar *name)
