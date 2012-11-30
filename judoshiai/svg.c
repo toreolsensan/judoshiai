@@ -34,7 +34,7 @@
 
 #define MATCHED(_a) (m[_a].blue_points || m[_a].white_points)
 
-static gboolean debug = TRUE;
+static gboolean debug = FALSE;
 
 #define WRITE2(_s, _l)                                                     \
     do { if (dfile) fwrite(_s, 1, _l, dfile);                            \
@@ -759,7 +759,6 @@ gint paint_svg(struct paint_data *pd)
                     }
                 }
             } else if (attr[0].code[0] == 't') {
-                g_print("teksti='%s'\n", print_texts[attr[0].value][print_lang]);
                 WRITE(print_texts[attr[0].value][print_lang]);
             } else if (attr[0].code[0] == 'h') {
                 if (attr[1].code[0] == 'm') {
@@ -772,6 +771,9 @@ gint paint_svg(struct paint_data *pd)
                         free_judoka(j);
                     }
                 }
+            } else if (attr[0].code[0] == 'n') { // number of competitors
+                snprintf(buf, sizeof(buf), "%d", num_judokas);
+                WRITE(buf);
             }
 
             if (delayed)
