@@ -17,6 +17,8 @@
 #include <glib/gstdio.h>
 #include <gdk/gdkkeysyms.h>
 
+#include <curl/curl.h>
+
 #ifdef WIN32
 
 #if 0
@@ -456,6 +458,9 @@ ok:
         /* Only the first program can communicate. */
         open_comm_socket();
 
+        /* libcurl init */
+        curl_global_init(CURL_GLOBAL_NOTHING);
+
         /* Create a bg thread using glib */
 #if 0 // NO SERVER THREAD
         gth = g_thread_create((GThreadFunc)server_thread,
@@ -479,6 +484,9 @@ ok:
                               (gpointer)&run_flag, FALSE, NULL); 
 #endif
         gth = g_thread_create((GThreadFunc)serial_thread,
+                              (gpointer)&run_flag, FALSE, NULL); 
+
+        gth = g_thread_create((GThreadFunc)ftp_thread,
                               (gpointer)&run_flag, FALSE, NULL); 
 
         g_timeout_add(1000, check_for_connection_status, NULL);
@@ -509,6 +517,8 @@ ok:
 
     run_flag = FALSE;     /* flag threads to stop and exit */
     //g_thread_join(gth);   /* wait for thread to exit */ 
+
+    curl_global_cleanup();
 
     return 0;
 }
