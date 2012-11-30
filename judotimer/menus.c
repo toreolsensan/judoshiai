@@ -206,21 +206,22 @@ static GtkWidget *name_layout, *name_layouts[NUM_NAME_LAYOUTS];
 static GtkWidget *display_font, *rules_no_free_shido, *rules_score_wins_warning, *rules_short_pin_times;
 
 static const gchar *flags_files[NUM_LANGS] = {
-    "finland.png", "sweden.png", "uk.png", "spain.png", "estonia.png", "ukraine.png", "iceland.png", "norway.png"
+    "finland.png", "sweden.png", "uk.png", "spain.png", "estonia.png", "ukraine.png", "iceland.png", 
+    "norway.png", "poland.png"
 };
 
 static const gchar *lang_names[NUM_LANGS] = {
-    "fi", "sv", "en", "es", "et", "uk", "is", "nb"
+    "fi", "sv", "en", "es", "et", "uk", "is", "nb", "pl"
 };
 
 static const gchar *help_file_names[NUM_LANGS] = {
     "judoshiai-fi.pdf", "judoshiai-en.pdf", "judoshiai-en.pdf", "judoshiai-es.pdf", "judoshiai-en.pdf",
-    "judoshiai-uk.pdf", "judoshiai-en.pdf", "judoshiai-en.pdf"
+    "judoshiai-uk.pdf", "judoshiai-en.pdf", "judoshiai-en.pdf", "judoshiai-en.pdf"
 };
 
 static const gchar *timer_help_file_names[NUM_LANGS] = {
     "judotimer-fi.pdf", "judotimer-en.pdf", "judotimer-en.pdf", "judotimer-es.pdf", "judotimer-en.pdf",
-    "judotimer-uk.pdf", "judotimer-en.pdf", "judotimer-en.pdf"
+    "judotimer-uk.pdf", "judotimer-en.pdf", "judotimer-en.pdf", "judotimer-en.pdf"
 };
 
 static GtkWidget *get_picture(const gchar *name)
