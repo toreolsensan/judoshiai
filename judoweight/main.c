@@ -464,6 +464,7 @@ void judoweight_log(gchar *format, ...)
     FILE *f = fopen(logfile_name, "a");
     if (f) {
         struct tm *tm = localtime((time_t *)&t);
+#ifdef USE_ISO_8859_1
         gsize x;
 
         gchar *text_ISO_8859_1 =
@@ -476,6 +477,13 @@ void judoweight_log(gchar *format, ...)
                 text_ISO_8859_1);
 
         g_free(text_ISO_8859_1);
+#else
+        fprintf(f, "%02d:%02d:%02d %s\n",
+                tm->tm_hour,
+                tm->tm_min,
+                tm->tm_sec,
+                text);
+#endif
         fclose(f);
     } else {
         g_print("Cannot open log file\n");
