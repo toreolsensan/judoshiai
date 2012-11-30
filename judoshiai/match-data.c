@@ -93,20 +93,21 @@ const guint poolsq[21][48][2] = {
 
 const guint french_num_matches[NUM_TABLES][NUM_FRENCH] = {
     {11, 23, 43, 79, 147}, // double repechage
-    {11, 23, 43, 79}, // dubbelt aaterkval
+    {11, 23, 43, 79},  // dubbelt aaterkval
     {11, 27, 59, 123}, // direct aaterkval
     {11, 27, 59, 123}, // est klass d
-    { 7, 15, 31, 63}, // no repechage
-    {11, 19, 37, 71}, // enkelt aaterkval
-    {13, 29, 43, 79}, // Eliminatoria doble perdida
+    { 7, 15, 31, 63},  // no repechage
+    {11, 19, 37, 71},  // enkelt aaterkval
+    {13, 29, 43, 79},  // Eliminatoria doble perdida
     /*{11, 23, 39, 71},*/ // Eliminatoria repesca doble inicio
     {11, 19, 35, 67, 131}, // Eliminatoria repesca doble = IJF
-    {11, 19, 35, 67}, // Eliminatoria repesca simple
+    {11, 19, 35, 67},  // Eliminatoria repesca simple
     {13, 29, 61, 125}, // modified double elimination
-    {12, 24, 44, 80}, // double repechage one bronze
+    {12, 24, 44, 80},  // double repechage one bronze
     {13, 29, 61, 125}, // double lost
     {11, 27, 59, 123}, // gbr knock out
-    {11, 27, 59, 123}  // den double elimination
+    {11, 27, 59, 123}, // den double elimination
+    {12, 28, 60, 124}  // est klass d one bronze
 };
 
 const gint medal_matches[NUM_TABLES][NUM_FRENCH][3] = {
@@ -116,15 +117,16 @@ const gint medal_matches[NUM_TABLES][NUM_FRENCH][3] = {
     {{9,10,11}, {25,26,27}, {57,58,59}, {121,122,123}}, // estonian D klass
     {{5,6,7},   {13,14,15}, {29,30,31}, {61,62,63}},    // no repechage
     {{9,10,11}, {17,18,19}, {35,36,37}, {69,70,71}},    // enkelt aaterkval
-    {{11,12,13}, {27,28,29}, {41,42,43}, {77,78,79}},    // Eliminatoria doble perdida
+    {{11,12,13}, {27,28,29}, {41,42,43}, {77,78,79}},   // Eliminatoria doble perdida
     /*{{9,10,11}, {21,22,23}, {37,38,39}, {69,70,71}},*/    // Eliminatoria repesca doble inicio
     {{9,10,11}, {17,18,19}, {33,34,35}, {65,66,67}, {129,130,131}},    // Eliminatoria repesca doble = IJF
     {{9,10,11}, {17,18,19}, {33,34,35}, {65,66,67}},    // Eliminatoria repesca simple
-    {{0,13,12}, {0,29,28}, {0,61,60}, {0,125,124}},       // modified double elimination
+    {{0,13,12}, {0,29,28}, {0,61,60}, {0,125,124}},     // modified double elimination
     {{11,0,12}, {23,0,24}, {43,0,44}, {79,0,80}},       // double repechage one bronze
-    {{11,12,13},{27,28,29}, {59,60,61}, {123,124,125}},  // double lost
+    {{11,12,13},{27,28,29}, {59,60,61}, {123,124,125}}, // double lost
     {{9,10,11}, {25,26,27}, {57,58,59}, {121,122,123}}, // gbr knock out
-    {{9,10,11}, {25,26,27}, {57,58,59}, {121,122,123}}  // den double elimination
+    {{9,10,11}, {25,26,27}, {57,58,59}, {121,122,123}}, // den double elimination
+    {{11,0,12}, {27,0,28}, {59,0,60}, {123,0,124}}      // estonian D klass one bronze
 };	
 
 gboolean one_bronze(gint table, gint sys)
@@ -612,6 +614,34 @@ const gchar french_64_matches_to_page[NUM_TABLES][NUM_MATCHES] = {
     2, 2, 2, 2, 2, 2, 0, 1, 2, 2,
     /*  121,122,123 */
     2, 2, 9
+},{ // estonian D klass one bronze
+    0,
+    /*  01,02,03,04,05,06,07,08,09,10 */
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    /*  11,12,13,14,15,16,17,18,19,20 */
+    0, 0, 0, 0, 0, 0, 1, 1, 1, 1,
+    /*  21,22,23,24,25,26,27,28,29,30 */
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    /*  31,32,33,34,35,36,37,38,39,40 */
+    1, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+    /*  41,42,43,44,45,46,47,48,49,50 */
+    1, 1, 1, 1, 1, 1, 1, 1, 2, 2,
+    /*  51,52,53,54,55,56,57,58,59,60 */
+    2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+    /*  61,62,63,64,65,66,67,68,69,70 */
+    2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+    /*  71,72,73,74,75,76,77,78,79,80 */
+    2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+    /*  81,82,83,84,85,86,87,88,89,90 */
+    0, 0, 0, 0, 1, 1, 1, 1, 2, 2,
+    /*  91,92,93,94,95,96,97,98,99,100 */
+    2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+    /*  101,102,103,104,105,106,107,108,109,110 */
+    2, 2, 2, 2, 0, 0, 1, 1, 2, 2,
+    /*  111,112,113,114,115,116,117,118,119,120 */
+    2, 2, 2, 2, 2, 2, 0, 1, 2, 2,
+    /*  121,122,123,124 */
+    2, 2, 2, 9
 }
 };
 
@@ -679,14 +709,14 @@ const gchar french_128_matches_to_page[NUM_TABLES][NUM_MATCHES] = {
     0,      1,  2,  3,  4,  4,  4,  4,  4,  4,
     /* 131,132,133,134,135,136,137,138,139,140 */
     4
-}, {}, {}
+}, {}, {}, {}
 };
 
 const gint result_y_position[NUM_TABLES][NUM_FRENCH] = {
     {4, 12, 28, 0, 0},
     {4, 12, 28, 0},
     {4, 22, 50, 0},
-    {4, 12, 54, 0},
+    {4, 22, 54, 0},
     {0, 0, 0, 0},
     {4, 12, 30, 0},
     {4, 12, 28, 0},
@@ -696,6 +726,7 @@ const gint result_y_position[NUM_TABLES][NUM_FRENCH] = {
     {4, 16, 48, 0},
     {4, 12, 28, 0},
     {7, 12, 23, 0},
+    {4, 22, 54, 0},
     {4, 22, 54, 0},
     {4, 22, 54, 0}
 };
@@ -715,7 +746,8 @@ const gint repechage_start[NUM_TABLES][NUM_FRENCH][2] = {
     {{7,0}, {0,0},   {29,0},  {0,63}},  // double repechage one bronze
     {{7,0}, {15,0},  {31,0}, {73,81}}, // double lost
     {{7,0}, {0,0},   {0,0},   {0,0}},   // gbr knock out
-    {{7,0}, {0,0},   {0,0},   {0,0}}   // den double elimination
+    {{7,0}, {0,0},   {0,0},   {0,0}},  // den double elimination
+    {{7,0}, {0,0},   {0,0},   {0,0}}   // estonian D klass one bronze
 };
 
 const gint french_matches[NUM_TABLES][NUM_FRENCH][NUM_MATCHES][2] = {
@@ -1649,6 +1681,72 @@ const gint french_matches[NUM_TABLES][NUM_FRENCH][NUM_MATCHES][2] = {
 	    /* 121,       122,       123      */
 	    {119,-118},{120,-117},{117,118}
 	}
+    },
+    /* Estonian for D klass one bronze */
+    {
+	/* 8 competitors */
+	{
+	    {0,0},
+	    /*  01,     02,     03,     04,     05,     06,     07,     08,     09,     10 */
+	    { 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 1, 2},{ 3, 4},{-1,-2},{-3,-4},{ 7,-6},{ 8,-5},
+	    {9,10},{ 5, 6}
+	},
+	/* <= 16 competitors */
+	{
+	    {0,0},
+	    /*  01,     02,     03,     04,     05,     06,     07,     08,     09,     10 */
+	    { 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 1, 2},{ 3, 4},
+	    /*  11,     12,     13,     14,     15,     16,     17,     18,     19,     20 */
+	    { 5, 6},{ 7, 8},{-1,-2},{-3,-4},{-5,-6},{-7,-8},{13,-10},{14,-9},{15,-12},{16,-11},
+	    /*  21,     22,     23,     24,     25,     26,     27,    28 */
+	    { 9,10},{11,12},{17,18},{19,20},{23,-22},{24,-21},{25,26},{21,22}
+	},
+	/* <= 32 competitors */
+	{
+	    {0,0},
+	    /*  01,     02,     03,     04,     05,     06,     07,     08,     09,     10 */
+	    { 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},
+	    /*  11,     12,     13,     14,     15,     16,     17,     18,     19,     20 */
+	    { 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 0, 0},{ 1, 2},{ 3, 4},{ 5, 6},{ 7, 8},
+	    /*  21,     22,     23,     24,     25,     26,     27,     28,     29,     30 */
+	    { 9,10},{11,12},{13,14},{15,16},{-5,-6},{-7,-8},{-1,-2},{-3,-4},{-13,-14},{-15,-16},
+	    /*  31,     32,     33,     34,     35,     36,     37,     38,     39,     40 */
+	    {-9,-10},{-11,-12},{25,-17},{26,-18},{27,-19},{28,-20},{29,-21},{30,-22},{31,-23},{32,-24},
+	    /*  41,     42,     43,     44,     45,     46,     47,     48,     49,     50 */
+	    {17,18},{19,20},{21,22},{23,24},{33,34},{35,36},{37,38},{39,40},{45,-42},{46,-41},
+	    /*  51,     52,     53,     54,     55,     56,     57,     58,     59,     60 */
+	    {47,-44},{48,-43},{41,42},{43,44},{49,50},{51,52},{55,-54},{56,-53},{57,58},{53,54}
+	},
+	/* <= 64 competitors */
+	{
+	    {0,0},
+	    /*  01,        02,        03,        04,        05,        06,        07,       08,       09,       10 */
+	    { 0, 0},   { 0, 0},   { 0, 0},   { 0, 0},   { 0, 0},   { 0, 0},   { 0, 0},  { 0, 0},  { 0, 0},  { 0, 0},
+	    /*  11,        12,        13,        14,        15,        16,        17,       18,       19,       20 */
+	    { 0, 0},   { 0, 0},   { 0, 0},   { 0, 0},   { 0, 0},   { 0, 0},   { 0, 0},  { 0, 0},  { 0, 0},  { 0, 0},
+	    /*  21,        22,        23,        24,        25,        26,        27,       28,       29,       30 */
+	    { 0, 0},   { 0, 0},   { 0, 0},   { 0, 0},   { 0, 0},   { 0, 0},   { 0, 0},  { 0, 0},  { 0, 0},  { 0, 0},
+	    /*  31,        32,        33,        34,        35,        36,        37,       38,       39,       40 */
+	    { 0, 0},   { 0, 0},   { 1, 2},   { 3, 4},   { 5, 6},   { 7, 8},   { 9,10},  {11,12},  {13,14},  {15,16},
+	    /*  41,        42,        43,        44,        45,        46,        47,       48,       49,       50 */
+	    {17,18},   {19,20},   {21,22},   {23,24},   {25,26},   {27,28},   {29,30},  {31,32},  {-1,-2},  {-3,-4},
+	    /*  51,        52,        53,        54,        55,        56,        57,       58,       59,       60 */
+	    {-5,-6},   {-7,-8},   {-9,-10},  {-11,-12}, {-13,-14}, {-15,-16}, {-17,-18},{-19,-20},{-21,-22},{-23,-24},
+	    /*  61,        62,        63,        64,        65,        66,        67,       68,       69,       70 */
+	    {-25,-26}, {-27,-28}, {-29,-30}, {-31,-32}, {49,-35},  {50,-36},  {51,-33}, {52,-34}, {53,-39}, {54,-40},
+	    /*  71,        72,        73,        74,        75,        76,        77,       78,       79        80  */
+	    {55,-37},  {56,-38},  {57,-43},  {58,-44},  {59,-41},  {60,-42},  {61,-47}, {62,-48}, {63,-45}, {64,-46},
+	    /*  81,        82,        83,        84,        85,        86,        87,       88,       89,       90  */
+	    {33,34},   {35,36},   {37,38},   {39,40},   {41,42},   {43,44},   {45,46},  {47,48},  {65,66},  {67,68},
+	    /*  91,        92,        93,        94,        95,        96,        97,       98,       99,      100  */
+	    {69,70},   {71,72},   {73,74},   {75,76},   {77,78},   {79,80},   {89,-83}, {90,-84}, {91,-81}, {92,-82},
+	    /* 101,       102,       103,       104,       105,       106,       107,      108,      109,      110 */
+	    {93,-87},  {94,-88},  {95,-85},  {96,-86},  {81,82},   {83,84},   {85,86},  {87,88},  {97,98},  {99,100},
+	    /* 111,       112,       113,       114,       115,       116,       117,      118,      119,      120 */
+	    {101,102}, {103,104}, {109,-105},{110,-106},{111,-107},{112,-108},{105,106},{107,108},{113,114},{115,116},
+	    /* 121,       122,       123        124 */
+	    {119,-118},{120,-117},{121,122},{117,118}
+	}
     }
 };
 
@@ -1664,6 +1762,7 @@ static const gint system_menu_order[NUM_SYSTEMS] = {
     CAT_SYSTEM_DUBBELT_AATERKVAL,
     CAT_SYSTEM_DIREKT_AATERKVAL,
     CAT_SYSTEM_EST_D_KLASS,
+    CAT_SYSTEM_EST_D_KLASS_ONE_BRONZE,
     CAT_ESP_DOBLE_PERDIDA,
     /*CAT_ESP_REPESCA_DOBLE_INICIO,*/
     CAT_ESP_REPESCA_DOBLE,
@@ -1695,7 +1794,8 @@ const gint cat_system_to_table[NUM_SYSTEMS] = {
     TABLE_DOUBLE_LOST,
     TABLE_GBR_KNOCK_OUT,
     0,
-    TABLE_DEN_DOUBLE_ELIMINATION
+    TABLE_DEN_DOUBLE_ELIMINATION,
+    TABLE_EST_D_KLASS_ONE_BRONZE
 };
 
 struct compsys wish_to_system(gint sys, gint numcomp)
@@ -1769,6 +1869,7 @@ gchar *get_system_description(gint index, gint competitors)
         case TABLE_DOUBLE_LOST: return _("Double Lost");
         case TABLE_GBR_KNOCK_OUT: return _("GBR Knock Out");
         case TABLE_DEN_DOUBLE_ELIMINATION: return _("DEN Dbl Elim");
+        case TABLE_EST_D_KLASS_ONE_BRONZE: return _("EST D klass 1 brz");
         }
     }
     
@@ -1803,6 +1904,7 @@ static gchar *get_system_name(gint num)
     case CAT_SYSTEM_GBR_KNOCK_OUT: return _("GBR Knock Out");
     case CAT_SYSTEM_BEST_OF_3: return _("Best of 3");
     case CAT_SYSTEM_DEN_DOUBLE_ELIMINATION: return _("DEN Double Elimination");
+    case CAT_SYSTEM_EST_D_KLASS_ONE_BRONZE: return _("EST Double Elim One Bronze");
     }
     return "";
 }
@@ -2066,6 +2168,30 @@ gint is_special_match(struct compsys sys, gint match, gint *intval, double *doub
             case 25:
                 *doubleval = 0.02;
                 return SPECIAL_MATCH_INC_Y;
+            }
+            break;
+        }
+        break;
+    case TABLE_EST_D_KLASS_ONE_BRONZE:
+        switch (sys.system) {
+        case SYSTEM_FRENCH_32:
+            switch (match) {
+            case 25:
+                *doubleval = 0.02;
+                return SPECIAL_MATCH_INC_Y;
+            }
+            break;
+        case SYSTEM_FRENCH_64:
+            switch (match) {
+            case 121:
+            case 122:
+                *intval = F_REPECHAGE;
+                return SPECIAL_MATCH_STOP;
+            case 123:
+                *intval = 2;
+                *doubleval = 0.82;
+                *doubleval2 = 0.86;
+                return SPECIAL_MATCH_X_Y;
             }
             break;
         }

@@ -106,6 +106,7 @@ enum tables {
     TABLE_DOUBLE_LOST,
     TABLE_GBR_KNOCK_OUT,
     TABLE_DEN_DOUBLE_ELIMINATION,
+    TABLE_EST_D_KLASS_ONE_BRONZE,
     NUM_TABLES
 };
 #define TABLE_IJF_DOUBLE_REPECHAGE TABLE_ESP_REPESCA_DOBLE
@@ -132,6 +133,7 @@ enum cat_systems {
     CAT_SYSTEM_GBR_KNOCK_OUT,
     CAT_SYSTEM_BEST_OF_3,
     CAT_SYSTEM_DEN_DOUBLE_ELIMINATION,
+    CAT_SYSTEM_EST_D_KLASS_ONE_BRONZE,
     NUM_SYSTEMS
 };
 #define CAT_IJF_DOUBLE_REPECHAGE CAT_ESP_REPESCA_DOBLE
@@ -431,6 +433,7 @@ enum {
     PROP_THREE_MATCHES_FOR_TWO,
     PROP_WIN_NEEDED_FOR_MEDAL,
     PROP_SEEDED_TO_FIXED_PLACES,
+    PROP_SCORE_WINS_WARNING,
     PROP_DEFAULT_CAT_1,
     PROP_DEFAULT_CAT_2,
     PROP_DEFAULT_CAT_3,
@@ -1124,5 +1127,9 @@ extern void reset_props_1(GtkWidget *button, void *data, gboolean if_unset);
 extern void props_save_to_db(void);
 extern gint props_get_default_wishsys(gint age, gint competitors);
 extern gint props_get_grade(gchar *b);
+
+/* ftp */
+extern gpointer ftp_thread(gpointer args);
+
 
 #endif
