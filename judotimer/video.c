@@ -871,6 +871,7 @@ static gboolean close_video(GtkWidget *widget, gpointer userdata)
 #define SUB(a,b) (a > b ? 4*(a - b) : 4*(b - a))
 //#define SUB(a,b) (a != b ? 100 : 0)
 
+#if 0
 static GdkPixbuf *sub_pixbufs(GdkPixbuf *pixbuf1, GdkPixbuf *pixbuf2)
 {
     GdkPixbuf *pixbuf;
@@ -910,12 +911,13 @@ static GdkPixbuf *sub_pixbufs(GdkPixbuf *pixbuf1, GdkPixbuf *pixbuf2)
 
     return pixbuf;
 }
+#endif
 
 static gboolean expose_video(GtkWidget *widget, GdkEventExpose *event, gpointer userdata)
 {
     gint width, height;
     GError *err = NULL;
-    static GdkPixbuf *pb, *pb1, *pb2;
+    static GdkPixbuf *pb;//, *pb1, *pb2;
 
     width = widget->allocation.width;
     height = widget->allocation.height;
@@ -933,15 +935,16 @@ static gboolean expose_video(GtkWidget *widget, GdkEventExpose *event, gpointer 
         if (fp == NULL || fp->length < 100)
             return FALSE;
 
-        if (pb2) g_object_unref(pb2);
-        pb2 = pb1;
+        //if (pb2) g_object_unref(pb2);
+        //pb2 = pb1;
         GInputStream *stream = g_memory_input_stream_new_from_data(fp->data, fp->length, NULL);
-        pb1 = gdk_pixbuf_new_from_stream(stream, NULL, &err);
+        pb = gdk_pixbuf_new_from_stream(stream, NULL, &err);
         g_input_stream_close(stream, NULL, NULL);
+        /*
         if (pb1 && pb2)
             pb = sub_pixbufs(pb1, pb2);
         else
-            pb = NULL;
+        pb = NULL;*/
         //pb = gdk_pixbuf_new_from_inline(fp->length, fp->data, TRUE, &err);
         //g_file_set_contents("test.jpg", fp->data, fp->length, NULL);
     }
