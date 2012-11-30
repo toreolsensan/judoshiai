@@ -56,7 +56,8 @@ gint approve_osaekomi_score(gint who);
 //static void ask_for_hantei(void);
 
 enum button_responses {
-    Q_GS_1_00 = 1000,
+    Q_GS_NO_LIMIT = 1000,
+    Q_GS_1_00,
     Q_GS_1_30,
     Q_GS_2_00,
     Q_GS_2_30,
@@ -148,7 +149,15 @@ void update_display(void)
     gint orun, score;
     static gint flash = 0;
 
-    t = total - st[0].elap;
+    // move last second to first second i.e. 0:00 = soremade
+    if (st[0].elap == 0.0) t = total;
+    else if (total == 0.0) t = st[0].elap;
+    else {
+        t = total - st[0].elap + 0.9;
+        if (t == 0 && total > st[0].elap)
+            t = 1;
+    }
+
     min = t / 60;
     sec =  t - min*60;
     oSec = st[0].oElap;
@@ -212,7 +221,7 @@ void update_clock(void)
 
         if (st[i].running) {
             st[i].elap = g_timer_elapsed(timer, NULL) - st[i].startTime;
-            if (st[i].elap >= total) {
+            if (total > 0.0 && st[i].elap >= total) {
                 //running = false;
                 st[i].elap = total;
                 if (!st[i].oRunning) {
@@ -380,7 +389,7 @@ static void toggle(void)
         judotimer_log("Shiai clock stop");
         st[0].running = FALSE;
         st[0].elap = g_timer_elapsed(timer, NULL) - st[0].startTime;
-        if (st[0].elap >= total)
+        if (total > 0.0 && st[0].elap >= total)
             st[0].elap = total;
         if (st[0].oRunning) {
 #if 1 // According to Staffan's wish
@@ -425,8 +434,8 @@ int get_match_time(void)
 }
 
 static void oToggle() {
-    if (st[0].running == FALSE && st[0].elap < total) {
-        if (st[0].oRunning)
+    if (st[0].running == FALSE && (st[0].elap < total || total == 0.0)) {
+        if (st[0].oRunning) // yoshi
             toggle();
         return;
     }
@@ -438,7 +447,7 @@ static void oToggle() {
         st[0].oElap = 0;
         set_comment_text("");
         update_display();
-        if (st[0].elap >= total)
+        if (total > 0.0 && st[0].elap >= total)
             beep("SOREMADE");
     } else /*if (st[0].running)*/ {
         judotimer_log("Osaekomi clock start");
@@ -481,6 +490,7 @@ gboolean ask_for_golden_score(void)
                                           GTK_DIALOG_MODAL,
                                           GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
                                           "Auto",           Q_GS_AUTO,
+                                          _("No Limit"),    Q_GS_NO_LIMIT, 
                                           "1:00 min",       Q_GS_1_00,
                                           "1:30 min",       Q_GS_1_30,
                                           "2:00 min",       Q_GS_2_00,
@@ -495,6 +505,7 @@ gboolean ask_for_golden_score(void)
     gtk_widget_destroy(dialog);
 
     switch (response) {
+    case Q_GS_NO_LIMIT: gs_time = 0.0; break;
     case Q_GS_1_00: gs_time = 60.0; break;
     case Q_GS_1_30: gs_time = 90.0; break;
     case Q_GS_2_00: gs_time = 120.0; break;
@@ -505,7 +516,7 @@ gboolean ask_for_golden_score(void)
     case Q_GS_AUTO: gs_time = 1000.0; break;
     }
 
-    if (response >= Q_GS_1_00 && response <= Q_GS_AUTO) {
+    if (response >= Q_GS_NO_LIMIT && response <= Q_GS_AUTO) {
         golden_score = TRUE;
         if (response == Q_GS_AUTO)
             automatic = TRUE;
@@ -562,6 +573,11 @@ static gint get_winner(void)
     else if (white_wins_voting) winner = WHITE;
     else if (hansokumake_to_white) winner = BLUE;
     else if (hansokumake_to_blue) winner = WHITE;
+    else if (rule_score_wins_warning &&
+             (st[0].bluepts[0] || st[0].bluepts[1])) {
+        if (st[0].bluepts[3] > st[0].whitepts[3]) winner = BLUE;
+        else if (st[0].bluepts[3] < st[0].whitepts[3]) winner = WHITE;
+    }
 
     return winner;
 }
@@ -814,13 +830,20 @@ void reset(guint key, struct msg_next_match *msg)
         golden_score = FALSE;
     }
 
-    gint bp = array2int(st[0].bluepts) & 0xfffffff0;
-    gint wp = array2int(st[0].whitepts) & 0xfffffff0;
+    gint bp;
+    gint wp;
+    if (rule_score_wins_warning) {
+        bp = array2int(st[0].bluepts);
+        wp = array2int(st[0].whitepts);
+    } else {
+        bp = array2int(st[0].bluepts) & 0xfffffff0;
+        wp = array2int(st[0].whitepts) & 0xfffffff0;
+    }
 
     if (key == GDK_9 ||
         (demo == 0 && bp == wp &&
          blue_wins_voting == white_wins_voting &&
-         total > 1.0 && st[0].elap >= total && key != GDK_0)) {
+         total > 0.0 && st[0].elap >= total && key != GDK_0)) {
         asking = TRUE;
         ask_for_golden_score();
         asking = FALSE;
@@ -926,6 +949,18 @@ void reset(guint key, struct msg_next_match *msg)
         st[i].stackdepth = 0;
     }
 
+    if (rule_short_pin_times) {
+        koka    = 5.000;
+        yuko    = 10.000;
+        wazaari = 15.000;
+        ippon   = 20.000;
+    } else {
+        koka    = 10.000;
+        yuko    = 15.000;
+        wazaari = 20.000;
+        ippon   = 25.000;
+    }
+
     switch (key) {
     case GDK_0:
         if (msg) {
@@ -973,45 +1008,21 @@ void reset(guint key, struct msg_next_match *msg)
         break;
     case GDK_2:
         total   = golden_score ? gs_time : 120.000;
-        koka    = 10.000;
-        yuko    = 15.000;
-        wazaari = 20.000;
-        ippon   = 25.000;
         break;
     case GDK_3:
         total   = golden_score ? gs_time : 180.000;
-        koka    = 10.000;
-        yuko    = 15.000;
-        wazaari = 20.000;
-        ippon   = 25.000;
         break;
     case GDK_4:
         total   = golden_score ? gs_time : 240.000;
-        koka    = 10.000;
-        yuko    = 15.000;
-        wazaari = 20.000;
-        ippon   = 25.000;
         break;
     case GDK_5:
         total   = golden_score ? gs_time : 300.000;
-        koka    = 10.000;
-        yuko    = 15.000;
-        wazaari = 20.000;
-        ippon   = 25.000;
         break;
     case GDK_6:
-        total   = golden_score ? gs_time : 30.000;
-        koka    = 10.000;
-        yuko    = 15.000;
-        wazaari = 20.000;
-        ippon   = 25.000;
+        total   = golden_score ? gs_time : 150.000;
         break;
     case GDK_7:
         total   = 700.000;
-        koka    = 10.000;
-        yuko    = 15.000;
-        wazaari = 20.000;
-        ippon   = 25.000;
         break;
     case GDK_9:
         if (golden_score)
@@ -1298,7 +1309,7 @@ void clock_key(guint key, guint event_state)
         if (st[0].running) {
             st[0].running = FALSE;
             st[0].elap = g_timer_elapsed(timer, NULL) - st[0].startTime;
-            if (st[0].elap >= total)
+            if (total > 0.0 && st[0].elap >= total)
                 st[0].elap = total;
             if (st[0].oRunning) {
                 st[0].oElap = g_timer_elapsed(timer, NULL) - st[0].oStartTime;
@@ -1359,29 +1370,49 @@ void clock_key(guint key, guint event_state)
             incdecpts(&st[0].whitepts[2], shift);
         break;
     case GDK_F8:
-        if (shift) {
-            switch (st[0].whitepts[3]) {
-            case 0: break;
-            case 1: if (!rules_no_koka_dsp) incdecpts(&st[0].bluepts[2], DEC); break;
-            case 2: if (!rules_no_koka_dsp) incdecpts(&st[0].bluepts[2], INC);
-                incdecpts(&st[0].bluepts[1], DEC);
-                break;
-            case 3: incdecpts(&st[0].bluepts[1], INC); incdecpts(&st[0].bluepts[0], DEC); break;
-            case 4: incdecpts(&st[0].bluepts[0], DEC);
+        if (rule_no_free_shido) {
+            if (shift) {
+                switch (st[0].whitepts[3]) {
+                case 1: incdecpts(&st[0].bluepts[1], DEC); break;
+                case 2: incdecpts(&st[0].bluepts[1], INC); incdecpts(&st[0].bluepts[0], DEC); break;
+                case 3: incdecpts(&st[0].bluepts[0], DEC);
+                }
+                incdecpts(&st[0].whitepts[3], DEC);
+                log_scores("Cancel shido to ", WHITE);
+            } else {
+                incdecpts(&st[0].whitepts[3], INC);
+                switch (st[0].whitepts[3]) {
+                case 1: incdecpts(&st[0].bluepts[1], INC); break;
+                case 2: incdecpts(&st[0].bluepts[1], DEC); incdecpts(&st[0].bluepts[0], INC); break;
+                case 3: incdecpts(&st[0].bluepts[0], INC);
+                }
+                log_scores("Shido to ", WHITE);
             }
-            incdecpts(&st[0].whitepts[3], DEC);
-            log_scores("Cancel shido to ", WHITE);
         } else {
-            incdecpts(&st[0].whitepts[3], INC);
-            switch (st[0].whitepts[3]) {
-            case 1: if (!rules_no_koka_dsp) incdecpts(&st[0].bluepts[2], INC); break;
-            case 2: if (!rules_no_koka_dsp) incdecpts(&st[0].bluepts[2], DEC);
-                incdecpts(&st[0].bluepts[1], INC);
-                break;
-            case 3: incdecpts(&st[0].bluepts[1], DEC); incdecpts(&st[0].bluepts[0], INC); break;
-            case 4: incdecpts(&st[0].bluepts[0], INC);
+            if (shift) {
+                switch (st[0].whitepts[3]) {
+                case 0: break;
+                case 1: if (!rules_no_koka_dsp) incdecpts(&st[0].bluepts[2], DEC); break;
+                case 2: if (!rules_no_koka_dsp) incdecpts(&st[0].bluepts[2], INC);
+                    incdecpts(&st[0].bluepts[1], DEC);
+                    break;
+                case 3: incdecpts(&st[0].bluepts[1], INC); incdecpts(&st[0].bluepts[0], DEC); break;
+                case 4: incdecpts(&st[0].bluepts[0], DEC);
+                }
+                incdecpts(&st[0].whitepts[3], DEC);
+                log_scores("Cancel shido to ", WHITE);
+            } else {
+                incdecpts(&st[0].whitepts[3], INC);
+                switch (st[0].whitepts[3]) {
+                case 1: if (!rules_no_koka_dsp) incdecpts(&st[0].bluepts[2], INC); break;
+                case 2: if (!rules_no_koka_dsp) incdecpts(&st[0].bluepts[2], DEC);
+                    incdecpts(&st[0].bluepts[1], INC);
+                    break;
+                case 3: incdecpts(&st[0].bluepts[1], DEC); incdecpts(&st[0].bluepts[0], INC); break;
+                case 4: incdecpts(&st[0].bluepts[0], INC);
+                }
+                log_scores("Shido to ", WHITE);
             }
-            log_scores("Shido to ", WHITE);
         }
         break;
     case GDK_F1:
@@ -1412,29 +1443,49 @@ void clock_key(guint key, guint event_state)
             incdecpts(&st[0].bluepts[2], shift);
         break;
     case GDK_F4:
-        if (shift) {
-            switch (st[0].bluepts[3]) {
-            case 0: break;
-            case 1: if (!rules_no_koka_dsp) incdecpts(&st[0].whitepts[2], DEC); break;
-            case 2: if (!rules_no_koka_dsp) incdecpts(&st[0].whitepts[2], INC);
-                incdecpts(&st[0].whitepts[1], DEC);
-                break;
-            case 3: incdecpts(&st[0].whitepts[1], INC); incdecpts(&st[0].whitepts[0], DEC); break;
-            case 4: incdecpts(&st[0].whitepts[0], DEC);
+        if (rule_no_free_shido) {
+            if (shift) {
+                switch (st[0].bluepts[3]) {
+                case 1: incdecpts(&st[0].whitepts[1], DEC); break;
+                case 2: incdecpts(&st[0].whitepts[1], INC); incdecpts(&st[0].whitepts[0], DEC); break;
+                case 3: incdecpts(&st[0].whitepts[0], DEC);
+                }
+                incdecpts(&st[0].bluepts[3], DEC);
+                log_scores("Cancel shido to ", BLUE);
+            } else {
+                incdecpts(&st[0].bluepts[3], INC);
+                switch (st[0].bluepts[3]) {
+                case 1: incdecpts(&st[0].whitepts[1], INC); break;
+                case 2: incdecpts(&st[0].whitepts[1], DEC); incdecpts(&st[0].whitepts[0], INC); break;
+                case 3: incdecpts(&st[0].whitepts[0], INC);
+                }
+                log_scores("Shido to ", BLUE);
             }
-            incdecpts(&st[0].bluepts[3], DEC);
-            log_scores("Cancel shido to ", BLUE);
         } else {
-            incdecpts(&st[0].bluepts[3], INC);
-            switch (st[0].bluepts[3]) {
-            case 1: if (!rules_no_koka_dsp) incdecpts(&st[0].whitepts[2], INC); break;
-            case 2: if (!rules_no_koka_dsp) incdecpts(&st[0].whitepts[2], DEC);
-                incdecpts(&st[0].whitepts[1], INC);
-                break;
-            case 3: incdecpts(&st[0].whitepts[1], DEC); incdecpts(&st[0].whitepts[0], INC); break;
-            case 4: incdecpts(&st[0].whitepts[0], INC);
+            if (shift) {
+                switch (st[0].bluepts[3]) {
+                case 0: break;
+                case 1: if (!rules_no_koka_dsp) incdecpts(&st[0].whitepts[2], DEC); break;
+                case 2: if (!rules_no_koka_dsp) incdecpts(&st[0].whitepts[2], INC);
+                    incdecpts(&st[0].whitepts[1], DEC);
+                    break;
+                case 3: incdecpts(&st[0].whitepts[1], INC); incdecpts(&st[0].whitepts[0], DEC); break;
+                case 4: incdecpts(&st[0].whitepts[0], DEC);
+                }
+                incdecpts(&st[0].bluepts[3], DEC);
+                log_scores("Cancel shido to ", BLUE);
+            } else {
+                incdecpts(&st[0].bluepts[3], INC);
+                switch (st[0].bluepts[3]) {
+                case 1: if (!rules_no_koka_dsp) incdecpts(&st[0].whitepts[2], INC); break;
+                case 2: if (!rules_no_koka_dsp) incdecpts(&st[0].whitepts[2], DEC);
+                    incdecpts(&st[0].whitepts[1], INC);
+                    break;
+                case 3: incdecpts(&st[0].whitepts[1], DEC); incdecpts(&st[0].whitepts[0], INC); break;
+                case 4: incdecpts(&st[0].whitepts[0], INC);
+                }
+                log_scores("Shido to ", BLUE);
             }
-            log_scores("Shido to ", BLUE);
         }
         break;
     default:
@@ -1442,27 +1493,47 @@ void clock_key(guint key, guint event_state)
     }
 
     /* check for shido amount of points */
-    if (st[0].bluepts[3] > 4)
-        st[0].bluepts[3] = 4;
-    if (st[0].bluepts[3] == 4 && (st[0].whitepts[0] & 2) == 0)
-        st[0].whitepts[0] |= 2;
-    else if (st[0].bluepts[3] == 3 && (st[0].whitepts[0] & 1) == 0)
-        st[0].whitepts[0] |= 1;
-    else if (st[0].bluepts[3] == 2 && st[0].whitepts[1] == 0)
-        st[0].whitepts[1] = 1;
-    else if (st[0].bluepts[3] == 1 && st[0].whitepts[2] == 0 && !rules_no_koka_dsp)
-        st[0].whitepts[2] = 1;
+    if (rule_no_free_shido) {
+        if (st[0].bluepts[3] > 3)
+            st[0].bluepts[3] = 3;
+        if (st[0].bluepts[3] == 3 && (st[0].whitepts[0] & 2) == 0)
+            st[0].whitepts[0] |= 2;
+        else if (st[0].bluepts[3] == 2 && (st[0].whitepts[0] & 1) == 0)
+            st[0].whitepts[0] |= 1;
+        else if (st[0].bluepts[3] == 1 && st[0].whitepts[1] == 0)
+            st[0].whitepts[1] = 1;
 
-    if (st[0].whitepts[3] > 4)
-        st[0].whitepts[3] = 4;
-    if (st[0].whitepts[3] == 4 && (st[0].bluepts[0] & 2) == 0)
-        st[0].bluepts[0] |= 2;
-    else if (st[0].whitepts[3] == 3 && (st[0].bluepts[0] & 1) == 0)
-        st[0].bluepts[0] |= 1;
-    else if (st[0].whitepts[3] == 2 && st[0].bluepts[1] == 0)
-        st[0].bluepts[1] = 1;
-    else if (st[0].whitepts[3] == 1 && st[0].bluepts[2] == 0 && !rules_no_koka_dsp)
-        st[0].bluepts[2] = 1;
+        if (st[0].whitepts[3] > 3)
+            st[0].whitepts[3] = 3;
+        if (st[0].whitepts[3] == 3 && (st[0].bluepts[0] & 2) == 0)
+            st[0].bluepts[0] |= 2;
+        else if (st[0].whitepts[3] == 2 && (st[0].bluepts[0] & 1) == 0)
+            st[0].bluepts[0] |= 1;
+        else if (st[0].whitepts[3] == 1 && st[0].bluepts[1] == 0)
+            st[0].bluepts[1] = 1;
+    } else {
+        if (st[0].bluepts[3] > 4)
+            st[0].bluepts[3] = 4;
+        if (st[0].bluepts[3] == 4 && (st[0].whitepts[0] & 2) == 0)
+            st[0].whitepts[0] |= 2;
+        else if (st[0].bluepts[3] == 3 && (st[0].whitepts[0] & 1) == 0)
+            st[0].whitepts[0] |= 1;
+        else if (st[0].bluepts[3] == 2 && st[0].whitepts[1] == 0)
+            st[0].whitepts[1] = 1;
+        else if (st[0].bluepts[3] == 1 && st[0].whitepts[2] == 0 && !rules_no_koka_dsp)
+            st[0].whitepts[2] = 1;
+
+        if (st[0].whitepts[3] > 4)
+            st[0].whitepts[3] = 4;
+        if (st[0].whitepts[3] == 4 && (st[0].bluepts[0] & 2) == 0)
+            st[0].bluepts[0] |= 2;
+        else if (st[0].whitepts[3] == 3 && (st[0].bluepts[0] & 1) == 0)
+            st[0].bluepts[0] |= 1;
+        else if (st[0].whitepts[3] == 2 && st[0].bluepts[1] == 0)
+            st[0].bluepts[1] = 1;
+        else if (st[0].whitepts[3] == 1 && st[0].bluepts[2] == 0 && !rules_no_koka_dsp)
+            st[0].bluepts[2] = 1;
+    }
 
     check_ippon();
 }
@@ -1602,15 +1673,18 @@ void judotimer_log(gchar *format, ...)
     FILE *f = fopen(logfile_name, "a");
     if (f) {
         struct tm *tm = localtime((time_t *)&t);
-        gsize x;
 
-        guint t = total - st[0].elap;
+        guint t = (total > 0.0) ? (total - st[0].elap) : st[0].elap;
         guint min = t / 60;
         guint sec =  t - min*60;
 
+#ifdef USE_ISO_8859_1
+        gsize x;
         gchar *text_ISO_8859_1 =
             g_convert(text, -1, "ISO-8859-1", "UTF-8", NULL, &x, NULL);
-
+#else
+        gchar *text_ISO_8859_1 = text;
+#endif
         if (t > 610)
             fprintf(f, "%02d:%02d:%02d [-:--] <%d-%02d> %s\n",
                     tm->tm_hour,
@@ -1627,7 +1701,9 @@ void judotimer_log(gchar *format, ...)
                     current_category, current_match,
                     text_ISO_8859_1);
 
+#ifdef USE_ISO_8859_1
         g_free(text_ISO_8859_1);
+#endif
         fclose(f);
     } else {
         g_print("Cannot open log file\n");

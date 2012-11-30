@@ -61,6 +61,9 @@ gboolean sides_switched = FALSE;
 gboolean white_first = FALSE;
 gboolean fullscreen = FALSE;
 gboolean menu_hidden = FALSE;
+gboolean rule_no_free_shido = FALSE;
+gboolean rule_score_wins_warning = FALSE;
+gboolean rule_short_pin_times = FALSE;
 
 #define MY_FONT "Arial"
 static gchar font_face[32];
@@ -1866,6 +1869,24 @@ void toggle_rules_stop_ippon(GtkWidget *menu_item, gpointer data)
 		rules_stop_ippon_2 = FALSE;
 		g_key_file_set_boolean(keyfile, "preferences", "stopippon", FALSE);
 	}
+}
+
+void toggle_rules_no_free_shido(GtkWidget *menu_item, gpointer data)
+{
+    rule_no_free_shido = GTK_CHECK_MENU_ITEM(menu_item)->active;
+    g_key_file_set_boolean(keyfile, "preferences", "rulesnofreeshido", rule_no_free_shido);
+}
+
+void toggle_rules_score_wins_warning(GtkWidget *menu_item, gpointer data)
+{
+    rule_score_wins_warning = GTK_CHECK_MENU_ITEM(menu_item)->active;
+    g_key_file_set_boolean(keyfile, "preferences", "rulesscorewinswarning", rule_score_wins_warning);
+}
+
+void toggle_rules_short_pin_times(GtkWidget *menu_item, gpointer data)
+{
+    rule_short_pin_times = GTK_CHECK_MENU_ITEM(menu_item)->active;
+    g_key_file_set_boolean(keyfile, "preferences", "rulesshortpintimes", rule_short_pin_times);
 }
 
 void toggle_confirm_match(GtkWidget *menu_item, gpointer data)
