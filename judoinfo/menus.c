@@ -32,15 +32,16 @@ static GtkTooltips *menu_tips;
 static GtkWidget *flags[NUM_LANGS], *menu_flags[NUM_LANGS];
 
 static const gchar *flags_files[NUM_LANGS] = {
-    "finland.png", "sweden.png", "uk.png", "spain.png", "estonia.png", "ukraine.png", "iceland.png", "norway.png"
+    "finland.png", "sweden.png", "uk.png", "spain.png", "estonia.png", "ukraine.png", "iceland.png", 
+    "norway.png", "poland.png"
 };
 static const gchar *lang_names[NUM_LANGS] = {
-    "fi", "sv", "en", "es", "et", "uk", "is", "nb"
+    "fi", "sv", "en", "es", "et", "uk", "is", "nb", "pl"
 };
 
 static const gchar *help_file_names[NUM_LANGS] = {
     "judoshiai-fi.pdf", "judoshiai-en.pdf", "judoshiai-en.pdf", "judoshiai-es.pdf", "judoshiai-en.pdf",
-    "judoshiai-uk.pdf", "judoshiai-en.pdf", "judoshiai-en.pdf"
+    "judoshiai-uk.pdf", "judoshiai-en.pdf", "judoshiai-en.pdf", "judoshiai-en.pdf"
 };
 
 
