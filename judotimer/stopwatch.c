@@ -573,10 +573,10 @@ static gint get_winner(void)
     else if (white_wins_voting) winner = WHITE;
     else if (hansokumake_to_white) winner = BLUE;
     else if (hansokumake_to_blue) winner = WHITE;
-    else if (rule_score_wins_warning &&
-             (st[0].bluepts[0] || st[0].bluepts[1])) {
-        if (st[0].bluepts[3] > st[0].whitepts[3]) winner = BLUE;
-        else if (st[0].bluepts[3] < st[0].whitepts[3]) winner = WHITE;
+    else if (rule_eq_score_less_shido_wins &&
+             (st[0].bluepts[3] || st[0].whitepts[3])) {
+        if (st[0].bluepts[3] > st[0].whitepts[3]) winner = WHITE;
+        else if (st[0].bluepts[3] < st[0].whitepts[3]) winner = BLUE;
     }
 
     return winner;
@@ -832,7 +832,7 @@ void reset(guint key, struct msg_next_match *msg)
 
     gint bp;
     gint wp;
-    if (rule_score_wins_warning) {
+    if (rule_eq_score_less_shido_wins) {
         bp = array2int(st[0].bluepts);
         wp = array2int(st[0].whitepts);
     } else {
@@ -1370,26 +1370,8 @@ void clock_key(guint key, guint event_state)
             incdecpts(&st[0].whitepts[2], shift);
         break;
     case GDK_F8:
-        if (rule_no_free_shido) {
-            if (shift) {
-                switch (st[0].whitepts[3]) {
-                case 1: incdecpts(&st[0].bluepts[1], DEC); break;
-                case 2: incdecpts(&st[0].bluepts[1], INC); incdecpts(&st[0].bluepts[0], DEC); break;
-                case 3: incdecpts(&st[0].bluepts[0], DEC);
-                }
-                incdecpts(&st[0].whitepts[3], DEC);
-                log_scores("Cancel shido to ", WHITE);
-            } else {
-                incdecpts(&st[0].whitepts[3], INC);
-                switch (st[0].whitepts[3]) {
-                case 1: incdecpts(&st[0].bluepts[1], INC); break;
-                case 2: incdecpts(&st[0].bluepts[1], DEC); incdecpts(&st[0].bluepts[0], INC); break;
-                case 3: incdecpts(&st[0].bluepts[0], INC);
-                }
-                log_scores("Shido to ", WHITE);
-            }
-        } else {
-            if (shift) {
+        if (shift) {
+            if (rule_eq_score_less_shido_wins == FALSE) { 
                 switch (st[0].whitepts[3]) {
                 case 0: break;
                 case 1: if (!rules_no_koka_dsp) incdecpts(&st[0].bluepts[2], DEC); break;
@@ -1399,10 +1381,15 @@ void clock_key(guint key, guint event_state)
                 case 3: incdecpts(&st[0].bluepts[1], INC); incdecpts(&st[0].bluepts[0], DEC); break;
                 case 4: incdecpts(&st[0].bluepts[0], DEC);
                 }
-                incdecpts(&st[0].whitepts[3], DEC);
-                log_scores("Cancel shido to ", WHITE);
-            } else {
-                incdecpts(&st[0].whitepts[3], INC);
+            } else if (st[0].whitepts[3] == 4) {
+                st[0].bluepts[0] &= ~2;
+            }
+            incdecpts(&st[0].whitepts[3], DEC);
+            log_scores("Cancel shido to ", WHITE);
+        } else {
+            incdecpts(&st[0].whitepts[3], INC);
+
+            if (rule_eq_score_less_shido_wins == FALSE) { 
                 switch (st[0].whitepts[3]) {
                 case 1: if (!rules_no_koka_dsp) incdecpts(&st[0].bluepts[2], INC); break;
                 case 2: if (!rules_no_koka_dsp) incdecpts(&st[0].bluepts[2], DEC);
@@ -1411,8 +1398,10 @@ void clock_key(guint key, guint event_state)
                 case 3: incdecpts(&st[0].bluepts[1], DEC); incdecpts(&st[0].bluepts[0], INC); break;
                 case 4: incdecpts(&st[0].bluepts[0], INC);
                 }
-                log_scores("Shido to ", WHITE);
+            } else if (st[0].whitepts[3] >= 4) {
+                st[0].bluepts[0] |= 2;
             }
+            log_scores("Shido to ", WHITE);
         }
         break;
     case GDK_F1:
@@ -1443,26 +1432,8 @@ void clock_key(guint key, guint event_state)
             incdecpts(&st[0].bluepts[2], shift);
         break;
     case GDK_F4:
-        if (rule_no_free_shido) {
-            if (shift) {
-                switch (st[0].bluepts[3]) {
-                case 1: incdecpts(&st[0].whitepts[1], DEC); break;
-                case 2: incdecpts(&st[0].whitepts[1], INC); incdecpts(&st[0].whitepts[0], DEC); break;
-                case 3: incdecpts(&st[0].whitepts[0], DEC);
-                }
-                incdecpts(&st[0].bluepts[3], DEC);
-                log_scores("Cancel shido to ", BLUE);
-            } else {
-                incdecpts(&st[0].bluepts[3], INC);
-                switch (st[0].bluepts[3]) {
-                case 1: incdecpts(&st[0].whitepts[1], INC); break;
-                case 2: incdecpts(&st[0].whitepts[1], DEC); incdecpts(&st[0].whitepts[0], INC); break;
-                case 3: incdecpts(&st[0].whitepts[0], INC);
-                }
-                log_scores("Shido to ", BLUE);
-            }
-        } else {
-            if (shift) {
+        if (shift) {
+            if (rule_eq_score_less_shido_wins == FALSE) { 
                 switch (st[0].bluepts[3]) {
                 case 0: break;
                 case 1: if (!rules_no_koka_dsp) incdecpts(&st[0].whitepts[2], DEC); break;
@@ -1472,10 +1443,14 @@ void clock_key(guint key, guint event_state)
                 case 3: incdecpts(&st[0].whitepts[1], INC); incdecpts(&st[0].whitepts[0], DEC); break;
                 case 4: incdecpts(&st[0].whitepts[0], DEC);
                 }
-                incdecpts(&st[0].bluepts[3], DEC);
-                log_scores("Cancel shido to ", BLUE);
-            } else {
-                incdecpts(&st[0].bluepts[3], INC);
+            } else if (st[0].bluepts[3] == 4) {
+                st[0].whitepts[0] &= ~2;
+            }
+            incdecpts(&st[0].bluepts[3], DEC);
+            log_scores("Cancel shido to ", BLUE);
+        } else {
+            incdecpts(&st[0].bluepts[3], INC);
+            if (rule_eq_score_less_shido_wins == FALSE) { 
                 switch (st[0].bluepts[3]) {
                 case 1: if (!rules_no_koka_dsp) incdecpts(&st[0].whitepts[2], INC); break;
                 case 2: if (!rules_no_koka_dsp) incdecpts(&st[0].whitepts[2], DEC);
@@ -1484,8 +1459,10 @@ void clock_key(guint key, guint event_state)
                 case 3: incdecpts(&st[0].whitepts[1], DEC); incdecpts(&st[0].whitepts[0], INC); break;
                 case 4: incdecpts(&st[0].whitepts[0], INC);
                 }
-                log_scores("Shido to ", BLUE);
+            } else if (st[0].bluepts[3] >= 4) {
+                st[0].whitepts[0] |= 2;
             }
+            log_scores("Shido to ", BLUE);
         }
         break;
     default:
@@ -1493,48 +1470,32 @@ void clock_key(guint key, guint event_state)
     }
 
     /* check for shido amount of points */
-    if (rule_no_free_shido) {
-        if (st[0].bluepts[3] > 3)
-            st[0].bluepts[3] = 3;
-        if (st[0].bluepts[3] == 3 && (st[0].whitepts[0] & 2) == 0)
-            st[0].whitepts[0] |= 2;
-        else if (st[0].bluepts[3] == 2 && (st[0].whitepts[0] & 1) == 0)
-            st[0].whitepts[0] |= 1;
-        else if (st[0].bluepts[3] == 1 && st[0].whitepts[1] == 0)
-            st[0].whitepts[1] = 1;
-
-        if (st[0].whitepts[3] > 3)
-            st[0].whitepts[3] = 3;
-        if (st[0].whitepts[3] == 3 && (st[0].bluepts[0] & 2) == 0)
-            st[0].bluepts[0] |= 2;
-        else if (st[0].whitepts[3] == 2 && (st[0].bluepts[0] & 1) == 0)
-            st[0].bluepts[0] |= 1;
-        else if (st[0].whitepts[3] == 1 && st[0].bluepts[1] == 0)
-            st[0].bluepts[1] = 1;
-    } else {
-        if (st[0].bluepts[3] > 4)
-            st[0].bluepts[3] = 4;
+    if (st[0].bluepts[3] > 4)
+        st[0].bluepts[3] = 4;
+    if (rule_eq_score_less_shido_wins == FALSE) { 
         if (st[0].bluepts[3] == 4 && (st[0].whitepts[0] & 2) == 0)
             st[0].whitepts[0] |= 2;
-        else if (st[0].bluepts[3] == 3 && (st[0].whitepts[0] & 1) == 0)
-            st[0].whitepts[0] |= 1;
+        else if (st[0].bluepts[3] == 3 && st[0].whitepts[0] == 0)
+            st[0].whitepts[0] = 1;
         else if (st[0].bluepts[3] == 2 && st[0].whitepts[1] == 0)
             st[0].whitepts[1] = 1;
         else if (st[0].bluepts[3] == 1 && st[0].whitepts[2] == 0 && !rules_no_koka_dsp)
             st[0].whitepts[2] = 1;
+    }    
 
-        if (st[0].whitepts[3] > 4)
-            st[0].whitepts[3] = 4;
+    if (st[0].whitepts[3] > 4)
+        st[0].whitepts[3] = 4;
+    if (rule_eq_score_less_shido_wins == FALSE) { 
         if (st[0].whitepts[3] == 4 && (st[0].bluepts[0] & 2) == 0)
             st[0].bluepts[0] |= 2;
-        else if (st[0].whitepts[3] == 3 && (st[0].bluepts[0] & 1) == 0)
-            st[0].bluepts[0] |= 1;
+        else if (st[0].whitepts[3] == 3 && st[0].bluepts[0] == 0)
+            st[0].bluepts[0] = 1;
         else if (st[0].whitepts[3] == 2 && st[0].bluepts[1] == 0)
             st[0].bluepts[1] = 1;
         else if (st[0].whitepts[3] == 1 && st[0].bluepts[2] == 0 && !rules_no_koka_dsp)
             st[0].bluepts[2] = 1;
     }
-
+    
     check_ippon();
 }
 
