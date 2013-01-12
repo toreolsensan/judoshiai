@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-23 09:40+0300\n"
+"POT-Creation-Date: 2013-01-12 13:46+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -474,4 +474,19 @@ msgid "Proxy:"
 msgstr ""
 
 msgid "Show Video"
+msgstr ""
+
+msgid "No free shido"
+msgstr ""
+
+msgid "Score wins warning"
+msgstr ""
+
+msgid "Short pin times"
+msgstr ""
+
+msgid "No Limit"
+msgstr ""
+
+msgid "If equal score less shido wins"
 msgstr ""

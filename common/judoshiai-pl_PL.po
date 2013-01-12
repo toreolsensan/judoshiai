@@ -716,7 +716,7 @@ msgstr "Kilpailut"
 msgid "Competitors:"
 msgstr "Ottelijoita:"
 
-msgid "Weighed:"
+msgid "Weighted:"
 msgstr "Punnittuja:"
 
 msgid "Add competitors"
@@ -1021,7 +1021,7 @@ msgstr "FIN Ranskalainen"
 msgid "SWE Double Repechage"
 msgstr "SWE Ranskalainen"
 
-msgid "SWE Direct Repechage"
+msgid "SWE Double Elimination"
 msgstr "SWE Pitkä keräily"
 
 msgid "EST Double Elimination"
@@ -1108,7 +1108,7 @@ msgstr "Ottelu"
 msgid "Quad Pool"
 msgstr "Neloispooli"
 
-msgid "IJF Qrt Final Rep"
+msgid "IJF Dbl Rep"
 msgstr "IJF Ransk."
 
 msgid "FIN Dbl Repchg"
@@ -1150,7 +1150,7 @@ msgstr "ESP Lyhyet keräilyt"
 msgid "Quadruple pool"
 msgstr "Neloispooli"
 
-msgid "IJF Quarter Final Repechage"
+msgid "IJF Double Repechage"
 msgstr "IJF Ranskalainen"
 
 msgid "Picture Files"
@@ -1483,7 +1483,7 @@ msgstr "Epäilyttäviä painoja:\n"
 msgid "warnings"
 msgstr "varoitusta"
 
-msgid "Weighed only"
+msgid "Weighted only"
 msgstr "Vain punnitut"
 
 msgid "With weights"
@@ -1555,177 +1555,178 @@ msgstr "Valitse kirjasin"
 msgid "Font"
 msgstr "Kirjasin"
 
+msgid "Replay Video"
+msgstr ""
+
+msgid "If equal score less shido wins"
+msgstr ""
+
+msgid "Short pin times"
+msgstr ""
+
+msgid "Video server"
+msgstr ""
+
+msgid "No Limit"
+msgstr ""
+
+msgid "Video server URL"
+msgstr ""
+
+msgid "User:"
+msgstr ""
+
+msgid "Proxy:"
+msgstr ""
+
+msgid "Show Video"
+msgstr ""
+
+msgid "Coach Id:"
+msgstr ""
+
+msgid "Comment:"
+msgstr ""
+
+msgid "Coach"
+msgstr ""
+
+msgid "Weights do not match"
+msgstr ""
+
+msgid "Corrupted competitor data:\n"
+msgstr ""
+
+msgid "Corrupted category data:\n"
+msgstr ""
+
+msgid "Server URL"
+msgstr ""
+
+msgid "Copy to Server"
+msgstr ""
+
+msgid "Proxy User:"
+msgstr ""
+
+msgid "Proxy Password:"
+msgstr ""
+
 msgid "Communication error"
-msgstr "Tietoliikennevirhe"
+msgstr ""
+
+msgid "IJF Qrt Final Rep"
+msgstr ""
 
 msgid "Double Lost"
 msgstr ""
 
-msgid "Replay Video"
-msgstr "Näytä video uusintana"
-
-msgid "Video server"
-msgstr "Videopalvelin"
-
-msgid "Video server URL"
-msgstr "Videopalvelimen URL"
-
-msgid "User:"
-msgstr "Käyttäjä:"
-
-msgid "Proxy:"
-msgstr "Välityspalvelin:"
-
-msgid "Show Video"
-msgstr "Näytä video"
-
 msgid "GBR Knock Out"
-msgstr "GBR Ranskalainen"
+msgstr ""
+
+msgid "DEN Dbl Elim"
+msgstr ""
+
+msgid "EST D klass 1 brz"
+msgstr ""
+
+msgid "IJF Quarter Final Repechage"
+msgstr ""
+
+msgid "SWE Direct Repechage"
+msgstr ""
+
+msgid "DEN Double Elimination"
+msgstr ""
+
+msgid "EST Double Elim One Bronze"
+msgstr ""
+
+msgid "Set score"
+msgstr ""
+
+msgid "Weighed only"
+msgstr ""
+
+msgid "Copy Weights"
+msgstr ""
+
+msgid "weights updated"
+msgstr ""
+
+msgid "Update Weights From Another Shiai"
+msgstr ""
 
 msgid "SVG Templates"
-msgstr "SVG-mallineet"
+msgstr ""
 
-msgid "General"
-msgstr "Yleiset asetukset"
-
-msgid "Reset to"
-msgstr "Aseta"
-
-msgid "Initialize"
-msgstr "Alusta"
-
-msgid "Players"
-msgstr "Ottelijat"
-
-msgid "Max age"
-msgstr "Suurin ikä"
-
-msgid "Min"
-msgstr "Min"
-
-msgid "Max"
-msgstr "Max"
-
-msgid "System"
-msgstr "Järjestelmä"
-
-msgid "Default systems"
-msgstr "Oletusjärjestelmät"
-
-msgid "Use SVG Templates"
-msgstr "Käytä SVG-mallineita"
-
-msgid "Seeded to fixed places:"
-msgstr "Sijoitetut kiinteille paikoille:"
-
-msgid "Double Pool 2 with carried forward points:"
-msgstr "Tuplapooli 2:n tulokset finaalipooliin:"
-
-msgid "Two pool bronzes:"
-msgstr "Kaksi poolipronssia:"
-
-msgid "Resolve 3-way ties by weights:"
-msgstr "Paino ratkaisee ristiin voitetut:"
-
-msgid "Coach Id:"
-msgstr "Valmentajatunnus:"
-
-msgid "Comment:"
-msgstr "Kommentti:"
+msgid "Edit Drawing"
+msgstr ""
 
 msgid "Best two out of three matches:"
-msgstr "Paras kaksi kolmesta:"
+msgstr ""
 
 msgid ""
 "Medal will be awarded \n"
 "only if a contest was won:"
 msgstr ""
-"Mitali vain, jos\n"
-"ottelu voitettu:"
+
+msgid "Seeded to fixed places:"
+msgstr ""
+
+msgid "Double Pool 2 with carried forward points:"
+msgstr ""
+
+msgid "Two pool bronzes:"
+msgstr ""
+
+msgid "Resolve 3-way ties by weights:"
+msgstr ""
+
+msgid "General"
+msgstr ""
 
 msgid "Pool settings"
-msgstr "Poolin asetukset"
+msgstr ""
 
 msgid "Statistics"
-msgstr "Tilastot"
+msgstr ""
+
+msgid "Reset to"
+msgstr ""
+
+msgid "Initialize"
+msgstr ""
+
+msgid "Players"
+msgstr ""
+
+msgid "Max age"
+msgstr ""
+
+msgid "Min"
+msgstr ""
+
+msgid "Max"
+msgstr ""
+
+msgid "System"
+msgstr ""
+
+msgid "Default systems"
+msgstr ""
 
 msgid "Grade names"
-msgstr "Vyöarvojen nimet"
-
-msgid "Coach"
-msgstr "Valmentaja"
-
-msgid "Weights do not match"
-msgstr "Painot eivät täsmää"
-
-msgid "Copy Weights"
-msgstr "Kopioi painot"
-
-msgid "weights updated"
-msgstr "painoa kopioitu"
-
-msgid "Update Weights From Another Shiai"
-msgstr "Kopioi painot toisesta tietokannasta"
-
-msgid "Weighted:"
-msgstr "Punnitut:"
-
-msgid "Print SVG"
-msgstr "Tulosta SVG"
-
-msgid "No free shido"
-msgstr "1. shidosta piste vastustajalle"
-
-msgid "Score wins warning"
-msgstr "Suorituspiste voittaa shidolla saadun"
-
-msgid "Short pin times"
-msgstr "Lyhyet sidonta-ajat"
-
-msgid "No Limit"
-msgstr "Ei aikarajaa"
-
-msgid "Corrupted competitor data:\n"
-msgstr "Virhe kilpailijadatassa:\n"
-
-msgid "Corrupted category data:\n"
-msgstr "Virhe sarjadatassa:\n"
-
-msgid "Server URL"
-msgstr "Palvelimen URL"
-
-msgid "Copy to Server"
-msgstr "Kopioi palvelimelle"
-
-msgid "Proxy User:"
-msgstr "Välittimen käyttäjätunnus:"
-
-msgid "Proxy Password:"
-msgstr "Välittimen salasana:"
-
-msgid "DEN Dbl Elim"
-msgstr "DEN kaksoiselim."
-
-msgid "EST D klass 1 brz"
-msgstr "EST Pitkä ker. 1 pronssi"
-
-msgid "DEN Double Elimination"
-msgstr "DEN Pitkä keräily"
-
-msgid "EST Double Elim One Bronze"
-msgstr "EST Pitkä keräily 1 pronssi"
+msgstr ""
 
 msgid "Remote address"
-msgstr "Kohdeosoite"
+msgstr ""
 
 msgid "Remote Control"
-msgstr "Etäohjaus"
+msgstr ""
 
-msgid "If equal score less shido wins"
-msgstr "Vähemmän shidoja voittaa jos pisteet tasan"
+msgid "Use SVG Templates"
+msgstr ""
 
-msgid "Set score"
-msgstr "Aseta pisteet"
-
-msgid "Edit Drawing"
-msgstr "Muuta arvontaa"
+msgid "Print SVG"
+msgstr ""

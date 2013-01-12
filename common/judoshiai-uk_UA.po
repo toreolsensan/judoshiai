@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-23 09:40+0300\n"
-"PO-Revision-Date: 2012-09-10 16:55+0200\n"
-"Last-Translator: Oleh Koshel <kapitel_bc@ukr.net>\n"
+"POT-Creation-Date: 2013-01-12 13:46+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
@@ -1670,3 +1670,53 @@ msgstr "Зважування:"
 msgid "Print SVG"
 msgstr "Друкувати SVG"
 
+msgid "If equal score less shido wins"
+msgstr ""
+
+msgid "No Limit"
+msgstr ""
+
+msgid "Corrupted competitor data:\n"
+msgstr ""
+
+msgid "Corrupted category data:\n"
+msgstr ""
+
+msgid "Server URL"
+msgstr ""
+
+msgid "Copy to Server"
+msgstr ""
+
+msgid "Proxy User:"
+msgstr ""
+
+msgid "Proxy Password:"
+msgstr ""
+
+msgid "DEN Dbl Elim"
+msgstr ""
+
+msgid "EST D klass 1 brz"
+msgstr ""
+
+msgid "SWE Direct Repechage"
+msgstr ""
+
+msgid "DEN Double Elimination"
+msgstr ""
+
+msgid "EST Double Elim One Bronze"
+msgstr ""
+
+msgid "Set score"
+msgstr ""
+
+msgid "Edit Drawing"
+msgstr ""
+
+msgid "Remote address"
+msgstr ""
+
+msgid "Remote Control"
+msgstr ""

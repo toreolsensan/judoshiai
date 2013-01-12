@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-23 09:40+0300\n"
+"POT-Creation-Date: 2013-01-12 13:46+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1684,4 +1684,64 @@ msgid "Weighted:"
 msgstr ""
 
 msgid "Print SVG"
+msgstr ""
+
+msgid "SWE Double Elimination"
+msgstr ""
+
+msgid "No free shido"
+msgstr ""
+
+msgid "Score wins warning"
+msgstr ""
+
+msgid "Short pin times"
+msgstr ""
+
+msgid "No Limit"
+msgstr ""
+
+msgid "Corrupted competitor data:\n"
+msgstr ""
+
+msgid "Corrupted category data:\n"
+msgstr ""
+
+msgid "Server URL"
+msgstr ""
+
+msgid "Copy to Server"
+msgstr ""
+
+msgid "Proxy User:"
+msgstr ""
+
+msgid "Proxy Password:"
+msgstr ""
+
+msgid "DEN Dbl Elim"
+msgstr ""
+
+msgid "EST D klass 1 brz"
+msgstr ""
+
+msgid "DEN Double Elimination"
+msgstr ""
+
+msgid "EST Double Elim One Bronze"
+msgstr ""
+
+msgid "Remote address"
+msgstr ""
+
+msgid "Remote Control"
+msgstr ""
+
+msgid "If equal score less shido wins"
+msgstr ""
+
+msgid "Set score"
+msgstr ""
+
+msgid "Edit Drawing"
 msgstr ""
