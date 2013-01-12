@@ -203,7 +203,7 @@ static GtkWidget *mode_normal, *mode_master, *mode_slave;
 static GtkWidget *undo, *hansokumake_blue, *hansokumake_white, *clear_selection, *switch_sides;
 static GtkWidget *advertise, *sound, *flags[NUM_LANGS], *menu_flags[NUM_LANGS];
 static GtkWidget *name_layout, *name_layouts[NUM_NAME_LAYOUTS];
-static GtkWidget *display_font, *rules_no_free_shido, *rules_score_wins_warning, *rules_short_pin_times;
+static GtkWidget *display_font, /**rules_no_free_shido,*/ *rules_eq_score_less_shido_wins, *rules_short_pin_times;
 
 static const gchar *flags_files[NUM_LANGS] = {
     "finland.png", "sweden.png", "uk.png", "spain.png", "estonia.png", "ukraine.png", "iceland.png", 
@@ -379,8 +379,8 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_menu_shell_append (GTK_MENU_SHELL (matchmenu), separator1);
     gtk_menu_shell_append (GTK_MENU_SHELL (matchmenu), blue_wins);
     gtk_menu_shell_append (GTK_MENU_SHELL (matchmenu), white_wins);
-    //gtk_menu_shell_append (GTK_MENU_SHELL (matchmenu), hansokumake_blue);
-    //gtk_menu_shell_append (GTK_MENU_SHELL (matchmenu), hansokumake_white);
+    gtk_menu_shell_append (GTK_MENU_SHELL (matchmenu), hansokumake_blue);
+    gtk_menu_shell_append (GTK_MENU_SHELL (matchmenu), hansokumake_white);
     gtk_menu_shell_append (GTK_MENU_SHELL (matchmenu), clear_selection);
     gtk_menu_shell_append (GTK_MENU_SHELL (matchmenu), switch_sides);
     gtk_menu_shell_append (GTK_MENU_SHELL (matchmenu), separator2);
@@ -440,8 +440,8 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     rules_no_koka   = gtk_check_menu_item_new_with_label("");
     rules_leave_points = gtk_check_menu_item_new_with_label("");
     rules_stop_ippon = gtk_check_menu_item_new_with_label("");
-    rules_no_free_shido = gtk_check_menu_item_new_with_label("");
-    rules_score_wins_warning = gtk_check_menu_item_new_with_label("");
+    //rules_no_free_shido = gtk_check_menu_item_new_with_label("");
+    rules_eq_score_less_shido_wins = gtk_check_menu_item_new_with_label("");
     rules_short_pin_times = gtk_check_menu_item_new_with_label("");
     confirm_match   = gtk_check_menu_item_new_with_label("");
     tatami_sel_none = gtk_radio_menu_item_new_with_label(NULL, "");
@@ -475,8 +475,8 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), full_screen);
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), rules_no_koka);
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), rules_leave_points);
-    gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), rules_no_free_shido);
-    gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), rules_score_wins_warning);
+    //gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), rules_no_free_shido);
+    gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), rules_eq_score_less_shido_wins);
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), rules_short_pin_times);
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), rules_stop_ippon);
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), confirm_match);
@@ -554,8 +554,8 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     g_signal_connect(G_OBJECT(rules_no_koka),      "activate", G_CALLBACK(toggle_rules_no_koka),    (gpointer)0);
     g_signal_connect(G_OBJECT(rules_leave_points), "activate", G_CALLBACK(toggle_rules_leave_points), (gpointer)0);
     g_signal_connect(G_OBJECT(rules_stop_ippon), "activate", G_CALLBACK(toggle_rules_stop_ippon), (gpointer)0);
-    g_signal_connect(G_OBJECT(rules_no_free_shido), "activate", G_CALLBACK(toggle_rules_no_free_shido), (gpointer)0);
-    g_signal_connect(G_OBJECT(rules_score_wins_warning), "activate", G_CALLBACK(toggle_rules_score_wins_warning), (gpointer)0);
+    //g_signal_connect(G_OBJECT(rules_no_free_shido), "activate", G_CALLBACK(toggle_rules_no_free_shido), (gpointer)0);
+    g_signal_connect(G_OBJECT(rules_eq_score_less_shido_wins), "activate", G_CALLBACK(toggle_rules_eq_score_less_shido_wins), (gpointer)0);
     g_signal_connect(G_OBJECT(rules_short_pin_times), "activate", G_CALLBACK(toggle_rules_short_pin_times), (gpointer)0);
     g_signal_connect(G_OBJECT(confirm_match),   "activate", G_CALLBACK(toggle_confirm_match),  (gpointer)0);
     g_signal_connect(G_OBJECT(whitefirst),      "activate", G_CALLBACK(toggle_whitefirst),     (gpointer)0);
@@ -656,14 +656,16 @@ void set_preferences(void)
         gtk_menu_item_activate(GTK_MENU_ITEM(rules_stop_ippon));
     }
 
+    /*
     error = NULL;
     if (g_key_file_get_boolean(keyfile, "preferences", "rulesnofreeshido", &error) || error) {
         gtk_menu_item_activate(GTK_MENU_ITEM(rules_no_free_shido));
     }
+    */
 
     error = NULL;
-    if (g_key_file_get_boolean(keyfile, "preferences", "rulesscorewinswarning", &error) || error) {
-        gtk_menu_item_activate(GTK_MENU_ITEM(rules_score_wins_warning));
+    if (g_key_file_get_boolean(keyfile, "preferences", "ruleseqscorelessshidowins", &error) || error) {
+        gtk_menu_item_activate(GTK_MENU_ITEM(rules_eq_score_less_shido_wins));
     }
 
     error = NULL;
@@ -864,8 +866,8 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(rules_leave_points, _("Leave points for GS"));
     change_menu_label(rules_stop_ippon, _("Stop clock on Ippon"));
 
-    change_menu_label(rules_no_free_shido, _("No free shido"));
-    change_menu_label(rules_score_wins_warning, _("Score wins warning"));
+    //change_menu_label(rules_no_free_shido, _("No free shido"));
+    change_menu_label(rules_eq_score_less_shido_wins, _("If equal score less shido wins"));
     change_menu_label(rules_short_pin_times, _("Short pin times"));
 
     change_menu_label(confirm_match, _("Confirm New Match"));
