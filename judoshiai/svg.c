@@ -526,13 +526,15 @@ gint paint_svg(struct paint_data *pd)
                         if (attr[next].value == points)
                             snprintf(buf, sizeof(buf), "%s", attr[next+1].code + 1);
                         else if (attr[next+2].value == 0)
-                            snprintf(buf, sizeof(buf), "%d%d%d%d", 
-                                     (points>>16)&0xf, (points>>12)&0xf, (points>>8)&0xf, points&0xf);
+                            snprintf(buf, sizeof(buf), "%d%d%d/%d%s", 
+                                     (points>>16)&0xf, (points>>12)&0xf, (points>>8)&0xf, 
+                                     points&0x7, points&8?"H":"");
                         else
                             buf[0] = 0;
                     } else
-                        snprintf(buf, sizeof(buf), "%d%d%d%d", 
-                                 (points>>16)&0xf, (points>>12)&0xf, (points>>8)&0xf, points&0xf);
+                        snprintf(buf, sizeof(buf), "%d%d%d/%d%s", 
+                                 (points>>16)&0xf, (points>>12)&0xf, (points>>8)&0xf, 
+                                 points&0x7, points&8?"H":"");
 
                     if ((ifmatched == FALSE || MATCHED(fight)) && buf[0])
                         WRITE(buf);
