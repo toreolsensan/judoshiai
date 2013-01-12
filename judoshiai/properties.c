@@ -99,8 +99,8 @@ struct property {
         .type = PROP_TYPE_CHECK,
     },
     {
-        .name = "ScoreWinsWarning",
-        .label = N_("Score wins warning"),
+        .name = "EqualScoreLessShidoWins",
+        .label = N_("If equal score less shido wins"),
         .type = PROP_TYPE_CHECK,
     },
     {
@@ -383,7 +383,7 @@ void reset_props_1(GtkWidget *button, void *data, gboolean if_unset)
 
     SET_VAL(PROP_WHITE_FIRST, "1", 1);
     SET_VAL(PROP_THREE_MATCHES_FOR_TWO, "0", 0);
-    SET_VAL(PROP_SCORE_WINS_WARNING, "1", 1);
+    SET_VAL(PROP_EQ_SCORE_LESS_SHIDO_WINS, "1", 1);
 
     if (number_of_tatamis == 0)
         number_of_tatamis = 3;
