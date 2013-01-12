@@ -33,11 +33,11 @@ struct offial_category official_categories[NUM_DRAWS][2][10] = {
                 {{60000, "60"}, {66000, "66"}, {73000, "73"}, 
                  {81000, "81"}, {90000, "90"}, {100000, "100"}, {0, NULL}}
             }, {
-                "MenU20", 19, 240, 180, 600, // name, max age, match gs rest times 
+                "MenU21", 20, 240, 180, 600, // name, max age, match gs rest times 
                 {{55000, "55"}, {60000, "60"}, {66000, "66"}, {73000, "73"}, 
                  {81000, "81"}, {90000, "90"}, {100000, "100"}, {0, NULL}}
             }, {
-                "MenU17", 16, 180, 120, 600, // name, max age, match gs rest times 
+                "MenU18", 17, 180, 120, 600, // name, max age, match gs rest times 
                 {{45000, "45"}, {50000, "50"}, {55000, "55"}, {60000, "60"}, 
                  {66000, "66"}, {73000, "73"}, {81000, "81"}, {90000, "90"}, {0, NULL}}
             }, { NULL, 0, 0, 0, 0, {{0, NULL}}}
@@ -48,11 +48,11 @@ struct offial_category official_categories[NUM_DRAWS][2][10] = {
                 {{48000, "48"}, {52000, "52"}, {57000, "57"}, 
                  {63000, "63"}, {70000, "70"}, {78000, "78"}, {0, NULL}}
             }, {
-                "WomenU20", 19, 240, 180, 600, // name, max age, match gs rest times 
+                "WomenU21", 20, 240, 180, 600, // name, max age, match gs rest times 
                 {{44000, "44"}, {48000, "48"}, {52000, "52"}, {57000, "57"}, 
                  {63000, "63"}, {70000, "70"}, {78000, "78"}, {0, NULL}}
             }, {
-                "WomenU17", 16, 180, 120, 600, // name, max age, match gs rest times 
+                "WomenU18", 17, 180, 120, 600, // name, max age, match gs rest times 
                 {{44000, "44"}, {48000, "48"}, {52000, "52"}, {57000, "57"}, 
                  {63000, "63"}, {70000, "70"}, {0, NULL}}
             }, { NULL, 0, 0, 0, 0, {{0, NULL}}}
@@ -64,11 +64,11 @@ struct offial_category official_categories[NUM_DRAWS][2][10] = {
                 {{60000, "60"}, {66000, "66"}, {73000, "73"}, 
                  {81000, "81"}, {90000, "90"}, {100000, "100"}, {0, NULL}}
             }, {
-                "AP", 19, 240, 120, 600, // name, max age, match gs rest times 
+                "AP", 20, 240, 120, 600, // name, max age, match gs rest times 
                 {{55000, "55"}, {60000, "60"}, {66000, "66"}, {73000, "73"}, 
                  {81000, "81"}, {90000, "90"}, {0, NULL}}
             }, {
-                "BP", 16, 240, 120, 600, // name, max age, match gs rest times 
+                "BP", 17, 240, 120, 600, // name, max age, match gs rest times 
                 {{45000, "45"}, {50000, "50"}, {55000, "55"}, {60000, "60"}, 
                  {66000, "66"}, {73000, "73"}, {81000, "81"}, {0, NULL}}
             }, {
@@ -90,11 +90,11 @@ struct offial_category official_categories[NUM_DRAWS][2][10] = {
                 {{48000, "48"}, {52000, "52"}, {57000, "57"}, 
                  {63000, "63"}, {70000, "70"}, {78000, "78"}, {0, NULL}}
             }, {
-                "AT", 19, 240, 120, 600, // name, max age, match gs rest times 
+                "AT", 20, 240, 120, 600, // name, max age, match gs rest times 
                 {{48000, "48"}, {52000, "52"}, {57000, "57"}, 
                  {63000, "63"}, {70000, "70"}, {0, NULL}}
             }, {
-                "BT", 16, 240, 120, 600, // name, max age, match gs rest times 
+                "BT", 17, 240, 120, 600, // name, max age, match gs rest times 
                 {{44000, "44"}, {48000, "48"}, {52000, "52"}, {57000, "57"}, 
                  {63000, "63"}, {0, NULL}}
             }, {
@@ -118,11 +118,11 @@ struct offial_category official_categories[NUM_DRAWS][2][10] = {
                 {{60000, "60"}, {66000, "66"}, {73000, "73"}, 
                  {81000, "81"}, {90000, "90"}, {100000, "100"}, {0, NULL}}
             }, {
-                "Herrar U20", 19, 240, 180, 600, // name, max age, match gs rest times 
+                "Herrar U21", 20, 240, 180, 600, // name, max age, match gs rest times 
                 {{55000, "55"}, {60000, "60"}, {66000, "66"}, {73000, "73"}, 
                  {81000, "81"}, {90000, "90"}, {100000, "100"}, {0, NULL}}
             }, {
-                "Pojkar U17", 16, 180, 120, 600, // name, max age, match gs rest times 
+                "Pojkar U18", 17, 180, 120, 600, // name, max age, match gs rest times 
                 {{46000, "46"}, {50000, "50"}, {55000, "55"}, {60000, "60"}, 
                  {66000, "66"}, {73000, "73"}, {81000, "81"}, {0, NULL}}
             }, {
@@ -144,11 +144,11 @@ struct offial_category official_categories[NUM_DRAWS][2][10] = {
                 {{48000, "48"}, {52000, "52"}, {57000, "57"}, 
                  {63000, "63"}, {70000, "70"}, {78000, "78"}, {0, NULL}}
             }, {
-                "Damer U20", 19, 240, 180, 600, // name, max age, match gs rest times 
+                "Damer U21", 20, 240, 180, 600, // name, max age, match gs rest times 
                 {{44000, "44"}, {48000, "48"}, {52000, "52"}, {57000, "57"}, 
                  {63000, "63"}, {70000, "70"}, {78000, "78"}, {0, NULL}}
             }, {
-                "Flickor U17", 16, 180, 120, 600, // name, max age, match gs rest times 
+                "Flickor U18", 17, 180, 120, 600, // name, max age, match gs rest times 
                 {{44000, "44"}, {48000, "48"}, {52000, "52"}, {57000, "57"}, 
                  {63000, "63"}, {70000, "70"}, {0, NULL}}
             }, {
@@ -172,11 +172,11 @@ struct offial_category official_categories[NUM_DRAWS][2][10] = {
                 {{60000, "60"}, {66000, "66"}, {73000, "73"}, 
                  {81000, "81"}, {90000, "90"}, {100000, "100"}, {0, NULL}}
             }, {
-                "M", 19, 240, 180, 600, // name, max age, match gs rest times 
+                "M", 20, 240, 180, 600, // name, max age, match gs rest times 
                 {{55000, "55"}, {60000, "60"}, {66000, "66"}, {73000, "73"}, 
                  {81000, "81"}, {90000, "90"}, {100000, "100"}, {0, NULL}}
             }, {
-                "AP", 16, 180, 60, 600, // name, max age, match gs rest times 
+                "AP", 17, 180, 60, 600, // name, max age, match gs rest times 
                 {{50000, "50"}, {55000, "55"}, {60000, "60"}, 
                  {66000, "66"}, {73000, "73"}, {81000, "81"}, {90000, "90"}, {0, NULL}}
             }, {
@@ -199,11 +199,11 @@ struct offial_category official_categories[NUM_DRAWS][2][10] = {
                 {{48000, "48"}, {52000, "52"}, {57000, "57"}, 
                  {63000, "63"}, {70000, "70"}, {78000, "78"}, {0, NULL}}
             }, {
-                "N", 19, 240, 180, 600, // name, max age, match gs rest times 
+                "N", 20, 240, 180, 600, // name, max age, match gs rest times 
                 {{44000, "44"}, {48000, "48"}, {52000, "52"}, {57000, "57"}, 
                  {63000, "63"}, {70000, "70"}, {78000, "78"}, {0, NULL}}
             }, {
-                "AT", 16, 180, 60, 600, // name, max age, match gs rest times 
+                "AT", 17, 180, 60, 600, // name, max age, match gs rest times 
                 {{40000, "40"}, {44000, "44"}, {48000, "48"}, {52000, "52"}, 
                  {57000, "57"}, {63000, "63"}, {70000, "70"}, {0, NULL}}
             }, {
@@ -294,11 +294,11 @@ struct offial_category official_categories[NUM_DRAWS][2][10] = {
                 {{60000, "60"}, {66000, "66"}, {73000, "73"}, 
                  {81000, "81"}, {90000, "90"}, {100000, "100"}, {0, NULL}}
             }, {
-                "U20H", 19, 240, 120, 600, // name, max age, match gs rest times 
+                "U21H", 20, 240, 120, 600, // name, max age, match gs rest times 
                 {{55000, "55"}, {60000, "60"}, {66000, "66"}, {73000, "73"}, 
                  {81000, "81"}, {90000, "90"}, {100000, "100"}, {0, NULL}}
             }, {
-                "U17G", 16, 180, 120, 600, // name, max age, match gs rest times 
+                "U18G", 17, 180, 120, 600, // name, max age, match gs rest times 
                 {{46000, "46"}, {50000, "50"}, {55000, "55"}, {60000, "60"}, 
                  {66000, "66"}, {73000, "73"}, {81000, "81"}, {90000, "90"}, {0, NULL}}
             }, {
@@ -326,11 +326,11 @@ struct offial_category official_categories[NUM_DRAWS][2][10] = {
                 {{48000, "48"}, {52000, "52"}, {57000, "57"}, 
                  {63000, "63"}, {70000, "70"}, {78000, "78"}, {0, NULL}}
             }, {
-                "U20D", 19, 240, 120, 600, // name, max age, match gs rest times 
+                "U21D", 20, 240, 120, 600, // name, max age, match gs rest times 
                 {{48000, "48"}, {52000, "52"}, {57000, "57"}, 
                  {63000, "63"}, {70000, "70"}, {78000, "78"}, {0, NULL}}
             }, {
-                "U17J", 16, 180, 120, 600, // name, max age, match gs rest times 
+                "U18J", 17, 180, 120, 600, // name, max age, match gs rest times 
                 {{40000, "40"}, {44000, "44"}, {48000, "48"}, {52000, "52"}, {57000, "57"}, 
                  {63000, "63"}, {70000, "70"}, {0, NULL}}
             }, {
@@ -406,11 +406,11 @@ struct offial_category official_categories[NUM_DRAWS][2][10] = {
                 {{60000, "60"}, {66000, "66"}, {73000, "73"}, 
                  {81000, "81"}, {90000, "90"}, {100000, "100"}, {0, NULL}}
             }, {
-                "Junior Men", 19, 240, 120, 300, // name, max age, match gs rest times 
+                "Junior Men", 20, 240, 120, 300, // name, max age, match gs rest times 
                 {{55000, "55"}, {60000, "60"}, {66000, "66"}, {73000, "73"}, 
                  {81000, "81"}, {90000, "90"}, {100000, "100"}, {0, NULL}}
             }, {
-                "Cadet Men", 16, 240, 120, 300, // name, max age, match gs rest times 
+                "Cadet Men", 17, 240, 120, 300, // name, max age, match gs rest times 
                 {{50000, "50"}, {55000, "55"}, {60000, "60"}, 
                  {66000, "66"}, {73000, "73"}, {81000, "81"}, {90000, "90"}, {0, NULL}}
             }, {
@@ -432,11 +432,11 @@ struct offial_category official_categories[NUM_DRAWS][2][10] = {
                 {{48000, "48"}, {52000, "52"}, {57000, "57"}, 
                  {63000, "63"}, {70000, "70"}, {78000, "78"}, {0, NULL}}
             }, {
-                "Junior Women", 19, 240, 120, 240, // name, max age, match gs rest times 
+                "Junior Women", 20, 240, 120, 240, // name, max age, match gs rest times 
                 {{44000, "44"}, {48000, "48"}, {52000, "52"}, {57000, "57"}, 
                  {63000, "63"}, {70000, "70"}, {78000, "78"}, {0, NULL}}
             }, {
-                "Cadet Women", 16, 240, 120, 240, // name, max age, match gs rest times 
+                "Cadet Women", 17, 240, 120, 240, // name, max age, match gs rest times 
                 {{40000, "40"}, {44000, "44"}, {48000, "48"}, {52000, "52"}, {57000, "57"}, 
                  {63000, "63"}, {70000, "70"}, {0, NULL}}
             }, {
@@ -456,29 +456,21 @@ struct offial_category official_categories[NUM_DRAWS][2][10] = {
     }, { // danish
         { // men
             {
-                "Herrar", 1000, 300, 180, 600, // name, max age, match gs rest times 
+                "Herrer", 1000, 300, 180, 600, // name, max age, match gs rest times 
                 {{60000, "60"}, {66000, "66"}, {73000, "73"}, 
                  {81000, "81"}, {90000, "90"}, {100000, "100"}, {0, NULL}}
             }, {
-                "Herrar U20", 19, 240, 180, 600, // name, max age, match gs rest times 
-                {{55000, "55"}, {60000, "60"}, {66000, "66"}, {73000, "73"}, 
+                "Herrer U21", 20, 300, 180, 600, // name, max age, match gs rest times 
+                {{50000, "50"}, {55000, "55"}, {60000, "60"}, {66000, "66"}, {73000, "73"}, 
                  {81000, "81"}, {90000, "90"}, {100000, "100"}, {0, NULL}}
             }, {
-                "Pojkar U17", 16, 180, 120, 600, // name, max age, match gs rest times 
-                {{46000, "46"}, {50000, "50"}, {55000, "55"}, {60000, "60"}, 
-                 {66000, "66"}, {73000, "73"}, {81000, "81"}, {0, NULL}}
+                "Drenge U18", 17, 240, 180, 600, // name, max age, match gs rest times 
+                {{35000, "35"}, {40000, "40"}, {45000, "45"}, {50000, "50"}, {55000, "55"}, {60000, "60"}, 
+                 {66000, "66"}, {73000, "73"}, {81000, "81"}, {90000, "90"}, {0, NULL}}
             }, {
-                "Pojkar U15", 14, 180, 120, 180, // name, max age, match gs rest times 
-                {{34000, "34"}, {38000, "38"}, {42000, "42"}, {46000, "46"}, 
-                 {50000, "50"}, {55000, "55"}, {60000, "60"}, {66000, "66"}, {0, NULL}}
-            }, {
-                "Pojkar U13", 12, 120, 60, 180, // name, max age, match gs rest times 
-                {{24000, "24"}, {27000, "27"}, {30000, "30"}, {34000, "34"}, 
-                 {38000, "38"}, {42000, "42"}, {46000, "46"}, {50000, "50"}, {0, NULL}}
-            }, {
-                "Pojkar U11", 10, 120, 60, 180, // name, max age, match gs rest times 
-                {{24000, "24"}, {27000, "27"}, {30000, "30"}, {34000, "34"}, 
-                 {38000, "38"}, {42000, "42"}, {46000, "46"}, {50000, "50"}, {0, NULL}}
+                "Drenge U13", 12, 180, 120, 600, // name, max age, match gs rest times 
+                {{25000, "25"}, {30000, "30"}, {35000, "35"}, 
+                 {40000, "40"}, {45000, "45"}, {50000, "50"}, {0, NULL}}
             }, { NULL, 0, 0, 0, 0, {{0, NULL}}}
         }, { // women
             {
@@ -486,25 +478,17 @@ struct offial_category official_categories[NUM_DRAWS][2][10] = {
                 {{48000, "48"}, {52000, "52"}, {57000, "57"}, 
                  {63000, "63"}, {70000, "70"}, {78000, "78"}, {0, NULL}}
             }, {
-                "Damer U20", 19, 240, 180, 600, // name, max age, match gs rest times 
+                "Damer U21", 20, 300, 180, 600, // name, max age, match gs rest times 
                 {{44000, "44"}, {48000, "48"}, {52000, "52"}, {57000, "57"}, 
                  {63000, "63"}, {70000, "70"}, {78000, "78"}, {0, NULL}}
             }, {
-                "Flickor U17", 16, 180, 120, 600, // name, max age, match gs rest times 
-                {{44000, "44"}, {48000, "48"}, {52000, "52"}, {57000, "57"}, 
+                "Piger U18", 17, 240, 180, 600, // name, max age, match gs rest times 
+                {{35000, "35"}, {40000, "40"}, {44000, "44"}, {48000, "48"}, {52000, "52"}, {57000, "57"}, 
                  {63000, "63"}, {70000, "70"}, {0, NULL}}
             }, {
-                "Flickor U15", 14, 180, 120, 180, // name, max age, match gs rest times 
-                {{32000, "32"}, {36000, "36"}, {40000, "40"}, {44000, "44"}, 
-                 {48000, "48"}, {52000, "52"}, {57000, "57"}, {63000, "63"}, {0, NULL}}
-            }, {
-                "Flickor U13", 12, 120, 60, 180, // name, max age, match gs rest times 
-                {{22000, "22"}, {25000, "25"}, {28000, "28"}, {32000, "32"}, 
-                 {36000, "36"}, {40000, "40"}, {44000, "44"}, {48000, "48"}, {0, NULL}}
-            }, {
-                "Flickor U11", 10, 120, 60, 180, // name, max age, match gs rest times 
-                {{22000, "22"}, {25000, "25"}, {28000, "28"}, {32000, "32"}, 
-                 {36000, "36"}, {40000, "40"}, {44000, "44"}, {48000, "48"}, {0, NULL}}
+                "Piger U13", 12, 180, 120, 600, // name, max age, match gs rest times 
+                {{25000, "25"}, {30000, "30"}, {35000, "35"}, 
+                 {40000, "40"}, {44000, "44"}, {0, NULL}}
             }, { NULL, 0, 0, 0, 0, {{0, NULL}}}
         }
     }
@@ -740,7 +724,7 @@ static void init_cat_data(void)
                 def.pin_time_yuko = 5;
                 def.pin_time_wazaari = 10;
                 def.pin_time_ippon = 15;
-            } else if (i == DRAW_AUSTRALIAN && def.age <= 8) {
+            } else if (TRUE || (i == DRAW_AUSTRALIAN && def.age <= 8)) { // new rules
                 def.pin_time_koka = 5;
                 def.pin_time_yuko = 10;
                 def.pin_time_wazaari = 15;
