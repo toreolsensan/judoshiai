@@ -27,6 +27,7 @@ struct find_data {
     gint       index[NUM_RESULTS];
     GtkTreeIter iter[NUM_RESULTS];
     gboolean   valid[NUM_RESULTS];
+    void     (*callback)(gint);
 } findstruct;
 
 static gboolean button_pressed(GtkWidget *button, 
@@ -37,12 +38,17 @@ static gboolean button_pressed(GtkWidget *button,
 
     for (i = 0; i < NUM_RESULTS && data->valid[i]; i++) {
         if (data->results[i] == button) {
-            GtkTreeIter iter;
-            if (find_iter(&iter, data->index[i])) {
-                GtkTreePath *path = gtk_tree_model_get_path(current_model, &iter); 
-                view_on_row_activated((GtkTreeView *)current_view, path, NULL, NULL);
-                gtk_tree_path_free(path);
+            if (data->callback) {
+                data->callback(data->index[i]);
                 return TRUE;
+            } else {
+                GtkTreeIter iter;
+                if (find_iter(&iter, data->index[i])) {
+                    GtkTreePath *path = gtk_tree_model_get_path(current_model, &iter); 
+                    view_on_row_activated((GtkTreeView *)current_view, path, NULL, NULL);
+                    gtk_tree_path_free(path);
+                    return TRUE;
+                }
             }
         }
     }
@@ -135,6 +141,8 @@ void search_competitor(GtkWidget *w, gpointer arg)
 
     struct find_data *data = g_malloc(sizeof(*data));
     memset(data, 0, sizeof(*data));
+
+    data->callback = arg;
 
     dialog = gtk_dialog_new_with_buttons (_("Search"),
                                           NULL,
