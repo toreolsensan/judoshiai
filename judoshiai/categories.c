@@ -189,15 +189,19 @@ void view_popup_menu_draw_category(GtkWidget *menuitem, gpointer userdata)
 void view_popup_menu_draw_category_manually(GtkWidget *menuitem, gpointer userdata)
 {
     gint n;
-    guint index = (guint)userdata;
+    guint index = ((guint)userdata)&0x00ffffff;
     GtkTreeIter iter;
         
     if (find_iter(&iter, index) == FALSE)
         return;
 
     n = gtk_tree_model_iter_n_children(current_model, &iter);
-    if (n >= 2 && n <= NUM_COMPETITORS)
-        draw_one_category_manually(&iter, n);
+    if (n >= 2 && n <= NUM_COMPETITORS) {
+        if (((guint)userdata)&0x01000000)
+            edit_drawing(&iter, n);
+        else
+            draw_one_category_manually(&iter, n);
+    }
 #if 0
     matches_refresh();
 
