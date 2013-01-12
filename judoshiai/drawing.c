@@ -21,7 +21,8 @@
 enum draw_dialog_buttons {
     BUTTON_NEXT = 1000,
     BUTTON_REST,
-    BUTTON_SHOW
+    BUTTON_SHOW,
+    BUTTON_ADD
 };
 
 guint french_matches_blue[64] = {
@@ -52,7 +53,7 @@ struct mdata {
 
     gint mjudokas, mpositions, mcategory_ix;
     gint selected, mfrench_sys;
-    gboolean hidden;
+    gboolean hidden, edit;
     gint drawn, seeded1, seeded2, seeded3;
     struct compsys sys;
 };
@@ -139,6 +140,17 @@ void draw_one_category_manually(GtkTreeIter *parent, gint competitors)
     draw_one_category_manually_1(parent, competitors, mdata);
 }
 
+void edit_drawing(GtkTreeIter *parent, gint competitors)
+{
+    struct mdata *mdata;
+
+    mdata = malloc(sizeof(*mdata));
+    memset(mdata, 0, sizeof(*mdata));
+    mdata->edit = TRUE;
+
+    draw_one_category_manually_1(parent, competitors, mdata);
+}
+
 static void free_mdata(struct mdata *mdata)
 {
     gint i;
@@ -169,7 +181,8 @@ static gint get_next_comp(struct mdata *mdata)
     // find seeded in order
     for (seed = 1; seed <= NUM_SEEDED; seed++) {
         for (i = 0; i < mdata->mjudokas; i++) {
-            if (mdata->mcomp[x].pos == 0 && 
+            if (mdata->mcomp[x].pos == 0 &&
+                mdata->mcomp[x].index && 
                 mdata->mcomp[x].seeded == seed)
                 return x;
 
@@ -182,7 +195,7 @@ static gint get_next_comp(struct mdata *mdata)
     // find from the same club as previous
     if (last_selected) {
         for (i = 1; i <= mdata->mjudokas; i++) {
-            if (mdata->mcomp[x].pos == 0) {
+            if (mdata->mcomp[x].pos == 0 && mdata->mcomp[x].index) {
                     gint c = cmp_clubs(&mdata->mcomp[x], &mdata->mcomp[last_selected]);
                     if (c & CLUB_TEXT_CLUB)
                         if ((same_club_seeding && mdata->mcomp[x].clubseeded && 
@@ -216,7 +229,7 @@ static gint get_next_comp(struct mdata *mdata)
 
     // find from the rest
     for (i = 0; i < mdata->mjudokas; i++) {
-	if (mdata->mcomp[x].pos == 0) {
+	if (mdata->mcomp[x].pos == 0 && mdata->mcomp[x].index) {
             // not yet drawed
 	    if (mdata->mcomp[x].num_mates >= highest_val) {
                 if (mdata->mcomp[x].num_mates > highest_val) {
@@ -573,6 +586,7 @@ static gboolean select_number(GtkWidget *eventbox, GdkEventButton *event, void *
             break;
         }
 
+    // undraw competitor
     if (num && mdata->mpos[num].judoka) {
         gdk_color_parse("#000000", &bg); 
         gtk_widget_modify_fg(mdata->mcomp[mdata->mpos[num].judoka].label, 
@@ -601,8 +615,13 @@ static gboolean select_number(GtkWidget *eventbox, GdkEventButton *event, void *
         }
     }
 
-    mdata->mpos[num].judoka = mdata->selected;
-    mdata->mcomp[mdata->selected].pos = num;
+    if (mdata->mcomp[mdata->selected].index) {
+        mdata->mpos[num].judoka = mdata->selected;
+        mdata->mcomp[mdata->selected].pos = num;
+    } else {
+        mdata->mpos[num].judoka = 0;
+        mdata->mcomp[mdata->selected].pos = 0;
+    }
         
     snprintf(buf, sizeof(buf), "%2d. %s", get_competitor_number(num, mdata), 
              gtk_label_get_text(GTK_LABEL(mdata->mcomp[mdata->selected].label)));
@@ -650,6 +669,18 @@ static gboolean select_competitor(GtkWidget *eventbox, GdkEventButton *event, vo
     gtk_widget_modify_bg(mdata->mcomp[index].eventbox, GTK_STATE_NORMAL, &bg);
     mdata->selected = index;
 
+    return TRUE;
+}
+
+static gboolean remove_competitor(GtkWidget *eventbox, GdkEventButton *event, void *param)
+{
+    struct mdata *mdata = param;
+
+    if (mdata->selected &&
+        mdata->mcomp[mdata->selected].pos == 0) {
+        mdata->mcomp[mdata->selected].index = 0;
+        gtk_label_set_text(GTK_LABEL(mdata->mcomp[mdata->selected].label), "- - -");
+    }
     return TRUE;
 }
 
@@ -1059,11 +1090,13 @@ static void make_manual_matches_callback(GtkWidget *widget,
 
     /* check drawing is complete */
     for (i = 1; i <= mdata->mjudokas; i++) {
-        if (mdata->mcomp[i].pos == 0) {
+        if (mdata->mcomp[i].index && mdata->mcomp[i].pos == 0) {
             show_message(_("Drawing not finished!"));
             return;
         }
     }
+
+    db_remove_matches(mdata->mcategory_ix);
 
     if (mdata->mfrench_sys < 0) {
         for (i = 0; i < num_matches(mdata->sys.system, mdata->mjudokas); i++) {
@@ -1106,6 +1139,9 @@ static void make_manual_matches_callback(GtkWidget *widget,
     }
 
     db_set_system(mdata->mcategory_ix, mdata->sys);
+
+    if (mdata->edit)
+        matches_refresh();
 out:
 
     update_category_status_info(mdata->mcategory_ix);
@@ -1312,7 +1348,7 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
 
     g_free(catname);
 
-    if (db_category_match_status(mdata->mcategory_ix) & REAL_MATCH_EXISTS) {
+    if ((db_category_match_status(mdata->mcategory_ix) & REAL_MATCH_EXISTS) && mdata->edit == FALSE) {
         // Cannot draw again.
 #if 0
         struct judoka *j = get_data(mdata->mcategory_ix);
@@ -1326,12 +1362,13 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
     }
 
     // Clean up the database.
-    struct compsys cs;
-    cs = get_cat_system(mdata->mcategory_ix);
-    cs.system = cs.numcomp = cs.table = 0; // leave wishsys as is
+    //struct compsys cs;
+    //cs = get_cat_system(mdata->mcategory_ix);
+    //cs.system = cs.numcomp = cs.table = 0; // leave wishsys as is
 
-    db_set_system(mdata->mcategory_ix, cs);
-    db_remove_matches(mdata->mcategory_ix);
+    // moved to OK button
+    //db_set_system(mdata->mcategory_ix, cs);
+    //db_remove_matches(mdata->mcategory_ix);
 
     // Get data of all the competitors.
     for (i = 0; i < competitors; i++) {
@@ -1386,6 +1423,7 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
                                           GTK_STOCK_OK, GTK_RESPONSE_OK,
                                           GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
                                           NULL);
+
     gtk_widget_set_size_request(GTK_WIDGET(dialog), FRAME_WIDTH, FRAME_HEIGHT);
     gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
 
@@ -1440,6 +1478,16 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
                                    gtk_hseparator_new(), FALSE, FALSE, 0);
         }
     }        
+
+    // cut button
+    if (mdata->edit && mdata->mfrench_sys >= 0) {
+        eventbox = gtk_event_box_new();
+        GtkWidget *delete = gtk_image_new_from_stock(GTK_STOCK_CUT, GTK_ICON_SIZE_LARGE_TOOLBAR);
+        gtk_container_add(GTK_CONTAINER(eventbox), delete);
+        gtk_box_pack_start(GTK_BOX(vbox1), eventbox, FALSE, FALSE, 0);
+        g_signal_connect(G_OBJECT(eventbox), "button_press_event",
+                         G_CALLBACK(remove_competitor), mdata);
+    }
 
     // find club mates of seeded
     for (i = 1; i <= mdata->mjudokas; i++)
@@ -1514,6 +1562,68 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
     gboolean retval = FALSE;
     g_signal_emit_by_name(mdata->mcomp[get_next_comp(mdata)].eventbox, "button_press_event", 
                           NULL, &retval);
+
+    if (mdata->edit) {
+        struct match matches[NUM_MATCHES];
+        memset(matches, 0, sizeof(matches));
+        db_read_category_matches(mdata->mcategory_ix, matches);
+
+        for (i = 1; i <= mdata->mpositions; i++) {
+            gint comp = 0;
+            if (mdata->mfrench_sys >= 0) {
+                if (i & 1) comp = matches[(i+1)/2].blue;
+                else comp = matches[(i+1)/2].white;
+            } else {
+                gint j = 0;
+                typedef guint pair_t[2];
+                pair_t *fights;
+
+                switch (mdata->sys.system) {
+                case SYSTEM_POOL:
+                case SYSTEM_BEST_OF_3:
+                    fights = (pair_t *)&pools[mdata->mjudokas];
+                    break;
+                case SYSTEM_DPOOL:
+                case SYSTEM_DPOOL2:
+                    fights = (pair_t *)&poolsd[mdata->mjudokas];
+                    break;
+                case SYSTEM_QPOOL:
+                    fights = (pair_t *)&poolsq[mdata->mjudokas];
+                    break;
+                }
+                for (j = 0; comp == 0 && fights[j][0]; j++) {
+                    if (fights[j][0] == i)
+                        comp = matches[j+1].blue;
+                    else if (fights[j][1] == i)
+                        comp = matches[j+1].white;
+                }
+            }
+
+            if (comp >= 10) {
+                gint j, cnum = 0;
+                for (j = 1; j <= mdata->mjudokas; j++) {
+                    if (mdata->mcomp[j].index == comp) {
+                        cnum = j;
+                        break;
+                    }
+                }
+
+                if (cnum) {
+                    mdata->mpos[i].judoka = cnum;
+                    mdata->mcomp[cnum].pos = i;
+                    snprintf(buf, sizeof(buf), "%2d. %s", get_competitor_number(i, mdata), 
+                             gtk_label_get_text(GTK_LABEL(mdata->mcomp[cnum].label)));
+                    gtk_label_set_text(GTK_LABEL(mdata->mpos[i].label), buf);
+
+                    gdk_color_parse("#7F7F7F", &bg); 
+                    gtk_widget_modify_fg(mdata->mcomp[cnum].label, GTK_STATE_NORMAL, &bg);
+                    gdk_color_parse("#FFFFFF", &bg); 
+                    gtk_widget_modify_bg(mdata->mcomp[cnum].eventbox, GTK_STATE_NORMAL, &bg);
+                }
+            }
+        } 
+        mdata->selected = 0;
+    }
 
     return dialog;
 }
