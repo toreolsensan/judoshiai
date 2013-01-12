@@ -768,6 +768,15 @@ void db_set_points(gint category, gint number, gint minutes,
     }
 }
 
+void db_set_score(gint category, gint number, gint score, gboolean is_blue)
+{
+    db_exec_str(NULL, db_callback_matches, 
+                "UPDATE matches SET \"%s\"=%d "
+                "WHERE \"category\"=%d AND \"number\"=%d", 
+                is_blue ? "blue_score" : "white_score", score,
+                category, number);
+}
+
 void db_reset_last_match_times(gint category, gint number, gboolean blue, gboolean white)
 {
     gint x = 0;
