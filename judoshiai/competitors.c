@@ -41,7 +41,7 @@ gchar *belts[NUM_BELTS] = {0};
 gchar *belts_defaults[] = {
     "?", "6.kyu", "5.kyu", "4.kyu", "3.kyu", "2.kyu", "1.kyu",
     "1.dan", "2.dan", "3.dan", "4.dan", "5.dan", "6.dan", "7.dan", "8.dan", "9.dan",
-    "5.mon", "4.mon", "3.mon", "2.mon", "1.mon",
+    "5.mon", "4.mon", "3.mon", "2.mon", "1.mon", "9.kyu", "8.kyu", "7.kyu",
     0
 };
 
@@ -831,6 +831,7 @@ void last_name_cell_data_func (GtkTreeViewColumn *col,
                                GtkTreeIter       *iter,
                                gpointer           user_data)
 {
+    extern gint get_competitor_position(gint ix);
     gchar  buf[100];
     gboolean visible;
     gchar *last;
@@ -839,6 +840,7 @@ void last_name_cell_data_func (GtkTreeViewColumn *col,
     guint  weight;
     gint   seeding;
     gchar *comment = NULL;
+    GtkTreeIter parent, child;
 
     gtk_tree_model_get(model, iter, 
                        COL_INDEX, &index,
@@ -850,11 +852,29 @@ void last_name_cell_data_func (GtkTreeViewColumn *col,
                        COL_COMMENT, &comment, -1);
 
     if (visible) {
-        if (seeding)
-            g_snprintf(buf, sizeof(buf), "%s (%d)%s", last, seeding,
-                       comment && comment[0] ? " *" : "");
+        gint jstatus = get_competitor_position(index), cstatus = 0;
+        gchar pos[8];
+        if (jstatus&0xf)
+            sprintf(pos, " [%d]", jstatus&0xf);
         else
-            g_snprintf(buf, sizeof(buf), "%s%s", last, comment && comment[0] ? " *" : "");
+            pos[0] = 0;
+
+        if (gtk_tree_model_iter_parent(model, &parent, iter)) {
+            guint catindex;
+            gtk_tree_model_get(model, &parent, COL_INDEX, &catindex, -1);
+            struct category_data *catdata = avl_get_category(catindex);
+            if (catdata)
+                cstatus = catdata->match_status;
+        }
+
+        if (seeding)
+            g_snprintf(buf, sizeof(buf), "%s (%d)%s%s", last, seeding,
+                       comment && comment[0] ? " *" : "",
+                       jstatus&0xf ? pos : "");
+        else
+            g_snprintf(buf, sizeof(buf), "%s%s%s", last, 
+                       comment && comment[0] ? " *" : "",
+                       jstatus&0xf ? pos : "");
 
         if (deleted & HANSOKUMAKE)
             g_object_set(renderer, "strikethrough", TRUE, "cell-background-set", FALSE, NULL);
@@ -869,6 +889,10 @@ void last_name_cell_data_func (GtkTreeViewColumn *col,
             g_object_set(renderer, 
                          "foreground", "darkred", FALSE, 
                          NULL);
+        else if (jstatus == 0 && (cstatus & REAL_MATCH_EXISTS))
+            g_object_set(renderer, 
+                         "foreground", "blue", FALSE, 
+                         NULL);
         else
             g_object_set(renderer, 
                          "foreground", "black", FALSE, 
@@ -877,6 +901,7 @@ void last_name_cell_data_func (GtkTreeViewColumn *col,
         gint status = 0;
         gboolean defined = TRUE;
         gboolean tie = FALSE;
+        gboolean extra = FALSE;
 		
         if (user_data == NULL) {
             //status = weight;
@@ -884,11 +909,30 @@ void last_name_cell_data_func (GtkTreeViewColumn *col,
             status = catdata ? catdata->match_status : 0;
             defined = catdata ? catdata->defined : TRUE;
             tie = catdata ? catdata->tie : FALSE;
+
+            // look for homeless competitors
+            if (status & REAL_MATCH_EXISTS) {
+                gboolean ok = gtk_tree_model_iter_children(model, &child, iter);
+                while (ok) {
+                    gint jindex;
+                    gtk_tree_model_get(model, &child, COL_INDEX, &jindex, -1);
+                    if ((get_competitor_position(jindex) & COMP_POS_DRAWN) == 0) {
+                        extra = TRUE;
+                        break;
+                    }
+                    ok = gtk_tree_model_iter_next(model, &child);
+                }
+            }
         }
 
         if (tie && prop_get_int_val(PROP_RESOLVE_3_WAY_TIES_BY_WEIGHTS) == FALSE)
             g_object_set(renderer, 
                          "cell-background", "Red", 
+                         "cell-background-set", TRUE, 
+                         NULL);
+        else if (extra)
+            g_object_set(renderer, 
+                         "cell-background", "Lightblue", 
                          "cell-background-set", TRUE, 
                          NULL);
         else if ((status & REAL_MATCH_EXISTS) && (status & MATCH_UNMATCHED) == 0)
@@ -924,7 +968,7 @@ void last_name_cell_data_func (GtkTreeViewColumn *col,
                          "foreground", "Brown", FALSE, 
                          NULL);
 
-        g_snprintf(buf, sizeof(buf), "%s", last);
+        g_snprintf(buf, sizeof(buf), "%s%s", extra ? "! " : "", last);
         g_object_set(renderer, "strikethrough", FALSE, NULL);
     }
 
