@@ -836,8 +836,8 @@ void write_comp_stat(gint index)
 
     fprintf(f, "<td valign=\"top\"><table class=\"compstat\">"
             "<tr><th colspan=\"7\">%s %s, %s</th></tr>\r\n"
-            "<tr><td class=\"cshdr\">%s<td class=\"cshdr\">%s<td class=\"cshdr\">IWYKS"
-            "<td align=\"center\" class=\"cshdr\">%s<td class=\"cshdr\">IWYKS"
+            "<tr><td class=\"cshdr\">%s<td class=\"cshdr\">%s<td class=\"cshdr\">IWY/S"
+            "<td align=\"center\" class=\"cshdr\">%s<td class=\"cshdr\">IWY/S"
             "<td class=\"cshdr\">%s<td class=\"cshdr\">%s</tr>\r\n",
             utf8_to_html(firstname_lastname() ? j->first : j->last), 
             utf8_to_html(firstname_lastname() ? j->last : j->first), 
@@ -877,9 +877,12 @@ void write_comp_stat(gint index)
                     ">%s</td><td "
                     "onclick=\"top.location.href='%d.html'\" "
                     "style=\"cursor: pointer\""
-                    ">%s %s</td><td class=\"%s\">%05x</td>"
+                    ">%s %s</td><td class=\"%s\">"
+                    "%d%d%d/%d%s</td>"
                     "<td align=\"center\">%d - %d</td>"
-                    "<td class=\"%s\">%05x</td><td "
+                    "<td class=\"%s\">"
+                    "%d%d%d/%d%s"
+                    "</td><td "
                     "onclick=\"top.location.href='%d.html'\" "
                     "style=\"cursor: pointer\""
                     ">%s %s</td><td>%d:%02d</td></tr>\r\n",
@@ -889,10 +892,13 @@ void write_comp_stat(gint index)
                     utf8_to_html(firstname_lastname() ? j1->first : j1->last), 
                     utf8_to_html(firstname_lastname() ? j1->last : j1->first),
                     prop_get_int_val(PROP_WHITE_FIRST) ? "wscore" : "bscore",
-                    blue_score, blue_points,
+                    (blue_score>>16)&15, (blue_score>>12)&15, (blue_score>>8)&15, 
+                    blue_score&7, blue_score&8?"H":"",
+                    blue_points,
                     white_points, 
                     prop_get_int_val(PROP_WHITE_FIRST) ? "bscore" : "wscore",
-                    white_score,
+                    (white_score>>16)&15, (white_score>>12)&15, (white_score>>8)&15, 
+                    white_score&7, white_score&8?"H":"",
                     j2->index,
                     utf8_to_html(firstname_lastname() ? j2->first : j2->last), 
                     utf8_to_html(firstname_lastname() ? j2->last : j2->first), mtime/60, mtime%60);
