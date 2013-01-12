@@ -434,7 +434,7 @@ enum {
     PROP_THREE_MATCHES_FOR_TWO,
     PROP_WIN_NEEDED_FOR_MEDAL,
     PROP_SEEDED_TO_FIXED_PLACES,
-    PROP_SCORE_WINS_WARNING,
+    PROP_EQ_SCORE_LESS_SHIDO_WINS,
     PROP_DEFAULT_CAT_1,
     PROP_DEFAULT_CAT_2,
     PROP_DEFAULT_CAT_3,
@@ -575,6 +575,7 @@ struct category_data {
     gboolean defined;
     gboolean deleted;
     gboolean tie;
+    gboolean extra_competitors;
     struct category_data *prev, *next;
 };
 
@@ -831,6 +832,7 @@ extern gint db_competitor_match_status(gint competitor);
 extern void db_remove_matches(guint category);
 extern void db_set_points(gint category, gint number, gint minutes, 
                           gint blue, gint white, gint blue_score, gint white_score, gint legend);
+extern void db_set_score(gint category, gint number, gint score, gboolean is_blue);
 extern void db_read_match(gint category, gint number);
 extern void db_read_matches_of_category(gint category);
 extern struct match *db_next_match(gint category, gint tatami);
@@ -1067,6 +1069,7 @@ extern void sql_window(GtkWidget *w, gpointer data);
 /* drawing */
 extern void draw_one_category(GtkTreeIter *parent, gint competitors);
 extern void draw_one_category_manually(GtkTreeIter *parent, gint competitors);
+extern void edit_drawing(GtkTreeIter *parent, gint competitors);
 extern void draw_all(GtkWidget *w, gpointer data);
 extern gint get_drawed_number(gint pos, gint sys);
 extern struct compsys get_system_for_category(gint index, gint competitors);
