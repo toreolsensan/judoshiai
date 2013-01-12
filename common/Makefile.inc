@@ -1,4 +1,4 @@
-SHIAI_VER_NUM=2.3beta1
+SHIAI_VER_NUM=2.3beta6
 SHIAI_VERSION="\"$(SHIAI_VER_NUM)\""
 
 OBJS=
@@ -26,9 +26,10 @@ SUFF=.exe
 DEVELDIR=/opt/win32/gtk
 SOUNDDIR=/opt/win32/fmod
 RSVGDIR=/opt/win32/rsvg
+CURLDIR=/opt/win32/curl
 RESHACKER=wine "C:\\bin\\ResHacker.exe"
-WINDRES=wine "C:\\MinGW\\bin\\windres.exe"
-INNOSETUP=wine "C:\\Program Files\\Inno Setup 5\\ISCC.exe"
+WINDRES=wine "/opt/win32/MinGW/bin/windres.exe"
+INNOSETUP=wine "/opt/win32/Inno Setup 5/ISCC.exe"
 OBJDIR=obj-win32
 RELEASEDIR=release-win32
 
@@ -85,6 +86,7 @@ CFLAGS=-Wall -g \
 -I/opt/win32/gtk/include/libpng14   \
 -I/opt/win32/w32api/include \
 -I/opt/win32/rsvg/include \
+-I/opt/win32/curl/include \
 -I../common -mms-bitfields \
 -DSHIAI_VERSION=$(SHIAI_VERSION) \
 -DENABLE_NLS
@@ -94,6 +96,7 @@ LIBS=-L/opt/win32/gtk/lib \
 -lpangowin32-1.0 -lgdi32 -lpangocairo-1.0 -lpango-1.0 -lgobject-2.0 \
 -lgmodule-2.0 -lgthread-2.0 -lglib-2.0 -lintl -lcairo \
 -L/opt/win32/rsvg/bin -lcroco-0.6-3 -lrsvg-2-2 -lxml2-2 \
+-L/opt/win32/curl/bin -lcurl \
 -L/opt/win32/w32api/lib -lws2_32 -mwindows
 
 ### Native compilations ###
@@ -106,7 +109,8 @@ CFLAGS=-Wall $(shell $(PKGCONFIGPATH) $(PKGCONFIG) --cflags gtk+-2.0) \
        -DENABLE_BINRELOC -DENABLE_NLS \
        -I$(DEVELDIR)/include -I../common -DSHIAI_VERSION=$(SHIAI_VERSION)
 
-LIBS=$(shell $(PKGCONFIGPATH) $(PKGCONFIG) --libs gtk+-2.0 gthread-2.0 cairo librsvg-2.0)
+LIBS=$(shell $(PKGCONFIGPATH) $(PKGCONFIG) --libs gtk+-2.0 gthread-2.0 cairo librsvg-2.0) \
+ $(shell curl-config --libs)
 
 ## Windows ##
 ifeq ($(OS),Windows_NT)
