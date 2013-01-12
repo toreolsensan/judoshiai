@@ -61,8 +61,8 @@ gboolean sides_switched = FALSE;
 gboolean white_first = FALSE;
 gboolean fullscreen = FALSE;
 gboolean menu_hidden = FALSE;
-gboolean rule_no_free_shido = FALSE;
-gboolean rule_score_wins_warning = FALSE;
+//gboolean rule_no_free_shido = FALSE;
+gboolean rule_eq_score_less_shido_wins = FALSE;
 gboolean rule_short_pin_times = FALSE;
 
 #define MY_FONT "Arial"
@@ -628,19 +628,19 @@ void set_timer_osaekomi_color(gint osaekomi_state, gint pts)
 
 void set_timer_value(guint min, guint tsec, guint sec)
 {
-        if (min < 10) {
-                set_text(MY_LABEL(t_min), num_to_str(min));
-                set_text(MY_LABEL(t_tsec), num_to_str(tsec));
-                set_text(MY_LABEL(t_sec), num_to_str(sec));
-        } else {
-                set_text(MY_LABEL(t_min), "-");
-                set_text(MY_LABEL(t_tsec), "-");
-                set_text(MY_LABEL(t_sec), "-");
-        }
+    if (min < 10) {
+        set_text(MY_LABEL(t_min), num_to_str(min));
+        set_text(MY_LABEL(t_tsec), num_to_str(tsec));
+        set_text(MY_LABEL(t_sec), num_to_str(sec));
+    } else {
+        set_text(MY_LABEL(t_min), "-");
+        set_text(MY_LABEL(t_tsec), "-");
+        set_text(MY_LABEL(t_sec), "-");
+    }
 
-	expose_label(NULL, t_min);
-	expose_label(NULL, t_tsec);
-	expose_label(NULL, t_sec);
+    expose_label(NULL, t_min);
+    expose_label(NULL, t_tsec);
+    expose_label(NULL, t_sec);
 }
 
 void set_osaekomi_value(guint tsec, guint sec)
@@ -664,42 +664,42 @@ static void set_number(gint w, gint num)
 
 void set_points(gint blue[], gint white[])
 {
-	if (rules_no_koka_dsp) {
-		if (blue[0] >= 2)
-			set_number(bw, 1);
-		else
-			set_number(bw, 0);
+    if (rules_no_koka_dsp) {
+        if (blue[0] >= 2)
+            set_number(bw, 1);
+        else
+            set_number(bw, 0);
 
-		if (blue[0] & 1)
-			set_number(by, 1);
-		else
-			set_number(by, 0);
+        if (blue[0] & 1)
+            set_number(by, 1);
+        else
+            set_number(by, 0);
 
-		set_number(bk, blue[1]);
-		set_number(bs, blue[3]);
+        set_number(bk, blue[1]);
+        set_number(bs, blue[3]);
 
-		if (white[0] >= 2)
-			set_number(ww, 1);
-		else
-			set_number(ww, 0);
+        if (white[0] >= 2)
+            set_number(ww, 1);
+        else
+            set_number(ww, 0);
 
-		if (white[0] & 1)
-			set_number(wy, 1);
-		else
-			set_number(wy, 0);
+        if (white[0] & 1)
+            set_number(wy, 1);
+        else
+            set_number(wy, 0);
 
-		set_number(wk, white[1]);
-		set_number(ws, white[3]);
-	} else {
-		set_number(bw, blue[0]);
-		set_number(by, blue[1]);
-		set_number(bk, blue[2]);
-		set_number(bs, blue[3]);
-		set_number(ww, white[0]);
-		set_number(wy, white[1]);
-		set_number(wk, white[2]);
-		set_number(ws, white[3]);
-	}
+        set_number(wk, white[1]);
+        set_number(ws, white[3]);
+    } else {
+        set_number(bw, blue[0]);
+        set_number(by, blue[1]);
+        set_number(bk, blue[2]);
+        set_number(bs, blue[3]);
+        set_number(ww, white[0]);
+        set_number(wy, white[1]);
+        set_number(wk, white[2]);
+        set_number(ws, white[3]);
+    }
 }
 
 void set_score(guint score)
@@ -1871,16 +1871,18 @@ void toggle_rules_stop_ippon(GtkWidget *menu_item, gpointer data)
 	}
 }
 
+/*
 void toggle_rules_no_free_shido(GtkWidget *menu_item, gpointer data)
 {
     rule_no_free_shido = GTK_CHECK_MENU_ITEM(menu_item)->active;
     g_key_file_set_boolean(keyfile, "preferences", "rulesnofreeshido", rule_no_free_shido);
 }
+*/
 
-void toggle_rules_score_wins_warning(GtkWidget *menu_item, gpointer data)
+void toggle_rules_eq_score_less_shido_wins(GtkWidget *menu_item, gpointer data)
 {
-    rule_score_wins_warning = GTK_CHECK_MENU_ITEM(menu_item)->active;
-    g_key_file_set_boolean(keyfile, "preferences", "rulesscorewinswarning", rule_score_wins_warning);
+    rule_eq_score_less_shido_wins = GTK_CHECK_MENU_ITEM(menu_item)->active;
+    g_key_file_set_boolean(keyfile, "preferences", "ruleseqscorelessshidowins", rule_eq_score_less_shido_wins);
 }
 
 void toggle_rules_short_pin_times(GtkWidget *menu_item, gpointer data)
