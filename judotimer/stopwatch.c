@@ -964,7 +964,7 @@ void reset(guint key, struct msg_next_match *msg)
     switch (key) {
     case GDK_0:
         if (msg) {
-            /*g_print("gs=%d match=%d gs=%d rep=%d flags=0x%x\n", 
+            /*g_print("is-gs=%d match=%d gs=%d rep=%d flags=0x%x\n", 
               golden_score, msg->match_time, msg->gs_time, msg->rep_time, msg->flags);*/
             if ((msg->flags & MATCH_FLAG_REPECHAGE) && msg->rep_time) {
                 total = msg->rep_time;

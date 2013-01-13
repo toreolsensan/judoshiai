@@ -76,7 +76,7 @@ static GtkWidget *menubar,
     *preference_auto_sheet_update, *preference_results_in_finnish, 
     *preference_langsel, *preference_results_in_swedish, *preference_results_in_english, 
     *preference_results_in_spanish, *preference_results_in_ukrainian, *preference_results_in_icelandic, 
-    *preference_results_in_norwegian, 
+    *preference_results_in_norwegian, *preference_results_in_polish, 
     *preference_weights_to_pool_sheets, 
     *preference_grade_visible, *preference_name_layout, *preference_name_layout_0, *preference_name_layout_1, *preference_name_layout_2, 
     *preference_layout, *preference_pool_style, *preference_belt_colors,
@@ -161,7 +161,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_menu_shell_append(GTK_MENU_SHELL(menubar), help_menu_item); 
 
     for (i = 0; i < NUM_LANGS; i++) {
-        if (i == LANG_SW || i == LANG_NO)
+        if (i == LANG_SW || i == LANG_NO || i == LANG_PL)
             continue;
         gtk_menu_shell_append(GTK_MENU_SHELL(menubar), menu_flags[i]); 
         g_signal_connect(G_OBJECT(menu_flags[i]), "button_press_event",
@@ -339,6 +339,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     preference_results_in_icelandic   = gtk_radio_menu_item_new_with_label(lang_group, _("Results in Icelandic"));
     lang_group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(preference_results_in_icelandic));
     preference_results_in_norwegian   = gtk_radio_menu_item_new_with_label(lang_group, _("Results in Norwegian"));
+    preference_results_in_polish      = gtk_radio_menu_item_new_with_label(lang_group, _("Results in Polish"));
 
     preference_club_text_club         = gtk_radio_menu_item_new_with_label(club_group, _("Club Name Only"));
     club_group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(preference_club_text_club));
@@ -390,6 +391,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_menu_shell_append(GTK_MENU_SHELL(submenu), preference_results_in_ukrainian);
     gtk_menu_shell_append(GTK_MENU_SHELL(submenu), preference_results_in_icelandic);
     gtk_menu_shell_append(GTK_MENU_SHELL(submenu), preference_results_in_norwegian);
+    gtk_menu_shell_append(GTK_MENU_SHELL(submenu), preference_results_in_polish);
 
     gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), gtk_separator_menu_item_new());
 
@@ -449,6 +451,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     g_signal_connect(G_OBJECT(preference_results_in_ukrainian),   "activate", G_CALLBACK(set_lang), (gpointer)LANG_UK);
     g_signal_connect(G_OBJECT(preference_results_in_icelandic),   "activate", G_CALLBACK(set_lang), (gpointer)LANG_IS);
     g_signal_connect(G_OBJECT(preference_results_in_norwegian),   "activate", G_CALLBACK(set_lang), (gpointer)LANG_NO);
+    g_signal_connect(G_OBJECT(preference_results_in_polish),      "activate", G_CALLBACK(set_lang), (gpointer)LANG_PL);
 
     g_signal_connect(G_OBJECT(preference_club_text_club),    "activate", 
 		     G_CALLBACK(set_club_text), (gpointer)CLUB_TEXT_CLUB);
@@ -622,6 +625,9 @@ void set_preferences(void)
         break;	
     case LANG_NO:
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(preference_results_in_norwegian), TRUE);
+        break;	
+    case LANG_PL:
+        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(preference_results_in_polish), TRUE);
         break;	
     default:
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(preference_results_in_finnish), TRUE);
@@ -848,6 +854,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(preference_results_in_ukrainian  , _("Results in Ukrainian"));
     change_menu_label(preference_results_in_icelandic  , _("Results in Icelandic"));
     change_menu_label(preference_results_in_norwegian  , _("Results in Norwegian"));
+    change_menu_label(preference_results_in_polish     , _("Results in Polish"));
 
     change_menu_label(preference_club_text             , _("Club Text Selection"));
     change_menu_label(preference_club_text_club        , _("Club Name Only"));
