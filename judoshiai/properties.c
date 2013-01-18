@@ -416,7 +416,7 @@ void reset_props_1(GtkWidget *button, void *data, gboolean if_unset)
     // default catsystems
     if (if_unset==FALSE || props[PROP_DEFAULT_CAT_1].value[0]==0) {
         memset(default_cats, 0, sizeof(default_cats));
-        default_cats[0] = (struct default_cat){0, 1, 2, CAT_SYSTEM_BEST_OF_3};
+        default_cats[0] = (struct default_cat){0, 2, 2, CAT_SYSTEM_BEST_OF_3};
         default_cats[1] = (struct default_cat){0, 3, 5, CAT_SYSTEM_POOL};
         default_cats[2] = (struct default_cat){0, 6, 7, CAT_SYSTEM_DPOOL};
         default_cats[3] = (struct default_cat){0, 8, 0, CAT_SYSTEM_REPECHAGE};
