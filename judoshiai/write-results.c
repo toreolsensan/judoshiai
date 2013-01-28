@@ -264,6 +264,9 @@ static void pool_results(FILE *f, gint category, struct judoka *ctg, gint num_ju
         if (pm.finished == FALSE || pm.j[pm.c[i]] == NULL)
             continue;
 
+        gint nrprint = 3;
+        if (print_lang == LANG_NO) nrprint = 5;
+
         // Spanish have two bronzes in pool system
         if (i <= 4 && prop_get_int_val(PROP_TWO_POOL_BRONZES) &&
             (pm.j[pm.c[i]]->deleted & HANSOKUMAKE) == 0) {
@@ -271,7 +274,7 @@ static void pool_results(FILE *f, gint category, struct judoka *ctg, gint num_ju
                          pm.j[pm.c[i]]->last, pm.j[pm.c[i]]->club, pm.j[pm.c[i]]->country);
             avl_set_competitor_position(pm.j[pm.c[i]]->index, i == 4 ? 3 : i);
             db_set_category_positions(category, pm.j[pm.c[i]]->index, i);
-        } else if (i <= 3 && 
+        } else if (i <= nrprint &&
             (pm.j[pm.c[i]]->deleted & HANSOKUMAKE) == 0) {
             // Need a victory in Norwegian system to get a result.
             if (prop_get_int_val(PROP_WIN_NEEDED_FOR_MEDAL) && pm.wins[pm.c[i]] == 0)
