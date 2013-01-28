@@ -290,66 +290,66 @@ struct offial_category official_categories[NUM_DRAWS][2][10] = {
     }, { // norwegian
         { // men
             {
-                "SenH", 1000, 300, 0, 600, // name, max age, match gs rest times 
+                "SenH", 1000, 300, 0, 300, // name, max age, match gs rest times
                 {{60000, "60"}, {66000, "66"}, {73000, "73"}, 
                  {81000, "81"}, {90000, "90"}, {100000, "100"}, {0, NULL}}
             }, {
-                "U21H", 20, 240, 0, 600, // name, max age, match gs rest times 
+                "U21H", 20, 240, 0, 240, // name, max age, match gs rest times
                 {{55000, "55"}, {60000, "60"}, {66000, "66"}, {73000, "73"}, 
                  {81000, "81"}, {90000, "90"}, {100000, "100"}, {0, NULL}}
             }, {
-                "U18G", 17, 180, 0, 600, // name, max age, match gs rest times 
+                "U18G", 17, 180, 0, 180, // name, max age, match gs rest times
                 {{46000, "46"}, {50000, "50"}, {55000, "55"}, {60000, "60"}, 
                  {66000, "66"}, {73000, "73"}, {81000, "81"}, {90000, "90"}, {0, NULL}}
             }, {
-                "U15G", 14, 180, 0, 600, // name, max age, match gs rest times 
+                "U15G", 14, 180, 0, 180, // name, max age, match gs rest times
                 {{34000, "34"}, {38000, "38"}, {42000, "42"}, {46000, "46"}, 
                  {50000, "50"}, {55000, "55"}, {60000, "60"}, {66000, "66"}, {0, NULL}}
             },{
-                "Barn", 12, 120, 0, 180, // name, max age, match gs rest times
+                "Barn", 12, 120, 0, 120, // name, max age, match gs rest times
                 {{24000, "24"}, {27000, "27"}, {30000, "30"}, {34000, "34"},
                  {38000, "38"}, {42000, "42"}, {46000, "46"}, {50000, "50"}, {0, NULL}}
             }, {
-                "Barn10", 10, 120, 0, 180, // name, max age, match gs rest times
+                "Barn10", 10, 120, 0, 120, // name, max age, match gs rest times
                 {{24000, "24"}, {27000, "27"}, {30000, "30"}, {34000, "34"},
                  {38000, "38"}, {42000, "42"}, {46000, "46"}, {50000, "50"}, {0, NULL}}
             }, {
-                "Mini ", 8, 120, 0, 180, // name, max age, match gs rest times
+                "Mini ", 8, 120, 0, 120, // name, max age, match gs rest times
                 {{100000, " "}, {0, NULL}}
             }, {
-                "Micro ", 6, 120, 60, 180, // name, max age, match gs rest times
+                "Micro ", 6, 120, 0, 120, // name, max age, match gs rest times
                 {{100000, " "}, {0, NULL}}
             }, { NULL, 0, 0, 0, 0, {{0, NULL}}}
         }, { // women
             {
-                "SenD", 1000, 300, 0, 600, // name, max age, match gs rest times 
+                "SenD", 1000, 300, 0, 300, // name, max age, match gs rest times
                 {{48000, "48"}, {52000, "52"}, {57000, "57"}, 
                  {63000, "63"}, {70000, "70"}, {78000, "78"}, {0, NULL}}
             }, {
-                "U21D", 20, 240, 0, 600, // name, max age, match gs rest times 
+                "U21D", 20, 240, 0, 240, // name, max age, match gs rest times
                 {{48000, "48"}, {52000, "52"}, {57000, "57"}, 
                  {63000, "63"}, {70000, "70"}, {78000, "78"}, {0, NULL}}
             }, {
-                "U18J", 17, 180, 0, 600, // name, max age, match gs rest times 
+                "U18J", 17, 180, 0, 180, // name, max age, match gs rest times
                 {{40000, "40"}, {44000, "44"}, {48000, "48"}, {52000, "52"}, {57000, "57"}, 
                  {63000, "63"}, {70000, "70"}, {0, NULL}}
             }, {
-                "U15J", 14, 180, 0, 600, // name, max age, match gs rest times 
+                "U15J", 14, 180, 0, 180, // name, max age, match gs rest times
                 {{32000, "32"}, {36000, "36"}, {40000, "40"}, {44000, "44"}, 
                  {48000, "48"}, {52000, "52"}, {57000, "57"}, {63000, "63"}, {0, NULL}}
             },{
-                "BarnJ", 12, 120, 0, 180, // name, max age, match gs rest times
+                "BarnJ", 12, 120, 0, 120, // name, max age, match gs rest times
                 {{24000, "24"}, {27000, "27"}, {30000, "30"}, {34000, "34"},
                  {38000, "38"}, {42000, "42"}, {46000, "46"}, {50000, "50"}, {0, NULL}}
             }, {
-                "Barn10", 10, 120, 0, 180, // name, max age, match gs rest times
+                "Barn10", 10, 120, 0, 120, // name, max age, match gs rest times
                 {{24000, "24"}, {27000, "27"}, {30000, "30"}, {34000, "34"},
                  {38000, "38"}, {42000, "42"}, {46000, "46"}, {50000, "50"}, {0, NULL}}
             }, {
-                "Mini ", 8, 120, 0, 180, // name, max age, match gs rest times
+                "Mini ", 8, 120, 0, 120, // name, max age, match gs rest times
                 {{100000, " "}, {0, NULL}}
             }, {
-                "Micro ", 6, 120, 0, 180, // name, max age, match gs rest times
+                "Micro ", 6, 120, 0, 120, // name, max age, match gs rest times
                 {{100000, " "}, {0, NULL}}
             }, { NULL, 0, 0, 0, 0, {{0, NULL}}}
         }
