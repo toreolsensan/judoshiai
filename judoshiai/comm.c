@@ -266,6 +266,13 @@ void msg_received(struct message *input_msg)
                     CP2MSG_STR(regcategory);
                     CP2MSG_INT(weight);
                     CP2MSG_INT(deleted);
+
+                    CP2MSG_INT(belt);
+                    CP2MSG_INT(visible);
+                    CP2MSG_STR(category);
+                    CP2MSG_INT(seeding);
+                    CP2MSG_INT(clubseeding);
+
                     send_packet(&output_msg);
                 }
                 display_one_judoka(j);
@@ -296,7 +303,7 @@ void msg_received(struct message *input_msg)
 	    if (j2.index) { // edit old competitor 
 		j = get_data(j2.index);
 		if (j) {
-		    j2.category = j->category;
+//		    j2.category = j->category;
 		    db_update_judoka(j2.index, &j2);
 		    if ((j->deleted & 1) == 0 && (j2.deleted & 1)) {
 			GtkTreeIter iter;
