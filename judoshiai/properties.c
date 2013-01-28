@@ -408,7 +408,7 @@ void reset_props_1(GtkWidget *button, void *data, gboolean if_unset)
     else
         SET_VAL(PROP_DPOOL2_WITH_CARRIED_FORWARD_POINTS, "0", 0);
 
-    if (draw_system == DRAW_FINNISH || draw_system == DRAW_SWEDISH || draw_system == DRAW_ESTONIAN)
+    if (draw_system == DRAW_FINNISH || draw_system == DRAW_SWEDISH || draw_system == DRAW_ESTONIAN || draw_system == DRAW_NORWEGIAN)
         SET_VAL(PROP_RESOLVE_3_WAY_TIES_BY_WEIGHTS, "1", 1);
     else
         SET_VAL(PROP_RESOLVE_3_WAY_TIES_BY_WEIGHTS, "0", 0);
