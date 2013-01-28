@@ -115,7 +115,7 @@ static void set_timers(GtkWidget *widget,
     clock_min = clock_sec = osaekomi = NULL;
 }
 
-static void manipulate_time(GtkWidget *w,
+void manipulate_time(GtkWidget *w,
                             gpointer   data )
 {
     gint what = (gint)data;
@@ -216,12 +216,12 @@ static const gchar *lang_names[NUM_LANGS] = {
 
 static const gchar *help_file_names[NUM_LANGS] = {
     "judoshiai-fi.pdf", "judoshiai-en.pdf", "judoshiai-en.pdf", "judoshiai-es.pdf", "judoshiai-en.pdf",
-    "judoshiai-uk.pdf", "judoshiai-en.pdf", "judoshiai-en.pdf", "judoshiai-en.pdf"
+    "judoshiai-uk.pdf", "judoshiai-en.pdf", "judoshiai-nb.pdf", "judoshiai-en.pdf"
 };
 
 static const gchar *timer_help_file_names[NUM_LANGS] = {
     "judotimer-fi.pdf", "judotimer-en.pdf", "judotimer-en.pdf", "judotimer-es.pdf", "judotimer-en.pdf",
-    "judotimer-uk.pdf", "judotimer-en.pdf", "judotimer-en.pdf", "judotimer-en.pdf"
+    "judotimer-uk.pdf", "judotimer-en.pdf", "judotimer-nb.pdf", "judotimer-en.pdf"
 };
 
 static GtkWidget *get_picture(const gchar *name)
