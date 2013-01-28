@@ -339,7 +339,9 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     preference_results_in_icelandic   = gtk_radio_menu_item_new_with_label(lang_group, _("Results in Icelandic"));
     lang_group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(preference_results_in_icelandic));
     preference_results_in_norwegian   = gtk_radio_menu_item_new_with_label(lang_group, _("Results in Norwegian"));
+    lang_group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(preference_results_in_norwegian));
     preference_results_in_polish      = gtk_radio_menu_item_new_with_label(lang_group, _("Results in Polish"));
+    lang_group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(preference_results_in_polish));
 
     preference_club_text_club         = gtk_radio_menu_item_new_with_label(club_group, _("Club Name Only"));
     club_group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(preference_club_text_club));
