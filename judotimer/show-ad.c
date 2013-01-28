@@ -1878,6 +1878,9 @@ void display_ad_window(void)
 
     gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 
+    gtk_window_set_modal(GTK_WINDOW(window),TRUE);
+    gtk_window_set_transient_for(GTK_WINDOW(window),GTK_WINDOW(main_window));
+
     GtkWidget *vbox;
     vbox = gtk_vbox_new(FALSE, 1);
     gtk_container_set_border_width (GTK_CONTAINER (vbox), 1);
