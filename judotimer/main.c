@@ -1262,8 +1262,8 @@ static gboolean key_press(GtkWidget *widget, GdkEventKey *event, gpointer userda
         expose(darea, 0, 0);
         return FALSE;
     }
-//    if (event->keyval == GDK_v) // V is a menu accelerator
-//        return FALSE;
+    if (event->keyval == GDK_v) // V is a menu accelerator
+        return FALSE;
 
     if (event->keyval == GDK_D && (event->state & 5) == 5)
         demo = 1;
