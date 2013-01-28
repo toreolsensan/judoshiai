@@ -66,17 +66,19 @@ void set_display(struct msg_edit_competitor *msg)
     gdk_window_set_cursor(GTK_WIDGET(main_window)->window, NULL);
 
     if (msg->operation == EDIT_OP_CONFIRM) {
-        snprintf(buf, sizeof(buf), "%s %s, %s/%s: %s: %d.%02d %s", 
-                 msg->last, msg->first, msg->country, msg->club, msg->regcategory,
+        snprintf(buf, sizeof(buf), "%s %s, %s/%s: %s (%s): %d.%02d %s",
+                 msg->last, msg->first, msg->country, msg->club, msg->category, msg->regcategory,
                  msg->weight/1000, (msg->weight%1000)/10,
                  (msg->deleted & JUDOGI_OK) ? "OK" :
-                 ((msg->deleted & JUDOGI_NOK) ? "NOK" : ""));
+                 ((msg->deleted & JUDOGI_NOK) ? "NOK" : _("WARNING: NO CONTROL")));
         gtk_label_set_label(GTK_LABEL(confirm_box), buf);
         return;
     }
 
     saved.u.edit_competitor = *msg;
 
+//    snprintf(buf, sizeof(buf), "%s %s, %s/%s: %s (%s)",
+//             msg->last, msg->first, msg->country, msg->club, msg->category, msg->regcategory);
     snprintf(buf, sizeof(buf), "%s %s, %s/%s (%s): %s", 
              msg->last, msg->first, msg->country, msg->club, msg->beltstr, msg->regcategory);
     gtk_label_set_label(GTK_LABEL(name_box), buf);
