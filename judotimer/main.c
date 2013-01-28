@@ -135,7 +135,8 @@ CBFUNC(match1)
 
 CBFUNC(match2)
 {
-        return FALSE;
+	clock_key(GDK_0, (event->button == 3) ? 1 : (event->state & 1));
+	return FALSE;
 }
 
 CBFUNC(blue_name_1)
@@ -1031,7 +1032,7 @@ void reset_display(gint key)
         if (golden_score == FALSE || rules_leave_score == FALSE)
             set_points(pts, pts);
 
-        set_text(MY_LABEL(comment), "");
+//       set_text(MY_LABEL(comment), "");
 	//expose(darea, 0, 0);
 }
 
@@ -1233,10 +1234,36 @@ static gboolean key_press(GtkWidget *widget, GdkEventKey *event, gpointer userda
             gtk_widget_hide(menubar);
             menu_hidden = TRUE;
         }
-    }
-
-    if (event->keyval == GDK_v) // V is a menu accelerator
         return FALSE;
+    }
+    if (event->keyval == GDK_n && ctl) {
+    	clock_key(GDK_0, FALSE);
+        return FALSE;
+    }
+    if (event->keyval == GDK_g && ctl) {
+    	clock_key(GDK_9, FALSE);
+        return FALSE;
+    }
+    if (event->keyval == GDK_f && ctl) {
+        if (!fullscreen) {
+        	fullscreen = TRUE;
+            gtk_window_fullscreen(GTK_WINDOW(main_window));
+            //Windows bug workaround:
+            gtk_widget_set_size_request(GTK_WIDGET(main_window), gdk_screen_width(),
+                                                               gdk_screen_height());
+            g_key_file_set_boolean(keyfile, "preferences", "fullscreen", TRUE);
+        } else {
+           	fullscreen = FALSE;
+           	gtk_widget_set_size_request(GTK_WIDGET(main_window), -1, -1);  // W7 bug
+            gtk_window_unfullscreen(GTK_WINDOW(main_window));
+            gtk_window_resize(GTK_WINDOW(main_window), 600,400);  //w7 bug.
+            g_key_file_set_boolean(keyfile, "preferences", "fullscreen", FALSE);
+        }
+        expose(darea, 0, 0);
+        return FALSE;
+    }
+//    if (event->keyval == GDK_v) // V is a menu accelerator
+//        return FALSE;
 
     if (event->keyval == GDK_D && (event->state & 5) == 5)
         demo = 1;
@@ -1246,7 +1273,7 @@ static gboolean key_press(GtkWidget *widget, GdkEventKey *event, gpointer userda
         demo = 0;
 
     //g_print("key=%x stat=%x\n", event->keyval, event->state);
-    if (event->keyval < GDK_0 || event->keyval > GDK_9 || event->keyval == GDK_6)
+    if (event->keyval < GDK_0 || event->keyval > GDK_9 || event->keyval == GDK_6 || ctl)
         clock_key(event->keyval, event->state);
 
     return FALSE;
