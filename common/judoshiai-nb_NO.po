@@ -483,10 +483,10 @@ msgid "Score wins warning"
 msgstr ""
 
 msgid "Short pin times"
-msgstr ""
+msgstr "Korte holdetider"
 
 msgid "No Limit"
-msgstr ""
+msgstr "Ubegrenset"
 
 msgid "If equal score less shido wins"
-msgstr ""
+msgstr "Færrest shido vinner ved uavgjort"
