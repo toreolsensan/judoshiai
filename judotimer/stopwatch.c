@@ -48,12 +48,14 @@
 #include "judotimer.h"
 #include "fmod.h"
 
+void manipulate_time(GtkWidget *widget, gpointer data );
 static void gen_random_key(void);
 
 void check_ippon(void);
 void give_osaekomi_score();
 gint approve_osaekomi_score(gint who);
 //static void ask_for_hantei(void);
+gboolean ask_for_golden_score(void);
 
 enum button_responses {
     Q_GS_NO_LIMIT = 1000,
@@ -372,8 +374,8 @@ void set_clocks(gint clock, gint osaekomi)
 
     if ((gdouble)clock > total)
         return;
-
-    st[0].elap = total - (gdouble)clock;
+    if ( clock > 0)
+    	st[0].elap = total - (gdouble)clock;
     if (osaekomi) {
         st[0].oElap = (gdouble)osaekomi;
         st[0].oRunning = TRUE;
@@ -711,7 +713,7 @@ static void create_ask_window(void)
 
     GtkWindow *window = ask_window = GTK_WINDOW(gtk_window_new(GTK_WINDOW_TOPLEVEL));
     gtk_window_set_title(GTK_WINDOW(window), _("Start New Match?"));
-    if (fullscreen && show_competitor_names && get_winner())
+    if (fullscreen ) // Clicking outside  && show_competitor_names && get_winner())
         gtk_window_fullscreen(GTK_WINDOW(window));
     else if (show_competitor_names && get_winner())
         gtk_widget_set_size_request(GTK_WIDGET(window), width, height);
@@ -720,6 +722,7 @@ static void create_ask_window(void)
 
     vbox = gtk_vbox_new(FALSE, 1);
     gtk_container_set_border_width (GTK_CONTAINER (vbox), 1);
+
 
     if (mode != MODE_SLAVE) {
         hbox = gtk_hbox_new(FALSE, 1);
@@ -764,6 +767,9 @@ static void create_ask_window(void)
         g_signal_connect(G_OBJECT(nok), 
                          "clicked", G_CALLBACK(close_ask_nok), window);
     }
+    gtk_window_set_modal(GTK_WINDOW(window),TRUE);
+    gtk_window_set_transient_for(GTK_WINDOW(window),GTK_WINDOW(main_window));
+
 }
 
 void close_ask_window(void)
@@ -1092,7 +1098,21 @@ void check_ippon(void)
                       get_cat(), name, st[0].elap);
     } else if (golden_score && get_winner()) {
         beep(_("Golden Score"));
+    } else if ((st[0].whitepts[3] >= 4 || st[0].bluepts[3] >= 4) &&
+               rule_eq_score_less_shido_wins && rules_stop_ippon_2) {
+    	if (st[0].oRunning)
+    		oToggle();
+    	if (st[0].running)
+    		toggle();
+        beep("SHIDO, Hansokumake");
+        gchar *name = get_name(st[0].whitepts[0] >= 2 ? WHITE : BLUE);
+        if (name == NULL || name[0] == 0)
+            name = st[0].whitepts[0] >= 2 ? "white" : "blue";
+
+        judotimer_log("%s: %s wins by %f s Shido)!",
+                      get_cat(), name, st[0].elap);
     }
+
 }
 
 gboolean set_osaekomi_winner(gint who)
@@ -1226,6 +1246,31 @@ void clock_key(guint key, guint event_state)
 
     lastkey = key;
     lasttime = now;
+
+    if (key == GDK_c && ctl) {
+    	manipulate_time(main_window, (gpointer)4 );
+    	return;
+    }
+    if (key == GDK_b && ctl) {
+    	if(white_first){
+    		voting_result(NULL,(gpointer)HANTEI_WHITE);
+    	}else{
+           	voting_result(NULL,(gpointer)HANTEI_BLUE);
+    	}
+    	return;
+    }
+    if (key == GDK_w && ctl) {
+    	if(white_first){
+    		voting_result(NULL,(gpointer)HANTEI_BLUE);
+    	}else{
+           	voting_result(NULL,(gpointer)HANTEI_WHITE);
+    	}
+    	return;
+    }
+    if (key == GDK_e && ctl) {
+       	voting_result(NULL,(gpointer)CLEAR_SELECTION);
+    	return;
+    }
 
     if (key == GDK_v) {
         create_video_window();
