@@ -806,7 +806,6 @@ void get_competitor(http_parser_t *parser)
 
     sendf(s, "<form method=\"get\" action=\"setcompetitor\" name=\"valtable\">"
           "<input type=\"hidden\" name=\"index\" value=\"%d\">"
-          "<input type=\"hidden\" name=\"category\" value=\"%s\">"
           "<table class=\"competitor\">\r\n", 
           index, category);
 
@@ -825,7 +824,16 @@ void get_competitor(http_parser_t *parser)
     HTML_ROW_STR("Country", country);
     HTML_ROW_STR("Reg.Category", regcategory);
 
-    sendf(s, "<tr><td>%s:</td><td>%s</td></tr>\r\n", "Category", category);
+    // category list box
+//    db_close_table();  //mutex problem.
+    numrows = db_get_table("select category from categories order by category");
+    sendf(s, "<tr><td>%s:</td><td><select name=\"category\" value=\"\">", "Category");
+    for (row = 0; row < numrows; row++) {
+    	gchar *cat = db_get_data(row, "category");
+         sendf(s, "<option %s>%s</option>", !strcmp(cat,category) ? "selected" : "", cat);
+    }
+    db_close_table();
+    sendf(s, "</select></td></tr>\r\n");
 
     sendf(s, "<tr><td>%s:</td><td><input type=\"text\" name=\"weight\" value=\"%d.%02d\"/></td></tr>\r\n", \
           "Weight", weight/1000, (weight%1000)/10);
@@ -954,10 +962,19 @@ void set_competitor(http_parser_t *parser)
     gint beltval;
     gchar *b = belt;
     gboolean kyu = strchr(b, 'k') != NULL || strchr(b, 'K') != NULL;
-    while (*b && (*b < '0' || *b > '9')) b++;
+    gboolean mon = strchr(b, 'm') != NULL || strchr(b, 'M') != NULL;
+    while (*b && (*b < '0' || *b > '9'))
+        b++;
+
     gint grade = atoi(b);
-    if (grade) beltval = kyu ? 7 - grade : 6 + grade;
-    if (beltval < 0 || beltval > 13) beltval = 0;
+    if (grade && mon)
+        beltval = 21 - grade;
+    else if (grade && kyu)
+        beltval = 7 - grade;
+    else
+    	beltval = 6 + grade;
+
+    if (beltval < 0 || beltval > 20) beltval = 0;
 
 #define STRCPY(_x)                                                      \
     strncpy(msg.u.edit_competitor._x, _x, sizeof(msg.u.edit_competitor._x)-1)
@@ -1033,8 +1050,22 @@ void get_competitors(http_parser_t *parser, gboolean show_deleted)
         tablecopy = db_get_table_copy("select * from competitors order by \"last\",\"first\" asc", 
                                       &numrows, &numcols);
     else if (!strcmp(order, "regcat"))
-        tablecopy = db_get_table_copy("select * from competitors order by \"regcategory\",\"last\",\"first\" asc", 
-                                      &numrows, &numcols);
+		tablecopy = db_get_table_copy("select * from competitors order by  \"deleted\",\"regcategory\",\"last\",\"first\" asc",
+                &numrows, &numcols);
+//       tablecopy = db_get_table_copy("select * from competitors order by \"regcategory\",\"last\",\"first\" asc",
+//                                      &numrows, &numcols);
+    else if (!strcmp(order, "category"))
+    	tablecopy = db_get_table_copy("select * from competitors order by \"category\",\"last\",\"first\" asc",
+                &numrows, &numcols);
+    else if (!strcmp(order, "weight"))
+    	tablecopy = db_get_table_copy("select * from competitors order by \"weight\",\"last\",\"first\" asc",
+                &numrows, &numcols);
+    else if (!strcmp(order, "ID"))
+    	tablecopy = db_get_table_copy("select * from competitors order by \"id\",\"last\",\"first\" asc",
+                &numrows, &numcols);
+    else if (!strcmp(order, "Index"))
+    	tablecopy = db_get_table_copy("select * from competitors order by \"index\",\"last\",\"first\" asc",
+                &numrows, &numcols);
     else
         tablecopy = db_get_table_copy("select * from competitors order by \"country\",\"club\",\"last\",\"first\" asc", 
                                       &numrows, &numcols);
@@ -1052,25 +1083,33 @@ void get_competitors(http_parser_t *parser, gboolean show_deleted)
           "<td><a href=\"?order=last\"><b>%s</b></a></td>"
           "<td><b>%s</b></td>"
           "<td><a href=\"?order=regcat\"><b>%s</b></a></td>"
+            "<td><a href=\"?order=category\"><b>%s</b></a></td>"
+            "<td><a href=\"?order=weight\"><b>%s</b></a></td>"
+            "<td><a href=\"?order=ID\"><b>%s</b></a>/<a href=\"?order=Index\"><b>%s</b></a></td>"
           "<td></td></tr>\r\n",
-          "Country", "Club", "Surname", "Name", "Reg.Category");
+          _("Country"), _("Club"), _("Surname"), _("Name"), _("Reg.Cat"), _("Category"),_("Weight"), _("ID"), _("Index"));
 
     for (row = 0; row < numrows; row++) {
+
+        gchar *rcat = db_get_col_data(tablecopy, numcols, row, "regcategory");
+        gint weight = my_atoi(db_get_col_data(tablecopy, numcols, row, "weight"));
+        gchar *idx = db_get_col_data(tablecopy, numcols, row, "index");
+
         gchar *last = db_get_col_data(tablecopy, numcols, row, "last");
         gchar *first = db_get_col_data(tablecopy, numcols, row, "first");
         gchar *club = db_get_col_data(tablecopy, numcols, row, "club");
         gchar *country = db_get_col_data(tablecopy, numcols, row, "country");
-        gchar *cat = db_get_col_data(tablecopy, numcols, row, "regcategory");
-        gchar *id = db_get_col_data(tablecopy, numcols, row, "index");
+        gchar *cat = db_get_col_data(tablecopy, numcols, row, "category");
+        gchar *id = db_get_col_data(tablecopy, numcols, row, "id");
         gint   deleted = my_atoi(db_get_col_data(tablecopy, numcols, row, "deleted"));
 
         if (((deleted&1) && show_deleted) ||
             ((deleted&1) == 0 && show_deleted == FALSE)) {
             sendf(s, "<tr %s><td>%s</td><td>%s</td><td>%s</td><td>%s</td>"
-                  "<td>%s</td>"
-                  "<td><a href=\"getcompetitor?index=%s\">%s</a></td></tr>\r\n",
+                  "<td>%s</td><td>%s</td><td>%d.%02d</td>"
+                  "<td><a href=\"getcompetitor?index=%s\">%s/%s</a></td></tr>\r\n",
                   (deleted & JUDOGI_OK) ? "class=\"judogiok\"" : ((deleted & JUDOGI_NOK) ? "class=\"judoginok\"" : ""), 
-                  country, club, last, first, cat, id, "Edit");
+                  country, club, last, first, rcat,cat,weight/1000, (weight%1000)/10,idx,id, idx);
         }
     }	
 
