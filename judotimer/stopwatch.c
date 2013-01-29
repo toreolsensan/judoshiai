@@ -372,10 +372,11 @@ void set_clocks(gint clock, gint osaekomi)
     if (st[0].running)
         return;
 
-    if ((gdouble)clock > total)
-        return;
-    if ( clock > 0)
+    if ( clock >= 0 && total >= clock)
     	st[0].elap = total - (gdouble)clock;
+    else if (clock >= 0)
+        st[0].elap = (gdouble)clock;
+
     if (osaekomi) {
         st[0].oElap = (gdouble)osaekomi;
         st[0].oRunning = TRUE;
@@ -595,13 +596,15 @@ static gboolean delete_event_ask( GtkWidget *widget, GdkEvent  *event, gpointer 
 
 static void destroy_ask( GtkWidget *widget, gpointer   data )
 {
-    if (mode == MODE_MASTER) {
-        struct message msg;
-        memset(&msg, 0, sizeof(msg));
-        msg.type = MSG_UPDATE_LABEL;
-        msg.u.update_label.label_num = STOP_WINNER;
+    struct message msg;
+    memset(&msg, 0, sizeof(msg));
+    msg.type = MSG_UPDATE_LABEL;
+    msg.u.update_label.label_num = STOP_WINNER;
+    write_tv_logo(&(msg.u.update_label));
+
+    if (mode == MODE_MASTER)
         send_label_msg(&msg);
-    }
+
     legend_widget = NULL;
     ask_area = NULL;
     asking = FALSE;
@@ -873,21 +876,22 @@ void reset(guint key, struct msg_next_match *msg)
         asking = TRUE;
         create_ask_window();
 
-        if (mode == MODE_MASTER) {
-            struct message msg;
-            gint winner = get_winner();
-            memset(&msg, 0, sizeof(msg));
-            msg.type = MSG_UPDATE_LABEL;
-            msg.u.update_label.label_num = START_WINNER;
-            snprintf(msg.u.update_label.text, sizeof(msg.u.update_label.text), 
-                     "%s\t%s\t\t", 
-                     winner == BLUE ? saved_last1 : saved_last2,
-                     winner == BLUE ? saved_first1 : saved_first2);
-            strncpy(msg.u.update_label.text2, saved_cat,
-                    sizeof(msg.u.update_label.text2)-1);
-            msg.u.update_label.text3[0] = winner;
+        struct message msg;
+        gint winner = get_winner();
+        memset(&msg, 0, sizeof(msg));
+        msg.type = MSG_UPDATE_LABEL;
+        msg.u.update_label.label_num = START_WINNER;
+        snprintf(msg.u.update_label.text, sizeof(msg.u.update_label.text), 
+                 "%s\t%s\t\t", 
+                 winner == BLUE ? saved_last1 : saved_last2,
+                 winner == BLUE ? saved_first1 : saved_first2);
+        strncpy(msg.u.update_label.text2, saved_cat,
+                sizeof(msg.u.update_label.text2)-1);
+        msg.u.update_label.text3[0] = winner;
+        write_tv_logo(&(msg.u.update_label));
+
+        if (mode == MODE_MASTER)
             send_label_msg(&msg);
-        }
 
         return;
 #if 0
