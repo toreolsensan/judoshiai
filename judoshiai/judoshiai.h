@@ -369,6 +369,7 @@ enum {
 #define MATCH_UNMATCHED    4
 #define CAT_PRINTED        8
 #define REAL_MATCH_EXISTS 16
+#define SYSTEM_DEFINED    32
 
 enum official_categories {
     CAT_UNKNOWN = 0,
