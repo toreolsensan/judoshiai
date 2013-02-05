@@ -33,7 +33,6 @@
 
 #include <gtk/gtk.h>
 #include <glib.h>
-#include <glib/gthread.h>
 #include <gdk/gdkkeysyms.h>
 #ifdef WIN32
 #include <glib/gwin32.h>
@@ -226,19 +225,22 @@ void msg_received(struct message *input_msg)
                     input_msg->u.next_match.category, input_msg->u.next_match.match);
             ***/
             display_comp_window(saved_cat, saved_last1, saved_last2);
-            if (mode == MODE_MASTER) {
-                struct message msg;
-                memset(&msg, 0, sizeof(msg));
-                msg.type = MSG_UPDATE_LABEL;
-                msg.u.update_label.label_num = START_COMPETITORS;
-                strncpy(msg.u.update_label.text, input_msg->u.next_match.blue_1,
-                        sizeof(msg.u.update_label.text)-1);
-                strncpy(msg.u.update_label.text2, input_msg->u.next_match.white_1,
-                        sizeof(msg.u.update_label.text2)-1);
-                strncpy(msg.u.update_label.text3, input_msg->u.next_match.cat_1,
-                        sizeof(msg.u.update_label.text3)-1);
+
+            struct message msg;
+            memset(&msg, 0, sizeof(msg));
+            msg.type = MSG_UPDATE_LABEL;
+            msg.u.update_label.label_num = START_COMPETITORS;
+            strncpy(msg.u.update_label.text, input_msg->u.next_match.blue_1,
+                    sizeof(msg.u.update_label.text)-1);
+            strncpy(msg.u.update_label.text2, input_msg->u.next_match.white_1,
+                    sizeof(msg.u.update_label.text2)-1);
+            strncpy(msg.u.update_label.text3, input_msg->u.next_match.cat_1,
+                    sizeof(msg.u.update_label.text3)-1);
+
+            write_tv_logo(&(msg.u.update_label));
+
+            if (mode == MODE_MASTER)
                 send_label_msg(&msg);
-            }
         }
 
         current_category = input_msg->u.next_match.category;

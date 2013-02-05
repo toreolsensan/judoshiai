@@ -1721,13 +1721,15 @@ static gboolean delete_event_ad( GtkWidget *widget,
 static void destroy_ad( GtkWidget *widget,
                         gpointer   data )
 {
-    if (mode == MODE_MASTER) {
-        struct message msg;
-        memset(&msg, 0, sizeof(msg));
-        msg.type = MSG_UPDATE_LABEL;
-        msg.u.update_label.label_num = STOP_COMPETITORS;
+    struct message msg;
+    memset(&msg, 0, sizeof(msg));
+    msg.type = MSG_UPDATE_LABEL;
+    msg.u.update_label.label_num = STOP_COMPETITORS;
+
+    write_tv_logo(&(msg.u.update_label));
+    
+    if (mode == MODE_MASTER)
         send_label_msg(&msg);
-    }
 
     ad_window = NULL;
     no_ads = FALSE;
