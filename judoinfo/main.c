@@ -12,7 +12,6 @@
 
 #include <gtk/gtk.h>
 #include <glib.h>
-#include <glib/gthread.h>
 #include <gdk/gdkkeysyms.h>
 #ifdef WIN32
 #include <glib/gwin32.h>
