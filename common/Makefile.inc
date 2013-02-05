@@ -1,4 +1,4 @@
-SHIAI_VER_NUM=2.3beta6
+SHIAI_VER_NUM=2.3beta7
 SHIAI_VERSION="\"$(SHIAI_VER_NUM)\""
 
 OBJS=
@@ -24,7 +24,7 @@ CC=i586-mingw32msvc-gcc
 LD=i586-mingw32msvc-gcc
 SUFF=.exe
 DEVELDIR=/opt/win32/gtk
-SOUNDDIR=/opt/win32/fmod
+SOUNDDIR=/opt/win32/FMOD\ SoundSystem/FMOD\ Programmers\ API\ Win32/api
 RSVGDIR=/opt/win32/rsvg
 CURLDIR=/opt/win32/curl
 RESHACKER=wine "C:\\bin\\ResHacker.exe"
