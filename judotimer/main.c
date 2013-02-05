@@ -12,8 +12,8 @@
 
 #include <gtk/gtk.h>
 #include <glib.h>
-#include <glib/gthread.h>
 #include <gdk/gdkkeysyms.h>
+
 #ifdef WIN32
 #include <glib/gwin32.h>
 #else
@@ -69,6 +69,8 @@ gboolean rule_short_pin_times = FALSE;
 static gchar font_face[32];
 static gint  font_slant = CAIRO_FONT_SLANT_NORMAL, font_weight = CAIRO_FONT_WEIGHT_NORMAL;
 static gdouble font_size = 1.0;
+
+gboolean update_tvlogo = FALSE; 
 
 static const gchar *num_to_str(guint num)
 {
@@ -642,25 +644,28 @@ void set_timer_value(guint min, guint tsec, guint sec)
     expose_label(NULL, t_min);
     expose_label(NULL, t_tsec);
     expose_label(NULL, t_sec);
+
+    update_tvlogo = TRUE;
 }
 
 void set_osaekomi_value(guint tsec, guint sec)
 {
-        set_text(MY_LABEL(o_tsec), num_to_str(tsec));
-        set_text(MY_LABEL(o_sec), num_to_str(sec));
-	expose_label(NULL, o_tsec);
-	expose_label(NULL, o_sec);
+    set_text(MY_LABEL(o_tsec), num_to_str(tsec));
+    set_text(MY_LABEL(o_sec), num_to_str(sec));
+    expose_label(NULL, o_tsec);
+    expose_label(NULL, o_sec);
+    update_tvlogo = TRUE;
 }
 
 static void set_number(gint w, gint num)
 {
-	const gchar *s, *n;
-	s = get_text(w);
-	n = num_to_str(num);
-	if ((s && n && strcmp(s, n)) || s == NULL) {
-		set_text(MY_LABEL(w), n);
-		expose_label(NULL, w);
-	}
+    const gchar *s, *n;
+    s = get_text(w);
+    n = num_to_str(num);
+    if ((s && n && strcmp(s, n)) || s == NULL) {
+        set_text(MY_LABEL(w), n);
+        expose_label(NULL, w);
+    }
 }
 
 void set_points(gint blue[], gint white[])
@@ -701,6 +706,8 @@ void set_points(gint blue[], gint white[])
         set_number(wk, white[2]);
         set_number(ws, white[3]);
     }
+
+    update_tvlogo = TRUE;
 }
 
 void set_score(guint score)
@@ -905,6 +912,22 @@ void show_message(gchar *cat_1,
 
     if (big_dialog)
         show_big();
+
+    if (mode == MODE_MASTER) {
+        struct message msg;
+        memset(&msg, 0, sizeof(msg));
+        msg.type = MSG_UPDATE_LABEL;
+        msg.u.update_label.label_num = SAVED_LAST_NAMES;
+        strncpy(msg.u.update_label.text, saved_last1,
+                sizeof(msg.u.update_label.text)-1);
+        strncpy(msg.u.update_label.text2, saved_last2,
+                sizeof(msg.u.update_label.text2)-1);
+        strncpy(msg.u.update_label.text3, saved_cat,
+                sizeof(msg.u.update_label.text3)-1);
+        send_label_msg(&msg);
+    }
+
+    update_tvlogo = TRUE;
 }
 
 gchar *get_name(gint who)
@@ -1350,19 +1373,32 @@ gboolean send_label(gint bigdsp)
 
 static gboolean timeout(void *param)
 {
-        update_clock();
+    update_clock();
 
-	if (big_dialog && time(NULL) > big_end)
-		delete_big(NULL);
+    if (big_dialog && time(NULL) > big_end)
+        delete_big(NULL);
 
-        if (mode != MODE_MASTER)
-                return TRUE;
+    if (update_tvlogo || mode == MODE_SLAVE) {
+        static gboolean vlc_conn = FALSE;
+        extern gboolean vlc_connection_ok;
 
-        if (send_label(0)) // send second if one exists
-                if (send_label(0)) // send third if second exists
-                        send_label(0);
+        if ((vlc_connection_ok && vlc_conn == FALSE) ||
+            update_tvlogo) {
+            write_tv_logo(NULL);
+            update_tvlogo = FALSE;
+        }
 
+        vlc_conn = vlc_connection_ok;
+    }
+
+    if (mode != MODE_MASTER)
         return TRUE;
+
+    if (send_label(0)) // send second if one exists
+        if (send_label(0)) // send third if second exists
+            send_label(0);
+
+    return TRUE;
 }
 
 void update_label(struct msg_update_label *msg)
@@ -1378,14 +1414,20 @@ void update_label(struct msg_update_label *msg)
         display_ad_window();
     } else if (w == START_COMPETITORS) {
         display_comp_window(msg->text3, msg->text, msg->text2);
+        write_tv_logo(msg);
         return;
     } else if (w == STOP_COMPETITORS) {
         close_ad_window();
     } else if (w == START_WINNER) {
         display_ask_window(msg->text, msg->text2, msg->text3[0]);
+        write_tv_logo(msg);
         return;
     } else if (w == STOP_WINNER) {
         close_ask_window();
+    } else if (w == SAVED_LAST_NAMES) {
+        strncpy(saved_last1, msg->text, sizeof(saved_last1)-1);
+        strncpy(saved_last2, msg->text2, sizeof(saved_last2)-1);
+        strncpy(saved_cat, msg->text3, sizeof(saved_cat)-1);
     } else if (w >= 0 && w < num_labels) {
         //labels[w].x = msg->x;
         //labels[w].y = msg->y;
@@ -1411,6 +1453,8 @@ void update_label(struct msg_update_label *msg)
 
     if (big_dialog)
         show_big();
+
+    write_tv_logo(msg);
 }
 
 #if 0
@@ -1724,6 +1768,8 @@ int main( int   argc,
     gth = g_thread_create((GThreadFunc)master_thread,
                           (gpointer)&run_flag, FALSE, NULL);
     gth = g_thread_create((GThreadFunc)video_thread,
+                          (gpointer)&run_flag, FALSE, NULL);
+    gth = g_thread_create((GThreadFunc)tvlogo_thread,
                           (gpointer)&run_flag, FALSE, NULL);
 
     gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER_ALWAYS);
@@ -2560,3 +2606,238 @@ void font_dialog(GtkWidget *w, gpointer data)
     gtk_widget_destroy(dialog);
 }
 
+
+
+#define D     4.0
+#define FS    0.8
+#define WL1 200.0
+#define WL2 160.0
+#define RL1  24.0
+#define RL2  16.0
+#define CL1  16.0
+#define CL2  10.0
+#define SP    5.0
+
+gdouble tvlogo_scale = 1.0;
+
+#define tvc1 tvc
+#define tvc2 tvc
+#define tvcs1 tvcs
+#define tvcs2 tvcs
+
+cairo_surface_t *tvcs = NULL;
+cairo_t *tvc = NULL;
+
+G_LOCK_EXTERN(logofile);
+
+static void start_tv_logo(cairo_surface_t **cs, cairo_t **c, gdouble w, gdouble h, gint rows)
+{
+    if (*c) cairo_destroy(*c);
+    if (*cs) cairo_surface_destroy(*cs);
+
+    *cs = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, w, h*rows);
+    *c = cairo_create(*cs);
+
+    cairo_set_font_size(*c, FS*h*tvlogo_scale);
+    cairo_select_font_face(*c, "arial",
+                           CAIRO_FONT_SLANT_NORMAL,
+                           CAIRO_FONT_WEIGHT_BOLD);
+}
+
+static void show_tv_logo(cairo_surface_t *cs, cairo_t *c)
+{
+    cairo_show_page(c);
+
+    G_LOCK(logofile);
+    if (++tvlogo_update >= NUM_LOGO_FILES)
+        tvlogo_update = 0;
+
+    if (tvlogofile[tvlogo_update])
+        cairo_surface_write_to_png(cs, tvlogofile[tvlogo_update]);
+    G_UNLOCK(logofile);
+}
+
+#define DSP_IS_LABEL(_x) (w == -1 || w == _x)
+#define DSP_TEXT(_x) (labels[_x].text)
+#define DSP_LBL(_x) labels[_x]
+
+void write_tv_logo(struct msg_update_label *msg)
+{
+    if (!vlc_connection_ok)
+        return;
+
+    gint i, w = msg ? msg->label_num : -1; // -1 updates everything
+    //cairo_surface_t *tvcs1 = NULL, *tvcs2 = NULL;
+    //cairo_t *tvc1 = NULL, *tvc2 = NULL;
+    gdouble row1 = RL1*tvlogo_scale, row2 = RL2*tvlogo_scale;
+    gdouble width1 = WL1*tvlogo_scale, width2 = WL2*tvlogo_scale;
+    gdouble col1 = CL1*tvlogo_scale, col2 = CL2*tvlogo_scale;
+    gdouble d1 = row1*(1-FS), d2 = row2*(1-FS);
+    static glong wait_stop_competitors = 0;
+
+    if (w == STOP_COMPETITORS ||
+        (wait_stop_competitors && time(NULL) > wait_stop_competitors + 10))
+        wait_stop_competitors = 0;
+
+    if (wait_stop_competitors)
+        return;
+
+    if (w == START_BIG || w == STOP_BIG || w == STOP_COMPETITORS || w == SAVED_LAST_NAMES)
+        w = -1;
+
+    if (w == START_COMPETITORS) {
+        gchar *p;
+        gchar category[32];
+        gchar b_last[32];
+        gchar w_last[32];
+
+        start_tv_logo(&tvcs1, &tvc1, WL1, RL1, 3);
+
+        strncpy(category, msg->text3, sizeof(category)-1);
+        strncpy(b_last, msg->text, sizeof(b_last)-1);
+        strncpy(w_last, msg->text2, sizeof(w_last)-1);
+    
+        p = strchr(b_last, '\t');
+        if (p) *p = 0;
+
+        p = strchr(w_last, '\t');
+        if (p) *p = 0;
+
+        cairo_set_source_rgb(tvc1, 0.0, 0.0, 0.0);
+        cairo_rectangle(tvc1, 0.0, 0.0, width1, row1);
+        cairo_fill(tvc1);
+
+        cairo_set_source_rgb(tvc1, 1.0, 1.0, 1.0);
+        cairo_rectangle(tvc1, 0.0, row1, width1, row1);
+        cairo_fill(tvc1);
+
+        cairo_set_source_rgb(tvc1, 0.0, 0.0, 1.0);
+        cairo_rectangle(tvc1, 0.0, 2*row1, width1, row1);
+        cairo_fill(tvc1);
+
+        cairo_set_source_rgb(tvc1, 1.0, 1.0, 1.0);
+        cairo_move_to(tvc1, 0.0, row1 - d1);
+        cairo_show_text(tvc1, category);
+
+        cairo_set_source_rgb(tvc1, 0.0, 0.0, 0.0);
+
+        //cairo_text_extents(c, labels[blue_name_1].text, &extents);
+        //gdouble y = (row1 + extents.height)/2.0;// - extents.y_bearing;
+        //g_print("row1=%f extheight=%f bear=%f\n", row1, extents.height, extents.y_bearing);
+        cairo_move_to(tvc1, 0.0, 2*row1 - d1);
+        cairo_show_text(tvc1, b_last);
+
+        cairo_set_source_rgb(tvc1, 1.0, 1.0, 1.0);
+        //cairo_text_extents(c, labels[white_name_1].text, &extents);
+        //y = row1 + (row1 + extents.height)/2.0;// - extents.y_bearing;
+        cairo_move_to(tvc1, 0.0, 3*row1 - d1);
+        cairo_show_text(tvc1, w_last);
+        
+        wait_stop_competitors = time(NULL);
+
+        show_tv_logo(tvcs1, tvc1);
+        return;
+    } 
+
+    start_tv_logo(&tvcs2, &tvc2, width2, row2, 2);
+
+    // blue_name_1
+    cairo_save(tvc2);
+    cairo_rectangle(tvc2, 0.0, 0.0, width2-8*col2-SP, row2);
+    cairo_clip(tvc2);
+    cairo_set_source_rgb(tvc2, 1.0, 1.0, 1.0);
+    cairo_rectangle(tvc2, 0.0, 0.0, width2-8*col2-SP, row2);
+    cairo_fill(tvc2);
+    cairo_set_source_rgb(tvc2, 0.0, 0.0, 0.0);
+    cairo_move_to(tvc2, 0.0, row2 - d2);
+    cairo_show_text(tvc2, saved_last1/*labels[blue_name_1].text*/);
+    cairo_restore(tvc2);
+
+    // white_name_1
+    cairo_save(tvc2);
+    cairo_rectangle(tvc2, 0.0, row2, width2-8*col2-SP, row2);
+    cairo_clip(tvc2);
+    cairo_set_source_rgb(tvc2, 0.0, 0.0, 1.0);
+    cairo_rectangle(tvc2, 0.0, row2, width2-8*col2-SP, row2);
+    cairo_fill(tvc2);
+    cairo_set_source_rgb(tvc2, 1.0, 1.0, 1.0);
+    cairo_move_to(tvc2, 0.0, 2*row2 - d2);
+    cairo_show_text(tvc2, saved_last2/*labels[white_name_1].text*/);
+    cairo_restore(tvc2);
+
+    // clocks
+    if (labels[o_sec].text[0] != '0' || labels[o_tsec].text[0] != '0') {
+        cairo_save(tvc2);
+        cairo_set_font_size(tvc2, row2);
+        cairo_set_source_rgb(tvc2, 0.0, 0.7, 0.0);
+        cairo_rectangle(tvc2, width2-4*col2, row2/2.0-4, 4*col2, row2+8);
+        cairo_fill(tvc2);
+        cairo_set_source_rgb(tvc2, 1.0, 1.0, 1.0);
+        cairo_move_to(tvc2, width2-3*col2, 1.5*row2 - d2);
+        cairo_show_text(tvc2, labels[o_tsec].text);
+        cairo_move_to(tvc2, width2-2*col2, 1.5*row2 - d2);
+        cairo_show_text(tvc2, labels[o_sec].text);
+        cairo_restore(tvc2);
+    } else {
+        cairo_save(tvc2);
+        cairo_set_font_size(tvc2, row2);
+        cairo_set_source_rgba(tvc2, 0.0, 0.0, 0.0, 0.5);
+        cairo_rectangle(tvc2, width2-4*col2, row2/2.0-4, 4*col2, row2+8);
+        cairo_fill(tvc2);
+        cairo_set_source_rgb(tvc2, labels[t_sec].fg_r, labels[t_sec].fg_g, labels[t_sec].fg_b);
+        cairo_move_to(tvc2, width2-4*col2, 1.5*row2 - d2);
+        cairo_show_text(tvc2, labels[t_min].text);
+        cairo_move_to(tvc2, width2-3*col2, 1.5*row2 - d2);
+        cairo_show_text(tvc2, labels[colon].text);
+        cairo_move_to(tvc2, width2-2*col2, 1.5*row2 - d2);
+        cairo_show_text(tvc2, labels[t_tsec].text);
+        cairo_move_to(tvc2, width2-col2, 1.5*row2 - d2);
+        cairo_show_text(tvc2, labels[t_sec].text);
+        cairo_restore(tvc2);
+    }
+
+    // score
+    static gint *lbls[2][4] = {{&bw, &by, &bk, &bs},{&ww, &wy, &wk, &ws}};
+    gint j;
+
+    cairo_set_source_rgb(tvc2, 1.0, 1.0, 1.0);
+    cairo_rectangle(tvc2, width2-8*col2, 0.0, 3*col2, row2);
+    cairo_fill(tvc2);
+
+    cairo_set_source_rgb(tvc2, 0.0, 0.0, 1.0);
+    cairo_rectangle(tvc2, width2-8*col2, row2, 3*col2, row2);
+    cairo_fill(tvc2);
+
+    for (i = 0; i < 2; i++) {
+        if (i == 0)
+            cairo_set_source_rgb(tvc2, 0.0, 0.0, 0.0);
+        else
+            cairo_set_source_rgb(tvc2, 1.0, 1.0, 1.0);
+
+        for (j = 0; j < 3; j++) {
+            cairo_move_to(tvc2, width2-(8-j)*col2, (i==0 ? row2 : 2*row2) - d2);
+            cairo_show_text(tvc2, labels[*lbls[i][j]].text);
+        }
+    }
+
+    if (labels[bs].text[0] != '0' || labels[ws].text[0] != '0') {
+        if (labels[bs].text[0] != '0') {
+            cairo_set_source_rgb(tvc2, 1.0, 1.0, 0.0);
+            cairo_rectangle(tvc2, width2-5*col2, 0, col2, row2);
+            cairo_fill(tvc2);
+            cairo_set_source_rgb(tvc2, 0.7, 0.0, 0.0);
+            cairo_move_to(tvc2, width2-5*col2, row2 - d2);
+            cairo_show_text(tvc2, labels[bs].text);
+        }
+        if (labels[ws].text[0] != '0') {
+            cairo_set_source_rgb(tvc2, 1.0, 1.0, 0.0);
+            cairo_rectangle(tvc2, width2-5*col2, row2, col2, row2);
+            cairo_fill(tvc2);
+            cairo_set_source_rgb(tvc2, 0.7, 0.0, 0.0);
+            cairo_move_to(tvc2, width2-5*col2, 2*row2 - d2);
+            cairo_show_text(tvc2, labels[ws].text);
+        }
+    }
+
+    show_tv_logo(tvcs2, tvc2);
+}
