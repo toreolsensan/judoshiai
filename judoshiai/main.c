@@ -13,8 +13,6 @@
 
 #include <gtk/gtk.h>
 #include <glib.h>
-#include <glib/gthread.h>
-#include <glib/gstdio.h>
 #include <gdk/gdkkeysyms.h>
 
 #include <curl/curl.h>
