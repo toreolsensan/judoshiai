@@ -608,6 +608,8 @@ gint db_category_match_status(gint category)
 
     struct category_data *catdata = avl_get_category(category);
     if (catdata) {
+        if (catdata->system.system)
+            res |= SYSTEM_DEFINED;
         catdata->match_status = res;
         catdata->match_count = match_count;
         catdata->matched_matches_count = matched_matches_count;
