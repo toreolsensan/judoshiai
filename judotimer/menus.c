@@ -194,7 +194,7 @@ static GtkWidget *blue_wins, *white_wins, *red_background, *full_screen, *rules_
 static GtkWidget *rules_leave_points, *rules_stop_ippon, *whitefirst, *showcomp, *confirm_match;
 static GtkWidget *tatami_sel, *tatami_sel_none, *tatami_sel_1,  *tatami_sel_2,  *tatami_sel_3,  *tatami_sel_4;
 static GtkWidget *tatami_sel_5, *tatami_sel_6, *tatami_sel_7, *tatami_sel_8, *tatami_sel_9, *tatami_sel_10;
-static GtkWidget *node_ip, *my_ip, *video_ip, *manual, *about, *quick_guide;
+static GtkWidget *node_ip, *my_ip, *video_ip, *vlc_cport, *manual, *about, *quick_guide;
 static GtkWidget *light, *menu_light, *menu_switched, *timeset;
 static GtkWidget *inc_time, *dec_time, *inc_osaekomi, *dec_osaekomi, *clock_only, *set_time, *layout_sel;
 static GtkWidget *layout_sel_1, *layout_sel_2, *layout_sel_3, *layout_sel_4, *layout_sel_5, *layout_sel_6, *layout_sel_7;
@@ -458,6 +458,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     node_ip         = gtk_menu_item_new_with_label("Communication node");
     my_ip           = gtk_menu_item_new_with_label("Own IP addresses");
     video_ip        = gtk_menu_item_new_with_label("");
+    vlc_cport       = gtk_menu_item_new_with_label("");
     inc_time        = gtk_menu_item_new_with_label("");
     dec_time        = gtk_menu_item_new_with_label("");
     inc_osaekomi    = gtk_menu_item_new_with_label("");
@@ -527,6 +528,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), node_ip);
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), my_ip);
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), video_ip);
+    gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), vlc_cport);
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), gtk_separator_menu_item_new());
 
     timeset = gtk_menu_item_new_with_label("");
@@ -585,6 +587,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     g_signal_connect(G_OBJECT(node_ip),         "activate", G_CALLBACK(ask_node_ip_address),  (gpointer)0);
     g_signal_connect(G_OBJECT(my_ip),           "activate", G_CALLBACK(show_my_ip_addresses), (gpointer)0);
     g_signal_connect(G_OBJECT(video_ip),        "activate", G_CALLBACK(ask_video_ip_address), (gpointer)0);
+    g_signal_connect(G_OBJECT(vlc_cport),       "activate", G_CALLBACK(ask_tvlogo_settings),  (gpointer)0);
     g_signal_connect(G_OBJECT(inc_time),        "activate", G_CALLBACK(manipulate_time),      (gpointer)0);
     g_signal_connect(G_OBJECT(dec_time),        "activate", G_CALLBACK(manipulate_time),      (gpointer)1);
     g_signal_connect(G_OBJECT(inc_osaekomi),    "activate", G_CALLBACK(manipulate_time),      (gpointer)2);
@@ -626,6 +629,7 @@ void set_preferences(void)
     GError *error = NULL;
     gchar  *str;
     gint    i;
+    gdouble d;
 
     if ((str = g_key_file_get_string(keyfile, "preferences", "color", &error))) {
         if (strcmp(str, "red") == 0) {
@@ -808,6 +812,42 @@ void set_preferences(void)
         video_http_password[0] = 0;
 
     video_update = TRUE;
+
+    error = NULL;
+    i = g_key_file_get_integer(keyfile, "preferences", "vlcport", &error);
+    if (!error)
+        vlc_port = i;
+    else
+        vlc_port = 0;
+
+    error = NULL;
+    i = g_key_file_get_integer(keyfile, "preferences", "tvlogox", &error);
+    if (!error)
+        tvlogo_x = i;
+    else
+        tvlogo_x = 10;
+
+    error = NULL;
+    i = g_key_file_get_integer(keyfile, "preferences", "tvlogoy", &error);
+    if (!error)
+        tvlogo_y = i;
+    else
+        tvlogo_y = 10;
+
+    error = NULL;
+    d = g_key_file_get_double(keyfile, "preferences", "tvlogoscale", &error);
+    if (!error)
+        tvlogo_scale = d;
+    else
+        tvlogo_scale = 1.0;
+
+    error = NULL;
+    i = g_key_file_get_integer(keyfile, "preferences", "tvlogoport", &error);
+    if (!error)
+        tvlogo_port = i;
+    else
+        tvlogo_port = 0;
+
 }
 
 gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param)
@@ -913,6 +953,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(node_ip,      _("Communication node"));
     change_menu_label(my_ip,        _("Own IP addresses"));
     change_menu_label(video_ip,     _("Video server"));
+    change_menu_label(vlc_cport,    _("VLC control"));
 
     change_menu_label(timeset,      _("Set time"));
     change_menu_label(inc_time,     _("Increment time"));
