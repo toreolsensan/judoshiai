@@ -1348,7 +1348,7 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
 
     g_free(catname);
 
-    if ((db_category_match_status(mdata->mcategory_ix) & REAL_MATCH_EXISTS) && mdata->edit == FALSE) {
+    if ((db_category_match_status(mdata->mcategory_ix) & SYSTEM_DEFINED /*REAL_MATCH_EXISTS*/) && mdata->edit == FALSE) {
         // Cannot draw again.
 #if 0
         struct judoka *j = get_data(mdata->mcategory_ix);
