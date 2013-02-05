@@ -387,7 +387,7 @@ void view_popup_menu(GtkWidget *treeview,
         ok = gtk_tree_model_iter_next(current_model, &iter);
     }
 
-    if ((matched & REAL_MATCH_EXISTS) == 0) {
+    if ((matched & SYSTEM_DEFINED /*REAL_MATCH_EXISTS*/) == 0) {
         menuitem = gtk_menu_item_new_with_label(_("Move Competitors Here"));
         g_signal_connect(menuitem, "activate",
                          (GCallback) view_popup_menu_move_judoka, userdata);
@@ -438,7 +438,7 @@ void view_popup_menu(GtkWidget *treeview,
 		     (GCallback) view_popup_menu_copy_judoka, userdata);
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
 
-    if ((matched & REAL_MATCH_EXISTS) == 0) {
+    if ((matched & SYSTEM_DEFINED /*REAL_MATCH_EXISTS*/) == 0) {
         menuitem = gtk_menu_item_new_with_label(_("Remove Competitors"));
         g_signal_connect(menuitem, "activate",
                          (GCallback) remove_competitors, userdata);
