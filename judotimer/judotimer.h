@@ -71,6 +71,7 @@
 #define STOP_COMPETITORS 132
 #define START_WINNER 133
 #define STOP_WINNER 134
+#define SAVED_LAST_NAMES 135
 
 extern GTimer *timer;
 
@@ -114,6 +115,19 @@ extern gchar  video_http_user[32];
 extern gchar  video_http_password[32];
 extern gchar  video_proxy_host[128];
 extern guint  video_proxy_port;
+
+#define NUM_LOGO_FILES 4
+extern gchar   *tvlogofile[NUM_LOGO_FILES];
+extern gint     tvlogo_update;
+extern gdouble  tvlogo_scale;
+extern guint    vlc_port;
+extern gint     tvlogo_x;
+extern gint     tvlogo_y;
+extern guint    tvlogo_port;
+extern gboolean update_tvlogo; 
+extern cairo_surface_t *tvcs;
+extern cairo_t *tvc;
+extern gboolean vlc_connection_ok;
 
 extern gboolean this_is_shiai(void);
 extern void copy_packet(struct message *msg); // not used
@@ -192,6 +206,8 @@ extern void display_ad_window(void);
 extern void send_label_msg(struct message *msg);
 extern gpointer master_thread(gpointer args);
 extern gpointer video_thread(gpointer args);
+extern gpointer tvlogo_thread(gpointer args);
+extern gpointer mjpeg_thread(gpointer args);
 extern void update_label(struct msg_update_label *msg);
 extern gboolean send_label(gint bigdsp);
 extern void open_sound(void);
@@ -215,5 +231,8 @@ extern void create_video_window(void);
 extern void video_record(gboolean yes);
 extern glong hostname_to_addr(gchar *str);
 extern void video_init(void);
+extern void ask_tvlogo_settings(GtkWidget *w, gpointer data);
+extern void write_tv_logo(struct msg_update_label *msg);
+extern void tvlogo_send_new_frame(gchar *frame, gint length);
 
 #endif
