@@ -902,16 +902,23 @@ void last_name_cell_data_func (GtkTreeViewColumn *col,
         gboolean defined = TRUE;
         gboolean tie = FALSE;
         gboolean extra = FALSE;
+        gint numcomp = 0;
 		
         if (user_data == NULL) {
             //status = weight;
             struct category_data *catdata = avl_get_category(index);
-            status = catdata ? catdata->match_status : 0;
-            defined = catdata ? catdata->defined : TRUE;
-            tie = catdata ? catdata->tie : FALSE;
+            if (catdata) {
+                status = catdata->match_status;
+                defined = catdata->defined;
+                tie = catdata->tie;
+                numcomp = catdata->system.numcomp;
+            }
 
             // look for homeless competitors
-            if (status & REAL_MATCH_EXISTS) {
+            if ((status & SYSTEM_DEFINED) && numcomp < gtk_tree_model_iter_n_children(model, iter))
+                extra = TRUE;
+#if 0
+            if (status & SYSTEM_DEFINED /*REAL_MATCH_EXISTS*/) {
                 gboolean ok = gtk_tree_model_iter_children(model, &child, iter);
                 while (ok) {
                     gint jindex;
@@ -923,6 +930,7 @@ void last_name_cell_data_func (GtkTreeViewColumn *col,
                     ok = gtk_tree_model_iter_next(model, &child);
                 }
             }
+#endif
         }
 
         if (tie && prop_get_int_val(PROP_RESOLVE_3_WAY_TIES_BY_WEIGHTS) == FALSE)
@@ -935,7 +943,7 @@ void last_name_cell_data_func (GtkTreeViewColumn *col,
                          "cell-background", "Lightblue", 
                          "cell-background-set", TRUE, 
                          NULL);
-        else if ((status & REAL_MATCH_EXISTS) && (status & MATCH_UNMATCHED) == 0)
+        else if (((status & SYSTEM_DEFINED /*REAL_MATCH_EXISTS*/) && (status & MATCH_UNMATCHED) == 0))
             g_object_set(renderer, 
                          "cell-background", "Green", 
                          "cell-background-set", TRUE, 
