@@ -840,7 +840,7 @@ void last_name_cell_data_func (GtkTreeViewColumn *col,
     guint  weight;
     gint   seeding;
     gchar *comment = NULL;
-    GtkTreeIter parent, child;
+    GtkTreeIter parent;
 
     gtk_tree_model_get(model, iter, 
                        COL_INDEX, &index,
@@ -1412,7 +1412,7 @@ static GtkWidget *create_view_and_model(void)
     col_offset = gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (view),
                                                               -1, _("Seeding"),
                                                               renderer, "text",
-                                                              COL_WEIGHT,
+                                                              COL_SEEDING,
                                                               NULL);
     col = gtk_tree_view_get_column (GTK_TREE_VIEW (view), col_offset - 1);
     gtk_tree_view_column_set_cell_data_func(col, renderer, seeding_cell_data_func, NULL, NULL);
@@ -1426,7 +1426,7 @@ static GtkWidget *create_view_and_model(void)
     col_offset = gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (view),
                                                               -1, _("Club Seeding"),
                                                               renderer, "text",
-                                                              COL_WEIGHT,
+                                                              COL_CLUBSEEDING,
                                                               NULL);
     col = gtk_tree_view_get_column (GTK_TREE_VIEW (view), col_offset - 1);
     gtk_tree_view_column_set_cell_data_func(col, renderer, seeding_cell_data_func, (gpointer)1, NULL);
@@ -2119,40 +2119,31 @@ void barcode_search(GtkWidget *w, gpointer data)
 #endif
 }
 
+static void set_col_title(gint column, gchar *title)
+{
+    GtkTreeViewColumn *col = gtk_tree_view_get_column(GTK_TREE_VIEW(current_view), column);
+    if (col)
+        gtk_tree_view_column_set_title(col, title);
+    else
+        g_print("No column for '%s'!\n", title);
+}
+
 void set_competitors_col_titles(void)
 {
-    GtkTreeViewColumn *col;
-
     if (!current_view)
         return;
 
-    col = gtk_tree_view_get_column(GTK_TREE_VIEW(current_view), COL_LAST_NAME-1);
-    gtk_tree_view_column_set_title(col, _("Last Name"));
-
-    col = gtk_tree_view_get_column(GTK_TREE_VIEW(current_view), COL_FIRST_NAME-1);
-    gtk_tree_view_column_set_title(col, _("First Name"));
-
-    col = gtk_tree_view_get_column(GTK_TREE_VIEW(current_view), COL_BIRTHYEAR-1);
-    gtk_tree_view_column_set_title(col, _("Year of Birth"));
-
-    col = gtk_tree_view_get_column(GTK_TREE_VIEW(current_view), COL_BELT-1);
-    gtk_tree_view_column_set_title(col, _("Grade"));
-
-    col = gtk_tree_view_get_column(GTK_TREE_VIEW(current_view), COL_CLUB-1);
-    gtk_tree_view_column_set_title(col, _("Club"));
-
-    col = gtk_tree_view_get_column(GTK_TREE_VIEW(current_view), COL_COUNTRY-1);
-    gtk_tree_view_column_set_title(col, _("Country"));
-
-    col = gtk_tree_view_get_column(GTK_TREE_VIEW(current_view), COL_WCLASS-1);
-    gtk_tree_view_column_set_title(col, _("Reg. Category"));
-
-    col = gtk_tree_view_get_column(GTK_TREE_VIEW(current_view), COL_WEIGHT-1);
-    gtk_tree_view_column_set_title(col, _("Weight"));
-
-    col = gtk_tree_view_get_column(GTK_TREE_VIEW(current_view), COL_ID-1);
-    gtk_tree_view_column_set_title(col, _("Id"));
-
+    set_col_title(COL_VISIBLE_LAST_NAME, _("Last Name"));
+    set_col_title(COL_VISIBLE_FIRST_NAME, _("First Name"));
+    set_col_title(COL_VISIBLE_BIRTHYEAR, _("Year of Birth"));
+    set_col_title(COL_VISIBLE_BELT, _("Grade"));
+    set_col_title(COL_VISIBLE_CLUB, _("Club"));
+    set_col_title(COL_VISIBLE_COUNTRY, _("Country"));
+    set_col_title(COL_VISIBLE_WCLASS, _("Reg. Category"));
+    set_col_title(COL_VISIBLE_WEIGHT, _("Weight"));
+    set_col_title(COL_VISIBLE_ID, _("Id"));
+    set_col_title(COL_VISIBLE_SEEDING, _("Seeding"));
+    set_col_title(COL_VISIBLE_CLUBSEEDING, _("Club Seeding"));
 
     if (competitor_label)
         gtk_label_set_text(GTK_LABEL(competitor_label), _("Competitors"));
