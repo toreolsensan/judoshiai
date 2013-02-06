@@ -12,864 +12,864 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "Blue won the voting"
-msgstr "Sininen voitti äänestyksen"
+msgstr "Niebieski wygrywa przez HANTEI"
 
 msgid "White won the voting"
-msgstr "Valkoinen voitti äänestyksen"
+msgstr "Biały wygrywa przez HANTEI"
 
 msgid "Match:"
-msgstr "Ottelu:"
+msgstr "Zapas:"
 
 msgid "Next:"
-msgstr "Valmist:"
+msgstr "Następny:"
 
 msgid "Match"
-msgstr "Ottelu"
+msgstr "Zapas"
 
 msgid "Contest"
-msgstr "Ottelu"
+msgstr "Walka"
 
 msgid "Preferences"
-msgstr "Asetukset"
+msgstr "Właściwości"
 
 msgid "Help"
-msgstr "Ohje"
+msgstr "Pomoc"
 
 msgid "Quit"
-msgstr "Lopeta"
+msgstr "Wyjście"
 
 msgid "Red background"
-msgstr "Punainen tausta"
+msgstr "Tło czerwone"
 
 msgid "Tatami not chosen"
-msgstr "Tatamia ei valittu"
+msgstr "Nie wybrano maty"
 
 msgid "Communication node"
-msgstr "Tietoliikennesolmu"
+msgstr "Węzeł komunikacji"
 
 msgid "Own IP addresses"
-msgstr "Omat IP-osoitteet"
+msgstr "Własny adres IP"
 
 msgid "Manual"
-msgstr "Manuaali"
+msgstr "Instrukcja"
 
 msgid "About"
-msgstr "Tietoja"
+msgstr "O..."
 
 msgid "Address of the communication node"
-msgstr "Tietoliikennesolmu"
+msgstr "Adres węzła komunikacjiń"
 
 msgid "IP address:"
-msgstr "IP-osoite:"
+msgstr "Adres IP:"
 
 msgid "(Connection OK)"
-msgstr "(Yhteys OK)"
+msgstr "(Połączenie OK)"
 
 msgid "(Connection broken)"
-msgstr "(Yhteys katkennut)"
+msgstr "(Połączenie przerwane)"
 
 msgid ""
 "Connection established to \n"
 "%ld.%ld.%ld.%ld"
-msgstr "Yhteys muodostettu solmuun %ld.%ld.%ld.%ld"
+msgstr "Połączenie ustanowione do %ld.%ld.%ld.%ld"
 
 msgid "Connection to the node broken"
-msgstr "Yhteys solmuun katkennut"
+msgstr "Połączenie z węzłem przerwane"
 
 msgid "Change language to Finnish"
-msgstr "Muuta kieli suomeksi"
+msgstr "Zmień język na fiński"
 
 msgid "Change language to Swedish"
-msgstr "Muuta kieli ruotsiksi"
+msgstr "Zmień język na szwedzki"
 
 msgid "Change language to English"
-msgstr "Muuta kieli englanniksi"
+msgstr "Zmień język na angielski"
 
 msgid "Change language to Norwegian"
-msgstr "Muuta kieli norjaksi"
+msgstr "Zmień język na norweski"
 
 msgid "Contest duration automatically from JudoShiai program"
-msgstr "Otteluaika automaattisesti JudoShiai-ohjelmalta"
+msgstr "Czas trwania walki automatycznie z programu JudoShiai"
 
 msgid "Fight:"
-msgstr "Ottelu:"
+msgstr "Walka:"
 
 msgid "Match duration: automatic"
-msgstr "Otteluaika: automaattinen"
+msgstr "Czas walki: automatyczny"
 
 msgid "Match duration: 2 min E-juniors"
-msgstr "Otteluaika: 2 min E-junnut"
+msgstr "Czas walki: 2 min (dzieci)"
 
 msgid "Match duration: 2 min"
-msgstr "Otteluaika: 2 min"
+msgstr "Czas walki: 2 min"
 
 msgid "Match duration: 3 min"
-msgstr "Otteluaika: 3 min"
+msgstr "Czas walki: 3 min"
 
 msgid "Match duration: 4 min"
-msgstr "Otteluaika: 4 min"
+msgstr "Czas walki: 4 min"
 
 msgid "Match duration: 5 min"
-msgstr "Otteluaika: 5 min"
+msgstr "Czas walki: 5 min"
 
 msgid "Contest duration: automatic"
-msgstr "Otteluaika: automaattinen"
+msgstr "Czas walki: automaattinen"
 
 msgid "Contest duration: 2 min (short pin times)"
-msgstr "Otteluaika: 2 min E-junnut"
+msgstr "Czas walki: 2 min (dzieci)"
 
 msgid "Contest duration: 2 min"
-msgstr "Otteluaika: 2 min"
+msgstr "Czas walki: 2 min"
 
 msgid "Contest duration: 3 min"
-msgstr "Otteluaika: 3 min"
+msgstr "Czas walki: 3 min"
 
 msgid "Contest duration: 4 min"
-msgstr "Otteluaika: 4 min"
+msgstr "Czas walki: 4 min"
 
 msgid "Contest duration: 5 min"
-msgstr "Otteluaika: 5 min"
+msgstr "Czas walki: 5 min"
 
 msgid "Majority of three: blue wins"
-msgstr "Äänestys: sininen voittaa"
+msgstr "Do dwóch wygranych: wygrywa niebieski"
 
 msgid "Hantei: blue wins"
-msgstr "Hantei: sininen voittaa"
+msgstr "Hantei: wygrywa niebieski"
 
 msgid "Hantei: white wins"
-msgstr "Hantei: valkoinen voittaa"
+msgstr "Hantei: wygrywa biały"
 
 msgid "Contest area not chosen"
-msgstr "Mattoa ei valittu"
+msgstr "Nie wybrano pola walki"
 
 msgid "Contest area 1"
-msgstr "Matto 1"
+msgstr "Mata 1"
 
 msgid "Contest area 2"
-msgstr "Matto 2"
+msgstr "Mata 2"
 
 msgid "Contest area 3"
-msgstr "Matto 3"
+msgstr "Mata 3"
 
 msgid "Contest area 4"
-msgstr "Matto 4"
+msgstr "Mata 4"
 
 msgid "Contest area 5"
-msgstr "Matto 5"
+msgstr "Mata 5"
 
 msgid "Contest area 6"
-msgstr "Matto 6"
+msgstr "Mata 6"
 
 msgid "Contest area 7"
-msgstr "Matto 7"
+msgstr "Mata 7"
 
 msgid "Contest area 8"
-msgstr "Matto 8"
+msgstr "Mata 8"
 
 msgid "Increment time"
-msgstr "Lisää ottelukelloa"
+msgstr "Czas narastająco"
 
 msgid "Decrement time"
-msgstr "Vähennä ottelukelloa"
+msgstr "Czas malejąco"
 
 msgid "Increment osaekomi"
-msgstr "Lisää sidontakelloa"
+msgstr "Osaekomi narastająco"
 
 msgid "Decrement osaekomi"
-msgstr "Vähennä sidontakelloa"
+msgstr "Osaekomi malejąco"
 
 msgid "View clocks only"
-msgstr "Näytä vain kellot"
+msgstr "Tylko zegar"
 
 msgid "Increment pin time"
-msgstr "Lisää sidontakelloa"
+msgstr "Czas w trzymaniu narastająco"
 
 msgid "Decrement pin time"
-msgstr "Vähennä sidontakelloa"
+msgstr "Czas w trzymaniu malejąco "
 
 msgid "Points going to blue"
-msgstr "Pisteet menossa siniselle"
+msgstr "Punkty dla niebieskiego"
 
 msgid "Points going to white"
-msgstr "Pisteet menossa valkoiselle"
+msgstr "Punkty dla białego"
 
 msgid "About Judotimer"
-msgstr "Tietoja Judotimerista"
+msgstr "O aplikacji Judotimer"
 
 msgid "Full screen mode"
-msgstr "Kokonäyttötila"
+msgstr "Pełny ekran"
 
 msgid "Normal operation"
-msgstr "Normaalitila"
+msgstr "Zwykła operacja"
 
 msgid "Master mode"
-msgstr "Isäntä"
+msgstr "Tryb master"
 
 msgid "Slave mode"
-msgstr "Orja"
+msgstr "Tryb slave"
 
 msgid "Undo!"
-msgstr "Eiku!"
+msgstr "Cofnij!"
 
 msgid "Set clocks"
-msgstr "Aseta kellot"
+msgstr "Ustaw zegary"
 
 msgid "Clock:"
-msgstr "Ottelukello:"
+msgstr "Zegar:"
 
 msgid "Hansoku-make to blue"
-msgstr "Hansoku-make siniselle"
+msgstr "Hansoku-make dla niebieskiego"
 
 msgid "Hansoku-make to white"
-msgstr "Hansoku-make valkoiselle"
+msgstr "Hansoku-make dla białego"
 
 msgid "Clear selection"
-msgstr "Poista valinta"
+msgstr "Usuń zaznaczenie"
 
 msgid "Display layout 1"
-msgstr "Näytön asettelu 1"
+msgstr "Format wyświetlania 1"
 
 msgid "Display layout 2"
-msgstr "Näytön asettelu 2"
+msgstr "Format wyświetlania 2"
 
 msgid "Display layout 3"
-msgstr "Näytön asettelu 3"
+msgstr "Format wyświetlania 3"
 
 msgid "Display layout 4"
-msgstr "Näytön asettelu 4"
+msgstr "Format wyświetlania 4"
 
 msgid "Display layout 5"
-msgstr "Näytön asettelu 5"
+msgstr "Format wyświetlania 5"
 
 msgid "Quick guide"
-msgstr "Pikaopas"
+msgstr "Przewodnik"
 
 msgid "Advertise"
-msgstr "Mainosta"
+msgstr "Reklama"
 
 msgid "Run Advertisements"
-msgstr "Mainosta"
+msgstr "Uruchom reklamy"
 
 msgid "Competitors"
-msgstr "Kilpailijat"
+msgstr "Zawodnicy"
 
 msgid "Categories"
-msgstr "Sarjat"
+msgstr "Kategorie"
 
 msgid "Drawing"
-msgstr "Arvonta"
+msgstr "Losowanie"
 
 msgid "Results"
-msgstr "Tulokset"
+msgstr "Wyniki"
 
 msgid "Judotimer"
 msgstr "Judotimer"
 
 msgid "New Tournament"
-msgstr "Uusi"
+msgstr "Nowy turniej"
 
 msgid "Open Tournament"
-msgstr "Valitse"
+msgstr "Otwórz turniej"
 
 msgid "Open Tournament from Net"
-msgstr "Valitse verkosta"
+msgstr "Otwórz turniej z sieci"
 
 msgid "Properties"
-msgstr "Ominaisuudet"
+msgstr "Właściwości"
 
 msgid "New Competitor"
-msgstr "Uusi"
+msgstr "Nowy zawodnik"
 
 msgid "Search Competitor"
-msgstr "Etsi"
+msgstr "Szukaj zawodnika"
 
 msgid "Select From Another Shiai"
-msgstr "Lisää valikoiden toisesta kisasta"
+msgstr "Wybierz z innej aplikacji Shiai"
 
 msgid "Add From a Text File"
-msgstr "Lisää tekstitiedostosta"
+msgstr "Dodaj z pliku tekstowego"
 
 msgid "Add All From Another Shiai"
-msgstr "Lisää kaikki toisesta salikisasta"
+msgstr "Dodaj wszystkich z innej aplikacji Shiai"
 
 msgid "Add All with Weights"
-msgstr "Lisää kaikki toisesta salikisasta painoineen"
+msgstr "Dodaj wszystkich z wagami"
 
 msgid "Remove Unweighted"
-msgstr "Poista punnitsemattomat"
+msgstr "Usuń niezważonych"
 
 msgid "Restore Removed"
-msgstr "Palauta poistetut"
+msgstr "Przywróć usuniętych"
 
 msgid "Bar Code Search"
-msgstr "Viivakoodihaku"
+msgstr "Szukanie po kodzie kreskowym"
 
 msgid "Print Weight Notes"
-msgstr "Tulosta punnituslaput"
+msgstr "Drukuj uwagi do wagi"
 
 msgid "New Category"
-msgstr "Uusi"
+msgstr "Nowa kategoria"
 
 msgid "Remove Empty"
-msgstr "Poista tyhjät"
+msgstr "Usuń puste"
 
 msgid "Create Categories"
-msgstr "Muodosta viralliset sarjat"
+msgstr "Stwórz kategorie"
 
 msgid "Print All"
-msgstr "Tulosta kaikki sarjat"
+msgstr "Drukuj wszystko"
 
 msgid "Best of Three"
-msgstr "3 ottelua kahden poolissa"
+msgstr "Do 2 zwycięstw"
 
 msgid "Place To"
-msgstr "Sijoita"
+msgstr "Rozdziel na"
 
 msgid "Tatamis"
-msgstr "Tatamille"
+msgstr "maty"
 
 msgid "Draw All Categories"
-msgstr "Arvo kaikki"
+msgstr "Losuj wszystkie kategorie"
 
 msgid "Print All (Web And PDF)"
-msgstr "Tulosta kaikki (Web ja PDF)"
+msgstr "Drukuj wszystko (Web i PDF)"
 
 msgid "Print Schedule to Printer"
-msgstr "Tulosta aikataulu (tulostin)"
+msgstr "Drukuj harmonogram (drukarka)"
 
 msgid "Print Schedule to PDF"
-msgstr "Tulosta aikataulu (PDF)"
+msgstr "Drukuj harmonogram (PDF)"
 
 msgid "Print Schedule"
-msgstr "Tulosta aikataulu"
+msgstr "Drukuj harmonogram"
 
 msgid "Control Tatami"
-msgstr "Ohjaa tatamia"
+msgstr "Mata kontrolna"
 
 msgid "Communication Node"
-msgstr "Tietoliikennesolmu"
+msgstr "Węzeł połączenia"
 
 msgid "Own IP Addresses"
-msgstr "Omat IP-osoitteet"
+msgstr "Własny adres IP"
 
 msgid "Show Attached Connections"
-msgstr "Näytä yhteydet tähän solmuun"
+msgstr "Pokaż aktywne połaczenia"
 
 msgid "Automatic Sheet Update"
-msgstr "Autom. kaavion päivitys"
+msgstr "Automatyczna aktualizacja arkuszy"
 
 msgid "Automatic Web Page Update"
-msgstr "Autom. web-sivun päivitys"
+msgstr "Automatyczna aktualizacja WWW"
 
 msgid "Results in Finnish"
-msgstr "Tulostus suomeksi"
+msgstr "Wyniki w j. fińskim"
 
 msgid "Results in Swedish"
-msgstr "Tulostus ruotsiksi"
+msgstr "Wyniki w j. szwedzkim"
 
 msgid "Results in English"
-msgstr "Tulostus englanniksi"
+msgstr "Wyniki w j. angielskim"
 
 msgid "Results in Spanish"
-msgstr "Tulostus espanjaksi"
+msgstr "Wyniki w j. hiszpańskim"
 
 msgid "Results in Estonian"
-msgstr "Tulostus viroksi"
+msgstr "Wyniki w j. estońskim"
 
 msgid "Results in Ukrainian"
-msgstr "Tulostus ukrainaksi"
+msgstr "Wyniki w j. ukraińskim"
 
 msgid "Results in Norwegian"
-msgstr "Tulostus norjaksi"
+msgstr "Wyniki w j. norweskim"
 
 msgid "Weights Visible in Pool Sheets"
-msgstr "Poolikaavioihin painot"
+msgstr "Pokaż wagi na arkuszach grup"
 
 msgid "Sheet Font"
-msgstr "Kaavion fontti"
+msgstr "Czcionka arkusza"
 
 msgid "Password"
-msgstr "Salasana"
+msgstr "Hasło"
 
 msgid "Password:"
-msgstr "Salasana:"
+msgstr "Hasło:"
 
 msgid "Competitor already exists!"
-msgstr "Kilpailija on jo olemassa!"
+msgstr "Zawodnik już istnieje!"
 
 msgid "Competitor"
-msgstr "Kilpailija"
+msgstr "Zawodnik"
 
 msgid "copied"
-msgstr "kopioitu"
+msgstr "skopiowany"
 
 msgid "Category already exists!"
-msgstr "Sarja on jo olemassa!"
+msgstr "Kategoria już istnieje!"
 
 msgid "Category"
-msgstr "Sarja"
+msgstr "Kategoria"
 
 msgid "has been copied with competitors and matches"
-msgstr "kopioitu kilpailijoineen ja otteluineen"
+msgstr "została skopiowana wraz z zawodnikami i walkami"
 
 msgid "Last Name"
-msgstr "Sukunimi"
+msgstr "Nazwisko"
 
 msgid "First Name"
-msgstr "Etunimi"
+msgstr "Imię"
 
 msgid "Year of Birth"
-msgstr "Syntymävuosi"
+msgstr "Rok urodzenia"
 
 msgid "Grade"
-msgstr "Vyö"
+msgstr "Stopień"
 
 msgid "Club"
-msgstr "Seura"
+msgstr "Klub"
 
 msgid "Reg. Category"
-msgstr "Ilm. sarja"
+msgstr "Zgłoszona kategoria"
 
 msgid "Weight"
-msgstr "Paino"
+msgstr "Waga"
 
 msgid "Drawing not finished!"
-msgstr "Arvonta kesken!"
+msgstr "Nie ukończono losowania!"
 
 msgid "Matches matched in category"
-msgstr "Otteluita oteltu sarjassa"
+msgstr "Walki rozegrane w kategorii"
 
 msgid "Clear the results first"
-msgstr "Nollaa tulokset ensin"
+msgstr "Usuń najpierw wyniki"
 
 msgid "Move the competitors"
-msgstr "Sijoita ottelijat"
+msgstr "Przenieś zawodników"
 
 msgid "Number"
-msgstr "Numero"
+msgstr "Numer"
 
 msgid "Select first a competitor and then a number."
-msgstr "Valitse ensin ottelija ja sitten numero."
+msgstr "Wybierz najpierw zawodnika a potel liczbę."
 
 msgid "All the categories has been drawn"
-msgstr "Kaikki sarjat arvottu"
+msgstr "Wszystkie kategorie zostały rozlosowane"
 
 msgid "Choose a directory"
-msgstr "Valitse hakemisto"
+msgstr "Wybierz folder"
 
 msgid "Category drawn"
-msgstr "Sarja arvottu"
+msgstr "Rozlosowano kategorię"
 
 msgid "All the categories located to the tatamis"
-msgstr "Kaikki sarjat sijoitettu tatameille"
+msgstr "Wszystkie kategorie przydzielono do mat"
 
 msgid "Unlocated"
-msgstr "Sijoittamattomat"
+msgstr "Nieprzydzielone"
 
 msgid "Connections to this node"
-msgstr "Yhteydet tähän solmuun"
+msgstr "Połączenie do tego węzła"
 
 msgid "already exists!"
-msgstr "on jo olemassa!"
+msgstr "już istnieje!"
 
 msgid "Group"
-msgstr "Ryhmä"
+msgstr "Grupa"
 
 msgid "Group:"
-msgstr "Ryhmä:"
+msgstr "Grupa:"
 
 msgid "Last Name:"
-msgstr "Sukunimi:"
+msgstr "Nazwisko:"
 
 msgid "First Name:"
-msgstr "Etunimi:"
+msgstr "Imię:"
 
 msgid "Year of Birth:"
-msgstr "Syntymävuosi:"
+msgstr "Rok urodzenia:"
 
 msgid "Grade:"
-msgstr "Vyö:"
+msgstr "Stopień:"
 
 msgid "Club:"
-msgstr "Seura:"
+msgstr "Klub:"
 
 msgid "Reg. Category:"
-msgstr "Ilm. sarja:"
+msgstr "Zgłoszona kategoria:"
 
 msgid "Weight:"
-msgstr "Paino:"
+msgstr "Waga:"
 
 msgid "Category:"
-msgstr "Sarja:"
+msgstr "Kategoria:"
 
 msgid "No seeding"
-msgstr "Ei sijoitusta"
+msgstr "Bez rozstawiania"
 
 msgid "Empty categories removed"
-msgstr "Tyhjät sarjat poistettu"
+msgstr "Puste kategorie usunięte"
 
 msgid "Unweighted competitors removed"
-msgstr "Punnitsemattomat kilpailijat poistettu"
+msgstr "Niezważeni zawodnicy usunięci"
 
 msgid "Matches exist. Undo the drawing first."
-msgstr "Otteluita arvottu. Poista arvonta ensin."
+msgstr "Trwają walki. Najpierw usuń losowanie."
 
 msgid "Competitors removed"
-msgstr "Kilpailijoita poistettu"
+msgstr "Zawodnicy usunięci"
 
 msgid "Type the barcode:"
-msgstr "Anna viivakoodi:"
+msgstr "Wpisz kod kreskowy:"
 
 msgid "Bar code search"
-msgstr "Viivakoodihaku"
+msgstr "Szukanie po kodzie kreskowym"
 
 msgid "Matches"
-msgstr "Ottelut"
+msgstr "Walki"
 
 msgid "Contests"
-msgstr "Ottelut"
+msgstr "Walki"
 
 msgid "Sheet"
-msgstr "Kaavio"
+msgstr "Arkusz"
 
 msgid "Previous winner"
-msgstr "Edellinen voittaja"
+msgstr "Poprzedni zwycięzca"
 
 msgid "Cancel the match"
-msgstr "Peruuta ottelu"
+msgstr "Skasuj walkę"
 
 msgid "Select a tatami"
-msgstr "Valitse matto"
+msgstr "Wybierz matę"
 
 msgid "Password accepted.<br>"
-msgstr "Salasana hyv&auml;ksytty.<br>"
+msgstr "Hasło przyjęte.<br>"
 
 msgid "User"
-msgstr "Käyttäjä"
+msgstr "Użytkownik"
 
 msgid "Back"
-msgstr "Takaisin"
+msgstr "Cofnij"
 
 msgid "Wrong password"
-msgstr "Salasana virheellinen"
+msgstr "Hasło niepoprawne"
 
 msgid "Logout"
-msgstr "Kirjaudu ulos"
+msgstr "Wyloguj"
 
 msgid "Login"
-msgstr "Kirjaudu sis&auml;&auml;n"
+msgstr "Login"
 
 msgid "No rights to give results"
-msgstr "Ei oikeutta antaa tuloksia"
+msgstr "Nie masz uprawnień by przeglądać wyniki"
 
 msgid "Not used"
-msgstr "Ei käytössä"
+msgstr "Nieużywane"
 
 msgid "Column"
-msgstr "Sarake"
+msgstr "Kolumna"
 
 msgid "Import from file"
-msgstr "Tuo tiedostosta"
+msgstr "Importuj z pliku"
 
 msgid "Sex:"
-msgstr "Sukupuoli:"
+msgstr "Płeć:"
 
 msgid "Girl Text:"
-msgstr "Tyttöteksti:"
+msgstr "Kobieta (tekst):"
 
 msgid "Column Separator:"
-msgstr "Sarake-erotin:"
+msgstr "Separator kolumn:"
 
 msgid "competitors added"
-msgstr "kilpailijaa lisätty"
+msgstr "zawodników dodano"
 
 msgid "errors"
-msgstr "virhettä"
+msgstr "błędami"
 
 msgid "competitors existed already"
-msgstr "kilpailijaa oli jo"
+msgstr "zawodników już istnieje"
 
 msgid "Time"
-msgstr "Aika"
+msgstr "Czas"
 
 msgid "Class"
-msgstr "Luokka"
+msgstr "Klasa"
 
 msgid "Message"
-msgstr "Viesti"
+msgstr "Wiadomość"
 
 msgid "Log"
-msgstr "Loki"
+msgstr "Log"
 
 msgid "Is there another JudoShiai program running?"
-msgstr "Onko toinen JudoShiai-ohjelma käynnissä?"
+msgstr "Czy jest uruchomiony inna aplikacja JudoShiai?"
 
 msgid "Yes, another JudoShiai program is running"
-msgstr ""
-"Kyllä, toinen JudoShiai-ohjelma \n"
-"on käynnissä"
+msgstr "Tak, jest uruchomiona"
+" inna aplikacja \n"
+" JudoShiai "
 
 msgid ""
 "No, this the only JudoShiai program. \n"
 "Purge erroneous lock file."
 msgstr ""
-"Ei, tämä on ainut JudoShiai-ohjelma. \n"
-"Pura virheellinen lukitus."
+"Nie, to jest jedyna aplikacja JudoShiai. \n"
+"Usuń błędny plik blokady."
 
 msgid ""
 "Communication is blocked! \n"
 "You can still use the program to create categories etc."
 msgstr ""
-"Tietoliikenne on estetty!\n"
-"Ohjelmaa voi silti käyttää sarjojen luontiin ym."
+"Połączenie zablokowane!\n"
+"Możesz dalej używać programu do tworzenia kategorii itp."
 
 msgid "Pool"
-msgstr "Pooli"
+msgstr "Grupa"
 
 msgid "Double pool"
-msgstr "Tuplapooli"
+msgstr "Dwie grupy"
 
 msgid "Double repechage"
-msgstr "Ranskalainen"
+msgstr "Podwójny repasaż"
 
 msgid "Next match"
-msgstr "Seuraava ottelu"
+msgstr "Następna walka"
 
 msgid "Next contest"
-msgstr "Seuraava ottelu"
+msgstr "Następna walka"
 
 msgid "Preparing"
-msgstr "Valmistautuvat"
+msgstr "Przygotuje się"
 
 msgid "Preparing:"
-msgstr "Valmistautuvat:"
+msgstr "Przygotuje się:"
 
 msgid "Delay the match"
-msgstr "Viivytä ottelua"
+msgstr "Opóźnij walkę"
 
 msgid "Matches matched. Clear the results first."
-msgstr "Otteluita oteltu. Nollaa tulokset ensin."
+msgstr "Rozegrano walki. Najpierw usuń wyniki."
 
 msgid "canceled"
-msgstr "mitätöity"
+msgstr "usunięte"
 
 msgid "changed"
-msgstr "muuttunut"
+msgstr "zmienione"
 
 msgid "points"
-msgstr "pisteet"
+msgstr "punkty"
 
 msgid "Expand All"
-msgstr "Avaa kaikki"
+msgstr "Rozwiń wszystko"
 
 msgid "Collapse All"
-msgstr "Sulje kaikki"
+msgstr "Zwiń wszystko"
 
 msgid "Remove comment"
-msgstr "Poista kommentti"
+msgstr "Usuń komentarz"
 
 msgid "Blue"
-msgstr "Sininen"
+msgstr "Niebieski"
 
 msgid "White"
-msgstr "Valkoinen"
+msgstr "Biały"
 
 msgid "Comment"
-msgstr "Kommentti"
+msgstr "Komentarz"
 
 msgid "Points"
-msgstr "Pisteet"
+msgstr "Punkty"
 
 msgid "Prev. winner:"
-msgstr "Ed. voittaja:"
+msgstr "Poprzedni zwycięzca:"
 
 msgid "Delayed"
-msgstr "Viivytetyt"
+msgstr "Opóźniony"
 
 msgid "Remove delay"
-msgstr "Poista viivytys"
+msgstr "Usuń opóźnienie"
 
 msgid "Date:"
-msgstr "Päivämäärä:"
+msgstr "Data:"
 
 msgid "Place:"
-msgstr "Paikka:"
+msgstr "Miejsce:"
 
 msgid "Start time:"
-msgstr "Aloitusaika:"
+msgstr "Początek:"
 
 msgid "Tournament from the net"
-msgstr "Kilpailu verkosta"
+msgstr "Turniej z sieci"
 
 msgid "Select sheet font"
-msgstr "Valitse kaavioiden fontti"
+msgstr "Wybierz czcionkę"
 
 msgid "Tournament"
-msgstr "Kilpailu"
+msgstr "Turniej"
 
 msgid "Tournament:"
-msgstr "Kilpailu:"
+msgstr "Turniej:"
 
 msgid "Tournaments"
-msgstr "Kilpailut"
+msgstr "Turnieje"
 
 msgid "Competitors:"
-msgstr "Ottelijoita:"
+msgstr "Zawodnicy:"
 
 msgid "Weighted:"
-msgstr "Punnittuja:"
+msgstr "Zważeni:"
 
 msgid "Add competitors"
-msgstr "Lisää kilpailijat"
+msgstr "Dodaj zawodników"
 
 msgid "Clean up duplicates and update reg. categories"
 msgstr ""
-"Korjaa ilm. sarjat iänmukaisiksi ja \n"
-"ota kilpailija vain kerran"
+"Usuń duplikaty oraz uaktualnij \n"
+"rejestrowane kategorie"
 
 msgid "competitors added and updated"
-msgstr "kilpailijaa lisätty päivittäen"
+msgstr "zawodników dodano i uaktualniono"
 
 msgid "competitors already existed"
-msgstr "kilpailijaa oli jo"
+msgstr "zawodników juz istnieje"
 
 msgid "competitors added unchanged"
-msgstr "kilpailijaa lisätty muuttamatta"
+msgstr "zawodników dodano bez zmian"
 
 msgid "Remove drawing first"
-msgstr "Poista arvonta ensin"
+msgstr "Najpierw usuń losowanie"
 
 msgid "already exists"
-msgstr "on jo olemassa"
+msgstr "już istnieje"
 
 msgid "Move Competitors to Category..."
-msgstr "Siirra kilpailijat sarjaan..."
+msgstr "Przenieś zawodników do kategorii..."
 
 msgid "Move Competitors Here"
-msgstr "Siirrä kilpailijat tänne"
+msgstr "Przenieś zawodników tu"
 
 msgid "Compose Unofficial Category"
-msgstr "Muodosta valituista salikisasarja"
+msgstr "Utwórz nieoficjalną kategorię"
 
 msgid "Draw Manually"
-msgstr "Arvo sarja käsin"
+msgstr "Losowanie ręczne"
 
 msgid "Remove Drawing"
-msgstr "Poista arvonta"
+msgstr "Usuń losowanie"
 
 msgid "Copy Competitors"
-msgstr "Kopioi kilpailijat"
+msgstr "Kopiuj zawodników"
 
 msgid "Remove Competitors"
-msgstr "Poista kilpailijat"
+msgstr "Usuń zawodników"
 
 msgid "Show Sheet"
-msgstr "Näytä kaavio"
+msgstr "Pokaż arkusz"
 
 msgid "Search"
-msgstr "Etsi"
+msgstr "Szukaj"
 
 msgid "----- Men -----"
-msgstr "----- Miehet -----"
+msgstr "----- Mężczyźni -----"
 
 msgid "----- Women -----"
-msgstr "----- Naiset -----"
+msgstr "----- Kobiety -----"
 
 msgid "Highest age:"
-msgstr "Ylin ikä:"
+msgstr "Maksymalny wiek:"
 
 msgid "Age text:"
-msgstr "Ikäteksti:"
+msgstr "Wiek (tekst):"
 
 msgid "Match time:"
-msgstr "Otteluaika:"
+msgstr "Czas walki:"
 
 msgid "Rest time:"
-msgstr "Lepoaika:"
+msgstr "Czas odpoczynku:"
 
 msgid "Pin times (IWYK):"
-msgstr "Sidont.(IWYK):"
+msgstr "Czasy trzymania (IWYK):"
 
 msgid "Highest weight (g):"
-msgstr "Ylin paino (g):"
+msgstr "Maksymalna waga (g):"
 
 msgid "Weight text:"
-msgstr "Painoteksti:"
+msgstr "Waga (tekst):"
 
 msgid "Save file"
-msgstr "Tallenna tiedosto"
+msgstr "Zapisz plik"
 
 msgid "Which one is correct?"
-msgstr "Kumpi on oikein?"
+msgstr "Który jest poprawny?"
 
 msgid "Own database"
-msgstr "Oma tietokanta"
+msgstr "Własna baza danych"
 
 msgid "Foreign database"
-msgstr "Vieras tietokanta"
+msgstr "Obca baza danych"
 
 msgid "Do not change"
-msgstr "Jätä ennalleen"
+msgstr "Nie zmieniaj"
 
 msgid "Stop synchronization"
-msgstr "Lopeta synkronointi"
+msgstr "Zatrzymaj synchronizację"
 
 msgid "Number of tatamis:"
-msgstr "Tatamien lkm:"
+msgstr "Ilośc mat:"
 
 msgid "Sheets"
-msgstr "Kaaviot"
+msgstr "Arkusze"
 
 msgid "Category starts"
-msgstr "Sarja alkaa"
+msgstr "Rozpoczęcie kategorii"
 
 msgid "Gold medal match"
-msgstr "Kultamitaliottelu"
+msgstr "Walka o złoto"
 
 msgid "Bronze match A"
-msgstr "Pronssiottelu A"
+msgstr "Walka o brąz A"
 
 msgid "Bronze match B"
-msgstr "Pronssiottelu B"
+msgstr "Walka o brąz B"
 
 msgid "Semifinal A"
-msgstr "Semifinaali A"
+msgstr "Półfinał A"
 
 msgid "Semifinal B"
-msgstr "Semifinaali B"
+msgstr "Półfinał B"
 
 msgid "Show Tatami"
-msgstr "Näytä tatami"
+msgstr "Pokaż matę"
 
 msgid "Start New Match?"
-msgstr "Aloita uusi ottelu?"
+msgstr "Rozpocząć nową walkę?"
 
 msgid "Hansokumake to blue"
-msgstr "Hansoku-make siniselle"
+msgstr "Hansoku-make dla niebieskiego"
 
 msgid "Hansokumake to white"
-msgstr "Hansoku-make valkoiselle"
+msgstr "Hansoku-make dla białego"
 
 msgid "Golden Score"
-msgstr "Jatkoaika"
+msgstr "Golden Score"
 
 msgid "Start Golden Score?"
-msgstr "Aloitetaanko jatkoaika?"
+msgstr "Rozpocząć Golden Score?"
 
 msgid "Hantei"
 msgstr "Hantei"
 
 msgid "Blue wins"
-msgstr "Sininen voittaa"
+msgstr "Wygrywa niebieski"
 
 msgid "White wins"
-msgstr "Valkoinen voittaa"
+msgstr "Wygrywa biały"
 
 msgid "REST TIME"
-msgstr "LEPOAIKA"
+msgstr "CZAS ODPOCZYNKU"
 
 msgid "Seeding:"
-msgstr "Sijoitus:"
+msgstr "Rozstawienie:"
 
 msgid "1"
 msgstr "1"
@@ -884,849 +884,850 @@ msgid "4"
 msgstr "4"
 
 msgid "Freeze match order"
-msgstr "Jäädytä ottelujärjestys"
+msgstr "Zablokuj kolejność walk"
 
 msgid "Unfreeze exported"
-msgstr "Vapauta viedyt"
+msgstr "Odblokuj wyeksportowane"
 
 msgid "Unfreeze imported"
-msgstr "Vapauta tuodut"
+msgstr "Odblokuj zaimportowane"
 
 msgid "Unfreeze this"
-msgstr "Vapauta tämä"
+msgstr "Odblokuj to"
 
 msgid "SQL Dialog"
-msgstr "SQL-dialogi"
+msgstr "Okno dialogowe SQL"
 
 msgid "Print All (PDF)"
-msgstr "Tulosta kaikki (PDF)"
+msgstr "Drukuj wszystko (PDF)"
 
 msgid "Golden Score:"
-msgstr "Jatkoaika:"
+msgstr "Golden Score:"
 
 msgid "SQL"
 msgstr "SQL"
 
 msgid "About JudoInfo"
-msgstr "Tietoja JudoInfosta"
+msgstr "O aplikacji JudoInfo"
 
 msgid "Next"
-msgstr "Seuraava"
+msgstr "Następny"
 
 msgid "Rest"
-msgstr "Loput"
+msgstr "Odpoczynek"
 
 msgid "Do Backup"
-msgstr "Tee varmuuskopio"
+msgstr "Wykonaj kopię zapasową"
 
 msgid "CANNOT OPEN BACKUP FILE"
-msgstr "EI VOI AVATA KOPIOTIEDOSTOA"
+msgstr "NIE MOŻNA OTWORZYĆ PLIKU KOPII ZAPASOWEJ"
 
 msgid "Tournament Backup"
-msgstr "Varmuuskopio"
+msgstr "Kopia zapasowa turnieju"
 
 msgid "Small display"
-msgstr "Pieni näyttö"
+msgstr "Mały format wyświetlania"
 
 msgid "Draw Selected"
-msgstr "Arvo valitut sarjat"
+msgstr "Losuj zaznaczone"
 
 msgid "Draw and Print Selected"
-msgstr "Arvo ja tulosta valitut sarjat"
+msgstr "Losuj i drukuj zaznaczone"
 
 msgid "Print Selected Sheets (Printer)"
-msgstr "Tulosta valitut kaaviot (Tulostin)"
+msgstr "Drukuj zaznaczone arkusz (Drukarka)"
 
 msgid "Print Selected Sheets (PDF)"
-msgstr "Tulosta valitut kaaviot (PDF)"
+msgstr "Drukuj zaznaczone arkusze (PDF)"
 
 msgid "Advertisement"
-msgstr "Mainos"
+msgstr "Reklama"
 
 msgid "Tournament properties"
-msgstr "Kilpailun tiedot"
+msgstr "Właściwości turnieju"
 
 msgid "Print Matches (CSV)"
-msgstr "Tulosta ottelut (CSV)"
+msgstr "Drukuj walki (CSV)"
 
 msgid "Match File"
-msgstr "Ottelutiedosto"
+msgstr "Plik walk"
 
 msgid "Print Not Started Categories"
-msgstr "Tulosta aloittamattomat sarjat"
+msgstr "Drukuj nierozpoczęte kategorie"
 
 msgid "Print Started Categories"
-msgstr "Tulosta aloitetut sarjat"
+msgstr "Drukuj rozpoczęte kategorie"
 
 msgid "Print Finished Categories"
-msgstr "Tulosta päättyneet sarjat"
+msgstr "Drukuj ukończone kategorie"
 
 msgid "Print Result"
-msgstr "Tulosta tulos"
+msgstr "Drukuj wynik"
 
 msgid "Print IWYKS"
-msgstr "Tulosta IWYKS"
+msgstr "Drukuj IWYKS"
 
 msgid "Print Comment"
-msgstr "Tulosta kommentti"
+msgstr "Drukuj komentarz"
 
 msgid "Create Statistics"
-msgstr "Tee tilastot"
+msgstr "Stwórz statystyki"
 
 msgid "NOTE"
-msgstr "HUOMAA"
+msgstr "UWAGA"
 
 msgid "is not a valid ASCII string!"
-msgstr "ei ole hyväksyttävä ASCII-merkkijono!"
+msgstr "nie jest ciągiem znaków ASCII!"
 
 msgid "No koka"
-msgstr "Koka ei käytössä"
+msgstr "Bez koki"
 
 msgid "Leave points for GS"
-msgstr "Jätä pisteet tauluun"
+msgstr "Pozostaw punkty do GS"
 
 msgid "Automatic Match Delay"
-msgstr "Autom. viivytys"
+msgstr "Automatyczne opóźnienie walk"
 
 msgid "Cannot move"
-msgstr "Ei voi siirtää"
+msgstr "Nie można przenieść"
 
 msgid "Mirror Tatami Order"
-msgstr "Käänteinen mattojärjestys"
+msgstr "Odwrotna kolejność mat"
 
 msgid "Mirror tatami order"
-msgstr "Käänteinen mattojärjestys"
+msgstr "Odwrotna kolejność mat"
 
 msgid "Country"
-msgstr "Maa"
+msgstr "Kraj"
 
 msgid "Id"
 msgstr "Id"
 
 msgid "Country:"
-msgstr "Maa:"
+msgstr "Kraj:"
 
 msgid "Id:"
 msgstr "Id:"
 
 msgid "System:"
-msgstr "Järjestelmä:"
+msgstr "System:"
 
 msgid "Default"
-msgstr "Oletus"
+msgstr "Domyślny"
 
 msgid "FIN Double Repechage"
-msgstr "FIN Ranskalainen"
+msgstr "FIN podwójny repasaż"
 
 msgid "SWE Double Repechage"
-msgstr "SWE Ranskalainen"
+msgstr "SWE podwójny repasaż"
 
 msgid "SWE Double Elimination"
-msgstr "SWE Pitkä keräily"
+msgstr "SWE podwójna eliminacja"
 
 msgid "EST Double Elimination"
-msgstr "EST Pitkä keräily"
+msgstr "EST podwójna eliminacja"
 
 msgid "Single Elimination"
-msgstr "Ei keräilyjä"
+msgstr "Pojedyncza eliminacja"
 
 msgid "SWE Single Repechage"
-msgstr "SWE Lyhyt keräily"
+msgstr "SWE pojedynczy repasaż"
 
 msgid "Club Name Only"
-msgstr "Vain seuran nimi"
+msgstr "Tylko nazwa klubu"
 
 msgid "Country Name Only"
-msgstr "Vain maan nimi"
+msgstr "Tylko nazwa kraju"
 
 msgid "Both Club and Country"
-msgstr "Seuran ja maan nimi"
+msgstr "Nazwa klubu i kraj"
 
 msgid "International System"
-msgstr "Kansainvälinen järjestelmä"
+msgstr "System międzynarodowy"
 
 msgid "Finnish System"
-msgstr "Suomalainen järjestelmä"
+msgstr "System fiński"
 
 msgid "Swedish System"
-msgstr "Ruotsalainen järjestelmä"
+msgstr "System szwedzki"
 
 msgid "Estonian System"
-msgstr "Virolainen järjestelmä"
+msgstr "System estoński"
 
 msgid "Reset to Defaults"
-msgstr "Palauta oletusarvot"
+msgstr "Przywróć domyślne"
 
 msgid "View Log"
-msgstr "Näytä loki"
+msgstr "Zobacz log"
 
 msgid "Double Pool"
-msgstr "Tuplapooli"
+msgstr "Dwie grupy"
 
 msgid "Cannot handle: Database created with newer JudoShiai version."
-msgstr "Ei voi käsitellä: Tietokanta on tehty uudemmalla JudoShiai-versiolla."
+msgstr "Nie obsługiwane: Baza danych utworzona w nowszej wersji JudoShiai."
 
 msgid "Database tables updated."
-msgstr "Tietokannan taulukot päivitetty."
+msgstr "Uaktualniono tabele bazy danych"
 
 msgid "Cannot open"
-msgstr "Ei voi avata"
+msgstr "Nie można otworzyć"
 
 msgid "Abbreviations in Sheets"
-msgstr "Lyhenteet kaavioissa"
+msgstr "Skróty na arkuszach"
 
 msgid "Display layout"
-msgstr "Näytön asettelu"
+msgstr "Format wyswietlania"
 
 msgid "Contest area"
-msgstr "Matto"
+msgstr "Mata"
 
 msgid "Set time"
-msgstr "Aseta aika"
+msgstr "Ustaw czas"
 
 msgid "Sound"
-msgstr "Ääni"
+msgstr "Dźwięk"
 
 msgid "Change language to Spanish"
-msgstr "Vaihda kieli espanjaksi"
+msgstr "Zmień język na hiszpański"
 
 msgid "Choose a file"
-msgstr "Valitse tiedosto"
+msgstr "Wybierz plik"
 
 msgid "Sound Files"
-msgstr "Äänitiedostot"
+msgstr "Pliki dźwiękowe"
 
 msgid "All Files"
-msgstr "Kaikki tiedostot"
+msgstr "Wszystkie pliki"
 
 msgid "Best of 3"
-msgstr "Paras kolmesta"
+msgstr "Do dwóch wygranych"
 
 msgid "One match"
-msgstr "Ottelu"
+msgstr "Jedna walka"
 
 msgid "Quad Pool"
-msgstr "Neloispooli"
+msgstr "Cztery grupy"
 
 msgid "IJF Dbl Rep"
-msgstr "IJF Ransk."
+msgstr "IJF podwójny repasaż"
 
 msgid "FIN Dbl Repchg"
-msgstr "FIN Ransk."
+msgstr "FIN podwójny repasaż"
 
-msgid "SWE Dubb återkv"
-msgstr "SWE Ransk."
+msgid "SWE Dubb 책terkv"
+msgstr "SWE podwójny repasaż"
 
-msgid "SWE Dir återkv"
-msgstr "SWE Suora ker."
+msgid "SWE Dir 책terkv"
+msgstr "SWE pojedynczy repasaż"
 
 msgid "EST D klass"
-msgstr "EST Pitkä ker."
+msgstr "EST juniorzy D"
 
 msgid "No Repechg"
-msgstr "Ei keräilyjä"
+msgstr "Bez repasaży"
 
-msgid "SWE Enkelt återkv"
-msgstr "SWE Lyhyet ker."
+msgid "SWE Enkelt 책terkv"
+msgstr "SWE pojedynczy repasaż"
 
 msgid "ESP Dbl Lost"
-msgstr "ESP Pitkä ker."
+msgstr "ESP do dwóch przegranych"
 
 msgid "ESP Dbl Rep"
-msgstr "ESP Ransk."
+msgstr "ESP podwójny repasaż"
 
 msgid "ESP Simple Rep"
-msgstr "ESP Lyh. ker."
+msgstr "ESP pojedynczy repasaż"
 
 msgid "ESP Double Lost"
-msgstr "ESP Pitkä keräily"
+msgstr "ESP do dwóch przegranych"
 
 msgid "ESP Double Repechage"
-msgstr "ESP Ranskalainen"
+msgstr "ESP podwójny repasaż"
 
 msgid "ESP Simple Repechage"
-msgstr "ESP Lyhyet keräilyt"
+msgstr "ESP pojedynczy repasaż"
 
 msgid "Quadruple pool"
-msgstr "Neloispooli"
+msgstr "Cztery grupy"
 
 msgid "IJF Double Repechage"
-msgstr "IJF Ranskalainen"
+msgstr "IJF podwójny repasaż"
 
 msgid "Picture Files"
-msgstr "Kuvatiedostot"
+msgstr "Pliki obrazów"
 
 msgid "Print Headers"
-msgstr "Tulosta otsikot"
+msgstr "Drukuj nagłówki"
 
 msgid "Language Selection"
-msgstr "Kielivalinta"
+msgstr "Wybór języka"
 
 msgid "Spanish System"
-msgstr "Espanjalainen järjestelmä"
+msgstr "System hiszpański"
 
 msgid "Communication"
-msgstr "Tietoliikenne"
+msgstr "Połączenie"
 
 msgid "Club Text Selection"
-msgstr "Seuratekstin valinta"
+msgstr "Wybór tekstu klubu"
 
 msgid "Print Logo"
-msgstr "Tulosta logo"
+msgstr "Drukuj logo"
 
 msgid "Sheet Layout"
-msgstr "Kaavion ulkoasu"
+msgstr "Format arkusza"
 
 msgid "Weights Visible"
-msgstr "Painot näkyvissä"
+msgstr "Pokaż wagi"
 
 msgid "Grade Visible"
-msgstr "Vyö näkyvissä"
+msgstr "Pokaż stopień"
 
 msgid "Print Competitors With Template"
-msgstr "Tulosta kilpailijat mallineella"
+msgstr "Drukuj zawodników wg szablonu"
 
 msgid "Select template"
-msgstr "Valitse malline"
+msgstr "Wybierz szablon"
 
 msgid "Line"
-msgstr "Rivi"
+msgstr "Linia"
 
 msgid "Syntax error"
-msgstr "Syntaksivirhe"
+msgstr "Błąd składni"
 
 msgid "Stop clock on Ippon"
-msgstr "Ippon pysäyttää kellon"
+msgstr "Zatrzymaj zegar gdy IPPON"
 
 msgid "Switch sides"
-msgstr "Vaihda puolia"
+msgstr "Zamień strony"
 
 msgid "Display customized layout"
-msgstr "Näytön asettelu tiedostosta"
+msgstr "Własny format wyświetlania"
 
 msgid "Change language to Estonian"
-msgstr "Muuta kieli viroksi"
+msgstr "Zmień język na estoński"
 
 msgid "Change language to Ukrainan"
-msgstr "Muuta kieli ukrainaksi"
+msgstr "Zmień język na ukraiński"
 
 msgid "No competitor found!"
-msgstr "Kilpailijaa ei löytynyt!"
+msgstr "Nie znaleziono zawodników!"
 
 msgid "Modified Dbl Elim"
-msgstr "Muutettu kaksoiselim."
+msgstr "Podwójna eliminacja (modyfikowany)"
 
 msgid "FIN Dbl Repchg One Bronze"
-msgstr "FIN Ranskalainen (yksi pronssi)"
+msgstr "FIN podwójny repasaż (1 brąz)"
 
 msgid "Modified Double Elimination"
-msgstr "Muutettu kaksoiseliminointi"
+msgstr "Podwójna eliminacja (modyfikowany)"
 
 msgid "FIN Double Repechage One Bronze"
-msgstr "FIN Ranskalainen (yksi pronssi)"
+msgstr "FIN podwójny repasaż (1 brąz)"
 
 msgid "Silver medal match"
-msgstr "Hopeamitaliottelu"
+msgstr "Mecz o srebro"
 
 msgid "Pool Style 2"
-msgstr "Poolin tyyli 2"
+msgstr "Grupy styl 2"
 
 msgid "Use Belt Colors"
-msgstr "Käytä vöiden väriä"
+msgstr "Używaj kolorów pasów"
 
 msgid "Print Unmatched"
-msgstr "Tulosta ottelemattomat"
+msgstr "Drukuj niedopasowanych"
 
 msgid "White first"
-msgstr "Valkoinen ensin"
+msgstr "Pierwszy biały"
 
 msgid "Show"
-msgstr "Näytä"
+msgstr "Pokaż"
 
 msgid "Show Deleted"
-msgstr "Näytä poistetut"
+msgstr "Pokaż usuniętych"
 
 msgid "Add"
-msgstr "Lisää"
+msgstr "Dodaj"
 
 msgid "OK"
 msgstr "OK"
 
 msgid "White first:"
-msgstr "Valkoinen ensin:"
+msgstr "Pierwszy biały:"
 
 msgid "Serial Communication"
-msgstr "Sarjaliikenne"
+msgstr "Połączenie RS-232"
 
 msgid "In Use"
-msgstr "Käytössä"
+msgstr "Włączona"
 
 msgid "Device"
-msgstr "Laite"
+msgstr "Urządzenie"
 
 msgid "Baudrate"
-msgstr "Nopeus"
+msgstr "Szybkość transmisji"
 
 msgid "Basic Scripts"
-msgstr "Basic-ohjelmat"
+msgstr "Skrypty basic"
 
 msgid "Select Script"
-msgstr "Valitse ohjelma"
+msgstr "Wybierz skrypt"
 
 msgid "No script available"
-msgstr "Ohjelmaa ei ole"
+msgstr "Skrypty niedostępne"
 
 msgid "Run Script"
-msgstr "Suorita ohjelma"
+msgstr "Uruchom skrypt"
 
 msgid "Repeat Script"
-msgstr "Toista ohjelma"
+msgstr "Powtórz skrypt"
 
 msgid "Double Pool 2"
-msgstr "Tuplapooli 2"
+msgstr "Dwie grupy 2"
 
 msgid "Double pool 2"
-msgstr "Tuplapooli 2"
+msgstr "Dwie grupy 2"
 
 msgid "Write to file"
-msgstr "Kirjoita tiedostoon"
+msgstr "Zapisz do pliku"
 
 msgid "Confirm New Match"
-msgstr "Vahvista uusi ottelu"
+msgstr "Potwierdź nową walkę"
 
 msgid "Contest area 9"
-msgstr "Matto 9"
+msgstr "Mata 9"
 
 msgid "Contest area 10"
-msgstr "Matto 10"
+msgstr "Mata 10"
 
 msgid "Move Medal Matches"
-msgstr "Siirrä mitaliottelut"
+msgstr "Przenieś walki o medale"
 
 msgid "Move match "
-msgstr "Siirrä ottelu"
+msgstr "Przenieś walkę "
 
 msgid "to tatami and/or"
-msgstr "matolle ja/tai"
+msgstr "na matę i/lub"
 
 msgid " delay"
-msgstr "viivytä"
+msgstr " opóźnij"
 
 msgid "Final"
-msgstr "Finaali"
+msgstr "Finał"
 
 msgid "Bronze1"
-msgstr "Pronssi 1"
+msgstr "Brąz 1"
 
 msgid "Bronze2"
-msgstr "Pronssi 2"
+msgstr "Brąz 2"
 
 msgid "Pool's last"
-msgstr "Poolin viimeinen"
+msgstr "Ostatnia walka w grupie"
 
 msgid "No move"
-msgstr "Ei siirtoa"
+msgstr "Nie przenoś"
 
 msgid "Print Accreditation Cards"
-msgstr "Tulosta akkreditointikortit"
+msgstr "Drukuj karty akredytacyjne"
 
 msgid "Name Format"
-msgstr "Nimen formaatti"
+msgstr "Format nazwiska"
 
 msgid "Name Surname, Country/Club"
-msgstr "Etu Suku, Maa/Seura"
+msgstr "Imię, nazwisko, kraj/klub"
 
 msgid "Surname, Name, Country/Club"
-msgstr "Suku, Etu, Maa/Seura"
+msgstr "Nazwisko, imię, kraj/klub"
 
 msgid "Country/Club  Surname, Name"
-msgstr "Maa/Seura  Suku, Etu"
+msgstr "Kraj/klub, nazwisko, imię"
 
 msgid "Medal Matches..."
-msgstr "Mitaliottelut..."
+msgstr "Walki o medale..."
 
 msgid "Print Selected Accreditation Cards"
-msgstr "Tulosta valitut akkreditointikortit"
+msgstr "Drukuj wybrane karty akredytacyjne"
 
 msgid "Layout:"
-msgstr "Asettelu:"
+msgstr "Szablon:"
 
 msgid "Print To:"
-msgstr "Tulostustapa:"
+msgstr "Drukuj do:"
 
 msgid "Template"
-msgstr "Malline"
+msgstr "Szablon"
 
 msgid "Printer"
-msgstr "Kirjoitin"
+msgstr "Drukarka"
 
 msgid "PDF"
 msgstr "PDF"
 
 msgid "One Card Per Page"
-msgstr "Yksi kortti sivulle"
+msgstr "Jedna karta na stronę"
 
 msgid "Normal display"
-msgstr "Normaali näyttö"
+msgstr "Format wyświetlania normalny"
 
 msgid "Horizontal display"
-msgstr "Vaakanäyttö"
+msgstr "Format wyświetlania pionowy"
 
 msgid "White has a judogi problem."
-msgstr "Valkoisella on judogiongelma"
+msgstr "Biały ma problem z judogą"
 
 msgid "Blue has a judogi problem."
-msgstr "Sinisellä on judogiongelma"
+msgstr "Niebieski ma problem z judogą"
 
 msgid "Show Competitors"
-msgstr "Näytä ottelijat"
+msgstr "Pokaż zawodników"
 
 msgid "Show competitors"
-msgstr "Näytä ottelijat"
+msgstr "Pokaż zawodników"
 
 msgid "Name format"
-msgstr "Nimen ulkoasu"
+msgstr "Format nazwiska"
 
 msgid "Country  Surname, Name"
-msgstr "Maa  Sukunimi, Etunimi"
+msgstr "Kraj, nazwisko, imię"
 
 msgid "Club  Surname, Name"
-msgstr "Seura Sukunimi, Etunimi"
+msgstr "Klub, nazwisko, imię"
 
 msgid "Country Surname"
-msgstr "Maa Sukunimi"
+msgstr "Kraj, nazwisko"
 
 msgid "Club Surname"
-msgstr "Seura Sukunimi"
+msgstr "Klub, nazwisko"
 
 msgid "Surname, Name"
-msgstr "Sukunimi, Etunimi"
+msgstr "Nazwisko, imię"
 
 msgid "Surname"
-msgstr "Sukunimi"
+msgstr "Nazwisko"
 
 msgid "Change language to Icelandic"
-msgstr "Muuta kieli islanniksi"
+msgstr "Zmień język na islandzki"
 
 msgid "WINNER"
-msgstr "VOITTAJA"
+msgstr "ZWYCIĘZCA"
 
 msgid "Cancel"
-msgstr "Peru"
+msgstr "Cofnij"
 
 msgid "Club Seeding:"
-msgstr "Sijoitus seurassa:"
+msgstr "Rozstawienie klubów:"
 
 msgid "Gender:"
-msgstr "Sukupuoli:"
+msgstr "Płeć:"
 
 msgid "Male"
-msgstr "Mies"
+msgstr "Mężczyzna"
 
 msgid "Female"
-msgstr "Nainen"
+msgstr "Kobieta"
 
 msgid "Control:"
-msgstr "Kontrolli:"
+msgstr "Kontrola:"
 
 msgid "NOK"
-msgstr "Ei OK"
+msgstr "Nie OK"
 
 msgid "Seeding"
-msgstr "Sijoitus"
+msgstr "Rozstawienie"
 
 msgid "Club Seeding"
-msgstr "Sijoitus seurassa"
+msgstr "Rozstawienie klubów"
 
 msgid "Database Validation"
-msgstr "Tietokannan tarkistus"
+msgstr "Walidacja bazy danych"
 
 msgid "Duplicate seedings:\n"
-msgstr "Samoja sijoituksia sarjassa:\n"
+msgstr "Powtórzone rozstawienia:\n"
 
 msgid "seeding"
-msgstr "sijoitus"
+msgstr "rozstawienie"
 
 msgid "defined"
-msgstr "määritelty"
+msgstr "zdefiniowane"
 
 msgid "times"
-msgstr "kertaa"
+msgstr "razy"
 
 msgid "Duplicate club seedings:\n"
-msgstr "Samoja sijoituksia seurassa:\n"
+msgstr "Zduplikowane rozstawienia klubów:\n"
 
 msgid "Missing category definitions:\n"
-msgstr "Puuttuvia sarjamäärittelyjä:\n"
+msgstr "Brak definicji kategorii:\n"
 
 msgid "is not"
-msgstr "ei ole"
+msgstr "nie jest"
 
 msgid "Typing errors:\n"
-msgstr "Kirjoitusvirheitä:\n"
+msgstr "Błędy pisowni:\n"
 
 msgid "UTF-8 errors"
-msgstr "UTF-8-virheitä"
+msgstr "Błędy UTF-8 "
 
 msgid "Extra spaces"
-msgstr "Ylimääräisiä välilyöntejä"
+msgstr "Dodatkowe odstępy"
 
 msgid "Possible duplicate competitors:\n"
-msgstr "Mahdollisesti samoja kilpailijoita:\n"
+msgstr "Możliwe duplikaty zawodników:\n"
 
 msgid "Possible duplicate club names:\n"
-msgstr "Mahdollisesti samoja seurojen nimiä:\n"
+msgstr "Możliwe duplikaty nazw klubów:\n"
 
 msgid "Suspicious weights:\n"
-msgstr "Epäilyttäviä painoja:\n"
+msgstr "Podejrzane wagi:\n"
 
 msgid "warnings"
-msgstr "varoitusta"
+msgstr "ostrzeżenia"
 
 msgid "Weighted only"
-msgstr "Vain punnitut"
+msgstr "Tylko zważeni"
 
 msgid "With weights"
-msgstr "Painojen kanssa"
+msgstr "Z wagami"
 
 msgid "Validate Database"
-msgstr "Tarkista tietokanta"
+msgstr "Walidacja bazy danych"
 
 msgid "Results in Icelandic"
-msgstr "Tulokset islanniksi"
+msgstr "Rezultaty w j. islandskim"
 
 msgid "Surname Name, Country/Club"
-msgstr "Sukunimi Etunimi, Maa/Seura"
+msgstr "Nazwisko Imię, Kraj/Klub"
 
 msgid "Country/Club,  Surname Name"
-msgstr "Maa/Seura, Sukunimi Etunimi"
+msgstr "Kraj/Klub, Nazwisko Imię"
 
 msgid "Scale Serial Interface..."
-msgstr "Vaa'an liitäntä..."
+msgstr "Interfejs wagi..."
 
 msgid "Type"
-msgstr "Tyyppi"
+msgstr "Rodzaj"
 
 msgid "ID:"
 msgstr "ID:"
 
 msgid "Name:"
-msgstr "Nimi:"
+msgstr "Nazwa:"
 
 msgid "About JudoWeight"
-msgstr "Tietoja JudoWeightista"
+msgstr "O aplikacji JudoWeight"
 
 msgid "No match soon! Please wait for a while."
-msgstr "Ei ottelua lähiaikoina! Odota vielä."
+msgstr "Wkrótce koniec walk! Poczekaj chwilę."
 
 msgid "About JudoJudogi"
-msgstr "Tietoja JudoJudogista"
+msgstr "O aplikacji JudoJudogi"
 
 msgid "Norwegian System"
-msgstr "Norjalainen järjestelmä"
+msgstr "System norweski"
 
 msgid "Confirm:"
-msgstr "Vahvistus:"
+msgstr "Potwierdź:"
 
 msgid "- - -"
-msgstr ""
+msgstr "- - -"
 
 msgid "syntax errors"
-msgstr "syntaksivirheitä"
+msgstr "błędy składni"
 
 msgid "Rep. time:"
-msgstr "Ker. aika:"
+msgstr "Czas repasażu:"
 
 msgid "Landscape"
-msgstr "Vaakasuunta"
+msgstr "Poziomo"
 
 msgid "Resolution (min):"
-msgstr "Tarkkuus (min):"
+msgstr "Rozdzielczość (min):"
 
 msgid "Running time"
-msgstr "Juokseva aika"
+msgstr "Biegnący czas"
 
 msgid "Compressed timeline"
-msgstr "Tiivistetty aika"
+msgstr "Skompresowana linia czasu"
 
 msgid "Select font"
-msgstr "Valitse kirjasin"
+msgstr "Wybierz czcionkę"
 
 msgid "Font"
-msgstr "Kirjasin"
+msgstr "Czcionka"
 
 msgid "Replay Video"
-msgstr ""
+msgstr "Powtórz wideo"
 
 msgid "If equal score less shido wins"
-msgstr ""
+msgstr "Przy remisie mniej SHIDO wygrywa"
 
 msgid "Short pin times"
-msgstr ""
+msgstr "Krótkie czasy trzymania"
 
 msgid "Video server"
-msgstr ""
+msgstr "Serwer wideo"
 
 msgid "No Limit"
-msgstr ""
+msgstr "Bez limitu"
 
 msgid "Video server URL"
-msgstr ""
+msgstr "URL serwera wideo"
 
 msgid "User:"
-msgstr ""
+msgstr "Użytkownik"
 
 msgid "Proxy:"
-msgstr ""
+msgstr "Proxy:"
 
 msgid "Show Video"
-msgstr ""
+msgstr "Pokaż wideo"
 
 msgid "Coach Id:"
-msgstr ""
+msgstr "ID trenera:"
 
 msgid "Comment:"
-msgstr ""
+msgstr "Komentarz:"
 
 msgid "Coach"
-msgstr ""
+msgstr "Trener"
 
 msgid "Weights do not match"
-msgstr ""
+msgstr "Wagi nie pasują"
 
 msgid "Corrupted competitor data:\n"
-msgstr ""
+msgstr "Uszkodzone dane zawodnika:\n"
 
 msgid "Corrupted category data:\n"
-msgstr ""
+msgstr "Uszkodzone dane kategorii:\n"
 
 msgid "Server URL"
-msgstr ""
+msgstr "Serwer URL"
 
 msgid "Copy to Server"
-msgstr ""
+msgstr "Kopiuj do serwera"
 
 msgid "Proxy User:"
-msgstr ""
+msgstr "Użytkownik proxy:"
 
 msgid "Proxy Password:"
-msgstr ""
+msgstr "Hasło do proxy:"
 
 msgid "Communication error"
-msgstr ""
+msgstr "Błąd połączenia"
 
 msgid "IJF Qrt Final Rep"
-msgstr ""
+msgstr "IJF repasaż od ćwierćfinału"
 
 msgid "Double Lost"
-msgstr ""
+msgstr "Do dwóch przegranych walk"
 
 msgid "GBR Knock Out"
-msgstr ""
+msgstr "GBR pucharowy"
 
 msgid "DEN Dbl Elim"
-msgstr ""
+msgstr "DEN podwójna eliminacja"
 
 msgid "EST D klass 1 brz"
-msgstr ""
+msgstr "EST juniorzy D"
 
 msgid "IJF Quarter Final Repechage"
-msgstr ""
+msgstr " IJF repasaż od ćwierćfinału "
 
 msgid "SWE Direct Repechage"
-msgstr ""
+msgstr "SWE bezpośredni repasaż"
 
 msgid "DEN Double Elimination"
-msgstr ""
+msgstr "DEN podwójna eliminacja"
 
 msgid "EST Double Elim One Bronze"
-msgstr ""
+msgstr "EST podwójna eliminacja (1 brąz)"
 
 msgid "Set score"
-msgstr ""
+msgstr "Ustaw punkty"
 
 msgid "Weighed only"
-msgstr ""
+msgstr "Tylko zważeni"
 
 msgid "Copy Weights"
-msgstr ""
+msgstr "Kopiuj wagi"
 
 msgid "weights updated"
-msgstr ""
+msgstr "wagi zaktualizowane"
 
 msgid "Update Weights From Another Shiai"
-msgstr ""
+msgstr "Uaktualnij wagi z innego JudoShiai"
 
 msgid "SVG Templates"
-msgstr ""
+msgstr "Szablony SVG"
 
 msgid "Edit Drawing"
-msgstr ""
+msgstr "Edytuj losowanie"
 
 msgid "Best two out of three matches:"
-msgstr ""
+msgstr "Do dwóch wygranych walk:"
 
 msgid ""
 "Medal will be awarded \n"
 "only if a contest was won:"
-msgstr ""
+msgstr "Medale są przyznawane tylko gdy zostanie wygrana walka:"
 
 msgid "Seeded to fixed places:"
-msgstr ""
+msgstr "Rozstawienie na ustalone miejsca:"
 
 msgid "Double Pool 2 with carried forward points:"
-msgstr ""
+msgstr "Dwie grupy 2 z przeniesieniem punktów:"
 
 msgid "Two pool bronzes:"
-msgstr ""
+msgstr "Dwa brązy w grupie"
 
 msgid "Resolve 3-way ties by weights:"
-msgstr ""
+msgstr "Rozwiąż remis w grupie poprzez wagi:"
 
 msgid "General"
-msgstr ""
+msgstr "Ogólne"
 
 msgid "Pool settings"
-msgstr ""
+msgstr "Ustawienia grupy"
 
 msgid "Statistics"
-msgstr ""
+msgstr "Statystyki"
 
 msgid "Reset to"
-msgstr ""
+msgstr "Przywróc do"
 
 msgid "Initialize"
-msgstr ""
+msgstr "Rozpocznij"
 
 msgid "Players"
-msgstr ""
+msgstr "Zawodnicy"
 
 msgid "Max age"
-msgstr ""
+msgstr "Wiek max"
 
 msgid "Min"
-msgstr ""
+msgstr "Min"
 
 msgid "Max"
-msgstr ""
+msgstr "Max"
 
 msgid "System"
-msgstr ""
+msgstr "System"
 
 msgid "Default systems"
-msgstr ""
+msgstr "Systemy domyślne"
 
 msgid "Grade names"
-msgstr ""
+msgstr "Nazwy stopni"
 
 msgid "Remote address"
-msgstr ""
+msgstr "Adres zdalny"
 
 msgid "Remote Control"
-msgstr ""
+msgstr "Kontrola zdalna"
 
 msgid "Use SVG Templates"
-msgstr ""
+msgstr "Użyj szablonów SVG"
 
 msgid "Print SVG"
-msgstr ""
+msgstr "Drukuj SVG"
+
