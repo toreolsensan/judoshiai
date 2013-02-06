@@ -104,6 +104,11 @@ struct property {
         .type = PROP_TYPE_CHECK,
     },
     {
+        .name = "GoldenScoreWinGives1Point",
+        .label = N_("Win in Golden Score gives 1 point"),
+        .type = PROP_TYPE_CHECK,
+    },
+    {
         .name = "DefaultCat1",
         .label = "",
         .type = PROP_TYPE_TEXT,
@@ -384,6 +389,7 @@ void reset_props_1(GtkWidget *button, void *data, gboolean if_unset)
     SET_VAL(PROP_WHITE_FIRST, "1", 1);
     SET_VAL(PROP_THREE_MATCHES_FOR_TWO, "0", 0);
     SET_VAL(PROP_EQ_SCORE_LESS_SHIDO_WINS, "1", 1);
+    SET_VAL(PROP_GS_WIN_GIVES_1_POINT, "0", 0);
 
     if (number_of_tatamis == 0)
         number_of_tatamis = 3;
