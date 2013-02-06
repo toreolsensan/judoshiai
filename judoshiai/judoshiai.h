@@ -562,6 +562,8 @@ struct cat_def {
         gint yukos;
         gint kokas;
         gint hanteis;
+        gint shidowins;
+        gint goldenscores;
         gint total;
         gint time;
     } stat;

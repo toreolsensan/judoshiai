@@ -694,6 +694,7 @@ void match_statistics(FILE *f)
 
     gint i, k;
     gint toti = 0, totw = 0, toty = 0, toth = 0, tott = 0, tots = 0, totc = 0;
+    gint totsw = 0, totg = 0;
     gchar *cmd = g_strdup_printf("select * from matches");
     gint numrows = db_get_table(cmd);
     g_free(cmd);
@@ -718,7 +719,10 @@ void match_statistics(FILE *f)
 
         gint blue_points = atoi(db_get_data(k, "blue_points"));
         gint white_points = atoi(db_get_data(k, "white_points"));
+        gint blue_score = atoi(db_get_data(k, "blue_score"));
+        gint white_score = atoi(db_get_data(k, "white_score"));
         gint time = atoi(db_get_data(k, "time"));
+        gint legend = atoi(db_get_data(k, "legend"));
 
         if (blue_points == 0 && white_points == 0)
             continue;
@@ -734,8 +738,14 @@ void match_statistics(FILE *f)
             category_definitions[i].stat.yukos++;
         else if (blue_points == 3 || white_points == 3)
             category_definitions[i].stat.kokas++;
+        else if (prop_get_int_val(PROP_EQ_SCORE_LESS_SHIDO_WINS) &&
+                 (blue_score & 0xffff0) == (white_score & 0xffff0))
+            category_definitions[i].stat.shidowins++;
         else
             category_definitions[i].stat.hanteis++;
+
+        if ((legend & 0x300) == 0x100)
+            category_definitions[i].stat.goldenscores++;
     }
 
     db_close_table();
@@ -766,6 +776,8 @@ out:
         totw += category_definitions[i].stat.wazaaris;
         toty += category_definitions[i].stat.yukos;
         toth += category_definitions[i].stat.hanteis;
+        totsw+= category_definitions[i].stat.shidowins;
+        totg += category_definitions[i].stat.goldenscores;
         tott += category_definitions[i].stat.total;
         tots += category_definitions[i].stat.time;
     }
@@ -803,10 +815,22 @@ out:
         if (category_definitions[i].stat.total)
             fprintf(f, "<td>%d", category_definitions[i].stat.yukos);
 
-    fprintf(f, "\n<tr><td class=\"stat1\">Hantei:<td>%d", toth);
+    if (prop_get_int_val(PROP_EQ_SCORE_LESS_SHIDO_WINS)) {
+        fprintf(f, "\n<tr><td class=\"stat1\">Shido:<td>%d", totsw);
+        for (i = 0; i < num_categories; i++)
+            if (category_definitions[i].stat.total)
+                fprintf(f, "<td>%d", category_definitions[i].stat.shidowins);
+    } else {
+        fprintf(f, "\n<tr><td class=\"stat1\">Hantei:<td>%d", toth);
+        for (i = 0; i < num_categories; i++)
+            if (category_definitions[i].stat.total)
+                fprintf(f, "<td>%d", category_definitions[i].stat.hanteis);
+    }
+
+    fprintf(f, "\n<tr><td class=\"stat1\">Golden score:<td>%d", totg);
     for (i = 0; i < num_categories; i++)
         if (category_definitions[i].stat.total)
-            fprintf(f, "<td>%d", category_definitions[i].stat.hanteis);
+            fprintf(f, "<td>%d", category_definitions[i].stat.goldenscores);
 
     fprintf(f, "\n<tr><td class=\"stat1\">%s:<td>%d:%02d", _T(time), 
             tott ? (tots/tott)/60 : 0, tott ? (tots/tott)%60 : 0);

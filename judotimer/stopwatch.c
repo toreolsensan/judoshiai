@@ -314,7 +314,7 @@ void update_clock(void)
                     }
                 } else {
                     gint ix = (current_category + current_match) & 7;
-                    send_result(res[ix][0], res[ix][1], 0, 0, 0, 0, 0);
+                    send_result(res[ix][0], res[ix][1], 0, 0, 0, 0, (ix&3)==2 ? 0x100 + ix : ix);
                 }
                 last_cat = current_category;
                 last_num = current_match;
@@ -825,6 +825,7 @@ void reset(guint key, struct msg_next_match *msg)
         key_pending = 0;
         asking = FALSE;
         asked = TRUE;
+        gs_cat = gs_num = 0;
     } else if (key == ASK_NOK) {
         key_pending = 0;
         asking = FALSE;

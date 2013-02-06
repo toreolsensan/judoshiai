@@ -851,7 +851,7 @@ gint paint_svg(struct paint_data *pd)
                 if ((m[look_match_num].blue_points && (look_match_comp & 1)) ||
                     (m[look_match_num].white_points && (look_match_comp & 2))) {
                     gchar buf[16];
-                    snprintf(buf, sizeof(buf), "%d", m[look_match_num].legend);
+                    snprintf(buf, sizeof(buf), "%d", m[look_match_num].legend & 0xff);
                     WRITE(buf);
                 }
                 look_legend_state = 0;
@@ -930,7 +930,7 @@ gint paint_svg(struct paint_data *pd)
                     continue;
 
                 if (rsvg_handle_has_sub(handle, buf)) {
-                    gint l = m[f].legend;
+                    gint l = m[f].legend & 0xff; // bits 0-7 are legend, bit #8 = golden score
                     RsvgPositionData position;
                     RsvgDimensionData dimensions;
                     if (l < 0 || l >= NUM_LEGENDS) l = 0;

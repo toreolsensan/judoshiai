@@ -489,7 +489,7 @@ ok:
 
         g_timeout_add(1000, check_for_connection_status, NULL);
 
-        g_printf("Comm threads started\n");
+        g_print("Comm threads started\n");
     }
 
     if (argc > 1 && argv[1][0] != '-') {

@@ -1951,7 +1951,7 @@ void set_points_and_score(struct message *msg)
 
     db_set_points(category, number, minutes,
                   blue_pts, white_pts, msg->u.result.blue_score, msg->u.result.white_score, 
-                  msg->u.result.legend & 0xff); // bits 0-7 are legend, bit #8 = golden score
+                  msg->u.result.legend); // bits 0-7 are legend, bit #8 = golden score
 
     db_read_match(category, number);
         
