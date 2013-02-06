@@ -1919,6 +1919,10 @@ void set_points_and_score(struct message *msg)
         else if ((winscore & 0xf0) > (losescore & 0xf0)) points = 3;
         else points = 2; //XXXXXXXXXXXXXXX This should never happen
                 
+        // After golden score only one point to winner if hantei bits set (Slovakia).
+        if (prop_get_int_val(PROP_GS_WIN_GIVES_1_POINT) && (msg->u.result.legend & 0x100))
+            points = 1;
+
         if ((msg->u.result.blue_score) > (msg->u.result.white_score))
             blue_pts = points;
         else
@@ -1936,6 +1940,7 @@ void set_points_and_score(struct message *msg)
             white_pts = 1;
     }
 
+
     /*** Timer cannot disqualify competitors from the tournament
     if (msg->u.result.blue_hansokumake || msg->u.result.white_hansokumake) {
         db_set_match_hansokumake(category, number, 
@@ -1945,7 +1950,8 @@ void set_points_and_score(struct message *msg)
     ***/
 
     db_set_points(category, number, minutes,
-                  blue_pts, white_pts, msg->u.result.blue_score, msg->u.result.white_score, msg->u.result.legend); 
+                  blue_pts, white_pts, msg->u.result.blue_score, msg->u.result.white_score, 
+                  msg->u.result.legend & 0xff); // bits 0-7 are legend, bit #8 = golden score
 
     db_read_match(category, number);
         
