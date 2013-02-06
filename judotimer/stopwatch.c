@@ -116,6 +116,7 @@ gboolean         golden_score = FALSE;
 gboolean         rest_time = FALSE;
 static gint      rest_flags = 0;
 gchar           *matchlist = NULL;
+static gint      gs_cat = 0, gs_num = 0;
 
 static void log_scores(gchar *txt, gint who)
 {
@@ -487,6 +488,8 @@ gboolean ask_for_golden_score(void)
     gint response;
 
     golden_score = FALSE;
+    gs_cat = gs_num = 0;
+
     dialog = gtk_dialog_new_with_buttons (_("Start Golden Score?"),
                                           NULL,
                                           GTK_DIALOG_MODAL,
@@ -520,6 +523,8 @@ gboolean ask_for_golden_score(void)
 
     if (response >= Q_GS_NO_LIMIT && response <= Q_GS_AUTO) {
         golden_score = TRUE;
+        gs_cat = current_category;
+        gs_num = current_match;
         if (response == Q_GS_AUTO)
             automatic = TRUE;
         else
@@ -616,6 +621,8 @@ static gboolean close_ask_ok(GtkWidget *widget, gpointer userdata)
         legend = gtk_combo_box_get_active(GTK_COMBO_BOX(legend_widget));
     else
         legend = 0;
+
+    if (legend < 0) legend = 0;
 
     reset(ASK_OK, NULL);
     gtk_widget_destroy(userdata);
@@ -924,6 +931,10 @@ void reset(guint key, struct msg_next_match *msg)
     rest_time = FALSE;
 
     if (key != GDK_0 && golden_score == FALSE) {
+        // set bit if golden score
+        if (gs_cat == current_category && gs_num == current_match)
+            legend |= 0x100;
+
         if (sides_switched) {
             send_result(st[0].whitepts, st[0].bluepts,
                         white_wins_voting, blue_wins_voting,
