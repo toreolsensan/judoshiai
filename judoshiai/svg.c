@@ -933,6 +933,7 @@ gint paint_svg(struct paint_data *pd)
                     gint l = m[f].legend;
                     RsvgPositionData position;
                     RsvgDimensionData dimensions;
+                    if (l < 0 || l >= NUM_LEGENDS) l = 0;
                     rsvg_handle_get_position_sub(handle, &position, buf);
                     rsvg_handle_get_dimensions_sub(handle, &dimensions, buf);
 
