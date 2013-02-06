@@ -161,7 +161,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_menu_shell_append(GTK_MENU_SHELL(menubar), help_menu_item); 
 
     for (i = 0; i < NUM_LANGS; i++) {
-        if (i == LANG_SW || i == LANG_NO || i == LANG_PL)
+        if (i == LANG_SW || i == LANG_NO)
             continue;
         gtk_menu_shell_append(GTK_MENU_SHELL(menubar), menu_flags[i]); 
         g_signal_connect(G_OBJECT(menu_flags[i]), "button_press_event",
