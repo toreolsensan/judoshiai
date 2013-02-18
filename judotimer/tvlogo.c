@@ -234,7 +234,7 @@ void ask_tvlogo_settings( GtkWidget *w,
     GtkWidget *dialog, *hbox, *hbox1, *hbox2, /* *hbox3,*/ *label;
     struct vlc_settings *vlc = g_malloc0(sizeof(*vlc));
 
-    dialog = gtk_dialog_new_with_buttons (_("VLC Control"),
+    dialog = gtk_dialog_new_with_buttons (_("VLC control"),
                                           NULL,
                                           GTK_DIALOG_DESTROY_WITH_PARENT,
                                           GTK_STOCK_OK, GTK_RESPONSE_OK,
