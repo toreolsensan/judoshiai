@@ -78,6 +78,7 @@ endif
 	cp etc/*.svg $(RELDIR)/etc/
 	cp etc/*.html $(RELDIR)/etc/
 	cp etc/*.js $(RELDIR)/etc/
+	cp etc/result-texts-*.txt $(RELDIR)/etc/
 	cp -r etc/flags-ioc $(RELDIR)/etc/
 	cp licenses/* $(RELDIR)/licenses
 	cp -r svg $(RELDIR)/
