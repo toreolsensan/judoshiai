@@ -373,6 +373,8 @@ ok:
         g_print("First instance\n");
     }
 
+    init_print_texts();
+
 #if 0
     g_print("LOCALE = %s homedir=%s configdir=%s\n", 
             setlocale(LC_ALL, 0), g_get_home_dir(), g_get_user_config_dir());
