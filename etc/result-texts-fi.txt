@@ -1,0 +1,99 @@
+### First line is the menu text
+Results in Finnish
+### 1: Competitors
+Kilpailijat
+### 2: Competitors A (for double and quadruple pools)
+Kilpailijat A
+### 3: Competitors B
+Kilpailijat B
+### 4: Competitors C
+Kilpailijat C
+### 5: Competitors D
+Kilpailijat D
+### 6: # (= short text for "Number", like "Nr")
+N:o
+### 7: Name
+Nimi
+### 8: Grade (belt grade, 1. dan, 3. kyu etc)
+Vyö
+### 9: Club
+Seura
+### 10: Matches
+Ottelut
+### 11: Matches A
+Ottelut A
+### 12: Matches B
+Ottelut B
+### 13: Matches C
+Ottelut C
+### 14: Matches D
+Ottelut D
+### 15: Match
+Ottelu
+### 16: Blue
+Sininen
+### 17: White
+Valkoinen
+### 18: Result (result of one fight)
+Tulos
+### 19: Results (all the results of the tournament)
+Tulokset
+### 20: Time (fight time)
+Aika
+### 21: Wins (number of wins)
+Voit.
+### 22: Pts (short text for points)
+Pist.
+### 23: Pos (short text for position = winner, second, bronze)
+Sij.
+### 24: Previous winner
+Ed. voit
+### 25: Next (competitors who have the next fight)
+Valmistautuvat
+### 26: Weight:
+Paino:
+### 27: PRELIMINARY SCHEDULE
+ALUSTAVA AIKATAULU
+### 28: weighin-notes.pdf (file name)
+punnituslaput.pdf
+### 29: schedule.pdf (file name)
+aikataulu.pdf
+### 30: categories.pdf (file name)
+sarjat.pdf
+### 31: Category
+Sarja
+### 32: Next fights (for a list of fights)
+Seuraavat ottelut
+### 33: Categories
+Sarjat
+### 34: Statistics
+Tilastot
+### 35: Medals
+Mitalit
+### 36: Total
+Yhteensä
+### 37: Country
+Maa
+### 38: Not drawn
+Ei arvottu
+### 39: Finished
+Loppunut
+### 40: Match ongoing
+Ottelu käynnissä
+### 41: Started (category has started)
+Sarja alkanut
+### 42: Drawing ready
+Arvonta valmis
+### 43: Coach
+Valmentaja
+### 44: Surname
+Sukunimi
+### 45: Status
+Tilanne
+### 46: Display
+näyttö
+### 47: "Match after n matches" divided in two parts
+###     Match after ("Match after" n matches)
+Ottelu
+### 48: matches (Match after n "matches")
+ottelun jälkeen

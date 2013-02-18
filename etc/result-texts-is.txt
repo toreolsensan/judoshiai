@@ -1,0 +1,99 @@
+### First line is the menu text
+Results in Icelandic
+### 1: Competitors
+Keppendur
+### 2: Competitors A (for double and quadruple pools)
+Keppendur A
+### 3: Competitors B
+Keppendur B
+### 4: Competitors C
+Keppendur C
+### 5: Competitors D
+Keppendur D
+### 6: # (= short text for "Number", like "Nr")
+Nr
+### 7: Name
+Nafn
+### 8: Grade (belt grade, 1. dan, 3. kyu etc)
+Gráða
+### 9: Club
+Félag
+### 10: Matches
+Viðureignir
+### 11: Matches A
+Viðureignir A
+### 12: Matches B
+Viðureignir B
+### 13: Matches C
+Viðureignir C
+### 14: Matches D
+Viðureignir D
+### 15: Match
+Viðureign
+### 16: Blue
+Blár
+### 17: White
+Hvítur
+### 18: Result (result of one fight)
+Úrslit
+### 19: Results (all the results of the tournament)
+Úrslit
+### 20: Time (fight time)
+Tími
+### 21: Wins (number of wins)
+Vin.
+### 22: Pts (short text for points)
+Stig
+### 23: Pos (short text for position = winner, second, bronze)
+Sæti
+### 24: Previous winner
+Fyrri sigurvegari
+### 25: Next (competitors who have the next fight)
+Næsta
+### 26: Weight:
+Þyngd
+### 27: PRELIMINARY SCHEDULE
+Bráðabirgða áætlun
+### 28: weighin-notes.pdf (file name)
+vigtunnar-listi
+### 29: schedule.pdf (file name)
+áætlun
+### 30: categories.pdf (file name)
+flokkar
+### 31: Category
+Þyngdarflokkur
+### 32: Next fights (for a list of fights)
+Næstu viðureignir
+### 33: Categories
+Þyngdarflokkar
+### 34: Statistics
+Tölfræði
+### 35: Medals
+Verðlaun
+### 36: Total
+Samtals
+### 37: Country
+Land
+### 38: Not drawn
+Not drawn
+### 39: Finished
+Finished
+### 40: Match ongoing
+Match ongoing
+### 41: Started (category has started)
+Started
+### 42: Drawing ready
+Drawing ready
+### 43: Coach
+Coach
+### 44: Surname
+Surname
+### 45: Status
+Status
+### 46: Display
+Display
+### 47: "Match after n matches" divided in two parts
+###     Match after ("Match after" n matches)
+Match after
+### 48: matches (Match after n "matches")
+matches
