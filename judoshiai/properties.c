@@ -458,6 +458,14 @@ void reset_props_1(GtkWidget *button, void *data, gboolean if_unset)
         case DRAW_DANISH:
             default_cats[3] = (struct default_cat){0, 8, 0, CAT_SYSTEM_DEN_DOUBLE_ELIMINATION};
             break;
+        case DRAW_POLISH:
+            default_cats[2] = (struct default_cat){0, 6, 8, CAT_SYSTEM_DPOOL};
+            default_cats[3] = (struct default_cat){0, 9, 0, CAT_IJF_DOUBLE_REPECHAGE};
+            break;
+        case DRAW_SLOVAKIAN:
+            default_cats[2] = (struct default_cat){0, 6, 8, CAT_SYSTEM_DPOOL};
+            default_cats[3] = (struct default_cat){0, 9, 0, CAT_SYSTEM_REPECHAGE};
+            break;
         }
 
         for (i = 0; i < NUM_DEFAULT_CATS; i++) {
@@ -498,7 +506,8 @@ static void reset_props1(GtkWidget *button, void *data)
 
 static const gchar *draw_system_names[NUM_DRAWS] = 
     {"International System", "Finnish System", "Swedish System", "Estonian System", "Spanish System", 
-     "Norwegian System", "British System", "Australian System", "Danish System"};
+     "Norwegian System", "British System", "Australian System", "Danish System", 
+     "Polish System", "Slovakian System"};
 
 #define NUM_TBLS 2
 
