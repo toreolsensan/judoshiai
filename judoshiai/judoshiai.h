@@ -435,6 +435,8 @@ enum default_drawing_system {
     DRAW_BRITISH,
     DRAW_AUSTRALIAN,
     DRAW_DANISH,
+    DRAW_POLISH,
+    DRAW_SLOVAKIAN,
     NUM_DRAWS
 };
 
@@ -1104,7 +1106,11 @@ extern void print_accreditation_cards(gboolean all);
 extern void print_schedule_cb(GtkWidget *menuitem, gpointer userdata);
 
 /* print_texts */
-extern gchar *print_texts[][NUM_LANGS];
+#define NUM_PRINT_LANGS 32
+extern gchar *print_texts[numprinttexts][NUM_PRINT_LANGS];
+extern gchar *print_lang_menu_texts[NUM_PRINT_LANGS];
+extern gchar  print_lang_names[NUM_PRINT_LANGS][2];
+extern void init_print_texts(void);
 
 /* match-data */
 extern gchar *get_system_name_for_menu(gint num);
