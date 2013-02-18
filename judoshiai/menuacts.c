@@ -286,7 +286,11 @@ void select_use_logo(GtkWidget *w, gpointer data)
 void set_lang(GtkWidget *w, gpointer data)
 {
     print_lang = (gint)data;
-    g_key_file_set_integer(keyfile, "preferences", "printlanguage", print_lang);
+    gchar l[3];
+    l[0] = print_lang_names[print_lang][0];
+    l[1] = print_lang_names[print_lang][1];
+    l[2] = 0;
+    g_key_file_set_string(keyfile, "preferences", "printlanguagestr", l);
 }
 
 void set_club_text(GtkWidget *w, gpointer data)
