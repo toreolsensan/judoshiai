@@ -29,6 +29,8 @@ all:
 	mkdir -p $(RELDIR)/share/locale/is/LC_MESSAGES
 	mkdir -p $(RELDIR)/share/locale/nb/LC_MESSAGES
 	mkdir -p $(RELDIR)/share/locale/pl/LC_MESSAGES
+	mkdir -p $(RELDIR)/share/locale/sk/LC_MESSAGES
+	mkdir -p $(RELDIR)/share/locale/nl/LC_MESSAGES
 	mkdir -p $(RELDIR)/share/locale/en_GB/LC_MESSAGES
 	mkdir -p $(RELDIR)/lib
 	mkdir -p $(RELDIR)/doc
@@ -54,6 +56,8 @@ ifeq ($(TGT),WIN32)
 	cp -r $(RUNDIR)/share/locale/is $(RELDIR)/share/locale/
 	cp -r $(RUNDIR)/share/locale/nb $(RELDIR)/share/locale/
 	cp -r $(RUNDIR)/share/locale/pl $(RELDIR)/share/locale/
+	cp -r $(RUNDIR)/share/locale/sk $(RELDIR)/share/locale/
+	cp -r $(RUNDIR)/share/locale/nl $(RELDIR)/share/locale/
 	cp -r $(RUNDIR)/share/locale/en_GB $(RELDIR)/share/locale/
 	cp -r $(RUNDIR)/share/themes $(RELDIR)/share/
 	cp -r $(RUNDIR)/etc $(RELDIR)/
@@ -70,6 +74,8 @@ endif
 	cp common/judoshiai-is_IS.mo $(RELDIR)/share/locale/is/LC_MESSAGES/judoshiai.mo
 	cp common/judoshiai-nb_NO.mo $(RELDIR)/share/locale/nb/LC_MESSAGES/judoshiai.mo
 	cp common/judoshiai-pl_PL.mo $(RELDIR)/share/locale/pl/LC_MESSAGES/judoshiai.mo
+	cp common/judoshiai-sk_SK.mo $(RELDIR)/share/locale/sk/LC_MESSAGES/judoshiai.mo
+	cp common/judoshiai-nl_NL.mo $(RELDIR)/share/locale/nl/LC_MESSAGES/judoshiai.mo
 	cp etc/*.png $(RELDIR)/etc/
 	cp etc/*.txt $(RELDIR)/etc/
 	cp etc/*.css $(RELDIR)/etc/
