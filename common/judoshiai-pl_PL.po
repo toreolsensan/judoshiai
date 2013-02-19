@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-12 13:46+0200\n"
+"POT-Creation-Date: 2013-02-19 14:40+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -71,7 +71,8 @@ msgstr "(Połączenie przerwane)"
 msgid ""
 "Connection established to \n"
 "%ld.%ld.%ld.%ld"
-msgstr "Połączenie ustanowione do \n"
+msgstr ""
+"Połączenie ustanowione do \n"
 "%ld.%ld.%ld.%ld"
 
 msgid "Connection to the node broken"
@@ -606,8 +607,8 @@ msgid "Is there another JudoShiai program running?"
 msgstr "Czy jest uruchomiona inna aplikacja JudoShiai?"
 
 msgid "Yes, another JudoShiai program is running"
-msgstr "Tak, jest uruchomiona"
-" inna aplikacja \n"
+msgstr ""
+"Tak, jest uruchomiona inna aplikacja \n"
 " JudoShiai "
 
 msgid ""
@@ -1756,20 +1757,11 @@ msgstr "System polski"
 msgid "Slovak System"
 msgstr "System słowacki"
 
-msgid "ID:"
-msgstr "ID:"
-
-msgid "Name:"
+msgid "Name: "
 msgstr "Nazwisko:"
 
-msgid "Weight:"
-msgstr "Waga:"
-
-msgid "Confirm:"
+msgid "Confirm: "
 msgstr "Ostatnio zatwierdzono:"
-
-msgid "Control:"
-msgstr "Kontrola:"
 
 msgid "OK:"
 msgstr "OK:"
@@ -1785,3 +1777,45 @@ msgstr "Skala"
 
 msgid "VLC port"
 msgstr "Port VLC"
+
+msgid "X:"
+msgstr ""
+
+msgid "Y:"
+msgstr ""
+
+msgid "Scale:"
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "Reg.Cat"
+msgstr ""
+
+msgid "ID"
+msgstr ""
+
+msgid "Index"
+msgstr ""
+
+msgid "SWE Dubb återkv"
+msgstr ""
+
+msgid "SWE Dir återkv"
+msgstr ""
+
+msgid "SWE Enkelt återkv"
+msgstr ""
+
+msgid "Results in Polish"
+msgstr ""
+
+msgid "Results in Slovak"
+msgstr ""
+
+msgid "Results in Dutch"
+msgstr ""
+
+msgid "WARNING: NO CONTROL"
+msgstr ""
