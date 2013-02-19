@@ -13,6 +13,7 @@
 #include <gdk/gdkkeysyms.h>
 
 #include "judoshiai.h"
+#include "language.h"
 
 extern void about_shiai(GtkWidget *w, gpointer data);
 extern void new_shiai(GtkWidget *w, gpointer data);
@@ -58,7 +59,7 @@ extern void ftp_to_server(GtkWidget *w, gpointer data);
 static GtkWidget *menubar, 
     *tournament_menu_item, *competitors_menu_item, 
     *categories_menu_item, *drawing_menu_item, *results_menu_item, 
-    *judotimer_menu_item, *preferences_menu_item, *help_menu_item,
+    *judotimer_menu_item, *preferences_menu_item, *help_menu_item, *lang_menu_item,
     *tournament_menu, *competitors_menu, 
     *categories_menu, *drawing_menu, *results_menu, 
     *judotimer_menu, *preferences_menu, *help_menu, *sql_dialog,
@@ -82,28 +83,9 @@ static GtkWidget *menubar,
     *preference_club_text_club, *preference_club_text_country, *preference_club_text_both,
     *preference_club_text_abbr, *preference_use_logo,
     *preference_serial, *preference_medal_matches,
-    *help_manual, *help_about, *flags[NUM_LANGS], *menu_flags[NUM_LANGS];
+    *help_manual, *help_about;
 
 static GSList *lang_group = NULL, *club_group = NULL;
-
-static GtkTooltips *menu_tips;
-
-static const gchar *flags_files[NUM_LANGS] = {
-    "finland.png", "sweden.png", "uk.png", "spain.png", "estonia.png", "ukraine.png", "iceland.png", 
-    "norway.png", "poland.png"
-};
-
-static const gchar *lang_names[NUM_LANGS] = {
-    "fi", "sv", "en", "es", "et", "uk", "is", "nb", "pl"
-};
-
-static GtkWidget *get_picture(const gchar *name)
-{
-    gchar *file = g_build_filename(installation_dir, "etc", name, NULL);
-    GtkWidget *pic = gtk_image_new_from_file(file);
-    g_free(file);
-    return pic;
-}
 
 GtkWidget *get_menubar_menu(GtkWidget  *window)
 {
@@ -111,7 +93,6 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gint i;
     gchar buf[64];
 
-    menu_tips = gtk_tooltips_new ();
     group = gtk_accel_group_new ();
     menubar = gtk_menu_bar_new ();
 
@@ -123,13 +104,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     judotimer_menu_item   = gtk_menu_item_new_with_label (_("Judotimer"));
     preferences_menu_item = gtk_menu_item_new_with_label (_("Preferences"));
     help_menu_item        = gtk_menu_item_new_with_label (_("Help"));
-
-    for (i = 0; i < NUM_LANGS; i++) {
-        flags[i] = get_picture(flags_files[i]);
-        menu_flags[i] = gtk_image_menu_item_new();
-        gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(menu_flags[i]), flags[i]);        
-        gtk_image_menu_item_set_always_show_image(GTK_IMAGE_MENU_ITEM(menu_flags[i]), TRUE);
-    }
+    lang_menu_item        = get_language_menu(window, change_language);
 
     tournament_menu  = gtk_menu_new();
     competitors_menu = gtk_menu_new();
@@ -157,14 +132,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     //gtk_menu_shell_append(GTK_MENU_SHELL(menubar), judotimer_menu_item); 
     gtk_menu_shell_append(GTK_MENU_SHELL(menubar), preferences_menu_item); 
     gtk_menu_shell_append(GTK_MENU_SHELL(menubar), help_menu_item); 
-
-    for (i = 0; i < NUM_LANGS; i++) {
-        if (i == LANG_SW || i == LANG_NO)
-            continue;
-        gtk_menu_shell_append(GTK_MENU_SHELL(menubar), menu_flags[i]); 
-        g_signal_connect(G_OBJECT(menu_flags[i]), "button_press_event",
-                         G_CALLBACK(change_language), (gpointer)i);
-    }
+    gtk_menu_shell_append(GTK_MENU_SHELL(menubar), lang_menu_item); 
 
     /* Create the Tournament menu content. */
     tournament_new        = gtk_menu_item_new_with_label(_("New Tournament"));
@@ -740,18 +708,9 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
 {
     gint i;
     gchar buf[64];
-    static gchar envbuf[32]; // this must be static for the putenv() function
 
     language = (gint)param;
-    sprintf(envbuf, "LANGUAGE=%s", lang_names[language]);
-    putenv(envbuf);
-    setlocale(LC_ALL, lang_names[language]);
-
-    gchar *dirname = g_build_filename(installation_dir, "share", "locale", NULL);
-    bindtextdomain ("judoshiai", dirname);
-    g_free(dirname);
-    bind_textdomain_codeset ("judoshiai", "UTF-8");
-    textdomain ("judoshiai");
+    set_gui_language(language);
 
     change_menu_label(tournament_menu_item , _("Tournament"));
     change_menu_label(competitors_menu_item, _("Competitors"));

@@ -539,34 +539,6 @@ static void open_url(const char *szURL) {
 }
 #endif
 
-static const gchar *help_file_names[NUM_LANGS] = {
-    "judoshiai-fi.pdf", // fi
-    "judoshiai-en.pdf", // se
-    "judoshiai-en.pdf", // en
-    "judoshiai-es.pdf", // es
-    "judoshiai-en.pdf", // et
-    "judoshiai-uk.pdf", // uk
-    "judoshiai-en.pdf", // is
-    "judoshiai-en.pdf", // no
-    "judoshiai-en.pdf"  // pl
-};
-
-void start_help(GtkWidget *w, gpointer data)
-{
-    gchar *docfile = g_build_filename(installation_dir, "doc", 
-                                      help_file_names[language], NULL);
-#ifdef WIN32
-    ShellExecute(NULL, TEXT("open"), docfile, NULL, ".\\", SW_SHOWMAXIMIZED);
-#else /* ! WIN32 */
-    gchar *cmd;
-    cmd = g_strdup_printf("if which acroread ; then PDFR=acroread ; "
-                          "elif which evince ; then PDFR=evince ; "
-                          "else PDFR=xpdf ; fi ; $PDFR \"%s\" &", docfile);
-    system(cmd);
-    g_free(cmd);
-#endif /* ! WIN32 */
-    g_free(docfile);
-}
 
 void backup_shiai(GtkWidget *w, gpointer data)
 {
