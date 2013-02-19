@@ -1,0 +1,99 @@
+### First line is the menu text
+Resultaten in het Nederlands
+### 1: Competitors
+Judokas
+### 2: Competitors A (for double and quadruple pools)
+Judokas A
+### 3: Competitors B
+Judokas B
+### 4: Competitors C
+Judokas C
+### 5: Competitors D
+Judokas D
+### 6: # (= short text for "Number", like "Nr")
+#
+### 7: Name
+Naam
+### 8: Grade (belt grade, 1. dan, 3. kyu etc)
+Graad
+### 9: Club
+Vereniging
+### 10: Matches
+Wedstrijden
+### 11: Matches A
+Wedstrijden A
+### 12: Matches B
+Wedstrijden B
+### 13: Matches C
+Wedstrijden C
+### 14: Matches D
+Wedstrijden D
+### 15: Match
+Wedstrijd
+### 16: Blue
+Blauw
+### 17: White
+Wit
+### 18: Result (result of one fight)
+Resultaat
+### 19: Results (all the results of the tournament)
+Resultaten
+### 20: Time (fight time)
+Tijd
+### 21: Wins (number of wins)
+Overwinningen
+### 22: Pts (short text for points)
+Ptn
+### 23: Pos (short text for position = winner, second, bronze)
+Pos
+### 24: Previous winner
+Vorige winnaar
+### 25: Next (competitors who have the next fight)
+Next
+### 26: Weight:
+Gewicht:
+### 27: PRELIMINARY SCHEDULE
+VOORLOPIG SCHEMA
+### 28: weighin-notes.pdf (file name)
+weeg-resultaten.pdf
+### 29: schedule.pdf (file name)
+schema.pdf
+### 30: categories.pdf (file name) official in dutch it is Categorieën but ë is not always nice so i left it out. Specially when it is pointing to a real file
+categorieen.pdf
+### 31: Category
+Categorie
+### 32: Next fights (for a list of fights)
+Volgende gevechten
+### 33: Categories
+Categorieën
+### 34: Statistics
+statistieken
+### 35: Medals
+Medailles
+### 36: Total
+Totaal
+### 37: Country
+Land
+### 38: Not drawn
+Niet opgesteld
+### 39: Finished
+Voltooid
+### 40: Match ongoing
+Match ongoing
+### 41: Started (category has started)
+Started
+### 42: Drawing ready
+Opstelling klaar
+### 43: Coach
+Coach
+### 44: Surname
+Achternaam
+### 45: Status
+Status
+### 46: Display
+Display
+### 47: "Match after n matches" divided in two parts
+###     Match after ("Match after" n matches)
+Wedstrijd na
+### 48: matches (Match after n "matches")
+wedstrijden
