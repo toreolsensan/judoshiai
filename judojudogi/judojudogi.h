@@ -29,17 +29,6 @@
 #define bind_textdomain_codeset(Domain,Codeset) (Codeset) 
 #endif /* ENABLE_NLS */
 
-#define LANG_FI 0
-#define LANG_SW 1
-#define LANG_EN 2
-#define LANG_ES 3
-#define LANG_EE 4
-#define LANG_UK 5
-#define LANG_IS 6
-#define LANG_NO 7
-#define LANG_PL 8
-#define NUM_LANGS 9
-
 #define FRAME_WIDTH  600
 #define FRAME_HEIGHT 400
 
