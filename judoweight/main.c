@@ -21,6 +21,7 @@
 #endif
 
 #include "judoweight.h"
+#include "language.h"
 #include "binreloc.h"
 
 #define JUDOGI_STATUS
@@ -37,7 +38,7 @@ GKeyFile      *keyfile;
 gchar         *conffile;
 GdkCursor     *cursor = NULL;
 guint          current_year;
-gint           language = LANG_FI;
+gint           language = LANG_EN;
 static GtkWidget *name_box;
 static GtkWidget *id_box;
 static GtkWidget *weight_box;

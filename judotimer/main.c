@@ -22,6 +22,7 @@
 #endif
 
 #include "judotimer.h"
+#include "language.h"
 #include "binreloc.h"
 #include "fmod.h"
 
@@ -29,7 +30,7 @@ static void show_big(void);
 static void expose_label(cairo_t *c, gint w);
 static gboolean expose(GtkWidget *widget, GdkEventExpose *event, gpointer userdata);
 gboolean delete_big(gpointer data);
-gint language = LANG_FI;
+gint language = LANG_EN;
 
 //#define TABLE_PARAM (GTK_EXPAND)
 #define TABLE_PARAM (GTK_EXPAND|GTK_FILL)

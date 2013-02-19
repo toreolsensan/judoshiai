@@ -21,6 +21,7 @@
 #endif
 
 #include "judojudogi.h"
+#include "language.h"
 #include "binreloc.h"
 
 static gboolean button_pressed(GtkWidget *sheet_page, 
@@ -40,7 +41,7 @@ gchar         *conffile;
 GdkCursor     *cursor = NULL;
 guint          current_year;
 static GtkWidget *darea = NULL;
-gint           language = LANG_FI;
+gint           language = LANG_EN;
 gint           num_lines = 3;//NUM_LINES;
 gint           display_type = HORIZONTAL_DISPLAY;//NORMAL_DISPLAY;
 gboolean       mirror_display = FALSE;
