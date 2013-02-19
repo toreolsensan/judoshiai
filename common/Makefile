@@ -22,3 +22,11 @@ po: $(tmps)
 
 clean:
 	rm -f *.mo
+
+# for future use
+#merge:
+#	echo '' > messages.po # xgettext needs that file, and we need it empty
+#	find .. -type f -iname "*.c" | xgettext --from-code=UTF-8 --keyword=_ --keyword=N_ -j -f -
+#	msgmerge -N existing.po messages.po > new.po
+#	mv new.po existing.po
+#	rm messages.po
