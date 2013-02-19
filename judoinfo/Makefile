@@ -3,7 +3,7 @@ include ../common/Makefile.inc
 all: $(OBJDIR)/judoinfo$(SUFF)
 
 OBJS += $(OBJDIR)/main.o $(OBJDIR)/menus.o $(OBJDIR)/comm.o $(OBJDIR)/ip.o \
-	$(OBJDIR)/protocol.o $(OBJDIR)/trees.o $(OBJDIR)/avl.o
+	$(OBJDIR)/protocol.o $(OBJDIR)/trees.o $(OBJDIR)/avl.o $(OBJDIR)/language.o
 
 CFLAGS += -DAPPLICATION="\"judoinfo\""
 
@@ -35,6 +35,9 @@ $(OBJDIR)/protocol.o: ../common/protocol.c
 
 $(OBJDIR)/binreloc.o: ../common/binreloc.c
 	${CC} -g $(CFLAGS) -c $< -o $@
+
+$(OBJDIR)/language.o: ../common/language.c
+	${CC} $(PROF) -g $(CFLAGS) -c $< -o $@
 
 $(OBJDIR)/%.o: %.c
 	${CC} -g $(CFLAGS) -c $< -o $@
