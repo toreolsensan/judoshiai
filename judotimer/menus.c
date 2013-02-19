@@ -13,8 +13,9 @@
 #include <gdk/gdkkeysyms.h>
 
 #include "judotimer.h"
+#include "language.h"
 
-void start_help(GtkWidget *w, gpointer data);
+void start_timer_help(GtkWidget *w, gpointer data);
 void start_log_view(GtkWidget *w, gpointer data);
 
 static void about_judotimer( GtkWidget *w,
@@ -201,28 +202,9 @@ static GtkWidget *layout_sel_1, *layout_sel_2, *layout_sel_3, *layout_sel_4, *la
 static GtkTooltips *menu_tips;
 static GtkWidget *mode_normal, *mode_master, *mode_slave;
 static GtkWidget *undo, *hansokumake_blue, *hansokumake_white, *clear_selection, *switch_sides;
-static GtkWidget *advertise, *sound, *flags[NUM_LANGS], *menu_flags[NUM_LANGS];
+static GtkWidget *advertise, *sound, *lang_menu_item;
 static GtkWidget *name_layout, *name_layouts[NUM_NAME_LAYOUTS];
 static GtkWidget *display_font, /**rules_no_free_shido,*/ *rules_eq_score_less_shido_wins, *rules_short_pin_times;
-
-static const gchar *flags_files[NUM_LANGS] = {
-    "finland.png", "sweden.png", "uk.png", "spain.png", "estonia.png", "ukraine.png", "iceland.png", 
-    "norway.png", "poland.png"
-};
-
-static const gchar *lang_names[NUM_LANGS] = {
-    "fi", "sv", "en", "es", "et", "uk", "is", "nb", "pl"
-};
-
-static const gchar *help_file_names[NUM_LANGS] = {
-    "judoshiai-fi.pdf", "judoshiai-en.pdf", "judoshiai-en.pdf", "judoshiai-es.pdf", "judoshiai-en.pdf",
-    "judoshiai-uk.pdf", "judoshiai-en.pdf", "judoshiai-nb.pdf", "judoshiai-en.pdf"
-};
-
-static const gchar *timer_help_file_names[NUM_LANGS] = {
-    "judotimer-fi.pdf", "judotimer-en.pdf", "judotimer-en.pdf", "judotimer-es.pdf", "judotimer-en.pdf",
-    "judotimer-uk.pdf", "judotimer-en.pdf", "judotimer-nb.pdf", "judotimer-en.pdf"
-};
 
 static GtkWidget *get_picture(const gchar *name)
 {
@@ -298,13 +280,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     preferences = gtk_menu_item_new_with_label (_("Preferences"));
     help        = gtk_menu_item_new_with_label (_("Help"));
     undo        = gtk_menu_item_new_with_label (_("Undo!"));
-
-    for (i = 0; i < NUM_LANGS; i++) {
-        flags[i] = get_picture(flags_files[i]);
-        menu_flags[i] = gtk_image_menu_item_new();
-        gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(menu_flags[i]), flags[i]);        
-        gtk_image_menu_item_set_always_show_image(GTK_IMAGE_MENU_ITEM(menu_flags[i]), TRUE);
-    }
+    lang_menu_item = get_language_menu(window, change_language);
 
     light      = get_picture("redlight.png");
     menu_light = gtk_image_menu_item_new();
@@ -327,12 +303,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_menu_shell_append (GTK_MENU_SHELL (menubar), match);
     gtk_menu_shell_append (GTK_MENU_SHELL (menubar), preferences);
     gtk_menu_shell_append (GTK_MENU_SHELL (menubar), help);
-
-    for (i = 0; i < NUM_LANGS; i++) {
-        gtk_menu_shell_append(GTK_MENU_SHELL(menubar), menu_flags[i]); 
-        g_signal_connect(G_OBJECT(menu_flags[i]), "button_press_event",
-                         G_CALLBACK(change_language), (gpointer)i);
-    }
+    gtk_menu_shell_append (GTK_MENU_SHELL (menubar), lang_menu_item); 
 
     //gtk_menu_shell_append (GTK_MENU_SHELL (menubar), undo);
     g_signal_connect(G_OBJECT(undo), "button_press_event",
@@ -612,7 +583,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_menu_shell_append (GTK_MENU_SHELL (helpmenu), about);
 
     g_signal_connect(G_OBJECT(manual),          "activate", G_CALLBACK(start_help),            (gpointer)0);
-    g_signal_connect(G_OBJECT(quick_guide),     "activate", G_CALLBACK(start_help),            (gpointer)1);
+    g_signal_connect(G_OBJECT(quick_guide),     "activate", G_CALLBACK(start_timer_help),            (gpointer)1);
     g_signal_connect(G_OBJECT(about),           "activate", G_CALLBACK(about_judotimer),       (gpointer)0);
 
     /* Attach the new accelerator group to the window. */
@@ -852,18 +823,8 @@ void set_preferences(void)
 
 gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param)
 {
-    static gchar envbuf[32]; // this must be static for the putenv() function
-
     language = (gint)param;
-    snprintf(envbuf, sizeof(envbuf), "LANGUAGE=%s", lang_names[language]);
-    putenv(envbuf);
-    setlocale(LC_ALL, lang_names[language]);
-
-    gchar *dirname = g_build_filename(installation_dir, "share", "locale", NULL);
-    bindtextdomain ("judoshiai", dirname);
-    g_free(dirname);
-    bind_textdomain_codeset ("judoshiai", "UTF-8");
-    textdomain ("judoshiai");
+    set_gui_language(language);
 
     change_menu_label(match,        _("Contest"));
     change_menu_label(preferences,  _("Preferences"));
@@ -973,24 +934,6 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(manual,       _("Manual"));
     change_menu_label(quick_guide,  _("Quick guide"));
     change_menu_label(about,        _("About"));
-
-    /* tooltips */
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (menu_tips), menu_flags[LANG_FI],
-                          _("Change language to Finnish"), NULL);
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (menu_tips), menu_flags[LANG_SW],
-                          _("Change language to Swedish"), NULL);
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (menu_tips), menu_flags[LANG_EN],
-                          _("Change language to English"), NULL);
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (menu_tips), menu_flags[LANG_ES],
-                          _("Change language to Spanish"), NULL);
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (menu_tips), menu_flags[LANG_EE],
-                          _("Change language to Estonian"), NULL);
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (menu_tips), menu_flags[LANG_UK],
-                          _("Change language to Ukrainan"), NULL);
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (menu_tips), menu_flags[LANG_IS],
-                          _("Change language to Icelandic"), NULL);
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (menu_tips), menu_flags[LANG_NO],
-                           _("Change language to Norwegian"), NULL);
 
     gtk_tooltips_set_tip (GTK_TOOLTIPS (menu_tips), match0,
                           _("Contest duration automatically from JudoShiai program"), NULL);
@@ -1119,12 +1062,15 @@ GtkWidget *get_option_menu( void )
 #include "shellapi.h"
 #endif /* WIN32 */
 
-void start_help(GtkWidget *w, gpointer data)
+void start_timer_help(GtkWidget *w, gpointer data)
 {
+    if (!data) {
+        start_help(w, data);
+        return;
+    }
+
     gchar *docfile = g_build_filename(installation_dir, "doc",
-                                      data ?
-                                      timer_help_file_names[language] :
-                                      help_file_names[language], NULL);
+                                      timer_help_file_names[language], NULL);
 #ifdef WIN32
     ShellExecute(NULL, TEXT("open"), docfile, NULL, ".\\", SW_SHOWMAXIMIZED);
 #else /* ! WIN32 */

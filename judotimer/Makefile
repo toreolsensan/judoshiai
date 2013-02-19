@@ -4,7 +4,7 @@ all: $(OBJDIR)/judotimer$(SUFF)
 
 OBJS += $(OBJDIR)/main.o $(OBJDIR)/menus.o $(OBJDIR)/stopwatch.o $(OBJDIR)/comm.o \
 	$(OBJDIR)/ip.o $(OBJDIR)/protocol.o $(OBJDIR)/show-ad.o $(OBJDIR)/sound.o \
-	$(OBJDIR)/video.o $(OBJDIR)/tvlogo.o
+	$(OBJDIR)/video.o $(OBJDIR)/tvlogo.o $(OBJDIR)/language.o
 
 CFLAGS += -DAPPLICATION="\"judotimer\""
 CFLAGS += -I$(SOUNDDIR)/inc
@@ -37,6 +37,9 @@ $(OBJDIR)/protocol.o: ../common/protocol.c
 
 $(OBJDIR)/binreloc.o: ../common/binreloc.c
 	${CC} -g $(CFLAGS) -c $< -o $@
+
+$(OBJDIR)/language.o: ../common/language.c
+	${CC} $(PROF) -g $(CFLAGS) -c $< -o $@
 
 $(OBJDIR)/%.o: %.c
 	${CC} -g $(CFLAGS) -c $< -o $@
