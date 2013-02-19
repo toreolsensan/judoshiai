@@ -3,7 +3,7 @@ include ../common/Makefile.inc
 all: $(OBJDIR)/judoweight$(SUFF)
 
 OBJS += $(OBJDIR)/main.o $(OBJDIR)/menus.o $(OBJDIR)/comm.o $(OBJDIR)/ip.o \
-	$(OBJDIR)/protocol.o $(OBJDIR)/serial.o
+	$(OBJDIR)/protocol.o $(OBJDIR)/serial.o $(OBJDIR)/language.o
 
 CFLAGS += -DAPPLICATION="\"judoweight\""
 
@@ -38,6 +38,9 @@ $(OBJDIR)/binreloc.o: ../common/binreloc.c
 
 $(OBJDIR)/serial.o: ../common/serial.c
 	${CC} -g $(CFLAGS) -c $< -o $@
+
+$(OBJDIR)/language.o: ../common/language.c
+	${CC} $(PROF) -g $(CFLAGS) -c $< -o $@
 
 $(OBJDIR)/%.o: %.c
 	${CC} -g $(CFLAGS) -c $< -o $@

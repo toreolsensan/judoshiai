@@ -13,6 +13,7 @@
 #include <gdk/gdkkeysyms.h>
 
 #include "judoweight.h"
+#include "language.h"
 
 void start_help(GtkWidget *w, gpointer data);
 extern void set_serial_dialog(GtkWidget *w, gpointer data);
@@ -23,24 +24,9 @@ extern void serial_set_type(gint type);
 static GtkWidget *menubar, *preferences, *help, *preferencesmenu, *helpmenu;
 static GtkWidget *quit, *manual;
 static GtkWidget *node_ip, *my_ip, *preference_serial, *about;
-static GtkWidget *light, *menu_light;
+static GtkWidget *light, *menu_light, *lang_menu_item;
 
 static GtkTooltips *menu_tips;
-
-static GtkWidget *flags[NUM_LANGS], *menu_flags[NUM_LANGS];
-
-static const gchar *flags_files[NUM_LANGS] = {
-    "finland.png", "sweden.png", "uk.png", "spain.png", "estonia.png", "ukraine.png", "iceland.png", 
-    "norway.png", "poland.png"
-};
-static const gchar *lang_names[NUM_LANGS] = {
-    "fi", "sv", "en", "es", "et", "uk", "is", "nb", "pl"
-};
-
-static const gchar *help_file_names[NUM_LANGS] = {
-    "judoshiai-fi.pdf", "judoshiai-en.pdf", "judoshiai-en.pdf", "judoshiai-es.pdf", "judoshiai-en.pdf",
-    "judoshiai-uk.pdf", "judoshiai-en.pdf", "judoshiai-en.pdf", "judoshiai-en.pdf"
-};
 
 static void about_judoinfo( GtkWidget *w,
 			    gpointer   data )
@@ -130,7 +116,6 @@ static void create_separator(GtkWidget *menu)
 GtkWidget *get_menubar_menu(GtkWidget  *window)
 {
     GtkAccelGroup *group;
-    gint i;
 
     menu_tips = gtk_tooltips_new ();
     group = gtk_accel_group_new ();
@@ -138,13 +123,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
 
     preferences = gtk_menu_item_new_with_label (_("Preferences"));
     help        = gtk_menu_item_new_with_label (_("Help"));
-
-    for (i = 0; i < NUM_LANGS; i++) {
-        flags[i] = get_picture(flags_files[i]);
-        menu_flags[i] = gtk_image_menu_item_new();
-        gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(menu_flags[i]), flags[i]);        
-        gtk_image_menu_item_set_always_show_image(GTK_IMAGE_MENU_ITEM(menu_flags[i]), TRUE);
-    }
+    lang_menu_item = get_language_menu(window, change_language);
 
     light      = get_picture("redlight.png");
     menu_light = gtk_image_menu_item_new();
@@ -159,14 +138,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
   
     gtk_menu_shell_append (GTK_MENU_SHELL (menubar), preferences); 
     gtk_menu_shell_append (GTK_MENU_SHELL (menubar), help);
-
-    for (i = 0; i < NUM_LANGS; i++) {
-        if (i == LANG_NO)
-            continue;
-        gtk_menu_shell_append(GTK_MENU_SHELL(menubar), menu_flags[i]); 
-        g_signal_connect(G_OBJECT(menu_flags[i]), "button_press_event",
-                         G_CALLBACK(change_language), (gpointer)i);
-    }
+    gtk_menu_shell_append (GTK_MENU_SHELL (menubar), lang_menu_item); 
 
     gtk_menu_shell_append (GTK_MENU_SHELL (menubar), menu_light); 
     gtk_menu_item_set_right_justified(GTK_MENU_ITEM(menu_light), TRUE);
@@ -202,7 +174,6 @@ void set_preferences(void)
     GError *error = NULL;
     gchar  *str;
     gint    i, x1;
-    gboolean b;
 
     error = NULL;
     str = g_key_file_get_string(keyfile, "preferences", "nodeipaddress", &error);
@@ -240,20 +211,8 @@ void set_preferences(void)
 
 gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param)
 {
-    gint i;
-    gchar *r = NULL;
-    static gchar envbuf[32]; // this must be static for the putenv() function
-
     language = (gint)param;
-    sprintf(envbuf, "LANGUAGE=%s", lang_names[language]);
-    putenv(envbuf);
-    r = setlocale(LC_ALL, lang_names[language]);
-
-    gchar *dirname = g_build_filename(installation_dir, "share", "locale", NULL);
-    bindtextdomain ("judoshiai", dirname);
-    g_free(dirname);
-    bind_textdomain_codeset ("judoshiai", "UTF-8");
-    textdomain ("judoshiai");
+    set_gui_language(language);
 
     change_menu_label(preferences,  _("Preferences"));
     change_menu_label(help,         _("Help"));
@@ -267,48 +226,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(manual,       _("Manual"));
     change_menu_label(about,        _("About"));
 
-    /* tooltips */
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (menu_tips), menu_flags[LANG_FI],
-                          _("Change language to Finnish"), NULL);
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (menu_tips), menu_flags[LANG_SW],
-                          _("Change language to Swedish"), NULL);
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (menu_tips), menu_flags[LANG_EN],
-                          _("Change language to English"), NULL);
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (menu_tips), menu_flags[LANG_ES],
-                          _("Change language to Spanish"), NULL);
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (menu_tips), menu_flags[LANG_EE],
-                          _("Change language to Estonian"), NULL);
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (menu_tips), menu_flags[LANG_UK],
-                          _("Change language to Ukrainan"), NULL);
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (menu_tips), menu_flags[LANG_IS],
-                          _("Change language to Icelandic"), NULL);
-
     g_key_file_set_integer(keyfile, "preferences", "language", language);
 
     return TRUE;
 }
-
-
-#ifdef WIN32
-#define WIN32_LEAN_AND_MEAN 1
-#include "windows.h"
-#include "shellapi.h"
-#endif /* WIN32 */
-
-void start_help(GtkWidget *w, gpointer data)
-{
-    gchar *docfile = g_build_filename(installation_dir, "doc", 
-                                      help_file_names[language], NULL);
-#ifdef WIN32
-    ShellExecute(NULL, TEXT("open"), docfile, NULL, ".\\", SW_SHOWMAXIMIZED);
-#else /* ! WIN32 */
-    gchar *cmd;
-    cmd = g_strdup_printf("if which acroread ; then PDFR=acroread ; "
-                          "elif which evince ; then PDFR=evince ; "
-                          "else PDFR=xpdf ; fi ; $PDFR \"%s\" &", docfile);
-    system(cmd);
-    g_free(cmd);
-#endif /* ! WIN32 */
-    g_free(docfile);
-}
-
