@@ -18,16 +18,16 @@ msgid "White won the voting"
 msgstr "Biały wygrywa przez HANTEI"
 
 msgid "Match:"
-msgstr "Zapas:"
+msgstr "Walczą:"
 
 msgid "Next:"
-msgstr "Następny:"
+msgstr "Przygotują się:"
 
 msgid "Match"
-msgstr "Zapas"
+msgstr "Walka"
 
 msgid "Contest"
-msgstr "Walka"
+msgstr "Turniej"
 
 msgid "Preferences"
 msgstr "Właściwości"
@@ -39,16 +39,16 @@ msgid "Quit"
 msgstr "Wyjście"
 
 msgid "Red background"
-msgstr "Tło czerwone"
+msgstr "Czerwone tło"
 
 msgid "Tatami not chosen"
 msgstr "Nie wybrano maty"
 
 msgid "Communication node"
-msgstr "Węzeł komunikacji"
+msgstr "Węzeł połączeń"
 
 msgid "Own IP addresses"
-msgstr "Własny adres IP"
+msgstr "Własne adresy IP"
 
 msgid "Manual"
 msgstr "Instrukcja"
@@ -57,7 +57,7 @@ msgid "About"
 msgstr "O..."
 
 msgid "Address of the communication node"
-msgstr "Adres węzła komunikacjiń"
+msgstr "Adres węzła połączeń"
 
 msgid "IP address:"
 msgstr "Adres IP:"
@@ -71,7 +71,8 @@ msgstr "(Połączenie przerwane)"
 msgid ""
 "Connection established to \n"
 "%ld.%ld.%ld.%ld"
-msgstr "Połączenie ustanowione do %ld.%ld.%ld.%ld"
+msgstr "Połączenie ustanowione do \n"
+"%ld.%ld.%ld.%ld"
 
 msgid "Connection to the node broken"
 msgstr "Połączenie z węzłem przerwane"
@@ -92,7 +93,7 @@ msgid "Contest duration automatically from JudoShiai program"
 msgstr "Czas trwania walki automatycznie z programu JudoShiai"
 
 msgid "Fight:"
-msgstr "Walka:"
+msgstr "Walczą:"
 
 msgid "Match duration: automatic"
 msgstr "Czas walki: automatyczny"
@@ -113,7 +114,7 @@ msgid "Match duration: 5 min"
 msgstr "Czas walki: 5 min"
 
 msgid "Contest duration: automatic"
-msgstr "Czas walki: automaattinen"
+msgstr "Czas walki: automatycznie"
 
 msgid "Contest duration: 2 min (short pin times)"
 msgstr "Czas walki: 2 min (dzieci)"
@@ -134,10 +135,10 @@ msgid "Majority of three: blue wins"
 msgstr "Do dwóch wygranych: wygrywa niebieski"
 
 msgid "Hantei: blue wins"
-msgstr "Hantei: wygrywa niebieski"
+msgstr "HANTEI: wygrywa niebieski"
 
 msgid "Hantei: white wins"
-msgstr "Hantei: wygrywa biały"
+msgstr "HANTEI: wygrywa biały"
 
 msgid "Contest area not chosen"
 msgstr "Nie wybrano pola walki"
@@ -173,10 +174,10 @@ msgid "Decrement time"
 msgstr "Czas malejąco"
 
 msgid "Increment osaekomi"
-msgstr "Osaekomi narastająco"
+msgstr "Czas OSAEKOMI narastająco"
 
 msgid "Decrement osaekomi"
-msgstr "Osaekomi malejąco"
+msgstr "Czas OSAEKOMI malejąco"
 
 msgid "View clocks only"
 msgstr "Tylko zegar"
@@ -200,7 +201,7 @@ msgid "Full screen mode"
 msgstr "Pełny ekran"
 
 msgid "Normal operation"
-msgstr "Zwykła operacja"
+msgstr "Tryb zwykły"
 
 msgid "Master mode"
 msgstr "Tryb master"
@@ -218,10 +219,10 @@ msgid "Clock:"
 msgstr "Zegar:"
 
 msgid "Hansoku-make to blue"
-msgstr "Hansoku-make dla niebieskiego"
+msgstr "HANSOKU-MAKE dla niebieskiego"
 
 msgid "Hansoku-make to white"
-msgstr "Hansoku-make dla białego"
+msgstr "HANSOKU-MAKE dla białego"
 
 msgid "Clear selection"
 msgstr "Usuń zaznaczenie"
@@ -242,7 +243,7 @@ msgid "Display layout 5"
 msgstr "Format wyświetlania 5"
 
 msgid "Quick guide"
-msgstr "Przewodnik"
+msgstr "Szybki przewodnik"
 
 msgid "Advertise"
 msgstr "Reklama"
@@ -290,7 +291,7 @@ msgid "Add From a Text File"
 msgstr "Dodaj z pliku tekstowego"
 
 msgid "Add All From Another Shiai"
-msgstr "Dodaj wszystkich z innej aplikacji Shiai"
+msgstr "Dodaj wszystko z innej aplikacji Shiai"
 
 msgid "Add All with Weights"
 msgstr "Dodaj wszystkich z wagami"
@@ -302,7 +303,7 @@ msgid "Restore Removed"
 msgstr "Przywróć usuniętych"
 
 msgid "Bar Code Search"
-msgstr "Szukanie po kodzie kreskowym"
+msgstr "Szukaj po kodzie kreskowym"
 
 msgid "Print Weight Notes"
 msgstr "Drukuj uwagi do wagi"
@@ -326,7 +327,7 @@ msgid "Place To"
 msgstr "Rozdziel na"
 
 msgid "Tatamis"
-msgstr "maty"
+msgstr "tatami"
 
 msgid "Draw All Categories"
 msgstr "Losuj wszystkie kategorie"
@@ -350,10 +351,10 @@ msgid "Communication Node"
 msgstr "Węzeł połączenia"
 
 msgid "Own IP Addresses"
-msgstr "Własny adres IP"
+msgstr "Własne adresy IP"
 
 msgid "Show Attached Connections"
-msgstr "Pokaż aktywne połaczenia"
+msgstr "Pokaż aktywne połączenia"
 
 msgid "Automatic Sheet Update"
 msgstr "Automatyczna aktualizacja arkuszy"
@@ -428,7 +429,7 @@ msgid "Club"
 msgstr "Klub"
 
 msgid "Reg. Category"
-msgstr "Zgłoszona kategoria"
+msgstr "Zarejestrowana kategoria"
 
 msgid "Weight"
 msgstr "Waga"
@@ -449,7 +450,7 @@ msgid "Number"
 msgstr "Numer"
 
 msgid "Select first a competitor and then a number."
-msgstr "Wybierz najpierw zawodnika a potel liczbę."
+msgstr "Wybierz najpierw zawodnika a potem liczbę."
 
 msgid "All the categories has been drawn"
 msgstr "Wszystkie kategorie zostały rozlosowane"
@@ -521,7 +522,7 @@ msgid "Type the barcode:"
 msgstr "Wpisz kod kreskowy:"
 
 msgid "Bar code search"
-msgstr "Szukanie po kodzie kreskowym"
+msgstr "Szukaj po kodzie kreskowym"
 
 msgid "Matches"
 msgstr "Walki"
@@ -560,7 +561,7 @@ msgid "Login"
 msgstr "Login"
 
 msgid "No rights to give results"
-msgstr "Nie masz uprawnień by przeglądać wyniki"
+msgstr "Nie masz uprawnień, by przeglądać wyniki"
 
 msgid "Not used"
 msgstr "Nieużywane"
@@ -602,7 +603,7 @@ msgid "Log"
 msgstr "Log"
 
 msgid "Is there another JudoShiai program running?"
-msgstr "Czy jest uruchomiony inna aplikacja JudoShiai?"
+msgstr "Czy jest uruchomiona inna aplikacja JudoShiai?"
 
 msgid "Yes, another JudoShiai program is running"
 msgstr "Tak, jest uruchomiona"
@@ -627,7 +628,7 @@ msgid "Pool"
 msgstr "Grupa"
 
 msgid "Double pool"
-msgstr "Dwie grupy"
+msgstr "Dwie grupy (brukselski)"
 
 msgid "Double repechage"
 msgstr "Podwójny repasaż"
@@ -639,10 +640,10 @@ msgid "Next contest"
 msgstr "Następna walka"
 
 msgid "Preparing"
-msgstr "Przygotuje się"
+msgstr "Przygotują się"
 
 msgid "Preparing:"
-msgstr "Przygotuje się:"
+msgstr "Przygotują się:"
 
 msgid "Delay the match"
 msgstr "Opóźnij walkę"
@@ -684,7 +685,7 @@ msgid "Prev. winner:"
 msgstr "Poprzedni zwycięzca:"
 
 msgid "Delayed"
-msgstr "Opóźniony"
+msgstr "Opóźnione"
 
 msgid "Remove delay"
 msgstr "Usuń opóźnienie"
@@ -725,13 +726,13 @@ msgstr "Dodaj zawodników"
 msgid "Clean up duplicates and update reg. categories"
 msgstr ""
 "Usuń duplikaty oraz uaktualnij \n"
-"rejestrowane kategorie"
+"zarejestrowane kategorie"
 
 msgid "competitors added and updated"
 msgstr "zawodników dodano i uaktualniono"
 
 msgid "competitors already existed"
-msgstr "zawodników juz istnieje"
+msgstr "zawodników już istnieje"
 
 msgid "competitors added unchanged"
 msgstr "zawodników dodano bez zmian"
@@ -815,7 +816,7 @@ msgid "Stop synchronization"
 msgstr "Zatrzymaj synchronizację"
 
 msgid "Number of tatamis:"
-msgstr "Ilośc mat:"
+msgstr "Ilość mat:"
 
 msgid "Sheets"
 msgstr "Arkusze"
@@ -845,10 +846,10 @@ msgid "Start New Match?"
 msgstr "Rozpocząć nową walkę?"
 
 msgid "Hansokumake to blue"
-msgstr "Hansoku-make dla niebieskiego"
+msgstr "HANSOKU-MAKE dla niebieskiego"
 
 msgid "Hansokumake to white"
-msgstr "Hansoku-make dla białego"
+msgstr "HANSOKU-MAKE dla białego"
 
 msgid "Golden Score"
 msgstr "Golden Score"
@@ -857,7 +858,7 @@ msgid "Start Golden Score?"
 msgstr "Rozpocząć Golden Score?"
 
 msgid "Hantei"
-msgstr "Hantei"
+msgstr "HANTEI"
 
 msgid "Blue wins"
 msgstr "Wygrywa niebieski"
@@ -935,7 +936,7 @@ msgid "Draw and Print Selected"
 msgstr "Losuj i drukuj zaznaczone"
 
 msgid "Print Selected Sheets (Printer)"
-msgstr "Drukuj zaznaczone arkusz (Drukarka)"
+msgstr "Drukuj zaznaczone arkusze (Drukarka)"
 
 msgid "Print Selected Sheets (PDF)"
 msgstr "Drukuj zaznaczone arkusze (PDF)"
@@ -1061,10 +1062,10 @@ msgid "View Log"
 msgstr "Zobacz log"
 
 msgid "Double Pool"
-msgstr "Dwie grupy"
+msgstr "Dwie grupy (brukselski)"
 
 msgid "Cannot handle: Database created with newer JudoShiai version."
-msgstr "Nie obsługiwane: Baza danych utworzona w nowszej wersji JudoShiai."
+msgstr "Nie obsługiwane: baza danych utworzona w nowszej wersji JudoShiai."
 
 msgid "Database tables updated."
 msgstr "Uaktualniono tabele bazy danych"
@@ -1076,10 +1077,10 @@ msgid "Abbreviations in Sheets"
 msgstr "Skróty na arkuszach"
 
 msgid "Display layout"
-msgstr "Format wyswietlania"
+msgstr "Format wyświetlania"
 
 msgid "Contest area"
-msgstr "Mata"
+msgstr "Pole walki"
 
 msgid "Set time"
 msgstr "Ustaw czas"
@@ -1118,7 +1119,7 @@ msgid "SWE Dubb 책terkv"
 msgstr "SWE podwójny repasaż"
 
 msgid "SWE Dir 책terkv"
-msgstr "SWE pojedynczy repasaż"
+msgstr "SWE bezpośredni repasaż"
 
 msgid "EST D klass"
 msgstr "EST juniorzy D"
@@ -1196,7 +1197,7 @@ msgid "Syntax error"
 msgstr "Błąd składni"
 
 msgid "Stop clock on Ippon"
-msgstr "Zatrzymaj zegar gdy IPPON"
+msgstr "Zatrzymaj zegar, gdy IPPON"
 
 msgid "Switch sides"
 msgstr "Zamień strony"
@@ -1229,7 +1230,7 @@ msgid "Silver medal match"
 msgstr "Mecz o srebro"
 
 msgid "Pool Style 2"
-msgstr "Grupy styl 2"
+msgstr "Grupy (styl 2)"
 
 msgid "Use Belt Colors"
 msgstr "Używaj kolorów pasów"
@@ -1283,10 +1284,10 @@ msgid "Repeat Script"
 msgstr "Powtórz skrypt"
 
 msgid "Double Pool 2"
-msgstr "Dwie grupy 2"
+msgstr "Dwie grupy v.2"
 
 msgid "Double pool 2"
-msgstr "Dwie grupy 2"
+msgstr "Dwie grupy v.2"
 
 msgid "Write to file"
 msgstr "Zapisz do pliku"
@@ -1316,10 +1317,10 @@ msgid "Final"
 msgstr "Finał"
 
 msgid "Bronze1"
-msgstr "Brąz 1"
+msgstr "Walka o brąz 1"
 
 msgid "Bronze2"
-msgstr "Brąz 2"
+msgstr "Walka o brąz 2"
 
 msgid "Pool's last"
 msgstr "Ostatnia walka w grupie"
@@ -1331,16 +1332,16 @@ msgid "Print Accreditation Cards"
 msgstr "Drukuj karty akredytacyjne"
 
 msgid "Name Format"
-msgstr "Format nazwiska"
+msgstr "Format wyświetlania nazwisk"
 
 msgid "Name Surname, Country/Club"
-msgstr "Imię, nazwisko, kraj/klub"
+msgstr "Imię, Nazwisko, Kraj/Klub"
 
 msgid "Surname, Name, Country/Club"
-msgstr "Nazwisko, imię, kraj/klub"
+msgstr "Nazwisko, Imię, Kraj/Klub"
 
 msgid "Country/Club  Surname, Name"
-msgstr "Kraj/klub, nazwisko, imię"
+msgstr "Kraj/Klub, Nazwisko, Imię"
 
 msgid "Medal Matches..."
 msgstr "Walki o medale..."
@@ -1367,10 +1368,10 @@ msgid "One Card Per Page"
 msgstr "Jedna karta na stronę"
 
 msgid "Normal display"
-msgstr "Format wyświetlania normalny"
+msgstr "Normalny format wyświetlania"
 
 msgid "Horizontal display"
-msgstr "Format wyświetlania pionowy"
+msgstr "Pionowy format wyświetlania"
 
 msgid "White has a judogi problem."
 msgstr "Biały ma problem z judogą"
@@ -1385,22 +1386,22 @@ msgid "Show competitors"
 msgstr "Pokaż zawodników"
 
 msgid "Name format"
-msgstr "Format nazwiska"
+msgstr "Format wyświetlania nazwisk"
 
 msgid "Country  Surname, Name"
-msgstr "Kraj, nazwisko, imię"
+msgstr "Kraj, Nazwisko, Imię"
 
 msgid "Club  Surname, Name"
-msgstr "Klub, nazwisko, imię"
+msgstr "Klub, Nazwisko, Imię"
 
 msgid "Country Surname"
-msgstr "Kraj, nazwisko"
+msgstr "Kraj, Nazwisko"
 
 msgid "Club Surname"
-msgstr "Klub, nazwisko"
+msgstr "Klub, Nazwisko"
 
 msgid "Surname, Name"
-msgstr "Nazwisko, imię"
+msgstr "Nazwisko, Imię"
 
 msgid "Surname"
 msgstr "Nazwisko"
@@ -1493,13 +1494,13 @@ msgid "Validate Database"
 msgstr "Walidacja bazy danych"
 
 msgid "Results in Icelandic"
-msgstr "Rezultaty w j. islandskim"
+msgstr "Wyniki w j. islandskim"
 
 msgid "Surname Name, Country/Club"
-msgstr "Nazwisko Imię, Kraj/Klub"
+msgstr "Nazwisko, Imię, Kraj/Klub"
 
 msgid "Country/Club,  Surname Name"
-msgstr "Kraj/Klub, Nazwisko Imię"
+msgstr "Kraj/Klub, Nazwisko, Imię"
 
 msgid "Scale Serial Interface..."
 msgstr "Interfejs wagi..."
@@ -1631,7 +1632,7 @@ msgid "EST D klass 1 brz"
 msgstr "EST juniorzy D"
 
 msgid "IJF Quarter Final Repechage"
-msgstr " IJF repasaż od ćwierćfinału "
+msgstr "IJF repasaż od ćwierćfinału "
 
 msgid "SWE Direct Repechage"
 msgstr "SWE bezpośredni repasaż"
@@ -1669,16 +1670,16 @@ msgstr "Do dwóch wygranych walk:"
 msgid ""
 "Medal will be awarded \n"
 "only if a contest was won:"
-msgstr "Medale są przyznawane tylko gdy zostanie wygrana walka:"
+msgstr "Medale są przyznawane tylko, gdy zostanie wygrana walka:"
 
 msgid "Seeded to fixed places:"
 msgstr "Rozstawienie na ustalone miejsca:"
 
 msgid "Double Pool 2 with carried forward points:"
-msgstr "Dwie grupy 2 z przeniesieniem punktów:"
+msgstr "Dwie grupy v.2 z przeniesieniem punktów:"
 
 msgid "Two pool bronzes:"
-msgstr "Dwa brązy w grupie"
+msgstr "Dwa brązy w grupie:"
 
 msgid "Resolve 3-way ties by weights:"
 msgstr "Rozwiąż remis w grupie poprzez wagi:"
@@ -1693,7 +1694,7 @@ msgid "Statistics"
 msgstr "Statystyki"
 
 msgid "Reset to"
-msgstr "Przywróc do"
+msgstr "Przywróć do"
 
 msgid "Initialize"
 msgstr "Rozpocznij"
@@ -1705,7 +1706,7 @@ msgid "Max age"
 msgstr "Wiek max"
 
 msgid "Min"
-msgstr "Min"
+msgstr "Mi."
 
 msgid "Max"
 msgstr "Max"
@@ -1731,3 +1732,56 @@ msgstr "Użyj szablonów SVG"
 msgid "Print SVG"
 msgstr "Drukuj SVG"
 
+msgid "Change language to Polish"
+msgstr "Zmień język na polski"
+
+msgid "Change language to Slovak"
+msgstr "Zmień język na słowacki"
+
+msgid "Win in Golden Score gives 1 point"
+msgstr "Zwycięstwo w Golden Score daje jeden punkt"
+
+msgid "British System"
+msgstr "System angielski"
+
+msgid "Danish System"
+msgstr "System duński"
+
+msgid "Australian System"
+msgstr "System australijski"
+
+msgid "Polish System"
+msgstr "System polski"
+
+msgid "Slovak System"
+msgstr "System słowacki"
+
+msgid "ID:"
+msgstr "ID:"
+
+msgid "Name:"
+msgstr "Nazwisko:"
+
+msgid "Weight:"
+msgstr "Waga:"
+
+msgid "Confirm:"
+msgstr "Ostatnio zatwierdzono:"
+
+msgid "Control:"
+msgstr "Kontrola:"
+
+msgid "OK:"
+msgstr "OK:"
+
+msgid "NOK:"
+msgstr "Nie OK:"
+
+msgid "VLC control"
+msgstr "Ustawienia VLC"
+
+msgid "Scale"
+msgstr "Skala"
+
+msgid "VLC port"
+msgstr "Port VLC"
