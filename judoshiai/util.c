@@ -13,6 +13,7 @@
 
 #include "sqlite3.h"
 #include "judoshiai.h"
+#include "language.h"
 
 
 static GtkTreeIter found_iter;

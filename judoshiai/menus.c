@@ -539,7 +539,7 @@ void set_preferences(void)
     if (!error)
         language = x1;
     else
-        language = LANG_FI;
+        language = LANG_EN;
 
     error = NULL;
     if (g_key_file_get_boolean(keyfile, "preferences", "mirror", &error)) {

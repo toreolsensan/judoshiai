@@ -15,6 +15,7 @@
 #include <cairo-pdf.h>
 
 #include "judoshiai.h"
+#include "language.h"
 
 #define SIZEX 630
 #define SIZEY 891

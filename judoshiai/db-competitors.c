@@ -13,6 +13,7 @@
 
 #include "sqlite3.h"
 #include "judoshiai.h"
+#include "language.h"
 
 extern void write_competitor(FILE *f, const gchar *first, const gchar *last, const gchar *belt, 
                              const gchar *club, const gchar *category, const gint index, const gboolean by_club);

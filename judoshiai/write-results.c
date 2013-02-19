@@ -12,6 +12,7 @@
 
 #include "sqlite3.h"
 #include "judoshiai.h"
+#include "language.h"
 
 void write_results(FILE *f);
 

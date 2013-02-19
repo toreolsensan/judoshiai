@@ -36,6 +36,7 @@
 
 //#include "shiai-i18n.h"
 #include "judoshiai.h"
+#include "language.h"
 #include "binreloc.h"
 
 guint current_year;
@@ -46,7 +47,7 @@ GCompletion *club_completer;
 gint print_lang = 0, club_text = 0, club_abbr = 0, draw_system = 0;
 gboolean first_instance = FALSE;
 gint number_of_tatamis = 3;
-gint language = LANG_FI;
+gint language = LANG_EN;
 gchar *use_logo = NULL;
 gboolean print_headers = FALSE;
 
