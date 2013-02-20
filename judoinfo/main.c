@@ -369,7 +369,7 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
         } else
             cairo_move_to(c, 10 + left, extents.height);
 
-        sprintf(buf, "Tatami %d", i+1);
+        sprintf(buf, "%s %d", _("Tatami"), i+1);
         cairo_show_text(c, buf);
 #if 0
         point_click_areas[num_rectangles].category = 0;
