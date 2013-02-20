@@ -505,9 +505,9 @@ static void reset_props1(GtkWidget *button, void *data)
 }
 
 static const gchar *draw_system_names[NUM_DRAWS] = 
-    {"International System", "Finnish System", "Swedish System", "Estonian System", "Spanish System", 
-     "Norwegian System", "British System", "Australian System", "Danish System", 
-     "Polish System", "Slovakian System"};
+    {N_("International System"), N_("Finnish System"), N_("Swedish System"), N_("Estonian System"), N_("Spanish System"), 
+     N_("Norwegian System"), N_("British System"), N_("Australian System"), N_("Danish System"), 
+     N_("Polish System"), N_("Slovakian System")};
 
 #define NUM_TBLS 2
 
