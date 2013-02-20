@@ -51,6 +51,7 @@ static GtkWidget *confirm_box;
 static struct message saved;
 static gchar  *saved_id = NULL;
 static GdkCursor *wait_cursor = NULL;
+static GtkWidget *w_id, *w_name, *w_weight, *w_control, *w_ok, *w_confirm;
 
 void set_display(struct msg_edit_competitor *msg)
 {
@@ -303,7 +304,7 @@ int main( int   argc,
     GtkWidget *table = gtk_table_new(5, 6, FALSE);
     gtk_table_set_col_spacings(GTK_TABLE(table), 5);
     gtk_table_set_row_spacings(GTK_TABLE(table), 5);
-    GtkWidget *tmp = gtk_label_new(_("ID:"));
+    GtkWidget *tmp = w_id = gtk_label_new(_("ID:"));
     gtk_misc_set_alignment(GTK_MISC(tmp), 1, 0.5);
     gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, row, row+1);
     id_box = gtk_entry_new();
@@ -311,7 +312,7 @@ int main( int   argc,
     gtk_table_attach_defaults(GTK_TABLE(table), id_box, 1, 2, row, row+1);
     row++;
 
-    tmp = gtk_label_new(_("Name:"));
+    tmp = w_name = gtk_label_new(_("Name:"));
     gtk_misc_set_alignment(GTK_MISC(tmp), 1, 0.5);
     gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, row, row+1);
     name_box = gtk_label_new("?");
@@ -320,7 +321,7 @@ int main( int   argc,
     gtk_table_attach_defaults(GTK_TABLE(table), name_box, 1, 4, row, row+1);
     row++;
 
-    tmp = gtk_label_new(_("Weight:"));
+    tmp = w_weight = gtk_label_new(_("Weight:"));
     gtk_misc_set_alignment(GTK_MISC(tmp), 1, 0.5);
     gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, row, row+1);
     //GtkWidget *whbox = gtk_hbox_new(FALSE, 5);
@@ -342,7 +343,7 @@ int main( int   argc,
 
 
 #ifdef JUDOGI_STATUS
-    tmp = gtk_label_new(_("Control:"));
+    tmp = w_control = gtk_label_new(_("Control:"));
     gtk_misc_set_alignment(GTK_MISC(tmp), 1, 0.5);
     gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, row, row+1);
     judogi_box = tmp = gtk_combo_box_new_text();
@@ -361,13 +362,13 @@ int main( int   argc,
     row++;
 #endif
 
-    tmp = gtk_button_new_with_label(_("OK"));
+    tmp = w_ok = gtk_button_new_with_label(_("OK"));
     gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, row, row+1);
     g_signal_connect(G_OBJECT(tmp), 
                      "clicked", G_CALLBACK(on_ok), NULL);
     row++;
 
-    tmp = gtk_label_new(_("Confirm:"));
+    tmp = w_confirm = gtk_label_new(_("Confirm:"));
     gtk_misc_set_alignment(GTK_MISC(tmp), 1, 0.5);
     gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, row, row+1);
     confirm_box = gtk_label_new("");
@@ -493,4 +494,14 @@ void judoweight_log(gchar *format, ...)
     }
 
     g_free(text);
+}
+
+void change_language_1(void)
+{
+    gtk_label_set_label(GTK_LABEL(w_id), _("ID:"));
+    gtk_label_set_label(GTK_LABEL(w_name), _("Name:"));
+    gtk_label_set_label(GTK_LABEL(w_weight), _("Weight:"));
+    gtk_label_set_label(GTK_LABEL(w_control), _("Control:"));
+    gtk_button_set_label(GTK_BUTTON(w_ok), _("OK"));
+    gtk_label_set_label(GTK_LABEL(w_confirm), _("Confirm:"));
 }

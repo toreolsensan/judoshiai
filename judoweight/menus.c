@@ -226,6 +226,8 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(manual,       _("Manual"));
     change_menu_label(about,        _("About"));
 
+    change_language_1();
+
     g_key_file_set_integer(keyfile, "preferences", "language", language);
 
     return TRUE;

@@ -59,5 +59,6 @@ extern void show_my_ip_addresses( GtkWidget *w, gpointer data);
 
 extern void set_display(struct msg_edit_competitor *msg);
 extern void judoweight_log(gchar *format, ...);
+extern void change_language_1(void);
 
 #endif
