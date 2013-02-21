@@ -324,8 +324,8 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     preference_auto_arrange           = gtk_check_menu_item_new_with_label("");
     preference_use_logo               = gtk_menu_item_new_with_label("");
 
-    preference_serial                 = gtk_menu_item_new_with_label(_(""));
-    preference_medal_matches          = gtk_menu_item_new_with_label(_(""));
+    preference_serial                 = gtk_menu_item_new_with_label("");
+    preference_medal_matches          = gtk_menu_item_new_with_label("");
 
     //gtk_menu_shell_append(GTK_MENU_SHELL(preferences_menu), preference_comm_node);
     preference_comm = gtk_menu_item_new_with_label("");
