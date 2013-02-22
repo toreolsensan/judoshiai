@@ -825,7 +825,6 @@ void reset(guint key, struct msg_next_match *msg)
         key_pending = 0;
         asking = FALSE;
         asked = TRUE;
-        gs_cat = gs_num = 0;
     } else if (key == ASK_NOK) {
         key_pending = 0;
         asking = FALSE;
@@ -876,9 +875,6 @@ void reset(guint key, struct msg_next_match *msg)
                 (st[0].running && rest_time) ||
                 rules_confirm_match) &&
                key != GDK_0) {
-        GtkWidget *dialog;
-        gint response;
-
         key_pending = key;
         asking = TRUE;
         create_ask_window();
@@ -946,6 +942,7 @@ void reset(guint key, struct msg_next_match *msg)
                         blue_wins_voting, white_wins_voting,
                         hansokumake_to_blue, hansokumake_to_white, legend);
         st[0].match_time = 0;
+        gs_cat = gs_num = 0;
     }
 
     if (golden_score == FALSE || rules_leave_score == FALSE) {
