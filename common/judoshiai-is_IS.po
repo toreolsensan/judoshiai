@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-12 13:46+0200\n"
+"POT-Creation-Date: 2013-02-21 16:00+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,9 +19,6 @@ msgstr "Hvítur vann"
 
 msgid "Match:"
 msgstr "Keppni:"
-
-msgid "Contest:"
-msgstr "Keppnin:"
 
 msgid "Next:"
 msgstr "Næst:"
@@ -43,9 +40,6 @@ msgstr "Hætta"
 
 msgid "Red background"
 msgstr "Rauður bakgrunnur"
-
-msgid "Tatami not chosen"
-msgstr "Völlur ekki valinn"
 
 msgid "Communication node"
 msgstr "Samskiptabúnaður"
@@ -70,23 +64,6 @@ msgstr "(Tenging í lagi)"
 
 msgid "(Connection broken)"
 msgstr "(Tenging rofin)"
-
-msgid ""
-"Connection established to \n"
-"%ld.%ld.%ld.%ld"
-msgstr "Sambandi komið á %ld.%ld.%ld.%ld"
-
-msgid "Connection to the node broken"
-msgstr "Samband til samskiptabúnaðar rofinn"
-
-msgid "Change language to Finnish"
-msgstr "Skiptu yfir í Finnsku"
-
-msgid "Change language to Swedish"
-msgstr "Skiptu yfir í Sænsku"
-
-msgid "Change language to English"
-msgstr "Skiptu yfir í Ensku"
 
 msgid "Contest duration automatically from JudoShiai program"
 msgstr "Keppnistími sjálfvirkur frá JudoShiai-forriti"
@@ -130,9 +107,6 @@ msgstr "Lengd viðureignar: 4 mín"
 msgid "Contest duration: 5 min"
 msgstr "Lengd viðureignar: 5 mín"
 
-msgid "Majority of three: blue wins"
-msgstr "Meirihluti þriggja: blár vinnur"
-
 msgid "Hantei: blue wins"
 msgstr "Hantei: blár vinnur"
 
@@ -171,12 +145,6 @@ msgstr "Bæta við tímann"
 
 msgid "Decrement time"
 msgstr "Minnka tímann"
-
-msgid "Increment osaekomi"
-msgstr "Bæta við tíma í fastataki"
-
-msgid "Decrement osaekomi"
-msgstr "Minnka tíma í fastataki"
 
 msgid "View clocks only"
 msgstr "Sýna aðeins klukkuna"
@@ -292,9 +260,6 @@ msgstr "Bæta við úr texta skrá"
 msgid "Add All From Another Shiai"
 msgstr "Bæta við af öðru móti"
 
-msgid "Add All with Weights"
-msgstr "Bæta við öllum sem hafa verið vigtaðir"
-
 msgid "Remove Unweighted"
 msgstr "Fjarlægja óvigtaða"
 
@@ -318,9 +283,6 @@ msgstr "Búa til flokka"
 
 msgid "Print All"
 msgstr "Prenta allt"
-
-msgid "Best of Three"
-msgstr "Best af þremur"
 
 msgid "Place To"
 msgstr "Dreyfist á "
@@ -621,17 +583,8 @@ msgstr ""
 msgid "Pool"
 msgstr "Riðill"
 
-msgid "Double pool"
-msgstr "Tvöfaldur riðill"
-
-msgid "Double repechage"
-msgstr "Tvöföld uppreisn"
-
 msgid "Next match"
 msgstr "Næsta viðureign"
-
-msgid "Next contest"
-msgstr "Næsta keppni"
 
 msgid "Preparing"
 msgstr "Tilbúin"
@@ -710,9 +663,6 @@ msgstr "Mót"
 
 msgid "Competitors:"
 msgstr "Keppendur:"
-
-msgid "Weighed:"
-msgstr "Vigtaður:"
 
 msgid "Add competitors"
 msgstr "Bæta við keppendum"
@@ -863,18 +813,6 @@ msgstr "HVÍLDAR TÍMI"
 
 msgid "Seeding:"
 msgstr "Forröðun:"
-
-msgid "1"
-msgstr "1"
-
-msgid "2"
-msgstr "2"
-
-msgid "3"
-msgstr "3"
-
-msgid "4"
-msgstr "4"
 
 msgid "Freeze match order"
 msgstr "Frysta viðureignar röð"
@@ -1081,9 +1019,6 @@ msgstr "Stilla klukku"
 msgid "Sound"
 msgstr "Hljóð"
 
-msgid "Change language to Spanish"
-msgstr "Breyta tungumáli yfir í Spænsku"
-
 msgid "Choose a file"
 msgstr "Velja skrá"
 
@@ -1141,9 +1076,6 @@ msgstr "ESP Ranskalainen"
 msgid "ESP Simple Repechage"
 msgstr "ESP Lyhyet keräilyt"
 
-msgid "Quadruple pool"
-msgstr "Neloispooli"
-
 msgid "IJF Quarter Final Repechage"
 msgstr "IJF Tvöföld uppreisn"
 
@@ -1177,12 +1109,6 @@ msgstr "Þyngd sjáanleg"
 msgid "Grade Visible"
 msgstr "Gráða sjáanleg"
 
-msgid "Print Competitors With Template"
-msgstr "Prenta keppenda form "
-
-msgid "Select template"
-msgstr "Veldu form"
-
 msgid "Line"
 msgstr "Lína"
 
@@ -1197,12 +1123,6 @@ msgstr "Skipta um stöðu"
 
 msgid "Display customized layout"
 msgstr "Sýna sérútbúið útlit"
-
-msgid "Change language to Estonian"
-msgstr "Skipta yfir í Eistnesku"
-
-msgid "Change language to Ukrainan"
-msgstr "Skipta yfir í Úkranísku"
 
 msgid "No competitor found!"
 msgstr "Enginn keppandi finnst!"
@@ -1249,9 +1169,6 @@ msgstr "OK"
 msgid "White first:"
 msgstr "Hvítur fyrst:"
 
-msgid "Scale Serial Interface"
-msgstr "Vog- Raðtengi (serial)"
-
 msgid "Serial Communication"
 msgstr "Raðræn samskipti (serial)"
 
@@ -1280,9 +1197,6 @@ msgid "Repeat Script"
 msgstr "Endurtaka skriptu"
 
 msgid "Double Pool 2"
-msgstr "Tvöfaldur riðill 2"
-
-msgid "Double pool 2"
 msgstr "Tvöfaldur riðill 2"
 
 msgid "Write to file"
@@ -1338,12 +1252,6 @@ msgstr "Keppnisvöllur 9"
 
 msgid "Contest area 10"
 msgstr "Keppnisvöllur 10"
-
-msgid "Change language to Icelandic"
-msgstr "Skipta yfir í Íslensku"
-
-msgid "Change language to Norwegian"
-msgstr "Skipta yfir í Norska"
 
 msgid "WINNER"
 msgstr "Sigurvegari"
@@ -1543,12 +1451,6 @@ msgstr "Úrslit á Norsku"
 msgid "Landscape"
 msgstr "Lárétt"
 
-msgid "Resolution:"
-msgstr "Upplausn:"
-
-msgid "Running time"
-msgstr ""
-
 msgid "Resolution (min):"
 msgstr "Upplausn (min):"
 
@@ -1591,9 +1493,6 @@ msgstr ""
 msgid "SVG Templates"
 msgstr ""
 
-msgid "Resolve 3-Way Ties by Weights"
-msgstr ""
-
 msgid "General"
 msgstr ""
 
@@ -1622,12 +1521,6 @@ msgid "Default systems"
 msgstr ""
 
 msgid "Use SVG Templates"
-msgstr ""
-
-msgid "Best of three:"
-msgstr ""
-
-msgid "Win needed for a medal:"
 msgstr ""
 
 msgid "Seeded to fixed places:"
@@ -1686,15 +1579,6 @@ msgstr ""
 msgid "Print SVG"
 msgstr ""
 
-msgid "SWE Double Elimination"
-msgstr ""
-
-msgid "No free shido"
-msgstr ""
-
-msgid "Score wins warning"
-msgstr ""
-
 msgid "Short pin times"
 msgstr ""
 
@@ -1744,4 +1628,61 @@ msgid "Set score"
 msgstr ""
 
 msgid "Edit Drawing"
+msgstr ""
+
+msgid "VLC control"
+msgstr ""
+
+msgid "X:"
+msgstr ""
+
+msgid "Y:"
+msgstr ""
+
+msgid "Scale:"
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "Reg.Cat"
+msgstr ""
+
+msgid "ID"
+msgstr ""
+
+msgid "Index"
+msgstr ""
+
+msgid "Results in Polish"
+msgstr ""
+
+msgid "Results in Slovak"
+msgstr ""
+
+msgid "Results in Dutch"
+msgstr ""
+
+msgid "Win in Golden Score gives 1 point"
+msgstr ""
+
+msgid "WARNING: NO CONTROL"
+msgstr ""
+
+msgid "British System"
+msgstr ""
+
+msgid "Australian System"
+msgstr ""
+
+msgid "Danish System"
+msgstr ""
+
+msgid "Polish System"
+msgstr ""
+
+msgid "Slovakian System"
+msgstr ""
+
+msgid "Tatami"
 msgstr ""

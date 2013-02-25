@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-19 14:40+0200\n"
+"POT-Creation-Date: 2013-02-21 16:00+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -41,9 +41,6 @@ msgstr "Wyjście"
 msgid "Red background"
 msgstr "Czerwone tło"
 
-msgid "Tatami not chosen"
-msgstr "Nie wybrano maty"
-
 msgid "Communication node"
 msgstr "Węzeł połączeń"
 
@@ -67,28 +64,6 @@ msgstr "(Połączenie OK)"
 
 msgid "(Connection broken)"
 msgstr "(Połączenie przerwane)"
-
-msgid ""
-"Connection established to \n"
-"%ld.%ld.%ld.%ld"
-msgstr ""
-"Połączenie ustanowione do \n"
-"%ld.%ld.%ld.%ld"
-
-msgid "Connection to the node broken"
-msgstr "Połączenie z węzłem przerwane"
-
-msgid "Change language to Finnish"
-msgstr "Zmień język na fiński"
-
-msgid "Change language to Swedish"
-msgstr "Zmień język na szwedzki"
-
-msgid "Change language to English"
-msgstr "Zmień język na angielski"
-
-msgid "Change language to Norwegian"
-msgstr "Zmień język na norweski"
 
 msgid "Contest duration automatically from JudoShiai program"
 msgstr "Czas trwania walki automatycznie z programu JudoShiai"
@@ -132,9 +107,6 @@ msgstr "Czas walki: 4 min"
 msgid "Contest duration: 5 min"
 msgstr "Czas walki: 5 min"
 
-msgid "Majority of three: blue wins"
-msgstr "Do dwóch wygranych: wygrywa niebieski"
-
 msgid "Hantei: blue wins"
 msgstr "HANTEI: wygrywa niebieski"
 
@@ -173,12 +145,6 @@ msgstr "Czas narastająco"
 
 msgid "Decrement time"
 msgstr "Czas malejąco"
-
-msgid "Increment osaekomi"
-msgstr "Czas OSAEKOMI narastająco"
-
-msgid "Decrement osaekomi"
-msgstr "Czas OSAEKOMI malejąco"
 
 msgid "View clocks only"
 msgstr "Tylko zegar"
@@ -294,9 +260,6 @@ msgstr "Dodaj z pliku tekstowego"
 msgid "Add All From Another Shiai"
 msgstr "Dodaj wszystko z innej aplikacji Shiai"
 
-msgid "Add All with Weights"
-msgstr "Dodaj wszystkich z wagami"
-
 msgid "Remove Unweighted"
 msgstr "Usuń niezważonych"
 
@@ -320,9 +283,6 @@ msgstr "Stwórz kategorie"
 
 msgid "Print All"
 msgstr "Drukuj wszystko"
-
-msgid "Best of Three"
-msgstr "Do 2 zwycięstw"
 
 msgid "Place To"
 msgstr "Rozdziel na"
@@ -628,16 +588,7 @@ msgstr ""
 msgid "Pool"
 msgstr "Grupa"
 
-msgid "Double pool"
-msgstr "Dwie grupy (brukselski)"
-
-msgid "Double repechage"
-msgstr "Podwójny repasaż"
-
 msgid "Next match"
-msgstr "Następna walka"
-
-msgid "Next contest"
 msgstr "Następna walka"
 
 msgid "Preparing"
@@ -873,18 +824,6 @@ msgstr "CZAS ODPOCZYNKU"
 msgid "Seeding:"
 msgstr "Rozstawienie:"
 
-msgid "1"
-msgstr "1"
-
-msgid "2"
-msgstr "2"
-
-msgid "3"
-msgstr "3"
-
-msgid "4"
-msgstr "4"
-
 msgid "Freeze match order"
 msgstr "Zablokuj kolejność walk"
 
@@ -1023,9 +962,6 @@ msgstr "FIN podwójny repasaż"
 msgid "SWE Double Repechage"
 msgstr "SWE podwójny repasaż"
 
-msgid "SWE Double Elimination"
-msgstr "SWE podwójna eliminacja"
-
 msgid "EST Double Elimination"
 msgstr "EST podwójna eliminacja"
 
@@ -1089,9 +1025,6 @@ msgstr "Ustaw czas"
 msgid "Sound"
 msgstr "Dźwięk"
 
-msgid "Change language to Spanish"
-msgstr "Zmień język na hiszpański"
-
 msgid "Choose a file"
 msgstr "Wybierz plik"
 
@@ -1110,26 +1043,14 @@ msgstr "Jedna walka"
 msgid "Quad Pool"
 msgstr "Cztery grupy"
 
-msgid "IJF Dbl Rep"
-msgstr "IJF podwójny repasaż"
-
 msgid "FIN Dbl Repchg"
 msgstr "FIN podwójny repasaż"
-
-msgid "SWE Dubb 책terkv"
-msgstr "SWE podwójny repasaż"
-
-msgid "SWE Dir 책terkv"
-msgstr "SWE bezpośredni repasaż"
 
 msgid "EST D klass"
 msgstr "EST juniorzy D"
 
 msgid "No Repechg"
 msgstr "Bez repasaży"
-
-msgid "SWE Enkelt 책terkv"
-msgstr "SWE pojedynczy repasaż"
 
 msgid "ESP Dbl Lost"
 msgstr "ESP do dwóch przegranych"
@@ -1148,12 +1069,6 @@ msgstr "ESP podwójny repasaż"
 
 msgid "ESP Simple Repechage"
 msgstr "ESP pojedynczy repasaż"
-
-msgid "Quadruple pool"
-msgstr "Cztery grupy"
-
-msgid "IJF Double Repechage"
-msgstr "IJF podwójny repasaż"
 
 msgid "Picture Files"
 msgstr "Pliki obrazów"
@@ -1185,12 +1100,6 @@ msgstr "Pokaż wagi"
 msgid "Grade Visible"
 msgstr "Pokaż stopień"
 
-msgid "Print Competitors With Template"
-msgstr "Drukuj zawodników wg szablonu"
-
-msgid "Select template"
-msgstr "Wybierz szablon"
-
 msgid "Line"
 msgstr "Linia"
 
@@ -1205,12 +1114,6 @@ msgstr "Zamień strony"
 
 msgid "Display customized layout"
 msgstr "Własny format wyświetlania"
-
-msgid "Change language to Estonian"
-msgstr "Zmień język na estoński"
-
-msgid "Change language to Ukrainan"
-msgstr "Zmień język na ukraiński"
 
 msgid "No competitor found!"
 msgstr "Nie znaleziono zawodników!"
@@ -1285,9 +1188,6 @@ msgid "Repeat Script"
 msgstr "Powtórz skrypt"
 
 msgid "Double Pool 2"
-msgstr "Dwie grupy v.2"
-
-msgid "Double pool 2"
 msgstr "Dwie grupy v.2"
 
 msgid "Write to file"
@@ -1407,9 +1307,6 @@ msgstr "Nazwisko, Imię"
 msgid "Surname"
 msgstr "Nazwisko"
 
-msgid "Change language to Icelandic"
-msgstr "Zmień język na islandzki"
-
 msgid "WINNER"
 msgstr "ZWYCIĘZCA"
 
@@ -1485,9 +1382,6 @@ msgstr "Podejrzane wagi:\n"
 msgid "warnings"
 msgstr "ostrzeżenia"
 
-msgid "Weighted only"
-msgstr "Tylko zważeni"
-
 msgid "With weights"
 msgstr "Z wagami"
 
@@ -1544,9 +1438,6 @@ msgstr "Poziomo"
 
 msgid "Resolution (min):"
 msgstr "Rozdzielczość (min):"
-
-msgid "Running time"
-msgstr "Biegnący czas"
 
 msgid "Compressed timeline"
 msgstr "Skompresowana linia czasu"
@@ -1733,12 +1624,6 @@ msgstr "Użyj szablonów SVG"
 msgid "Print SVG"
 msgstr "Drukuj SVG"
 
-msgid "Change language to Polish"
-msgstr "Zmień język na polski"
-
-msgid "Change language to Slovak"
-msgstr "Zmień język na słowacki"
-
 msgid "Win in Golden Score gives 1 point"
 msgstr "Zwycięstwo w Golden Score daje jeden punkt"
 
@@ -1754,29 +1639,8 @@ msgstr "System australijski"
 msgid "Polish System"
 msgstr "System polski"
 
-msgid "Slovak System"
-msgstr "System słowacki"
-
-msgid "Name: "
-msgstr "Nazwisko:"
-
-msgid "Confirm: "
-msgstr "Ostatnio zatwierdzono:"
-
-msgid "OK:"
-msgstr "OK:"
-
-msgid "NOK:"
-msgstr "Nie OK:"
-
 msgid "VLC control"
 msgstr "Ustawienia VLC"
-
-msgid "Scale"
-msgstr "Skala"
-
-msgid "VLC port"
-msgstr "Port VLC"
 
 msgid "X:"
 msgstr ""
@@ -1818,4 +1682,10 @@ msgid "Results in Dutch"
 msgstr ""
 
 msgid "WARNING: NO CONTROL"
+msgstr ""
+
+msgid "Slovakian System"
+msgstr ""
+
+msgid "Tatami"
 msgstr ""

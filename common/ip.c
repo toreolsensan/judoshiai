@@ -75,7 +75,7 @@ extern void copy_packet(struct message *msg);
 
 gint pwcrc32(const guchar *str, gint len);
 
-gulong my_ip_address = 0, node_ip_addr = 0;
+gulong my_ip_address = 0, node_ip_addr = 0, ssdp_ip_addr = 0;
 gchar  my_hostname[100];
 gboolean connection_ok = FALSE;
 GStaticMutex send_mutex = G_STATIC_MUTEX_INIT;
@@ -635,7 +635,7 @@ gpointer client_thread(gpointer args)
         gulong tmp_node_addr;
 
         if (node_ip_addr == 0 && this_is_shiai() == FALSE) {
-            tmp_node_addr = nodescan(my_ip_address);
+            tmp_node_addr = ssdp_ip_addr;//nodescan(my_ip_address);
             if (tmp_node_addr == 0) {
                 g_usleep(1000000);
                 continue;
@@ -839,3 +839,197 @@ gint pwcrc32(const guchar *str, gint len)
     return crc;
 }
 
+#define SSDP_MULTICAST      "239.255.255.250"
+#define SSDP_PORT           1900
+#define URN ":urn:judoshiai:service:all:" SHIAI_VERSION
+#define ST "ST" URN
+#define NT "NT" URN
+
+static gchar *ssdp_req_data = NULL;
+gchar ssdp_id[64];
+gboolean ssdp_notify = FALSE;
+
+gpointer ssdp_thread(gpointer args)
+{
+    SOCKET sock;
+    gint n, ret;
+    struct sockaddr_in sockname, dst, si_me;
+    struct sockaddr_in clientsock;
+    static gchar inbuf[1024];
+    fd_set read_fd, fds;
+    guint socklen;
+    struct hostent *hostname;
+    struct ip_mreq mreq;
+
+#ifdef WIN32
+    const gchar *os = "Windows";
+#else
+    const gchar *os = "Linux";
+#endif
+
+    hostname = gethostbyname(SSDP_MULTICAST);
+    hostname->h_addrtype = AF_INET;
+    memset(&mreq, 0, sizeof(mreq));
+    struct in_addr ia;
+    memcpy((void*)&ia, (void*)hostname->h_addr, hostname->h_length); 
+    memcpy(&mreq.imr_multiaddr.s_addr, &ia, sizeof(struct in_addr));
+    mreq.imr_interface.s_addr = htonl(INADDR_ANY);
+
+    ssdp_req_data = g_strdup_printf("M-SEARCH * HTTP/1.1\r\n"
+                                    "HOST: 239.255.255.250:1900\r\n"
+                                    "MAN: \"ssdp:discover\"\r\n"
+                                    ST "\r\n"
+                                    "MX:3\r\n"
+                                    "\r\n");
+
+    if ((sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP)) == INVALID_SOCKET) {
+        perror("SSDP socket");
+        goto out;
+    }
+
+    memset((gchar *)&si_me, 0, sizeof(si_me));
+    si_me.sin_family = AF_INET;
+    si_me.sin_port = htons(SSDP_PORT);
+    si_me.sin_addr.s_addr = htonl(INADDR_ANY);
+    if (bind(sock, (struct sockaddr *)&si_me, sizeof(si_me)) == -1) {
+        perror("SSDP bind");
+        goto out;
+    }
+
+    memset((gchar*)&sockname, 0, sizeof(sockname));
+    sockname.sin_family = AF_INET;
+    sockname.sin_port = htons(SSDP_PORT);
+    sockname.sin_addr.s_addr=*((unsigned long*)(hostname->h_addr_list[0]));
+
+    if (setsockopt(sock,
+                   IPPROTO_IP,
+                   IP_ADD_MEMBERSHIP,
+                   &mreq,
+                   sizeof(struct ip_mreq)) == -1) {
+        perror("SSDP setsockopt");
+    }
+
+#if 0	
+    ret = sendto(sock, ssdp_req_data, strlen(ssdp_req_data), 0, (struct sockaddr*) &sockname, 
+                 sizeof(struct sockaddr_in));
+    if (ret != strlen(ssdp_req_data)) {
+        perror("SSDP send req");
+        goto out;
+    }
+#endif
+
+    FD_ZERO(&fds);
+    FD_SET(sock, &fds);
+
+    for ( ; *((gboolean *)args) ; )   /* exit loop when flag is cleared */
+    {
+	struct timeval timeout;
+        gint len;
+
+        timeout.tv_sec=3;
+        timeout.tv_usec=0;
+        read_fd = fds;
+	
+        if (select(sock+1, &read_fd, NULL, NULL, &timeout) < 0) {
+            perror("SSDP select");
+            continue;
+        }
+
+        if (FD_ISSET(sock, &read_fd)) {
+            socklen = sizeof(clientsock);
+            if ((len = recvfrom(sock, inbuf, sizeof(inbuf)-1, 0, 
+                                (struct sockaddr *)&clientsock, &socklen)) == (size_t)-1){
+                perror("SSDP recvfrom");
+                goto out;
+            }
+
+            inbuf[len]='\0';
+		
+            /* Check the HTTP response code */
+            if(strncmp(inbuf, "HTTP/1.1 200 OK", 12) == 0 ||
+               strncmp(inbuf, "NOTIFY", 6) == 0) {
+                gchar *p1, *p = strstr(inbuf, "UPnP/1.0 Judo");
+
+                if (p) {
+                    p1 = strchr(p, '\r');
+                    if (p1) {
+                        *p1 = 0;
+#if (APP_NUM != APPLICATION_TYPE_SHIAI)
+                        if (strncmp(p, "JudoShiai", 9) == 0) {
+                            ssdp_ip_addr = clientsock.sin_addr.s_addr;
+                        }
+#else
+
+#endif
+                    } // if (p1)
+                } // if (p)
+            } else if (strncmp(inbuf, "M-SEARCH", 8) == 0 &&
+                       strstr(inbuf, "ST:urn:judoshiai:service:all:")) {
+                g_print("SSDP rec: '%s'\n", inbuf);
+                struct sockaddr_in addr;
+                addr.sin_addr.s_addr = my_ip_address;
+
+                gchar *resp = g_strdup_printf("HTTP/1.1 200 OK\r\n"
+                                              "DATE:Mon, 25 Feb 2013 12:22:23 GMT\r\n"
+                                              "CACHE-CONTROL: max-age=1800\r\n"
+                                              "EXT:\r\n"
+                                              "LOCATION: http://%s/UPnP/desc.xml\r\n"
+                                              "SERVER:%s/1 UPnP/1.0 %s/%s\r\n"
+                                              ST "\r\n"
+                                              "USN: uuid:23105808-cafe-babe-737%d-%012lx\r\n"
+                                              "\r\n",
+                                              inet_ntoa(addr.sin_addr), os, 
+                                              ssdp_id,
+                                              SHIAI_VERSION, application_type(), my_ip_address);
+
+                g_print("SSDP send: '%s'\n", resp);
+                ret = sendto(sock, resp, strlen(resp), 0, (struct sockaddr *)&clientsock, socklen);
+                g_free(resp);
+            }
+		
+            //g_print("SSDP rec: '%s'\n", inbuf);
+        } else {
+            // timeout
+        }
+
+        if (ssdp_notify) {
+            struct sockaddr_in addr;
+            addr.sin_addr.s_addr = my_ip_address;
+
+            gchar *resp = g_strdup_printf("NOTIFY * HTTP/1.1\r\n"
+                                          "HOST: 239.255.255.250:1900\r\n"
+                                          "CACHE-CONTROL: max-age=1800\r\n"
+                                          "LOCATION: http://%s/UPnP/desc.xml\r\n"
+                                          NT "\r\n"
+                                          "NTS: ssdp-alive\r\n"
+                                          "SERVER:%s/1 UPnP/1.0 %s/%s\r\n"
+                                          "USN: uuid:23105808-cafe-babe-737%d-%012lx\r\n"
+                                          "\r\n",
+                                          inet_ntoa(addr.sin_addr), os, 
+                                          ssdp_id,
+                                          SHIAI_VERSION, application_type(), my_ip_address);
+
+            g_print("SSDP send: '%s'\n", resp);
+            ret = sendto(sock, resp, strlen(resp), 0, (struct sockaddr *)&clientsock, socklen);
+            g_free(resp);
+            ssdp_notify = FALSE;
+        }
+
+        static time_t last_time = 0;
+        time_t now = time(NULL);
+        if (!connection_ok && now > last_time + 5) {
+            last_time = now;
+            ret = sendto(sock, ssdp_req_data, strlen(ssdp_req_data), 0, (struct sockaddr*) &sockname, 
+                         sizeof(struct sockaddr_in));
+            if (ret != strlen(ssdp_req_data)) {
+                perror("SSDP send req");
+                goto out;
+            }
+        }
+    }
+
+ out:
+    g_print("SSDP OUT!\n");
+    g_thread_exit(NULL);    /* not required just good pratice */
+    return NULL;
+}

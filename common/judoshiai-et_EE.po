@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-12 13:46+0200\n"
+"POT-Creation-Date: 2013-02-21 16:00+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -64,15 +64,6 @@ msgstr "(Ühendus OK)"
 
 msgid "(Connection broken)"
 msgstr "(Ühendus katkenud)"
-
-msgid "Change language to Finnish"
-msgstr "Muuta kieli suomeksi"
-
-msgid "Change language to Estonian"
-msgstr "Muuda keel Eesti keeleks"
-
-msgid "Change language to English"
-msgstr "Muuta kieli englanniksi"
 
 msgid "Contest duration automatically from JudoShiai program"
 msgstr "Vali võistluse aeg automaatselt JudoShiai-programmist"
@@ -194,9 +185,6 @@ msgstr "Märgi kell"
 msgid "Clock:"
 msgstr "Võistluse aeg:"
 
-msgid "Year 2009 rules"
-msgstr "2009 aasta reeglid"
-
 msgid "Short pin times"
 msgstr "Lühikesed sidumise ajad"
 
@@ -275,9 +263,6 @@ msgstr "Lisa tekstifailist"
 msgid "Add All From Another Shiai"
 msgstr "Lisa kõik teisest võistlusest"
 
-msgid "Add All with Weights"
-msgstr "Lisa kõik teisest võistlusest"
-
 msgid "Remove Unweighted"
 msgstr "Eemalda keda pole kaalutud"
 
@@ -301,9 +286,6 @@ msgstr "Moodusta ametlikud võistlussarjad"
 
 msgid "Print All"
 msgstr "Prindi kõik võistlussarjad"
-
-msgid "Best of Three"
-msgstr "Parim kolmest"
 
 msgid "Place To"
 msgstr "Paiguta"
@@ -606,16 +588,7 @@ msgstr ""
 msgid "Pool"
 msgstr "Pool"
 
-msgid "Double pool"
-msgstr "Topeltpool"
-
-msgid "Double repechage"
-msgstr "Prantsuse"
-
 msgid "Next match"
-msgstr "Järgmine võistlus"
-
-msgid "Next contest"
 msgstr "Järgmine võistlus"
 
 msgid "Preparing"
@@ -695,9 +668,6 @@ msgstr "Turniir"
 
 msgid "Competitors:"
 msgstr "Võistlejad:"
-
-msgid "Weighed:"
-msgstr "kaalutud:"
 
 msgid "Add competitors"
 msgstr "Lisa võistlejad"
@@ -824,9 +794,6 @@ msgstr "Näita tataamit"
 msgid "Start New Match?"
 msgstr "Alusta uus võistlus?"
 
-msgid "Start New Contest?"
-msgstr "Alusta uus võistlus?"
-
 msgid "Hansokumake to blue"
 msgstr "Hansoku-make sinisele"
 
@@ -853,18 +820,6 @@ msgstr "VAHEAEG"
 
 msgid "Seeding:"
 msgstr "Paigutus:"
-
-msgid "1"
-msgstr "1"
-
-msgid "2"
-msgstr "2"
-
-msgid "3"
-msgstr "3"
-
-msgid "4"
-msgstr "4"
 
 msgid "Freeze match order"
 msgstr "Külmuta võistluse järjekord"
@@ -1070,9 +1025,6 @@ msgstr "Aseta aeg"
 msgid "Sound"
 msgstr "Hääl"
 
-msgid "Change language to Spanish"
-msgstr "Vaheta keel hispaaniaks"
-
 msgid "Choose a file"
 msgstr "Vali andmed"
 
@@ -1093,9 +1045,6 @@ msgstr "NeljasPool"
 
 msgid "IJF Qrt Final Rep"
 msgstr "IJF Prant."
-
-msgid "Dbl Repchg"
-msgstr "Prant."
 
 msgid "FIN Dbl Repchg"
 msgstr "FIN Prant."
@@ -1118,9 +1067,6 @@ msgstr "SWE Lyhyet ker."
 msgid "ESP Dbl Lost"
 msgstr "ESP Pitkä ker."
 
-msgid "ESP Dbl Rep/Bgn"
-msgstr "ESP Ransk. alusta"
-
 msgid "ESP Dbl Rep"
 msgstr "ESP Ransk."
 
@@ -1135,9 +1081,6 @@ msgstr "ESP Ranskalainen"
 
 msgid "ESP Simple Repechage"
 msgstr "ESP Lyhyet keräilyt"
-
-msgid "Quadruple pool"
-msgstr "Neloispooli"
 
 msgid "IJF Quarter Final Repechage"
 msgstr "IJF Ranskalainen"
@@ -1172,20 +1115,11 @@ msgstr "Kaalud nähtaval"
 msgid "Grade Visible"
 msgstr "Vööd nähtaval"
 
-msgid "Print Competitors With Template"
-msgstr "Prindi võistlejad templatil"
-
-msgid "Select template"
-msgstr "Vali Template"
-
 msgid "Line"
 msgstr "Rida"
 
 msgid "Syntax error"
 msgstr "Syntaksiviga"
-
-msgid "Change language to Swedish"
-msgstr ""
 
 msgid "Switch sides"
 msgstr ""
@@ -1196,13 +1130,7 @@ msgstr ""
 msgid "Display customized layout"
 msgstr ""
 
-msgid "Change language to Ukrainan"
-msgstr ""
-
 msgid "No competitor found!"
-msgstr ""
-
-msgid "Deleted Competitors"
 msgstr ""
 
 msgid "Modified Dbl Elim"
@@ -1247,9 +1175,6 @@ msgstr ""
 msgid "White first:"
 msgstr ""
 
-msgid "Scale Serial Interface"
-msgstr ""
-
 msgid "Serial Communication"
 msgstr ""
 
@@ -1278,9 +1203,6 @@ msgid "Repeat Script"
 msgstr ""
 
 msgid "Double Pool 2"
-msgstr ""
-
-msgid "Double pool 2"
 msgstr ""
 
 msgid "Write to file"
@@ -1398,12 +1320,6 @@ msgid "Surname, Name"
 msgstr ""
 
 msgid "Surname"
-msgstr ""
-
-msgid "Change language to Icelandic"
-msgstr ""
-
-msgid "Change language to Norwegian"
 msgstr ""
 
 msgid "WINNER"
@@ -1583,9 +1499,6 @@ msgstr ""
 msgid "SVG Templates"
 msgstr ""
 
-msgid "Resolve 3-Way Ties by Weights"
-msgstr ""
-
 msgid "General"
 msgstr ""
 
@@ -1614,12 +1527,6 @@ msgid "Default systems"
 msgstr ""
 
 msgid "Use SVG Templates"
-msgstr ""
-
-msgid "Best of three:"
-msgstr ""
-
-msgid "Win needed for a medal:"
 msgstr ""
 
 msgid "Seeded to fixed places:"
@@ -1678,15 +1585,6 @@ msgstr ""
 msgid "Print SVG"
 msgstr ""
 
-msgid "SWE Double Elimination"
-msgstr ""
-
-msgid "No free shido"
-msgstr ""
-
-msgid "Score wins warning"
-msgstr ""
-
 msgid "No Limit"
 msgstr ""
 
@@ -1733,4 +1631,61 @@ msgid "Set score"
 msgstr ""
 
 msgid "Edit Drawing"
+msgstr ""
+
+msgid "VLC control"
+msgstr ""
+
+msgid "X:"
+msgstr ""
+
+msgid "Y:"
+msgstr ""
+
+msgid "Scale:"
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "Reg.Cat"
+msgstr ""
+
+msgid "ID"
+msgstr ""
+
+msgid "Index"
+msgstr ""
+
+msgid "Results in Polish"
+msgstr ""
+
+msgid "Results in Slovak"
+msgstr ""
+
+msgid "Results in Dutch"
+msgstr ""
+
+msgid "Win in Golden Score gives 1 point"
+msgstr ""
+
+msgid "WARNING: NO CONTROL"
+msgstr ""
+
+msgid "British System"
+msgstr ""
+
+msgid "Australian System"
+msgstr ""
+
+msgid "Danish System"
+msgstr ""
+
+msgid "Polish System"
+msgstr ""
+
+msgid "Slovakian System"
+msgstr ""
+
+msgid "Tatami"
 msgstr ""

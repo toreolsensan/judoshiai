@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-12 13:46+0200\n"
+"POT-Creation-Date: 2013-02-21 16:00+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -65,32 +65,6 @@ msgstr "(Conexión OK)"
 msgid "(Connection broken)"
 msgstr "(Conexión perdida)"
 
-msgid ""
-"Connection established to \n"
-"%ld.%ld.%ld.%ld"
-msgstr "Conexión establecida con %ld.%ld.%ld.%ld"
-
-msgid "Connection to the node broken"
-msgstr "Conexión con el nodo perdida"
-
-msgid "Change language to Finnish"
-msgstr "Cambiar el idioma a Finlandés"
-
-msgid "Change language to Swedish"
-msgstr "Cambiar el idioma a Suizo"
-
-msgid "Change language to English"
-msgstr "Cambiar el idioma a Inglés"
-
-msgid "Change language to Norwegian"
-msgstr "Cambiar el idioma a Noruego"
-
-msgid "Match automatically from JudoShiai program"
-msgstr "Combate automático desde el programa JudoShiai"
-
-msgid "Match time automatically from JudoShiai program"
-msgstr "Tiempo de combate automático desde el programa JudoShiai"
-
 msgid "Contest duration automatically from JudoShiai program"
 msgstr "Duración del Combate automático desde el programa JudoShiai"
 
@@ -133,9 +107,6 @@ msgstr "Duración del combate: 4 min"
 msgid "Contest duration: 5 min"
 msgstr "Duración del combate: 5 min"
 
-msgid "Majority of three: blue wins"
-msgstr "Mayoria de tres: Azul gana"
-
 msgid "Hantei: blue wins"
 msgstr "Hantei: Azul gana"
 
@@ -175,12 +146,6 @@ msgstr "Incrementar tiempo"
 msgid "Decrement time"
 msgstr "Disminuir tiempo"
 
-msgid "Increment osaekomi"
-msgstr "Incrementar osaekomi"
-
-msgid "Decrement osaekomi"
-msgstr "Disminuir osaekomi"
-
 msgid "View clocks only"
 msgstr "Ver relojes solo"
 
@@ -198,9 +163,6 @@ msgstr "Los puntos va a Blanco"
 
 msgid "About Judotimer"
 msgstr "Acerca de Judotimer"
-
-msgid "Full screen"
-msgstr "Pantalla completa"
 
 msgid "Full screen mode"
 msgstr "Pantalla completa"
@@ -298,9 +260,6 @@ msgstr "Añadir desde un archivo de texto"
 msgid "Add All From Another Shiai"
 msgstr "Añadir todos desde otro torneo"
 
-msgid "Add All with Weights"
-msgstr "Añadir todos con pesos"
-
 msgid "Remove Unweighted"
 msgstr "Eliminar no pesados"
 
@@ -324,9 +283,6 @@ msgstr "Crear categorias"
 
 msgid "Print All"
 msgstr "Imprimir todas"
-
-msgid "Best of Three"
-msgstr "Al mejor de 3"
 
 msgid "Place To"
 msgstr "Enviar a"
@@ -627,15 +583,6 @@ msgstr ""
 msgid "Pool"
 msgstr "ESP Liga"
 
-msgid "Double pool"
-msgstr "ESP Dos ligas cruzadas"
-
-msgid "Quad pool"
-msgstr "ESP Cuatro ligas cruzadas"
-
-msgid "Double repechage"
-msgstr "ESP Repesca Doble"
-
 msgid "Next match"
 msgstr "Siguiente combate"
 
@@ -646,9 +593,6 @@ msgid "Preparing:"
 msgstr "Preparado:"
 
 msgid "Delay the match"
-msgstr "Retrasar el combate"
-
-msgid "Delay the contest"
 msgstr "Retrasar el combate"
 
 msgid "Matches matched. Clear the results first."
@@ -702,9 +646,6 @@ msgstr "Lugar:"
 msgid "Start time:"
 msgstr "Hora de comiezo:"
 
-msgid "Number of tatamis"
-msgstr "Número de tatamis:"
-
 msgid "Tournament from the net"
 msgstr "Torneo desde red"
 
@@ -722,9 +663,6 @@ msgstr "Torneos"
 
 msgid "Competitors:"
 msgstr "Competidores:"
-
-msgid "Weighed:"
-msgstr "Pesados:"
 
 msgid "Add competitors"
 msgstr "Añadir competidor"
@@ -771,12 +709,6 @@ msgstr "Borrar competidores"
 msgid "Show Sheet"
 msgstr "Mostrar hoja"
 
-msgid "Print Sheet (Printer)"
-msgstr "Imprimir hoja (Impresora)"
-
-msgid "Print Sheet (PDF)"
-msgstr "Imprimir hoja (PDF)"
-
 msgid "Search"
 msgstr "Buscar"
 
@@ -794,9 +726,6 @@ msgstr "Texto de edad:"
 
 msgid "Match time:"
 msgstr "Tiempo de combate:"
-
-msgid "Contest duration:"
-msgstr "Duración del combate:"
 
 msgid "Rest time:"
 msgstr "Tiempo de descanso:"
@@ -828,13 +757,7 @@ msgstr "No cambiar"
 msgid "Stop synchronization"
 msgstr "Parar sincronización"
 
-msgid "Remove Matches"
-msgstr "Eliminar combates"
-
 msgid "Number of tatamis:"
-msgstr "Número de tatamis:"
-
-msgid "Number of contest areas:"
 msgstr "Número de tatamis:"
 
 msgid "Sheets"
@@ -890,18 +813,6 @@ msgstr "Tiempo de descanso"
 
 msgid "Seeding:"
 msgstr "Cabeza de serie:"
-
-msgid "1"
-msgstr "1"
-
-msgid "2"
-msgstr "2"
-
-msgid "3"
-msgstr "3"
-
-msgid "4"
-msgstr "4"
 
 msgid "Freeze match order"
 msgstr "Congelar orden de combates"
@@ -1041,9 +952,6 @@ msgstr "ESP Repesca doble desde 1ª ronda"
 msgid "SWE Double Repechage"
 msgstr "SWE Repesca doble"
 
-msgid "SWE Double Elimination"
-msgstr "SWE Eliminatoria doble"
-
 msgid "EST Double Elimination"
 msgstr "EST Eliminatoria doble"
 
@@ -1061,21 +969,6 @@ msgstr "Solo nombre del País"
 
 msgid "Both Club and Country"
 msgstr "Nombre del País y del Club"
-
-msgid "International System"
-msgstr "Sistema internacional"
-
-msgid "Finnish System"
-msgstr "Sistema Finlandés"
-
-msgid "Swedish System"
-msgstr "Sistema Suizo"
-
-msgid "Estonian System"
-msgstr "Sistema Estonio"
-
-msgid "Spanish System"
-msgstr "Sistema Español"
 
 msgid "Reset to Defaults"
 msgstr "Resetear a valores por defecto"
@@ -1121,9 +1014,6 @@ msgstr "Área de combate"
 msgid "Set time"
 msgstr "Configurar tiempo"
 
-msgid "Change language to Spanish"
-msgstr "Cambiar idioma al Español"
-
 msgid "Choose a file"
 msgstr "Selecciona un archivo"
 
@@ -1157,9 +1047,6 @@ msgstr "SWE. Rep simple"
 msgid "ESP Dbl Lost"
 msgstr "ESP Dbl. per."
 
-msgid "ESP Dbl Rep/Bgn"
-msgstr "ESP Rep. doble ini."
-
 msgid "ESP Dbl Rep"
 msgstr "ESP Rep. doble"
 
@@ -1169,9 +1056,6 @@ msgstr "ESP Rep. en cuartos"
 msgid "ESP Double Lost"
 msgstr "ESP Doble pérdida"
 
-msgid "ESP Double Repechage from Beginning"
-msgstr "ESP Repesca doble desde 1ª ronda"
-
 msgid "ESP Double Repechage"
 msgstr "ESP Repesca doble"
 
@@ -1180,9 +1064,6 @@ msgstr "IJF Repesca doble"
 
 msgid "ESP Simple Repechage"
 msgstr "ESP Repesca en cuartos"
-
-msgid "Quadruple pool"
-msgstr "ESP 4 Ligas cruzadas"
 
 msgid "Picture Files"
 msgstr "Archivos de imágenes"
@@ -1211,12 +1092,6 @@ msgstr "Pesos visibles"
 msgid "Grade Visible"
 msgstr "Grado visible"
 
-msgid "Print Competitors With Template"
-msgstr "Imprimir competidores con plantilla"
-
-msgid "Select template"
-msgstr "Seleccionar plantilla"
-
 msgid "Line"
 msgstr "Linea"
 
@@ -1234,12 +1109,6 @@ msgstr "Cambiar posicion"
 
 msgid "Display customized layout"
 msgstr "Pantalla personalizada"
-
-msgid "Change language to Estonian"
-msgstr "Cambiar el idioma a Estonio"
-
-msgid "Change language to Ukrainan"
-msgstr "Cambiar el idioma a Ucraniano"
 
 msgid "No competitor found!"
 msgstr "¡Competidor no encontrado!"
@@ -1283,9 +1152,6 @@ msgstr "OK"
 msgid "White first:"
 msgstr "Blanco primero:"
 
-msgid "Scale Serial Interface"
-msgstr "Adaptador Interface Serie"
-
 msgid "Serial Communication"
 msgstr "Comunicación Puerto Serie"
 
@@ -1312,9 +1178,6 @@ msgstr "Ejecutar Script"
 
 msgid "Repeat Script"
 msgstr "Repetir Script"
-
-msgid "Double pool 2"
-msgstr "Liga doble cruzada a liga"
 
 msgid "Write to file"
 msgstr "Escribir a fichero"
@@ -1433,9 +1296,6 @@ msgstr "Apellidos Nombre"
 msgid "Surname"
 msgstr "Apellidos"
 
-msgid "Change language to Icelandic"
-msgstr "Cambiar el idioma a Islandés"
-
 msgid "WINNER"
 msgstr "GANADOR"
 
@@ -1550,9 +1410,6 @@ msgstr "¡No hay combates proximamente! Por favor espere un rato"
 msgid "About JudoJudogi"
 msgstr "Acerca de JudoJudogi"
 
-msgid "Norwegian System"
-msgstr "Sistema Noruego"
-
 msgid "Confirm:"
 msgstr "Confirmar:"
 
@@ -1570,12 +1427,6 @@ msgstr "Resultados en Noruego"
 
 msgid "Landscape"
 msgstr "Apaisado"
-
-msgid "Resolution:"
-msgstr "Resolución:"
-
-msgid "Running time"
-msgstr "Tiempo corriendo"
 
 msgid "Resolution (min):"
 msgstr "Resolución (min):"
@@ -1619,9 +1470,6 @@ msgstr "GBR Eliminatoria"
 msgid "SVG Templates"
 msgstr "Plantilla SVG"
 
-msgid "Resolve 3-Way Ties by Weights"
-msgstr "Resolver Triples empates usando el peso"
-
 msgid "General"
 msgstr "General"
 
@@ -1651,12 +1499,6 @@ msgstr "Sistemas por defecto"
 
 msgid "Use SVG Templates"
 msgstr "Usar plantilla SVG"
-
-msgid "Best of three:"
-msgstr "Al mejor de tres:"
-
-msgid "Win needed for a medal:"
-msgstr "Se necesita una victoria para medalla:"
 
 msgid "Seeded to fixed places:"
 msgstr "Cabezas de serie a puestos fijos:"
@@ -1771,4 +1613,79 @@ msgid "Remote address"
 msgstr ""
 
 msgid "Remote Control"
+msgstr ""
+
+msgid "VLC control"
+msgstr ""
+
+msgid "X:"
+msgstr ""
+
+msgid "Y:"
+msgstr ""
+
+msgid "Scale:"
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "Reg.Cat"
+msgstr ""
+
+msgid "ID"
+msgstr ""
+
+msgid "Index"
+msgstr ""
+
+msgid "Results in Polish"
+msgstr ""
+
+msgid "Results in Slovak"
+msgstr ""
+
+msgid "Results in Dutch"
+msgstr ""
+
+msgid "Win in Golden Score gives 1 point"
+msgstr ""
+
+msgid "WARNING: NO CONTROL"
+msgstr ""
+
+msgid "International System"
+msgstr ""
+
+msgid "Finnish System"
+msgstr ""
+
+msgid "Swedish System"
+msgstr ""
+
+msgid "Estonian System"
+msgstr ""
+
+msgid "Spanish System"
+msgstr ""
+
+msgid "Norwegian System"
+msgstr ""
+
+msgid "British System"
+msgstr ""
+
+msgid "Australian System"
+msgstr ""
+
+msgid "Danish System"
+msgstr ""
+
+msgid "Polish System"
+msgstr ""
+
+msgid "Slovakian System"
+msgstr ""
+
+msgid "Tatami"
 msgstr ""

@@ -250,6 +250,8 @@ struct message {
 extern volatile gint msg_queue_put, msg_queue_get;
 extern struct message msg_to_send[MSG_QUEUE_LEN];
 extern GStaticMutex send_mutex;
+extern gboolean ssdp_notify;
+extern gchar ssdp_id[64];
 
 /* comm */
 extern void open_comm_socket(void);
@@ -262,5 +264,7 @@ extern gint application_type(void);
 extern gint pwcrc32(const guchar *str, gint len);
 extern gint encode_msg(struct message *m, guchar *buf, gint buflen);
 extern gint decode_msg(struct message *m, guchar *buf, gint buflen);
+extern void set_ssdp_id(void);
+extern void handle_ssdp_packet(gchar *p);
 
 #endif

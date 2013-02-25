@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-12 13:46+0200\n"
+"POT-Creation-Date: 2013-02-21 16:00+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,18 +23,6 @@ msgstr "----- Чоловіки -----"
 msgid "----- Women -----"
 msgstr "----- Жінки -----"
 
-msgid "1"
-msgstr "1"
-
-msgid "2"
-msgstr "2"
-
-msgid "3"
-msgstr "3"
-
-msgid "4"
-msgstr "4"
-
 msgid "Abbreviations in Sheets"
 msgstr "Скорочення в протоколах"
 
@@ -49,9 +37,6 @@ msgstr "Про Judotimer"
 
 msgid "Add All From Another Shiai"
 msgstr "Додати з іншого турніру"
-
-msgid "Add All with Weights"
-msgstr "Додати учасників з вагою"
 
 msgid "Add From a Text File"
 msgstr "Додати з текстового файлу"
@@ -99,9 +84,6 @@ msgid "Bar code search"
 msgstr "Пошук штрих-коду"
 
 msgid "Best of 3"
-msgstr "Кращий в трьох"
-
-msgid "Best of Three"
 msgstr "Кращий в трьох"
 
 msgid "Blue"
@@ -154,18 +136,6 @@ msgstr "Початок категорії"
 
 msgid "Category:"
 msgstr "Категорія:"
-
-msgid "Change language to English"
-msgstr "Оберіть англійську"
-
-msgid "Change language to Finnish"
-msgstr "Оберіть фінську"
-
-msgid "Change language to Spanish"
-msgstr "Оберіть іспанську"
-
-msgid "Change language to Swedish"
-msgstr "Оберіть  шведську"
 
 msgid "Choose a directory"
 msgstr "Виберіть каталог"
@@ -374,12 +344,6 @@ msgstr "Не змінювати"
 
 msgid "Double Pool"
 msgstr "Double Pool"
-
-msgid "Double pool"
-msgstr "Double pool"
-
-msgid "Double repechage"
-msgstr "Подвійне втішення"
 
 msgid "Draw All Categories"
 msgstr "Скласти усі протоколи"
@@ -715,9 +679,6 @@ msgstr "Пароль"
 msgid "Password accepted.<br>"
 msgstr "Пароль прийнято.<br>"
 
-msgid "Password not in use"
-msgstr "Пароль не використовується"
-
 msgid "Password:"
 msgstr "Пароль:"
 
@@ -772,9 +733,6 @@ msgstr "Друкувати (Web і PDF)"
 msgid "Print Comment"
 msgstr "Додати коментар"
 
-msgid "Print Competitors With Template"
-msgstr "Друк учасників з шаблону"
-
 msgid "Print Finished Categories"
 msgstr "Друк завершених категорій"
 
@@ -826,9 +784,6 @@ msgstr "Властивості"
 msgid "Quad Pool"
 msgstr "Quad Pool"
 
-msgid "Quadruple pool"
-msgstr "Quadruple pool"
-
 msgid "Quick guide"
 msgstr "Короткий посібник"
 
@@ -855,9 +810,6 @@ msgstr "Скасувати протокол"
 
 msgid "Remove Empty"
 msgstr "Видалити порожні"
-
-msgid "Remove Matches"
-msgstr "Скасувати сутичку"
 
 msgid "Remove Unweighted"
 msgstr "Видалити незважених"
@@ -916,9 +868,6 @@ msgstr "SQL Dialog"
 msgid "SWE Dir återkv"
 msgstr "SWE Dir återkv"
 
-msgid "SWE Double Elimination"
-msgstr "SWE Double Elimination"
-
 msgid "SWE Double Repechage"
 msgstr "SWE Double Repechage"
 
@@ -954,9 +903,6 @@ msgstr "Виберіть учасника, а потім номер."
 
 msgid "Select sheet font"
 msgstr "Виберіть шрифт"
-
-msgid "Select template"
-msgstr "Вибрати дизайн"
 
 msgid "Semifinal A"
 msgstr "Півфінал А"
@@ -996,9 +942,6 @@ msgstr "Показати протокол"
 
 msgid "Show Tatami"
 msgstr "Показати татамі"
-
-msgid "Silver medalist"
-msgstr "Срібний призер"
 
 msgid "Single Elimination"
 msgstr "Вибування"
@@ -1105,9 +1048,6 @@ msgstr "Вагова кат.:"
 msgid "Weight:"
 msgstr "Вага:"
 
-msgid "Weighed:"
-msgstr "Вага:"
-
 msgid "Weights Visible"
 msgstr "Показати вагу"
 
@@ -1186,12 +1126,6 @@ msgstr "Змінити порядок"
 msgid "Display customized layout"
 msgstr "Макет 6"
 
-msgid "Change language to Estonian"
-msgstr "Оберіть естонську"
-
-msgid "Change language to Ukrainan"
-msgstr "Оберіть українську"
-
 msgid "No competitor found!"
 msgstr "Учасника не знайдено"
 
@@ -1234,9 +1168,6 @@ msgstr "Гаразд"
 msgid "White first:"
 msgstr "Білий спочатку:"
 
-msgid "Scale Serial Interface"
-msgstr "Параметри мережі"
-
 msgid "Serial Communication"
 msgstr "Зв'язок"
 
@@ -1265,9 +1196,6 @@ msgid "Repeat Script"
 msgstr "Повторити сценарій"
 
 msgid "Double Pool 2"
-msgstr "Double pool 2"
-
-msgid "Double pool 2"
 msgstr "Double pool 2"
 
 msgid "Write to file"
@@ -1386,12 +1314,6 @@ msgstr "Прізвище, Ім'я"
 
 msgid "Surname"
 msgstr "Прізвище"
-
-msgid "Change language to Icelandic"
-msgstr "Change language to Icelandic"
-
-msgid "Change language to Norwegian"
-msgstr ""
 
 msgid "WINNER"
 msgstr "ПЕРЕМОЖЕЦЬ"
@@ -1528,9 +1450,6 @@ msgstr ""
 msgid "Landscape"
 msgstr "Альбомна"
 
-msgid "Resolution:"
-msgstr "Роздільна:"
-
 msgid "Resolution (min):"
 msgstr "Роздільна (хвилин):"
 
@@ -1573,9 +1492,6 @@ msgstr ""
 msgid "SVG Templates"
 msgstr "Шаблони SVG"
 
-msgid "Resolve 3-Way Ties by Weights"
-msgstr ""
-
 msgid "General"
 msgstr "Загальні положення"
 
@@ -1605,12 +1521,6 @@ msgstr "Визначена система"
 
 msgid "Use SVG Templates"
 msgstr "Власний шаблон SVG"
-
-msgid "Best of three:"
-msgstr "Кращий з трьох:"
-
-msgid "Win needed for a medal:"
-msgstr "Кількість необхідних перемог:"
 
 msgid "Seeded to fixed places:"
 msgstr "Сіяні з фіксованими місцями"
@@ -1719,4 +1629,61 @@ msgid "Remote address"
 msgstr ""
 
 msgid "Remote Control"
+msgstr ""
+
+msgid "VLC control"
+msgstr ""
+
+msgid "X:"
+msgstr ""
+
+msgid "Y:"
+msgstr ""
+
+msgid "Scale:"
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "Reg.Cat"
+msgstr ""
+
+msgid "ID"
+msgstr ""
+
+msgid "Index"
+msgstr ""
+
+msgid "Results in Polish"
+msgstr ""
+
+msgid "Results in Slovak"
+msgstr ""
+
+msgid "Results in Dutch"
+msgstr ""
+
+msgid "Win in Golden Score gives 1 point"
+msgstr ""
+
+msgid "WARNING: NO CONTROL"
+msgstr ""
+
+msgid "British System"
+msgstr ""
+
+msgid "Australian System"
+msgstr ""
+
+msgid "Danish System"
+msgstr ""
+
+msgid "Polish System"
+msgstr ""
+
+msgid "Slovakian System"
+msgstr ""
+
+msgid "Tatami"
 msgstr ""
