@@ -81,12 +81,14 @@ static void tatami_selection(GtkWidget *w,
 {
     tatami = (gint)data;
     g_key_file_set_integer(keyfile, "preferences", "tatami", tatami);
+    set_ssdp_id();
 }
 
 static void mode_selection(GtkWidget *w,
 			   gpointer   data )
 {
     mode = (gint)data;
+    set_ssdp_id();
 }
 
 static void display_competitors(GtkWidget *w,
@@ -819,6 +821,7 @@ void set_preferences(void)
     else
         tvlogo_port = 0;
 
+    set_ssdp_id();
 }
 
 gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param)

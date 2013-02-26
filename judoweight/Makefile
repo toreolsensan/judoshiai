@@ -6,6 +6,7 @@ OBJS += $(OBJDIR)/main.o $(OBJDIR)/menus.o $(OBJDIR)/comm.o $(OBJDIR)/ip.o \
 	$(OBJDIR)/protocol.o $(OBJDIR)/serial.o $(OBJDIR)/language.o
 
 CFLAGS += -DAPPLICATION="\"judoweight\""
+CFLAGS += -DAPP_NUM=4
 
 ### Windows executable ###
 ifeq ($(TGT),WIN32)

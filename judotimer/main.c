@@ -1773,6 +1773,10 @@ int main( int   argc,
     gth = g_thread_create((GThreadFunc)tvlogo_thread,
                           (gpointer)&run_flag, FALSE, NULL);
 
+    extern gpointer ssdp_thread(gpointer args);
+    gth = g_thread_create((GThreadFunc)ssdp_thread,
+                          (gpointer)&run_flag, FALSE, NULL);
+
     gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER_ALWAYS);
 
     cursor = gdk_cursor_new(GDK_HAND2);
@@ -2529,6 +2533,18 @@ gboolean this_is_shiai(void)
 gint application_type(void)
 {
         return APPLICATION_TYPE_TIMER;
+}
+
+void set_ssdp_id(void)
+{
+    if (mode == MODE_SLAVE)
+        g_snprintf(ssdp_id, sizeof(ssdp_id), "JudoTimer tatami=%d slave", tatami);
+    else if (mode == MODE_MASTER)
+        g_snprintf(ssdp_id, sizeof(ssdp_id), "JudoTimer tatami=%d master", tatami);
+    else
+        g_snprintf(ssdp_id, sizeof(ssdp_id), "JudoTimer tatami=%d", tatami);
+
+    ssdp_notify = TRUE;
 }
 
 gboolean blue_background(void)

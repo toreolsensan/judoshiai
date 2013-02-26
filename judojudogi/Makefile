@@ -6,6 +6,7 @@ OBJS += $(OBJDIR)/main.o $(OBJDIR)/menus.o $(OBJDIR)/comm.o $(OBJDIR)/ip.o \
 	$(OBJDIR)/protocol.o $(OBJDIR)/trees.o $(OBJDIR)/avl.o $(OBJDIR)/language.o
 
 CFLAGS += -DAPPLICATION="\"judojudogi\""
+CFLAGS += -DAPP_NUM=5
 
 ### Windows executable ###
 ifeq ($(TGT),WIN32)

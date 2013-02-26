@@ -456,6 +456,8 @@ ok:
     }
 
     if (first_instance) {
+        g_snprintf(ssdp_id, sizeof(ssdp_id), "JudoShiai");
+
         /* Only the first program can communicate. */
         open_comm_socket();
 
@@ -488,6 +490,9 @@ ok:
                               (gpointer)&run_flag, FALSE, NULL); 
 
         gth = g_thread_create((GThreadFunc)ftp_thread,
+                              (gpointer)&run_flag, FALSE, NULL); 
+
+        gth = g_thread_create((GThreadFunc)ssdp_thread,
                               (gpointer)&run_flag, FALSE, NULL); 
 
         g_timeout_add(1000, check_for_connection_status, NULL);

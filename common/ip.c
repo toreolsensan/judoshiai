@@ -76,6 +76,7 @@ extern void copy_packet(struct message *msg);
 gint pwcrc32(const guchar *str, gint len);
 
 gulong my_ip_address = 0, node_ip_addr = 0, ssdp_ip_addr = 0;
+static gulong tmp_node_addr;
 gchar  my_hostname[100];
 gboolean connection_ok = FALSE;
 GStaticMutex send_mutex = G_STATIC_MUTEX_INIT;
@@ -340,7 +341,7 @@ static void node_ip_address_callback(GtkWidget *widget,
 void ask_node_ip_address( GtkWidget *w,
                           gpointer   data )
 {
-    gchar addrstr[20];
+    gchar addrstr[64];
     gulong myaddr = ntohl(node_ip_addr);
     GtkWidget *dialog, *hbox, *label, *address;
 
@@ -363,7 +364,13 @@ void ask_node_ip_address( GtkWidget *w,
     gtk_box_pack_start_defaults(GTK_BOX(hbox), label);
     gtk_box_pack_start_defaults(GTK_BOX(hbox), address);
 
-    if (connection_ok)
+    if (connection_ok && node_ip_addr == 0) {
+        gulong myaddr = ntohl(tmp_node_addr);
+        g_snprintf(addrstr, sizeof(addrstr), "%s: %ld.%ld.%ld.%ld", _("(Connection OK)"), 
+                   (myaddr>>24)&0xff, (myaddr>>16)&0xff, 
+                   (myaddr>>8)&0xff, (myaddr)&0xff);
+        label = gtk_label_new(addrstr);
+    } else if (connection_ok)
         label = gtk_label_new(_("(Connection OK)"));
     else
         label = gtk_label_new(_("(Connection broken)"));
@@ -502,13 +509,11 @@ gboolean check_for_input(gpointer data)
 static gint conn_info_callback(gpointer data)
 {
     static gboolean last_ok = FALSE;
-    gulong          addr;
         
     if (connection_ok == last_ok)
         return TRUE;
 
     last_ok = connection_ok;
-    addr = ntohl(node_ip_addr);
 
     return TRUE;
 }
@@ -632,15 +637,13 @@ gpointer client_thread(gpointer args)
 
     for ( ; *((gboolean *)args) ; )   /* exit loop when flag is cleared */
     {
-        gulong tmp_node_addr;
-
         if (node_ip_addr == 0 && this_is_shiai() == FALSE) {
             tmp_node_addr = ssdp_ip_addr;//nodescan(my_ip_address);
             if (tmp_node_addr == 0) {
                 g_usleep(1000000);
                 continue;
             }
-            node_ip_addr = tmp_node_addr;
+            //node_ip_addr = tmp_node_addr;
         } else {
             tmp_node_addr = node_ip_addr;
         }
@@ -682,13 +685,15 @@ gpointer client_thread(gpointer args)
         FD_ZERO(&read_fd);
         FD_SET(comm_fd, &read_fd);
 
-        while (tmp_node_addr == node_ip_addr) {
+        while ((tmp_node_addr == ssdp_ip_addr && node_ip_addr == 0) ||
+               (tmp_node_addr == node_ip_addr)) {
             struct timeval timeout;
             gint r;
 			
             if (old_port != get_port()) {
                 g_print("oldport=%d newport=%d\n", old_port, get_port());
                 old_port = get_port();
+                ssdp_ip_addr = 0;
                 break;
             }
 
@@ -757,7 +762,7 @@ gpointer client_thread(gpointer args)
                 } else 
                     break;
             }
-        }
+        } // while
 
         connection_ok = FALSE;
 
@@ -846,19 +851,62 @@ gint pwcrc32(const guchar *str, gint len)
 #define NT "NT" URN
 
 static gchar *ssdp_req_data = NULL;
+static gint   ssdp_req_data_len = 0;
 gchar ssdp_id[64];
-gboolean ssdp_notify = FALSE;
+gboolean ssdp_notify = TRUE;
+
+static void analyze_ssdp(gchar *rec, struct sockaddr_in *client)
+{
+    if (connection_ok)
+        return;
+
+    gchar *p1, *p = strstr(rec, "UPnP/1.0 Judo");
+    
+    if (!p)
+        return;
+
+    p1 = strchr(p, '\r');
+    if (!p1)
+        return;
+
+    *p1 = 0;
+
+#if (APP_NUM == APPLICATION_TYPE_INFO) || (APP_NUM == APPLICATION_TYPE_WEIGHT) || (APP_NUM == APPLICATION_TYPE_JUDOGI)
+    if (strncmp(p+9, "JudoShiai", 9) == 0) {
+        ssdp_ip_addr = client->sin_addr.s_addr;
+        g_print("SSDP %s: judoshiai addr=%lx\n", APPLICATION, ssdp_ip_addr);
+    }
+#elif (APP_NUM == APPLICATION_TYPE_TIMER)
+#define MODE_SLAVE  2
+    extern gint tatami, mode;
+
+    if (mode == MODE_SLAVE) {
+        if (strncmp(p+9, "JudoTimer", 9) == 0 && strstr(p+18, "master")) {
+            p1 = strstr(p+18, "tatami=");
+            if (p1) {
+                gint t = atoi(p1+7);
+                if (t == tatami) {
+                    ssdp_ip_addr = client->sin_addr.s_addr;
+                    g_print("SSDP %s: master timer addr=%lx\n", APPLICATION, ssdp_ip_addr);
+                }
+            }
+        }
+    } else if (strncmp(p+9, "JudoShiai", 9) == 0) {
+        ssdp_ip_addr = client->sin_addr.s_addr;
+        g_print("SSDP %s: judoshiai addr=%lx\n", APPLICATION, ssdp_ip_addr);
+    }
+#endif
+}
 
 gpointer ssdp_thread(gpointer args)
 {
-    SOCKET sock;
-    gint n, ret;
-    struct sockaddr_in sockname, dst, si_me;
+    SOCKET sock_in, sock_out;
+    gint ret;
+    struct sockaddr_in name_out, name_in;
     struct sockaddr_in clientsock;
     static gchar inbuf[1024];
     fd_set read_fd, fds;
     guint socklen;
-    struct hostent *hostname;
     struct ip_mreq mreq;
 
 #ifdef WIN32
@@ -867,59 +915,69 @@ gpointer ssdp_thread(gpointer args)
     const gchar *os = "Linux";
 #endif
 
-    hostname = gethostbyname(SSDP_MULTICAST);
-    hostname->h_addrtype = AF_INET;
-    memset(&mreq, 0, sizeof(mreq));
-    struct in_addr ia;
-    memcpy((void*)&ia, (void*)hostname->h_addr, hostname->h_length); 
-    memcpy(&mreq.imr_multiaddr.s_addr, &ia, sizeof(struct in_addr));
-    mreq.imr_interface.s_addr = htonl(INADDR_ANY);
-
     ssdp_req_data = g_strdup_printf("M-SEARCH * HTTP/1.1\r\n"
                                     "HOST: 239.255.255.250:1900\r\n"
                                     "MAN: \"ssdp:discover\"\r\n"
                                     ST "\r\n"
                                     "MX:3\r\n"
                                     "\r\n");
+    ssdp_req_data_len = strlen(ssdp_req_data);
 
-    if ((sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP)) == INVALID_SOCKET) {
+    // receiving socket
+
+    if ((sock_in = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP)) == INVALID_SOCKET) {
         perror("SSDP socket");
         goto out;
     }
 
-    memset((gchar *)&si_me, 0, sizeof(si_me));
-    si_me.sin_family = AF_INET;
-    si_me.sin_port = htons(SSDP_PORT);
-    si_me.sin_addr.s_addr = htonl(INADDR_ANY);
-    if (bind(sock, (struct sockaddr *)&si_me, sizeof(si_me)) == -1) {
+    gint reuse = 1;
+    if (setsockopt(sock_in, SOL_SOCKET, SO_REUSEADDR, (void *)&reuse, sizeof(reuse)) < 0) {
+        perror("setsockopt (SO_REUSEADDR)");
+    }
+
+    memset((gchar *)&name_in, 0, sizeof(name_in));
+    name_in.sin_family = AF_INET;
+    name_in.sin_port = htons(SSDP_PORT);
+    name_in.sin_addr.s_addr = htonl(INADDR_ANY);
+    if (bind(sock_in, (struct sockaddr *)&name_in, sizeof(name_in)) == -1) {
         perror("SSDP bind");
         goto out;
     }
 
-    memset((gchar*)&sockname, 0, sizeof(sockname));
-    sockname.sin_family = AF_INET;
-    sockname.sin_port = htons(SSDP_PORT);
-    sockname.sin_addr.s_addr=*((unsigned long*)(hostname->h_addr_list[0]));
-
-    if (setsockopt(sock,
-                   IPPROTO_IP,
-                   IP_ADD_MEMBERSHIP,
-                   &mreq,
-                   sizeof(struct ip_mreq)) == -1) {
+    memset(&mreq, 0, sizeof(mreq));
+    mreq.imr_multiaddr.s_addr = inet_addr(SSDP_MULTICAST);
+    mreq.imr_interface.s_addr = htonl(INADDR_ANY);
+    if (setsockopt(sock_in, IPPROTO_IP, IP_ADD_MEMBERSHIP, &mreq, sizeof(mreq)) == -1) {
         perror("SSDP setsockopt");
     }
 
+    // transmitting socket
+
+    if ((sock_out = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP)) == INVALID_SOCKET) {
+        perror("SSDP socket");
+        goto out;
+    }
+
+    gint ttl = 3;
+    setsockopt(sock_out, IPPROTO_IP, IP_MULTICAST_TTL, (void *)&ttl, sizeof(ttl));
+
+    memset((gchar*)&name_out, 0, sizeof(name_out));
+    name_out.sin_family = AF_INET;
+    name_out.sin_port = htons(SSDP_PORT);
+    name_out.sin_addr.s_addr = inet_addr(SSDP_MULTICAST);
+
 #if 0	
-    ret = sendto(sock, ssdp_req_data, strlen(ssdp_req_data), 0, (struct sockaddr*) &sockname, 
+    ret = sendto(sock_out, ssdp_req_data, ssdp_req_data_len, 0, (struct sockaddr*) &name_out, 
                  sizeof(struct sockaddr_in));
-    if (ret != strlen(ssdp_req_data)) {
+    if (ret != ssdp_req_data_len) {
         perror("SSDP send req");
         goto out;
     }
 #endif
 
     FD_ZERO(&fds);
-    FD_SET(sock, &fds);
+    FD_SET(sock_in, &fds);
+    FD_SET(sock_out, &fds);
 
     for ( ; *((gboolean *)args) ; )   /* exit loop when flag is cleared */
     {
@@ -930,66 +988,64 @@ gpointer ssdp_thread(gpointer args)
         timeout.tv_usec=0;
         read_fd = fds;
 	
-        if (select(sock+1, &read_fd, NULL, NULL, &timeout) < 0) {
+        if (select(sock_out+2, &read_fd, NULL, NULL, &timeout) < 0) {
             perror("SSDP select");
             continue;
         }
 
-        if (FD_ISSET(sock, &read_fd)) {
+        if (FD_ISSET(sock_out, &read_fd)) {
             socklen = sizeof(clientsock);
-            if ((len = recvfrom(sock, inbuf, sizeof(inbuf)-1, 0, 
-                                (struct sockaddr *)&clientsock, &socklen)) == (size_t)-1){
+            if ((len = recvfrom(sock_out, inbuf, sizeof(inbuf)-1, 0, 
+                                (struct sockaddr *)&clientsock, &socklen)) == (size_t)-1) {
                 perror("SSDP recvfrom");
                 goto out;
             }
 
-            inbuf[len]='\0';
-		
-            /* Check the HTTP response code */
-            if(strncmp(inbuf, "HTTP/1.1 200 OK", 12) == 0 ||
-               strncmp(inbuf, "NOTIFY", 6) == 0) {
-                gchar *p1, *p = strstr(inbuf, "UPnP/1.0 Judo");
+            if (len > 0) {
+                inbuf[len]='\0';
 
-                if (p) {
-                    p1 = strchr(p, '\r');
-                    if (p1) {
-                        *p1 = 0;
-#if (APP_NUM != APPLICATION_TYPE_SHIAI)
-                        if (strncmp(p, "JudoShiai", 9) == 0) {
-                            ssdp_ip_addr = clientsock.sin_addr.s_addr;
-                        }
-#else
+                if (strncmp(inbuf, "HTTP/1.1 200 OK", 12) == 0)
+                    analyze_ssdp(inbuf, &clientsock);
+            } // len > 0
+        } 
 
-#endif
-                    } // if (p1)
-                } // if (p)
-            } else if (strncmp(inbuf, "M-SEARCH", 8) == 0 &&
-                       strstr(inbuf, "ST:urn:judoshiai:service:all:")) {
-                g_print("SSDP rec: '%s'\n", inbuf);
-                struct sockaddr_in addr;
-                addr.sin_addr.s_addr = my_ip_address;
-
-                gchar *resp = g_strdup_printf("HTTP/1.1 200 OK\r\n"
-                                              "DATE:Mon, 25 Feb 2013 12:22:23 GMT\r\n"
-                                              "CACHE-CONTROL: max-age=1800\r\n"
-                                              "EXT:\r\n"
-                                              "LOCATION: http://%s/UPnP/desc.xml\r\n"
-                                              "SERVER:%s/1 UPnP/1.0 %s/%s\r\n"
-                                              ST "\r\n"
-                                              "USN: uuid:23105808-cafe-babe-737%d-%012lx\r\n"
-                                              "\r\n",
-                                              inet_ntoa(addr.sin_addr), os, 
-                                              ssdp_id,
-                                              SHIAI_VERSION, application_type(), my_ip_address);
-
-                g_print("SSDP send: '%s'\n", resp);
-                ret = sendto(sock, resp, strlen(resp), 0, (struct sockaddr *)&clientsock, socklen);
-                g_free(resp);
+        if (FD_ISSET(sock_in, &read_fd)) {
+            socklen = sizeof(clientsock);
+            if ((len = recvfrom(sock_in, inbuf, sizeof(inbuf)-1, 0, 
+                                (struct sockaddr *)&clientsock, &socklen)) == (size_t)-1) {
+                perror("SSDP recvfrom");
+                goto out;
             }
-		
-            //g_print("SSDP rec: '%s'\n", inbuf);
-        } else {
-            // timeout
+
+            if (len > 0) {
+                inbuf[len]='\0';
+
+                if (strncmp(inbuf, "NOTIFY", 6) == 0)
+                    analyze_ssdp(inbuf, &clientsock);
+                else if (strncmp(inbuf, "M-SEARCH", 8) == 0 &&
+                         strstr(inbuf, "ST:urn:judoshiai:service:all:")) {
+                    //g_print("SSDP %s rec: '%s'\n\n", APPLICATION, inbuf);
+                    struct sockaddr_in addr;
+                    addr.sin_addr.s_addr = my_ip_address;
+
+                    gchar *resp = g_strdup_printf("HTTP/1.1 200 OK\r\n"
+                                                  "DATE:Mon, 25 Feb 2013 12:22:23 GMT\r\n"
+                                                  "CACHE-CONTROL: max-age=1800\r\n"
+                                                  "EXT:\r\n"
+                                                  "LOCATION: http://%s/UPnP/desc.xml\r\n"
+                                                  "SERVER:%s/1 UPnP/1.0 %s/%s\r\n"
+                                                  ST "\r\n"
+                                                  "USN: uuid:23105808-cafe-babe-737%d-%012lx\r\n"
+                                                  "\r\n",
+                                                  inet_ntoa(addr.sin_addr), os, 
+                                                  ssdp_id,
+                                                  SHIAI_VERSION, application_type(), my_ip_address);
+
+                    //g_print("SSDP %s send: '%s'\n", APPLICATION, resp);
+                    ret = sendto(sock_out, resp, strlen(resp), 0, (struct sockaddr *)&clientsock, socklen);
+                    g_free(resp);
+                }
+            } // len > 0
         }
 
         if (ssdp_notify) {
@@ -1009,23 +1065,25 @@ gpointer ssdp_thread(gpointer args)
                                           ssdp_id,
                                           SHIAI_VERSION, application_type(), my_ip_address);
 
-            g_print("SSDP send: '%s'\n", resp);
-            ret = sendto(sock, resp, strlen(resp), 0, (struct sockaddr *)&clientsock, socklen);
+            //g_print("SSDP %s send: '%s'\n", APPLICATION, resp);
+            ret = sendto(sock_out, resp, strlen(resp), 0, (struct sockaddr *)&name_out, sizeof(struct sockaddr_in));
             g_free(resp);
             ssdp_notify = FALSE;
         }
 
+#if (APP_NUM != APPLICATION_TYPE_SHIAI)
         static time_t last_time = 0;
         time_t now = time(NULL);
         if (!connection_ok && now > last_time + 5) {
             last_time = now;
-            ret = sendto(sock, ssdp_req_data, strlen(ssdp_req_data), 0, (struct sockaddr*) &sockname, 
+            ret = sendto(sock_out, ssdp_req_data, ssdp_req_data_len, 0, (struct sockaddr*) &name_out, 
                          sizeof(struct sockaddr_in));
-            if (ret != strlen(ssdp_req_data)) {
+            //g_print("SSDP %s REQ SEND by timeout\n\n", APPLICATION);
+            if (ret != ssdp_req_data_len) {
                 perror("SSDP send req");
-                goto out;
             }
         }
+#endif
     }
 
  out:

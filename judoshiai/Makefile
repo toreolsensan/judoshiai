@@ -21,6 +21,7 @@ OBJS += $(OBJDIR)/main.o $(OBJDIR)/competitors.o $(OBJDIR)/sheets.o $(OBJDIR)/se
 	$(OBJDIR)/svg.o $(OBJDIR)/properties.o $(OBJDIR)/ftp.o $(OBJDIR)/language.o
 
 CFLAGS += -DAPPLICATION="\"judoshiai\""
+CFLAGS += -DAPP_NUM=1
 
 ### Windows executable ###
 ifeq ($(TGT),WIN32)

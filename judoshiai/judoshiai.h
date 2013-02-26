@@ -994,6 +994,7 @@ extern gpointer node_thread(gpointer args);
 extern gpointer client_thread(gpointer args);
 extern gpointer httpd_thread(gpointer args);
 extern gpointer serial_thread(gpointer args);
+extern gpointer ssdp_thread(gpointer args);
 extern gchar *other_info(gint num);
 extern gint read_file_from_net(gchar *filename, gint num);
 extern gulong get_my_address();

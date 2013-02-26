@@ -7,6 +7,7 @@ OBJS += $(OBJDIR)/main.o $(OBJDIR)/menus.o $(OBJDIR)/stopwatch.o $(OBJDIR)/comm.
 	$(OBJDIR)/video.o $(OBJDIR)/tvlogo.o $(OBJDIR)/language.o
 
 CFLAGS += -DAPPLICATION="\"judotimer\""
+CFLAGS += -DAPP_NUM=2
 CFLAGS += -I$(SOUNDDIR)/inc
 LIBS += -L$(SOUNDDIR)/lib -lfmodex
 

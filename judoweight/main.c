@@ -399,6 +399,11 @@ int main( int   argc,
     gth = g_thread_create((GThreadFunc)serial_thread,
                           (gpointer)&run_flag, FALSE, NULL); 
 
+    extern gpointer ssdp_thread(gpointer args);
+    g_snprintf(ssdp_id, sizeof(ssdp_id), "JudoWeight");
+    gth = g_thread_create((GThreadFunc)ssdp_thread,
+                          (gpointer)&run_flag, FALSE, NULL);
+
     gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER_ALWAYS);
 	
     cursor = gdk_cursor_new(GDK_HAND2);
