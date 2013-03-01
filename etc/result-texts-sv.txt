@@ -47,7 +47,7 @@ Poäng
 ### 23: Pos (short text for position = winner, second, bronze)
 Plats
 ### 24: Previous winner
-Föregående vinnare
+Vinnare
 ### 25: Next (competitors who have the next fight)
 Därefter
 ### 26: Weight:
@@ -63,9 +63,9 @@ viktklass.pdf
 ### 31: Category
 Viktklass
 ### 32: Next fights (for a list of fights)
-Nästa match
+Nästa matchen
 ### 33: Categories
-Viktklass
+Viktklasser
 ### 34: Statistics
 Statistik
 ### 35: Medals
@@ -75,25 +75,25 @@ Totalt
 ### 37: Country
 Land
 ### 38: Not drawn
-Not drawn
+Lottningen inte färdig
 ### 39: Finished
-Finished
+Färdig
 ### 40: Match ongoing
-Match ongoing
+Matchen pågor
 ### 41: Started (category has started)
-Started
+Börjat
 ### 42: Drawing ready
-Drawing ready
+Lottningen färdig
 ### 43: Coach
 Coach
 ### 44: Surname
-Surname
+Efternamn
 ### 45: Status
 Status
 ### 46: Display
 Display
 ### 47: "Match after n matches" divided in two parts
 ###     Match after ("Match after" n matches)
-Match after
+Match efter
 ### 48: matches (Match after n "matches")
-matches
+matcher

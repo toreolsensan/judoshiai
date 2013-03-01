@@ -41,15 +41,15 @@ Wyniki
 ### 20: Time (fight time)
 Czas
 ### 21: Wins (number of wins)
-Wygrywa
+Wygrane
 ### 22: Pts (short text for points)
 Pkt.
 ### 23: Pos (short text for position = winner, second, bronze)
-Miejsce
+Msc.
 ### 24: Previous winner
 Poprzedni wygrany
 ### 25: Next (competitors who have the next fight)
-Następny
+Następni
 ### 26: Weight:
 Waga:
 ### 27: PRELIMINARY SCHEDULE
@@ -75,25 +75,25 @@ Suma
 ### 37: Country
 Kraj
 ### 38: Not drawn
-Not drawn
+Nie rozlosowany
 ### 39: Finished
-Finished
+Ukończono
 ### 40: Match ongoing
-Match ongoing
+Aktualnie walczą
 ### 41: Started (category has started)
-Started
+Rozpoczęto
 ### 42: Drawing ready
-Drawing ready
+Losowanie wykonane
 ### 43: Coach
-Coach
+Trener
 ### 44: Surname
-Surname
+Nazwisko
 ### 45: Status
 Status
 ### 46: Display
-Display
+Wyświetl.
 ### 47: "Match after n matches" divided in two parts
 ###     Match after ("Match after" n matches)
-Match after
+Walka po
 ### 48: matches (Match after n "matches")
-matches
+walce/kach
