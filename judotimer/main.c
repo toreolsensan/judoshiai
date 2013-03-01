@@ -632,8 +632,8 @@ void set_timer_osaekomi_color(gint osaekomi_state, gint pts)
 
 void set_timer_value(guint min, guint tsec, guint sec)
 {
-    if (min < 10) {
-        set_text(MY_LABEL(t_min), num_to_str(min));
+    if (min < 10000/60) {
+        set_text(MY_LABEL(t_min), num_to_str(min%10));
         set_text(MY_LABEL(t_tsec), num_to_str(tsec));
         set_text(MY_LABEL(t_sec), num_to_str(sec));
     } else {

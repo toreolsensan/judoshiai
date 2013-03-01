@@ -327,7 +327,9 @@ void hajime_inc_func(void)
 {
     if (st[0].running)
         return;
-    if (st[0].elap >= 1.0)
+    if (total == 0) {
+        st[0].elap += 1.0;
+    } else if (st[0].elap >= 1.0)
         st[0].elap -= 1.0;
     else
         st[0].elap = 0.0;
@@ -338,7 +340,9 @@ void hajime_dec_func(void)
 {
     if (st[0].running)
         return;
-    if (st[0].elap <= (total - 1.0))
+    if (total == 0) {
+        if (st[0].elap >= 1.0) st[0].elap -= 1.0;
+    } else if (st[0].elap <= (total - 1.0))
         st[0].elap += 1.0;
     else
         st[0].elap = total;
@@ -410,7 +414,7 @@ static void toggle(void)
         update_display();
         video_record(FALSE);
     } else if (!st[0].running) {
-        if (total > 600) // don't let clock run if dashes in display '-:--'
+        if (total > 9000) // don't let clock run if dashes in display '-:--'
             return;
 
         if (st[0].elap == 0)
@@ -1040,7 +1044,7 @@ void reset(guint key, struct msg_next_match *msg)
         total   = golden_score ? gs_time : 150.000;
         break;
     case GDK_7:
-        total   = 700.000;
+        total   = 10000.000;
         break;
     case GDK_9:
         if (golden_score)
