@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-21 16:00+0200\n"
+"POT-Creation-Date: 2013-03-01 13:12+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,13 +21,13 @@ msgid "(Connection OK)"
 msgstr "(Anslutningen OK)"
 
 msgid "(Connection broken)"
-msgstr "(Anslutningen är bruten)"
+msgstr "(Anslutningen stängd)"
 
 msgid "Own IP addresses"
 msgstr "Egna IP-adresser"
 
 msgid "Blue won the voting"
-msgstr "Blue vann omröstningen"
+msgstr "Blå vann omröstningen"
 
 msgid "White won the voting"
 msgstr "Vit vann omröstningen"
@@ -129,10 +129,10 @@ msgid "Communication node"
 msgstr "Kommunikation nod"
 
 msgid "Increment time"
-msgstr "Öka matchtid"
+msgstr "Öka matchtiden"
 
 msgid "Decrement time"
-msgstr "Minska matchtid"
+msgstr "Minska matchtiden"
 
 msgid "Manual"
 msgstr "Hjälp"
@@ -141,7 +141,7 @@ msgid "About"
 msgstr "Om"
 
 msgid "Contest duration automatically from JudoShiai program"
-msgstr "Matchtid automatiskt från JudoShiai-program"
+msgstr "Matchtid automatiskt från JudoShiai-programmet"
 
 msgid "View clocks only"
 msgstr "Visa bara clockor"
@@ -153,10 +153,10 @@ msgid "Decrement pin time"
 msgstr "Minska fasthållnings-tid"
 
 msgid "Points going to blue"
-msgstr "Poäng går till blå"
+msgstr "Poäng går till blått"
 
 msgid "Points going to white"
-msgstr "Poäng går till vit"
+msgstr "Poäng går till vitt"
 
 msgid "About Judotimer"
 msgstr "Om Judotimer"
@@ -177,7 +177,7 @@ msgid "Undo!"
 msgstr "Ångra!"
 
 msgid "Set clocks"
-msgstr "Sätta klockor"
+msgstr "Ställa klockor"
 
 msgid "Clock:"
 msgstr "Klockan:"
@@ -195,19 +195,19 @@ msgid "Clear selection"
 msgstr "Avmarkera"
 
 msgid "Display layout 1"
-msgstr "Layoutvy 1"
+msgstr "Visa layout 1"
 
 msgid "Display layout 2"
-msgstr "Layoutvy 2"
+msgstr "Visa layout 2"
 
 msgid "Display layout 3"
-msgstr "Layoutvy 3"
+msgstr "Visa layout 3"
 
 msgid "Display layout 4"
-msgstr "Layoutvy 4"
+msgstr "Visa layout 4"
 
 msgid "Display layout 5"
-msgstr "Layoutvy 5"
+msgstr "Visa layout 5"
 
 msgid "Quick guide"
 msgstr "Snabbstartguide"
@@ -240,567 +240,569 @@ msgid "White wins"
 msgstr "Vit vinner"
 
 msgid "REST TIME"
-msgstr "TID AT VILA"
+msgstr "VILOTID"
 
 msgid "Advertise"
-msgstr "Göra reklam"
+msgstr "Annonsera"
 
 msgid "Run Advertisements"
-msgstr "Göra reklam"
+msgstr "Kör annonser"
 
 msgid "Advertisement"
-msgstr "Reklam"
+msgstr "Annons"
 
 msgid "Choose a directory"
-msgstr "Välja katalog"
+msgstr "Välj en katalog"
 
 msgid "No koka"
 msgstr "Koka inte in bruk"
 
 msgid "Leave points for GS"
-msgstr "Lämna påäng på tavlan"
+msgstr "Lämna påäng för GS"
 
 msgid "View Log"
-msgstr ""
+msgstr "Visa logg"
 
 msgid "Display layout"
-msgstr ""
+msgstr "Visa layout"
 
 msgid "Contest area"
-msgstr ""
+msgstr "Mattan"
 
 msgid "Set time"
-msgstr ""
+msgstr "Ställ in tid"
 
 msgid "Sound"
-msgstr ""
+msgstr "Ljud"
 
 msgid "Choose a file"
-msgstr ""
+msgstr "Välj en fil"
 
 msgid "Sound Files"
-msgstr ""
+msgstr "Ljudfilar"
 
 msgid "All Files"
-msgstr ""
+msgstr "Alla filer"
 
 msgid "Stop clock on Ippon"
 msgstr "Ippon stoppar clockan"
 
 msgid "Switch sides"
-msgstr ""
+msgstr "Byta sidor"
 
 msgid "Display customized layout"
-msgstr ""
+msgstr "Visa anpassad layout"
 
 msgid "White first"
-msgstr ""
+msgstr "Vit först"
 
 msgid "Confirm New Match"
-msgstr ""
+msgstr "Bekräfta ny match"
 
 msgid "Contest area 9"
-msgstr ""
+msgstr "Mattan 9"
 
 msgid "Contest area 10"
-msgstr ""
+msgstr "Mattan 10"
 
 msgid "White has a judogi problem."
-msgstr ""
+msgstr "Vit har en judogi problem."
 
 msgid "Blue has a judogi problem."
-msgstr ""
+msgstr "Blå har en judogi problem"
 
 msgid "Show Competitors"
-msgstr ""
+msgstr "Visa tävlande"
 
 msgid "Show competitors"
-msgstr ""
+msgstr "Visa tävlande"
 
 msgid "Name format"
-msgstr ""
+msgstr "Namnformat"
 
 msgid "Name Surname, Country/Club"
-msgstr ""
+msgstr "Namn Efternamn, Land/Klubb"
 
 msgid "Surname, Name, Country/Club"
-msgstr ""
+msgstr "Efternamn, Namn, Land/Klubb"
 
 msgid "Country/Club  Surname, Name"
-msgstr ""
+msgstr "Land/Klubb Efternamn, Namn"
 
 msgid "Country  Surname, Name"
-msgstr ""
+msgstr "Land Efternamn, Namn"
 
 msgid "Club  Surname, Name"
-msgstr ""
+msgstr "Klubb Efternamn, Namn"
 
 msgid "Country Surname"
-msgstr ""
+msgstr "Land Efternamn"
 
 msgid "Club Surname"
-msgstr ""
+msgstr "Klubb Efternamn"
 
 msgid "Surname, Name"
-msgstr ""
+msgstr "Efternamn, Namn"
 
 msgid "Surname"
-msgstr ""
+msgstr "Efternamn"
 
 msgid "Country"
-msgstr ""
+msgstr "Land"
 
 msgid "Club"
-msgstr ""
+msgstr "Klubb"
 
 msgid "OK"
-msgstr ""
+msgstr "OK"
 
 msgid "WINNER"
-msgstr ""
+msgstr "VINNAREN"
 
 msgid "Cancel"
-msgstr ""
+msgstr "Avbryt"
 
 msgid "- - -"
-msgstr ""
+msgstr "- - -"
 
 msgid "Select font"
-msgstr "Välj teckensnitt"
+msgstr "Välj typsnitt"
 
 msgid "Font"
-msgstr "Teckensnitt"
+msgstr "Typsnitt"
 
 msgid "Replay Video"
-msgstr ""
+msgstr "Spela upp video"
 
 msgid "Video server"
-msgstr ""
+msgstr "Videoserver"
 
 msgid "Video server URL"
-msgstr ""
+msgstr "URL till server"
 
 msgid "User:"
-msgstr ""
+msgstr "Användare:"
 
 msgid "Password:"
-msgstr ""
+msgstr "Lösenord:"
 
 msgid "Proxy:"
-msgstr ""
+msgstr "Proxy:"
 
 msgid "Show Video"
-msgstr ""
+msgstr "Spela upp video"
 
 msgid "No Limit"
-msgstr ""
+msgstr "Ingen tidsbegränsning"
 
 msgid "If equal score less shido wins"
-msgstr ""
+msgstr "Om lika påängen minst antal Shido vinner"
 
 msgid "VLC control"
-msgstr ""
+msgstr "VLC kontroll"
 
 msgid "X:"
-msgstr ""
+msgstr "X:"
 
 msgid "Y:"
-msgstr ""
+msgstr "Y:"
 
 msgid "Scale:"
-msgstr ""
+msgstr "Skala:"
 
 msgid "Competitor already exists!"
-msgstr ""
+msgstr "Tävlande finns redan!"
 
 msgid "Competitor"
-msgstr ""
+msgstr "Tävlande"
 
 msgid "copied"
-msgstr ""
+msgstr "kopierat"
 
 msgid "Category already exists!"
-msgstr ""
+msgstr "Kategori finns redan!"
 
 msgid "Category"
-msgstr ""
+msgstr "Kategori"
 
 msgid "has been copied with competitors and matches"
-msgstr ""
+msgstr "har kopierats med tävlande och matcher"
 
 msgid "Last Name"
-msgstr ""
+msgstr "Efternamn"
 
 msgid "First Name"
-msgstr ""
+msgstr "Namn"
 
 msgid "Year of Birth"
-msgstr ""
+msgstr "Födelseår"
 
 msgid "Grade"
-msgstr ""
+msgstr "Grad"
 
 msgid "Reg. Category"
-msgstr ""
+msgstr "Reg. kategori"
 
 msgid "Weight"
-msgstr ""
+msgstr "Vikt"
 
 msgid "Id"
-msgstr ""
+msgstr "Id"
 
 msgid "Tournaments"
-msgstr ""
+msgstr "Tävlingar"
 
 msgid "Tournament"
-msgstr ""
+msgstr "Tävling"
 
 msgid "Cannot move"
-msgstr ""
+msgstr "Kan inte flytta"
 
 msgid "Category drawn"
-msgstr ""
+msgstr "Katogori lottade ut"
 
 msgid "All the categories located to the tatamis"
-msgstr ""
+msgstr "Alla kategorier placerat på tatamier"
 
 msgid "Unlocated"
-msgstr ""
+msgstr "Inte placerat"
 
 msgid "Categories"
-msgstr ""
+msgstr "Kategorier"
 
 msgid "Connections to this node"
-msgstr ""
+msgstr "Anslutningar till denna nod"
 
 msgid "already exists!"
-msgstr ""
+msgstr "finns redan!"
 
 msgid "Remove drawing first"
-msgstr ""
+msgstr "Ta bort lottningen först"
 
 msgid "Competitors"
-msgstr ""
+msgstr "Tävlande"
 
 msgid "Last Name:"
-msgstr ""
+msgstr "Efternamn:"
 
 msgid "First Name:"
-msgstr ""
+msgstr "Namn:"
 
 msgid "Year of Birth:"
-msgstr ""
+msgstr "Födelseår:"
 
 msgid "Grade:"
-msgstr ""
+msgstr "Grad:"
 
 msgid "Club:"
-msgstr ""
+msgstr "Klubb:"
 
 msgid "Country:"
-msgstr ""
+msgstr "Land:"
 
 msgid "Reg. Category:"
-msgstr ""
+msgstr "Reg. kategori"
 
 msgid "Category:"
-msgstr ""
+msgstr "Kategori:"
 
 msgid "Weight:"
-msgstr ""
+msgstr "Vikt:"
 
 msgid "Seeding:"
-msgstr ""
+msgstr "Seedning:"
 
 msgid "No seeding"
-msgstr ""
+msgstr "Utan seedning"
 
 msgid "Club Seeding:"
-msgstr ""
+msgstr "Klubb seedning:"
 
 msgid "Id:"
-msgstr ""
+msgstr "Id:"
 
 msgid "Coach Id:"
-msgstr ""
+msgstr "Coach Id:"
 
 msgid "Gender:"
-msgstr ""
+msgstr "Kön:"
 
 msgid "Male"
-msgstr ""
+msgstr "Man"
 
 msgid "Female"
-msgstr ""
+msgstr "Kvinna"
 
 msgid "Control:"
-msgstr ""
+msgstr "Kontroll:"
 
 msgid "NOK"
-msgstr ""
+msgstr "NOK"
 
 msgid "Comment:"
-msgstr ""
+msgstr "Kommentar:"
 
 msgid "System:"
-msgstr ""
+msgstr "System:"
 
 msgid "Group:"
-msgstr ""
+msgstr "Grupp:"
 
 msgid "Coach"
-msgstr ""
+msgstr "Coach"
 
 msgid "Group"
-msgstr ""
+msgstr "Grupp"
 
 msgid "Seeding"
-msgstr ""
+msgstr "Seedning"
 
 msgid "Club Seeding"
-msgstr ""
+msgstr "Klubb seedning"
 
 msgid "Empty categories removed"
-msgstr ""
+msgstr "Tomma kategorier tog bort"
 
 msgid "Unweighted competitors removed"
-msgstr ""
+msgstr "Oviktat tävlande tog bort"
 
 msgid "Matches exist. Undo the drawing first."
-msgstr ""
+msgstr "Matcherna finns. Ta bort lottningen först."
 
 msgid "Competitors removed"
-msgstr ""
+msgstr "Tävlande tog bort."
 
 msgid "Bar code search"
-msgstr ""
+msgstr "Sök på streckkod"
 
 msgid "Type the barcode:"
-msgstr ""
+msgstr "Ange streckkoden:"
 
 msgid "Cannot handle: Database created with newer JudoShiai version."
-msgstr ""
+msgstr "Kan inte hantera: Databas skapad med nyare JudoShiai version."
 
 msgid "Database tables updated."
-msgstr ""
+msgstr "Databastabeller uppdateras."
 
 msgid "Weights do not match"
-msgstr ""
+msgstr "Vikterna stämmer inte"
 
 msgid "Database Validation"
-msgstr ""
+msgstr "Databas validering"
 
 msgid "Duplicate seedings:\n"
-msgstr ""
+msgstr "Dubbelt seedningar:\n"
 
 msgid "seeding"
-msgstr ""
+msgstr "seedning"
 
 msgid "defined"
-msgstr ""
+msgstr "definierade"
 
 msgid "times"
-msgstr ""
+msgstr "gånger"
 
 msgid "Duplicate club seedings:\n"
-msgstr ""
+msgstr "Dubbelt klubb seedningar:\n"
 
 msgid "Missing category definitions:\n"
-msgstr ""
+msgstr "Saknande kategoridefinitioner:\n"
 
 msgid "is not"
-msgstr ""
+msgstr "är inte"
 
 msgid "Typing errors:\n"
-msgstr ""
+msgstr "Skrivfel:\n"
 
 msgid "UTF-8 errors"
-msgstr ""
+msgstr "UTF-8 fel"
 
 msgid "Extra spaces"
-msgstr ""
+msgstr "Extra blanktecken"
 
 msgid "Possible duplicate competitors:\n"
-msgstr ""
+msgstr "Möjliga dubbla tävlingar:\n"
 
 msgid "Possible duplicate club names:\n"
-msgstr ""
+msgstr "Möjliga dubbla klubb namn:\n"
 
 msgid "Suspicious weights:\n"
-msgstr ""
+msgstr "Misstänkta vikter:\n"
 
 msgid "Corrupted competitor data:\n"
-msgstr ""
+msgstr "Skadad tävlingsdata:\n"
 
 msgid "Corrupted category data:\n"
-msgstr ""
+msgstr "Skadad lategoridata:\n"
 
 msgid "warnings"
-msgstr ""
+msgstr "varningar"
 
 msgid "Drawing not finished!"
-msgstr ""
+msgstr "Lottning inte färdig!"
 
 msgid "Matches matched in category"
-msgstr ""
+msgstr "Matchar matchas i kategorin"
 
 msgid "Clear the results first"
-msgstr ""
+msgstr "Töm resultaten först"
 
 msgid "Move the competitors"
-msgstr ""
+msgstr "Flytta tävlingar"
 
 msgid "Next"
-msgstr ""
+msgstr "Nästa"
 
 msgid "Rest"
-msgstr ""
+msgstr "Resta"
 
 msgid "Number"
-msgstr ""
+msgstr "Nummer"
 
 msgid "Select first a competitor and then a number."
-msgstr ""
+msgstr "Välj först en tävlande och sedan ett nummer."
 
 msgid "All the categories has been drawn"
-msgstr ""
+msgstr "Alla kategorier har lottats ut"
 
 msgid "Server URL"
-msgstr ""
+msgstr "URL till server"
 
 msgid "Copy to Server"
-msgstr ""
+msgstr "Kopiera till server"
 
 msgid "Proxy User:"
-msgstr ""
+msgstr "Proxyserver användare:"
 
 msgid "Proxy Password:"
-msgstr ""
+msgstr "Proxyserver lösenord:"
 
 msgid "Matches"
-msgstr ""
+msgstr "Matcher"
 
 msgid "Sheet"
-msgstr ""
+msgstr "Blad"
 
 msgid "Previous winner"
-msgstr ""
+msgstr "Vinnare"
 
 msgid "Cancel the match"
-msgstr ""
+msgstr "Avbryt matchen"
 
 msgid "Select a tatami"
-msgstr ""
+msgstr "Välj ett matchområd"
 
 msgid "Password accepted.<br>"
-msgstr ""
+msgstr "Lösedord accepteras.<br>"
 
 msgid "User"
-msgstr ""
+msgstr "Användare"
 
 msgid "Password"
-msgstr ""
+msgstr "Lösenord"
 
 msgid "Back"
-msgstr ""
+msgstr "Tillbaka"
 
 msgid "Wrong password"
-msgstr ""
+msgstr "Fel lösenord"
 
 msgid "Show"
-msgstr ""
+msgstr "Visa"
 
 msgid "Show Deleted"
-msgstr ""
+msgstr "Visa borttagna"
 
 msgid "New Competitor"
-msgstr ""
+msgstr "Ny tevlande"
 
 msgid "Logout"
-msgstr ""
+msgstr "Loggan ut"
 
 msgid "Login"
-msgstr ""
+msgstr "Logga in"
 
 msgid "No rights to give results"
-msgstr ""
+msgstr "Inga rättigheter ge resultat"
 
 msgid "No competitor found!"
-msgstr ""
+msgstr "Inga tävlande hittas!"
 
 msgid "Add"
-msgstr ""
+msgstr "Lägga till"
 
 msgid "Name"
-msgstr ""
+msgstr "Namn"
 
 msgid "Reg.Cat"
-msgstr ""
+msgstr "Reg.Kat."
 
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 msgid "Index"
-msgstr ""
+msgstr "Index"
 
 msgid "Not used"
-msgstr ""
+msgstr "Används ej"
 
 msgid "Column"
-msgstr ""
+msgstr "Kolumn"
 
 msgid "Import from file"
-msgstr ""
+msgstr "Importera från fil"
 
 msgid "Sex:"
-msgstr ""
+msgstr "Kön:"
 
 msgid "Girl Text:"
-msgstr ""
+msgstr "Flicka text:"
 
 msgid "Column Separator:"
-msgstr ""
+msgstr "Kolumn separator:"
 
 msgid "competitors added"
-msgstr ""
+msgstr "Tävlande lagt till"
 
 msgid "errors"
-msgstr ""
+msgstr "fel"
 
 msgid "competitors existed already"
-msgstr ""
+msgstr "tävlande fanns redan"
 
 msgid "syntax errors"
-msgstr ""
+msgstr "syntaxfel"
 
 msgid "Time"
-msgstr ""
+msgstr "Tid"
 
 msgid "Class"
-msgstr ""
+msgstr "Klass"
 
 msgid "Message"
-msgstr ""
+msgstr "Meddelande"
 
 msgid "Log"
-msgstr ""
+msgstr "Logg"
 
 msgid "Communication error"
-msgstr ""
+msgstr "Kommunikationsfel"
 
 msgid "Cannot open"
-msgstr ""
+msgstr "Kan inte öppna"
 
 msgid "Is there another JudoShiai program running?"
-msgstr ""
+msgstr "Finns det en annan JudoShiai program körs?"
 
 msgid "Yes, another JudoShiai program is running"
-msgstr ""
+msgstr "Ja, en annan JudoShiai program som körs"
 
 msgid ""
 "No, this the only JudoShiai program. \n"
 "Purge erroneous lock file."
 msgstr ""
+"Nej, detta är den enda JudoShiai programmet.\n"
+"Rensa felaktig låsfil."
 
 msgid ""
 "Communication is blocked! \n"
@@ -808,22 +810,22 @@ msgid ""
 msgstr ""
 
 msgid "Best of 3"
-msgstr ""
+msgstr "Best av 3"
 
 msgid "One match"
-msgstr ""
+msgstr "En match"
 
 msgid "Pool"
-msgstr ""
+msgstr "Pool"
 
 msgid "Double Pool"
-msgstr ""
+msgstr "Dubbelt pool"
 
 msgid "Quad Pool"
-msgstr ""
+msgstr "Quad pool"
 
 msgid "Double Pool 2"
-msgstr ""
+msgstr "Dubbelt pool 2"
 
 msgid "IJF Qrt Final Rep"
 msgstr ""
@@ -877,7 +879,7 @@ msgid "IJF Quarter Final Repechage"
 msgstr ""
 
 msgid "Default"
-msgstr ""
+msgstr "Standard"
 
 msgid "FIN Double Repechage"
 msgstr ""
@@ -919,765 +921,767 @@ msgid "EST Double Elim One Bronze"
 msgstr ""
 
 msgid "Next match"
-msgstr ""
+msgstr "Nästa matchen"
 
 msgid "Preparing"
-msgstr ""
+msgstr "Förbereda"
 
 msgid "Delay the match"
-msgstr ""
+msgstr "Försena matchen"
 
 msgid "canceled"
-msgstr ""
+msgstr "avbryts"
 
 msgid "changed"
-msgstr ""
+msgstr "ändrats"
 
 msgid "Gold medal match"
-msgstr ""
+msgstr "Guldmedaljmatch"
 
 msgid "Bronze match A"
-msgstr ""
+msgstr "Bronsmatch A"
 
 msgid "Bronze match B"
-msgstr ""
+msgstr "Bronsmatch B"
 
 msgid "Semifinal A"
-msgstr ""
+msgstr "Semifinal A"
 
 msgid "Semifinal B"
-msgstr ""
+msgstr "Semifinal B"
 
 msgid "Silver medal match"
-msgstr ""
+msgstr "Silvermedaljmatch"
 
 msgid "Preparing:"
-msgstr ""
+msgstr "Förbereda:"
 
 msgid "points"
-msgstr ""
+msgstr "påäng"
 
 msgid "Expand All"
-msgstr ""
+msgstr "Utöka alla"
 
 msgid "Collapse All"
-msgstr ""
+msgstr "Komprimera alla"
 
 msgid "Remove comment"
-msgstr ""
+msgstr "Ta bort kommentar"
 
 msgid "Set score"
-msgstr ""
+msgstr "Ställ påäng"
 
 msgid "White"
-msgstr ""
+msgstr "Vit"
 
 msgid "Blue"
-msgstr ""
+msgstr "Blå"
 
 msgid "Points"
-msgstr ""
+msgstr "Påäng"
 
 msgid "Comment"
-msgstr ""
+msgstr "Kommentär"
 
 msgid "Prev. winner:"
-msgstr ""
+msgstr "Föregående vinnare:"
 
 msgid "Delayed"
-msgstr ""
+msgstr "Fördröjd"
 
 msgid "Remove delay"
-msgstr ""
+msgstr "Ta bort försening"
 
 msgid "Freeze match order"
-msgstr ""
+msgstr "Frysa match ordning"
 
 msgid "Unfreeze exported"
-msgstr ""
+msgstr "Avbryt frysning för exporterade"
 
 msgid "Unfreeze imported"
-msgstr ""
+msgstr "Avbryt frysning för importerade"
 
 msgid "Unfreeze this"
-msgstr ""
+msgstr "Avbryt frysning för detta"
 
 msgid "Move Medal Matches"
-msgstr ""
+msgstr "Flytta medalmatcher"
 
 msgid "Move match "
-msgstr ""
+msgstr "Flytta match"
 
 msgid "to tatami and/or"
-msgstr ""
+msgstr "på matchområd och/eller"
 
 msgid " delay"
-msgstr ""
+msgstr " fördröjd"
 
 msgid "Final"
-msgstr ""
+msgstr "Final"
 
 msgid "Bronze1"
-msgstr ""
+msgstr "Brons1"
 
 msgid "Bronze2"
-msgstr ""
+msgstr "Brons2"
 
 msgid "Pool's last"
-msgstr ""
+msgstr "Poolens sista"
 
 msgid "No move"
-msgstr ""
+msgstr "Flytta inte"
 
 msgid "Tournament from the net"
 msgstr ""
 
 msgid "Contests"
-msgstr ""
+msgstr "Tävlingar"
 
 msgid "Select sheet font"
-msgstr ""
+msgstr "Välj blads typsnitt"
 
 msgid "Picture Files"
-msgstr ""
+msgstr "Bildfiler"
 
 msgid "Print Headers"
-msgstr ""
+msgstr "Skriv ut sidhuvud"
 
 msgid "Add competitors"
-msgstr ""
+msgstr "Lägga till tävlingar"
 
 msgid "Clean up duplicates and update reg. categories"
-msgstr ""
+msgstr "Städa upp dubbletter och uppdatera reg. kategorierna"
 
 msgid "Weighed only"
-msgstr ""
+msgstr "Endast vägde"
 
 msgid "With weights"
-msgstr ""
+msgstr "Med vikter"
 
 msgid "competitors added and updated"
-msgstr ""
+msgstr "tävlingar lagt till och uppdateras"
 
 msgid "competitors already existed"
-msgstr ""
+msgstr "tävlingar fanns redand"
 
 msgid "competitors added unchanged"
-msgstr ""
+msgstr "tävlingar lagt till oförändrad"
 
 msgid "Copy Weights"
-msgstr ""
+msgstr "Kopiera vikter"
 
 msgid "weights updated"
-msgstr ""
+msgstr "vikter uppdaterad"
 
 msgid "Do Backup"
-msgstr ""
+msgstr "Gör säkerhetskopia"
 
 msgid "CANNOT OPEN BACKUP FILE"
-msgstr ""
+msgstr "KAN INTE ÖPPNA SÄKERHETSKOPIAN"
 
 msgid "Drawing"
-msgstr ""
+msgstr "Lottning"
 
 msgid "Results"
-msgstr ""
+msgstr "Resultat"
 
 msgid "Judotimer"
-msgstr ""
+msgstr "Judotimer"
 
 msgid "New Tournament"
-msgstr ""
+msgstr "Ny tävling"
 
 msgid "Open Tournament"
-msgstr ""
+msgstr "Öppna tävlingen"
 
 msgid "Open Tournament from Net"
 msgstr ""
 
 msgid "Properties"
-msgstr ""
+msgstr "Egenskaper"
 
 msgid "Tournament Backup"
-msgstr ""
+msgstr "Tävlingens säkerhetskopia"
 
 msgid "Validate Database"
-msgstr ""
+msgstr "Validera databas"
 
 msgid "SQL Dialog"
-msgstr ""
+msgstr "SQL dialog"
 
 msgid "Search Competitor"
-msgstr ""
+msgstr "Sök tävlande"
 
 msgid "Select From Another Shiai"
-msgstr ""
+msgstr "Välj från en annan Shiai"
 
 msgid "Add From a Text File"
-msgstr ""
+msgstr "Lägg til från en textfil"
 
 msgid "Add All From Another Shiai"
-msgstr ""
+msgstr "Lägg till alla från en annan Shiai"
 
 msgid "Update Weights From Another Shiai"
-msgstr ""
+msgstr "Uppdatera vikter från en annan Shiai"
 
 msgid "Remove Unweighted"
-msgstr ""
+msgstr "Ta bort uviktat"
 
 msgid "Restore Removed"
-msgstr ""
+msgstr "Återställa borttagen"
 
 msgid "Bar Code Search"
-msgstr ""
+msgstr "Streckkodsök"
 
 msgid "Print Weight Notes"
-msgstr ""
+msgstr "Skriv viktlappar"
 
 msgid "New Category"
-msgstr ""
+msgstr "Ny kategorin"
 
 msgid "Remove Empty"
-msgstr ""
+msgstr "Ta bor den tömma"
 
 msgid "Create Categories"
-msgstr ""
+msgstr "Skapa kategorier"
 
 msgid "Print All"
-msgstr ""
+msgstr "Skriv ut alla"
 
 msgid "Print All (PDF)"
-msgstr ""
+msgstr "Skriv ut alla (PDF)"
 
 msgid "Print Matches (CSV)"
-msgstr ""
+msgstr "Skriv ut matcherna"
 
 msgid "Place To"
-msgstr ""
+msgstr "Placera på"
 
 msgid "Tatamis"
-msgstr ""
+msgstr "Matchområden"
 
 msgid "Draw All Categories"
-msgstr ""
+msgstr "Lotta ut alla kategorier"
 
 msgid "Print All (Web And PDF)"
-msgstr ""
+msgstr "Skriv ut alla (Web och PDF)"
 
 msgid "Print Schedule to Printer"
-msgstr ""
+msgstr "Skriv ut tidtabell till skrivare"
 
 msgid "Print Schedule to PDF"
-msgstr ""
+msgstr "Skriv ut tidtabell som PDF"
 
 msgid "Control Tatami"
-msgstr ""
+msgstr "Kontroll matchområdet"
 
 msgid "Communication Node"
-msgstr ""
+msgstr "Kommunikation node"
 
 msgid "Own IP Addresses"
-msgstr ""
+msgstr "Egna IP-adresser"
 
 msgid "Show Attached Connections"
-msgstr ""
+msgstr "Visa anslutningar"
 
 msgid "Automatic Sheet Update"
-msgstr ""
+msgstr "Automatisk blad uppdatering"
 
 msgid "Club Name Only"
-msgstr ""
+msgstr "Endast klubb"
 
 msgid "Country Name Only"
-msgstr ""
+msgstr "Endast land"
 
 msgid "Both Club and Country"
-msgstr ""
+msgstr "Både klubben och land"
 
 msgid "Abbreviations in Sheets"
-msgstr ""
+msgstr "Förkortningar i blad"
 
 msgid "Weights Visible in Pool Sheets"
-msgstr ""
+msgstr "Vikter synliga i pool blad"
 
 msgid "Sheet Font"
-msgstr ""
+msgstr "Blads typsnitt"
 
 msgid "SVG Templates"
-msgstr ""
+msgstr "SVG mallar"
 
 msgid "Language Selection"
-msgstr ""
+msgstr "Språkval"
 
 msgid "Print Accreditation Cards"
-msgstr ""
+msgstr "Skriv ut ackrediteringskort"
 
 msgid "Print Schedule"
-msgstr ""
+msgstr "Skriv ut tidtabell"
 
 msgid "Communication"
-msgstr ""
+msgstr "Kommunikation"
 
 msgid "Club Text Selection"
-msgstr ""
+msgstr "Klubbtext valning"
 
 msgid "Sheet Layout"
-msgstr ""
+msgstr "Blad layout"
 
 msgid "Weights Visible"
-msgstr ""
+msgstr "Vikter synliga"
 
 msgid "Grade Visible"
-msgstr ""
+msgstr "Grad synlig"
 
 msgid "Name Format"
-msgstr ""
+msgstr "Namnform"
 
 msgid "Surname Name, Country/Club"
-msgstr ""
+msgstr "Efternamn Namn, Land/Klubb"
 
 msgid "Country/Club,  Surname Name"
-msgstr ""
+msgstr "Land/Klubb, Efternamn Namn"
 
 msgid "Pool Style 2"
-msgstr ""
+msgstr "Pool design 2"
 
 msgid "Use Belt Colors"
 msgstr ""
 
 msgid "Mirror Tatami Order"
-msgstr ""
+msgstr "Spegla matchområdordning"
 
 msgid "Automatic Match Delay"
-msgstr ""
+msgstr "Automatisk matchförsening"
 
 msgid "Print Logo"
-msgstr ""
+msgstr "Skriv ut logo"
 
 msgid "Scale Serial Interface..."
-msgstr ""
+msgstr "Vikt vågs anslutning"
 
 msgid "Medal Matches..."
-msgstr ""
+msgstr "Medaljmatcher"
 
 msgid "Matches matched. Clear the results first."
-msgstr ""
+msgstr "Matcher matchat"
 
 msgid "already exists"
-msgstr ""
+msgstr "finns redan"
 
 msgid "Move Competitors to Category..."
-msgstr ""
+msgstr "Flytta tävlande till kategori..."
 
 msgid "Move Competitors Here"
-msgstr ""
+msgstr "Flytta tävlande här"
 
 msgid "Compose Unofficial Category"
-msgstr ""
+msgstr "Bilda inofficiel kategorier"
 
 msgid "Draw Selected"
-msgstr ""
+msgstr "Lotta ut de valda"
 
 msgid "Draw and Print Selected"
-msgstr ""
+msgstr "Lotta och skriv ut de valda"
 
 msgid "Draw Manually"
-msgstr ""
+msgstr "Lotta ut manuellt"
 
 msgid "Remove Drawing"
-msgstr ""
+msgstr "Ta bort lottning"
 
 msgid "Edit Drawing"
-msgstr ""
+msgstr "Redigera lottning"
 
 msgid "Copy Competitors"
-msgstr ""
+msgstr "Kopiera tävlande"
 
 msgid "Remove Competitors"
-msgstr ""
+msgstr "Ta bort tävlande"
 
 msgid "Show Sheet"
-msgstr ""
+msgstr "Visa blad"
 
 msgid "Print Selected Sheets (Printer)"
-msgstr ""
+msgstr "Skriv ut valda bladen (skrivare)"
 
 msgid "Print Selected Sheets (PDF)"
-msgstr ""
+msgstr "Skriv ut valda bladen (PDF)"
 
 msgid "Print Selected Accreditation Cards"
-msgstr ""
+msgstr "Skriv ut valda ackrediteringskort"
 
 msgid "Save file"
-msgstr ""
+msgstr "Spara fil"
 
 msgid "Landscape"
-msgstr ""
+msgstr "Liggande"
 
 msgid "Line"
-msgstr ""
+msgstr "Linje"
 
 msgid "Syntax error"
-msgstr ""
+msgstr "Syntaxfel"
 
 msgid "Print To:"
-msgstr ""
+msgstr "Skriv ut till:"
 
 msgid "Printer"
-msgstr ""
+msgstr "Skrivare"
 
 msgid "PDF"
-msgstr ""
+msgstr "PDF"
 
 msgid "Start time:"
-msgstr ""
+msgstr "Starttid:"
 
 msgid "Resolution (min):"
-msgstr ""
+msgstr "Upplösning (min):"
 
 msgid "Compressed timeline"
-msgstr ""
+msgstr "Komprimerad tidslinje"
 
 msgid "Match File"
-msgstr ""
+msgstr "Matchfil"
 
 msgid "Print Not Started Categories"
-msgstr ""
+msgstr "Skriv ut inte börjat kategorier"
 
 msgid "Print Started Categories"
-msgstr ""
+msgstr "Skriv ut börjat kategorier"
 
 msgid "Print Finished Categories"
-msgstr ""
+msgstr "Skriv ut färdiga kategorier"
 
 msgid "Print Unmatched"
-msgstr ""
+msgstr "Skriv ut inte matchat"
 
 msgid "Print Result"
-msgstr ""
+msgstr "Skriv ut resultat"
 
 msgid "Print IWYKS"
-msgstr ""
+msgstr "Skriv ut IWYS"
 
 msgid "Print Comment"
-msgstr ""
+msgstr "Skriv ut kommentar"
 
 msgid "Layout:"
-msgstr ""
+msgstr "Layout:"
 
 msgid "Template"
-msgstr ""
+msgstr "Mall"
 
 msgid "One Card Per Page"
-msgstr ""
+msgstr "Ett kort per sida"
 
 msgid "Results in Finnish"
-msgstr ""
+msgstr "Resultaten på finska"
 
 msgid "Results in Swedish"
-msgstr ""
+msgstr "Resultaten på svenska"
 
 msgid "Results in English"
-msgstr ""
+msgstr "Resultaten på engelska"
 
 msgid "Results in Spanish"
-msgstr ""
+msgstr "Resultaten på spanska"
 
 msgid "Results in Estonian"
-msgstr ""
+msgstr "Resultaten på estniska"
 
 msgid "Results in Ukrainian"
-msgstr ""
+msgstr "Resultaten på ukrainska"
 
 msgid "Results in Norwegian"
-msgstr ""
+msgstr "Resultaten på norska"
 
 msgid "Results in Icelandic"
-msgstr ""
+msgstr "Resultaten på isländska"
 
 msgid "Results in Polish"
-msgstr ""
+msgstr "Resultaten på polska"
 
 msgid "Results in Slovak"
-msgstr ""
+msgstr "Resultaten på slovakiska"
 
 msgid "Results in Dutch"
-msgstr ""
+msgstr "Resultaten på holländska"
 
 msgid "Tournament:"
-msgstr ""
+msgstr "Tävling:"
 
 msgid "Date:"
-msgstr ""
+msgstr "Datum:"
 
 msgid "Place:"
-msgstr ""
+msgstr "Plats:"
 
 msgid "Number of tatamis:"
-msgstr ""
+msgstr "Antal matchområden:"
 
 msgid "White first:"
-msgstr ""
+msgstr "Vit först:"
 
 msgid "Best two out of three matches:"
-msgstr ""
+msgstr "Bästa två av tre matcher:"
 
 msgid ""
 "Medal will be awarded \n"
 "only if a contest was won:"
 msgstr ""
+"Medalj delas ut\n"
+"bara om en tävling vanns:"
 
 msgid "Seeded to fixed places:"
-msgstr ""
+msgstr "Seedning till fasta platser:"
 
 msgid "Win in Golden Score gives 1 point"
-msgstr ""
+msgstr "Vinn i Golden Score ger 1 poäng"
 
 msgid "Double Pool 2 with carried forward points:"
-msgstr ""
+msgstr "Dubbel pool 2 med överförts påäng:"
 
 msgid "Two pool bronzes:"
-msgstr ""
+msgstr "Två pool brons:"
 
 msgid "Resolve 3-way ties by weights:"
-msgstr ""
+msgstr "Lösa lika påängtal med vikter:"
 
 msgid "Tournament properties"
-msgstr ""
+msgstr "Tävling egenskaper"
 
 msgid "General"
-msgstr ""
+msgstr "Allmänt"
 
 msgid "Pool settings"
-msgstr ""
+msgstr "Pool inställningar"
 
 msgid "Competitors:"
-msgstr ""
+msgstr "Tävlande:"
 
 msgid "Weighted:"
-msgstr ""
+msgstr "Invägde:"
 
 msgid "Statistics"
-msgstr ""
+msgstr "Statistik"
 
 msgid "Reset to"
-msgstr ""
+msgstr "Återställ till"
 
 msgid "Initialize"
-msgstr ""
+msgstr "Initiera"
 
 msgid "Players"
-msgstr ""
+msgstr "Spelare"
 
 msgid "Max age"
-msgstr ""
+msgstr "Max ålder"
 
 msgid "Min"
-msgstr ""
+msgstr "Min"
 
 msgid "Max"
-msgstr ""
+msgstr "Max"
 
 msgid "System"
-msgstr ""
+msgstr "System"
 
 msgid "Default systems"
-msgstr ""
+msgstr "Standard systemen"
 
 msgid "Grade names"
-msgstr ""
+msgstr "Grad namnen"
 
 msgid "Remote address"
-msgstr ""
+msgstr "Fjärradress"
 
 msgid "Remote Control"
-msgstr ""
+msgstr "Fjärrkontrol"
 
 msgid "Search"
-msgstr ""
+msgstr "Sök"
 
 msgid "Reset to Defaults"
-msgstr ""
+msgstr "Återställ standard"
 
 msgid "----- Men -----"
-msgstr ""
+msgstr "Män"
 
 msgid "----- Women -----"
-msgstr ""
+msgstr "Kvinnor"
 
 msgid "Highest age:"
-msgstr ""
+msgstr "Högsta ålder:"
 
 msgid "Age text:"
-msgstr ""
+msgstr "Ålder text:"
 
 msgid "Match time:"
-msgstr ""
+msgstr "Matchtid:"
 
 msgid "Rest time:"
-msgstr ""
+msgstr "Vilotid:"
 
 msgid "Golden Score:"
 msgstr ""
 
 msgid "Pin times (IWYK):"
-msgstr ""
+msgstr "Fasthållnings-tider (IWYK):"
 
 msgid "Rep. time:"
-msgstr ""
+msgstr "Rep. tid:"
 
 msgid "Highest weight (g):"
-msgstr ""
+msgstr "Högsta vikt (g):"
 
 msgid "Weight text:"
-msgstr ""
+msgstr "Vikttext:"
 
 msgid "Sheets"
-msgstr ""
+msgstr "Bladen"
 
 msgid "Basic Scripts"
-msgstr ""
+msgstr "Basic-skript"
 
 msgid "Select Script"
-msgstr ""
+msgstr "Välja skriptet"
 
 msgid "No script available"
-msgstr ""
+msgstr "Ingen skript tillgängliga"
 
 msgid "SQL"
-msgstr ""
+msgstr "SQL"
 
 msgid "Run Script"
-msgstr ""
+msgstr "Köra skriptet"
 
 msgid "Repeat Script"
-msgstr ""
+msgstr "Repetera skriptet"
 
 msgid "Use SVG Templates"
-msgstr ""
+msgstr "Använd SVG-mallar"
 
 msgid "Which one is correct?"
-msgstr ""
+msgstr "Vilken är korrekt?"
 
 msgid "Own database"
-msgstr ""
+msgstr "Egen databas"
 
 msgid "Foreign database"
-msgstr ""
+msgstr "Annan databas"
 
 msgid "Do not change"
-msgstr ""
+msgstr "Ändra inte"
 
 msgid "Stop synchronization"
-msgstr ""
+msgstr "Stopp synkronisering"
 
 msgid "NOTE"
-msgstr ""
+msgstr "OBS"
 
 msgid "is not a valid ASCII string!"
-msgstr ""
+msgstr "är inte en giltig ASCII-sträng!"
 
 msgid "Automatic Web Page Update"
-msgstr ""
+msgstr "Automatisk websida uppdatering"
 
 msgid "Create Statistics"
-msgstr ""
+msgstr "Skapa statistik"
 
 msgid "Print SVG"
-msgstr ""
+msgstr "Skriv ut SVG"
 
 msgid "Category starts"
-msgstr ""
+msgstr "Kategori börjar"
 
 msgid "About JudoInfo"
-msgstr ""
+msgstr "Om JudoInfo"
 
 msgid "Normal display"
-msgstr ""
+msgstr "Normal display"
 
 msgid "Small display"
-msgstr ""
+msgstr "Liten display"
 
 msgid "Horizontal display"
-msgstr ""
+msgstr "Horisontell visning"
 
 msgid "Mirror tatami order"
-msgstr ""
+msgstr "Spegla matchområdordning"
 
 msgid "Write to file"
-msgstr ""
+msgstr "Skriv till fil"
 
 msgid "Show Tatami"
-msgstr ""
+msgstr "Visa matchområdet"
 
 msgid "Serial Communication"
-msgstr ""
+msgstr "Seriell kommunikation"
 
 msgid "In Use"
-msgstr ""
+msgstr "Används"
 
 msgid "Device"
-msgstr ""
+msgstr "Enhet"
 
 msgid "Baudrate"
-msgstr ""
+msgstr "Baudhastighet"
 
 msgid "Type"
-msgstr ""
+msgstr "Typ"
 
 msgid "WARNING: NO CONTROL"
-msgstr ""
+msgstr "VARNING: INGEN KONTROLL"
 
 msgid "ID:"
-msgstr ""
+msgstr "ID:"
 
 msgid "Name:"
-msgstr ""
+msgstr "Namn:"
 
 msgid "Confirm:"
-msgstr ""
+msgstr "Bekräftelse:"
 
 msgid "About JudoWeight"
-msgstr ""
+msgstr "Om JudoWeight"
 
 msgid "No match soon! Please wait for a while."
-msgstr ""
+msgstr "Ingen match snart! Vänta en stund."
 
 msgid "About JudoJudogi"
-msgstr ""
+msgstr "On JudoJudogi"
 
 msgid "International System"
-msgstr ""
+msgstr "International systemet"
 
 msgid "Finnish System"
-msgstr ""
+msgstr "Finska systemet"
 
 msgid "Swedish System"
-msgstr ""
+msgstr "Svenska systemet"
 
 msgid "Estonian System"
-msgstr ""
+msgstr "Estniska systemet"
 
 msgid "Spanish System"
-msgstr ""
+msgstr "Spanska systemet"
 
 msgid "Norwegian System"
 msgstr ""
 
 msgid "British System"
-msgstr ""
+msgstr "Brittisk systemet"
 
 msgid "Australian System"
-msgstr ""
+msgstr "Australisk systemet"
 
 msgid "Danish System"
-msgstr ""
+msgstr "Danska systemet"
 
 msgid "Polish System"
-msgstr ""
+msgstr "Polska systemet"
 
 msgid "Slovakian System"
-msgstr ""
+msgstr "Slovakiska systemet"
 
 msgid "Tatami"
-msgstr ""
+msgstr "Matchområde"

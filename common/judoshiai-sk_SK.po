@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-21 16:00+0200\n"
+"POT-Creation-Date: 2013-03-01 13:12+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -41,6 +41,9 @@ msgstr "Ukončiť"
 msgid "Red background"
 msgstr "Červené pozadie"
 
+msgid "Tatami not chosen"
+msgstr "Tatami nie je vybraná"
+
 msgid "Communication node"
 msgstr "Komunikačný uzol"
 
@@ -64,6 +67,28 @@ msgstr "(Pripojenie OK)"
 
 msgid "(Connection broken)"
 msgstr "(Pripojenie prerušené)"
+
+msgid ""
+"Connection established to \n"
+"%ld.%ld.%ld.%ld"
+msgstr ""
+"Pripojenie nadviazané na \n"
+"%ld.%ld.%ld.%ld"
+
+msgid "Connection to the node broken"
+msgstr "Pripojenie z uzlom prerušené"
+
+msgid "Change language to Finnish"
+msgstr "Zmeniť jazyk na fínsky"
+
+msgid "Change language to Swedish"
+msgstr "Zmeniť jazyk na švédsky"
+
+msgid "Change language to English"
+msgstr "Zmeniť jazyk na anglický"
+
+msgid "Change language to Norwegian"
+msgstr "Zmeniť jazyk na nórsky"
 
 msgid "Contest duration automatically from JudoShiai program"
 msgstr "Čas trvania zápasu automaticky z programu JudoShiai"
@@ -107,6 +132,9 @@ msgstr "Trvanie zápasu: 4 min"
 msgid "Contest duration: 5 min"
 msgstr "Trvanie zápasu: 5 min"
 
+msgid "Majority of three: blue wins"
+msgstr "Väčšina z troch: Modrý vyhráva "
+
 msgid "Hantei: blue wins"
 msgstr "Hantei: Modrý vyhráva"
 
@@ -145,6 +173,12 @@ msgstr "Zvýšenie času"
 
 msgid "Decrement time"
 msgstr "Zníženie času"
+
+msgid "Increment osaekomi"
+msgstr "Osaekomi zvýšenie"
+
+msgid "Decrement osaekomi"
+msgstr "Osaekomi zníženie"
 
 msgid "View clocks only"
 msgstr "Zobraziť iba hodiny"
@@ -260,6 +294,9 @@ msgstr "Pridať z Textového súboru"
 msgid "Add All From Another Shiai"
 msgstr "Pridať všetkých z inej aplikácie Shiai"
 
+msgid "Add All with Weights"
+msgstr "Pridať všetkých s Váhami"
+
 msgid "Remove Unweighted"
 msgstr "Odstráň nezvážených"
 
@@ -283,6 +320,9 @@ msgstr "Vytvoriť kategórie"
 
 msgid "Print All"
 msgstr "Tlačiť všetko"
+
+msgid "Best of Three"
+msgstr "Najlepší z troch"
 
 msgid "Place To"
 msgstr "Umiestniť pre"
@@ -324,25 +364,25 @@ msgid "Automatic Web Page Update"
 msgstr "Automatická aktualizácia z Web stránky"
 
 msgid "Results in Finnish"
-msgstr "Výsledky v jazyku fínskom"
+msgstr "Výsledky - fínsky"
 
 msgid "Results in Swedish"
-msgstr "Výsledky v jazyku švédskom"
+msgstr "Výsledky - švédsky"
 
 msgid "Results in English"
-msgstr "Výsledky v jazyku anglickom"
+msgstr "Výsledky - anglický"
 
 msgid "Results in Spanish"
-msgstr "Výsledky v jazyku španielskom"
+msgstr "Výsledky - španielský"
 
 msgid "Results in Estonian"
-msgstr "Výsledky v jazyku estónskom"
+msgstr "Výsledky - estónský"
 
 msgid "Results in Ukrainian"
-msgstr "Výsledky v jazyku ukrajinskom"
+msgstr "Výsledky - ukrajinský"
 
 msgid "Results in Norwegian"
-msgstr "Výsledky v jazyku nórskom"
+msgstr "Výsledky - nórsky"
 
 msgid "Weights Visible in Pool Sheets"
 msgstr "Váhy zobrazené v Listoch skupín"
@@ -586,7 +626,16 @@ msgstr ""
 msgid "Pool"
 msgstr "Skupina"
 
+msgid "Double pool"
+msgstr "Dvojitá skupina"
+
+msgid "Double repechage"
+msgstr "Dvojitá repasáž"
+
 msgid "Next match"
+msgstr "Ďalší zápas"
+
+msgid "Next contest"
 msgstr "Ďalší zápas"
 
 msgid "Preparing"
@@ -820,6 +869,18 @@ msgstr "Doba prestávky"
 msgid "Seeding:"
 msgstr "Rozostavenie:"
 
+msgid "1"
+msgstr "1"
+
+msgid "2"
+msgstr "2"
+
+msgid "3"
+msgstr "3"
+
+msgid "4"
+msgstr "4"
+
 msgid "Freeze match order"
 msgstr "Zablokuj poradie zápasov"
 
@@ -958,6 +1019,9 @@ msgstr "FIN Dvojitá Repasáž"
 msgid "SWE Double Repechage"
 msgstr "SWE Dvojitá Repasáž"
 
+msgid "SWE Double Elimination"
+msgstr "SWE Dvojité Vylúčenie"
+
 msgid "EST Double Elimination"
 msgstr "EST Dvojité Vylúčenie"
 
@@ -1021,6 +1085,9 @@ msgstr "Nastaviť čas"
 msgid "Sound"
 msgstr "Zvuk"
 
+msgid "Change language to Spanish"
+msgstr "Zmeniť jazyk na španielsky"
+
 msgid "Choose a file"
 msgstr "Vybrať súbor"
 
@@ -1039,14 +1106,26 @@ msgstr "Jeden zápas"
 msgid "Quad Pool"
 msgstr "Štvoritá skupina"
 
+msgid "IJF Dbl Rep"
+msgstr "IJF Dvojnásobná Repasáž"
+
 msgid "FIN Dbl Repchg"
 msgstr "FIN Dvojnásobná Repasáž"
+
+msgid "SWE Dubb ?terkv"
+msgstr "SWE Dvojnásobná Repasáž"
+
+msgid "SWE Dir ?terkv"
+msgstr "SWE priama Repasáž"
 
 msgid "EST D klass"
 msgstr "EST juniori D"
 
 msgid "No Repechg"
 msgstr "Bez Repasáže"
+
+msgid "SWE Enkelt ?terkv"
+msgstr "SWE Jednoduchá Repasáž"
 
 msgid "ESP Dbl Lost"
 msgstr "ESP Dvojnásobná Prehra"
@@ -1065,6 +1144,12 @@ msgstr "ESP Dvojnásobná Repasáž"
 
 msgid "ESP Simple Repechage"
 msgstr "ESP Jednoduchá Repasáž"
+
+msgid "Quadruple pool"
+msgstr "Štvornásobná skupiny"
+
+msgid "IJF Double Repechage"
+msgstr "IJF Dvojnásobná Repasáž"
 
 msgid "Picture Files"
 msgstr "Obrazové Súbory"
@@ -1096,6 +1181,12 @@ msgstr "Zobraziť Váhy"
 msgid "Grade Visible"
 msgstr "Zobraziť Stupeň"
 
+msgid "Print Competitors With Template"
+msgstr "Tlačiť Pretekárov so šablonou"
+
+msgid "Select template"
+msgstr "Vybrať Šablonu"
+
 msgid "Line"
 msgstr "Riadok"
 
@@ -1110,6 +1201,12 @@ msgstr "Vymeniť strany"
 
 msgid "Display customized layout"
 msgstr "Vlastný formát Obrazovky"
+
+msgid "Change language to Estonian"
+msgstr "Zmeniť jazyk na estónsky"
+
+msgid "Change language to Ukrainan"
+msgstr "Zmeniť jazyk na ukrajinsky"
 
 msgid "No competitor found!"
 msgstr "Pretekár nenájdený!"
@@ -1186,6 +1283,9 @@ msgstr "Opakovať skript"
 msgid "Double Pool 2"
 msgstr "Dvojnásobná skupina 2"
 
+msgid "Double pool 2"
+msgstr "Dvojnásobná skupina 2"
+
 msgid "Write to file"
 msgstr "zapísať do súboru"
 
@@ -1236,6 +1336,9 @@ msgstr "Meno, Priezvisko, Štát/Klub"
 
 msgid "Surname, Name, Country/Club"
 msgstr "Priezvisko, Meno, Štát/Klub"
+
+msgid "Country/Club, Surname, Name"
+msgstr "Štát/Klub, Priezvisko, Meno"
 
 msgid "Medal Matches..."
 msgstr "Medailové Zápasy..."
@@ -1299,6 +1402,9 @@ msgstr "Priezvisko, Meno"
 
 msgid "Surname"
 msgstr "Priezvisko"
+
+msgid "Change language to Icelandic"
+msgstr "Zmeniť jazyk na islandský"
 
 msgid "WINNER"
 msgstr "VÍŤAZ"
@@ -1375,6 +1481,9 @@ msgstr "Podozrivé Váhy:\n"
 msgid "warnings"
 msgstr "upozornenia"
 
+msgid "Weighted only"
+msgstr "Len zvážený"
+
 msgid "With weights"
 msgstr "Z váhami"
 
@@ -1382,13 +1491,13 @@ msgid "Validate Database"
 msgstr "Potvrdiť Databázu"
 
 msgid "Results in Icelandic"
-msgstr "Výsledky v islandčine"
+msgstr "Výsledky - islandský"
 
 msgid "Surname Name, Country/Club"
 msgstr "Priezvisko, Meno, Štát/Klub"
 
 msgid "Country/Club,  Surname Name"
-msgstr "Kraj/Klub, Nazwisko Imię"
+msgstr "Štát/Klub, Priezvisko, Meno"
 
 msgid "Scale Serial Interface..."
 msgstr "Sériový port Váhy..."
@@ -1431,6 +1540,9 @@ msgstr "Kraj"
 
 msgid "Resolution (min):"
 msgstr "Rozlíšenie (min):"
+
+msgid "Running time"
+msgstr "Bežiaci čas"
 
 msgid "Compressed timeline"
 msgstr "Stlačené os času"
@@ -1517,7 +1629,7 @@ msgid "EST D klass 1 brz"
 msgstr "EST juniori D 1 bronz"
 
 msgid "IJF Quarter Final Repechage"
-msgstr " IJF Repasáž Do Štvrťfinále "
+msgstr "IJF Repasáž Do Štvrťfinále"
 
 msgid "SWE Direct Repechage"
 msgstr "SWE priama Repasáž"
@@ -1551,6 +1663,9 @@ msgstr "Upraviť losovanie"
 
 msgid "Best two out of three matches:"
 msgstr "Najlepší dvaja z troch zápasov:"
+
+msgid "Medal will be awarded only if a contest was won:"
+msgstr "Medailu udeliť, len keď je súťaž vyhraná:"
 
 msgid "Seeded to fixed places:"
 msgstr "Nasadenie na pevné miesto:"
@@ -1603,6 +1718,9 @@ msgstr "Názvy stupňov"
 msgid "Remote address"
 msgstr "Vzdialená adresa"
 
+msgid "Remote control"
+msgstr "Diaľkové ovládanie"
+
 msgid "Use SVG Templates"
 msgstr "Použiť šablóny SVG"
 
@@ -1610,63 +1728,65 @@ msgid "Print SVG"
 msgstr "Vytlač SVG"
 
 msgid "Country/Club  Surname, Name"
-msgstr ""
+msgstr "Štát/Klub, Priezvisko, Meno"
 
 msgid "VLC control"
-msgstr ""
+msgstr "VLC control"
 
 msgid "X:"
-msgstr ""
+msgstr "X:"
 
 msgid "Y:"
-msgstr ""
+msgstr "Y:"
 
 msgid "Scale:"
-msgstr ""
+msgstr "Pomer"
 
 msgid "Name"
-msgstr ""
+msgstr "Meno"
 
 msgid "Reg.Cat"
-msgstr ""
+msgstr "Reg.Kat"
 
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 msgid "Index"
-msgstr ""
+msgstr "Index"
 
 msgid "SWE Dubb återkv"
-msgstr ""
+msgstr "SWE Dvojnásobná Repasáž"
 
 msgid "SWE Dir återkv"
-msgstr ""
+msgstr "SWE priama Repasáž"
 
 msgid "SWE Enkelt återkv"
-msgstr ""
+msgstr "SWE Jednoduchá Repasáž"
 
 msgid ""
 "Medal will be awarded \n"
 "only if a contest was won:"
 msgstr ""
+"Bude ocenený, \n"
+"ak vyhrá aspoň jeden zápas:"
 
 msgid "Win in Golden Score gives 1 point"
-msgstr ""
+msgstr "Víťaz v zlatom skóre získa 1 bod"
 
 msgid "Remote Control"
-msgstr ""
+msgstr "Diaľkové ovládanie"
 
 msgid "WARNING: NO CONTROL"
-msgstr ""
+msgstr "POZOR: BEZ KONTROLY"
 
 msgid "Results in Polish"
-msgstr ""
+msgstr "Výsledky - poľský"
 
 msgid "Results in Slovak"
-msgstr ""
+msgstr "Výsledky - slovenský"
 
 msgid "Results in Dutch"
-msgstr ""
+msgstr "Výsledky - holandský"
 
 msgid "British System"
 msgstr ""
