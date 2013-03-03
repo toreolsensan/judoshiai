@@ -2356,6 +2356,7 @@ static gdouble zoom_x_offset = 0.0, zoom_y_offset = 0.0, orig_x_offset, orig_y_o
 static gdouble button_start_x, button_start_y;
 static gboolean button_drag = FALSE;
 
+#if 0 // not compatible with ARM processor
 __inline__ guint64 rdtsc(void) {
     guint32 lo, hi;
     __asm__ __volatile__ (      // serialize
@@ -2365,7 +2366,7 @@ __inline__ guint64 rdtsc(void) {
     __asm__ __volatile__ ("rdtsc" : "=a" (lo), "=d" (hi));
     return (guint64)hi << 32 | lo;
 }
-
+#endif
 
 static gboolean expose_cat(GtkWidget *widget, GdkEventExpose *event, gpointer userdata)
 {
