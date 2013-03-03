@@ -529,7 +529,7 @@ void open_comm_socket(void)
     }
 #endif
     my_ip_address = get_my_address();
-    g_print("Koneen osoite = %ld.%ld.%ld.%ld\n", 
+    g_print("My address = %ld.%ld.%ld.%ld\n", 
             (my_ip_address)&0xff,
             (my_ip_address>>8)&0xff,
             (my_ip_address>>16)&0xff,
@@ -764,6 +764,7 @@ gpointer client_thread(gpointer args)
             }
         } // while
 
+        ssdp_ip_addr = 0;
         connection_ok = FALSE;
 
         closesocket(comm_fd);
@@ -874,7 +875,7 @@ static void analyze_ssdp(gchar *rec, struct sockaddr_in *client)
 #if (APP_NUM == APPLICATION_TYPE_INFO) || (APP_NUM == APPLICATION_TYPE_WEIGHT) || (APP_NUM == APPLICATION_TYPE_JUDOGI)
     if (strncmp(p+9, "JudoShiai", 9) == 0) {
         ssdp_ip_addr = client->sin_addr.s_addr;
-        g_print("SSDP %s: judoshiai addr=%lx\n", APPLICATION, ssdp_ip_addr);
+        //g_print("SSDP %s: judoshiai addr=%lx\n", APPLICATION, ssdp_ip_addr);
     }
 #elif (APP_NUM == APPLICATION_TYPE_TIMER)
 #define MODE_SLAVE  2
@@ -887,13 +888,13 @@ static void analyze_ssdp(gchar *rec, struct sockaddr_in *client)
                 gint t = atoi(p1+7);
                 if (t == tatami) {
                     ssdp_ip_addr = client->sin_addr.s_addr;
-                    g_print("SSDP %s: master timer addr=%lx\n", APPLICATION, ssdp_ip_addr);
+                    //g_print("SSDP %s: master timer addr=%lx\n", APPLICATION, ssdp_ip_addr);
                 }
             }
         }
     } else if (strncmp(p+9, "JudoShiai", 9) == 0) {
         ssdp_ip_addr = client->sin_addr.s_addr;
-        g_print("SSDP %s: judoshiai addr=%lx\n", APPLICATION, ssdp_ip_addr);
+        //g_print("SSDP %s: judoshiai addr=%lx\n", APPLICATION, ssdp_ip_addr);
     }
 #endif
 }

@@ -8,11 +8,11 @@ OBJS += $(OBJDIR)/main.o $(OBJDIR)/menus.o $(OBJDIR)/stopwatch.o $(OBJDIR)/comm.
 
 CFLAGS += -DAPPLICATION="\"judotimer\""
 CFLAGS += -DAPP_NUM=2
-CFLAGS += -I$(SOUNDDIR)/inc
-LIBS += -L$(SOUNDDIR)/lib -lfmodex
 
 ### Windows executable ###
 ifeq ($(TGT),WIN32)
+CFLAGS += -I$(SOUNDDIR)/include
+LIBS += -L$(SOUNDDIR)/bin -lmpg123-0 -lao-4
 RPATH =
 OBJS += judotimer-icon.res
 
@@ -24,6 +24,7 @@ judotimer-icon.rc:
 
 ### Linux executable ###
 else
+LIBS += -lmpg123 -lao
 RPATH = -Wl,-rpath,/usr/lib/judoshiai/lib
 endif
 

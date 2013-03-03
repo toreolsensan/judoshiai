@@ -196,7 +196,7 @@ extern void send_label_msg(struct message *msg);
 extern gpointer master_thread(gpointer args);
 extern gpointer video_thread(gpointer args);
 extern gpointer tvlogo_thread(gpointer args);
-extern gpointer mjpeg_thread(gpointer args);
+extern gpointer sound_thread(gpointer args);
 extern void update_label(struct msg_update_label *msg);
 extern gboolean send_label(gint bigdsp);
 extern void open_sound(void);

@@ -44,7 +44,7 @@ all:
 ### Windows executable ###
 ifeq ($(TGT),WIN32)
 	cp $(RUNDIR)/bin/*.dll $(RELDIR)/bin/
-	cp $(SOUNDDIR)/fmodex.dll $(RELDIR)/bin/
+	cp $(SOUNDDIR)/bin/*.dll $(RELDIR)/bin/
 	cp $(RSVGDIR)/bin/*.dll $(RELDIR)/bin/
 	cp $(CURLDIR)/bin/*.dll $(RELDIR)/bin/
 	cp -r $(RUNDIR)/lib/gtk-2.0 $(RELDIR)/lib/
@@ -63,7 +63,7 @@ ifeq ($(TGT),WIN32)
 	cp -r $(RUNDIR)/etc $(RELDIR)/
 ### Linux executable ###
 else
-	cp $(SOUNDDIR)/lib/libfmodex-*.so $(RELDIR)/lib/libfmodex.so
+
 endif
 	cp doc/*.pdf $(RELDIR)/doc/
 	cp common/judoshiai-fi_FI.mo $(RELDIR)/share/locale/fi/LC_MESSAGES/judoshiai.mo

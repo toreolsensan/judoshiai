@@ -15,50 +15,59 @@
 #include <gtk/gtk.h>
 
 #include "judotimer.h"
-#include "fmod.h"
-#include "fmod_errors.h"
 
-static FMOD_SYSTEM      *fmodsystem;
-static FMOD_SOUND       *fmodsound = NULL;
-static FMOD_CHANNEL     *fmodchannel = NULL;
-static FMOD_RESULT       result;
+#include <ao/ao.h>
+#include <mpg123.h>
 
+#define BITS 8
+
+G_LOCK_DEFINE(sound);
+
+static mpg123_handle *mh = NULL;
+static ao_device *dev = NULL;
+static int driver;
+static char *buffer;
+static size_t buffer_size;
+static gboolean play = FALSE;
 static gchar *sound_file = NULL;
 
-static void ERRCHECK(FMOD_RESULT result)
+static void init_dev(void)
 {
-    if (result != FMOD_OK)
-        g_print("FMOD error! (%d) %s\n", result, FMOD_ErrorString(result));
+    int channels, encoding;
+    long rate;
+    ao_sample_format format;
+
+    if (dev) ao_close(dev);
+
+    mpg123_open(mh, sound_file);
+    mpg123_getformat(mh, &rate, &channels, &encoding);
+
+    /* set the output format and open the output device */
+    format.bits = mpg123_encsize(encoding) * BITS;
+    format.rate = rate;
+    format.channels = channels;
+    format.byte_format = AO_FMT_NATIVE;
+    format.matrix = 0;
+    dev = ao_open_live(driver, &format, NULL);
 }
 
 void open_sound(void)
 {
-    guint version;
+    int err;
 
-    result = FMOD_System_Create(&fmodsystem);
-    ERRCHECK(result);
-
-    result = FMOD_System_GetVersion(fmodsystem, &version);
-    ERRCHECK(result);
-
-    if (version < FMOD_VERSION) {
-        g_print("Error! You are using an old version of FMOD %08x.  This program requires %08x\n", version, FMOD_VERSION);
-    }
-
-    result = FMOD_System_Init(fmodsystem, 32, FMOD_INIT_NORMAL, NULL);
-    ERRCHECK(result);
+    ao_initialize();
+    driver = ao_default_driver_id();
+    mpg123_init();
+    mh = mpg123_new(NULL, &err);
+    buffer_size = mpg123_outblock(mh);
+    buffer = malloc(buffer_size * sizeof(char));
 
     GError *error = NULL;
     gchar  *str;
     if ((str = g_key_file_get_string(keyfile, "preferences", "soundfile", &error))) {
         if (str[0]) {
             sound_file = str;
-            result = FMOD_System_CreateSound(fmodsystem, sound_file, FMOD_SOFTWARE, 0, &fmodsound);
-            ERRCHECK(result);
-            if (result != FMOD_OK) {
-                g_free(sound_file);
-                sound_file = NULL;
-            }
+            init_dev();
         } else
             g_free(str);
     }
@@ -66,28 +75,46 @@ void open_sound(void)
 
 void close_sound(void)
 {
-    if (fmodsound) {
-        result = FMOD_Sound_Release(fmodsound);
-        ERRCHECK(result);
+    free(buffer);
+    ao_close(dev);
+    mpg123_close(mh);
+    mpg123_delete(mh);
+    mpg123_exit();
+    ao_shutdown();
+}
+
+static void start_sound(gpointer ok)
+
+{
+    size_t done;
+
+    G_LOCK(sound);
+
+    if (mh == NULL || dev == NULL || sound_file == NULL) {
+        G_UNLOCK(sound);
+        return;
     }
-    result = FMOD_System_Close(fmodsystem);
-    ERRCHECK(result);
-    result = FMOD_System_Release(fmodsystem);
-    ERRCHECK(result);
+
+    mpg123_seek(mh, 0, SEEK_SET);
+
+    while (play && (*((gboolean *)ok)) &&
+           mpg123_read(mh, (unsigned char *)buffer, buffer_size, &done) == MPG123_OK)
+        ao_play(dev, buffer, done);
+
+    G_UNLOCK(sound);
 }
 
 void play_sound(void)
 {
-    if (sound_file && fmodsound) {
-        result = FMOD_System_PlaySound(fmodsystem, FMOD_CHANNEL_FREE, fmodsound, 0, &fmodchannel);
-        ERRCHECK(result);
-    }
+    play = TRUE;
 }
 
 void select_sound(GtkWidget *menu_item, gpointer data)
 {
     GtkWidget *dialog;
     GtkFileFilter *filter, *filter_all;
+
+    play = FALSE;
 
     dialog = gtk_file_chooser_dialog_new(_("Choose a file"),
                                          NULL,
@@ -115,16 +142,24 @@ void select_sound(GtkWidget *menu_item, gpointer data)
 
     gint r = gtk_dialog_run(GTK_DIALOG(dialog));
 
+    if (play) { // can start during dialog
+        gtk_widget_destroy(dialog);
+        return;
+    }
+
     if (r == 1000) { // stop sound
+        G_LOCK(sound);
+
         g_free(sound_file);
         sound_file = NULL;
-        if (fmodsound) {
-            result = FMOD_Sound_Release(fmodsound);
-            ERRCHECK(result);
-            fmodsound = NULL;
-        }
+
+        if (dev) ao_close(dev);
+        dev = NULL;
+
         g_key_file_set_string(keyfile, "preferences", "soundfile", "");
         gtk_widget_destroy(dialog);
+
+        G_UNLOCK(sound);
         return;
     }
 
@@ -133,18 +168,34 @@ void select_sound(GtkWidget *menu_item, gpointer data)
         return;
     }
                
-    if (fmodsound) {
-        result = FMOD_Sound_Release(fmodsound);
-        ERRCHECK(result);
-        fmodsound = NULL;
-    }
+    G_LOCK(sound);
 
     g_free(sound_file);
     sound_file = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
     g_key_file_set_string(keyfile, "preferences", "soundfile", sound_file);
 
-    gtk_widget_destroy(dialog);
+    init_dev();
 
-    result = FMOD_System_CreateSound(fmodsystem, sound_file, FMOD_SOFTWARE, 0, &fmodsound);
-    ERRCHECK(result);
+    G_UNLOCK(sound);
+
+    gtk_widget_destroy(dialog);
+}
+
+gpointer sound_thread(gpointer args)
+{
+    open_sound();
+
+    for ( ; *((gboolean *)args) ; )   /* exit loop when flag is cleared */
+    {
+        if (play) {
+            start_sound(args);
+            play = FALSE;
+        } else {
+            g_usleep(100000);
+        }
+    }
+
+    close_sound();
+    g_thread_exit(NULL);    /* not required just good pratice */
+    return NULL;
 }

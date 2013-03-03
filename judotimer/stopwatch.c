@@ -45,7 +45,6 @@
 #include <string.h>
 
 #include "judotimer.h"
-#include "fmod.h"
 
 void manipulate_time(GtkWidget *widget, gpointer data );
 static void gen_random_key(void);

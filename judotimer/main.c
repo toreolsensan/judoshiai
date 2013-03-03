@@ -24,7 +24,6 @@
 #include "judotimer.h"
 #include "language.h"
 #include "binreloc.h"
-#include "fmod.h"
 
 static void show_big(void);
 static void expose_label(cairo_t *c, gint w);
@@ -1772,6 +1771,8 @@ int main( int   argc,
                           (gpointer)&run_flag, FALSE, NULL);
     gth = g_thread_create((GThreadFunc)tvlogo_thread,
                           (gpointer)&run_flag, FALSE, NULL);
+    gth = g_thread_create((GThreadFunc)sound_thread,
+                          (gpointer)&run_flag, FALSE, NULL);
 
     extern gpointer ssdp_thread(gpointer args);
     gth = g_thread_create((GThreadFunc)ssdp_thread,
@@ -1781,9 +1782,6 @@ int main( int   argc,
 
     cursor = gdk_cursor_new(GDK_HAND2);
     gdk_window_set_cursor(GTK_WIDGET(main_window)->window, cursor);
-
-    open_sound();
-    //video_init();
 
     for (i = 1; i < argc; i++) {
         if (argv[i][0] == '-' && argv[i][1] == 'd') {
@@ -1801,8 +1799,6 @@ int main( int   argc,
      * and waits for an event to occur (like a key press or
      * mouse event). */
     gtk_main();
-
-    close_sound();
 
     gdk_threads_leave();  /* release GDK locks */
     run_flag = FALSE;     /* flag threads to stop and exit */
