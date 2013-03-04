@@ -477,6 +477,9 @@ gboolean osaekomi_running(void)
 
 void set_hantei_winner(gint cmd)
 {
+    if (cmd == CLEAR_SELECTION)
+        st[0].big_displayed = FALSE;
+
     if (cmd == HANSOKUMAKE_BLUE)
         st[0].whitepts[0] |= 2;
     else if (cmd == HANSOKUMAKE_WHITE)
