@@ -822,7 +822,7 @@ msgid "Category starts"
 msgstr " Začiatok kategórie"
 
 msgid "Gold medal match"
-msgstr "Finále o Zlatu medailu"
+msgstr "Finále o Zlatú medailu"
 
 msgid "Bronze match A"
 msgstr "Zápas o Bronz A"
@@ -1044,13 +1044,13 @@ msgid "International System"
 msgstr "Medzinárodný Systém"
 
 msgid "Finnish System"
-msgstr "Systém fínsky"
+msgstr "Fínsky Systém"
 
 msgid "Swedish System"
-msgstr "System švédsky"
+msgstr "Švédsky Systém"
 
 msgid "Estonian System"
-msgstr "System estónsky"
+msgstr "Estónsky Systém"
 
 msgid "Reset to Defaults"
 msgstr "Reset - Základné nastavenia"
@@ -1461,7 +1461,7 @@ msgid "is not"
 msgstr "nie je"
 
 msgid "Typing errors:\n"
-msgstr "Pravopisné chyba:\n"
+msgstr "Pravopisné chyby:\n"
 
 msgid "UTF-8 errors"
 msgstr "Chyba UTF-8 "
@@ -1485,7 +1485,7 @@ msgid "Weighted only"
 msgstr "Len zvážený"
 
 msgid "With weights"
-msgstr "Z váhami"
+msgstr "S váhami"
 
 msgid "Validate Database"
 msgstr "Potvrdiť Databázu"
@@ -1521,7 +1521,7 @@ msgid "About JudoJudogi"
 msgstr "O aplikácii JudoJudogi"
 
 msgid "Norwegian System"
-msgstr "Systém nórski"
+msgstr "Systém nórsky"
 
 msgid "Confirm:"
 msgstr "Potvrdiť:"
@@ -1536,7 +1536,7 @@ msgid "Rep. time:"
 msgstr "Doba repasáže:"
 
 msgid "Landscape"
-msgstr "Kraj"
+msgstr "Na šírku"
 
 msgid "Resolution (min):"
 msgstr "Rozlíšenie (min):"
@@ -1671,10 +1671,10 @@ msgid "Seeded to fixed places:"
 msgstr "Nasadenie na pevné miesto:"
 
 msgid "Double Pool 2 with carried forward points:"
-msgstr "Dvojitá Skupiny 2 s prenesením bodov:"
+msgstr "Dvojitá Skupina 2 s prenesením bodov:"
 
 msgid "Two pool bronzes:"
-msgstr "Dve skupiny bronzové"
+msgstr "Dve skupiny bronzové:"
 
 msgid "Resolve 3-way ties by weights:"
 msgstr "Pri remíze v skupine umiestnenie podľa váhy:"
@@ -1789,19 +1789,19 @@ msgid "Results in Dutch"
 msgstr "Výsledky - holandský"
 
 msgid "British System"
-msgstr ""
+msgstr "Britský systém"
 
 msgid "Australian System"
-msgstr ""
+msgstr "Austrálsky systém"
 
 msgid "Danish System"
-msgstr ""
+msgstr "Dánsky systém"
 
 msgid "Polish System"
-msgstr ""
+msgstr "Poľský systém"
 
 msgid "Slovakian System"
-msgstr ""
+msgstr "Slovenský systém"
 
 msgid "Tatami"
-msgstr ""
+msgstr "Tatami"

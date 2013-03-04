@@ -1821,7 +1821,7 @@ msgid "WARNING: NO CONTROL"
 msgstr "UWAGA: BRAK KONTROLI"
 
 msgid "Slovakian System"
-msgstr ""
+msgstr "Syatem Słowacki"
 
 msgid "Tatami"
-msgstr ""
+msgstr "Mata"
