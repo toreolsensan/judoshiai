@@ -1,0 +1,99 @@
+### First line is the menu text
+Results in German
+### 1: Competitors
+Kämpfer
+### 2: Competitors A (for double and quadruple pools)
+Kämpfer A
+### 3: Competitors B
+Kämpfer B
+### 4: Competitors C
+Kämpfer C
+### 5: Competitors D
+Kämpfer D
+### 6: # (= short text for "Number", like "Nr")
+Nr
+### 7: Name
+Name
+### 8: Grade (belt grade, 1. dan, 3. kyu etc)
+Gradierung
+### 9: Club
+Verein
+### 10: Matches
+Kämpfe
+### 11: Matches A
+Kampf A
+### 12: Matches B
+Kampf B
+### 13: Matches C
+Kampf C
+### 14: Matches D
+Kampf D
+### 15: Match
+Kampf
+### 16: Blue
+Blau
+### 17: White
+Weiß
+### 18: Result (result of one fight)
+Ergebnis
+### 19: Results (all the results of the tournament)
+Ergebnisse
+### 20: Time (fight time)
+Zeit
+### 21: Wins (number of wins)
+Siege
+### 22: Pts (short text for points)
+Pkt
+### 23: Pos (short text for position = winner, second, bronze)
+Platz
+### 24: Previous winner
+Vorheriger Gewinner
+### 25: Next (competitors who have the next fight)
+nächster
+### 26: Weight:
+Gewicht
+### 27: PRELIMINARY SCHEDULE
+VORAUSSICHTLICHER ZEITPLAN
+### 28: weighin-notes.pdf (file name)
+Wiegeliste.pdf
+### 29: schedule.pdf (file name)
+Zeitplan.pdf
+### 30: categories.pdf (file name)
+Kategorien.pdf
+### 31: Category
+Kategorie
+### 32: Next fights (for a list of fights)
+Nächste Kämpfe
+### 33: Categories
+Kategorien
+### 34: Statistics
+Statistiken
+### 35: Medals
+Medaillen
+### 36: Total
+Gesamt
+### 37: Country
+Land
+### 38: Not drawn
+nicht erstellt
+### 39: Finished
+Beendet
+### 40: Match ongoing
+Kämpfe laufen
+### 41: Started (category has started)
+Begonnen
+### 42: Drawing ready
+erstellt
+### 43: Coach
+Trainer
+### 44: Surname
+Vorname
+### 45: Status
+Status
+### 46: Display
+Anzeige
+### 47: "Match after n matches" divided in two parts
+###     Match after ("Match after" n matches)
+Kampf nach
+### 48: matches (Match after n "matches")
+Kämpfen
