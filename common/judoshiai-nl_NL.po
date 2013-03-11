@@ -150,7 +150,7 @@ msgid "View clocks only"
 msgstr "Alleen klokken weergeven"
 
 msgid "Increment pin time"
-msgstr "Optellende pin tijd"
+msgstr "Oplopende pin tijd"
 
 msgid "Decrement pin time"
 msgstr "Aftellende pin tijd"
@@ -165,7 +165,7 @@ msgid "About Judotimer"
 msgstr "Over Judotimer"
 
 msgid "Full screen mode"
-msgstr "Maximale scherm instellen"
+msgstr "Scherm maximaliseren"
 
 msgid "Normal operation"
 msgstr "Normale bediening"
@@ -219,13 +219,13 @@ msgid "Run Advertisements"
 msgstr "Advertenties afspelen"
 
 msgid "Competitors"
-msgstr "Judokas"
+msgstr "Deelnemers"
 
 msgid "Categories"
 msgstr "Categorieën"
 
 msgid "Drawing"
-msgstr "Opstelling"
+msgstr "Loting"
 
 msgid "Results"
 msgstr "Resultaten"
@@ -237,7 +237,7 @@ msgid "New Tournament"
 msgstr "Nieuw Toernooi"
 
 msgid "Open Tournament"
-msgstr "Open opgeslagen toernooi"
+msgstr "Open toernooi"
 
 msgid "Open Tournament from Net"
 msgstr "Open toernooi van het netwerk"
@@ -246,19 +246,19 @@ msgid "Properties"
 msgstr "Eigenschappen"
 
 msgid "New Competitor"
-msgstr "Nieuwe jukoka"
+msgstr "Nieuwe Deelnemer"
 
 msgid "Search Competitor"
-msgstr "Zoek judoka"
+msgstr "Zoek Deelnemer"
 
 msgid "Select From Another Shiai"
 msgstr "Selecteer uit andere Shiai"
 
 msgid "Add From a Text File"
-msgstr "Voeg toe uit tekst bestand"
+msgstr "Toevoegen uit tekstbestand"
 
 msgid "Add All From Another Shiai"
-msgstr "Voeg alle toe uit andere Shiai"
+msgstr "Alles toevoegen uit andere Shiai"
 
 msgid "Remove Unweighted"
 msgstr "Verwijder ongewogen"
@@ -270,7 +270,7 @@ msgid "Bar Code Search"
 msgstr "Zoeken op barcode"
 
 msgid "Print Weight Notes"
-msgstr "Druk gewicht regels af"
+msgstr "Afdrukken Weeg gegevens"
 
 msgid "New Category"
 msgstr "Nieuwe Categorie"
@@ -282,7 +282,7 @@ msgid "Create Categories"
 msgstr "Maak Categorieën"
 
 msgid "Print All"
-msgstr "Druk alles af"
+msgstr "Alles Afdrukken"
 
 msgid "Place To"
 msgstr "Plaats naar"
@@ -291,22 +291,22 @@ msgid "Tatamis"
 msgstr "Mat (Tatamis)"
 
 msgid "Draw All Categories"
-msgstr "Stel alle Categorieën op"
+msgstr "Loting van alle categorieën"
 
 msgid "Print All (Web And PDF)"
-msgstr "Druk alles af (Web en PDF)"
+msgstr "Alles Afdrukken (Web en PDF)"
 
 msgid "Print Schedule to Printer"
-msgstr "Stuur schema naar Printer"
+msgstr "Schema Afdrukken (printer)"
 
 msgid "Print Schedule to PDF"
-msgstr "Stuur schema naar PDF bestand"
+msgstr "Schema Afdrukken (PDF)"
 
 msgid "Print Schedule"
-msgstr "Druk schema af"
+msgstr "Schema Afdrukken"
 
 msgid "Control Tatami"
-msgstr "Controleer Tatami"
+msgstr "Toegang controle tatamia"
 
 msgid "Communication Node"
 msgstr "Communicatie Node"
@@ -321,7 +321,7 @@ msgid "Automatic Sheet Update"
 msgstr "Automatische pagina vernieuwen"
 
 msgid "Automatic Web Page Update"
-msgstr "Automatisch Webpagine vernieuwen"
+msgstr "Automatisch Webpagina vernieuwen"
 
 msgid "Results in Finnish"
 msgstr "Resultaten in het Fins"
@@ -336,16 +336,16 @@ msgid "Results in Spanish"
 msgstr "Resultaten in het Spaans"
 
 msgid "Results in Estonian"
-msgstr "Resultaten in het Estlands"
+msgstr "Resultaten in het Ests"
 
 msgid "Results in Ukrainian"
 msgstr "Resultaten in het Oekraïens"
 
 msgid "Weights Visible in Pool Sheets"
-msgstr "Pool overzichten met gewichten"
+msgstr "Poule overzichten met gewichten"
 
 msgid "Sheet Font"
-msgstr "Blad lettertype"
+msgstr "Opmaak lettertype"
 
 msgid "Password"
 msgstr "Wachtwoord"
@@ -357,7 +357,7 @@ msgid "Competitor already exists!"
 msgstr "Deelnemer bestaat al!"
 
 msgid "Competitor"
-msgstr "Judoka"
+msgstr "Deelnemer"
 
 msgid "copied"
 msgstr "gekopieerd"
@@ -393,7 +393,7 @@ msgid "Weight"
 msgstr "Gewicht"
 
 msgid "Drawing not finished!"
-msgstr "Opstellingen niet klaar!"
+msgstr "Loting niet klaar!"
 
 msgid "Matches matched in category"
 msgstr "Wedstrijden opgestelt in categorie"
@@ -402,28 +402,28 @@ msgid "Clear the results first"
 msgstr "Wis de resultaten eerst"
 
 msgid "Move the competitors"
-msgstr "Verplaats de jodokas"
+msgstr "Verplaats de deelnemers"
 
 msgid "Number"
 msgstr "Nummer"
 
 msgid "Select first a competitor and then a number."
-msgstr "Selecteer eerst een judoka en dan een nummer"
+msgstr "Selecteer eerst een deelnemer en dan een nummer"
 
 msgid "All the categories has been drawn"
-msgstr "Alle categorieëen zijn opgesteld"
+msgstr "Alle categorieën zijn geloot"
 
 msgid "Choose a directory"
 msgstr "Selecteer een folder"
 
 msgid "Category drawn"
-msgstr "Categorie opstellen"
+msgstr "Categorie loting"
 
 msgid "All the categories located to the tatamis"
-msgstr "Alle categorieën op de mat"
+msgstr "Alle categorieën opgestelt op de mat"
 
 msgid "Unlocated"
-msgstr "Niet geplaatst"
+msgstr "Niet opgestelt"
 
 msgid "Connections to this node"
 msgstr "Verbind met deze server"
@@ -468,13 +468,13 @@ msgid "Empty categories removed"
 msgstr "Lege categorieën verwijderd"
 
 msgid "Unweighted competitors removed"
-msgstr "Ongewogen judokas verwijderd"
+msgstr "Ongewogen deelnemers verwijderd"
 
 msgid "Matches exist. Undo the drawing first."
 msgstr "Opstelling bestaat. Maak eerst opstelling ongedaan."
 
 msgid "Competitors removed"
-msgstr "Judokas verwijderd"
+msgstr "Deelnemer verwijderd"
 
 msgid "Type the barcode:"
 msgstr "Geef de barcode in:"
@@ -537,10 +537,10 @@ msgid "Girl Text:"
 msgstr "Dames tekst:"
 
 msgid "Column Separator:"
-msgstr "kolom scheidings teken:"
+msgstr "Kolom scheidings teken:"
 
 msgid "competitors added"
-msgstr "deelnemer toegevoegd"
+msgstr "deelnemers toegevoegd"
 
 msgid "errors"
 msgstr "fouten"
@@ -577,24 +577,23 @@ msgid ""
 "Communication is blocked! \n"
 "You can still use the program to create categories etc."
 msgstr ""
-"Communicatie is geblokkeerd! \n"
-" Je kan nog steeds dit programma gebruiken om nieuwe categorieën te creeën "
-"etc."
+"Communicatie is geblokkeerd! \nJe kan nog steeds dit programma gebruiken om "
+"nieuwe categorieën te creeën etc."
 
 msgid "Pool"
-msgstr "Pool"
+msgstr "Poule"
 
 msgid "Next match"
 msgstr "Volgende wedstrijd"
 
 msgid "Preparing"
-msgstr "Voorbereiden"
+msgstr "Voorbereiding"
 
 msgid "Preparing:"
-msgstr "Voorbereiden:"
+msgstr "Voorbereiding:"
 
 msgid "Delay the match"
-msgstr "Stel de wedstrijd uit"
+msgstr "Wedstrijd uitstellen"
 
 msgid "Matches matched. Clear the results first."
 msgstr "Wedstrijden opgestelt. Wis eerst de resultaten."
@@ -633,7 +632,7 @@ msgid "Prev. winner:"
 msgstr "Vorige winnaar:"
 
 msgid "Delayed"
-msgstr "Vertraagd"
+msgstr "Uitgestelt"
 
 msgid "Remove delay"
 msgstr "Verwijder vertraging"
@@ -648,10 +647,10 @@ msgid "Start time:"
 msgstr "Aanvangstijd:"
 
 msgid "Tournament from the net"
-msgstr "Toernooi van het netwerk"
+msgstr "Toernooi vanaf het netwerk"
 
 msgid "Select sheet font"
-msgstr "Selecteer blad lettertype"
+msgstr "Selecteer opmaak lettertype"
 
 msgid "Tournament"
 msgstr "Toernooi"
@@ -666,19 +665,19 @@ msgid "Competitors:"
 msgstr "Deelnemers:"
 
 msgid "Add competitors"
-msgstr "Judokas toevoegen"
+msgstr "Deelnemers toevoegen"
 
 msgid "Clean up duplicates and update reg. categories"
 msgstr "Wis duplicaten en reg. categorieën bijwerken"
 
 msgid "competitors added and updated"
-msgstr "judokas toegevoegd en bijgewerkt"
+msgstr "deelnemers toegevoegd en bijgewerkt"
 
 msgid "competitors already existed"
 msgstr "deelnemer bestaat al"
 
 msgid "competitors added unchanged"
-msgstr "Judokas ongewijzigd toegevoegd"
+msgstr "Deelnemers ongewijzigd toegevoegd"
 
 msgid "Remove drawing first"
 msgstr "Verwijder opstelling eerst"
@@ -687,10 +686,10 @@ msgid "already exists"
 msgstr "bestaat al"
 
 msgid "Move Competitors to Category..."
-msgstr "Verplaats Judokas naar categorie..."
+msgstr "Deelnemers verplaatsen naar categorie..."
 
 msgid "Move Competitors Here"
-msgstr "Verplaats Judokas naar hier"
+msgstr "Deelnemers naar hier verplaatsen"
 
 msgid "Compose Unofficial Category"
 msgstr "Niet-officiële categorie opstellen"
@@ -702,13 +701,13 @@ msgid "Remove Drawing"
 msgstr "Verwijder opstelling"
 
 msgid "Copy Competitors"
-msgstr "Kopieer judokas"
+msgstr "Kopieer Deelnemers"
 
 msgid "Remove Competitors"
-msgstr "Verwijder judokas"
+msgstr "Verwijder Deelnemers"
 
 msgid "Show Sheet"
-msgstr "Blad weergeven"
+msgstr "Pagina weergeven"
 
 msgid "Search"
 msgstr "Zoeken"
@@ -729,10 +728,10 @@ msgid "Match time:"
 msgstr "Wedstrijd tijd:"
 
 msgid "Rest time:"
-msgstr "Resterende tijd:"
+msgstr "Rust tijd:"
 
 msgid "Pin times (IWYK):"
-msgstr "Pin times (IWYK):"
+msgstr "Pin tijden (IWYK):"
 
 msgid "Highest weight (g):"
 msgstr "Hoogste gewicht (g):"
@@ -762,19 +761,19 @@ msgid "Number of tatamis:"
 msgstr "Aantal matten (tatamis):"
 
 msgid "Sheets"
-msgstr "Bladen"
+msgstr "Pagina's"
 
 msgid "Category starts"
 msgstr "Categorie start"
 
 msgid "Gold medal match"
-msgstr "Wedstrijd voor Gouden "
+msgstr "Wedstrijd voor Goud"
 
 msgid "Bronze match A"
-msgstr "Wedstrijd Brons A"
+msgstr "Wedstrijd voor Brons A"
 
 msgid "Bronze match B"
-msgstr "Wedstrijd Brons B"
+msgstr "Wedstrijd voor Brons B"
 
 msgid "Semifinal A"
 msgstr "Halve finale A"
@@ -831,7 +830,7 @@ msgid "SQL Dialog"
 msgstr "SQL Dialoog"
 
 msgid "Print All (PDF)"
-msgstr "Print alles (PDF)"
+msgstr "Alles Afdrukken (PDF)"
 
 msgid "Golden Score:"
 msgstr "Golden Score:"
@@ -852,10 +851,10 @@ msgid "Do Backup"
 msgstr "Maak Backup"
 
 msgid "CANNOT OPEN BACKUP FILE"
-msgstr "KAN HET BACKUP BESTAND OPENEN"
+msgstr "KAN BACKUP BESTAND NIET OPENEN"
 
 msgid "Tournament Backup"
-msgstr "Tournooi Backup"
+msgstr "Toernooi Backup"
 
 msgid "Small display"
 msgstr "Klein scherm"
@@ -864,43 +863,43 @@ msgid "Draw Selected"
 msgstr "Stel geslecteerd op"
 
 msgid "Draw and Print Selected"
-msgstr "Teken en druk af"
+msgstr "Geselecteerde Opstellen en Afdrukken "
 
 msgid "Print Selected Sheets (Printer)"
-msgstr "Druk geselecteerde bladen af (Printer)"
+msgstr "Geselecteerde Pagina's Afdrukken (Printer)"
 
 msgid "Print Selected Sheets (PDF)"
-msgstr "Druk geselecteerde bladen af (PDF)"
+msgstr "Geselecteerde Pagina's Afdrukken (PDF)"
 
 msgid "Advertisement"
 msgstr "Advertentie"
 
 msgid "Tournament properties"
-msgstr "Tournooi instellingen"
+msgstr "Toernooi instellingen"
 
 msgid "Print Matches (CSV)"
-msgstr "Druk wedstrijden af (CSV)"
+msgstr "Wedstrijden Afdrukken (CSV)"
 
 msgid "Match File"
 msgstr "Wedstrijd bestand"
 
 msgid "Print Not Started Categories"
-msgstr "Druk niet gestarte Categorieën af"
+msgstr "Niet Gestarte Categorieën Afdrukken"
 
 msgid "Print Started Categories"
-msgstr "Druk gestarte Categorieën af"
+msgstr "Gestarte Categorieën Afdrukken"
 
 msgid "Print Finished Categories"
-msgstr "Druk Categorieën af die klaar zijn"
+msgstr "Categorieën die klaar zijn Afdrukken"
 
 msgid "Print Result"
-msgstr "Druk resultaten af"
+msgstr "Resultaten Afdrukken"
 
 msgid "Print IWYKS"
-msgstr "Druk IWYKS af"
+msgstr "IWYKS Afdrukken"
 
 msgid "Print Comment"
-msgstr "Druk commentaar af"
+msgstr "Commentaar Afdrukken"
 
 msgid "Create Statistics"
 msgstr "Creeër statistieken"
@@ -915,10 +914,10 @@ msgid "No koka"
 msgstr "Geen koka"
 
 msgid "Leave points for GS"
-msgstr "Laat punten voor GS"
+msgstr "Laat punten staan voor GS"
 
 msgid "Automatic Match Delay"
-msgstr "Automatische wedstrijd uitstel"
+msgstr "Automatische Wedstrijd Uitstel"
 
 msgid "Cannot move"
 msgstr "Kan niet verplaatsen"
@@ -948,22 +947,22 @@ msgid "Default"
 msgstr "Standaard"
 
 msgid "FIN Double Repechage"
-msgstr "FIN Double Repechage"
+msgstr "FIN Dubbele Herkansing"
 
 msgid "SWE Double Repechage"
-msgstr "SWE Double Repechage"
+msgstr "SWE Dubbele Herkansing"
 
 msgid "EST Double Elimination"
-msgstr "EST Double Elimination"
+msgstr "EST Dubbele Eliminatie"
 
 msgid "Single Elimination"
-msgstr "Single Elimination"
+msgstr "Enkele Eliminatie"
 
 msgid "SWE Single Repechage"
-msgstr "SWE Single Repechage"
+msgstr "SWE Enkele Herkansing"
 
 msgid "Club Name Only"
-msgstr "Allen verenigings naam"
+msgstr "Alleen verenigingsnaam"
 
 msgid "Country Name Only"
 msgstr "Alleen land"
@@ -972,7 +971,7 @@ msgid "Both Club and Country"
 msgstr "Zowel land als vereniging"
 
 msgid "International System"
-msgstr "Het Internationale Systeem"
+msgstr "Internationale Systeem"
 
 msgid "Finnish System"
 msgstr "Het Finse System"
@@ -981,7 +980,7 @@ msgid "Swedish System"
 msgstr "Het Zweedse System"
 
 msgid "Estonian System"
-msgstr "Het Ests-System"
+msgstr "Het Estse System"
 
 msgid "Spanish System"
 msgstr "Het Spaanse System"
@@ -993,7 +992,7 @@ msgid "View Log"
 msgstr "Bekijk Log"
 
 msgid "Double Pool"
-msgstr "Double Pool"
+msgstr "Dubbele Poule"
 
 msgid "Cannot handle: Database created with newer JudoShiai version."
 msgstr ""
@@ -1006,7 +1005,7 @@ msgid "Cannot open"
 msgstr "Kan niet openen"
 
 msgid "Abbreviations in Sheets"
-msgstr "Afkortingen op de afdruk"
+msgstr "Afkortingen op de Pagina's"
 
 msgid "One match"
 msgstr "Een wedstrijd"
@@ -1027,7 +1026,7 @@ msgid "Contest area"
 msgstr "Wedstrijd gebied"
 
 msgid "Set time"
-msgstr "Stel de tijd in"
+msgstr "Zet tijd"
 
 msgid "Choose a file"
 msgstr "Kies een bestand"
@@ -1039,10 +1038,10 @@ msgid "Best of 3"
 msgstr "Beste uit 3"
 
 msgid "Quad Pool"
-msgstr "Quad Pool"
+msgstr "4 Poule"
 
 msgid "IJF Qrt Final Rep"
-msgstr "IJF Kwart Final Her"
+msgstr "IJF Kwart Finale Her"
 
 msgid "SWE Dubb återkv"
 msgstr "SWE Dubbele Her"
@@ -1057,7 +1056,7 @@ msgid "No Repechg"
 msgstr "Geen herkansing"
 
 msgid "SWE Enkelt återkv"
-msgstr "SWE Eenvoudige her"
+msgstr "SWE Enkelvoud. her"
 
 msgid "ESP Dbl Lost"
 msgstr "ESP Dbl verloren"
@@ -1081,10 +1080,10 @@ msgid "ESP Simple Repechage"
 msgstr "ESP Eenvoudige Herkansing"
 
 msgid "Picture Files"
-msgstr "Afbeeldingsbestanden"
+msgstr "Afbeeldings bestanden"
 
 msgid "Print Headers"
-msgstr "Druk kolom koptekst af"
+msgstr "Koptekst Afdrukken"
 
 msgid "Language Selection"
 msgstr "Taal keuze"
@@ -1096,16 +1095,16 @@ msgid "Club Text Selection"
 msgstr "Vereniging tekst weergave"
 
 msgid "Print Logo"
-msgstr "Druk logo af"
+msgstr "Logo Afdrukken"
 
 msgid "Sheet Layout"
-msgstr "Blad indeling"
+msgstr "Pagina indeling"
 
 msgid "Weights Visible"
-msgstr "Gewicht zichtbaar"
+msgstr "Gewicht weergeven"
 
 msgid "Grade Visible"
-msgstr "Graad zichtbaar"
+msgstr "Graad weergeven"
 
 msgid "Line"
 msgstr "Lijn"
@@ -1114,13 +1113,13 @@ msgid "Syntax error"
 msgstr "Syntax error"
 
 msgid "Print Unmatched"
-msgstr "Druk niet opgestelde af"
+msgstr "Niet Opgestelde Afdrukken"
 
 msgid "Stop clock on Ippon"
-msgstr "Stop klok bij Ippon"
+msgstr "Klok bij Ippon stoppen"
 
 msgid "Switch sides"
-msgstr "Wissel van kant"
+msgstr "Van kant wisselen"
 
 msgid "Display customized layout"
 msgstr "Aangepaste scherm indeling"
@@ -1144,7 +1143,7 @@ msgid "Silver medal match"
 msgstr "Wedstrijd voor Zilver"
 
 msgid "Pool Style 2"
-msgstr "Pool Style 2"
+msgstr "Poule Style 2"
 
 msgid "Use Belt Colors"
 msgstr "Gebruik band kleuren"
@@ -1153,10 +1152,10 @@ msgid "White first"
 msgstr "Wit eerst"
 
 msgid "Show"
-msgstr "Laat zien"
+msgstr "Weergeven"
 
 msgid "Show Deleted"
-msgstr "Laat verwijderden zien"
+msgstr "Verwijderden Weergeven"
 
 msgid "Add"
 msgstr "Voeg toe"
@@ -1171,7 +1170,7 @@ msgid "Serial Communication"
 msgstr "Seriële communicatie"
 
 msgid "In Use"
-msgstr "Actief"
+msgstr "In gebruik"
 
 msgid "Device"
 msgstr "Apparaat"
@@ -1195,10 +1194,10 @@ msgid "Repeat Script"
 msgstr "Herhaal script"
 
 msgid "Write to file"
-msgstr "Schrijf naar bestand"
+msgstr "Naar bestand schrijven"
 
 msgid "Confirm New Match"
-msgstr "Bevestig nieuwe wedstrijd"
+msgstr "Bevestig Nieuwe Wedstrijd"
 
 msgid "Contest area 9"
 msgstr "Wedstrijd gebied 9"
@@ -1216,7 +1215,7 @@ msgid "to tatami and/or"
 msgstr "naar mat en/of"
 
 msgid " delay"
-msgstr " uitstel"
+msgstr " uitstellen"
 
 msgid "Final"
 msgstr "Finale"
@@ -1228,13 +1227,13 @@ msgid "Bronze2"
 msgstr "Brons2"
 
 msgid "Pool's last"
-msgstr "Laatste wedstrijd van de Pool"
+msgstr "Laatste wedstrijd van de Poule"
 
 msgid "No move"
 msgstr "Niets verplaatst"
 
 msgid "Print Accreditation Cards"
-msgstr "Druk weegkaarten af"
+msgstr "Deelnemerskaarten afdrukken"
 
 msgid "Name Format"
 msgstr "Naam opmaak"
@@ -1243,7 +1242,7 @@ msgid "Name Surname, Country/Club"
 msgstr "Voornaam Achternaam, Land/Vereniging"
 
 msgid "Surname, Name, Country/Club"
-msgstr "Acternaam, Voornaam, Land/vereniging"
+msgstr "Acternaam, Voornaam, Land/Vereniging"
 
 msgid "Country/Club  Surname, Name"
 msgstr "Land/Vereniging, Achternaam, Voornaam"
@@ -1252,7 +1251,7 @@ msgid "Medal Matches..."
 msgstr "Medaille wedstrijden..."
 
 msgid "Print Selected Accreditation Cards"
-msgstr "Druk de geselecteerde accreditatie kaarten af"
+msgstr "Geselecteerde Deelnemerskaarten Afdrukken"
 
 msgid "Layout:"
 msgstr "Opmaak:"
@@ -1273,10 +1272,10 @@ msgid "One Card Per Page"
 msgstr "Een kaart per pagina"
 
 msgid "Normal display"
-msgstr "Normale weergaven"
+msgstr "Normaal weergeven"
 
 msgid "Horizontal display"
-msgstr "Beeldscherm horizontaal"
+msgstr "Horizontaal weergeven"
 
 msgid "White has a judogi problem."
 msgstr "Wit heeft een judogi probleem."
@@ -1285,10 +1284,10 @@ msgid "Blue has a judogi problem."
 msgstr "Blauw heeft een judogi probleem."
 
 msgid "Show Competitors"
-msgstr "Laat judokas zien"
+msgstr "Deelnemers Weergeven"
 
 msgid "Show competitors"
-msgstr "Laat judokas zien"
+msgstr "Deelnemers weergeven"
 
 msgid "Name format"
 msgstr "Naam opmaak"
@@ -1321,7 +1320,7 @@ msgid "Club Seeding:"
 msgstr "Vereniging geplaatst:"
 
 msgid "Gender:"
-msgstr "Geslacht"
+msgstr "Geslacht:"
 
 msgid "Male"
 msgstr "Man"
@@ -1345,7 +1344,7 @@ msgid "Database Validation"
 msgstr "Database Validatie"
 
 msgid "Duplicate seedings:\n"
-msgstr "Duplicate seedings:\n"
+msgstr "Dubbel geplaatst:\n"
 
 msgid "seeding"
 msgstr "geplaatst"
@@ -1357,7 +1356,7 @@ msgid "times"
 msgstr "tijden"
 
 msgid "Duplicate club seedings:\n"
-msgstr "Dubbele club plaatsing:\n"
+msgstr "Vereniging dubbel geplaatst:\n"
 
 msgid "Missing category definitions:\n"
 msgstr "Ontbrekende catogorie definities:\n"
@@ -1372,25 +1371,25 @@ msgid "UTF-8 errors"
 msgstr "UTF-8 fouten"
 
 msgid "Extra spaces"
-msgstr "Extra spaties"
+msgstr "Extra ruimtes"
 
 msgid "Possible duplicate competitors:\n"
 msgstr "Mogelijk dubbele deelnemers:\n"
 
 msgid "Possible duplicate club names:\n"
-msgstr "Possible duplicate club names:\n"
+msgstr "Mogelijk dubbele verenigings namen:\n"
 
 msgid "Suspicious weights:\n"
-msgstr "Verdacht gewicht:\n"
+msgstr "Verdacht gewichten:\n"
 
 msgid "warnings"
 msgstr "waarschuwingen"
 
 msgid "Weighed only"
-msgstr "Alleen gewicht"
+msgstr "Alleen gewogen"
 
 msgid "With weights"
-msgstr "Met gewicht"
+msgstr "Met gewichten"
 
 msgid "Validate Database"
 msgstr "Valideer Database"
@@ -1420,7 +1419,7 @@ msgid "About JudoWeight"
 msgstr "Over JudoWeight"
 
 msgid "No match soon! Please wait for a while."
-msgstr "Voorlopig geen wedstrijd. Korte pause"
+msgstr "Voorlopig geen wedstrijd. Korte pause."
 
 msgid "About JudoJudogi"
 msgstr "Over JudoJudogi"
@@ -1462,10 +1461,10 @@ msgid "Communication error"
 msgstr "Communicatie fout"
 
 msgid "Double Lost"
-msgstr "2 keer verloren"
+msgstr "Dubbel Verloren"
 
 msgid "Replay Video"
-msgstr "Opnieuw video afspelen"
+msgstr "Video Opnieuw Afspelen"
 
 msgid "Video server"
 msgstr "Video server"
@@ -1492,13 +1491,13 @@ msgid "General"
 msgstr "Algemeen"
 
 msgid "Reset to"
-msgstr "Opnieuw instellen"
+msgstr "Opnieuw Instellen naar"
 
 msgid "Initialize"
 msgstr "Initialiseren"
 
 msgid "Players"
-msgstr "Deelnemers"
+msgstr "Spelers"
 
 msgid "Max age"
 msgstr "Max leeftijd"
@@ -1513,7 +1512,7 @@ msgid "System"
 msgstr "Systeem"
 
 msgid "Default systems"
-msgstr "Systeem standaard terugzetten"
+msgstr "Standaard Systemen"
 
 msgid "Use SVG Templates"
 msgstr "Gebruik SVG Sjablonen"
@@ -1522,10 +1521,10 @@ msgid "Seeded to fixed places:"
 msgstr "Geplaatst op vaste plaatsen"
 
 msgid "Double Pool 2 with carried forward points:"
-msgstr "Dubbele Pool 2 met overgedragen punten:"
+msgstr "Dubbele Poule 2 met overgedragen punten:"
 
 msgid "Two pool bronzes:"
-msgstr "Twee pool brons:"
+msgstr "Twee poule bronsen:"
 
 msgid "Resolve 3-way ties by weights:"
 msgstr "Los drievoudig gelijkspel op met gewichten:"
@@ -1547,7 +1546,7 @@ msgstr ""
 "alleen als een wedstrijd was gewonnen:"
 
 msgid "Pool settings"
-msgstr "Configuratie van de competities"
+msgstr "Poule instellingen"
 
 msgid "Statistics"
 msgstr "Statistieken"
@@ -1562,22 +1561,22 @@ msgid "Weights do not match"
 msgstr "Gewichten komen niet overeen"
 
 msgid "Copy Weights"
-msgstr "Kopieëer  Gewichten"
+msgstr "Kopieëer Gewichten"
 
 msgid "weights updated"
 msgstr "gewichten bijgewerkt"
 
 msgid "Update Weights From Another Shiai"
-msgstr "Werk gewichten bij vanuit een andere Shiai"
+msgstr "Gewichten bijwerken vanuit een andere Shiai"
 
 msgid "Weighted:"
 msgstr "Gewogen:"
 
 msgid "Print SVG"
-msgstr "Druk SVG af"
+msgstr "SVG Afdrukken"
 
 msgid "If equal score less shido wins"
-msgstr "Als score gelijk dan minste shido wint"
+msgstr "Bij gelijek score minste shido wint"
 
 msgid "Short pin times"
 msgstr "Korte pin tijden"
@@ -1586,7 +1585,7 @@ msgid "No Limit"
 msgstr "Geen Limiet"
 
 msgid "Corrupted competitor data:\n"
-msgstr "Beschadigde deelnemer gegevens:\n"
+msgstr "Beschadigde gegevens deelnemer:\n"
 
 msgid "Corrupted category data:\n"
 msgstr "Beschadigde categoriegegevens:\n"
@@ -1622,7 +1621,7 @@ msgid "EST Double Elim One Bronze"
 msgstr "EST Dubbele Elim Één Brons"
 
 msgid "Set score"
-msgstr "Stel score in"
+msgstr "Stel punten in"
 
 msgid "Edit Drawing"
 msgstr "Bewerk opstelling"
