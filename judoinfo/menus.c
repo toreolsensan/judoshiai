@@ -27,7 +27,8 @@ static GtkWidget *node_ip, *my_ip, *about;
 static GtkWidget *light, *menu_light;
 static GtkWidget *writefile, *lang_menu_item;
 
-gboolean show_tatami[NUM_TATAMIS];
+gboolean show_tatami[NUM_TATAMIS] = {0}, conf_show_tatami[NUM_TATAMIS] = {0};
+static gint configured_tatamis = 0;
 static GtkTooltips *menu_tips;
 
 extern void toggle_full_screen(GtkWidget *menu_item, gpointer data);
@@ -55,9 +56,22 @@ static void tatami_selection(GtkWidget *w,
     gchar buf[32];
     gint tatami = (gint)data;
     SPRINTF(buf, "tatami%d", tatami);
-    show_tatami[tatami-1] = GTK_CHECK_MENU_ITEM(w)->active;
+    conf_show_tatami[tatami-1] = GTK_CHECK_MENU_ITEM(w)->active;
     g_key_file_set_boolean(keyfile, "preferences", buf, 
                            GTK_CHECK_MENU_ITEM(w)->active);
+
+    gint i;
+    configured_tatamis = 0;
+    for (i = 0; i < NUM_TATAMIS; i++)
+        if (conf_show_tatami[i])
+            configured_tatamis++;
+
+    for (i = 0; i < NUM_TATAMIS; i++) {
+        if (configured_tatamis) // follow manual configuration
+            show_tatami[i] = conf_show_tatami[i];
+        else                    // automatic configuration
+            show_tatami[i] = match_list[i][1].blue && match_list[i][1].white;
+    }
 
     refresh_window();
 }
@@ -70,6 +84,11 @@ gint number_of_tatamis(void)
             n++;
 
     return n;
+}
+
+gint number_of_conf_tatamis(void)
+{
+    return configured_tatamis;
 }
 
 static void change_menu_label(GtkWidget *item, const gchar *new_text)

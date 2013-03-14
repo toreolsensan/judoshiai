@@ -169,6 +169,12 @@ void msg_received(struct message *input_msg)
 
         write_matches();
         //refresh_window();
+
+        if (show_tatami[tatami] == FALSE &&
+            number_of_conf_tatamis() == 0 &&
+            match_list[tatami][position].blue &&
+            match_list[tatami][position].white)
+            show_tatami[tatami] = TRUE;
         break;
 
     case MSG_NAME_INFO:

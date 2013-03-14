@@ -93,6 +93,7 @@ extern gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void
 extern void ask_node_ip_address( GtkWidget *w, gpointer data);
 extern void show_my_ip_addresses( GtkWidget *w, gpointer data);
 extern gint number_of_tatamis(void);
+extern gint number_of_conf_tatamis(void);
 extern void init_trees(void);
 extern struct name_data *avl_get_data(gint index);
 extern void avl_set_data(gint index, gchar *first, gchar *last, gchar *club);
