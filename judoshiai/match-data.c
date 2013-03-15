@@ -1854,7 +1854,7 @@ gchar *get_system_description(gint index, gint competitors)
             return _("IJF Qrt Final Rep");
 
         switch (sys.table) {
-        case TABLE_DOUBLE_REPECHAGE: return _("FIN Dbl Repchg");
+        case TABLE_DOUBLE_REPECHAGE: return (draw_system == DRAW_UKRAINIAN) ? _("UKR Dbl Repchg") : _("FIN Dbl Repchg");
         case TABLE_SWE_DUBBELT_AATERKVAL: return _("SWE Dubb återkv");
         case TABLE_SWE_DIREKT_AATERKVAL: return _("SWE Dir återkv");
         case TABLE_EST_D_KLASS: return _("EST D klass");
@@ -1888,7 +1888,7 @@ static gchar *get_system_name(gint num)
     case CAT_SYSTEM_DPOOL: return _("Double Pool");
     case CAT_SYSTEM_QPOOL: return _("Quad Pool");
     case CAT_SYSTEM_DPOOL2: return _("Double Pool 2");
-    case CAT_SYSTEM_REPECHAGE: return _("FIN Double Repechage");
+    case CAT_SYSTEM_REPECHAGE: return (draw_system == DRAW_UKRAINIAN) ? _("UKR Double Repechage") : _("FIN Double Repechage");
     case CAT_SYSTEM_DUBBELT_AATERKVAL: return _("SWE Double Repechage");
     case CAT_SYSTEM_DIREKT_AATERKVAL: return _("SWE Direct Repechage");
     case CAT_SYSTEM_EST_D_KLASS: return _("EST Double Elimination");

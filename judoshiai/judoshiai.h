@@ -426,6 +426,7 @@ enum default_drawing_system {
     DRAW_DANISH,
     DRAW_POLISH,
     DRAW_SLOVAKIAN,
+    DRAW_UKRAINIAN,
     NUM_DRAWS
 };
 

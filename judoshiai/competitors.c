@@ -652,7 +652,7 @@ void view_on_row_activated(GtkTreeView        *treeview,
                                  get_system_menu_selection(catdata->system.wishsys) :
                                  CAT_SYSTEM_DEFAULT);
 
-        tmp = gtk_label_new("Tatami:");
+        tmp = gtk_label_new(_("Tatami:"));
         gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, 2, 3);
         judoka_tmp->belt = tmp = gtk_combo_box_new_text();
         gtk_combo_box_append_text(GTK_COMBO_BOX(tmp), "?");
