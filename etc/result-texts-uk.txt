@@ -1,7 +1,6 @@
-### First line is the menu text
-Results in Ukrainian
+﻿Результати Українською
 ### 1: Competitors
-Учасники
+Учасники 
 ### 2: Competitors A (for double and quadruple pools)
 Учасники A
 ### 3: Competitors B
@@ -13,15 +12,15 @@ Results in Ukrainian
 ### 6: # (= short text for "Number", like "Nr")
 №
 ### 7: Name
-Учасник
+Ім'я
 ### 8: Grade (belt grade, 1. dan, 3. kyu etc)
-Розряд
+Ступінь
 ### 9: Club
-Команда
+Клуб
 ### 10: Matches
 Сутички
 ### 11: Matches A
-Сутички A
+Сутички А
 ### 12: Matches B
 Сутички B
 ### 13: Matches C
@@ -41,29 +40,29 @@ Results in Ukrainian
 ### 20: Time (fight time)
 Час
 ### 21: Wins (number of wins)
-П
+Перемог
 ### 22: Pts (short text for points)
-О
+Оч.
 ### 23: Pos (short text for position = winner, second, bronze)
-М
+Пр.
 ### 24: Previous winner
-Previous winner
+Попередній переможець
 ### 25: Next (competitors who have the next fight)
 Наступні
 ### 26: Weight:
-Вага
+Вага:
 ### 27: PRELIMINARY SCHEDULE
-ПОПЕРЕДНІЙ РОЗКЛАД
+ПОПЕРЕДНІЙ ГРАФІК
 ### 28: weighin-notes.pdf (file name)
-weighin-notes.pdf
+zvajuvannya.pdf
 ### 29: schedule.pdf (file name)
-schedule.pdf
+plan.pdf
 ### 30: categories.pdf (file name)
-categories.pdf
+kategoriy.pdf
 ### 31: Category
 Категорія
 ### 32: Next fights (for a list of fights)
-Наступна
+Наступна сутичка
 ### 33: Categories
 Категорії
 ### 34: Statistics
@@ -71,29 +70,29 @@ categories.pdf
 ### 35: Medals
 Медалі
 ### 36: Total
-Підсумок
+Сума
 ### 37: Country
 Країна
 ### 38: Not drawn
-Not drawn
+Протокол не складено
 ### 39: Finished
-Finished
+Завершено
 ### 40: Match ongoing
-Match ongoing
+Поточна сутичка
 ### 41: Started (category has started)
-Started
-### 42: Drawing ready
-Drawing ready
+Розпочата категорія
+### 42:  Drawing ready
+Складання виконано
 ### 43: Coach
-Coach
+Тренер
 ### 44: Surname
-Surname
-### 45: Status
-Status
+Прізвище
+### 45: Статус
+Статус
 ### 46: Display
-Display
+Перегляд
 ### 47: "Match after n matches" divided in two parts
 ###     Match after ("Match after" n matches)
-Match after
+Наступна сутичка
 ### 48: matches (Match after n "matches")
-matches
+Наступні сутички
