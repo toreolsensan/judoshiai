@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-21 16:00+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2013-03-19 00:31+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -45,7 +45,7 @@ msgid "Add competitors"
 msgstr "Додати учасників"
 
 msgid "Address of the communication node"
-msgstr "Адреса вузла зв'язку"
+msgstr "Адреса мережі"
 
 msgid "Advertise"
 msgstr "Реклама"
@@ -186,7 +186,7 @@ msgid "Communication"
 msgstr "Мережа"
 
 msgid "Communication Node"
-msgstr "Вузол зв'язку"
+msgstr "Мережа"
 
 msgid ""
 "Communication is blocked! \n"
@@ -196,7 +196,7 @@ msgstr ""
 "Ви все ще можете створювати категорії та інше."
 
 msgid "Communication node"
-msgstr "Вузол зв'язку"
+msgstr "Мережа"
 
 msgid "Competitor"
 msgstr "Учасник"
@@ -343,7 +343,7 @@ msgid "Do not change"
 msgstr "Не змінювати"
 
 msgid "Double Pool"
-msgstr "Double Pool"
+msgstr "Змішана - 2 підгрупи"
 
 msgid "Draw All Categories"
 msgstr "Скласти усі протоколи"
@@ -439,7 +439,7 @@ msgid "Grade"
 msgstr "Розряд"
 
 msgid "Grade Visible"
-msgstr "Показати розряд"
+msgstr "Показувати розряд"
 
 msgid "Grade:"
 msgstr "Розряд:"
@@ -478,13 +478,13 @@ msgid "Highest age:"
 msgstr "Не старше:"
 
 msgid "Highest weight (g):"
-msgstr "Найвища вага (г):"
+msgstr "Допустима вага (г):"
 
 msgid "IJF Qrt Final Rep"
-msgstr "Подв. втіш. IJF "
+msgstr "Подв. втіш. IJF від чветі"
 
 msgid "IJF Quarter Final Repechage"
-msgstr "Подвійне втішення IJF "
+msgstr "IJF втішення від чвертьфіналу "
 
 msgid "IP address:"
 msgstr "IP-адреси:"
@@ -782,7 +782,7 @@ msgid "Properties"
 msgstr "Властивості"
 
 msgid "Quad Pool"
-msgstr "Quad Pool"
+msgstr "Змішана - 4 підгрупи"
 
 msgid "Quick guide"
 msgstr "Короткий посібник"
@@ -827,7 +827,7 @@ msgid "Reset to Defaults"
 msgstr "Відновити значення за замовчуванням"
 
 msgid "Rest"
-msgstr "Відпочинок"
+msgstr "Завершити"
 
 msgid "Rest time:"
 msgstr "Час відпочинку:"
@@ -935,7 +935,7 @@ msgid "Short pin times"
 msgstr "Коротке утримання"
 
 msgid "Show Attached Connections"
-msgstr "Показати  підключення"
+msgstr "Показувати підключення"
 
 msgid "Show Sheet"
 msgstr "Показати протокол"
@@ -1049,10 +1049,10 @@ msgid "Weight:"
 msgstr "Вага:"
 
 msgid "Weights Visible"
-msgstr "Показати вагу"
+msgstr "Показувати вагу"
 
 msgid "Weights Visible in Pool Sheets"
-msgstr "Показати вагу в протоколі"
+msgstr "Показувати вагу в протоколі"
 
 msgid "Which one is correct?"
 msgstr "Який з них правильний?"
@@ -1124,7 +1124,7 @@ msgid "Switch sides"
 msgstr "Змінити порядок"
 
 msgid "Display customized layout"
-msgstr "Макет 6"
+msgstr "Власний макет"
 
 msgid "No competitor found!"
 msgstr "Учасника не знайдено"
@@ -1145,7 +1145,7 @@ msgid "Silver medal match"
 msgstr "Срібна сутичка"
 
 msgid "Pool Style 2"
-msgstr "Pool Style 2"
+msgstr "Кругова (стиль 2)"
 
 msgid "Use Belt Colors"
 msgstr "Колір пояса"
@@ -1169,7 +1169,7 @@ msgid "White first:"
 msgstr "Білий спочатку:"
 
 msgid "Serial Communication"
-msgstr "Зв'язок"
+msgstr "Послідовна зв'язок"
 
 msgid "In Use"
 msgstr "Задіяти"
@@ -1190,13 +1190,13 @@ msgid "No script available"
 msgstr "Сценарій недоступний"
 
 msgid "Run Script"
-msgstr "Управління сценарієм"
+msgstr "Ввімкнути сценарій"
 
 msgid "Repeat Script"
 msgstr "Повторити сценарій"
 
 msgid "Double Pool 2"
-msgstr "Double pool 2"
+msgstr "Змішана - 2 підгрупи v.2"
 
 msgid "Write to file"
 msgstr "Записати у файл"
@@ -1334,7 +1334,7 @@ msgid "Female"
 msgstr "Жінка"
 
 msgid "Control:"
-msgstr "Управління:"
+msgstr "Контроль:"
 
 msgid "NOK"
 msgstr "NOK"
@@ -1475,7 +1475,7 @@ msgid "Video server"
 msgstr "Відеосервер"
 
 msgid "Video server URL"
-msgstr " URL відеосерверу"
+msgstr "URL відеосерверу"
 
 msgid "User:"
 msgstr "Користувач:"
@@ -1526,16 +1526,16 @@ msgid "Seeded to fixed places:"
 msgstr "Сіяні з фіксованими місцями"
 
 msgid "Double Pool 2 with carried forward points:"
-msgstr ""
+msgstr "Змішана - 2 підгрупи з переносом оцінок:"
 
 msgid "Two pool bronzes:"
-msgstr ""
+msgstr "Кругова з двома бронзами:"
 
 msgid "Resolve 3-way ties by weights:"
-msgstr ""
+msgstr "Із трьох рівних перемагає найлегший:"
 
 msgid "Coach Id:"
-msgstr "Id Тренера"
+msgstr "Код тренера"
 
 msgid "Comment:"
 msgstr "Кометар:"
@@ -1547,17 +1547,17 @@ msgid ""
 "Medal will be awarded \n"
 "only if a contest was won:"
 msgstr ""
-"Медаль буде вручена \n"
-"тільки переможцю сутички"
+"Лише переможна сутичка \n"
+"надає право на медаль"
 
 msgid "Pool settings"
-msgstr "Умови кругової системи"
+msgstr "Параметри змішаних систем"
 
 msgid "Statistics"
 msgstr "Статистика"
 
 msgid "Grade names"
-msgstr "Ступінь"
+msgstr "Ступені (Кю/Розряд)"
 
 msgid "Coach"
 msgstr "Тренер"
@@ -1581,22 +1581,22 @@ msgid "Print SVG"
 msgstr "Друкувати SVG"
 
 msgid "If equal score less shido wins"
-msgstr ""
+msgstr "За рівних оцінок порівнюють shido"
 
 msgid "No Limit"
-msgstr ""
+msgstr "Без обмежень"
 
 msgid "Corrupted competitor data:\n"
-msgstr ""
+msgstr "Дані учасника пошкоджено:\n"
 
 msgid "Corrupted category data:\n"
-msgstr ""
+msgstr "Дані категорії пошкоджено:\n"
 
 msgid "Server URL"
-msgstr ""
+msgstr "URL сервера"
 
 msgid "Copy to Server"
-msgstr ""
+msgstr "Копіювати на сервер"
 
 msgid "Proxy User:"
 msgstr ""
@@ -1620,40 +1620,40 @@ msgid "EST Double Elim One Bronze"
 msgstr ""
 
 msgid "Set score"
-msgstr ""
+msgstr "Поставити оцінку"
 
 msgid "Edit Drawing"
-msgstr ""
+msgstr "Редагувати протокол"
 
 msgid "Remote address"
-msgstr ""
+msgstr "Віддалена адреса"
 
 msgid "Remote Control"
-msgstr ""
+msgstr "Віддалений контроль"
 
 msgid "VLC control"
-msgstr ""
+msgstr "VLC контроль"
 
 msgid "X:"
-msgstr ""
+msgstr "X:"
 
 msgid "Y:"
-msgstr ""
+msgstr "Y:"
 
 msgid "Scale:"
-msgstr ""
+msgstr "Масштаб:"
 
 msgid "Name"
-msgstr ""
+msgstr "Назва"
 
 msgid "Reg.Cat"
 msgstr ""
 
 msgid "ID"
-msgstr ""
+msgstr "Код"
 
 msgid "Index"
-msgstr ""
+msgstr "Індекс"
 
 msgid "Results in Polish"
 msgstr ""
@@ -1665,10 +1665,10 @@ msgid "Results in Dutch"
 msgstr ""
 
 msgid "Win in Golden Score gives 1 point"
-msgstr ""
+msgstr "Golden Score - до першої оцінки"
 
 msgid "WARNING: NO CONTROL"
-msgstr ""
+msgstr "УВАГА: КЕРУВАННЯ ВІДСУТНЄ"
 
 msgid "British System"
 msgstr ""
@@ -1686,4 +1686,5 @@ msgid "Slovakian System"
 msgstr ""
 
 msgid "Tatami"
-msgstr ""
+msgstr "Татамі"
+
