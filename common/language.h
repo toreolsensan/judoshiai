@@ -20,6 +20,7 @@ enum {
     LANG_PL,
     LANG_SK,
     LANG_NL,
+    LANG_CS,
     NUM_LANGS
 };
 

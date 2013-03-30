@@ -1,0 +1,1680 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-08-23 09:40+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Blue won the voting"
+msgstr "Modrý vyhrál hlasováním"
+
+msgid "White won the voting"
+msgstr "Bílý vhrál hlasováním"
+
+msgid "Match:"
+msgstr "Zápas:"
+
+msgid "Next:"
+msgstr "Další:"
+
+msgid "Match"
+msgstr "Zápas"
+
+msgid "Contest"
+msgstr "Soutěž"
+
+msgid "Preferences"
+msgstr "Předvolby"
+
+msgid "Help"
+msgstr "Pomoc"
+
+msgid "Quit"
+msgstr "Quit"
+
+msgid "Red background"
+msgstr "Červené pozadí"
+
+msgid "Communication node"
+msgstr "Komunikační uzel"
+
+msgid "Own IP addresses"
+msgstr "Vlastní IP-adresa"
+
+msgid "Manual"
+msgstr "Manuál"
+
+msgid "About"
+msgstr "O"
+
+msgid "Address of the communication node"
+msgstr "Adresa komunikačního kanálu"
+
+msgid "IP address:"
+msgstr "IP-adresa:"
+
+msgid "(Connection OK)"
+msgstr "(Připojení OK)"
+
+msgid "(Connection broken)"
+msgstr "(Připojení přerušené)"
+
+msgid "Change language to Finnish"
+msgstr "Změna jazyku na Finsky"
+
+msgid "Change language to Estonian"
+msgstr "Změna jazyku na Estonsky"
+
+msgid "Change language to English"
+msgstr "Změna jazyku na Anglicky"
+
+msgid "Contest duration automatically from JudoShiai program"
+msgstr "Soutěží se z programu JudoShiai"
+
+msgid "Fight:"
+msgstr "Zápas:"
+
+msgid "Match duration: automatic"
+msgstr "DOba zápasu : automaticky"
+
+msgid "Match duration: 2 min E-juniors"
+msgstr "Doba zápasu : 2 min E-junioři"
+
+msgid "Match duration: 2 min"
+msgstr "Doba zápasu: 2 min"
+
+msgid "Match duration: 3 min"
+msgstr "Doba zápasu: 3 min"
+
+msgid "Match duration: 4 min"
+msgstr "Doba zápasu: 4 min"
+
+msgid "Match duration: 5 min"
+msgstr "Doba zápasu: 5 min"
+
+msgid "Contest duration: automatic"
+msgstr "Soutěž trvá: automaticky"
+
+msgid "Contest duration: 2 min (short pin times)"
+msgstr "Soutěž trvá: 2 min "
+
+msgid "Contest duration: 2 min"
+msgstr "Soutěž trvá: 2 min"
+
+msgid "Contest duration: 3 min"
+msgstr "Soutěž trvá: 3 min"
+
+msgid "Contest duration: 4 min"
+msgstr "Soutěž trvá: 4 min"
+
+msgid "Contest duration: 5 min"
+msgstr "Soutěž trvá: 5 min"
+
+msgid "Hantei: blue wins"
+msgstr "Hantei: modrý vyhrál"
+
+msgid "Hantei: white wins"
+msgstr "Hantei: bílý vyhrál"
+
+msgid "Contest area not chosen"
+msgstr "Tatami není vybrána"
+
+msgid "Contest area 1"
+msgstr "Tatami 1"
+
+msgid "Contest area 2"
+msgstr "Tatami 2"
+
+msgid "Contest area 3"
+msgstr "Tatami 3"
+
+msgid "Contest area 4"
+msgstr "Tatami 4"
+
+msgid "Contest area 5"
+msgstr "Tatami 5"
+
+msgid "Contest area 6"
+msgstr "Tatami 6"
+
+msgid "Contest area 7"
+msgstr "Tatami 7"
+
+msgid "Contest area 8"
+msgstr "Tatami 8"
+
+msgid "Increment time"
+msgstr "Zvýšení času"
+
+msgid "Decrement time"
+msgstr "Snížení času"
+
+msgid "View clocks only"
+msgstr "Zobraz poze hodiny"
+
+msgid "Increment pin time"
+msgstr "Zvýšení pin času"
+
+msgid "Decrement pin time"
+msgstr "Snížení pin času"
+
+msgid "Points going to blue"
+msgstr "Body modrý"
+
+msgid "Points going to white"
+msgstr "Body bílý"
+
+msgid "About Judotimer"
+msgstr "Info Judotimerist"
+
+msgid "Full screen mode"
+msgstr "Na celou obrazpvku"
+
+msgid "Normal operation"
+msgstr "Normální operace"
+
+msgid "Master mode"
+msgstr "Master mód"
+
+msgid "Slave mode"
+msgstr "Slave mód"
+
+msgid "Undo!"
+msgstr "Zpět!"
+
+msgid "Set clocks"
+msgstr "Nastav čas"
+
+msgid "Clock:"
+msgstr "Hodiny:"
+
+msgid "Year 2009 rules"
+msgstr "pravidla 2009"
+
+msgid "Short pin times"
+msgstr "Krátký čas"
+
+msgid "Hansoku-make to blue"
+msgstr "Hansoku-make modrý"
+
+msgid "Hansoku-make to white"
+msgstr "Hansoku-make bílý"
+
+msgid "Zrušit Výběr"
+msgstr "Eemalda valik"
+
+msgid "Display layout 1"
+msgstr "Display 1"
+
+msgid "Display layout 2"
+msgstr "Display 2"
+
+msgid "Display layout 3"
+msgstr "Display 3"
+
+msgid "Display layout 4"
+msgstr "Display 4"
+
+msgid "Display layout 5"
+msgstr "Display 5"
+
+msgid "Quick guide"
+msgstr "Stručný návod"
+
+msgid "Advertise"
+msgstr "Reklama"
+
+msgid "Run Advertisements"
+msgstr "Spustit reklamy"
+
+msgid "Competitors"
+msgstr "Soutěžící"
+
+msgid "Categories"
+msgstr "Kategorie"
+
+msgid "Drawing"
+msgstr "Losování"
+
+msgid "Results"
+msgstr "Výsledky"
+
+msgid "Judotimer"
+msgstr "Judotimer"
+
+msgid "New Tournament"
+msgstr "Nový turnaj"
+
+msgid "Open Tournament"
+msgstr "Otevřít turnaj"
+
+msgid "Open Tournament from Net"
+msgstr "Otevřít turnaj z netu"
+
+msgid "Properties"
+msgstr "Vlastnosti"
+
+msgid "New Competitor"
+msgstr "Nový závodník"
+
+msgid "Search Competitor"
+msgstr "Vyhledat závodníka"
+
+msgid "Select From Another Shiai"
+msgstr "Výběr z dalšího Shiai"
+
+msgid "Add From a Text File"
+msgstr "Přidat z textového souboru"
+
+msgid "Add All From Another Shiai"
+msgstr "Přidat vše z dalšího Shiai"
+
+msgid "Add All with Weights"
+msgstr "Přidat vše s váhou"
+
+msgid "Remove Unweighted"
+msgstr "Odebrat nezvážené"
+
+msgid "Restore Removed"
+msgstr "Obnovit odebrané"
+
+msgid "Bar Code Search"
+msgstr "Vyhledat BAR kód"
+
+msgid "Print Weight Notes"
+msgstr "Vtiskout váhy"
+
+msgid "New Category"
+msgstr "Nová kategorie"
+
+msgid "Remove Empty"
+msgstr "Odebrat prázdné"
+
+msgid "Create Categories"
+msgstr "Vytvořit kategorie"
+
+msgid "Print All"
+msgstr "Vtisknout vše"
+
+msgid "Best of Three"
+msgstr "Nejlepší tři"
+
+msgid "Place To"
+msgstr "Místo"
+
+msgid "Tatamis"
+msgstr "Tatami"
+
+msgid "Draw All Categories"
+msgstr "Losuj všechny kategorie"
+
+msgid "Print All (Web And PDF)"
+msgstr "Tiskni vše (Web a PDF)"
+
+msgid "Print Schedule to Printer"
+msgstr "Tiskni časový plán - tiskárna"
+
+msgid "Print Schedule to PDF"
+msgstr "Tiskni časový plán (PDF)"
+
+msgid "Print Schedule"
+msgstr "Tiskni časový plán"
+
+msgid "Control Tatami"
+msgstr "Kontrola tatami"
+
+msgid "Communication Node"
+msgstr "Komunikační kanál"
+
+msgid "Own IP Addresses"
+msgstr "Vlastní IP-adresa"
+
+msgid "Show Attached Connections"
+msgstr "Zobrazit příchozí spojení"
+
+msgid "Automatic Sheet Update"
+msgstr "Automatická aktualizace tabulky"
+
+msgid "Automatic Web Page Update"
+msgstr "Automatická aktualizace web"
+
+msgid "Results in Finnish"
+msgstr "Výsledky Finsky"
+
+msgid "Results in Swedish"
+msgstr "Výsledky Švédsky"
+
+msgid "Results in English"
+msgstr "Výsledky Anglicky"
+
+msgid "Results in Spanish"
+msgstr "Výsledky Španělsky"
+
+msgid "Results in Estonian"
+msgstr "Výsledky Estonsky"
+
+msgid "Results in Ukrainian"
+msgstr "Výsledky ukrajinsky"
+
+msgid "Results in Czech"
+msgstr "Výsledky Česky"
+
+msgid "Weights Visible in Pool Sheets"
+msgstr "Hmotnosti viditelné v tabulkách"
+
+msgid "Sheet Font"
+msgstr "Font listu" 
+
+msgid "Password"
+msgstr "Heslo"
+
+msgid "Password:"
+msgstr "Heslo:"
+
+msgid "Competitor already exists!"
+msgstr "Soutěžící už existuje"
+
+msgid "Competitor"
+msgstr "Soutěžící"
+
+msgid "copied"
+msgstr "kopie"
+
+msgid "Category already exists!"
+msgstr "Kategorie už existuje"
+
+msgid "Category"
+msgstr "Kategorie"
+
+msgid "has been copied with competitors and matches"
+msgstr "bude zkopírován se závodníky a zápasy"
+
+msgid "Last Name"
+msgstr "Příjmení"
+
+msgid "First Name"
+msgstr "Jméno"
+
+msgid "Year of Birth"
+msgstr "Rok narození"
+
+msgid "Grade"
+msgstr "Stupěň"
+
+msgid "Club"
+msgstr "Klub"
+
+msgid "Reg. Category"
+msgstr "Reg.kategorie"
+
+msgid "Weight"
+msgstr "Váha"
+
+msgid "Drawing not finished!"
+msgstr "Losování není ukončeno"
+
+msgid "Matches matched in category"
+msgstr "Zápasy zařazené v kategorii"
+
+msgid "Clear the results first"
+msgstr "Vyčisti nejdřív výsledky"
+
+msgid "Move the competitors"
+msgstr "Vlož závodníky"
+
+msgid "Number"
+msgstr "Číslo"
+
+msgid "Select first a competitor and then a number."
+msgstr "Vyber nejdřív závodníka a potom číslo."
+
+msgid "All the categories has been drawn"
+msgstr "Všechny kategorie byly rozlosovány"
+
+msgid "Choose a directory"
+msgstr "Vyber adresář"
+
+msgid "Category drawn"
+msgstr "Losování kategorie"
+
+msgid "All the categories located to the tatamis"
+msgstr "Všechny kategorie byly umístěny na tatami"
+
+msgid "Unlocated"
+msgstr "Neumístěno"
+
+msgid "Connections to this node"
+msgstr "Propojení k tomuto kanálu"
+
+msgid "already exists!"
+msgstr "již existuje!"
+
+msgid "Group"
+msgstr "Skupina"
+
+msgid "Group:"
+msgstr "Skupina:"
+
+msgid "Last Name:"
+msgstr "Příjmení:"
+
+msgid "First Name:"
+msgstr "Jméno:"
+
+msgid "Year of Birth:"
+msgstr "Rok narození:"
+
+msgid "Grade:"
+msgstr "Stupeň:"
+
+msgid "Club:"
+msgstr "Klub:"
+
+msgid "Reg. Category:"
+msgstr "Reg. kategorie:"
+
+msgid "Weight:"
+msgstr "Váha:"
+
+msgid "Category:"
+msgstr "Kategorie:"
+
+msgid "No seeding"
+msgstr "Bez nasazení"
+
+msgid "Empty categories removed"
+msgstr "Odstranit prázndé kategorie"
+
+msgid "Unweighted competitors removed"
+msgstr "Odstranit nezvážené závodníky"
+
+msgid "Matches exist. Undo the drawing first."
+msgstr "Zápas existuje.Odstraň nejdřív rozlosování."
+
+msgid "Competitors removed"
+msgstr "Odstraň závodníky"
+
+msgid "Type the barcode:"
+msgstr "Vlož čárový kód:"
+
+msgid "Bar code search"
+msgstr "Vyhledej čárový kód"
+
+msgid "Matches"
+msgstr "Zápas"
+
+msgid "Contests"
+msgstr "Soutěže"
+
+msgid "Sheet"
+msgstr "List"
+
+msgid "Previous winner"
+msgstr "Předchozí vítěz"
+
+msgid "Cancel the match"
+msgstr "Ukonči zápas"
+
+msgid "Select a tatami"
+msgstr "vyber Tatami"
+
+msgid "Password accepted.<br>"
+msgstr "Heslo akceptováno.<br>"
+
+msgid "User"
+msgstr "Uživatel"
+
+msgid "Back"
+msgstr "Zpět"
+
+msgid "Wrong password"
+msgstr "Špatné heslo"
+
+msgid "Logout"
+msgstr "Odhlásit"
+
+msgid "Login"
+msgstr "Přihlásit"
+
+msgid "No rights to give results"
+msgstr "Bez oprávnění vkládat výsledky"
+
+msgid "Not used"
+msgstr "Nepoužité"
+
+msgid "Column"
+msgstr "Sloupec"
+
+msgid "Import from file"
+msgstr "Import ze souboru"
+
+msgid "Sex:"
+msgstr "Pohlaví:"
+
+msgid "Girl Text:"
+msgstr "Dívka:"
+
+msgid "Column Separator:"
+msgstr "Odělovač sloupců:"
+
+msgid "competitors added"
+msgstr "závodníci vloženi"
+
+msgid "errors"
+msgstr "chyba"
+
+msgid "competitors existed already"
+msgstr "závodníci už existují"
+
+msgid "Time"
+msgstr "Čas"
+
+msgid "Class"
+msgstr "třída"
+
+msgid "Message"
+msgstr "zpráva"
+
+msgid "Log"
+msgstr "Log"
+
+msgid "Is there another JudoShiai program running?"
+msgstr "Je spuštěn další JudoShiai ?"
+
+msgid "Yes, another JudoShiai program is running"
+msgstr "Ano, další JudoShiai už běží"
+
+
+msgid ""
+"No, this the only JudoShiai program. \n"
+""
+msgstr ""
+"Ne, toto je jediný JudoShiai \n"
+""
+
+msgid ""
+"Communication is blocked! \n"
+"You can still use the program to create categories etc."
+msgstr ""
+"Kumunikace je blokována"
+"Můžete stále vytvářet kategorie v tomto programu např."
+
+msgid "Pool"
+msgstr "Pool"
+
+msgid "Double pool"
+msgstr "Double pool"
+
+msgid "Double repechage"
+msgstr "Dvojité opravy"
+
+msgid "Next match"
+msgstr "Další zápas"
+
+msgid "Next contest"
+msgstr "Další soutěž"
+
+msgid "Preparing"
+msgstr "Příprava"
+
+msgid "Preparing:"
+msgstr "Příprava:"
+
+msgid "Delay the match"
+msgstr "Zpozdit zápas"
+
+msgid "Matches matched. Clear the results first."
+msgstr "Zápas je vložen. Vyčisti výsledky"
+
+msgid "canceled"
+msgstr "ukončeno"
+
+msgid "changed"
+msgstr "změněno"
+
+msgid "points"
+msgstr "body"
+
+msgid "Expand All"
+msgstr "Rozbal vše"
+
+msgid "Collapse All"
+msgstr "Zabal vše"
+
+msgid "Remove comment"
+msgstr "Odeber komentář"
+
+msgid "Blue"
+msgstr "Modrý"
+
+msgid "White"
+msgstr "Bílý"
+
+msgid "Comment"
+msgstr "Komentář"
+
+msgid "Points"
+msgstr "Body"
+
+msgid "Prev. winner:"
+msgstr "Před. vítěz:"
+
+msgid "Delayed"
+msgstr "Zpožděný"
+
+msgid "Remove delay"
+msgstr "Odeber zpoždění"
+
+msgid "Date:"
+msgstr "Datum:"
+
+msgid "Place:"
+msgstr "Místo:"
+
+msgid "Start time:"
+msgstr "Začátek:"
+
+msgid "Tournament from the net"
+msgstr "Turnaj ze sítě"
+
+msgid "Select sheet font"
+msgstr "Vyber font listu"
+
+msgid "Tournament"
+msgstr "Turnaj"
+
+msgid "Tournament:"
+msgstr "Turnaj:"
+
+msgid "Tournaments"
+msgstr "Turnaje"
+
+msgid "Competitors:"
+msgstr "Závodníci:"
+
+msgid "Weighed:"
+msgstr "Váha:"
+
+msgid "Add competitors"
+msgstr "Vložit závodníky"
+
+msgid "Clean up duplicates and update reg. categories"
+msgstr ""
+"Vyčisti zdvojené a updatuj kategorie"
+
+msgid "competitors added and updated"
+msgstr "závodníci vloženi a udatování"
+
+msgid "competitors already existed"
+msgstr "závodníci už existují"
+
+msgid "competitors added unchanged"
+msgstr "vložení závdníci nezměněni"
+
+msgid "Remove drawing first"
+msgstr "Odeber nejdřív losování"
+
+msgid "already exists"
+msgstr "už existuje"
+
+msgid "Move Competitors to Category..."
+msgstr "Vlž závodníky do kategorií..."
+
+msgid "Move Competitors Here"
+msgstr "Vlož závodníky zde"
+
+msgid "Compose Unofficial Category"
+msgstr "Vytvoř neoficiální kategorie"
+
+msgid "Draw Manually"
+msgstr "Manuální losování"
+
+msgid "Remove Drawing"
+msgstr "Odebrat losování"
+
+msgid "Copy Competitors"
+msgstr "Kopírování závodníků"
+
+msgid "Remove Competitors"
+msgstr "Odeber závodníky"
+
+msgid "Show Sheet"
+msgstr "Ukaž tabulku"
+
+msgid "Search"
+msgstr "Hledat"
+
+msgid "----- Men -----"
+msgstr "----- Muž -----"
+
+msgid "----- Women -----"
+msgstr "----- Žena -----"
+
+msgid "Highest age:"
+msgstr "Maximální věk:"
+
+msgid "Age text:"
+msgstr "Věková kategorie:"
+
+msgid "Match time:"
+msgstr "Čas zápasu:"
+
+msgid "Rest time:"
+msgstr "Přestávka:"
+
+msgid "Pin times (IWYK):"
+msgstr "Časy držení.(IWYK):"
+
+msgid "Highest weight (g):"
+msgstr "Nejvyšší váha (g):"
+
+msgid "Weight text:"
+msgstr "Váha:"
+
+msgid "Save file"
+msgstr "Ulož Soubor"
+
+msgid "Which one is correct?"
+msgstr "Který je správně?"
+
+msgid "Own database"
+msgstr "Vlastní databáze"
+
+msgid "Foreign database"
+msgstr "Zahraniční databáze"
+
+msgid "Do not change"
+msgstr "Neměnit"
+
+msgid "Stop synchronization"
+msgstr "Zastav synchronizaci"
+
+msgid "Number of tatamis:"
+msgstr "Počet tatami:"
+
+msgid "Sheets"
+msgstr "Tabulky"
+
+msgid "Category starts"
+msgstr "Start kategorie"
+
+msgid "Gold medal match"
+msgstr "Zápas o zlati"
+
+msgid "Bronze match A"
+msgstr "Zápas o bronz A"
+
+msgid "Bronze match B"
+msgstr "Zápas o bronz B"
+
+msgid "Semifinal A"
+msgstr "Semifinále A"
+
+msgid "Semifinal B"
+msgstr "Semifinále B"
+
+msgid "Show Tatami"
+msgstr "Ukaž tatami"
+
+msgid "Start New Match?"
+msgstr "Začít další zápas?"
+
+msgid "Start New Contest?"
+msgstr "Začít novou soutěž?"
+
+msgid "Hansokumake to blue"
+msgstr "Hansoku-make modrý"
+
+msgid "Hansokumake to white"
+msgstr "Hansoku-make červený"
+
+msgid "Golden Score"
+msgstr "Zlaté skóre"
+
+msgid "Start Golden Score?"
+msgstr "Začít zlaté skóre?"
+
+msgid "Hantei"
+msgstr "Hantei"
+
+msgid "Blue wins"
+msgstr "Vítěz modrý"
+
+msgid "White wins"
+msgstr "Vítěz  bílý"
+
+msgid "REST TIME"
+msgstr "PŘESTÁVKA"
+
+msgid "Seeding:"
+msgstr "Nasazení:"
+
+msgid "1"
+msgstr "1"
+
+msgid "2"
+msgstr "2"
+
+msgid "3"
+msgstr "3"
+
+msgid "4"
+msgstr "4"
+
+msgid "Freeze match order"
+msgstr "Zmrazit zápasový řád"
+
+msgid "Unfreeze exported"
+msgstr "Odmrazit exportované"
+
+msgid "Unfreeze imported"
+msgstr "Odmrazit importované"
+
+msgid "Unfreeze this"
+msgstr "Odmrazit toto"
+
+msgid "SQL Dialog"
+msgstr "SQL-dialoog"
+
+msgid "Print All (PDF)"
+msgstr "Vytiskni vše (PDF)"
+
+msgid "Golden Score:"
+msgstr "Zlaté skóre:"
+
+msgid "SQL"
+msgstr "SQL"
+
+msgid "About JudoInfo"
+msgstr "O JudoInfo"
+
+msgid "Next"
+msgstr "Další"
+
+msgid "Rest"
+msgstr "Zbytek"
+
+msgid "Do Backup"
+msgstr "Záloha"
+
+msgid "CANNOT OPEN BACKUP FILE"
+msgstr "Nelze otevřít záložní soubor"
+
+msgid "Tournament Backup"
+msgstr "Záloha turnaje"
+
+msgid "Small display"
+msgstr "Malý display"
+
+msgid "Draw Selected"
+msgstr "Losuj vybrané"
+
+msgid "Draw and Print Selected"
+msgstr "Losuj a tiskni vybrané"
+
+msgid "Print Selected Sheets (Printer)"
+msgstr "Tiskni vybrané tabulky (Tiskárna)"
+
+msgid "Print Selected Sheets (PDF)"
+msgstr "Tiskni vybrané tabulky (PDF)"
+
+msgid "Advertisement"
+msgstr "Reklama"
+
+msgid "Tournament properties"
+msgstr "Nastavení turnaje"
+
+msgid "Print Matches (CSV)"
+msgstr "Tiskni zápasy (CSV)"
+
+msgid "Match File"
+msgstr "Soubor zápasů"
+
+msgid "Print Not Started Categories"
+msgstr "Tiskni nenastartované kategorie"
+
+msgid "Print Started Categories"
+msgstr "Tiskni nastarované kategorie"
+
+msgid "Print Finished Categories"
+msgstr "Tiskni ukončené kategorie"
+
+msgid "Print Result"
+msgstr "Tiskni výsledky"
+
+msgid "Print IWYKS"
+msgstr "Tiskni IWYKS"
+
+msgid "Print Comment"
+msgstr "Tiskni komentář"
+
+msgid "Create Statistics"
+msgstr "Vytvoř statistiku"
+
+msgid "NOTE"
+msgstr "Poznámka"
+
+msgid "is not a valid ASCII string!"
+msgstr "není správný ASCII-znak!"
+
+msgid "No koka"
+msgstr "BEZ koky"
+
+msgid "Leave points for GS"
+msgstr "Nevkládej body do DoublePool"
+
+msgid "Automatic Match Delay"
+msgstr "Autom. přestávka mezi zápasy"
+
+msgid "Cannot move"
+msgstr "Nemůžu vložit"
+
+msgid "Mirror Tatami Order"
+msgstr "Zrcadli tatami"
+
+msgid "Mirror tatami order"
+msgstr "Zrcadli tatami"
+
+msgid "Country"
+msgstr "Země"
+
+msgid "Id"
+msgstr "Id"
+
+msgid "Country:"
+msgstr "Země:"
+
+msgid "Id:"
+msgstr "Id:"
+
+msgid "System:"
+msgstr "System:"
+
+msgid "Default"
+msgstr "Default"
+
+msgid "FIN Double Repechage"
+msgstr "FIN Dvojité opravy"
+
+msgid "SWE Double Repechage"
+msgstr "SWE Dvojité opravy"
+
+msgid "SWE Double Elimination"
+msgstr "SWE Dvojitá eliminace"
+
+msgid "EST Double Elimination"
+msgstr "EST Dvojitá eliminace"
+
+msgid "Single Elimination"
+msgstr "Jednoduchá eliminace"
+
+msgid "SWE Single Repechage"
+msgstr "SWE Jednoduché opravy"
+
+msgid "Club Name Only"
+msgstr "Jen klub"
+
+msgid "Country Name Only"
+msgstr "Jen země"
+
+msgid "Both Club and Country"
+msgstr "Klub a země"
+
+msgid "International System"
+msgstr "Mezinárodní systém"
+
+msgid "Finnish System"
+msgstr "Finský systém"
+
+msgid "Swedish System"
+msgstr "Švédský systém"
+
+msgid "Estonian System"
+msgstr "Estonský sytém"
+
+msgid "Reset to Defaults"
+msgstr "Nastav na výchozí"
+
+msgid "View Log"
+msgstr "Zobraz log"
+
+msgid "Double Pool"
+msgstr "Double Pool"
+
+msgid "Cannot handle: Database created with newer JudoShiai version."
+msgstr "Nemůžu změnit: Databáze je vytvořena v novější verzi JudoShiai."
+
+msgid "Database tables updated."
+msgstr "Databáze tabulek udatována"
+
+msgid "Cannot open"
+msgstr "Nelze otevřít"
+
+msgid "Abbreviations in Sheets"
+msgstr "Zkratky v tabulkách"
+
+msgid "Display layout"
+msgstr "Výstup display"
+
+msgid "Contest area"
+msgstr "Tatami"
+
+msgid "Set time"
+msgstr "Nastav čas"
+
+msgid "Sound"
+msgstr "Zvuk"
+
+msgid "Change language to Spanish"
+msgstr "Změn jazyk na Španělsky"
+
+msgid "Choose a file"
+msgstr "Vyber soubor"
+
+msgid "Sound Files"
+msgstr "Zvukové soubory"
+
+msgid "All Files"
+msgstr "Všechny soubory"
+
+msgid "Best of 3"
+msgstr "Nejlepší 3"
+
+msgid "One match"
+msgstr "Jeden zápas"
+
+msgid "Quad Pool"
+msgstr "Quad Pool"
+
+msgid "IJF Qrt Final Rep"
+msgstr "IJF Qrt finále rep."
+
+msgid "Dbl Repchg"
+msgstr "Dbl Repchg"
+
+msgid "FIN Dbl Repchg"
+msgstr "FIN Dbl Repchg"
+
+msgid "SWE Dubb återkv"
+msgstr "SWE Dbl Repchg"
+
+msgid "SWE Dir återkv"
+msgstr "SWE dir Repchg"
+
+msgid "EST D klass"
+msgstr "EST D "
+
+msgid "No Repechg"
+msgstr "Bez oprav"
+
+msgid "SWE Enkelt återkv"
+msgstr "SWE jednoduché opravy"
+
+msgid "ESP Dbl Lost"
+msgstr "ESP Dbl prohra"
+
+msgid "ESP Dbl Rep/Bgn"
+msgstr "ESP Dbl opr/Bgn"
+
+msgid "ESP Dbl Rep"
+msgstr "ESP Dbl.opravy"
+
+msgid "ESP Simple Rep"
+msgstr "ESP Jednoduché opravy"
+
+msgid "ESP Double Lost"
+msgstr "ESP Dvojitá prohra"
+
+msgid "ESP Double Repechage"
+msgstr "ESP Dvojité opravy"
+
+msgid "ESP Simple Repechage"
+msgstr "ESP jednoduché opravy"
+
+msgid "Quadruple pool"
+msgstr "Quadruple pool"
+
+msgid "IJF Quarter Final Repechage"
+msgstr "IJF Quarter Final opravy"
+
+msgid "Picture Files"
+msgstr "Soubory obrýzků"
+
+msgid "Print Headers"
+msgstr "Tiskni záhlaví"
+
+msgid "Language Selection"
+msgstr "Výběr jazyka"
+
+msgid "Spanish System"
+msgstr "Španělský systém"
+
+msgid "Communication"
+msgstr "Komunikace"
+
+msgid "Club Text Selection"
+msgstr "Výber klubu"
+
+msgid "Print Logo"
+msgstr "Tiskni logo"
+
+msgid "Sheet Layout"
+msgstr "Vzhled tabulek"
+
+msgid "Weights Visible"
+msgstr "Váha viditelná"
+
+msgid "Grade Visible"
+msgstr "Stuneň viditelný"
+
+msgid "Print Competitors With Template"
+msgstr "tiskni závodníky se šablonou"
+
+msgid "Select template"
+msgstr "Výběr šablony"
+
+msgid "Line"
+msgstr "Linka"
+
+msgid "Syntax error"
+msgstr "Syntax error"
+
+msgid "Change language to Swedish"
+msgstr "Změn jazyk na Švédsky"
+
+msgid "Switch sides"
+msgstr "Změnit strany"
+
+msgid "Stop clock on Ippon"
+msgstr "Zastav čas při Ipponu"
+
+msgid "Display customized layout"
+msgstr "Zobraz vlstní rozložení"
+
+msgid "Change language to Ukrainan"
+msgstr "Změň jazyk na Ukrajinsky"
+
+msgid "No competitor found!"
+msgstr "Nenalezen závodník"
+
+msgid "Deleted Competitors"
+msgstr "Vymazání závodníci"
+
+msgid "Modified Dbl Elim"
+msgstr "Upravená dv.elim"
+
+msgid "FIN Dbl Repchg One Bronze"
+msgstr "FIN dv.opravy jedno 3."
+
+msgid "Modified Double Elimination"
+msgstr "Upravená dvojitá eliminace"
+
+msgid "FIN Double Repechage One Bronze"
+msgstr "FIN dvojité opravy jedno 3."
+
+msgid "Silver medal match"
+msgstr "Zápas o stříbro"
+
+msgid "Pool Style 2"
+msgstr "Pool Style 2"
+
+msgid "Use Belt Colors"
+msgstr "Zobraz barvný pás"
+
+msgid "Print Unmatched"
+msgstr "Tiskni bez zápasů"
+
+msgid "White first"
+msgstr "Bílý první"
+
+msgid "Show"
+msgstr "Ukaž"
+
+msgid "Show Deleted"
+msgstr "Ukaž smazané"
+
+msgid "Add"
+msgstr "Vlož"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "White first:"
+msgstr "Bílý první :"
+
+msgid "Scale Serial Interface"
+msgstr "Sériový port váhy"
+
+msgid "Serial Communication"
+msgstr "Sériová komunikace"
+
+msgid "In Use"
+msgstr "In Use"
+
+msgid "Device"
+msgstr "Zařízení"
+
+msgid "Baudrate"
+msgstr "Přenosová rychlost"
+
+msgid "Basic Scripts"
+msgstr "Základní skritp"
+
+msgid "Select Script"
+msgstr "Výběr skriptu"
+
+msgid "No script available"
+msgstr "Nedostupný skript"
+
+msgid "Run Script"
+msgstr "Spusť skript"
+
+msgid "Repeat Script"
+msgstr "Opakuj skript"
+
+msgid "Double Pool 2"
+msgstr "Double Pool 2"
+
+msgid "Double pool 2"
+msgstr "Double Pool 2"
+
+msgid "Write to file"
+msgstr "Zapiš do souboru"
+
+msgid "Confirm New Match"
+msgstr "Potvrď nový zápas"
+
+msgid "Contest area 9"
+msgstr "Tatami 9"
+
+msgid "Contest area 10"
+msgstr "Tatami 10"
+
+msgid "Move Medal Matches"
+msgstr "Spusť medailové zápasy"
+
+msgid "Move match "
+msgstr "Spusť zápas"
+
+msgid "to tatami and/or"
+msgstr "na tatami a/nebo"
+
+msgid " delay"
+msgstr "přestávka"
+
+msgid "Final"
+msgstr "Finále"
+
+msgid "Bronze1"
+msgstr "Bronzový 1"
+
+msgid "Bronze2"
+msgstr "Bronzový 2"
+
+msgid "Pool's last"
+msgstr "Pool's last"
+
+msgid "No move"
+msgstr ""
+
+msgid "Print Accreditation Cards"
+msgstr "Tiskni akreditační karty"
+
+msgid "Name Format"
+msgstr "Formát Jména"
+
+msgid "Name Surname, Country/Club"
+msgstr "Jméno Příjmení, Zemé/Klub"
+
+msgid "Surname, Name, Country/Club"
+msgstr "Jméno, Příjmení, Země/Klub"
+
+msgid "Country/Club  Surname, Name"
+msgstr "Zemé/Klub Příjmení,Jméno"
+
+msgid "Medal Matches..."
+msgstr "Medailové zápasy..."
+
+msgid "Print Selected Accreditation Cards"
+msgstr "Tiskni vybrané akreditace"
+
+msgid "Layout:"
+msgstr "Výstup"
+
+msgid "Print To:"
+msgstr "Tiskni do:"
+
+msgid "Template"
+msgstr "Šablona"
+
+msgid "Printer"
+msgstr "Tiskárna"
+
+msgid "PDF"
+msgstr ""
+
+msgid "One Card Per Page"
+msgstr "Jednu kartu na stránku"
+
+msgid "Normal display"
+msgstr "Normální display"
+
+msgid "Horizontal display"
+msgstr "Horizontální display"
+
+msgid "White has a judogi problem."
+msgstr "Bílý má problém s kimonem"
+
+msgid "Blue has a judogi problem."
+msgstr "Modrý má problém s kimonem"
+
+msgid "Show Competitors"
+msgstr "Ukaž Závodníky"
+
+msgid "Show competitors"
+msgstr "Ukaž závodníky"
+
+msgid "Name format"
+msgstr "Formát jména"
+
+msgid "Country  Surname, Name"
+msgstr "Země  Příjmení,Jméno"
+
+msgid "Club  Surname, Name"
+msgstr "Klub  Příjmení, Jméno"
+
+msgid "Country Surname"
+msgstr "Země Příjmení"
+
+msgid "Club Surname"
+msgstr "Klub Příjmení"
+
+msgid "Surname, Name"
+msgstr "Příjmení, Jméno"
+
+msgid "Surname"
+msgstr "Příjmení"
+
+msgid "Change language to Icelandic"
+msgstr "Změn jazyk na Islandsky"
+
+msgid "Change language to Norwegian"
+msgstr "Změň jazyk na Norsky"
+
+msgid "WINNER"
+msgstr "Vítěz"
+
+msgid "Cancel"
+msgstr "Konec"
+
+msgid "Club Seeding:"
+msgstr "Nasazení klubu"
+
+msgid "Gender:"
+msgstr "Pohlaví"
+
+msgid "Male"
+msgstr "Muž"
+
+msgid "Female"
+msgstr "Žena"
+
+msgid "Control:"
+msgstr "Kontrola"
+
+msgid "NOK"
+msgstr "NOK"
+
+msgid "Seeding"
+msgstr "Nasazení"
+
+msgid "Club Seeding"
+msgstr "Nasezení klubu"
+
+msgid "Database Validation"
+msgstr ""
+
+msgid "Duplicate seedings:\n"
+msgstr ""
+
+msgid "seeding"
+msgstr ""
+
+msgid "defined"
+msgstr ""
+
+msgid "times"
+msgstr "časy"
+
+msgid "Duplicate club seedings:\n"
+msgstr ""
+
+msgid "Missing category definitions:\n"
+msgstr ""
+
+msgid "is not"
+msgstr ""
+
+msgid "Typing errors:\n"
+msgstr ""
+
+msgid "UTF-8 errors"
+msgstr ""
+
+msgid "Extra spaces"
+msgstr ""
+
+msgid "Possible duplicate competitors:\n"
+msgstr ""
+
+msgid "Possible duplicate club names:\n"
+msgstr ""
+
+msgid "Suspicious weights:\n"
+msgstr ""
+
+msgid "warnings"
+msgstr ""
+
+msgid "jen zvážené"
+msgstr ""
+
+msgid "With weights"
+msgstr "s váhou"
+
+msgid "Validate Database"
+msgstr ""
+
+msgid "Results in Icelandic"
+msgstr "Výsledky v islandštině"
+
+msgid "Surname Name, Country/Club"
+msgstr ""
+
+msgid "Country/Club,  Surname Name"
+msgstr ""
+
+msgid "Scale Serial Interface..."
+msgstr ""
+
+msgid "Type"
+msgstr ""
+
+msgid "ID:"
+msgstr ""
+
+msgid "Name:"
+msgstr "Jméno:"
+
+msgid "About JudoWeight"
+msgstr "O JudoWeight"
+
+msgid "No match soon! Please wait for a while."
+msgstr "Žádný zápas! Prosím počkejte chvíli"
+
+msgid "About JudoJudogi"
+msgstr "O JudoJudogi"
+
+msgid "Norwegian System"
+msgstr "Norský systém"
+
+msgid "Confirm:"
+msgstr "Potvrď:"
+
+msgid "- - -"
+msgstr ""
+
+msgid "syntax errors"
+msgstr "syntax errors"
+
+msgid "Rep. time:"
+msgstr ""
+
+msgid "Results in Norwegian"
+msgstr "Výsledky Norsky"
+
+msgid "Landscape"
+msgstr "Landscape"
+
+msgid "Resolution (min):"
+msgstr "Řešení (min):"
+
+msgid "Compressed timeline"
+msgstr "Stalčit čas"
+
+msgid "Select font"
+msgstr "Výběr fontu"
+
+msgid "Font"
+msgstr "Font"
+
+msgid "Communication error"
+msgstr "Chyba komunikace"
+
+msgid "Double Lost"
+msgstr "Dvojitá prohra"
+
+msgid "Replay Video"
+msgstr "Přehraj video"
+
+msgid "Video server"
+msgstr "Video server"
+
+msgid "Video server URL"
+msgstr "URL video serveru"
+
+msgid "User:"
+msgstr "Uživatel"
+
+msgid "Proxy:"
+msgstr "Proxy:"
+
+msgid "Show Video"
+msgstr "Ukaž video"
+
+msgid "GBR Knock Out"
+msgstr "GBR KO"
+
+msgid "SVG Templates"
+msgstr "SVG šablony"
+
+msgid "Resolve 3-Way Ties by Weights"
+msgstr "Řešení 3-dle váhy"
+
+msgid "General"
+msgstr "Hlavní"
+
+msgid "Reset to"
+msgstr "Resetuj do"
+
+msgid "Initialize"
+msgstr "Inicializuj"
+
+msgid "Players"
+msgstr "Hráči"
+
+msgid "Max age"
+msgstr "Max věk"
+
+msgid "Min"
+msgstr "Min"
+
+msgid "Max"
+msgstr "Max"
+
+msgid "System"
+msgstr "Systém"
+
+msgid "Default systems"
+msgstr "Základní system"
+
+msgid "Use SVG Templates"
+msgstr "Použij SVG šablony"
+
+msgid "Best of three:"
+msgstr "Nejlepší z tří"
+
+msgid "Win needed for a medal:"
+msgstr ""
+
+msgid "Seeded to fixed places:"
+msgstr ""
+
+msgid "Double Pool 2 with carried forward points:"
+msgstr ""
+
+msgid "Two pool bronzes:"
+msgstr ""
+
+msgid "Resolve 3-way ties by weights:"
+msgstr ""
+
+msgid "Coach Id:"
+msgstr ""
+
+msgid "Comment:"
+msgstr ""
+
+msgid "Best two out of three matches:"
+msgstr ""
+
+msgid ""
+"Medal will be awarded \n"
+"only if a contest was won:"
+msgstr ""
+
+msgid "Pool settings"
+msgstr ""
+
+msgid "Statistics"
+msgstr ""
+
+msgid "Grade names"
+msgstr ""
+
+msgid "Coach"
+msgstr ""
+
+msgid "Weights do not match"
+msgstr ""
+
+msgid "Copy Weights"
+msgstr ""
+
+msgid "weights updated"
+msgstr ""
+
+msgid "Update Weights From Another Shiai"
+msgstr ""
+
+msgid "Weighted:"
+msgstr ""
+
+msgid "Print SVG"
+msgstr ""
