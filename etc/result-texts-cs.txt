@@ -1,0 +1,99 @@
+### First line is the menu text
+Results in Czech
+### 1: Competitors
+Závodníci
+### 2: Competitors A (for double and quadruple pools)
+Závodníci A
+### 3: Competitors B
+Závodníci B
+### 4: Competitors C
+Závodníci C
+### 5: Competitors D
+Závodníci D
+### 6: # (= short text for "Number", like "Nr")
+Číslo
+### 7: Name
+Jméno
+### 8: Grade (belt grade, 1. dan, 3. kyu etc)
+Stupeň
+### 9: Club
+Klub
+### 10: Matches
+Zápas
+### 11: Matches A
+Zápas A
+### 12: Matches B
+Zápas B
+### 13: Matches C
+Zápas C
+### 14: Matches D
+Zápas D
+### 15: Match
+Zápas
+### 16: Blue
+Modrý
+### 17: White
+Bílý
+### 18: Result (result of one fight)
+Výsledek
+### 19: Results (all the results of the tournament)
+Wyniki
+### 20: Time (fight time)
+Čas
+### 21: Wins (number of wins)
+Výhra
+### 22: Pts (short text for points)
+Body
+### 23: Pos (short text for position = winner, second, bronze)
+Místo.
+### 24: Previous winner
+Přechozí vítěz
+### 25: Next (competitors who have the next fight)
+Následující
+### 26: Weight:
+Váha:
+### 27: PRELIMINARY SCHEDULE
+Wstupní plán
+### 28: weighin-notes.pdf (file name)
+váha-poznámky.pdf
+### 29: schedule.pdf (file name)
+plán.pdf
+### 30: categories.pdf (file name)
+kategorie.pdf
+### 31: Category
+Kategorie
+### 32: Next fights (for a list of fights)
+Další zápasy
+### 33: Categories
+Kategorie
+### 34: Statistics
+Statistika
+### 35: Medals
+Medaile
+### 36: Total
+Celkem
+### 37: Country
+Země
+### 38: Not drawn
+Nerozlosovaný
+### 39: Finished
+Ukončeno
+### 40: Match ongoing
+Aktuální zápas
+### 41: Started (category has started)
+Již běží
+### 42: Drawing ready
+Losování připraveno
+### 43: Coach
+Trenér
+### 44: Surname
+Příjmení
+### 45: Status
+Status
+### 46: Display
+Display.
+### 47: "Match after n matches" divided in two parts
+###     Match after ("Match after" n matches)
+Zápas po 
+### 48: matches (Match after n "matches")
+zápasy/zápasech
