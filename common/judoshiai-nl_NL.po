@@ -288,7 +288,7 @@ msgid "Place To"
 msgstr "Plaats naar"
 
 msgid "Tatamis"
-msgstr "Mat (Tatamis)"
+msgstr "Mat (Tatami)"
 
 msgid "Draw All Categories"
 msgstr "Loting van alle categorieën"
@@ -306,7 +306,7 @@ msgid "Print Schedule"
 msgstr "Schema Afdrukken"
 
 msgid "Control Tatami"
-msgstr "Toegang controle tatamia"
+msgstr "Toegang controle mat"
 
 msgid "Communication Node"
 msgstr "Communicatie Node"
@@ -537,7 +537,7 @@ msgid "Girl Text:"
 msgstr "Dames tekst:"
 
 msgid "Column Separator:"
-msgstr "Kolom scheidings teken:"
+msgstr "Kolom scheidingsteken:"
 
 msgid "competitors added"
 msgstr "deelnemers toegevoegd"
@@ -845,7 +845,7 @@ msgid "Next"
 msgstr "Volgende"
 
 msgid "Rest"
-msgstr "Rust"
+msgstr "Rest"
 
 msgid "Do Backup"
 msgstr "Maak Backup"
@@ -1053,7 +1053,7 @@ msgid "EST D klass"
 msgstr "EST D klasse"
 
 msgid "No Repechg"
-msgstr "Geen herkansing"
+msgstr "Geen Herkansing"
 
 msgid "SWE Enkelt återkv"
 msgstr "SWE Enkelvoud. her"
@@ -1074,7 +1074,7 @@ msgid "ESP Double Repechage"
 msgstr "ESP Dubbele herkansing"
 
 msgid "IJF Quarter Final Repechage"
-msgstr "IJF kwart finale herkansing"
+msgstr "IJF Kwart Finale Herkansing"
 
 msgid "ESP Simple Repechage"
 msgstr "ESP Eenvoudige Herkansing"
@@ -1131,13 +1131,13 @@ msgid "Modified Dbl Elim"
 msgstr "Aangepaste Dbl Elim"
 
 msgid "FIN Dbl Repchg One Bronze"
-msgstr "FIN Dbl Her Één Brons"
+msgstr "FIN Dbl Her Eén Brons"
 
 msgid "Modified Double Elimination"
 msgstr "Aangepaste dubbele Eliminatie"
 
 msgid "FIN Double Repechage One Bronze"
-msgstr "FIN Dubbele Herkanzing Één brons"
+msgstr "FIN Dubbele Herkanzing Eén brons"
 
 msgid "Silver medal match"
 msgstr "Wedstrijd voor Zilver"
@@ -1541,9 +1541,7 @@ msgstr "Beste 2 uit 3 wedstrijden:"
 msgid ""
 "Medal will be awarded \n"
 "only if a contest was won:"
-msgstr ""
-"Medaille zal worden toegekend\n"
-"alleen als een wedstrijd was gewonnen:"
+msgstr "Medaille zal worden toegekend alleen\nals een wedstrijd was gewonnen:"
 
 msgid "Pool settings"
 msgstr "Poule instellingen"
@@ -1576,7 +1574,7 @@ msgid "Print SVG"
 msgstr "SVG Afdrukken"
 
 msgid "If equal score less shido wins"
-msgstr "Bij gelijek score minste shido wint"
+msgstr "Bij gelijke score minste shido wint"
 
 msgid "Short pin times"
 msgstr "Korte pin tijden"
@@ -1612,13 +1610,13 @@ msgid "EST D klass 1 brz"
 msgstr "EST D klasse 1 brs"
 
 msgid "SWE Direct Repechage"
-msgstr "SWE Gelijk herkansing"
+msgstr "SWE Gelijk Herkansing"
 
 msgid "DEN Double Elimination"
 msgstr "DEN Dubbele Eliminatie"
 
 msgid "EST Double Elim One Bronze"
-msgstr "EST Dubbele Elim Één Brons"
+msgstr "EST Dubbele Elim Eén Brons"
 
 msgid "Set score"
 msgstr "Stel punten in"
@@ -1688,3 +1686,9 @@ msgstr "Het Sloveense Systeem"
 
 msgid "Tatami"
 msgstr "Mat (Tatami)"
+
+msgid "Tatami:"
+msgstr "Mat (Tatami):"
+
+msgid "No Logo"
+msgstr "Geen Logo"
