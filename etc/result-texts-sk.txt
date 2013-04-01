@@ -1,0 +1,99 @@
+### First line is the menu text
+Results in Slovak
+### 1: Competitors
+Pretekári
+### 2: Competitors A (for double and quadruple pools)
+Pretekári A
+### 3: Competitors B
+Pretekári B
+### 4: Competitors C
+Pretekári C
+### 5: Competitors D
+Pretekári D
+### 6: # (= short text for "Number", like "Nr")
+Č.
+### 7: Name
+Meno
+### 8: Grade (belt grade, 1. dan, 3. kyu etc)
+Kyu
+### 9: Club
+Klub
+### 10: Matches
+Zápasy
+### 11: Matches A
+Zápasy A
+### 12: Matches B
+Zápasy B
+### 13: Matches C
+Zápasy C
+### 14: Matches D
+Zápasy D
+### 15: Match
+Zápas
+### 16: Blue
+Modrý
+### 17: White
+Biely
+### 18: Result (result of one fight)
+Výsledok
+### 19: Results (all the results of the tournament)
+Výsledky
+### 20: Time (fight time)
+Čas
+### 21: Wins (number of wins)
+Vyhraté
+### 22: Pts (short text for points)
+B.
+### 23: Pos (short text for position = winner, second, bronze)
+Umst.
+### 24: Previous winner
+Posledný víťaz
+### 25: Next (competitors who have the next fight)
+Pripraví sa
+### 26: Weight:
+Váha:
+### 27: PRELIMINARY SCHEDULE
+HARMONOGRAM
+### 28: weighin-notes.pdf (file name)
+váha-poznámky.pdf
+### 29: schedule.pdf (file name)
+harmonogram.pdf
+### 30: categories.pdf (file name)
+kategórie.pdf
+### 31: Category
+Kategória
+### 32: Next fights (for a list of fights)
+Nasledujúce zápasy
+### 33: Categories
+Kategórie
+### 34: Statistics
+Štatistiky
+### 35: Medals
+Medaile
+### 36: Total
+Spolu
+### 37: Country
+Štát
+### 38: Not drawn
+Nelosovaný
+### 39: Finished
+Skončil/a
+### 40: Match ongoing
+Zápasia
+### 41: Satarted (category has started)
+Spustená
+### 42: Drawing ready
+Vylosované
+### 43: Coach
+Tréner
+### 44: Surname
+Priezvisko
+### 45: Status
+Status
+### 46: Display
+Obraz.
+### 47: "Match after n matches" divided in two parts
+###     Match after ("Match after" n matches)
+Zápas po
+### 48: matches (Match after n "matches")
+zápase/och
