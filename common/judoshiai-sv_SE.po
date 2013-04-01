@@ -714,7 +714,7 @@ msgid "Show Deleted"
 msgstr "Visa borttagna"
 
 msgid "New Competitor"
-msgstr "Ny tevlande"
+msgstr "Ny tävlande"
 
 msgid "Logout"
 msgstr "Loggan ut"
@@ -808,9 +808,11 @@ msgid ""
 "Communication is blocked! \n"
 "You can still use the program to create categories etc."
 msgstr ""
+"Kommunikationen är blockerad! \n"
+"Du kan fortfarande använda programmet för att skapa kategorier etc."
 
 msgid "Best of 3"
-msgstr "Best av 3"
+msgstr "Bäst av 3"
 
 msgid "One match"
 msgstr "En match"
@@ -957,7 +959,7 @@ msgid "Preparing:"
 msgstr "Förbereda:"
 
 msgid "points"
-msgstr "påäng"
+msgstr "poäng"
 
 msgid "Expand All"
 msgstr "Utöka alla"
@@ -1032,7 +1034,7 @@ msgid "No move"
 msgstr "Flytta inte"
 
 msgid "Tournament from the net"
-msgstr ""
+msgstr "Tävling från nätet"
 
 msgid "Contests"
 msgstr "Tävlingar"
@@ -1245,7 +1247,7 @@ msgid "Pool Style 2"
 msgstr "Pool design 2"
 
 msgid "Use Belt Colors"
-msgstr ""
+msgstr "Använd bältesfärger"
 
 msgid "Mirror Tatami Order"
 msgstr "Spegla matchområdordning"
@@ -1447,7 +1449,7 @@ msgid "Resolve 3-way ties by weights:"
 msgstr "Lösa lika påängtal med vikter:"
 
 msgid "Tournament properties"
-msgstr "Tävling egenskaper"
+msgstr "Tävlingsegenskaper"
 
 msgid "General"
 msgstr "Allmänt"
