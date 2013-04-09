@@ -10,70 +10,24 @@ DOCSHIAI_FI=judoshiai-fi.pdf
 DOCSHIAI_EN=judoshiai-en.pdf
 DOCSHIAI_ES=judoshiai-es.pdf
 DOCSHIAI_UK=judoshiai-uk.pdf
+DOCSHIAI_NL=judoshiai-nl.pdf
 DOCTIMER_FI=judotimer-fi.pdf
 DOCTIMER_EN=judotimer-en.pdf
 DOCTIMER_ES=judotimer-es.pdf
-DOCFILES=$(DOCSHIAI_FI) $(DOCSHIAI_EN) $(DOCSHIAI_ES) $(DOCSHIAI_UK) \
- $(DOCTIMER_FI) $(DOCTIMER_EN) $(DOCTIMER_ES)
+SQL_GUIDE_EN=sql-guide-en.pdf
+DOCFILES=$(DOCSHIAI_FI) $(DOCSHIAI_EN) $(DOCSHIAI_ES) $(DOCSHIAI_UK) $(DOCSHIAI_NL) \
+ $(DOCTIMER_FI) $(DOCTIMER_EN) $(DOCTIMER_ES) $(SQL_GUIDE_EN)
 
 all: $(DOCFILES)
 
 %.pdf: %.odt
-	echo "Please create $@ manually using OpenOffice."
-	#rm -f $@
-	#soffice "macro:///Standard.Module1.ConvertWordToPDF($(DOCPATH)$<)"
-	#while test ! \( -e $@ \) ; do \
-	#echo "Waiting for $@"; sleep 1; done
+	rm -f $@
+	libreoffice --headless --convert-to pdf $<
 
 %.pdf: %.odg
-	echo "Please create $@ manually using OpenOffice."
-	#rm -f $@
-	#soffice "macro:///Standard.Module1.ConvertWordToPDF($(DOCPATH)$<)"
-	#while test ! \( -e $@ \) ; do \
-	#echo "Waiting for $@"; sleep 1; done
+	rm -f $@
+	libreoffice --headless --convert-to pdf $<
 
 clean:
-	echo "Please remove PDF files manually if necessary."
-	#rm -f *.pdf
-
-#####################################################################
-# OpenOffice writer needs the macro                                 #
-# Standard.Module1.ConvertWordToPDF                                 #
-# to convert odt files to pdf files.                                #
-# (http://www.oooforum.org/forum/viewtopic.phtml?t=3772)            #
-#####################################################################
-#
-#Sub ConvertWordToPDF( cFile )
-#   cURL = ConvertToURL( cFile )
-#   
-#   ' Open the document.
-#   ' Just blindly assume that the document is of a type that OOo will
-#   '  correctly recognize and open -- without specifying an import filter.
-#   oDoc = StarDesktop.loadComponentFromURL( cURL, "_blank", 0, Array(_
-#            MakePropertyValue( "Hidden", True ),_
-#            ) )
-#
-#
-#   cFile = Left( cFile, Len( cFile ) - 4 ) + ".pdf"
-#   cURL = ConvertToURL( cFile )
-#   
-#   ' Save the document using a filter.   
-#   oDoc.storeToURL( cURL, Array(_
-#            MakePropertyValue( "FilterName", "writer_pdf_Export" ),_
-#            )
-#   
-#   oDoc.close( True )
-#End Sub
-#
-#
-#Function MakePropertyValue( Optional cName As String, Optional uValue ) As com.sun.star.beans.PropertyValue
-#   Dim oPropertyValue As New com.sun.star.beans.PropertyValue
-#   If Not IsMissing( cName ) Then
-#      oPropertyValue.Name = cName
-#   EndIf
-#   If Not IsMissing( uValue ) Then
-#      oPropertyValue.Value = uValue
-#   EndIf
-#   MakePropertyValue() = oPropertyValue
-#End Function
+	rm -f *.pdf
 
