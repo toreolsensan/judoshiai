@@ -168,7 +168,7 @@ const gchar *timer_help_file_names[NUM_LANGS] = {
 
 
 static const gchar *help_file_names[NUM_LANGS] = {
-    "judoshiai-fi.pdf", // fi
+    "judoshiai-en.pdf", // fi
     "judoshiai-en.pdf", // se
     "judoshiai-en.pdf", // en
     "judoshiai-es.pdf", // es
@@ -176,9 +176,9 @@ static const gchar *help_file_names[NUM_LANGS] = {
     "judoshiai-uk.pdf", // uk
     "judoshiai-en.pdf", // is
     "judoshiai-en.pdf", // no
-    "judoshiai-en.pdf"  // pl
-    "judoshiai-en.pdf"  // sk
-    "judoshiai-en.pdf"  // nl
+    "judoshiai-en.pdf", // pl
+    "judoshiai-en.pdf", // sk
+    "judoshiai-nl.pdf", // nl
     "judoshiai-en.pdf"  // cs
 };
 
