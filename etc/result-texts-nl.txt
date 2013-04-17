@@ -41,7 +41,7 @@ Resultaten
 ### 20: Time (fight time)
 Tijd
 ### 21: Wins (number of wins)
-Overwinningen
+Win
 ### 22: Pts (short text for points)
 Ptn
 ### 23: Pos (short text for position = winner, second, bronze)
@@ -49,7 +49,7 @@ Pos
 ### 24: Previous winner
 Vorige winnaar
 ### 25: Next (competitors who have the next fight)
-Next
+volgende
 ### 26: Weight:
 Gewicht:
 ### 27: PRELIMINARY SCHEDULE
@@ -58,14 +58,14 @@ VOORLOPIG SCHEMA
 weeg-resultaten.pdf
 ### 29: schedule.pdf (file name)
 schema.pdf
-### 30: categories.pdf (file name) official in dutch it is Categorieën but ë is not always nice so i left it out. Specially when it is pointing to a real file
+### 30: categories.pdf (file name) official in dutch it is CategorieÃ«n but Ã« is not always nice so i left it out. Specially when it is pointing to a real file
 categorieen.pdf
 ### 31: Category
 Categorie
 ### 32: Next fights (for a list of fights)
 Volgende gevechten
 ### 33: Categories
-Categorieën
+CategorieÃ«n
 ### 34: Statistics
 statistieken
 ### 35: Medals
