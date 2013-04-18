@@ -592,8 +592,8 @@ gint num_categories = 0;
 
 gint find_age_index(const gchar *category)
 {
-    gint i;
-    gchar catbuf[32];
+    gint i, male = -1, female = -1;
+    gchar catbuf[32], ch = 0;
 
     if (category == NULL || category[0] == 0)
         return -1;
@@ -602,16 +602,40 @@ gint find_age_index(const gchar *category)
     gchar *p = strrchr(catbuf, '-');
     if (!p)
         p = strrchr(catbuf, '+');
-    if (p)
+    if (p) {
+        ch = *p;
         *p = 0;
+    }
 
     for (i = 0; i < num_categories; i++) {
-        if (category_definitions[i].agetext[0] == 0)
+        if (category_definitions[i].agetext[0] == 0 && category_definitions[i].age == 0)
             continue;
-        if (strcmp(category_definitions[i].agetext, catbuf) == 0)
-            return i;
+
+        if (strcmp(category_definitions[i].agetext, catbuf) == 0) {
+            if (category_definitions[i].gender & IS_MALE)
+                male = i;
+            else if (category_definitions[i].gender & IS_FEMALE)
+                female = i;
+            if (male >= 0 && female >= 0)
+                break;
+        }
     }
-    //g_print("could not find%s\n", category);
+
+    if (male >= 0 && female >= 0) {
+        if (!p)
+            return -1;
+
+        *p = ch;
+        for (i = 0; i < NUM_CAT_DEF_WEIGHTS && category_definitions[male].weights[i].weight; i++) {
+            if (strcmp(p, category_definitions[male].weights[i].weighttext) == 0)
+                return male;
+        }
+        return female;
+    } else if (male >= 0)
+        return male;
+    else if (female >= 0)
+        return female;
+
     return -1;
 }
 
@@ -696,7 +720,7 @@ gint get_category_match_time(const gchar *cat)
 
 gchar *find_correct_category(gint age, gint weight, gint gender, const gchar *category_now, gboolean best_match)
 {
-    gint i, age_ix = 0, w_ix, weight1 = 0;
+    gint i = -1, age_ix = 0, w_ix, weight1 = 0;
 
     if ((age == 0 || gender == 0) && category_now) {
         i = find_age_index(category_now);
@@ -711,7 +735,11 @@ gchar *find_correct_category(gint age, gint weight, gint gender, const gchar *ca
     if (age == 0 || gender == 0)
         return NULL;
 	
-    age_ix = find_age_index_by_age(age, gender);
+    if (i >= 0)
+        age_ix = i;
+    else
+        age_ix = find_age_index_by_age(age, gender);
+
     if (age_ix < 0)
         return NULL;
 
@@ -895,7 +923,7 @@ void read_cat_definitions(void)
         /* find existing category line */
         gint i;
         for (i = 0; i < num_categories; i++) {
-            if (category_definitions[i].age    == age &&
+            if (strcmp(category_definitions[i].agetext, agetext) == 0 &&
                 category_definitions[i].gender == flags)
                 break;
         }
