@@ -985,15 +985,15 @@ static void set_repechage_16(struct match m[], gint table, gint i)
 	COPY_PLAYER((15+i), blue, LOSER(p));
 	set_match(&m[15+i]); db_set_match(&m[15+i]);
     } else if (table == TABLE_DEN_DOUBLE_ELIMINATION) {
-        const gint reps[] = {15, 16, 13, 14};
+        const gint reps[] = {17, 18, 15, 16};
         gint pw, pl;
 	if (!MATCHED_FRENCH(9+i))
 	    return;
 
         GET_PREV_MATCHES(9+i, pw, pl);
 
-	COPY_PLAYER((13+i), blue, LOSER(pw));
-	set_match(&m[13+i]); db_set_match(&m[13+i]);
+	COPY_PLAYER((15+i), blue, LOSER(pw));
+	set_match(&m[15+i]); db_set_match(&m[15+i]);
 
         COPY_PLAYER((reps[i]), white, LOSER(pl));
 	set_match(&m[reps[i]]); db_set_match(&m[reps[i]]);
@@ -1046,8 +1046,8 @@ static void set_repechage_32(struct match m[], gint table, gint i)
 	if (!MATCHED_FRENCH(25+i))
 	    return;
         gint pw, pl, pww, pwl, plw, pll;
-        gint o1 = 29+i*2;
-        gint o2 = (i <= 1) ? (33+i*2) : (29+(i-2)*2);
+        gint o1 = 31+i*2;
+        gint o2 = (i <= 1) ? (35+i*2) : (31+(i-2)*2);
 
         GET_PREV_MATCHES(25+i, pw, pl); // matches 17, 18
         GET_PREV_MATCHES(pw, pww, pwl); // matches 17, 18
@@ -1122,10 +1122,10 @@ static void set_repechage_64(struct match m[], gint table, gint i)
 	if (!MATCHED_FRENCH(57+i))
 	    return;
         gint pw, pl, pww, pwl, plw, pll, pwww, pwwl, pwlw, pwll, plww, plwl, pllw, plll;
-        gint o1 = 61+i*4;
-        gint o2 = (i <= 1) ? (69+i*4) : (61+(i-2)*4);
-        gint o3 = 101+i*2;
-        gint o4 = (i <= 1) ? (105+i*2) : (101+(i-2)*2);
+        gint o1 = 63+i*4;
+        gint o2 = (i <= 1) ? (71+i*4) : (63+(i-2)*4);
+        gint o3 = 103+i*2;
+        gint o4 = (i <= 1) ? (107+i*2) : (103+(i-2)*2);
 
         GET_PREV_MATCHES(57+i, pw, pl); // matches 49, 50
         GET_PREV_MATCHES(pw, pww, pwl); // matches 33, 34
