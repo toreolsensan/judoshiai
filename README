@@ -1,66 +1,87 @@
-JudoShiai software helps you to arrange judo tournaments. 
-JudoShiai consists of the following programs:
+HOW TO MAKE A BUILD
 
-* JudoShiai: Tournament planning, drawing, and results printing.
-* JudoTimer: Clocks and scoreboard.
-* JudoInfo: Information display for the announcer and audience.
-[* Flash versions of JudoTimer and JudoInfo.]
+Linux and Windows are the supported operating systems.
 
-Windows XP, Vista and Linux are the supported operating systems.
+Development work is done in Linux environment. For Windows users it is recommended
+to install VirtualBox + Ubuntu (32 bit) for compilation. Learn how to use
+Linux terminal and line commands. Everything below after the $ sign 
+is typed in a terminal.
 
-For compilation you need the following software:
+LibreOffice is needed for PDF creation. You should already have it,
+but if not, get it with the following command:
 
-Linux (Ubuntu):
-- Gnome development tools. In Ubuntu this is the gnome-devel
-  software package.
-- Open Office to export documents to PDF format. You have to create
-  some macros that are described in the doc/Makefile.
-- CheckInstall (http://www.asic-linux.com.mx/~izto/checkinstall/) 
-  to create a Debian package.
-- FMOD sound library (http://www.fmod.org/). Edit common/Makefile.inc to set
-  the correct directory.
-[- For Flash versions you need a haXe environment (http://haxe.org). (Not yet supported)]
+$ sudo apt-get install libreoffice
 
-Windows:
-- GTK+ library for Windows (http://www.gtk.org/download-windows.html).
-  Install the All-in-one bundle. Edit common/Makefile.inc to set
-  the correct directory.
-- MinGW and MSYS (http://www.mingw.org). They provide 
-  ports of the GNU software for the Windows environment.
-- Open Office to export documents to PDF format. You have to create
-  some macros that are described in the doc/Makefile.
-- Inno Setup to create a setup binary (http://www.jrsoftware.org/isinfo.php).
-- FMOD sound library (http://www.fmod.org/). Edit common/Makefile.inc to set
-  the correct directory.
-- ResHacker.exe (http://www.angusj.com/resourcehacker/)
-[- For Flash versions you need a haXe environment (http://haxe.org). (Not yet supported)]
+"sudo" makes you have temporary root priviledges that are required for 
+software installation. "apt-get install" fetches and installs software packages.
 
-Compilation:
+Install the basic development tools:
 
-Get the judoshiai sources:
-  svn co https://judoshiai.svn.sourceforge.net/svnroot/judoshiai judoshiai
+$ sudo apt-get install build-essential gnome-devel bison flex checkinstall
 
-Go to the main level:
-  cd judoshiai/trunk
+You probably already have "build-essential" (compiler, linker). "gnome-devel"
+contains everything needed for GTK+ graphical user interface development. 
+"bison flex" are used for parsing text. "checkinstall" is required for Debian packages.
+
+Next some libraries:
+
+$ sudo apt-get install librsvg2-dev libao-dev libmpg123-dev libcurl4-openssl-dev
+
+JudoShiai is under Subversion in Sourceforge:
+
+$ sudo apt-get install subversion
+
+If you are behind a proxy you want to edit /etc/subversion/servers.
+Get the JudoShiai software:
+
+$ svn checkout http://svn.code.sf.net/p/judoshiai/code/trunk judoshiai-code
+or
+$ svn checkout svn://svn.code.sf.net/p/judoshiai/code/trunk judoshiai-code
+
+Change directory:
+
+$ cd judoshiai-code
 
 Compile:
-  make
 
-Now you have a release directory containing a binary tree. Create
-a setup binary file:
-  make setup
+$ make
 
-In release directory you will find a Linux runnable file
-  judoshiai-setup-<ver>.bin
-or a Windows setup file
-  judoshiai-setup-<ver>.exe
+Make a Debian package
 
-In the Linux environment you can also create a Debian package file
-  sudo make debian
+$ sudo make debian
 
-Give your password and accept the suggested options. Software
-is temporarily installed and then removed.
-Finally in the release directory you will find 
-judoshiai_<ver>-1_i386.deb.
+You can find the result in judoshiai-code/release-linux.
 
-Note: Flash versions are not available yet.
+Cross compilation for Windows requires more software:
+
+$ sudo apt-get install mingw32
+
+Some programs need Windows emulator to run:
+
+$ sudo apt-get install wine
+
+There exist still lots of required libraries and run time DLL's that are not in
+any package. Many DLL's have incompatible versions around and finding the correct one 
+may take time. To make life easier you can fetch a ready made set of Windows software.
+Get it using command line or your favorite browser:
+
+$ wget http://judoshiai.sourceforge.net/win32.tar.gz
+
+Extract it under the /opt directory:
+
+$ sudo tar xvzf win32.tar.gz -C /opt
+
+Start cross compilation:
+
+$ make TARGETOS=WIN32
+
+Make a package:
+
+$ make setup TARGETOS=WIN32
+
+Result will be in judoshiai-code/release-win32 directory.
+Clean everything with commands
+
+$ make clean
+and
+$ make clean TARGETOS=WIN32
