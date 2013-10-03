@@ -962,7 +962,7 @@ void voting_result(GtkWidget *w,
     hansokumake_to_blue = FALSE;
     hansokumake_to_white = FALSE;
 
-    switch ((gint)data) {
+    switch (ptr_to_gint(data)) {
     case HANTEI_BLUE:
         if (white_first)
             set_text(MY_LABEL(comment), _("White won the voting"));
@@ -997,7 +997,7 @@ void voting_result(GtkWidget *w,
     }
     expose_label(NULL, comment);
 
-    set_hantei_winner((gint)data);
+    set_hantei_winner(ptr_to_gint(data));
 }
 
 gboolean delete_big(gpointer data)
@@ -1758,7 +1758,7 @@ int main( int   argc,
     gtk_widget_show_all(window);
 
     set_preferences();
-    change_language(NULL, NULL, (gpointer)language);
+    change_language(NULL, NULL, gint_to_ptr(language));
 
     open_comm_socket();
 
@@ -2101,7 +2101,7 @@ void select_display_layout(GtkWidget *menu_item, gpointer data)
     bgcolor_pts = bgcolor_points = color_black;
 
     clocks_only = FALSE;
-    dsp_layout = (gint)data;
+    dsp_layout = ptr_to_gint(data);
 
     switch(dsp_layout) {
         /*if (GTK_CHECK_MENU_ITEM(menu_item)->active) {*/
@@ -2493,7 +2493,7 @@ void select_display_layout(GtkWidget *menu_item, gpointer data)
     set_colors();
     expose(darea, 0, 0);
 
-    g_key_file_set_integer(keyfile, "preferences", "displaylayout", (gint)data);
+    g_key_file_set_integer(keyfile, "preferences", "displaylayout", ptr_to_gint(data));
 
     /****
          if (mode == MODE_MASTER) {
@@ -2510,7 +2510,7 @@ void select_name_layout(GtkWidget *menu_item, gpointer data)
 {
     expose(darea, 0, 0);
 
-    selected_name_layout = (gint)data; 
+    selected_name_layout = ptr_to_gint(data); 
     g_key_file_set_integer(keyfile, "preferences", "namelayout", selected_name_layout);
 }
 

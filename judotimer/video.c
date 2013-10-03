@@ -785,7 +785,7 @@ static void open_media(gint num)
 
 static void on_button(GtkWidget *widget, gpointer data) 
 {
-    gint button = (gint)data;
+    gint button = ptr_to_gint(data);
     gint i;
 
     view = FALSE;
@@ -1121,7 +1121,7 @@ void create_video_window(void)
         if (i == BUTTON_EXIT)
             g_signal_connect(button_w[i], "clicked", G_CALLBACK(close_video), window);
         else
-            g_signal_connect(button_w[i], "clicked", G_CALLBACK(on_button), (gpointer)i);
+            g_signal_connect(button_w[i], "clicked", G_CALLBACK(on_button), gint_to_ptr(i));
         gtk_box_pack_start(GTK_BOX(hbuttonbox), button_w[i], FALSE, FALSE, 0);
     }
 

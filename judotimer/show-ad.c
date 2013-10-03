@@ -1644,8 +1644,8 @@ static gboolean expose_ad(GtkWidget *widget, GdkEventExpose *event, gpointer use
                           (FIRST_BLOCK_HEIGHT - extents.height)/2.0 - extents.y_bearing);
             cairo_show_text(c, buf);
 
-            if (white_first && (rflags & MATCH_FLAG_BLUE_REST) ||
-                white_first == FALSE && (rflags & MATCH_FLAG_WHITE_REST))
+            if ((white_first && (rflags & MATCH_FLAG_BLUE_REST)) ||
+                (white_first == FALSE && (rflags & MATCH_FLAG_WHITE_REST)))
                 cairo_set_source_rgb(c, 1.0, 1.0, 1.0);
             else if (blue_background())
                 cairo_set_source_rgb(c, 0, 0, 1.0);

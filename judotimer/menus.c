@@ -79,7 +79,7 @@ static void gs_cb( GtkWidget *w,
 static void tatami_selection(GtkWidget *w,
                              gpointer   data )
 {
-    tatami = (gint)data;
+    tatami = ptr_to_gint(data);
     g_key_file_set_integer(keyfile, "preferences", "tatami", tatami);
     set_ssdp_id();
 }
@@ -87,7 +87,7 @@ static void tatami_selection(GtkWidget *w,
 static void mode_selection(GtkWidget *w,
 			   gpointer   data )
 {
-    mode = (gint)data;
+    mode = ptr_to_gint(data);
     set_ssdp_id();
 }
 
@@ -121,7 +121,7 @@ static void set_timers(GtkWidget *widget,
 void manipulate_time(GtkWidget *w,
                             gpointer   data )
 {
-    gint what = (gint)data;
+    gint what = ptr_to_gint(data);
     switch (what) {
     case 0:
         hajime_inc_func();
@@ -544,7 +544,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     g_signal_connect(G_OBJECT(layout_sel_7),    "activate", G_CALLBACK(select_display_layout), (gpointer)7);
 
     for (i = 0; i < NUM_NAME_LAYOUTS; i++)
-        g_signal_connect(G_OBJECT(name_layouts[i]), "activate", G_CALLBACK(select_name_layout), (gpointer)i);
+        g_signal_connect(G_OBJECT(name_layouts[i]), "activate", G_CALLBACK(select_name_layout), gint_to_ptr(i));
 
     g_signal_connect(G_OBJECT(tatami_sel_none), "activate", G_CALLBACK(tatami_selection),     (gpointer)0);
     g_signal_connect(G_OBJECT(tatami_sel_1),    "activate", G_CALLBACK(tatami_selection),     (gpointer)1);
@@ -826,7 +826,7 @@ void set_preferences(void)
 
 gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param)
 {
-    language = (gint)param;
+    language = ptr_to_gint(param);
     set_gui_language(language);
 
     change_menu_label(match,        _("Contest"));
