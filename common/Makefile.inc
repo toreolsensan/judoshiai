@@ -108,7 +108,7 @@ CFLAGS=-Wall $(shell $(PKGCONFIGPATH) $(PKGCONFIG) --cflags gtk+-2.0) \
        -I$(DEVELDIR)/include -I../common -DSHIAI_VERSION=$(SHIAI_VERSION)
 
 LIBS=$(shell $(PKGCONFIGPATH) $(PKGCONFIG) --libs gtk+-2.0 gthread-2.0 cairo librsvg-2.0) \
- $(shell curl-config --libs)
+ $(shell curl-config --libs) -ldl
 
 ## Windows ##
 ifeq ($(OS),Windows_NT)
