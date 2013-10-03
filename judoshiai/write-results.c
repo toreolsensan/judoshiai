@@ -584,6 +584,14 @@ static FILE *open_write(gchar *filename)
     return f;
 }
 
+static FILE *open_read(gchar *filename)
+{
+    gchar *file = g_build_filename(current_directory, filename, NULL);
+    FILE *f = fopen(file, "rb");
+    g_free(file);
+    return f;
+}
+
 static void print_embedded_text(FILE *f, gchar *name, struct compsys systm, gint pagenum)
 {
     gint w, h;
@@ -631,6 +639,25 @@ static void print_embedded_text(FILE *f, gchar *name, struct compsys systm, gint
 #endif
 }
 
+static void copy_from_file(gchar *fname, FILE *f)
+{
+    FILE *fmap = open_read(fname);
+    if (fmap) {
+        gint n, x1, y1, x2, y2, judoka;
+
+        fprintf(f, "<map name=\"judokas\">\r\n");
+
+        if (create_statistics) {
+            while ((n = fscanf(fmap, "%d,%d,%d,%d,%d\n", &x1, &y1, &x2, &y2, &judoka)) == 5)
+                fprintf(f, "<area shape=\"rect\" coords=\"%d,%d,%d,%d\" href=\"%d.html\">\r\n",
+                        x1, y1, x2, y2, judoka);
+        }
+
+        fprintf(f, "</map>\r\n");
+        fclose(fmap);
+    }
+}
+
 void write_html(gint cat)
 {
     gchar buf[64];
@@ -671,11 +698,20 @@ void write_html(gint cat)
         }
     } else {
         fprintf(f, "<td valign=\"top\"><table><tr class=\"cattr1\"><td>"
-                "<div class=\"catdiv\"><img src=\"%s.png\" class=\"catimg\"/></div></td></tr>\r\n", hextext);
+                "<div class=\"catdiv\"><img src=\"%s.png\" class=\"catimg\" usemap=\"#judokas\"/>", hextext);
 
-        for (i = 1; i < num_pages(sys); i++)
+        snprintf(buf, sizeof(buf), "%s.map", hextext);
+        copy_from_file(buf, f);
+        
+        fprintf(f, "</div></td></tr>\r\n");
+
+        for (i = 1; i < num_pages(sys); i++) {
             fprintf(f, "  <tr class=\"cattr2\"><td><div class=\"catdiv\">"
-                    "<img src=\"%s-%d.png\" class=\"catimg\"/></div></td></tr>\r\n", hextext, i);
+                    "<img src=\"%s-%d.png\" class=\"catimg\" usemap=\"#judokas%d\"/>\r\n", hextext, i, i);
+            snprintf(buf, sizeof(buf), "%s-%d.map", hextext, i);
+            copy_from_file(buf, f);
+            fprintf(f, "</div></td></tr>\r\n");
+        }
     }
 
     fprintf(f, "  </table></td>\r\n");
@@ -683,7 +719,7 @@ void write_html(gint cat)
     make_bottom_frame(f);
     fclose(f);
 
-    write_png(NULL, (gpointer)cat);
+    write_png(NULL, gint_to_ptr(cat));
 out:
     free_judoka(j);
 }

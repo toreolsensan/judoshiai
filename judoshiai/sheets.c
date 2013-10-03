@@ -17,6 +17,8 @@
 #include "judoshiai.h"
 #include "language.h"
 
+//#include "my-cairo.h"
+
 #define SIZEX 630
 #define SIZEY 891
 #define W(_w) ((_w)*pd->paper_width)
@@ -62,6 +64,12 @@ static gint current_page = 0;
         write_table_h(pd, &_t, _r, _c, _del, _buf);     \
     } while (0)  
 
+#define WRITE_TABLE_H_2(_t, _r, _c, _del, _ix, _txt...) do {   \
+        char _buf[100];                                 \
+        snprintf(_buf, sizeof(_buf)-1, _txt);           \
+        write_table_h_2(pd, &_t, _r, _c, _del, _buf, _ix);     \
+    } while (0)  
+    
 //#define MY_FONT "Sans"
 #define MY_FONT "Arial"
 static gchar font_face[32];
@@ -128,6 +136,12 @@ static void init_tables(struct paint_data *pd)
     win_table.position_x = POOL_WIN_X;
     win_table.position_y = POOL_WIN_Y;
 }
+
+#define NUM_JUDOKA_RECTANGLES 128
+struct judoka_rectangle judoka_rectangles[NUM_JUDOKA_RECTANGLES];
+gint judoka_rectangle_cnt = 0;
+static void add_judoka_rectangle(struct paint_data *pd, gdouble x, gdouble y, gdouble w, gdouble h, gint judoka_ix);
+
 
 #define PI 3.14159265
 
@@ -212,6 +226,9 @@ static double paint_comp(struct paint_data *pd, struct pool_matches *unused1, in
                 cairo_move_to(pd->c, x + TEXT_OFFSET, 
                               blue_y - extents.height - extents.y_bearing - H(0.005));
                 cairo_show_text(pd->c, buf);
+                add_judoka_rectangle(pd, x + TEXT_OFFSET, blue_y - extents.height - H(0.005), 
+                                     extents.width, extents.height, j->index);
+                
                 free_judoka(j);
             }
         }
@@ -325,6 +342,9 @@ static double paint_comp(struct paint_data *pd, struct pool_matches *unused1, in
             py = blue_y - extents.height - extents.y_bearing - H(0.005);
             cairo_move_to(pd->c, x + TEXT_OFFSET, py);
             if (TRUE || (j->deleted & HANSOKUMAKE) == 0 || blue_pts || white_pts) {
+                add_judoka_rectangle(pd, x + TEXT_OFFSET, blue_y - extents.height - H(0.005), 
+                                     extents.width, extents.height, j->index);
+                
                 cairo_show_text(pd->c, buf);
                 if (j->deleted & HANSOKUMAKE) {
                     cairo_move_to(pd->c, x + TEXT_OFFSET, blue_y - extents.height/2.0 - H(0.005));
@@ -371,6 +391,9 @@ static double paint_comp(struct paint_data *pd, struct pool_matches *unused1, in
             py = white_y - extents.height - extents.y_bearing - H(0.005);
             cairo_move_to(pd->c, x + TEXT_OFFSET, py);
             if (TRUE || (j->deleted & HANSOKUMAKE) == 0 || blue_pts || white_pts) {
+                add_judoka_rectangle(pd, x + TEXT_OFFSET, white_y - extents.height - H(0.005), 
+                                     extents.width, extents.height, j->index);
+
                 cairo_show_text(pd->c, buf);
                 if (j->deleted & HANSOKUMAKE) {
                     cairo_move_to(pd->c, x + TEXT_OFFSET, white_y - extents.height/2.0 - H(0.005));
@@ -463,6 +486,35 @@ static void write_table(struct paint_data *pd, struct table *t, int row, int col
     cairo_restore(pd->c);
 }
 
+static void add_judoka_rectangle_by_table(struct paint_data *pd, struct table *t, int row, int col, gint judoka_ix)
+{
+    double x1 = t->position_x + colpos(pd, t, col);
+    double y1 = t->position_y + row*ROW_HEIGHT;
+    double x2 = x1 + W(t->columns[col]);
+    double y2 = y1 + ROW_HEIGHT;
+    
+    if (judoka_rectangle_cnt >= NUM_JUDOKA_RECTANGLES)
+        return;
+    judoka_rectangles[judoka_rectangle_cnt].judoka = judoka_ix;
+    judoka_rectangles[judoka_rectangle_cnt].x1 = x1;
+    judoka_rectangles[judoka_rectangle_cnt].y1 = y1;
+    judoka_rectangles[judoka_rectangle_cnt].x2 = x2;
+    judoka_rectangles[judoka_rectangle_cnt].y2 = y2;
+    judoka_rectangle_cnt++;
+}
+
+static void add_judoka_rectangle(struct paint_data *pd, gdouble x, gdouble y, gdouble w, gdouble h, gint judoka_ix)
+{
+    if (judoka_rectangle_cnt >= NUM_JUDOKA_RECTANGLES)
+        return;
+    judoka_rectangles[judoka_rectangle_cnt].judoka = judoka_ix;
+    judoka_rectangles[judoka_rectangle_cnt].x1 = (int)x;
+    judoka_rectangles[judoka_rectangle_cnt].y1 = (int)y;
+    judoka_rectangles[judoka_rectangle_cnt].x2 = (int)(x + w);
+    judoka_rectangles[judoka_rectangle_cnt].y2 = (int)(y + h);
+    judoka_rectangle_cnt++;
+}
+
 static void write_table_h(struct paint_data *pd, struct table *t, int row, int col, gint del, char *txt)
 {
     cairo_text_extents_t extents;
@@ -501,6 +553,12 @@ static void write_table_h(struct paint_data *pd, struct table *t, int row, int c
     */
     cairo_show_text(pd->c, txt);
     cairo_restore(pd->c);
+}
+
+static void write_table_h_2(struct paint_data *pd, struct table *t, int row, int col, gint del, char *txt, gint judoka_ix)
+{
+    write_table_h(pd, t, row, col, del, txt);
+    add_judoka_rectangle_by_table(pd, t, row, col, judoka_ix);
 }
 
 static void write_table_title(struct paint_data *pd, struct table *t, char *txt)
@@ -606,7 +664,7 @@ static void paint_pool(struct paint_data *pd, gint category, struct judoka *ctg,
             snprintf(name, sizeof(name), "%s", get_name_and_club_text(pm.j[i], CLUB_TEXT_NO_CLUB));
 
         write_table(pd, &judoka_table, i, 0, num);
-        write_table_h(pd, &judoka_table, i, 1, pm.j[i]->deleted, name);
+        write_table_h_2(pd, &judoka_table, i, 1, pm.j[i]->deleted, name, pm.j[i]->index);
         if (grade_visible)
             write_table(pd, &judoka_table, i, 2, belts[pm.j[i]->belt]);
         write_table(pd, &judoka_table, i, 3, (char *)get_club_text(pm.j[i], 0));
@@ -659,6 +717,9 @@ static void paint_pool(struct paint_data *pd, gint category, struct judoka *ctg,
             else
                 WRITE_TABLE(judoka_table, white, blue + 3, "%d", pm.m[i].white_points);
         }
+
+        add_judoka_rectangle_by_table(pd, &match_table, i, 1, pm.j[blue]->index);
+        add_judoka_rectangle_by_table(pd, &match_table, i, 4, pm.j[white]->index);
     }
 
     /* win table */
@@ -699,7 +760,7 @@ static void paint_pool(struct paint_data *pd, gint category, struct judoka *ctg,
         WRITE_TABLE(result_table, i, 0, "%d", prop_get_int_val(PROP_TWO_POOL_BRONZES) && i == 4 ? 3 : i);
         if (pm.finished == FALSE || pm.j[pm.c[i]] == NULL)
             continue;
-        WRITE_TABLE_H(result_table, i, 1, pm.j[pm.c[i]]->deleted, "%s", 
+        WRITE_TABLE_H_2(result_table, i, 1, pm.j[pm.c[i]]->deleted, pm.j[pm.c[i]]->index, "%s", 
                       get_name_and_club_text(pm.j[pm.c[i]], 0)); 
 
         set_competitor_position(pm.j[pm.c[i]]->index, COMP_POS_DRAWN | 
@@ -783,7 +844,7 @@ static void paint_pool_2(struct paint_data *pd, gint category, struct judoka *ct
             snprintf(name, sizeof(name), "%s", get_name_and_club_text(pm.j[i], CLUB_TEXT_NO_CLUB));
 
         write_table(pd, &pool_table_2, 2*i-1, 0, num);
-        write_table_h(pd, &pool_table_2, 2*i-1, 1, pm.j[i]->deleted, name);
+        write_table_h_2(pd, &pool_table_2, 2*i-1, 1, pm.j[i]->deleted, name, pm.j[i]->index);
         sprintf(name, "%s", get_club_text(pm.j[i], 0));
         write_table(pd, &pool_table_2, 2*i, 1, name);
 
@@ -834,7 +895,7 @@ static void paint_pool_2(struct paint_data *pd, gint category, struct judoka *ct
         WRITE_TABLE(result_table, i, 0, "%d", prop_get_int_val(PROP_TWO_POOL_BRONZES) && i == 4 ? 3 : i);
         if (pm.finished == FALSE || pm.j[pm.c[i]] == NULL)
             continue;
-        WRITE_TABLE_H(result_table, i, 1, pm.j[pm.c[i]]->deleted, "%s", 
+        WRITE_TABLE_H_2(result_table, i, 1, pm.j[pm.c[i]]->deleted, pm.j[pm.c[i]]->index, "%s", 
                       get_name_and_club_text(pm.j[pm.c[i]], 0));
 
         set_competitor_position(pm.j[pm.c[i]]->index, COMP_POS_DRAWN | 
@@ -908,11 +969,11 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
                 continue;
             WRITE_TABLE(judoka_table, i, 0, "%d", i);
             if (weights_in_sheets)
-                WRITE_TABLE_H(judoka_table, i, 1, pm.j[i]->deleted, "%s  (%d,%02d)", 
+                WRITE_TABLE_H_2(judoka_table, i, 1, pm.j[i]->deleted, pm.j[i]->index, "%s  (%d,%02d)", 
                               get_name_and_club_text(pm.j[i], CLUB_TEXT_NO_CLUB),
                               pm.j[i]->weight/1000, (pm.j[i]->weight%1000)/10);
             else
-                WRITE_TABLE_H(judoka_table, i, 1, pm.j[i]->deleted, "%s", 
+                WRITE_TABLE_H_2(judoka_table, i, 1, pm.j[i]->deleted, pm.j[i]->index, "%s", 
                               get_name_and_club_text(pm.j[i], CLUB_TEXT_NO_CLUB));
 
             if (grade_visible)
@@ -948,11 +1009,11 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
 
             WRITE_TABLE(judoka_table, i - num_pool_a, 0, "%d", i);
             if (weights_in_sheets)
-                WRITE_TABLE_H(judoka_table, i - num_pool_a, 1, pm.j[i]->deleted, "%s  (%d,%02d)", 
+                WRITE_TABLE_H_2(judoka_table, i - num_pool_a, 1, pm.j[i]->deleted, pm.j[i]->index, "%s  (%d,%02d)", 
                               get_name_and_club_text(pm.j[i], CLUB_TEXT_NO_CLUB),
                               pm.j[i]->weight/1000, (pm.j[i]->weight%1000)/10);
             else
-                WRITE_TABLE_H(judoka_table, i - num_pool_a, 1, pm.j[i]->deleted, "%s", 
+                WRITE_TABLE_H_2(judoka_table, i - num_pool_a, 1, pm.j[i]->deleted, pm.j[i]->index, "%s", 
                               get_name_and_club_text(pm.j[i], CLUB_TEXT_NO_CLUB));
 
             if (grade_visible)
@@ -1175,22 +1236,22 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
         WRITE_TABLE(result_table, 4, 0, "3");
                 
         if (gold && (j1 = get_data(gold))) {
-            WRITE_TABLE_H(result_table, 1, 1, j1->deleted, "%s", get_name_and_club_text(j1, 0));
+            WRITE_TABLE_H_2(result_table, 1, 1, j1->deleted, j1->index, "%s", get_name_and_club_text(j1, 0));
             set_competitor_position(j1->index, COMP_POS_DRAWN | 1);
             free_judoka(j1);
         }
         if (gold && (j1 = get_data(silver))) {
-            WRITE_TABLE_H(result_table, 2, 1, j1->deleted, "%s", get_name_and_club_text(j1, 0));
+            WRITE_TABLE_H_2(result_table, 2, 1, j1->deleted, j1->index, "%s", get_name_and_club_text(j1, 0));
             set_competitor_position(j1->index, COMP_POS_DRAWN | 2);
             free_judoka(j1);
         }
         if (gold && (j1 = get_data(bronze1))) {
-            WRITE_TABLE_H(result_table, 3, 1, j1->deleted, "%s", get_name_and_club_text(j1, 0));
+            WRITE_TABLE_H_2(result_table, 3, 1, j1->deleted, j1->index, "%s", get_name_and_club_text(j1, 0));
             set_competitor_position(j1->index, COMP_POS_DRAWN | 3);
             free_judoka(j1);
         }
         if (gold && (j1 = get_data(bronze2))) {
-            WRITE_TABLE_H(result_table, 4, 1, j1->deleted, "%s", get_name_and_club_text(j1, 0));
+            WRITE_TABLE_H_2(result_table, 4, 1, j1->deleted, j1->index, "%s", get_name_and_club_text(j1, 0));
             set_competitor_position(j1->index, COMP_POS_DRAWN | 3);
             free_judoka(j1);
         }
@@ -1276,11 +1337,11 @@ static void paint_qpool(struct paint_data *pd, gint category, struct judoka *ctg
 
                 WRITE_TABLE(judoka_table, i, 0, "%d", i+pool_start[pool]);
                 if (weights_in_sheets)
-                    WRITE_TABLE_H(judoka_table, i, 1, pm.j[i+pool_start[pool]]->deleted, "%s  (%d,%02d)", 
+                    WRITE_TABLE_H_2(judoka_table, i, 1, pm.j[i+pool_start[pool]]->deleted, pm.j[i+pool_start[pool]]->index, "%s  (%d,%02d)", 
                                   get_name_and_club_text(pm.j[i+pool_start[pool]], CLUB_TEXT_NO_CLUB),
                                   pm.j[i+pool_start[pool]]->weight/1000, (pm.j[i+pool_start[pool]]->weight%1000)/10);
                 else
-                    WRITE_TABLE_H(judoka_table, i, 1, pm.j[i+pool_start[pool]]->deleted, "%s", 
+                    WRITE_TABLE_H_2(judoka_table, i, 1, pm.j[i+pool_start[pool]]->deleted, pm.j[i+pool_start[pool]]->index, "%s", 
                                   get_name_and_club_text(pm.j[i+pool_start[pool]], CLUB_TEXT_NO_CLUB));
 
                 if (grade_visible)
@@ -1459,22 +1520,22 @@ static void paint_qpool(struct paint_data *pd, gint category, struct judoka *ctg
         WRITE_TABLE(result_table, 4, 0, "3");
                 
         if (gold && (j1 = get_data(gold))) {
-            WRITE_TABLE_H(result_table, 1, 1, j1->deleted, "%s", get_name_and_club_text(j1, 0));
+            WRITE_TABLE_H_2(result_table, 1, 1, j1->deleted, j1->index, "%s", get_name_and_club_text(j1, 0));
             set_competitor_position(j1->index, COMP_POS_DRAWN | 1);
             free_judoka(j1);
         }
         if (gold && (j1 = get_data(silver))) {
-            WRITE_TABLE_H(result_table, 2, 1, j1->deleted, "%s", get_name_and_club_text(j1, 0));
+            WRITE_TABLE_H_2(result_table, 2, 1, j1->deleted, j1->index, "%s", get_name_and_club_text(j1, 0));
             set_competitor_position(j1->index, COMP_POS_DRAWN | 2);
             free_judoka(j1);
         }
         if (gold && (j1 = get_data(bronze1))) {
-            WRITE_TABLE_H(result_table, 3, 1, j1->deleted, "%s", get_name_and_club_text(j1, 0));
+            WRITE_TABLE_H_2(result_table, 3, 1, j1->deleted, j1->index, "%s", get_name_and_club_text(j1, 0));
             set_competitor_position(j1->index, COMP_POS_DRAWN | 3);
             free_judoka(j1);
         }
         if (gold && (j1 = get_data(bronze2))) {
-            WRITE_TABLE_H(result_table, 4, 1, j1->deleted, "%s", get_name_and_club_text(j1, 0));
+            WRITE_TABLE_H_2(result_table, 4, 1, j1->deleted, j1->index, "%s", get_name_and_club_text(j1, 0));
             set_competitor_position(j1->index, COMP_POS_DRAWN | 3);
             free_judoka(j1);
         }
@@ -1947,47 +2008,47 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
     }
 
     if (gold && (j1 = get_data(gold))) {
-        WRITE_TABLE_H(result_table_2, 1, 1, j1->deleted, "%s", get_name_and_club_text(j1, 0));
+        WRITE_TABLE_H_2(result_table_2, 1, 1, j1->deleted, j1->index, "%s", get_name_and_club_text(j1, 0));
         set_competitor_position(j1->index, COMP_POS_DRAWN | 1);
         free_judoka(j1);
     }
     if (gold && (j1 = get_data(silver))) {
-        WRITE_TABLE_H(result_table_2, 2, 1, j1->deleted, "%s", get_name_and_club_text(j1, 0));
+        WRITE_TABLE_H_2(result_table_2, 2, 1, j1->deleted, j1->index, "%s", get_name_and_club_text(j1, 0));
         set_competitor_position(j1->index, COMP_POS_DRAWN | 2);
         free_judoka(j1);
     }
     if (gold && (j1 = get_data(bronze1))) {
-        WRITE_TABLE_H(result_table_2, 3, 1, j1->deleted, "%s", get_name_and_club_text(j1, 0));
+        WRITE_TABLE_H_2(result_table_2, 3, 1, j1->deleted, j1->index, "%s", get_name_and_club_text(j1, 0));
         set_competitor_position(j1->index, COMP_POS_DRAWN | 3);
         free_judoka(j1);
     }
     if (gold && one_bronze(table, sys) == FALSE && (j1 = get_data(bronze2))) {
-        WRITE_TABLE_H(result_table_2, 4, 1, j1->deleted, "%s", get_name_and_club_text(j1, 0));
+        WRITE_TABLE_H_2(result_table_2, 4, 1, j1->deleted, j1->index, "%s", get_name_and_club_text(j1, 0));
         set_competitor_position(j1->index, COMP_POS_DRAWN | 3);
         free_judoka(j1);
     }
     if (gold && one_bronze(table, sys) && (j1 = get_data(fourth))) {
-        WRITE_TABLE_H(result_table_2, 4, 1, j1->deleted, "%s", get_name_and_club_text(j1, 0));
+        WRITE_TABLE_H_2(result_table_2, 4, 1, j1->deleted, j1->index, "%s", get_name_and_club_text(j1, 0));
         set_competitor_position(j1->index, COMP_POS_DRAWN | 4);
         free_judoka(j1);
     }
     if (gold && (j1 = get_data(fifth1))) {
-        WRITE_TABLE_H(result_table_2, 5, 1, j1->deleted, "%s", get_name_and_club_text(j1, 0));
+        WRITE_TABLE_H_2(result_table_2, 5, 1, j1->deleted, j1->index, "%s", get_name_and_club_text(j1, 0));
         set_competitor_position(j1->index, COMP_POS_DRAWN | 5);
         free_judoka(j1);
     }
     if (gold && (j1 = get_data(fifth2))) {
-        WRITE_TABLE_H(result_table_2, 6, 1, j1->deleted, "%s", get_name_and_club_text(j1, 0));
+        WRITE_TABLE_H_2(result_table_2, 6, 1, j1->deleted, j1->index, "%s", get_name_and_club_text(j1, 0));
         set_competitor_position(j1->index, COMP_POS_DRAWN | 5);
         free_judoka(j1);
     }
     if (gold && (j1 = get_data(seventh1))) {
-        WRITE_TABLE_H(result_table_2, 7, 1, j1->deleted, "%s", get_name_and_club_text(j1, 0));
+        WRITE_TABLE_H_2(result_table_2, 7, 1, j1->deleted, j1->index, "%s", get_name_and_club_text(j1, 0));
         set_competitor_position(j1->index, COMP_POS_DRAWN | 7);
         free_judoka(j1);
     }
     if (gold && (j1 = get_data(seventh2))) {
-        WRITE_TABLE_H(result_table_2, 8, 1, j1->deleted, "%s", get_name_and_club_text(j1, 0));
+        WRITE_TABLE_H_2(result_table_2, 8, 1, j1->deleted, j1->index, "%s", get_name_and_club_text(j1, 0));
         set_competitor_position(j1->index, COMP_POS_DRAWN | 7);
         free_judoka(j1);
     }
@@ -2016,6 +2077,8 @@ void paint_category(struct paint_data *pd)
     gdouble  total_width_saved;
     gboolean landscape_saved;
 
+    judoka_rectangle_cnt = 0;
+
     /* find system */
     sys = db_get_system(category);
     pd->systm = sys;
@@ -2026,6 +2089,8 @@ void paint_category(struct paint_data *pd)
 
     if (pd->c == NULL)
         return;
+
+    //open_svg(pd);
 
     ROW_HEIGHT = NAME_H;
 	
@@ -2162,6 +2227,8 @@ void paint_category(struct paint_data *pd)
         cairo_rotate(pd->c, 0.5*M_PI);
         cairo_translate(pd->c, -paper_width_saved*0.5, -paper_height_saved*0.5);
     }
+
+    //close_svg();
 }
 
 
@@ -2434,7 +2501,7 @@ static gboolean print_cat(GtkWidget *window,
         gint x = event->x, y = event->y;
 
         if (x < 32 && y < 32) {
-            print_doc(NULL, (gpointer)(pd->category | PRINT_SHEET | PRINT_TO_PRINTER));
+            print_doc(NULL, gint_to_ptr(pd->category | PRINT_SHEET | PRINT_TO_PRINTER));
             return TRUE;
         } else  {
             pd->page = next_page(pd->category, pd->page);
@@ -2606,10 +2673,10 @@ void refresh_sheet_display(gboolean forced)
 
     current_page = 0;
 
-    expose(darea, 0, (gpointer)(forced == 0 && automatic_sheet_update == 0));
+    expose(darea, 0, gint_to_ptr(forced == 0 && automatic_sheet_update == 0));
 
     if (automatic_web_page_update) {
-        write_png(NULL, (gpointer)current_category);
+        write_png(NULL, gint_to_ptr(current_category));
         make_next_matches_html();
     }
 }
@@ -2694,12 +2761,12 @@ gboolean change_current_page(GtkWidget *sheet_page,
                                 (next_matches_info[t][0].matchnum << 5) | 
                                 (j == 0 ? 16 : 0) |
                                 i;
-                            set_points(NULL, (gpointer)data);
+                            set_points(NULL, gint_to_ptr(data));
                         } else if (next_matches_info[t][0].won_catnum >= 10000) {
                             gint wcat = next_matches_info[t][0].won_catnum;
                             gint wnum = next_matches_info[t][0].won_matchnum;
                             data = (wcat << 18) | (wnum << 5);
-                            set_points(NULL, (gpointer)data);
+                            set_points(NULL, gint_to_ptr(data));
                             db_set_comment(next_matches_info[t][1].catnum,
                                            next_matches_info[t][1].matchnum,
                                            COMMENT_EMPTY);

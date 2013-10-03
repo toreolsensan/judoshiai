@@ -116,7 +116,7 @@ void print_trace(void)
 
     for (i = 0; i < size; i++) {
         if (strncmp(strings[i], "judoshiai", 4)) continue;
-        g_print("\n%d\n%s\n", i, strings[i]);
+        g_print("\n%ld\n%s\n", i, strings[i]);
 
         char syscom[256];
         sprintf(syscom, "addr2line %p -e %s", array[i], name_buf);
@@ -127,10 +127,32 @@ void print_trace(void)
     free (strings);
 }
 #endif
+static void write_map_file(const gchar *catname, gint page)
+{
+    gchar buf[128];
+    if (page == 0)
+        snprintf(buf, sizeof(buf), "%s.map", txt2hex(catname));
+    else
+        snprintf(buf, sizeof(buf), "%s-%d.map", txt2hex(catname), page);
+        
+    gchar *mapname = g_build_filename(current_directory, buf, NULL);
+    FILE *map = fopen(mapname, "wb");
+    g_free(mapname);
+    if (map) {
+        int i;
+        for (i = 0; i < judoka_rectangle_cnt; i++) {
+            fprintf(map, "%d,%d,%d,%d,%d\n", 
+                judoka_rectangles[i].x1, judoka_rectangles[i].y1,
+                judoka_rectangles[i].x2, judoka_rectangles[i].y2,
+                judoka_rectangles[i].judoka);
+        }
+        fclose(map);
+    }
+}
 
 void write_png(GtkWidget *menuitem, gpointer userdata)
 {
-    gint ctg = (gint)userdata, i;
+    gint ctg = ptr_to_gint(userdata), i;
     gchar buf[200];
     cairo_surface_t *cs_pdf, *cs_png;
     cairo_t *c_pdf, *c_png;
@@ -227,6 +249,8 @@ void write_png(GtkWidget *menuitem, gpointer userdata)
         cairo_surface_write_to_png(cs_png, pngname);
         g_free(pngname);
 
+        write_map_file(ctgdata->last, 0);
+
         for (i = 1; i < num_pages(sys); i++) { // print other pages
             pd.page = i;
             paint_category(&pd);
@@ -236,6 +260,8 @@ void write_png(GtkWidget *menuitem, gpointer userdata)
             pngname = g_build_filename(current_directory, buf, NULL);
             cairo_surface_write_to_png(cs_png, pngname);
             g_free(pngname);
+
+            write_map_file(ctgdata->last, i);
         }
 
         cairo_destroy(c_png);
@@ -265,6 +291,8 @@ void write_png(GtkWidget *menuitem, gpointer userdata)
         cairo_surface_write_to_png(cs_png, pngname);
         g_free(pngname);
 
+        write_map_file(ctgdata->last, 0);
+
         for (i = 1; i < num_pages(sys); i++) { // print other pages
             pd.page = i;
             pd.c = c_pdf;
@@ -278,6 +306,8 @@ void write_png(GtkWidget *menuitem, gpointer userdata)
             pngname = g_build_filename(current_directory, buf, NULL);
             cairo_surface_write_to_png(cs_png, pngname);
             g_free(pngname);
+
+            write_map_file(ctgdata->last, i);
         }
 
         cairo_destroy(c_pdf);
@@ -1620,7 +1650,7 @@ void print_schedule(void)
             if (print_resolution > 180) print_resolution = 180;
         }
 
-        print_doc(NULL, (gpointer)flags);
+        print_doc(NULL, gint_to_ptr(flags));
     }
 
     g_free(s);
@@ -1695,11 +1725,11 @@ static void begin_print(GtkPrintOperation *operation,
                         GtkPrintContext   *context,
                         gpointer           user_data)
 {
-    gint what = (gint)user_data & PRINT_ITEM_MASK;
+    gint what = ptr_to_gint(user_data) & PRINT_ITEM_MASK;
     numpages = 1;
 
     if (what == PRINT_ALL_CATEGORIES || what == PRINT_SHEET) {
-        fill_in_pages((gint)user_data & PRINT_DATA_MASK, 
+        fill_in_pages(ptr_to_gint(user_data) & PRINT_DATA_MASK, 
                       what == PRINT_ALL_CATEGORIES);
         gtk_print_operation_set_n_pages(operation, numpages);
     } else if (what == PRINT_WEIGHING_NOTES) {
@@ -1717,17 +1747,17 @@ static void begin_print(GtkPrintOperation *operation,
             gtk_page_setup_get_top_margin(setup, GTK_UNIT_MM) -
             gtk_page_setup_get_bottom_margin(setup, GTK_UNIT_MM);
 
-        if ((gint)user_data & PRINT_TEMPLATE)
+        if (ptr_to_gint(user_data) & PRINT_TEMPLATE)
             read_print_template(template_in, context);
         else
             read_print_template(NULL, context);
         
-        if ((gint)user_data & PRINT_ALL)
+        if (ptr_to_gint(user_data) & PRINT_ALL)
             find_print_judokas(NULL);
 
         filter_winners();
         
-        if ((gint)user_data & PRINT_ONE_PER_PAGE)
+        if (ptr_to_gint(user_data) & PRINT_ONE_PER_PAGE)
             numpages = num_selected_judokas;
         else
             numpages = get_num_pages(&pd);
@@ -1735,7 +1765,7 @@ static void begin_print(GtkPrintOperation *operation,
         gtk_print_operation_set_n_pages(operation, numpages);
     } else {
 #if 0
-        gint ctg = (gint)user_data;
+        gint ctg = ptr_to_gint(user_data);
         gint sys = db_get_system(ctg);
 
         if ((sys & SYSTEM_MASK) == SYSTEM_FRENCH_64)
@@ -1751,7 +1781,7 @@ static void draw_page(GtkPrintOperation *operation,
                       gpointer           user_data)
 {
     struct paint_data pd;
-    gint ctg = (gint)user_data;
+    gint ctg = ptr_to_gint(user_data);
     GtkPageSetup *setup = gtk_print_context_get_page_setup(context);
 
     memset(&pd, 0, sizeof(pd));
@@ -1829,9 +1859,9 @@ void print_doc(GtkWidget *menuitem, gpointer userdata)
     struct judoka *cat = NULL;
     gint i;
         
-    gint what  = (gint)userdata & PRINT_ITEM_MASK;
-    gint where = (gint)userdata & PRINT_DEST_MASK;
-    gint data  = (gint)userdata & PRINT_DATA_MASK;
+    gint what  = ptr_to_gint(userdata) & PRINT_ITEM_MASK;
+    gint where = ptr_to_gint(userdata) & PRINT_DEST_MASK;
+    gint data  = ptr_to_gint(userdata) & PRINT_DATA_MASK;
 
     struct paint_data pd;
     memset(&pd, 0, sizeof(pd));
@@ -1893,28 +1923,28 @@ void print_doc(GtkWidget *menuitem, gpointer userdata)
             }
             break;
         case PRINT_WEIGHING_NOTES:
-	    if ((gint)userdata & PRINT_TEMPLATE)
+	    if (ptr_to_gint(userdata) & PRINT_TEMPLATE)
 		read_print_template(template_in, NULL);
 	    else
 		read_print_template(NULL, NULL);
 
-	    if ((gint)userdata & PRINT_ALL)
+	    if (ptr_to_gint(userdata) & PRINT_ALL)
 		find_print_judokas(NULL);
 
             filter_winners();
 
-	    if ((gint)userdata & PRINT_ONE_PER_PAGE)
+	    if (ptr_to_gint(userdata) & PRINT_ONE_PER_PAGE)
 		numpages = num_selected_judokas;
 	    else
 		numpages = get_num_pages(&pd);
 
             for (i = 1; i <= numpages; i++) {
-                paint_weight_notes(&pd, (gint)userdata, i);
+                paint_weight_notes(&pd, ptr_to_gint(userdata), i);
                 cairo_show_page(pd.c);
             }
             break;
         case PRINT_SCHEDULE:
-            if ((gint)userdata & PRINT_LANDSCAPE)
+            if (ptr_to_gint(userdata) & PRINT_LANDSCAPE)
                 pd.rotate = TRUE;
             paint_schedule(&pd);
             cairo_show_page(pd.c);
@@ -2244,7 +2274,7 @@ void print_accreditation_cards(gboolean all)
         if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(s->layout_template)))
             flags |=  PRINT_TEMPLATE;
 
-        print_doc(NULL, (gpointer)flags);
+        print_doc(NULL, gint_to_ptr(flags));
 
         print_flags = flags;
     }
