@@ -53,7 +53,7 @@ static void tatami_selection(GtkWidget *w,
                              gpointer   data )
 {
     gchar buf[32];
-    gint tatami = (gint)data;
+    gint tatami = ptr_to_gint(data);
     sprintf(buf, "tatami%d", tatami);
     show_tatami[tatami-1] = GTK_CHECK_MENU_ITEM(w)->active;
     g_key_file_set_boolean(keyfile, "preferences", buf, 
@@ -134,7 +134,7 @@ static GtkWidget *create_menu_item(GtkWidget *menu, void *cb, gint param)
 {
     GtkWidget *w = gtk_menu_item_new_with_label("");
     gtk_menu_shell_append (GTK_MENU_SHELL(menu), w);
-    g_signal_connect(G_OBJECT(w), "activate", G_CALLBACK(cb), (gpointer)param);
+    g_signal_connect(G_OBJECT(w), "activate", G_CALLBACK(cb), gint_to_ptr(param));
     return w;
 }
 
@@ -225,7 +225,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
         tatami_show[i] = gtk_check_menu_item_new_with_label("");
         gtk_menu_shell_append(GTK_MENU_SHELL(preferencesmenu), tatami_show[i]);
         g_signal_connect(G_OBJECT(tatami_show[i]), "activate", 
-                         G_CALLBACK(tatami_selection), (gpointer)(i+1));
+                         G_CALLBACK(tatami_selection), gint_to_ptr(i+1));
     }
 
     //create_separator(preferencesmenu);
@@ -307,7 +307,7 @@ void set_preferences(void)
         b = g_key_file_get_boolean(keyfile, "preferences", t, &error);
         if (b && !error) {
             gtk_menu_item_activate(GTK_MENU_ITEM(tatami_show[i-1]));
-            tatami_selection(tatami_show[i-1], (gpointer)i);
+            tatami_selection(tatami_show[i-1], gint_to_ptr(i));
         }
     }
 
@@ -332,7 +332,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
 {
     gint i;
 
-    language = (gint)param;
+    language = ptr_to_gint(param);
     set_gui_language(language);
 
     change_menu_label(preferences,  _("Preferences"));
