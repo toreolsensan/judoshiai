@@ -5,6 +5,11 @@
  * Full copyright text is included in the software package.
  */ 
 
+#include <stdint.h>
+#define ptr_to_gint( p ) ((gint)(uintptr_t) (p) )
+#define gint_to_ptr( p ) ((void*)(uintptr_t) (p) )
+
+
 #define SPRINTF(_buf, _fmt...) do {gint _n = snprintf(_buf, sizeof(_buf), _fmt); \
         if (_n >= sizeof(_buf)) g_print("Buffer overflow! %s:%d\n", __FILE__, __LINE__); } while (0)
 
