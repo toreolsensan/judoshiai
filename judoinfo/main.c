@@ -481,10 +481,10 @@ void toggle_small_display(GtkWidget *menu_item, gpointer data)
 {
     if (GTK_CHECK_MENU_ITEM(menu_item)->active) {
         num_lines = NUM_LINES;
-        display_type = (gint)data;
-        g_key_file_set_integer(keyfile, "preferences", "displaytype", (gint)data);
+        display_type = ptr_to_gint(data);
+        g_key_file_set_integer(keyfile, "preferences", "displaytype", ptr_to_gint(data));
 
-        switch ((gint)data) {
+        switch (ptr_to_gint(data)) {
         case NORMAL_DISPLAY:
             break;
         case SMALL_DISPLAY:
@@ -649,7 +649,7 @@ int main( int   argc,
     gtk_widget_show_all(window);
 
     set_preferences();
-    change_language(NULL, NULL, (gpointer)language);
+    change_language(NULL, NULL, gint_to_ptr(language));
 
     open_comm_socket();
 	
