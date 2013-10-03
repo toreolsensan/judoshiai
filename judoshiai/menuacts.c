@@ -285,7 +285,7 @@ void select_use_logo(GtkWidget *w, gpointer data)
 
 void set_lang(GtkWidget *w, gpointer data)
 {
-    print_lang = (gint)data;
+    print_lang = ptr_to_gint(data);
     gchar l[3];
     l[0] = print_lang_names[print_lang][0];
     l[1] = print_lang_names[print_lang][1];
@@ -295,7 +295,7 @@ void set_lang(GtkWidget *w, gpointer data)
 
 void set_club_text(GtkWidget *w, gpointer data)
 {
-    club_text = (gint)data;
+    club_text = ptr_to_gint(data);
     g_key_file_set_integer(keyfile, "preferences", "clubtext", club_text);
 }
 
@@ -332,7 +332,7 @@ void toggle_grade_visible(GtkWidget *menu_item, gpointer data)
 
 void toggle_name_layout(GtkWidget *menu_item, gpointer data)
 {
-    name_layout = (gint)data;
+    name_layout = ptr_to_gint(data);
     g_key_file_set_integer(keyfile, "preferences", "namelayout", name_layout);
 }
 

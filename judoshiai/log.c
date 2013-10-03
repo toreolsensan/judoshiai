@@ -65,7 +65,7 @@ static void date_cell_data_func (GtkTreeViewColumn *col,
                                  gpointer           user_data)
 {
     gchar         buf[32];
-    guint         date;
+    time_t        date;
     struct tm    *tm;
 
     gtk_tree_model_get(model, iter, COL_DATE, &date, -1);
@@ -178,7 +178,7 @@ void set_log_page(GtkWidget *notebook)
 
 void shiai_log(guint severity, guint tatami, gchar *format, ...)
 {
-    guint         t;
+    time_t        t;
     GtkTreeModel *model;
     GtkTreeIter   iter;
     static gint   num_log_lines = 0;

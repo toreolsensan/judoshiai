@@ -409,7 +409,7 @@ void get_categories(http_parser_t *parser)
 
 static cairo_status_t write_to_http(void *closure, const unsigned char *data, unsigned int length)
 {
-    mysend((SOCKET)closure, (gchar *)data, length);
+    mysend((SOCKET)ptr_to_gint(closure), (gchar *)data, length);
     return CAIRO_STATUS_SUCCESS;
 }
 
@@ -421,7 +421,7 @@ void get_sheet(http_parser_t *parser)
     sendf(s, "HTTP/1.0 200 OK\r\n");
     sendf(s, "Content-Type: image/png\r\n");
     sendf(s, "\r\n");
-    write_sheet_to_stream(catid, write_to_http, (void *)s);
+    write_sheet_to_stream(catid, write_to_http, gint_to_ptr(s));
 }
 
 static gint pts2int(const gchar *p)

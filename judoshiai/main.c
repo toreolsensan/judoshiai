@@ -435,7 +435,7 @@ ok:
 
     set_font("Arial 12");
     set_preferences();
-    change_language(NULL, NULL, (gpointer)language);
+    change_language(NULL, NULL, gint_to_ptr(language));
 
     if (!first_instance) {
         GtkWidget *dialog = 

@@ -436,7 +436,7 @@ void send_packet(struct message *msg)
 void set_tatami_state(GtkWidget *menu_item, gpointer data)
 {
     gchar buf[32];
-    gint tatami = (gint)data;
+    gint tatami = ptr_to_gint(data);
 
     tatami_state[tatami-1] = GTK_CHECK_MENU_ITEM(menu_item)->active;
 

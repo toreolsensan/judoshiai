@@ -634,6 +634,14 @@ struct paint_data {
     gchar   *filename;
 };
 
+struct judoka_rectangle {
+    gint judoka;
+    gint x1, y1, x2, y2;
+};
+extern struct judoka_rectangle judoka_rectangles[];
+extern gint judoka_rectangle_cnt;
+
+
 extern avl_tree *categories_tree;
 extern struct category_data category_queue[NUM_TATAMIS+1];
 

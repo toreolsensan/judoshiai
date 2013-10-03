@@ -24,7 +24,7 @@ static gboolean traverse_rows(GtkTreeModel *model,
 			      GtkTreeIter *iter,
 			      gpointer data)
 {
-    guint ix = (guint)data;
+    guint ix = ptr_to_gint(data);
     guint index;
 
     gtk_tree_model_get(model, iter,
@@ -44,7 +44,7 @@ gboolean find_iter(GtkTreeIter *iter, guint index)
         return FALSE;
 
     index_found = FALSE;
-    gtk_tree_model_foreach(current_model, traverse_rows, (gpointer)index);
+    gtk_tree_model_foreach(current_model, traverse_rows, gint_to_ptr(index));
     if (index_found) {
         *iter = found_iter;
         return TRUE;
@@ -55,7 +55,7 @@ gboolean find_iter(GtkTreeIter *iter, guint index)
 gboolean find_iter_model(GtkTreeIter *iter, guint index, GtkTreeModel *model)
 {
     index_found = FALSE;
-    gtk_tree_model_foreach(model, traverse_rows, (gpointer)index);
+    gtk_tree_model_foreach(model, traverse_rows, gint_to_ptr(index));
     if (index_found) {
         *iter = found_iter;
         return TRUE;

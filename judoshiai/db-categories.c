@@ -29,7 +29,7 @@ static gint my_atoi(gchar *p)
 
 static int db_callback_categories(void *data, int argc, char **argv, char **azColName)
 {
-    gint i, flags = (int)data;
+    gint i, flags = ptr_to_gint(data);
 
     for (i = 0; i < argc; i++) {
         //g_print(" %s=%s", azColName[i], argv[i]);

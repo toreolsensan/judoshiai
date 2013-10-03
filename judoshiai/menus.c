@@ -250,7 +250,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
 
     for (i = 0; i < NUM_TATAMIS; i++)
         g_signal_connect(G_OBJECT(category_to_tatamis[i]), "activate", G_CALLBACK(locate_to_tatamis), 
-                         (gpointer)(i+1));
+                         gint_to_ptr(i+1));
 
     /* Create the Drawing menu content. */
     draw_all_categories = gtk_menu_item_new_with_label(_("Draw All Categories"));
@@ -281,7 +281,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
         judotimer_control[i] = gtk_check_menu_item_new_with_label(buf);
         gtk_menu_shell_append(GTK_MENU_SHELL(judotimer_menu), judotimer_control[i]);
         g_signal_connect(G_OBJECT(judotimer_control[i]), "activate", G_CALLBACK(set_tatami_state), 
-                         (gpointer)(i+1));
+                         gint_to_ptr(i+1));
     }
 
 
@@ -401,7 +401,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
 
     for (i = 0; i < NUM_PRINT_LANGS; i++) {
         if (preference_result_languages[i])
-            g_signal_connect(G_OBJECT(preference_result_languages[i]), "activate", G_CALLBACK(set_lang), (gpointer)i);
+            g_signal_connect(G_OBJECT(preference_result_languages[i]), "activate", G_CALLBACK(set_lang), gint_to_ptr(i));
     }
 
     g_signal_connect(G_OBJECT(preference_club_text_club),    "activate", 
@@ -709,7 +709,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     gint i;
     gchar buf[64];
 
-    language = (gint)param;
+    language = ptr_to_gint(param);
     set_gui_language(language);
 
     change_menu_label(tournament_menu_item , _("Tournament"));

@@ -118,13 +118,13 @@ static void name_cell_data_func (GtkTreeViewColumn *col,
     struct judoka *j;
 
     gtk_tree_model_get(model, iter, 
-                       (gint)user_data, &index, 
+                       ptr_to_gint(user_data), &index, 
                        COL_MATCH_CAT, &category,
                        COL_MATCH_VIS, &visible, 
                        -1);
   
     if (visible == FALSE) {
-        if ((gint)user_data != COL_MATCH_BLUE)
+        if (ptr_to_gint(user_data) != COL_MATCH_BLUE)
             return;
 
         gchar *sys;
@@ -179,7 +179,7 @@ static void category_cell_data_func (GtkTreeViewColumn *col,
     struct judoka *j;
 
     gtk_tree_model_get(model, iter, 
-                       (gint)user_data, &index, 
+                       ptr_to_gint(user_data), &index, 
                        COL_MATCH_CAT, &category,
                        COL_MATCH_VIS, &visible, 
                        -1);
@@ -240,7 +240,7 @@ static void score_cell_data_func (GtkTreeViewColumn *col,
     guint score;
 
     gtk_tree_model_get(model, iter,
-                       (gint)user_data, &score,
+                       ptr_to_gint(user_data), &score,
                        COL_MATCH_VIS, &visible, 
                        -1);
 
@@ -267,7 +267,7 @@ static void time_cell_data_func (GtkTreeViewColumn *col,
     guint tm;
 
     gtk_tree_model_get(model, iter,
-                       (gint)user_data, &tm,
+                       ptr_to_gint(user_data), &tm,
                        COL_MATCH_VIS, &visible, 
                        -1);
 
@@ -1812,7 +1812,7 @@ error:
 
 void set_points(GtkWidget *menuitem, gpointer userdata)
 {
-    guint data = (guint)userdata;
+    guint data = ptr_to_gint(userdata);
     guint category = data >> 18;
     guint number = (data >> 5) & 0x1fff;
     gboolean is_blue = (data & 16) != 0;
@@ -2030,7 +2030,7 @@ static void view_match_popup_menu(GtkWidget *treeview,
 
 static void set_comment(GtkWidget *menuitem, gpointer userdata)
 {
-    guint data = (guint)userdata;
+    guint data = ptr_to_gint(userdata);
     guint category = data>>16;
     guint number = (data&0xfffc) >> 2;
     guint cmd = data & 0x3;
@@ -2080,22 +2080,22 @@ static void view_next_match_popup_menu(GtkWidget *treeview,
 
     menuitem = gtk_menu_item_new_with_label(_("Next match"));
     g_signal_connect(menuitem, "activate",
-                     (GCallback) set_comment, (gpointer)((category<<16)|(number<<2)|COMMENT_MATCH_1));
+                     (GCallback) set_comment, gint_to_ptr((category<<16)|(number<<2)|COMMENT_MATCH_1));
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
 
     menuitem = gtk_menu_item_new_with_label(_("Preparing"));
     g_signal_connect(menuitem, "activate",
-                     (GCallback) set_comment, (gpointer)((category<<16)|(number<<2)|COMMENT_MATCH_2));
+                     (GCallback) set_comment, gint_to_ptr((category<<16)|(number<<2)|COMMENT_MATCH_2));
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
 
     menuitem = gtk_menu_item_new_with_label(_("Delay the match"));
     g_signal_connect(menuitem, "activate",
-                     (GCallback) set_comment, (gpointer)((category<<16)|(number<<2)|COMMENT_WAIT));
+                     (GCallback) set_comment, gint_to_ptr((category<<16)|(number<<2)|COMMENT_WAIT));
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
 
     menuitem = gtk_menu_item_new_with_label(_("Remove comment"));
     g_signal_connect(menuitem, "activate",
-                     (GCallback) set_comment, (gpointer)((category<<16)|(number<<2)));
+                     (GCallback) set_comment, gint_to_ptr((category<<16)|(number<<2)));
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
 
     gtk_widget_show_all(menu);
@@ -2122,27 +2122,27 @@ static void view_match_points_popup_menu(GtkWidget *treeview,
 
     menuitem = gtk_menu_item_new_with_label("10");
     g_signal_connect(menuitem, "activate",
-                     (GCallback) set_points, (gpointer)(data + 10));
+                     (GCallback) set_points, gint_to_ptr(data + 10));
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
     menuitem = gtk_menu_item_new_with_label("7");
     g_signal_connect(menuitem, "activate",
-                     (GCallback) set_points, (gpointer)(data + 7));
+                     (GCallback) set_points, gint_to_ptr(data + 7));
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
     menuitem = gtk_menu_item_new_with_label("5");
     g_signal_connect(menuitem, "activate",
-                     (GCallback) set_points, (gpointer)(data + 5));
+                     (GCallback) set_points, gint_to_ptr(data + 5));
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
     menuitem = gtk_menu_item_new_with_label("3");
     g_signal_connect(menuitem, "activate",
-                     (GCallback) set_points, (gpointer)(data + 3));
+                     (GCallback) set_points, gint_to_ptr(data + 3));
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
     menuitem = gtk_menu_item_new_with_label("1");
     g_signal_connect(menuitem, "activate",
-                     (GCallback) set_points, (gpointer)(data + 1));
+                     (GCallback) set_points, gint_to_ptr(data + 1));
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
     menuitem = gtk_menu_item_new_with_label("0");
     g_signal_connect(menuitem, "activate",
-                     (GCallback) set_points, (gpointer)(data));
+                     (GCallback) set_points, gint_to_ptr(data));
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
         
     gtk_widget_show_all(menu);

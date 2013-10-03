@@ -78,7 +78,7 @@ void db_matches_init(void)
 
 static int db_callback_matches(void *data, int argc, char **argv, char **azColName)
 {
-    guint flags = (int)data;
+    guint flags = ptr_to_gint(data);
     gint i, val;
 
     for (i = 0; i < argc; i++) {
@@ -787,7 +787,7 @@ void db_reset_last_match_times(gint category, gint number, gboolean blue, gboole
     if (white)
         x |= DB_RESET_LAST_MATCH_TIME_W;
 
-    db_exec_str((gpointer)x, db_callback_matches,
+    db_exec_str(gint_to_ptr(x), db_callback_matches,
                 "SELECT * FROM matches "
                 "WHERE \"category\"=%d AND \"number\"=%d", 
                 category, number);

@@ -145,7 +145,7 @@ void create_categories(GtkWidget *w, gpointer data)
 void view_popup_menu_draw_category(GtkWidget *menuitem, gpointer userdata)
 {
     gint n, num_selected = 0;
-    guint index = (guint)userdata;
+    guint index = ptr_to_gint(userdata);
     GtkTreeIter iter;
     gboolean ok;
     GtkTreeSelection *selection = 
@@ -189,7 +189,7 @@ void view_popup_menu_draw_category(GtkWidget *menuitem, gpointer userdata)
 void view_popup_menu_draw_category_manually(GtkWidget *menuitem, gpointer userdata)
 {
     gint n;
-    guint index = ((guint)userdata)&0x00ffffff;
+    guint index = (ptr_to_gint(userdata))&0x00ffffff;
     GtkTreeIter iter;
         
     if (find_iter(&iter, index) == FALSE)
@@ -197,7 +197,7 @@ void view_popup_menu_draw_category_manually(GtkWidget *menuitem, gpointer userda
 
     n = gtk_tree_model_iter_n_children(current_model, &iter);
     if (n >= 2 && n <= NUM_COMPETITORS) {
-        if (((guint)userdata)&0x01000000)
+        if ((ptr_to_gint(userdata))&0x01000000)
             edit_drawing(&iter, n);
         else
             draw_one_category_manually(&iter, n);
@@ -211,7 +211,7 @@ void view_popup_menu_draw_category_manually(GtkWidget *menuitem, gpointer userda
 
 void locate_to_tatamis(GtkWidget *w, gpointer data)
 {
-    gint n = (gint)data;
+    gint n = ptr_to_gint(data);
     GtkTreeIter iter;
     gboolean ok;
     gint t = 1, i = 0;

@@ -96,7 +96,7 @@ static void judoka_edited_callback(GtkWidget *widget,
 				   gpointer data)
 {
     gint ret;
-    gint event_id = (gint)event;
+    gint event_id = ptr_to_gint(event);
     struct judoka edited;
     struct judoka_widget *judoka_tmp = data;
     gint ix = judoka_tmp->index;
@@ -350,7 +350,7 @@ static void judoka_edited_callback(GtkWidget *widget,
         update_category_status_info_all();
 
         if (event_id == RESPONSE_PRINT)
-            print_doc(NULL, (gpointer)(edited.index | PRINT_SHEET | PRINT_TO_PRINTER));
+            print_doc(NULL, gint_to_ptr(edited.index | PRINT_SHEET | PRINT_TO_PRINTER));
     }
 
 out:
@@ -452,13 +452,13 @@ void view_on_row_activated(GtkTreeView        *treeview,
             snprintf(clubseeding_s, sizeof(clubseeding_s), "%d", clubseeding);
 	}
     } else {
-        visible = (gboolean) ((int)userdata == NEW_JUDOKA ? TRUE : FALSE);
+        visible = (gboolean) (ptr_to_gint(userdata) == NEW_JUDOKA ? TRUE : FALSE);
         category = strdup("?");
         deleted = 0;
         sprintf(weight_s, "0");
         sprintf(birthyear_s, "0");
         belt = 0;
-        index = (guint) userdata;
+        index = ptr_to_gint(userdata);
         strcpy(clubseeding_s, "0");
     }
 	
@@ -695,7 +695,7 @@ static void print_competitors_callback(GtkWidget *widget,
                                        GdkEvent *event,
                                        gpointer data)
 {
-    gint event_id = (gint)event;
+    gint event_id = ptr_to_gint(event);
 
     if (event_id == RESPONSE_COACH) {
         num_selected_judokas = 0;
@@ -713,7 +713,7 @@ static gboolean display_coach(GtkWidget *treeview,
                               GdkEventButton *event, 
                               gpointer userdata)
 {
-    display_competitor((gint)userdata | 0x10000);
+    display_competitor(ptr_to_gint(userdata) | 0x10000);
     return TRUE;
 }
 
@@ -747,9 +747,9 @@ void print_competitors_dialog(const gchar *cid, gint ix)
         }
 
         g_signal_connect(G_OBJECT(tmp), "button-press-event", 
-                         (GCallback) display_coach, (gpointer)ix);
+                         (GCallback) display_coach, gint_to_ptr(ix));
         g_signal_connect(G_OBJECT(tmp), "key-press-event", 
-                         (GCallback) display_coach, (gpointer)ix);
+                         (GCallback) display_coach, gint_to_ptr(ix));
     } else {
         tmp = gtk_label_new("");
         gchar *markup = g_markup_printf_escaped ("<b>%s %s</b>", _("Coach"), cid);
@@ -1196,7 +1196,7 @@ static gboolean view_on_button_pressed(GtkWidget *treeview,
 
             if (event->button == 3) {
                 view_popup_menu(treeview, event, 
-                                (gpointer)index,
+                                gint_to_ptr(index),
                                 selected_regcategory,
                                 selected_visible);
                 if (selected_visible == FALSE)
@@ -1937,14 +1937,14 @@ static gboolean foreach_comp_dsp(GtkTreeModel *model,
                                  void         *indx)
 {
     gint   id;
-    gint   lookfor = (gint)indx & 0xffff;
+    gint   lookfor = ptr_to_gint(indx) & 0xffff;
 
     gtk_tree_model_get(model, iter,
                        COL_INDEX, &id,
                        -1);
 
     if (id == lookfor) {
-        view_on_row_activated(GTK_TREE_VIEW(current_view), path, NULL, (gpointer)((gint)indx & 0x10000));
+        view_on_row_activated(GTK_TREE_VIEW(current_view), path, NULL, gint_to_ptr(ptr_to_gint(indx) & 0x10000));
 
         return TRUE;
     }
@@ -1956,7 +1956,7 @@ static void display_competitor(gint indx)
 {
     gtk_tree_model_foreach(GTK_TREE_MODEL(current_model),
                            (GtkTreeModelForeachFunc) foreach_comp_dsp,
-                           (void *)indx);
+                           gint_to_ptr(indx));
 }
 
 #if 0

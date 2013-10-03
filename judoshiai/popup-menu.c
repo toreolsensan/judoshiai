@@ -150,7 +150,7 @@ void view_popup_menu_print_cards(GtkWidget *menuitem, gpointer userdata)
 
 static void view_popup_menu_change_category(GtkWidget *menuitem, gpointer userdata)
 {
-    struct judoka *j = get_data((gint)userdata);
+    struct judoka *j = get_data(ptr_to_gint(userdata));
     if (!j)
         return;
 
@@ -166,18 +166,18 @@ static void view_popup_menu_change_category(GtkWidget *menuitem, gpointer userda
 
 static void view_popup_menu_remove_draw(GtkWidget *menuitem, gpointer userdata)
 {
-    if (db_category_match_status((gint)userdata) & MATCH_MATCHED) {
+    if (db_category_match_status(ptr_to_gint(userdata)) & MATCH_MATCHED) {
         SHOW_MESSAGE(_("Matches matched. Clear the results first."));
         return;
     }
 
     struct compsys cs;
-    cs = get_cat_system((gint)userdata);
+    cs = get_cat_system(ptr_to_gint(userdata));
     cs.system = cs.numcomp = cs.table = 0; // leave wishsys as is
 
-    db_set_system((gint)userdata, cs);
-    db_remove_matches((gint)userdata);
-    update_category_status_info((gint)userdata);
+    db_set_system(ptr_to_gint(userdata), cs);
+    db_remove_matches(ptr_to_gint(userdata));
+    update_category_status_info(ptr_to_gint(userdata));
     matches_refresh();
     refresh_window();
 }
@@ -322,12 +322,12 @@ static void create_new_category(GtkWidget *menuitem, gpointer userdata)
 static void view_popup_menu_draw_and_print_category(GtkWidget *menuitem, gpointer userdata)
 {
     view_popup_menu_draw_category(menuitem, userdata);
-    print_doc(menuitem, (gpointer)((gint)userdata | PRINT_SHEET | PRINT_TO_PRINTER));
+    print_doc(menuitem, gint_to_ptr(ptr_to_gint(userdata) | PRINT_SHEET | PRINT_TO_PRINTER));
 }
 
 static void show_category_window(GtkWidget *menuitem, gpointer userdata)
 {
-    category_window((gint)userdata);
+    category_window(ptr_to_gint(userdata));
 }
 
 void view_popup_menu(GtkWidget *treeview, 
@@ -337,14 +337,14 @@ void view_popup_menu(GtkWidget *treeview,
                      gboolean visible)
 {
     GtkWidget *menu, *menuitem;
-    gint matched = db_category_match_status((gint)userdata);
-    //db_matched_matches_exist((gint)userdata);
+    gint matched = db_category_match_status(ptr_to_gint(userdata));
+    //db_matched_matches_exist(ptr_to_gint(userdata));
 
     if (dest_category)
         g_free(dest_category);
 
     dest_category = strdup(regcategory);
-    dest_category_ix = (gint)userdata;
+    dest_category_ix = ptr_to_gint(userdata);
     menu = gtk_menu_new();
 
     menuitem = gtk_menu_item_new_with_label(_("Expand All"));
@@ -380,7 +380,7 @@ void view_popup_menu(GtkWidget *treeview,
         menuitem = gtk_menu_item_new_with_label(cat);
         g_signal_connect(menuitem, "activate",
                          (GCallback) view_popup_menu_change_category, 
-                         (gpointer)index);
+                         gint_to_ptr(index));
         gtk_menu_shell_append(GTK_MENU_SHELL(submenu), menuitem);
         g_free(cat);
         
@@ -427,7 +427,7 @@ void view_popup_menu(GtkWidget *treeview,
         menuitem = gtk_menu_item_new_with_label(_("Edit Drawing"));
         g_signal_connect(menuitem, "activate",
                          (GCallback) view_popup_menu_draw_category_manually, 
-                         (gpointer)((gint)userdata | 0x01000000));
+                         gint_to_ptr(ptr_to_gint(userdata) | 0x01000000));
         gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
 
         gtk_menu_shell_append(GTK_MENU_SHELL(menu), gtk_separator_menu_item_new());
@@ -454,12 +454,12 @@ void view_popup_menu(GtkWidget *treeview,
 
     menuitem = gtk_menu_item_new_with_label(_("Print Selected Sheets (Printer)"));
     g_signal_connect(menuitem, "activate",
-                     (GCallback) print_doc, (gpointer)((gint)userdata | PRINT_SHEET | PRINT_TO_PRINTER));
+                     (GCallback) print_doc, gint_to_ptr(ptr_to_gint(userdata) | PRINT_SHEET | PRINT_TO_PRINTER));
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
 
     menuitem = gtk_menu_item_new_with_label(_("Print Selected Sheets (PDF)"));
     g_signal_connect(menuitem, "activate",
-                     (GCallback) print_doc, (gpointer)((gint)userdata | PRINT_SHEET | PRINT_TO_PDF));
+                     (GCallback) print_doc, gint_to_ptr(ptr_to_gint(userdata) | PRINT_SHEET | PRINT_TO_PDF));
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
 
     menuitem = gtk_menu_item_new_with_label(_("Print Selected Accreditation Cards"));

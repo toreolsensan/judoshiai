@@ -592,8 +592,8 @@ static gint find_box(gdouble x, gdouble y)
 
 static void change_comment(GtkWidget *menuitem, gpointer userdata)
 {
-    gint t = ((gint)userdata) >> 4;
-    gint cmd = ((gint)userdata) & 0x0f;
+    gint t = (ptr_to_gint(userdata)) >> 4;
+    gint cmd = (ptr_to_gint(userdata)) & 0x0f;
     struct compsys sys = db_get_system(point_click_areas[t].category);
 
     db_set_comment(point_click_areas[t].category, point_click_areas[t].number, cmd);
@@ -603,7 +603,7 @@ static void change_comment(GtkWidget *menuitem, gpointer userdata)
     struct message msg;
     memset(&msg, 0, sizeof(msg));
     msg.type = MSG_SET_COMMENT;
-    msg.u.set_comment.data = (gint)userdata;
+    msg.u.set_comment.data = ptr_to_gint(userdata);
     msg.u.set_comment.category = point_click_areas[t].category;
     msg.u.set_comment.number = point_click_areas[t].number;
     msg.u.set_comment.cmd = cmd;
@@ -613,8 +613,8 @@ static void change_comment(GtkWidget *menuitem, gpointer userdata)
 
 static void freeze(GtkWidget *menuitem, gpointer userdata)
 {
-    gint t = ((gint)userdata) >> AREA_SHIFT;
-    gint arg = ((gint)userdata) & ARG_MASK;
+    gint t = (ptr_to_gint(userdata)) >> AREA_SHIFT;
+    gint arg = (ptr_to_gint(userdata)) & ARG_MASK;
 
     db_freeze_matches(point_click_areas[t].tatami, 
                       point_click_areas[t].category, 
@@ -678,25 +678,25 @@ static gboolean mouse_click(GtkWidget *sheet_page,
         menu = gtk_menu_new();
 
         menuitem = gtk_menu_item_new_with_label(_("Next match"));
-        p = (gpointer)(COMMENT_MATCH_1 | (t << 4));
+        p = gint_to_ptr(COMMENT_MATCH_1 | (t << 4));
         g_signal_connect(menuitem, "activate",
                          (GCallback) change_comment, p);
         gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
 
         menuitem = gtk_menu_item_new_with_label(_("Preparing"));
-        p = (gpointer)(COMMENT_MATCH_2 | (t << 4));
+        p = gint_to_ptr(COMMENT_MATCH_2 | (t << 4));
         g_signal_connect(menuitem, "activate",
                          (GCallback) change_comment, p);
         gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
 
         menuitem = gtk_menu_item_new_with_label(_("Delay the match"));
-        p = (gpointer)(COMMENT_WAIT | (t << 4));
+        p = gint_to_ptr(COMMENT_WAIT | (t << 4));
         g_signal_connect(menuitem, "activate",
                          (GCallback) change_comment, p);
         gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
 
         menuitem = gtk_menu_item_new_with_label(_("Remove delay"));
-        p = (gpointer)(COMMENT_EMPTY | (t << 4));
+        p = gint_to_ptr(COMMENT_EMPTY | (t << 4));
         g_signal_connect(menuitem, "activate",
                          (GCallback) change_comment, p);
         gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
@@ -704,25 +704,25 @@ static gboolean mouse_click(GtkWidget *sheet_page,
         gtk_menu_shell_append(GTK_MENU_SHELL(menu), gtk_separator_menu_item_new());
 
         menuitem = gtk_menu_item_new_with_label(_("Freeze match order"));
-        p = (gpointer)(FREEZE_MATCHES | (t << AREA_SHIFT));
+        p = gint_to_ptr(FREEZE_MATCHES | (t << AREA_SHIFT));
         g_signal_connect(menuitem, "activate",
                          (GCallback) freeze, p);
         gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
 		
         menuitem = gtk_menu_item_new_with_label(_("Unfreeze exported"));
-        p = (gpointer)(UNFREEZE_EXPORTED | (t << AREA_SHIFT));
+        p = gint_to_ptr(UNFREEZE_EXPORTED | (t << AREA_SHIFT));
         g_signal_connect(menuitem, "activate",
                          (GCallback) freeze, p);
         gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
 		
         menuitem = gtk_menu_item_new_with_label(_("Unfreeze imported"));
-        p = (gpointer)(UNFREEZE_IMPORTED | (t << AREA_SHIFT));
+        p = gint_to_ptr(UNFREEZE_IMPORTED | (t << AREA_SHIFT));
         g_signal_connect(menuitem, "activate",
                          (GCallback) freeze, p);
         gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
 		
         menuitem = gtk_menu_item_new_with_label(_("Unfreeze this"));
-        p = (gpointer)(UNFREEZE_THIS | (t << AREA_SHIFT));
+        p = gint_to_ptr(UNFREEZE_THIS | (t << AREA_SHIFT));
         g_signal_connect(menuitem, "activate",
                          (GCallback) freeze, p);
         gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
@@ -828,3 +828,5 @@ void set_match_graph_titles(void)
     if (match_graph_label)
         gtk_label_set_text(GTK_LABEL(match_graph_label), _("Matches"));
 }
+
+

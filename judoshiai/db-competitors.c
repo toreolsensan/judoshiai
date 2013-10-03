@@ -39,7 +39,7 @@ static gint weights_updated;
 
 static int db_callback(void *data, int argc, char **argv, char **azColName)
 {
-    int i, flags = (int)data;
+    int i, flags = ptr_to_gint(data);
     struct judoka j;
     gchar *newcat = NULL;
 
@@ -361,9 +361,9 @@ void db_add_competitors(const gchar *competition, gboolean with_weight,
         flags |= CLEANUP;
 
     if (weighted)
-        db_exec(competition, "SELECT * FROM competitors WHERE \"weight\">0", (gpointer)flags, db_callback);
+        db_exec(competition, "SELECT * FROM competitors WHERE \"weight\">0", gint_to_ptr(flags), db_callback);
     else
-        db_exec(competition, "SELECT * FROM competitors", (gpointer)flags, db_callback);
+        db_exec(competition, "SELECT * FROM competitors", gint_to_ptr(flags), db_callback);
 
     *added = competitors_added;
     *not_added = competitors_not_added;
