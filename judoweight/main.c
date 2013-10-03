@@ -388,7 +388,7 @@ int main( int   argc,
     gtk_widget_show_all(window);
 
     set_preferences();
-    change_language(NULL, NULL, (gpointer)language);
+    change_language(NULL, NULL, gint_to_ptr(language));
 
     open_comm_socket();
 	

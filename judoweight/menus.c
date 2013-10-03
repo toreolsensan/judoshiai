@@ -103,7 +103,7 @@ static GtkWidget *create_menu_item(GtkWidget *menu, void *cb, gint param)
 {
     GtkWidget *w = gtk_menu_item_new_with_label("");
     gtk_menu_shell_append (GTK_MENU_SHELL(menu), w);
-    g_signal_connect(G_OBJECT(w), "activate", G_CALLBACK(cb), (gpointer)param);
+    g_signal_connect(G_OBJECT(w), "activate", G_CALLBACK(cb), gint_to_ptr(param));
     return w;
 }
 
@@ -211,7 +211,7 @@ void set_preferences(void)
 
 gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param)
 {
-    language = (gint)param;
+    language = ptr_to_gint(param);
     set_gui_language(language);
 
     change_menu_label(preferences,  _("Preferences"));
