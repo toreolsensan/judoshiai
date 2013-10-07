@@ -72,6 +72,13 @@ struct match {
     time_t rest_end;
 };
 
+struct paint_data {
+    cairo_t *c;
+    gdouble  paper_width;
+    gdouble  paper_height;
+};
+
+extern GtkWidget *main_window;
 extern GTimer *timer;
 extern gchar *installation_dir;
 extern gulong my_ip_address, node_ip_addr;
@@ -79,6 +86,7 @@ extern GKeyFile *keyfile;
 extern gboolean show_tatami[NUM_TATAMIS];
 extern struct match match_list[NUM_TATAMIS][NUM_LINES];
 extern gint language;
+extern gchar *svg_file;
 
 extern gboolean this_is_shiai(void);
 extern void msg_to_queue(struct message *msg);
@@ -101,6 +109,8 @@ extern void init_trees(void);
 extern void refresh_window(void);
 extern gint timeout_ask_for_data(gpointer data);
 extern void write_matches(void);
+extern void read_svg_file(void);
+extern gint paint_svg(struct paint_data *pd);
 
 
 #endif

@@ -25,7 +25,7 @@ static GtkWidget *mirror, *whitefirst, *redbackground;
 static GtkWidget *tatami_show[NUM_TATAMIS];
 static GtkWidget *node_ip, *my_ip, *about;
 static GtkWidget *light, *menu_light;
-static GtkWidget *writefile, *lang_menu_item;
+static GtkWidget *writefile, *lang_menu_item, *svgfile;
 
 gboolean show_tatami[NUM_TATAMIS] = {0}, conf_show_tatami[NUM_TATAMIS] = {0};
 static gint configured_tatamis = 0;
@@ -37,6 +37,7 @@ extern void toggle_mirror(GtkWidget *menu_item, gpointer data);
 extern void toggle_whitefirst(GtkWidget *menu_item, gpointer data);
 extern void toggle_redbackground(GtkWidget *menu_item, gpointer data);
 extern void set_write_file(GtkWidget *menu_item, gpointer data);
+extern void set_svg_file(GtkWidget *menu_item, gpointer data);
 
 static void about_judoinfo( GtkWidget *w,
 			    gpointer   data )
@@ -252,6 +253,12 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
                      G_CALLBACK(set_write_file), 0);
 
     create_separator(preferencesmenu);
+    svgfile = gtk_menu_item_new_with_label("");
+    gtk_menu_shell_append(GTK_MENU_SHELL(preferencesmenu), svgfile);
+    g_signal_connect(G_OBJECT(svgfile), "activate", 
+                     G_CALLBACK(set_svg_file), 0);
+
+    create_separator(preferencesmenu);
     quit    = create_menu_item(preferencesmenu, destroy, 0);
 
     /* Create the Help menu content. */
@@ -338,6 +345,14 @@ void set_preferences(void)
         language = i;
     else
         language = LANG_FI;
+        
+    error = NULL;
+    str = g_key_file_get_string(keyfile, "preferences", "svgfile", &error);
+    if (!error) {
+        svg_file = str;
+        read_svg_file();
+    }
+
 }
 
 gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param)
@@ -360,6 +375,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(whitefirst, _("White first"));
     change_menu_label(redbackground, _("Red background"));
     change_menu_label(writefile, _("Write to file"));
+    change_menu_label(svgfile, _("SVG Templates"));
 
     for (i = 0; i < NUM_TATAMIS; i++) {
         gchar buf[64];

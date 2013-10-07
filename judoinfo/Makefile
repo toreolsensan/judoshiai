@@ -3,7 +3,8 @@ include ../common/Makefile.inc
 all: $(OBJDIR)/judoinfo$(SUFF)
 
 OBJS += $(OBJDIR)/main.o $(OBJDIR)/menus.o $(OBJDIR)/comm.o $(OBJDIR)/ip.o \
-	$(OBJDIR)/protocol.o $(OBJDIR)/trees.o $(OBJDIR)/avl.o $(OBJDIR)/language.o
+	$(OBJDIR)/protocol.o $(OBJDIR)/trees.o $(OBJDIR)/avl.o $(OBJDIR)/language.o \
+	$(OBJDIR)/svg.o
 
 CFLAGS += -DAPPLICATION="\"judoinfo\""
 CFLAGS += -DAPP_NUM=3

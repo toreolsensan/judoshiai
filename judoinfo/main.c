@@ -456,8 +456,14 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
 static gboolean expose(GtkWidget *widget, GdkEventExpose *event, gpointer userdata)
 {
     cairo_t *c = gdk_cairo_create(widget->window);
+    struct paint_data pd;
+    
+    pd.c = c;
+    pd.paper_width = widget->allocation.width;
+    pd.paper_height = widget->allocation.height;
 
-    paint(c, widget->allocation.width, widget->allocation.height, userdata);
+    if (paint_svg(&pd) == FALSE)
+        paint(c, widget->allocation.width, widget->allocation.height, userdata);
 
     cairo_show_page(c);
     cairo_destroy(c);
