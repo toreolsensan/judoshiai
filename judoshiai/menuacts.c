@@ -593,13 +593,14 @@ void make_backup(void)
     time_t t = time(NULL);
 
     struct tm *tm = localtime((time_t *)&t);
-    sprintf(buf, "shiai_%04d%02d%02d_%02d%02d%02d.shi",
-            tm->tm_year+1900, 
-            tm->tm_mon+1,
-            tm->tm_mday,
-            tm->tm_hour,
-            tm->tm_min,
-            tm->tm_sec);
+    if (tm)
+	    sprintf(buf, "shiai_%04d%02d%02d_%02d%02d%02d.shi",
+	            tm->tm_year+1900, 
+	            tm->tm_mon+1,
+	            tm->tm_mday,
+	            tm->tm_hour,
+	            tm->tm_min,
+	            tm->tm_sec);
 
     filenames[ix] = g_build_filename(backup_directory, buf, NULL);
 
