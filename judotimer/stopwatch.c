@@ -1672,7 +1672,7 @@ gchar *logfile_name = NULL;
 
 void judotimer_log(gchar *format, ...)
 {
-    guint t;
+    time_t t;
     gchar buf[256];
     va_list args;
     va_start(args, format);
@@ -1682,21 +1682,23 @@ void judotimer_log(gchar *format, ...)
     t = time(NULL);
 
     if (logfile_name == NULL) {
-        struct tm *tm = localtime((time_t *)&t);
-        sprintf(buf, "judotimer_%04d%02d%02d_%02d%02d%02d.log",
-                tm->tm_year+1900,
-                tm->tm_mon+1,
-                tm->tm_mday,
-                tm->tm_hour,
-                tm->tm_min,
-                tm->tm_sec);
-        logfile_name = g_build_filename(g_get_user_data_dir(), buf, NULL);
+        struct tm *tm = localtime(&t);
+        if (tm) {
+	        sprintf(buf, "judotimer_%04d%02d%02d_%02d%02d%02d.log",
+	                tm->tm_year+1900,
+	                tm->tm_mon+1,
+	                tm->tm_mday,
+	                tm->tm_hour,
+	                tm->tm_min,
+	                tm->tm_sec);
+	        logfile_name = g_build_filename(g_get_user_data_dir(), buf, NULL);
+	    }
         g_print("logfile_name=%s\n", logfile_name);
     }
 
     FILE *f = fopen(logfile_name, "a");
     if (f) {
-        struct tm *tm = localtime((time_t *)&t);
+        struct tm *tm = localtime(&t);
 
         guint t = (total > 0.0) ? (total - st[0].elap) : st[0].elap;
         guint min = t / 60;
@@ -1709,22 +1711,23 @@ void judotimer_log(gchar *format, ...)
 #else
         gchar *text_ISO_8859_1 = text;
 #endif
-        if (t > 610)
-            fprintf(f, "%02d:%02d:%02d [-:--] <%d-%02d> %s\n",
-                    tm->tm_hour,
-                    tm->tm_min,
-                    tm->tm_sec,
-                    current_category, current_match,
-                    text_ISO_8859_1);
-        else
-            fprintf(f, "%02d:%02d:%02d [%d:%02d] <%d-%02d> %s\n",
-                    tm->tm_hour,
-                    tm->tm_min,
-                    tm->tm_sec,
-                    min, sec,
-                    current_category, current_match,
-                    text_ISO_8859_1);
-
+		if (tm) {
+	        if (t > 610)
+	            fprintf(f, "%02d:%02d:%02d [-:--] <%d-%02d> %s\n",
+	                    tm->tm_hour,
+	                    tm->tm_min,
+	                    tm->tm_sec,
+	                    current_category, current_match,
+	                    text_ISO_8859_1);
+	        else
+	            fprintf(f, "%02d:%02d:%02d [%d:%02d] <%d-%02d> %s\n",
+	                    tm->tm_hour,
+	                    tm->tm_min,
+	                    tm->tm_sec,
+	                    min, sec,
+	                    current_category, current_match,
+	                    text_ISO_8859_1);
+		}
 #ifdef USE_ISO_8859_1
         g_free(text_ISO_8859_1);
 #endif
