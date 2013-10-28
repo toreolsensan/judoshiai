@@ -70,15 +70,16 @@ static void date_cell_data_func (GtkTreeViewColumn *col,
 
     gtk_tree_model_get(model, iter, COL_DATE, &date, -1);
   
-    tm = localtime((time_t *)&date);
+    tm = localtime(&date);
 
-    sprintf(buf, "%04d-%02d-%02d %02d:%02d:%02d", 
-            tm->tm_year+1900, 
-            tm->tm_mon+1,
-            tm->tm_mday,
-            tm->tm_hour,
-            tm->tm_min,
-            tm->tm_sec);
+	if (tm)
+	    sprintf(buf, "%04d-%02d-%02d %02d:%02d:%02d", 
+	            tm->tm_year+1900, 
+	            tm->tm_mon+1,
+	            tm->tm_mday,
+	            tm->tm_hour,
+	            tm->tm_min,
+	            tm->tm_sec);
         
     g_object_set(renderer, "foreground-set", FALSE, NULL); /* print this normal */
 
@@ -214,20 +215,21 @@ void shiai_log(guint severity, guint tatami, gchar *format, ...)
     if (logfile_name[0]) {
         FILE *f = fopen(logfile_name, "a");
         if (f) {
-            struct tm *tm = localtime((time_t *)&t);
+            struct tm *tm = localtime(&t);
             gsize x;
 
             gchar *text_ISO_8859_1 = 
                 g_convert(text, -1, "ISO-8859-1", "UTF-8", NULL, &x, NULL);
 
-            fprintf(f, "%04d-%02d-%02d %02d:%02d:%02d %d %d %s\n",
-                    tm->tm_year+1900, 
-                    tm->tm_mon+1,
-                    tm->tm_mday,
-                    tm->tm_hour,
-                    tm->tm_min,
-                    tm->tm_sec,
-                    severity, tatami, text_ISO_8859_1);
+			if (tm)
+	            fprintf(f, "%04d-%02d-%02d %02d:%02d:%02d %d %d %s\n",
+	                    tm->tm_year+1900, 
+	                    tm->tm_mon+1,
+	                    tm->tm_mday,
+	                    tm->tm_hour,
+	                    tm->tm_min,
+	                    tm->tm_sec,
+	                    severity, tatami, text_ISO_8859_1);
             g_free(text_ISO_8859_1);
             fclose(f);
         }
