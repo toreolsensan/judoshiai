@@ -287,7 +287,7 @@ void db_print_competitors(FILE *f)
 
     write_competitor_for_coach_display(NULL); // init file
 
-    if (print_lang == LANG_IS)
+    if (IS_LANG_IS)
         db_exec(db_name, "SELECT * FROM competitors ORDER BY \"first\" ASC, \"last\" ASC", 
                 (void *)PRINT_COMPETITORS, 
                 db_callback);

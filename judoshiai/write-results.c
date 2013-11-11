@@ -266,7 +266,7 @@ static void pool_results(FILE *f, gint category, struct judoka *ctg, gint num_ju
             continue;
 
         gint nrprint = 3;
-        if (print_lang == LANG_NO) nrprint = 5;
+        if (IS_LANG_NB) nrprint = 5;
 
         // Spanish have two bronzes in pool system
         if (i <= 4 && prop_get_int_val(PROP_TWO_POOL_BRONZES) &&

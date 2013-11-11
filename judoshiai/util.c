@@ -608,7 +608,7 @@ const gchar *get_club_text(struct judoka *j, gint flags)
 
 gboolean firstname_lastname(void)
 {
-    if (print_lang == LANG_IS)
+    if (IS_LANG_IS)
         return TRUE;
 
     switch (name_layout) {
