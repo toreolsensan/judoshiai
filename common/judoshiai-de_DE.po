@@ -1,0 +1,1692 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-11-01 13:12+0200\n"
+"PO-Revision-Date: 2013-Nov-03 HO:MI+ZONE\n"
+"Last-Translator: michaelzart<@web.de>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Address of the communication node"
+msgstr "Netzknoten-Adresse"
+
+msgid "IP address:"
+msgstr "IP-Adresse:"
+
+msgid "(Connection OK)"
+msgstr "(Verbindung OK)"
+
+msgid "(Connection broken)"
+msgstr "(Keine Verbindung)"
+
+msgid "Own IP addresses"
+msgstr "Eigene IP-Adresse"
+
+msgid "Blue won the voting"
+msgstr "Blau hat die Abstimmung gewonnen"
+
+msgid "White won the voting"
+msgstr "Weiß hat die Abstimmung gewonnen"
+
+msgid "Match:"
+msgstr "Match:"
+
+msgid "Next:"
+msgstr "Nächster:"
+
+msgid "Fight:"
+msgstr "Kampf:"
+
+msgid "Contest"
+msgstr "Wettkampf"
+
+msgid "Preferences"
+msgstr "Einstellungen"
+
+msgid "Help"
+msgstr "Hilfe"
+
+msgid "Match duration: automatic"
+msgstr "Kampfzeit: automatisch"
+
+msgid "Match duration: 2 min E-juniors"
+msgstr "Kampfzeit: 2 min U12"
+
+msgid "Match duration: 2 min"
+msgstr "Kampfzeit: 2 min"
+
+msgid "Match duration: 3 min"
+msgstr "Kampfzeit: 3 min"
+
+msgid "Match duration: 4 min"
+msgstr "Kampfzeit: 4 min"
+
+msgid "Match duration: 5 min"
+msgstr "Kampfzeit: 5 min"
+
+msgid "Contest duration: automatic"
+msgstr "Kampfzeit: automatisch"
+
+msgid "Contest duration: 2 min (short pin times)"
+msgstr "Kampfzeit: 2 min U12 (kurze Haltezeit)"
+
+msgid "Contest duration: 2 min"
+msgstr "Kampfzeit: 2 min"
+
+msgid "Contest duration: 3 min"
+msgstr "Kampfzeit: 3 min"
+
+msgid "Contest duration: 4 min"
+msgstr "Kampfzeit: 4 min"
+
+msgid "Contest duration: 5 min"
+msgstr "Kampfzeit: 5 min"
+
+msgid "Hantei: blue wins"
+msgstr "Hantei: Blau gewinnt"
+
+msgid "Hantei: white wins"
+msgstr "Hantei: Weiß gewinnt"
+
+msgid "Quit"
+msgstr "Beenden"
+
+msgid "Red background"
+msgstr "Roter Hintergrund"
+
+msgid "Contest area not chosen"
+msgstr "Keine Matte gewählt"
+
+msgid "Contest area 1"
+msgstr "Matte 1"
+
+msgid "Contest area 2"
+msgstr "Matte 2"
+
+msgid "Contest area 3"
+msgstr "Matte 3"
+
+msgid "Contest area 4"
+msgstr "Matte 4"
+
+msgid "Contest area 5"
+msgstr "Matte 5"
+
+msgid "Contest area 6"
+msgstr "Matte 6"
+
+msgid "Contest area 7"
+msgstr "Matte 7"
+
+msgid "Contest area 8"
+msgstr "Matte 8"
+
+msgid "Communication node"
+msgstr "Netzwerkknoten"
+
+msgid "Increment time"
+msgstr "Kampfzeit erhöhen"
+
+msgid "Decrement time"
+msgstr "Kampfzeit verringern"
+
+msgid "Manual"
+msgstr "Handbuch"
+
+msgid "About"
+msgstr "Über"
+
+msgid "Contest duration automatically from JudoShiai program"
+msgstr "Kampfzeit automatisch vom JudoShiai-Programmt"
+
+msgid "View clocks only"
+msgstr "Nur Zeiten anzeigen"
+
+msgid "Increment pin time"
+msgstr "Haltegriffzeit erhöhen"
+
+msgid "Decrement pin time"
+msgstr "Haltegriffzeit verringern"
+
+msgid "Points going to blue"
+msgstr "Punkte gehen an blau"
+
+msgid "Points going to white"
+msgstr "Punkte gehen an weiß"
+
+msgid "About Judotimer"
+msgstr "Über Judotimer"
+
+msgid "Full screen mode"
+msgstr "Vollbild"
+
+msgid "Normal operation"
+msgstr "Standard-Modus"
+
+msgid "Master mode"
+msgstr "Master-Modus"
+
+msgid "Slave mode"
+msgstr "Slave-Modus"
+
+msgid "Undo!"
+msgstr "Rückgängig!"
+
+msgid "Set clocks"
+msgstr "Uhren stellen"
+
+msgid "Clock:"
+msgstr "Uhr:"
+
+msgid "Short pin times"
+msgstr "Kurze Haltegriffzeiten"
+
+msgid "Hansoku-make to blue"
+msgstr "Hansoku-make für blau"
+
+msgid "Hansoku-make to white"
+msgstr "Hansoku-make für weiß"
+
+msgid "Clear selection"
+msgstr "Auswahl aufheben/löschen"
+
+msgid "Display layout 1"
+msgstr "Zeige Layout 1"
+
+msgid "Display layout 2"
+msgstr "Zeige Layout 2"
+
+msgid "Display layout 3"
+msgstr "Zeige Layout 3"
+
+msgid "Display layout 4"
+msgstr "Zeige Layout 4"
+
+msgid "Display layout 5"
+msgstr "Zeige Layout 5"
+
+msgid "Quick guide"
+msgstr "Kurzanleitung"
+
+msgid "Start New Match?"
+msgstr "Neuen Kampf beginnen?"
+
+msgid "Hansokumake to blue"
+msgstr "Hansoku-make für blau"
+
+msgid "Hansokumake to white"
+msgstr "Hansoku-make für weiß"
+
+msgid "Match"
+msgstr "Kampf"
+
+msgid "Golden Score"
+msgstr "Golden Score"
+
+msgid "Start Golden Score?"
+msgstr "Golden Score beginnen?"
+
+msgid "Hantei"
+msgstr "Hantei"
+
+msgid "Blue wins"
+msgstr "Blau gewinnt"
+
+msgid "White wins"
+msgstr "Weiß gewinnt"
+
+msgid "REST TIME"
+msgstr "RUHEZEIT"
+
+msgid "Advertise"
+msgstr "Werbung"
+
+msgid "Run Advertisements"
+msgstr "Werbung starten"
+
+msgid "Advertisement"
+msgstr "Anzeige"
+
+msgid "Choose a directory"
+msgstr "Verzeichnis wählen"
+
+msgid "No koka"
+msgstr "Kein Koka"
+
+msgid "Leave points for GS"
+msgstr ""
+
+msgid "View Log"
+msgstr "Log zeigen"
+
+msgid "Display layout"
+msgstr "Zeige Layout"
+
+msgid "Contest area"
+msgstr "Matte"
+
+msgid "Set time"
+msgstr "Zeit setzen"
+
+msgid "Sound"
+msgstr "Ton"
+
+msgid "Choose a file"
+msgstr "Datei wählen"
+
+msgid "Sound Files"
+msgstr "Sounddatei"
+
+msgid "All Files"
+msgstr "Alle Dateien"
+
+msgid "Stop clock on Ippon"
+msgstr "Uhr bei Ippon anhalten"
+
+msgid "Switch sides"
+msgstr "Seiten wechseln"
+
+msgid "Display customized layout"
+msgstr "Zeige angepasstes Layout"
+
+msgid "White first"
+msgstr "Weiß zuerst"
+
+msgid "Confirm New Match"
+msgstr "Bestätige neuen Kampf"
+
+msgid "Contest area 9"
+msgstr "Matte 9"
+
+msgid "Contest area 10"
+msgstr "Matte 10"
+
+msgid "White has a judogi problem."
+msgstr "Weiß hat ein Judogi-Problem."
+
+msgid "Blue has a judogi problem."
+msgstr "Blau hat ein Judogi-Problem"
+
+msgid "Show Competitors"
+msgstr "Zeige Wettkämpfer"
+
+msgid "Show competitors"
+msgstr "Zeige Wettkämpfer"
+
+msgid "Name format"
+msgstr "Format Namen"
+
+msgid "Name Surname, Country/Club"
+msgstr "Vorname Nachname, Land/Verein"
+
+msgid "Surname, Name, Country/Club"
+msgstr "Nachname, Name, Land/Verein"
+
+msgid "Country/Club  Surname, Name"
+msgstr "Land/Verein Nachname, Name"
+
+msgid "Country  Surname, Name"
+msgstr "Land Nachname, Name"
+
+msgid "Club  Surname, Name"
+msgstr "Verein  Nachname, Name"
+
+msgid "Country Surname"
+msgstr "Land Nachname"
+
+msgid "Club Surname"
+msgstr "Verein Nachname"
+
+msgid "Surname, Name"
+msgstr "Nachname, Vorname"
+
+msgid "Surname"
+msgstr "Nachname"
+
+msgid "Country"
+msgstr "Land"
+
+msgid "Club"
+msgstr "Verein"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "WINNER"
+msgstr "GEWINNER"
+
+msgid "Cancel"
+msgstr "Abbrechen"
+
+msgid "- - -"
+msgstr "- - -"
+
+msgid "Select font"
+msgstr "Schriftart auswählen"
+
+msgid "Font"
+msgstr "Schriftart"
+
+msgid "Replay Video"
+msgstr "Zeige Video erneut"
+
+msgid "Video server"
+msgstr "Videoserver"
+
+msgid "Video server URL"
+msgstr "Server-URL"
+
+msgid "User:"
+msgstr "Benutzer:"
+
+msgid "Password:"
+msgstr "Passwort:"
+
+msgid "Proxy:"
+msgstr "Proxy:"
+
+msgid "Show Video"
+msgstr "Zeige Video"
+
+msgid "No Limit"
+msgstr "Keine Zeitbegrenzung"
+
+msgid "If equal score less shido wins"
+msgstr "Bei gleicher Punktzahl Sieg mit weniger Shidos"
+
+msgid "VLC control"
+msgstr "VLC Kontrolle"
+
+msgid "X:"
+msgstr "X:"
+
+msgid "Y:"
+msgstr "Y:"
+
+msgid "Scale:"
+msgstr "Skala:"
+
+msgid "Competitor already exists!"
+msgstr "Kämpfer besteht bereits!"
+
+msgid "Competitor"
+msgstr "Kämpfer"
+
+msgid "copied"
+msgstr "kopiert"
+
+msgid "Category already exists!"
+msgstr "Klasse besteht bereits!"
+
+msgid "Category"
+msgstr "Klasse"
+
+msgid "has been copied with competitors and matches"
+msgstr "wurde mit Kämpfern und Kämpfen kopiert"
+
+msgid "Last Name"
+msgstr "Nachname"
+
+msgid "First Name"
+msgstr "Vorname"
+
+msgid "Year of Birth"
+msgstr "Geburtsjahr"
+
+msgid "Grade"
+msgstr "Graduierung"
+
+msgid "Reg. Category"
+msgstr "Gemeldete Klasse"
+
+msgid "Weight"
+msgstr "Gewicht"
+
+msgid "Id"
+msgstr "Id"
+
+msgid "Tournaments"
+msgstr "Turniere"
+
+msgid "Tournament"
+msgstr "Turnier"
+
+msgid "Cannot move"
+msgstr "nicht verschiebbar"
+
+msgid "Category drawn"
+msgstr "Klasse ausgelost"
+
+msgid "All the categories located to the tatamis"
+msgstr "Alle Klassen auf die Matten verteilt"
+
+msgid "Unlocated"
+msgstr "Unplatziert"
+
+msgid "Categories"
+msgstr "Klassen"
+
+msgid "Connections to this node"
+msgstr "Verbindung mit diesem Knoten"
+
+msgid "already exists!"
+msgstr "besteht bereits!"
+
+msgid "Remove drawing first"
+msgstr "Auslosungen zuerst löschen"
+
+msgid "Competitors"
+msgstr "Kämpfer"
+
+msgid "Last Name:"
+msgstr "Nachname:"
+
+msgid "First Name:"
+msgstr "Vorname:"
+
+msgid "Year of Birth:"
+msgstr "Geburtsjahr:"
+
+msgid "Grade:"
+msgstr "Graduierung:"
+
+msgid "Club:"
+msgstr "Verein:"
+
+msgid "Country:"
+msgstr "Land:"
+
+msgid "Reg. Category:"
+msgstr "Gemeldete Klasse:"
+
+msgid "Category:"
+msgstr "Klasse:"
+
+msgid "Weight:"
+msgstr "Gewicht:"
+
+msgid "Seeding:"
+msgstr "Vorplatzierung:"
+
+msgid "No seeding"
+msgstr "Keine Vorplatzierung"
+
+msgid "Club Seeding:"
+msgstr "Verein-Vorplatzierung:"
+
+msgid "Id:"
+msgstr "Id:"
+
+msgid "Coach Id:"
+msgstr "Trainer Id:"
+
+msgid "Gender:"
+msgstr "Geschlecht:"
+
+msgid "Male"
+msgstr "männlich"
+
+msgid "Female"
+msgstr "weiblich"
+
+msgid "Control:"
+msgstr "Kontrolle:"
+
+msgid "NOK"
+msgstr "Not OK"
+
+msgid "Comment:"
+msgstr "Kommentar:"
+
+msgid "System:"
+msgstr "System:"
+
+msgid "Group:"
+msgstr "Gruppe:"
+
+msgid "Coach"
+msgstr "Trainer"
+
+msgid "Group"
+msgstr "Gruppe"
+
+msgid "Seeding"
+msgstr "Vorplatzierung"
+
+msgid "Club Seeding"
+msgstr "Verein-Vorplatzierung"
+
+msgid "Empty categories removed"
+msgstr "Leere Klassen gelöscht"
+
+msgid "Unweighted competitors removed"
+msgstr "Nicht gewogene Kämpfer gelöscht"
+
+msgid "Matches exist. Undo the drawing first."
+msgstr "Kämpfe vorhanden. Auslosungen zuerst löschen."
+
+msgid "Competitors removed"
+msgstr "Kämpfer gelöscht"
+
+msgid "Bar code search"
+msgstr "Barcode-Suche"
+
+msgid "Type the barcode:"
+msgstr "Barcode eingeben:"
+
+msgid "Cannot handle: Database created with newer JudoShiai version."
+msgstr "Nicht möglich: Datanbank mit neuer JudoShiai-Version erstellt."
+
+msgid "Database tables updated."
+msgstr "Datenbanktabellen aktualisiert."
+
+msgid "Weights do not match"
+msgstr "Gewicht passt nicht"
+
+msgid "Database Validation"
+msgstr "Datenbanküberprüfung"
+
+msgid "Duplicate seedings:\n"
+msgstr "doppelte Vorplatzierung:\n"
+
+msgid "seeding"
+msgstr "vorplatzieren"
+
+msgid "defined"
+msgstr "angelegt"
+
+msgid "times"
+msgstr "Male"
+
+msgid "Duplicate club seedings:\n"
+msgstr "Doppelte Vereinsvorplatzierung:\n"
+
+msgid "Missing category definitions:\n"
+msgstr "Fehlende Klasseneinrichtung:\n"
+
+msgid "is not"
+msgstr "ist nicht"
+
+msgid "Typing errors:\n"
+msgstr "Zeichenfehler:\n"
+
+msgid "UTF-8 errors"
+msgstr "UTF-8 Fehler"
+
+msgid "Extra spaces"
+msgstr "Extra Leerzeichen"
+
+msgid "Possible duplicate competitors:\n"
+msgstr "Möglw. doppelte Kämpfer:\n"
+
+msgid "Possible duplicate club names:\n"
+msgstr "Möglw. doppelte Vereinsnamen:\n"
+
+msgid "Suspicious weights:\n"
+msgstr "Möglw. falsche Gewichte:\n"
+
+msgid "Corrupted competitor data:\n"
+msgstr "Beschädigte Kämpferdaten:\n"
+
+msgid "Corrupted category data:\n"
+msgstr "Beschädigte Klassendaten:\n"
+
+msgid "warnings"
+msgstr "Warnungen"
+
+msgid "Drawing not finished!"
+msgstr "Auslosung nicht abgeschlossen!"
+
+msgid "Matches matched in category"
+msgstr "Kämpfe in Klasse gekämpft"
+
+msgid "Clear the results first"
+msgstr "Zuerst Ergebnisse löschen"
+
+msgid "Move the competitors"
+msgstr "Kämpfer verschieben"
+
+msgid "Next"
+msgstr "Nächster"
+
+msgid "Rest"
+msgstr "Rest"
+
+msgid "Number"
+msgstr "Nummer"
+
+msgid "Select first a competitor and then a number."
+msgstr "Erst einen Kämpfer dann eine Nummer auswählen."
+
+msgid "All the categories has been drawn"
+msgstr "Alle Klassen wurden ausgelost"
+
+msgid "Server URL"
+msgstr "Server-URL"
+
+msgid "Copy to Server"
+msgstr "Auf den Server kopieren"
+
+msgid "Proxy User:"
+msgstr "Proxy Benutzer:"
+
+msgid "Proxy Password:"
+msgstr "Proxy Passwort:"
+
+msgid "Matches"
+msgstr "Kämpfe"
+
+msgid "Sheet"
+msgstr "Kampfliste"
+
+msgid "Previous winner"
+msgstr "Vorheriger Gewinner"
+
+msgid "Cancel the match"
+msgstr "Kampf abbrechen"
+
+msgid "Select a tatami"
+msgstr "Matte auswählen"
+
+msgid "Password accepted.<br>"
+msgstr "Passwort akzeptiert.<br>"
+
+msgid "User"
+msgstr "Benutzer"
+
+msgid "Password"
+msgstr "Passwort"
+
+msgid "Back"
+msgstr "Zurück"
+
+msgid "Wrong password"
+msgstr "Falsches Passwort"
+
+msgid "Show"
+msgstr "Zeige"
+
+msgid "Show Deleted"
+msgstr "Zeige gelöschte"
+
+msgid "New Competitor"
+msgstr "Neuer Kämpfer"
+
+msgid "Logout"
+msgstr "Abmelden"
+
+msgid "Login"
+msgstr "Anmelden"
+
+msgid "No rights to give results"
+msgstr "Keine Berechtigung für Ergebnisse"
+
+msgid "No competitor found!"
+msgstr "Kein Kämpfer gefunden!"
+
+msgid "Add"
+msgstr "Hinzufügen"
+
+msgid "Name"
+msgstr "Name"
+
+msgid "Reg.Cat"
+msgstr "Gem.Klasse"
+
+msgid "ID"
+msgstr "ID"
+
+msgid "Index"
+msgstr "Index"
+
+msgid "Not used"
+msgstr "nicht verwendet"
+
+msgid "Column"
+msgstr "Spalte"
+
+msgid "Import from file"
+msgstr "Importiere aus Datei"
+
+msgid "Sex:"
+msgstr "Geschlecht:"
+
+msgid "Girl Text:"
+msgstr ""
+
+msgid "Column Separator:"
+msgstr "Trennzeichen:"
+
+msgid "competitors added"
+msgstr "Kämpfer hinzugefügt"
+
+msgid "errors"
+msgstr "Fehler"
+
+msgid "competitors existed already"
+msgstr "Kämpfer bestehen bereits"
+
+msgid "syntax errors"
+msgstr "Syntax Fehler"
+
+msgid "Time"
+msgstr "Zeit"
+
+msgid "Class"
+msgstr "Klasse"
+
+msgid "Message"
+msgstr "Nachricht"
+
+msgid "Log"
+msgstr "Log"
+
+msgid "Communication error"
+msgstr "Kommunikationsfehler"
+
+msgid "Cannot open"
+msgstr "Kann nicht öffnen"
+
+msgid "Is there another JudoShiai program running?"
+msgstr "Läuft bereits ein anderes JudoShiai?"
+
+msgid "Yes, another JudoShiai program is running"
+msgstr "Ja, es läuft ein anderes JudoShiai"
+
+msgid ""
+"No, this the only JudoShiai program. \n"
+"Purge erroneous lock file."
+msgstr ""
+"Nein, dies ist das einzige JudoShiai.\n"
+"Lock-Datei freigeben."
+
+msgid ""
+"Communication is blocked! \n"
+"You can still use the program to create categories etc."
+msgstr ""
+"Kommunikation ist geblockt! \n"
+"Klassen etc. können weiterhin eingegeben werden."
+
+msgid "Best of 3"
+msgstr "Best of 3"
+
+msgid "One match"
+msgstr "Ein Kampf"
+
+msgid "Pool"
+msgstr "Pool"
+
+msgid "Double Pool"
+msgstr "Doppel-Pool"
+
+msgid "Quad Pool"
+msgstr "4fach Pool"
+
+msgid "Double Pool 2"
+msgstr "Doppel-Pool 2"
+
+msgid "IJF Qrt Final Rep"
+msgstr "IJF Viertelfinal-Trostrunde"
+
+msgid "FIN Dbl Repchg"
+msgstr "FIN Doppeltrostrunde"
+
+msgid "SWE Dubb ćterkv"
+msgstr ""
+
+msgid "SWE Dir ćterkv"
+msgstr ""
+
+msgid "EST D klass"
+msgstr ""
+
+msgid "No Repechg"
+msgstr "Ohne Trostrunde"
+
+msgid "SWE Enkelt ćterkv"
+msgstr ""
+
+msgid "ESP Dbl Lost"
+msgstr "ESP Doppel-KO"
+
+msgid "ESP Dbl Rep"
+msgstr "ESP Doppeltrostrunde"
+
+msgid "ESP Simple Rep"
+msgstr "ESP Einfache Trostrunde"
+
+msgid "Modified Dbl Elim"
+msgstr "Mod. Doppel-KO-System"
+
+msgid "FIN Dbl Repchg One Bronze"
+msgstr "FIN Doppeltrostrunde einmal Bronze"
+
+msgid "Double Lost"
+msgstr ""
+
+msgid "GBR Knock Out"
+msgstr "GBR KO-System"
+
+msgid "DEN Dbl Elim"
+msgstr "DEN Doppel-KO-System"
+
+msgid "EST D klass 1 brz"
+msgstr ""
+
+msgid "IJF Quarter Final Repechage"
+msgstr "IJF Viertelfinal-Trostrunde"
+
+msgid "Default"
+msgstr "Standard"
+
+msgid "FIN Double Repechage"
+msgstr "FIN Doppeltrostrunde"
+
+msgid "SWE Double Repechage"
+msgstr "SWE Doppeltrostrunde"
+
+msgid "SWE Direct Repechage"
+msgstr ""
+
+msgid "EST Double Elimination"
+msgstr "EST Doppel-KO-System"
+
+msgid "Single Elimination"
+msgstr "Einfaches KO-System"
+
+msgid "SWE Single Repechage"
+msgstr "SWE einfache Trostrunde"
+
+msgid "ESP Double Lost"
+msgstr "ESP Doppel-KO-System"
+
+msgid "ESP Double Repechage"
+msgstr "ESP Doppel-Trostrunde"
+
+msgid "ESP Simple Repechage"
+msgstr "ESP Einfache Trostrunde"
+
+msgid "Modified Double Elimination"
+msgstr "Mod. Doppel-KO-System"
+
+msgid "FIN Double Repechage One Bronze"
+msgstr "FIN Doppel-Trostrunde Einmal Bronze"
+
+msgid "DEN Double Elimination"
+msgstr "DEN Doppel-KO-System"
+
+msgid "EST Double Elim One Bronze"
+msgstr "EST Doppel-KO-System Einmal Bronze"
+
+msgid "Next match"
+msgstr "Nächster Kampf"
+
+msgid "Preparing"
+msgstr "Es bereiten sich vor"
+
+msgid "Delay the match"
+msgstr "Kampf verzögern"
+
+msgid "canceled"
+msgstr "gestrichen"
+
+msgid "changed"
+msgstr "geändert"
+
+msgid "Gold medal match"
+msgstr "Kampf um Gold"
+
+msgid "Bronze match A"
+msgstr "Kampf um Bronze A"
+
+msgid "Bronze match B"
+msgstr "Kampf um Bronze B"
+
+msgid "Semifinal A"
+msgstr "Halbfinale A"
+
+msgid "Semifinal B"
+msgstr "Halbfinale B"
+
+msgid "Silver medal match"
+msgstr "Kampf um Silber"
+
+msgid "Preparing:"
+msgstr "Es bereiten sich vor:"
+
+msgid "points"
+msgstr "Punkte"
+
+msgid "Expand All"
+msgstr "alle ausklappen"
+
+msgid "Collapse All"
+msgstr "alle einklappen"
+
+msgid "Remove comment"
+msgstr "Kommentar löschen"
+
+msgid "Set score"
+msgstr "Punkte setzen"
+
+msgid "White"
+msgstr "Weiß"
+
+msgid "Blue"
+msgstr "Blau"
+
+msgid "Points"
+msgstr "Punkte"
+
+msgid "Comment"
+msgstr "Kommentar"
+
+msgid "Prev. winner:"
+msgstr "Vorh. Gewinner:"
+
+msgid "Delayed"
+msgstr "verzögert"
+
+msgid "Remove delay"
+msgstr "Verzögerung aufheben"
+
+msgid "Freeze match order"
+msgstr "Kampfreihenfolge einfrieren"
+
+msgid "Unfreeze exported"
+msgstr "Exportierte freigeben"
+
+msgid "Unfreeze imported"
+msgstr "Importierte freigeben"
+
+msgid "Unfreeze this"
+msgstr "Dies freigeben"
+
+msgid "Move Medal Matches"
+msgstr "Medaillenkämpfe verschieben"
+
+msgid "Move match "
+msgstr "Kampf verschieben"
+
+msgid "to tatami and/or"
+msgstr "auf Matte und/oder"
+
+msgid " delay"
+msgstr " Verzögerung"
+
+msgid "Final"
+msgstr "Finale"
+
+msgid "Bronze1"
+msgstr "Bronze1"
+
+msgid "Bronze2"
+msgstr "Bronze2"
+
+msgid "Pool's last"
+msgstr "Pools letzter"
+
+msgid "No move"
+msgstr "nicht verschiebbar"
+
+msgid "Tournament from the net"
+msgstr "Turnier aus dem Netz"
+
+msgid "Contests"
+msgstr "Wettkämpfe"
+
+msgid "Select sheet font"
+msgstr "Schriftart Kampflisten"
+
+msgid "Picture Files"
+msgstr "Bilddateien"
+
+msgid "Print Headers"
+msgstr "Kopfzeilen drucken"
+
+msgid "Add competitors"
+msgstr "Kämpfer hinzufügen"
+
+msgid "Clean up duplicates and update reg. categories"
+msgstr "Doppelte löschen und Klassen aktualisieren"
+
+msgid "Weighed only"
+msgstr "nur gewogene"
+
+msgid "With weights"
+msgstr "Mit Gewicht"
+
+msgid "competitors added and updated"
+msgstr "Kämpfer hinzugefügt und aktualisiert"
+
+msgid "competitors already existed"
+msgstr "Kämpfer bestehen bereits"
+
+msgid "competitors added unchanged"
+msgstr ""
+
+msgid "Copy Weights"
+msgstr "Gewicht kopieren"
+
+msgid "weights updated"
+msgstr "Gewicht aktualisiert"
+
+msgid "Do Backup"
+msgstr "Backup ausführen"
+
+msgid "CANNOT OPEN BACKUP FILE"
+msgstr "BACKUPDATEI LÄSST SICH NICHT ÖFFNEN"
+
+msgid "Drawing"
+msgstr "Auslosung"
+
+msgid "Results"
+msgstr "Ergebnisse"
+
+msgid "Judotimer"
+msgstr "Judotimer"
+
+msgid "New Tournament"
+msgstr "Neues Turnier"
+
+msgid "Open Tournament"
+msgstr "Öffne Turnier"
+
+msgid "Open Tournament from Net"
+msgstr "Öffne Turnier aus dem Netz"
+
+msgid "Properties"
+msgstr "Turniereigenschaften"
+
+msgid "Tournament Backup"
+msgstr "Turnier Backup"
+
+msgid "Validate Database"
+msgstr "Datenbank überprüfen"
+
+msgid "SQL Dialog"
+msgstr "SQL Dialog"
+
+msgid "Search Competitor"
+msgstr "Kämpfer suchen"
+
+msgid "Select From Another Shiai"
+msgstr "Aus anderem Shiai importieren"
+
+msgid "Add From a Text File"
+msgstr "Aus Textdatei importieren"
+
+msgid "Add All From Another Shiai"
+msgstr "Alle aus anderem Shiai importieren"
+
+msgid "Update Weights From Another Shiai"
+msgstr "Gewichtsklassen aus anderem Shiai aktualisieren"
+
+msgid "Remove Unweighted"
+msgstr "Lösche Ungewogene"
+
+msgid "Restore Removed"
+msgstr "Gelöschte wiederherstellen"
+
+msgid "Bar Code Search"
+msgstr "Barcodesuche"
+
+msgid "Print Weight Notes"
+msgstr "Wiegekarten drucken"
+
+msgid "New Category"
+msgstr "Neue Klasse"
+
+msgid "Remove Empty"
+msgstr "Leere löschen"
+
+msgid "Create Categories"
+msgstr "Klassen erstellen"
+
+msgid "Print All"
+msgstr "Alle drucken"
+
+msgid "Print All (PDF)"
+msgstr "Alle drucken (PDF)"
+
+msgid "Print Matches (CSV)"
+msgstr "Kämpfe drucken (CSV)"
+
+msgid "Place To"
+msgstr "Platzieren auf"
+
+msgid "Tatamis"
+msgstr "Matten"
+
+msgid "Draw All Categories"
+msgstr "Alle Klassen auslosen"
+
+msgid "Print All (Web And PDF)"
+msgstr "Alle drucken (Web und PDF)"
+
+msgid "Print Schedule to Printer"
+msgstr "Zeitplan ausdrucken"
+
+msgid "Print Schedule to PDF"
+msgstr "Zeitplan ausdrucken PDF"
+
+msgid "Control Tatami"
+msgstr ""
+
+msgid "Communication Node"
+msgstr "Kommunikationsknoten"
+
+msgid "Own IP Addresses"
+msgstr "Eigene IP-Adresse"
+
+msgid "Show Attached Connections"
+msgstr "Zeige Verbindungen"
+
+msgid "Automatic Sheet Update"
+msgstr "Automatische Kampflistenaktualisierung"
+
+msgid "Club Name Only"
+msgstr "Nur Vereinsname"
+
+msgid "Country Name Only"
+msgstr "Nur Land"
+
+msgid "Both Club and Country"
+msgstr "Verein und Land"
+
+msgid "Abbreviations in Sheets"
+msgstr "Abkürzungen in Kampflisten"
+
+msgid "Weights Visible in Pool Sheets"
+msgstr "Gewicht in Pool-Liste sichtbar"
+
+msgid "Sheet Font"
+msgstr "Schriftart Kampfliste"
+
+msgid "SVG Templates"
+msgstr "SVG Vorlagen"
+
+msgid "Language Selection"
+msgstr "Sprache"
+
+msgid "Print Accreditation Cards"
+msgstr "Drucke ID-/Wiegekarten/Urkunden"
+
+msgid "Print Schedule"
+msgstr "Drucke Zeitplan"
+
+msgid "Communication"
+msgstr "Kommunikation"
+
+msgid "Club Text Selection"
+msgstr "Auswahl Vereinstext"
+
+msgid "Sheet Layout"
+msgstr "Layout Kampfliste"
+
+msgid "Weights Visible"
+msgstr "Gewicht sichtbar"
+
+msgid "Grade Visible"
+msgstr "Graduierung sichtbar"
+
+msgid "Name Format"
+msgstr "Format Name"
+
+msgid "Surname Name, Country/Club"
+msgstr "Nachname Name, Land/Verein"
+
+msgid "Country/Club,  Surname Name"
+msgstr "Land/Verein,  Nachname Name"
+
+msgid "Pool Style 2"
+msgstr "Pool Style 2"
+
+msgid "Use Belt Colors"
+msgstr "Verwende Gürtelfarben"
+
+msgid "Mirror Tatami Order"
+msgstr "Spiegel Mattenreihenfolge"
+
+msgid "Automatic Match Delay"
+msgstr "Automatische Kampfverzögerung"
+
+msgid "Print Logo"
+msgstr "Drucke Logo"
+
+msgid "Scale Serial Interface..."
+msgstr "Skaliere serielle Schnittstelle..."
+
+msgid "Medal Matches..."
+msgstr "Medaillenkämpfe..."
+
+msgid "Matches matched. Clear the results first."
+msgstr "Kämpfe gekämpft. Zuerst Ergebnisse löschen."
+
+msgid "already exists"
+msgstr "besteht bereits"
+
+msgid "Move Competitors to Category..."
+msgstr "Verschiebe Kämpfer in Klasse..."
+
+msgid "Move Competitors Here"
+msgstr "Verschiebe Kämpfer hierher"
+
+msgid "Compose Unofficial Category"
+msgstr "Bilde inoffizielle Klasse"
+
+msgid "Draw Selected"
+msgstr "Markierte auslosen"
+
+msgid "Draw and Print Selected"
+msgstr "Markierte auslosen und drucken"
+
+msgid "Draw Manually"
+msgstr "Manuelle Auslosung"
+
+msgid "Remove Drawing"
+msgstr "Auslosung löschen"
+
+msgid "Edit Drawing"
+msgstr "Auslosung bearbeiten"
+
+msgid "Copy Competitors"
+msgstr "Kämpfer kopieren"
+
+msgid "Remove Competitors"
+msgstr "Kämpfer löschen"
+
+msgid "Show Sheet"
+msgstr "Zeige Kampfliste"
+
+msgid "Print Selected Sheets (Printer)"
+msgstr "Druck markierte Kampflisten (Drucker)"
+
+msgid "Print Selected Sheets (PDF)"
+msgstr " Druck markierte Kampflisten (PDF)"
+
+msgid "Print Selected Accreditation Cards"
+msgstr "Drucke für markierte ID-/Wiegekarten/Urkunden"
+
+msgid "Save file"
+msgstr "Datei speichern"
+
+msgid "Landscape"
+msgstr "Querformat"
+
+msgid "Line"
+msgstr "Zeile"
+
+msgid "Syntax error"
+msgstr "Syntax Fehler"
+
+msgid "Print To:"
+msgstr "Drucke auf:"
+
+msgid "Printer"
+msgstr "Drucker"
+
+msgid "PDF"
+msgstr "PDF"
+
+msgid "Start time:"
+msgstr "Startzeit:"
+
+msgid "Resolution (min):"
+msgstr "Auflösung (min)"
+
+msgid "Compressed timeline"
+msgstr "Komprimierte Zeitlinie"
+
+msgid "Match File"
+msgstr "Kampf-Datei"
+
+msgid "Print Not Started Categories"
+msgstr "Drucke noch nicht begonnene Klasse"
+
+msgid "Print Started Categories"
+msgstr "Drucke begonnene Klassen"
+
+msgid "Print Finished Categories"
+msgstr "Drucke beendete Klassen"
+
+msgid "Print Unmatched"
+msgstr "Drucke nicht gekämpfte"
+
+msgid "Print Result"
+msgstr "Drucke Ergebnisse"
+
+msgid "Print IWYKS"
+msgstr "Drucke IWYS"
+
+msgid "Print Comment"
+msgstr "Drucke Kommentare"
+
+msgid "Layout:"
+msgstr "Layout:"
+
+msgid "Template"
+msgstr "Vorlage"
+
+msgid "One Card Per Page"
+msgstr "Eine Karte pro Seite"
+
+msgid "Results in Finnish"
+msgstr "Ergebnisse in Finnisch"
+
+msgid "Results in Swedish"
+msgstr "Ergebnisse in Schwedisch"
+
+msgid "Results in English"
+msgstr "Ergebnisse in Englisch"
+
+msgid "Results in Spanish"
+msgstr "Ergebnisse in Spanisch"
+
+msgid "Results in Estonian"
+msgstr "Ergebnisse in Estnisch"
+
+msgid "Results in Ukrainian"
+msgstr "Ergebnisse in Ukrainisch"
+
+msgid "Results in Norwegian"
+msgstr "Ergebnisse in Norwegisch"
+
+msgid "Results in Icelandic"
+msgstr "Ergebnisse in Isländisch"
+
+msgid "Results in Polish"
+msgstr "Ergebnisse in Polnisch"
+
+msgid "Results in Slovak"
+msgstr "Ergebnisse in Slowakisch"
+
+msgid "Results in Dutch"
+msgstr "Ergebnisse in Niederländisch"
+
+msgid "Results in German"
+msgstr "Ergebnisse in Deutsch"
+
+msgid "Tournament:"
+msgstr "Turnier:"
+
+msgid "Date:"
+msgstr "Datum:"
+
+msgid "Place:"
+msgstr "Platz:"
+
+msgid "Number of tatamis:"
+msgstr "Anzahl Matten:"
+
+msgid "White first:"
+msgstr "Weiß zuerst:"
+
+msgid "Best two out of three matches:"
+msgstr "2 Beste aus drei Kämpfen:"
+
+msgid ""
+"Medal will be awarded \n"
+"only if a contest was won:"
+msgstr ""
+"Medaille nur wenn ein \n"
+"Kampf gewonnen wurde:"
+
+msgid "Seeded to fixed places:"
+msgstr "Vorplatzierung auf festen Platz:"
+
+msgid "Win in Golden Score gives 1 point"
+msgstr "Gewinne bei Golden Score zählen 1 Punkt"
+
+msgid "Double Pool 2 with carried forward points:"
+msgstr "Doppel-Pool 2 mit Punkteübertrag:"
+
+msgid "Two pool bronzes:"
+msgstr "Zwei Bronzepools:"
+
+msgid "Resolve 3-way ties by weights:"
+msgstr ""
+
+msgid "Tournament properties"
+msgstr "Turniereigenschaften"
+
+msgid "General"
+msgstr "Allgemein"
+
+msgid "Pool settings"
+msgstr "Pool Einstellungen"
+
+msgid "Competitors:"
+msgstr "Kämpfer:"
+
+msgid "Weighted:"
+msgstr "Gewogen:"
+
+msgid "Statistics"
+msgstr "Statistik"
+
+msgid "Reset to"
+msgstr "Zurücksetzen auf"
+
+msgid "Initialize"
+msgstr "Initialisieren"
+
+msgid "Players"
+msgstr "Spieler"
+
+msgid "Max age"
+msgstr "Max Alter"
+
+msgid "Min"
+msgstr "Min"
+
+msgid "Max"
+msgstr "Max"
+
+msgid "System"
+msgstr "System"
+
+msgid "Default systems"
+msgstr "Standardsystem"
+
+msgid "Grade names"
+msgstr "Gradbezeichnungen"
+
+msgid "Remote address"
+msgstr "Remote Adresse"
+
+msgid "Remote Control"
+msgstr "Remote Control"
+
+msgid "Search"
+msgstr "Suche"
+
+msgid "Reset to Defaults"
+msgstr "Auf Standard zurücksetzen"
+
+msgid "----- Men -----"
+msgstr "--- Männer ---"
+
+msgid "----- Women -----"
+msgstr "--- Frauen ---"
+
+msgid "Highest age:"
+msgstr "Max Alter:"
+
+msgid "Age text:"
+msgstr "Alter Text:"
+
+msgid "Match time:"
+msgstr "Kampfzeit:"
+
+msgid "Rest time:"
+msgstr "Ruhezeit:"
+
+msgid "Golden Score:"
+msgstr "Golden Score:"
+
+msgid "Pin times (IWYK):"
+msgstr "Haltezeit (IWYK):"
+
+msgid "Rep. time:"
+msgstr ""
+
+msgid "Highest weight (g):"
+msgstr "Max. Gewicht (kg):"
+
+msgid "Weight text:"
+msgstr "Text Gewicht:"
+
+msgid "Sheets"
+msgstr "Kampflisten"
+
+msgid "Basic Scripts"
+msgstr "Basic-skript"
+
+msgid "Select Script"
+msgstr "Wähle Skript"
+
+msgid "No script available"
+msgstr "Keine Skripts vorhanden"
+
+msgid "SQL"
+msgstr "SQL"
+
+msgid "Run Script"
+msgstr "Skript starten"
+
+msgid "Repeat Script"
+msgstr "Skript wiederholen"
+
+msgid "Use SVG Templates"
+msgstr "SVG Vorlagen anwenden"
+
+msgid "Which one is correct?"
+msgstr "Welche ist richtig?"
+
+msgid "Own database"
+msgstr "Eigene Datenbank"
+
+msgid "Foreign database"
+msgstr "Remote Datenbank"
+
+msgid "Do not change"
+msgstr "Nicht ändern"
+
+msgid "Stop synchronization"
+msgstr "Stopp Synchronisierung"
+
+msgid "NOTE"
+msgstr "HINWEIS"
+
+msgid "is not a valid ASCII string!"
+msgstr "ist keine gültige ASCII Folge!"
+
+msgid "Automatic Web Page Update"
+msgstr "Automatische Webseitenaktualisierung"
+
+msgid "Create Statistics"
+msgstr "Statistik erzeugen"
+
+msgid "Print SVG"
+msgstr "SVG drucken"
+
+msgid "Category starts"
+msgstr "Klasse beginnt"
+
+msgid "About JudoInfo"
+msgstr "Über JudoInfo"
+
+msgid "Normal display"
+msgstr "Normalansicht"
+
+msgid "Small display"
+msgstr "Miniaturansicht"
+
+msgid "Horizontal display"
+msgstr "Horizontale Ansicht"
+
+msgid "Mirror tatami order"
+msgstr "Spiegel Tatami-Reihenfolge"
+
+msgid "Write to file"
+msgstr "In Datei schreiben"
+
+msgid "Show Tatami"
+msgstr "Zeige Tatamit"
+
+msgid "Serial Communication"
+msgstr "Serielle Verbindung"
+
+msgid "In Use"
+msgstr "in use"
+
+msgid "Device"
+msgstr "Gerät"
+
+msgid "Baudrate"
+msgstr "Baudrate"
+
+msgid "Type"
+msgstr "Typ"
+
+msgid "WARNING: NO CONTROL"
+msgstr "WARNUNG: KEINE KONTROLLE"
+
+msgid "ID:"
+msgstr "ID:"
+
+msgid "Name:"
+msgstr "Name:"
+
+msgid "Confirm:"
+msgstr "Bestätigen:"
+
+msgid "About JudoWeight"
+msgstr "Über JudoWeight"
+
+msgid "No match soon! Please wait for a while."
+msgstr "Vorerst kein Kampf! Bitte ein wenig Geduld."
+
+msgid "About JudoJudogi"
+msgstr "Über JudoJudogi"
+
+msgid "International System"
+msgstr "Internationales System"
+
+msgid "Finnish System"
+msgstr "Finnisches System"
+
+msgid "Swedish System"
+msgstr "Schwedisches System"
+
+msgid "Estonian System"
+msgstr "Esnisches System"
+
+msgid "Spanish System"
+msgstr "Spanisches System"
+
+msgid "Norwegian System"
+msgstr "Norwegisches System"
+
+msgid "British System"
+msgstr "Britisches System"
+
+msgid "Australian System"
+msgstr "Australisches System"
+
+msgid "Danish System"
+msgstr "Dänisches System"
+
+msgid "Polish System"
+msgstr "Polnisches System"
+
+msgid "Slovakian System"
+msgstr "Slowakisches System"
+
+msgid "Tatami"
+msgstr "Matte"
