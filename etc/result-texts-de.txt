@@ -15,7 +15,7 @@ Nr
 ### 7: Name
 Name
 ### 8: Grade (belt grade, 1. dan, 3. kyu etc)
-Gradierung
+Graduierung
 ### 9: Club
 Verein
 ### 10: Matches
