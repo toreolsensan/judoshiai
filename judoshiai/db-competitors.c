@@ -386,6 +386,8 @@ static int db_hansokumake_cb(void *data, int argc, char **argv, char **azColName
 
 gboolean db_has_hansokumake(gint competitor)
 {
+    return avl_get_competitor_status(competitor) & HANSOKUMAKE;
+#if 0
     char buffer[100];
 
     has_hansokumake = FALSE;
@@ -397,6 +399,7 @@ gboolean db_has_hansokumake(gint competitor)
     db_exec(db_name, buffer, NULL, db_hansokumake_cb);
 
     return has_hansokumake;
+#endif
 }
 
 void db_set_match_hansokumake(gint category, gint number, gint blue, gint white)
