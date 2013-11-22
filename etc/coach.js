@@ -7,56 +7,47 @@ var positions;
 var matches = new Array();
 var current_sheet = "";
 var current_competitor = "";
+var map = new Array();
 
 function getPositions()
 {
-    var oRequest = new XMLHttpRequest();
-    oRequest.open("GET", "c-winners.txt?" + new Date().getTime(), false);
-    oRequest.send(null)
-
-    if (oRequest.status == 200) {
-	//console.log("pos="+oRequest.responseText.substr(0, 50));
-	positions = oRequest.responseText;
-    }
+    $.get("c-winners.txt?" + new Date().getTime(), function(data, status) {
+	if (status == "success") {
+	    positions = data;
+	}
+    });
 }
 
 function getIds()
 {
-    var oRequest = new XMLHttpRequest();
-    oRequest.open("GET", "c-ids.txt?" + new Date().getTime(), false);
-    oRequest.send(null)
-    if (oRequest.status == 200) {
-	var r = oRequest.responseText;
-	var lines = new Array();
-	lines = r.split("\n");
+    $.get("c-ids.txt?" + new Date().getTime(), function(data, status) {
+	if (status == "success") {
+	    var lines = new Array();
+	    lines = data.split("\n");
 
-	for (line in lines) {
-	    //console.log("getIds i="+line+" line="+lines[line]);
-	    var competitor = new Array();
-	    competitor = lines[line].split("\t");
-	    competitors[line] = competitor;
+	    for (line in lines) {
+		var competitor = new Array();
+		competitor = lines[line].split("\t");
+		competitors[line] = competitor;
+	    }
 	}
-    }
+    });
 }
 
 function getMatches()
 {
-    var oRequest = new XMLHttpRequest();
-    oRequest.open("GET", "c-matches.txt?" + new Date().getTime(), false);
-    oRequest.send(null)
+    $.get("c-matches.txt?" + new Date().getTime(), function(data, status) {
+	if (status == "success") {
+	    var lines = new Array();
+	    lines = data.split("\n");
 
-    if (oRequest.status == 200) {
-	var r = oRequest.responseText;
-	var lines = new Array();
-	lines = r.split("\n");
-
-	for (line in lines) {
-	    //console.log("getIds i="+line+" line="+lines[line]);
-	    var info = new Array();
-	    info = lines[line].split("\t");
-	    matches[line] = info;
+	    for (line in lines) {
+		var info = new Array();
+		info = lines[line].split("\t");
+		matches[line] = info;
+	    }
 	}
-    }
+    });
 }
 
 function GetOffset (object, offset) {
@@ -80,7 +71,7 @@ function GetScrolled (object, scrolled) {
 }
 
 function scrolldown() {
-    var div = document.getElementById ("sheet1");
+    var div = $("#sheets")[0];
     
     var offset = {x : 0, y : 0};
     GetOffset (div, offset);
@@ -91,58 +82,114 @@ function scrolldown() {
     var posX = offset.x - scrolled.x;
     var posY = offset.y - scrolled.y;
     
-    if (posY > 200) {
-	window.scrollBy(0, 40);
-	setTimeout("scrolldown()", 50);
-    }
+    $("html, body").animate({ scrollTop: posY }, 1000);
 }
 
-function getSheet(name, judoka)
-{
+function imgLoaded(name, page, judoka) {
+    if ($("#box"+page)[0]) // handled already
+	return;
+
+    var offset = {x : 0, y : 0};
+    var div = $("#img"+page)[0];
+    if (!div) alert("no img"+page);
+    GetOffset(div, offset);
+    var file = escape_utf8(name);
+    var f;
+    //console.log("imgLoaded: cat="+name+" page="+page+" judoka="+judoka+"; offset x="+offset.x+" y="+offset.y);
+
+    if (page == 0) {
+        f = file + ".map?" + new Date().getTime();
+	scrolldown();
+    } else {
+        f = file + "-" + page + ".map?" + new Date().getTime();
+    }
+
+    $("#compbox").append("<div id=\"box"+page+"\"></div>"); // page handled tag
+
+    $.get(f, function(data, status) {
+	if (status == "success") {
+            var lines = new Array();
+            lines = data.split("\n");
+
+            for (line in lines) {
+		var map = new Array();
+		map = lines[line].split(",");
+		if (map[4] != judoka) {
+                    continue;
+		}
+		var boxes = "<div style=\"display: inline-block; position:absolute;";
+		boxes += "left:"+(offset.x+parseInt(map[0]))+"px;top:"+(offset.y+parseInt(map[1]) - 2)+"px;";
+		boxes += "width:"+(parseInt(map[2])-parseInt(map[0]))+"px; height:"+(parseInt(map[3])-parseInt(map[1]))+"px;";
+		boxes += "border:2px solid #f00;\">&nbsp</div>";
+		$("#compbox").append(boxes);
+            }
+
+	    // next sheet
+	    f = file + "-" + (page+1) + ".png?" + new Date().getTime();
+	    $.ajax({
+		type: "HEAD",
+		async: true,
+		url: f,
+		success: function(result, status, xhr) {
+		    //console.log("SUCCESS2: xhr="+xhr + " status="+status + " result="+result);
+		    var src = "<img src=\"" + f + "\" class=\"catimg\" id=\"img"+(page+1)+"\" "+
+			"onload=\"imgLoaded('"+name+"',"+(page+1)+","+judoka+")\"><br>";
+		    $("#sheets").append(src);
+		}
+	    });
+	} // success
+    });
+}
+
+function getSheet(name, judoka) {
     current_sheet = name;
 
-    if (name == "empty") {
-	for (var i = 1; i <= 5; i++) {
-	    document.getElementById("sheet" + i).innerHTML = "";
-	}
-	return;
-    }
+    $("#sheets").html("");
+    $("#compbox").html("");
+
+    if (name == "empty")
+        return;
+
+    //console.log("getSheet called by " + arguments.callee.caller.toString());
 
     var file = escape_utf8(name);
-    var src = "";
 
-    for (var i = 1; i <= 5; i++) {
-	var f;
-	if (i == 1) {
-	    f = file + ".png?" + new Date().getTime();
-	} else {
-	    f = file + "-" + (i-1) + ".png?" + new Date().getTime();
-	}
-	oRequest = new XMLHttpRequest();
-	oRequest.open('HEAD', f, false);
-	oRequest.send(null)
-	if (oRequest.status == 200 || oRequest.status == 304) {
-	    src += "<img src=\""+f+"\" class=\"catimg\"><br>";
-	} else {
-	    if (i == 1) {
-		f = file + ".svg?" + new Date().getTime();
-	    } else {
-		f = file + "-" + (i-1) + ".svg?" + new Date().getTime();
+    // find the first png file
+    var f = file + ".png?" + new Date().getTime();
+
+    $.ajax({
+        type: "HEAD",
+        async: true,
+        url: f,
+        success: function(result, status, xhr) {
+	    //console.log("SUCCESS: xhr="+xhr + " status="+status + " result="+result);
+            $("#sheets").html("<img src=\"" + f + "\" class=\"catimg\" id=\"img0\" onload=\"imgLoaded('"+name+"',0,"+judoka+")\"><br>");
+	    $("#competitor").focus();
+        },
+	error: function(xhr, status, error) {
+	    //console.log("ERROR: xhr="+xhr + " status="+status + " error="+error);
+	    // svg files
+	    var src = "";
+	    for (var i = 1; i <= 10; i++) {
+		if (i == 1) {
+		    f = file + ".svg?" + new Date().getTime();
+		} else {
+		    f = file + "-" + (i - 1) + ".svg?" + new Date().getTime();
+		}
+		oRequest = new XMLHttpRequest();
+		oRequest.open('GET', f, false);
+		oRequest.send(null)
+		if (oRequest.status == 200 || oRequest.status == 304) {
+		    src += oRequest.responseText.replace("cmpx", "cmp" + judoka) + "<br>";
+		} else {
+		    break;
+		}
 	    }
-	    oRequest = new XMLHttpRequest();
-	    oRequest.open('GET', f, false);
-	    oRequest.send(null)
-	    if (oRequest.status == 200 || oRequest.status == 304) {
-		src += oRequest.responseText.replace("cmpx", "cmp"+judoka) + "<br>";
-	    } else {
-		break;
-	    }
+
+	    $("#sheets").html(src);
+	    $("#competitor").focus();
 	}
-    }
-	
-    document.getElementById("sheet1").innerHTML = src;
-    scrolldown();
-    document.getElementById("competitor").focus();
+    });
 }
 
 function getCompetitor(ix)
@@ -263,9 +310,8 @@ function getJudokaLine(judoka, sheet)
 
 function checkCompetitor()
 {
-
-    //document.getElementById("result").innerHTML=document.getElementById("competitor").value;
-    var v = document.getElementById("competitor").value;
+    var v = $("#competitor").val();
+    console.log("competitor="+v+" len="+v.length+" current="+current_competitor);
     if (v.length < 1) { 
 	v = current_competitor;
 	getSheet(current_sheet, v);
@@ -278,8 +324,8 @@ function checkCompetitor()
     current_competitor = v;
     checkCompetitor1(v);
 
-    document.getElementById("competitor").value = "";
-    document.getElementById("competitor").focus();
+    $("#competitor").val("");
+    $("#competitor").focus();
 }
 
 function checkCompetitor1(v)
@@ -322,15 +368,15 @@ function checkCompetitor1(v)
 	}
 
 	r += "</tbody></table>\n";
-	document.getElementById("result").innerHTML = r;
+	$("#result").html(r);
     } else if (idFound > 0) { // competitor
 	r += getJudokaLine(idFound, true);
 	r += "</tbody></table>\n";
-	document.getElementById("result").innerHTML = r;
+	$("#result").html(r);
     } else { // no hit
 	r += getJudokaLine(v, true);
 	r += "</tbody></table>\n";
-	document.getElementById("result").innerHTML = r;
+	$("#result").html(r);
     }
 
     $("#judokas").tablesorter({ 
@@ -340,7 +386,7 @@ function checkCompetitor1(v)
 
 function doFocus()
 {
-    document.getElementById('competitor').focus();
+    $('#competitor').focus();
 }
 
 function getFiles()
@@ -369,19 +415,18 @@ function refresh() {
 function clearx() {
     current_competitor = "";
     current_sheet = "empty";
-    document.getElementById("competitor").value = "";
-    document.getElementById("result").innerHTML = "";
-    for (var i = 1; i <= 5; i++) {
-	document.getElementById("sheet"+i).innerHTML = "";
-    }
+    $("#competitor").val("");
+    $("#result").html("");
+    $("#sheets").html("");
+    $("#compbox").html("");
 }
 
 function initialize()
 {
-    document.getElementById("coachhdr").innerHTML = txt_coach + txt_display;
+    $("#coachhdr").html(txt_coach + txt_display);
     getFiles();
-    document.getElementById("competitor").value = "";
-    document.getElementById("competitor").focus();
+    $("#competitor").val("");
+    $("#competitor").focus();
     setInterval(function () { doFocus() }, 1000);
     //setInterval(function () { getFiles() }, 5000);
     //setInterval(function () { update() }, 5000);
