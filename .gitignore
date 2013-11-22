@@ -1,0 +1,15 @@
+G*
+common/*.mo
+doc/*.pdf
+judoshiai/obj*
+judotimer/obj*
+judoinfo/obj*
+judoweight/obj*
+judojudogi/obj*
+judoshiai/basic.output
+judoshiai/basic.tab.c
+judoshiai/basic.tab.h
+judoshiai/lex.yy.c
+release-*
+test
+*~
