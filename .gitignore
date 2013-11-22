@@ -1,11 +1,11 @@
 G*
 common/*.mo
 doc/*.pdf
-judoshiai/obj*
-judotimer/obj*
-judoinfo/obj*
-judoweight/obj*
-judojudogi/obj*
+judoshiai/obj-linux/*
+judotimer/obj-linux/*
+judoinfo/obj-linux/*
+judoweight/obj-linux/*
+judojudogi/obj-linux/*
 judoshiai/basic.output
 judoshiai/basic.tab.c
 judoshiai/basic.tab.h
