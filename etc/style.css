@@ -327,13 +327,15 @@ table.tablesorter .headerSortDown {
 	background-repeat: no-repeat;
 }
 img.catimg {
-    cursor: n-resize;
+    /*cursor: n-resize;*/
+    cursor: pointer;
 }
 img.button {
     cursor: pointer;
 }
 div.catdiv {
-    cursor: n-resize;
+    /*cursor: n-resize;*/
+    cursor: pointer;
 }
 
 /* tooltip */

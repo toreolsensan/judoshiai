@@ -137,7 +137,7 @@ static void init_tables(struct paint_data *pd)
     win_table.position_y = POOL_WIN_Y;
 }
 
-#define NUM_JUDOKA_RECTANGLES 128
+#define NUM_JUDOKA_RECTANGLES 256
 struct judoka_rectangle judoka_rectangles[NUM_JUDOKA_RECTANGLES];
 gint judoka_rectangle_cnt = 0;
 static void add_judoka_rectangle(struct paint_data *pd, gdouble x, gdouble y, gdouble w, gdouble h, gint judoka_ix);
