@@ -11,6 +11,7 @@
 #include <locale.h>
 #include <gtk/gtk.h>
 
+#include "comm.h"
 #include "language.h"
 
 #ifdef ENABLE_NLS
@@ -89,7 +90,7 @@ void lang_dialog_cb(GtkWidget *w, void *param)
 
     for (i = 0; i < NUM_LANGS; i++) {
         if (w == data->buttons[i]) {
-            data->cb(NULL, NULL, (gpointer)i);
+            data->cb(NULL, NULL, gint_to_ptr(i));
             //gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(lang_menu), flags[i]);        
             gtk_widget_destroy(data->dialog);
             g_free(data);

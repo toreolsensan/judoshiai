@@ -1,6 +1,9 @@
 include ../common/Makefile.inc
 
-all: $(OBJDIR)/judoweight$(SUFF)
+all: $(OBJDIR) $(OBJDIR)/judoweight$(SUFF)
+
+$(OBJDIR):
+	mkdir -p $(OBJDIR)
 
 OBJS += $(OBJDIR)/main.o $(OBJDIR)/menus.o $(OBJDIR)/comm.o $(OBJDIR)/ip.o \
 	$(OBJDIR)/protocol.o $(OBJDIR)/serial.o $(OBJDIR)/language.o

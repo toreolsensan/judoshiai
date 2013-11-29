@@ -3,7 +3,10 @@ PROF=
 
 include ../common/Makefile.inc
 
-all: $(OBJDIR)/judoshiai$(SUFF)
+all: $(OBJDIR) $(OBJDIR)/judoshiai$(SUFF)
+
+$(OBJDIR):
+	mkdir -p $(OBJDIR)
 
 OBJS += $(OBJDIR)/main.o $(OBJDIR)/competitors.o $(OBJDIR)/sheets.o $(OBJDIR)/set-one-judoka.o \
 	$(OBJDIR)/sqlite3.o $(OBJDIR)/popup-menu.o $(OBJDIR)/util.o $(OBJDIR)/db.o \

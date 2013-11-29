@@ -1,6 +1,9 @@
 include ../common/Makefile.inc
 
-all: $(OBJDIR)/judotimer$(SUFF)
+all: $(OBJDIR) $(OBJDIR)/judotimer$(SUFF)
+
+$(OBJDIR):
+	mkdir -p $(OBJDIR)
 
 OBJS += $(OBJDIR)/main.o $(OBJDIR)/menus.o $(OBJDIR)/stopwatch.o $(OBJDIR)/comm.o \
 	$(OBJDIR)/ip.o $(OBJDIR)/protocol.o $(OBJDIR)/show-ad.o $(OBJDIR)/sound.o \

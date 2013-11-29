@@ -1,6 +1,9 @@
 include ../common/Makefile.inc
 
-all: $(OBJDIR)/judojudogi$(SUFF)
+all: $(OBJDIR) $(OBJDIR)/judojudogi$(SUFF)
+
+$(OBJDIR):
+	mkdir -p $(OBJDIR)
 
 OBJS += $(OBJDIR)/main.o $(OBJDIR)/menus.o $(OBJDIR)/comm.o $(OBJDIR)/ip.o \
 	$(OBJDIR)/protocol.o $(OBJDIR)/trees.o $(OBJDIR)/avl.o $(OBJDIR)/language.o
