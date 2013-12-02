@@ -1307,6 +1307,7 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
                        -1);
 
     mdata->sys = get_system_for_category(mdata->mcategory_ix, competitors);
+    mdata->sys.numcomp = competitors;
 
     switch (mdata->sys.system) {
     case SYSTEM_POOL:
