@@ -41,7 +41,7 @@ static void ftp_to_server_callback(GtkWidget *widget,
 {
     struct url *uri = (struct url *)data;
 
-    if ((gulong)event == GTK_RESPONSE_OK) {
+    if (ptr_to_gint(event) == GTK_RESPONSE_OK) {
         proto = gtk_combo_box_get_active(GTK_COMBO_BOX(uri->proto));
         if (proto < 0) proto = 0;
         g_key_file_set_integer(keyfile, "preferences", "ftpproto", proto);

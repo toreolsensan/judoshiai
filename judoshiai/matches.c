@@ -2164,7 +2164,7 @@ static void set_score(GtkWidget *widget,
 {
     struct score *s = data;
 
-    if ((gulong)event == GTK_RESPONSE_OK) {
+    if (ptr_to_gint(event) == GTK_RESPONSE_OK) {
         db_set_score(s->category, s->number, 
                      (gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(s->ippon))<<16) | 
                      (gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(s->wazaari))<<12) | 

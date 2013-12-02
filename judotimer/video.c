@@ -504,7 +504,7 @@ static void video_ip_address_callback(GtkWidget *widget,
 {
     struct url *uri = (struct url *)data;
 
-    if ((gulong)event == GTK_RESPONSE_OK) {
+    if (ptr_to_gint(event) == GTK_RESPONSE_OK) {
         snprintf(video_http_host, sizeof(video_http_host), "%s", gtk_entry_get_text(GTK_ENTRY(uri->address))); 
         g_key_file_set_string(keyfile, "preferences", "videoipaddress", video_http_host);
         video_http_addr = hostname_to_addr(video_http_host);

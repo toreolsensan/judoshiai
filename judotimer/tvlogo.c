@@ -206,7 +206,7 @@ static void vlc_settings_callback(GtkWidget *widget,
 {
     struct vlc_settings *vlc = (struct vlc_settings *)data;
 
-    if ((gulong)event == GTK_RESPONSE_OK) {
+    if (ptr_to_gint(event) == GTK_RESPONSE_OK) {
         vlc_port = atoi(gtk_entry_get_text(GTK_ENTRY(vlc->port)));
         g_key_file_set_integer(keyfile, "preferences", "vlcport", vlc_port);
 

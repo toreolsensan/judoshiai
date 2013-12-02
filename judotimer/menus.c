@@ -109,7 +109,7 @@ static void set_timers(GtkWidget *widget,
 		       GdkEvent *event,
 		       GtkWidget *data)
 {
-    if ((gulong)event == GTK_RESPONSE_OK) {
+    if (ptr_to_gint(event) == GTK_RESPONSE_OK) {
         set_clocks(atoi(gtk_entry_get_text(GTK_ENTRY(clock_min)))*60 +
                    atoi(gtk_entry_get_text(GTK_ENTRY(clock_sec))),
                    atoi(gtk_entry_get_text(GTK_ENTRY(osaekomi))));

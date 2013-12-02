@@ -1072,20 +1072,20 @@ static void make_manual_matches_callback(GtkWidget *widget,
     gint i;
     struct mdata *mdata = data;
 
-    if ((gulong)event == BUTTON_NEXT) {
+    if (ptr_to_gint(event) == BUTTON_NEXT) {
         draw_one_comp(mdata);
                 
         return;
     }
 
-    if ((gulong)event == BUTTON_REST) {
+    if (ptr_to_gint(event) == BUTTON_REST) {
         while (draw_one_comp(mdata))
             ;
                 
         return;
     }
 
-    if ((gulong)event != GTK_RESPONSE_OK)
+    if (ptr_to_gint(event) != GTK_RESPONSE_OK)
         goto out;
 
     /* check drawing is complete */
@@ -1147,7 +1147,7 @@ out:
     update_category_status_info(mdata->mcategory_ix);
     update_matches(mdata->mcategory_ix, (struct compsys){0,0,0,0}, 0);
 
-    if (mdata->hidden == FALSE && (gulong)event == GTK_RESPONSE_OK)
+    if (mdata->hidden == FALSE && ptr_to_gint(event) == GTK_RESPONSE_OK)
         category_window(mdata->mcategory_ix);
 
     free_mdata(mdata);
