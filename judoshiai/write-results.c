@@ -680,6 +680,7 @@ void write_html(gint cat)
         goto out;
 
     make_top_frame_1(f, "<script defer=\"defer\" type=\"text/javascript\" src=\"sie.js\"></script>\r\n"
+                     "<script type=\"text/javascript\" src=\"jquery-1.10.2.min.js\" charset=\"utf-8\"></script>\r\n"
                      "<script type=\"text/javascript\" src=\"coach.js\" charset=\"utf-8\"></script>\r\n");
     make_left_frame(f);
 
@@ -1053,9 +1054,9 @@ void make_png_all(GtkWidget *w, gpointer data)
     avl_init_competitor_position();
 
     /* copy files */
-    gchar *files_to_copy[] = {"style.css", "coach.html", "coach.js", 
+    gchar *files_to_copy[] = {"style.css", "coach.html", "coach.js",
                               "asc.png", "desc.png", "bg.png", "refresh.png", "clear.png", 
-                              "jquery.js", "jquery.tablesorter.js", 
+                              "jquery-1.10.2.min.js", "jquery-1.10.2.min.map", "jquery.tablesorter.js", 
                               "sie.js", NULL};
     for (i = 0; files_to_copy[i]; i++) {
         f = open_write(files_to_copy[i]);

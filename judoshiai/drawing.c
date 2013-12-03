@@ -680,6 +680,8 @@ static gboolean remove_competitor(GtkWidget *eventbox, GdkEventButton *event, vo
         mdata->mcomp[mdata->selected].pos == 0) {
         mdata->mcomp[mdata->selected].index = 0;
         gtk_label_set_text(GTK_LABEL(mdata->mcomp[mdata->selected].label), "- - -");
+        if (mdata->sys.numcomp > 0)
+            mdata->sys.numcomp--;
     }
     return TRUE;
 }
