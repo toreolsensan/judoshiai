@@ -494,44 +494,15 @@ function openCatWindow(cat, judoka) {
 			      +',scrollbars=1'
 			      +',resizable=1');
 
-    var file = escape_utf8(cat);
-    var src = "";
-
-    for (var i = 1; i <= 5; i++) {
-	var f;
-	if (i == 1) {
-	    f = file + ".png?" + new Date().getTime();
-	} else {
-	    f = file + "-" + (i-1) + ".png?" + new Date().getTime();
-	}
-	oRequest = new XMLHttpRequest();
-	oRequest.open('HEAD', f, false);
-	oRequest.send(null)
-	if (oRequest.status == 200 || oRequest.status == 304) {
-	    src += "<img src=\""+f+"\" class=\"catimg\"><br>";
-	} else {
-	    if (i == 1) {
-		f = file + ".svg?" + new Date().getTime();
-	    } else {
-		f = file + "-" + (i-1) + ".svg?" + new Date().getTime();
-	    }
-	    oRequest = new XMLHttpRequest();
-	    oRequest.open('GET', f, false);
-	    oRequest.send(null)
-	    if (oRequest.status == 200 || oRequest.status == 304) {
-		src += oRequest.responseText.replace("cmpx", "cmp"+judoka) + "<br>";
-	    } else {
-		break;
-	    }
-	}
-    }
-
     top.catWinRef.document.writeln(
-	'<html><head><title>'+cat+'</title></head>'
-	    +'<body bgcolor=white onLoad="self.focus()">\r\n'
-            +"<!--[if lt IE 9]> <h1>Old Internet Explorer not supported!</h1> <![endif]-->\r\n"
-	    + src
-	    +'</body></html>'
+	'<html><head><title>'+cat+'</title>'
+	    + '<script type="text/javascript" src="jquery-1.10.2.min.js" charset="utf-8"></script>'
+	    + '<script type="text/javascript" src="coach.js" charset="utf-8"></script></head>'
+	    + '<body bgcolor=white onLoad="getSheet(\''+cat+'\','+judoka+')">\r\n'
+	    + '<div id="sheets"></div>'
+	    + '<div id="compbox"></div>'
+	    + '<div id="competitor"></div>'
+	    + '</body></html>'
     );
     top.catWinRef.document.close()
 }
