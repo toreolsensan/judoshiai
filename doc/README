@@ -1,0 +1,77 @@
+RELEASE NOTE
+VERSION 2.3.1
+
+Common:
+-------
+
+German language added.
+Support for 64 bit compilation.
+Result texts language bug fixed.
+
+JudoShiai:
+----------
+
+Coach display enhancements.
+Program is a little bit faster.
+
+JudoInfo:
+----------
+
+Support for SVG templates.
+
+RELEASE NOTE
+VERSION 2.3
+
+Common:
+-------
+
+JudoShiai:
+----------
+
++ Settings divided to Properties (saved in the database) and Preferences.
++ Comment and Coach ID fields added to database.
++ Setting for 3-way tie.
++ Double/Triple/Quad pool doesn't continue if 3-way tie. Category name turns red.
++ Support for customised SVG sheets.
++ Sheets in web results can be printed in SVG format.
++ Web page for coach info.
++ Weights can be imported from another shiai.
++ Best of three is now a separate competition system.
++ IJF double repechage has been renamed to IJF quarter final repechage.
++ Categories starting with underscore (_) are ignored from drawing and results.
++ Categories starting with '?' are ignored from results.
++ Competitors from the same club will have the first match in pool systems.
++ Score points printing added for SVG brackets.
++ Flags printing added for SVG brackets.
++ Brackets utilizes javascript to be more interactive.
++ Built-in FTP client to copy results to a server.
++ Support for Estonian one bronze system.
++ New rule: If equal score less shido wins.
++ Results in Polish.
++ Competitor can be moved to a drawn category.
++ Blue category name background if extra competitors in category.
++ Extra competitor's name in blue.
++ Category draw editing added.
++ Competitors position visible in Competitors tab.
++ Score points editing added (tatami tab).
++ Score points format changed from IWYKS to IWY/S.
++ Category default values partly updated (ages for cadets and juniors, no timelimit for golden score).
++ New property: Win in golden score always gives one point.
++ Danish defaults updated.
+
+JudoTimer:
+----------
+
++ Support for video replay.
++ Possibility to give hansokumake. It means losing only the match, not disqualification from the tournament.
++ New rule: Shorter osaekomi times.
++ New rule: 'Equal score less shido wins' added.
++ New rule: 'Shido gives no score to the opponent' added.
++ New rule: Golden Score option 'No time limit' added.
++ VideoLAN control to embed score points and clocks on video screen.
++ New keyboard shortcuts.
+
+JudoWeight:
+-----------
+
++ Grade added to competitor data.

@@ -534,7 +534,7 @@ msgid "Female"
 msgstr "weiblich"
 
 msgid "Control:"
-msgstr "Kontrolle:"
+msgstr "Judogi-Kontrolle:"
 
 msgid "NOK"
 msgstr "Not OK"
@@ -1304,13 +1304,13 @@ msgid "Show Sheet"
 msgstr "Zeige Kampfliste"
 
 msgid "Print Selected Sheets (Printer)"
-msgstr "Druck markierte Kampflisten (Drucker)"
+msgstr "Drucke für Auswahl Kampflisten (Drucker)"
 
 msgid "Print Selected Sheets (PDF)"
-msgstr " Druck markierte Kampflisten (PDF)"
+msgstr "Drucke für Auswahl Kampflisten (PDF)"
 
 msgid "Print Selected Accreditation Cards"
-msgstr "Drucke für markierte ID-/Wiegekarten/Urkunden"
+msgstr "Druck für Auswahl ID-/Wiegekarten/Urkunden"
 
 msgid "Save file"
 msgstr "Datei speichern"
@@ -1418,7 +1418,7 @@ msgid "Date:"
 msgstr "Datum:"
 
 msgid "Place:"
-msgstr "Platz:"
+msgstr "Ort:"
 
 msgid "Number of tatamis:"
 msgstr "Anzahl Matten:"
@@ -1449,7 +1449,7 @@ msgid "Two pool bronzes:"
 msgstr "Zwei Bronzepools:"
 
 msgid "Resolve 3-way ties by weights:"
-msgstr ""
+msgstr "Löse 3fach Patt durch Gewichtung:"
 
 msgid "Tournament properties"
 msgstr "Turniereigenschaften"
@@ -1611,13 +1611,13 @@ msgid "Horizontal display"
 msgstr "Horizontale Ansicht"
 
 msgid "Mirror tatami order"
-msgstr "Spiegel Tatami-Reihenfolge"
+msgstr "Spiegel Matten-Reihenfolge"
 
 msgid "Write to file"
 msgstr "In Datei schreiben"
 
 msgid "Show Tatami"
-msgstr "Zeige Tatamit"
+msgstr "Zeige Matte"
 
 msgid "Serial Communication"
 msgstr "Serielle Verbindung"

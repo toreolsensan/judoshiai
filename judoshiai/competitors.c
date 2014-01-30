@@ -2106,7 +2106,7 @@ void barcode_search(GtkWidget *w, gpointer data)
     gtk_box_pack_start_defaults(GTK_BOX (GTK_DIALOG (dialog)->vbox), hbox);
     gtk_widget_show_all(dialog);
 
-    bcdialog = dialog;
+    bcdialog = (void *)dialog;
 
     /* Call gtk_widget_destroy() when the dialog emits the response signal. */
     g_signal_connect(G_OBJECT(bcentry), 

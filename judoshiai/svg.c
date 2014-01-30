@@ -85,7 +85,7 @@ static gint cnt = 0;
 static struct svg_cache {
     gint key;
     gchar *data;
-    guint datalen;
+    gsize datalen;
     gint width;
     gint height;
 } svg_data[NUM_SVG];

@@ -18,6 +18,8 @@
 #define PROTO_FTP 0
 #define PROTO_HTTP 1
 
+static void ftp_log(gchar *format, ...);
+
 struct url {
     GtkWidget *address, *port, *path, *start;
     GtkWidget *user, *password, *proxy_address, *proxy_port;
@@ -27,7 +29,7 @@ struct url {
 static gchar *ftp_server = NULL, *ftp_path = NULL, *proxy_host = NULL,
     *ftp_user = NULL, *ftp_password = NULL, *proxy_user, *proxy_password;
 static gint ftp_port = 21, proxy_port = 8080, proto = PROTO_FTP;
-static gboolean connection_ok = FALSE, ftp_update = FALSE, do_ftp = FALSE;
+static gboolean ftp_update = FALSE, do_ftp = FALSE;
 
 #define STRDUP(_d, _s) do { g_free(_d); _d = g_strdup(_s); } while (0)
 #define GETSTR(_d, _s) do { g_free(_d);                                 \
@@ -85,7 +87,7 @@ static void ftp_to_server_callback(GtkWidget *widget,
 void ftp_to_server(GtkWidget *w, gpointer data)
 {
     gchar buf[128];
-    GtkWidget *dialog, *hbox, *hbox1, *hbox2, *hbox3, *label;
+    GtkWidget *dialog, *hbox, *hbox1, *hbox2, *hbox3;
     struct url *uri = g_malloc0(sizeof(*uri));
     GtkWidget *proxy_lbl = gtk_label_new(_("Proxy:"));
 
@@ -203,18 +205,25 @@ static struct curl_slist *headerlist = NULL;
 
 static void init_curl(void)
 {
+    CURLcode err;
+
     curl = curl_easy_init();
-    if (!curl)
+    if (!curl) {
+        ftp_log("Cannot curl_easy_init!");
         return;
+    }
     
     /* verbose printing */
     //curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
 
     /* we want to use our own read function */ 
-    curl_easy_setopt(curl, CURLOPT_READFUNCTION, read_callback);
+    if ((err = curl_easy_setopt(curl, CURLOPT_READFUNCTION, read_callback)))
+        ftp_log("Read function option error: %s!", curl_easy_strerror(err));
  
     /* enable uploading */ 
-    curl_easy_setopt(curl, CURLOPT_UPLOAD, 1L);
+    if ((err = curl_easy_setopt(curl, CURLOPT_UPLOAD, 1L)))
+        ftp_log("Upload option error: %s!", curl_easy_strerror(err));
+        
  
     /* user & password */
     if (ftp_user && ftp_user[0]) {
@@ -226,14 +235,17 @@ static void init_curl(void)
         gchar pwd[64];
         snprintf(pwd, sizeof(pwd), "%s:%s", ftp_user, 
                  ftp_password?ftp_password:"");
-        curl_easy_setopt(curl, CURLOPT_USERPWD, pwd);
+        if ((err = curl_easy_setopt(curl, CURLOPT_USERPWD, pwd)))
+            ftp_log("Username/password option error: %s!", curl_easy_strerror(err));
 #endif
     }
 
     /* proxy */
     if (proxy_host && proxy_host[0]) {
-        curl_easy_setopt(curl, CURLOPT_PROXY, proxy_host);
-        curl_easy_setopt(curl, CURLOPT_PROXYPORT, (long)proxy_port);
+        if ((err = curl_easy_setopt(curl, CURLOPT_PROXY, proxy_host)))
+            ftp_log("Proxy option error: %s!", curl_easy_strerror(err));
+        if ((err = curl_easy_setopt(curl, CURLOPT_PROXYPORT, (long)proxy_port)))
+            ftp_log("Proxy port option error: %s!", curl_easy_strerror(err));
     }
 
     /* proxy user & password */
@@ -241,11 +253,17 @@ static void init_curl(void)
         gchar pwd[64];
         snprintf(pwd, sizeof(pwd), "%s:%s", proxy_user, 
                  proxy_password?proxy_password:"");
-        curl_easy_setopt(curl, CURLOPT_PROXYUSERPWD, pwd);
+        if ((err = curl_easy_setopt(curl, CURLOPT_PROXYUSERPWD, pwd)))
+            ftp_log("Proxy user/password option error: %s!", curl_easy_strerror(err));
     }
 
-    if (ftp_port)
-        curl_easy_setopt(curl, CURLOPT_PORT, (long)ftp_port);
+    if (ftp_port) {
+        if ((err = curl_easy_setopt(curl, CURLOPT_PORT, (long)ftp_port)))
+            ftp_log("FTP port option error: %s!", curl_easy_strerror(err));
+    }
+
+    if ((err = curl_easy_setopt(curl, CURLOPT_TIMEOUT, (long)300)))
+        ftp_log("Timeout option error: %s!", curl_easy_strerror(err));
 }
 
 static void cleanup_curl(void)
@@ -259,6 +277,16 @@ static void cleanup_curl(void)
 
 gpointer ftp_thread(gpointer args)
 {
+    CURLcode res;
+    
+
+    ftp_log("Starting FTP");
+
+    while ((res = curl_global_init(CURL_GLOBAL_DEFAULT))) {
+        ftp_log("Cannot init curl: %s!", curl_easy_strerror(res));
+        g_usleep(120000000);
+    }        
+
     for ( ; *((gboolean *)args) ; )   /* exit loop when flag is cleared */
     {
         time_t last_copy = 0;
@@ -268,6 +296,8 @@ gpointer ftp_thread(gpointer args)
                !current_directory[0] || current_directory[0] == '.') {
             g_usleep(1000000);
         }
+
+        ftp_log("Server=%s directory=%s", ftp_server, current_directory);
 
         while (!ftp_update) {
             time_t copy_start = time(NULL);
@@ -283,7 +313,6 @@ gpointer ftp_thread(gpointer args)
                             (statbuf.st_mode & S_IFREG)) {
                             FILE *f = fopen(fullname, "rb");
                             if (f) {
-                                CURLcode res;
                                 if (curl) {
                                     if (proto == PROTO_FTP) {
                                         gchar *n = g_strdup_printf("RNTO %s", fname);
@@ -291,7 +320,8 @@ gpointer ftp_thread(gpointer args)
                                         headerlist = curl_slist_append(headerlist, n);
                                         g_free(n);
                                         /* pass in that last of FTP commands to run after the transfer */ 
-                                        curl_easy_setopt(curl, CURLOPT_POSTQUOTE, headerlist);
+                                        if ((res = curl_easy_setopt(curl, CURLOPT_POSTQUOTE, headerlist)))
+                                            ftp_log("Postquote option error: %s!", curl_easy_strerror(res));
                                     }
 
                                     curl_off_t fsize = statbuf.st_size;
@@ -310,35 +340,36 @@ gpointer ftp_thread(gpointer args)
                                                             ftp_server,
                                                             proto == PROTO_FTP ? "TMPXYZ" : fname);
 
-                                    curl_easy_setopt(curl, CURLOPT_URL, u);
+                                    if ((res = curl_easy_setopt(curl, CURLOPT_URL, u)))
+                                        ftp_log("URL option error: %s!", curl_easy_strerror(res));
                                     g_free(u);
                                     
                                     /* specify which file to upload */
-                                    curl_easy_setopt(curl, CURLOPT_READDATA, f);
- 
+                                    if ((res = curl_easy_setopt(curl, CURLOPT_READDATA, f)))
+                                        ftp_log("Read data option error: %s!", curl_easy_strerror(res));
+
                                     /* Set the size of the file to upload (optional).  If you give a *_LARGE
                                        option you MUST make sure that the type of the passed-in argument is a
                                        curl_off_t. If you use CURLOPT_INFILESIZE (without _LARGE) you must
                                        make sure that to pass in a type 'long' argument. */ 
-                                    curl_easy_setopt(curl, CURLOPT_INFILESIZE_LARGE,
-                                                     (curl_off_t)fsize);
+                                    if ((res = curl_easy_setopt(curl, CURLOPT_INFILESIZE_LARGE,
+                                                                (curl_off_t)fsize)))
+                                        ftp_log("Large option error: %s!", curl_easy_strerror(res));
                                 
                                     //curl_easy_setopt(curl, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
                                     //curl_easy_setopt(curl, CURLOPT_FTP_USE_EPSV, 0);
 
                                     /* Now run off and do what you've been told! */ 
-                                    res = curl_easy_perform(curl);
-
-                                    /* Check for errors */ 
-                                    if(res != CURLE_OK)
-                                        g_print("curl_easy_perform() failed: %s\n",
+                                    if ((res = curl_easy_perform(curl)))
+                                        ftp_log("Cannot execute: %s!\n",
                                                 curl_easy_strerror(res));
 
                                     if (headerlist) {
                                         /* clean up the FTP commands list */ 
                                         curl_slist_free_all(headerlist);
                                         headerlist = NULL;
-                                        curl_easy_setopt(curl, CURLOPT_POSTQUOTE, headerlist);
+                                        if ((res = curl_easy_setopt(curl, CURLOPT_POSTQUOTE, headerlist)))
+                                            ftp_log("Postquote option error: %s!", curl_easy_strerror(res));
                                     }
                                 } // if (curl)
                                 fclose(f);
@@ -355,9 +386,55 @@ gpointer ftp_thread(gpointer args)
                 cleanup_curl();
             } // if (dir)
             g_usleep(2000000);
-        }
+        } // while
+        ftp_log("Configuration update.");
     }
 
     g_thread_exit(NULL);    /* not required just good pratice */
     return NULL;
+}
+
+static gchar *ftp_logfile_name = NULL;
+
+static void ftp_log(gchar *format, ...)
+{
+    time_t t;
+    gchar buf[256];
+    va_list args;
+    va_start(args, format);
+    gchar *text = g_strdup_vprintf(format, args);
+    va_end(args);
+
+    t = time(NULL);
+
+    if (ftp_logfile_name == NULL) {
+        struct tm *tm = localtime(&t);
+        if (tm) {
+            sprintf(buf, "judoftp_%04d%02d%02d_%02d%02d%02d.log",
+                    tm->tm_year+1900,
+                    tm->tm_mon+1,
+                    tm->tm_mday,
+                    tm->tm_hour,
+                    tm->tm_min,
+                    tm->tm_sec);
+            ftp_logfile_name = g_build_filename(g_get_user_data_dir(), buf, NULL);
+        }
+    }
+
+    FILE *f = fopen(ftp_logfile_name, "a");
+    if (f) {
+        struct tm *tm = localtime(&t);
+
+        fprintf(f, "%02d:%02d:%02d %s\n",
+                tm->tm_hour,
+                tm->tm_min,
+                tm->tm_sec,
+                text);
+        fclose(f);
+    } else {
+        g_print("Cannot open ftp log file\n");
+        perror("ftp_logfile_name");
+    }
+
+    g_free(text);
 }
