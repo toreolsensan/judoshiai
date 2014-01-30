@@ -329,7 +329,7 @@ static void node_ip_address_callback(GtkWidget *widget,
 {
     gulong a,b,c,d;
 
-    if ((gulong)event == GTK_RESPONSE_OK) {
+    if (ptr_to_gint(event) == GTK_RESPONSE_OK) {
         sscanf(gtk_entry_get_text(GTK_ENTRY(data)), "%ld.%ld.%ld.%ld", &a, &b, &c, &d);
         node_ip_addr = htonl((a << 24) | (b << 16) | (c << 8) | d);
         g_key_file_set_string(keyfile, "preferences", "nodeipaddress", 
