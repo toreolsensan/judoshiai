@@ -509,7 +509,7 @@ void view_on_row_activated(GtkTreeView        *treeview,
         tmp = gtk_label_new(_("Grade:"));
         gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, row, row+1);
         judoka_tmp->belt = tmp = gtk_combo_box_new_text();
-        for (i = 0; (belts[i] && belts[i][0]) || (i == 0 && belts[i]); i++)
+        for (i = 0; i < NUM_BELTS && ((belts[i] && belts[i][0]) || (i == 0 && belts[i])); i++)
             gtk_combo_box_append_text((GtkComboBox *)tmp, belts[i]);
         gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, row, row+1);
         gtk_combo_box_set_active((GtkComboBox *)tmp, belt);
@@ -1105,7 +1105,7 @@ void belt_cell_data_func (GtkTreeViewColumn *col,
     strcpy(buf, "?");
   
     if (visible) {
-        if (belt >= 0 && belt < 21) {
+        if (belt >= 0 && belt < NUM_BELTS) {
             g_snprintf(buf, sizeof(buf), "%s", belts[belt]);
             g_object_set(renderer, "foreground-set", FALSE, NULL); /* print this normal */
         }
