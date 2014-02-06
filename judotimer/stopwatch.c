@@ -717,7 +717,7 @@ static gboolean expose_ask(GtkWidget *widget, GdkEventExpose *event, gpointer us
 }
 
 static gchar *legends[] = 
-    {"?", "(T)", "(H)", "(C)", "(L)", "SG", "HM", "KG", "T", "H", "S", "/P\\", "FG", "TT", "TH", NULL};
+    {"?", "(T)", "(H)", "(C)", "(L)", "SG", "HM", "KG", "T", "H", "S", "/P\\", "FG", "TT", "TH", "/HM\\", NULL};
 
 static void create_ask_window(void)
 {
