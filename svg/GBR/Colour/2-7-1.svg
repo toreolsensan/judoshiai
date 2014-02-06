@@ -1,499 +1,3578 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 width="819.877px" height="568.701px" viewBox="0 0 819.877 568.701" enable-background="new 0 0 819.877 568.701"
-	 xml:space="preserve">
-<rect x="125.339" y="107.034" fill="#00CCFF" width="69.602" height="19.2"/>
-<polyline fill="#00CCFF" points="515.778,107.034 585.615,107.034 585.615,126.233 515.778,126.233 "/>
-<rect x="264.06" y="125.994" fill="#00CCFF" width="69.84" height="18.48"/>
-<rect x="585.379" y="125.994" fill="#00CCFF" width="69.841" height="18.48"/>
-<polyline fill="#00CCFF" points="194.699,144.233 264.299,144.233 264.299,162.713 194.699,162.713 "/>
-<rect x="585.379" y="144.233" fill="#00CCFF" width="69.841" height="18.48"/>
-<rect x="264.06" y="162.474" fill="#00CCFF" width="69.84" height="18.48"/>
-<rect x="264.06" y="180.713" fill="#00CCFF" width="69.84" height="18.48"/>
-<polyline fill="#00CCFF" points="194.699,198.954 264.299,198.954 264.299,217.434 194.699,217.434 "/>
-<rect x="22.98" y="310.353" fill="#FFFFCC" width="30.521" height="32.4"/>
-<rect x="195.473" y="310.353" fill="#FFFFCC" width="34.8" height="32.4"/>
-<rect x="231.034" y="342.513" fill="#FFFFCC" width="34.187" height="32.32"/>
-<rect x="386.656" y="342.513" fill="#FFFFCC" width="45.84" height="16.32"/>
-<rect x="386.656" y="358.593" fill="#FFFFCC" width="45.84" height="16.32"/>
-<rect x="22.98" y="374.673" fill="#00CCFF" width="31.021" height="32.4"/>
-<rect x="53.26" y="374.673" fill="#CCFFFF" width="141.454" height="32.4"/>
-<rect x="195.473" y="374.673" fill="#00CCFF" width="34.8" height="32.4"/>
-<rect x="432.26" y="406.833" fill="#FFCC00" width="31.42" height="16.32"/>
-<rect x="463.939" y="406.833" fill="#FFFF9A" width="128.88" height="16.32"/>
-<rect x="432.26" y="422.914" fill="#FFCC00" width="31.42" height="16.32"/>
-<rect x="463.939" y="422.914" fill="#FFFF9A" width="128.88" height="16.32"/>
-<rect x="22.98" y="438.994" fill="#FFFFCC" width="30.521" height="32.396"/>
-<rect x="195.473" y="438.994" fill="#FFFFCC" width="34.8" height="32.396"/>
-<rect x="231.034" y="471.154" fill="#00CCFF" width="34.187" height="32.313"/>
-<rect x="264.979" y="471.154" fill="#CCFFFF" width="121.92" height="16.313"/>
-<rect x="386.656" y="471.154" fill="#00CCFF" width="45.84" height="32.313"/>
-<rect x="264.979" y="487.234" fill="#CCFFFF" width="121.92" height="16.313"/>
-<rect x="22.98" y="503.313" fill="#00CCFF" width="30.021" height="32.398"/>
-<rect x="53.759" y="503.313" fill="#CCFFFF" width="140.954" height="32.398"/>
-<rect x="195.473" y="503.313" fill="#00CCFF" width="34.8" height="32.398"/>
-<text transform="matrix(1 0 0 1 17.9624 89.9922)" font-family="'ArialMT'" font-size="9.12">Grade</text>
-<text transform="matrix(1 0 0 1 408.1641 89.9922)" font-family="'ArialMT'" font-size="9.12">Grade</text>
-<text transform="matrix(1 0 0 1 24.5542 103.1914)" font-family="'ArialMT'" font-size="9.12">Club</text>
-<text transform="matrix(1 0 0 1 414.7549 103.1934)" font-family="'ArialMT'" font-size="9.12">Club</text>
-<text transform="matrix(1 0 0 1 658.0977 103.9131)" font-family="'ArialMT'" font-size="9">Duration</text>
-<text transform="matrix(1 0 0 1 38.2373 122.1523)" font-family="'ArialMT'" font-size="9.12">1</text>
-<text transform="matrix(1 0 0 1 428.4395 122.1523)" font-family="'ArialMT'" font-size="9.12">3</text>
-<text transform="matrix(1 0 0 1 38.2373 140.3926)" font-family="'ArialMT'" font-size="9.12">2</text>
-<text transform="matrix(1 0 0 1 428.4395 140.3926)" font-family="'ArialMT'" font-size="9.12">6</text>
-<text transform="matrix(1 0 0 1 38.2373 158.6328)" font-family="'ArialMT'" font-size="9.12">4</text>
-<text transform="matrix(1 0 0 1 428.4395 158.6328)" font-family="'ArialMT'" font-size="9.12">9</text>
-<text transform="matrix(1 0 0 1 38.2373 176.873)" font-family="'ArialMT'" font-size="9.12">5</text>
-<text transform="matrix(1 0 0 1 408.1641 176.873)" font-family="'ArialMT'" font-size="9.12">Points</text>
-<text transform="matrix(1 0 0 1 38.2373 195.1133)" font-family="'ArialMT'" font-size="9.12">7</text>
-<text transform="matrix(1 0 0 1 413.2451 195.1133)" font-family="'ArialMT'" font-size="9.12">Wins</text>
-<text transform="matrix(1 0 0 1 38.2373 213.3535)" font-family="'ArialMT'" font-size="9.12">8</text>
-<text transform="matrix(1 0 0 1 410.6973 213.3535)" font-family="'ArialMT'" font-size="9.12">Place</text>
-<text transform="matrix(1 0 0 1 17.9624 231.5918)" font-family="'ArialMT'" font-size="9.12">Points</text>
-<text transform="matrix(1 0 0 1 408.1655 231.5938)" font-family="'ArialMT'" font-size="9.12">Points</text>
-<text transform="matrix(1 0 0 1 23.0454 249.1133)" font-family="'ArialMT'" font-size="9.12">Wins</text>
-<text transform="matrix(1 0 0 1 20.4956 266.6309)" font-family="'ArialMT'" font-size="9.12">Place</text>
-<text transform="matrix(1 0 0 1 17.9624 284.1523)" font-family="'ArialMT'" font-size="9.12">Points</text>
-<text transform="matrix(1 0 0 1 18.9834 69.832)" font-family="'ArialMT'" font-size="9.12">Name</text>
-<text transform="matrix(1 0 0 1 409.1846 69.833)" font-family="'ArialMT'" font-size="9.12">Name</text>
-<text transform="matrix(1 0 0 1 105.4165 498.2725)" font-family="'ArialMT'" font-size="10.08">Duration:</text>
-<text transform="matrix(1 0 0 1 117.4165 369.6318)" font-family="'ArialMT'" font-size="10.08">Duration:</text>
-<text transform="matrix(1 0 0 1 323.9375 426.0332)" font-family="'ArialMT'" font-size="10.08">Duration:</text>
-<text transform="matrix(1 0 0 1 56.3374 281.793)" font-family="'ArialMT'" font-size="7">This pool</text>
-<text transform="matrix(1 0 0 1 337.978 102.9551)" font-family="'ArialMT'" font-size="9">Duration</text>
-<rect x="56.939" y="53.994" width="277.68" height="1.92"/>
-<rect x="56.939" y="79.673" width="277.68" height="1.92"/>
-<rect x="56.939" y="92.874" width="323.279" height="1.92"/>
-<rect x="56.939" y="106.073" width="323.279" height="1.92"/>
-<rect x="56.939" y="125.514" width="67.438" height="0.96"/>
-<rect x="126.299" y="125.514" width="67.438" height="0.96"/>
-<polyline points="195.659,125.514 263.1,125.514 263.1,126.474 195.659,126.474 "/>
-<rect x="265.02" y="125.514" width="67.68" height="0.96"/>
-<rect x="334.615" y="125.034" width="45.604" height="1.92"/>
-<rect x="447.139" y="125.514" width="67.683" height="0.96"/>
-<polyline points="516.738,125.514 584.419,125.514 584.419,126.474 516.738,126.474 "/>
-<rect x="586.341" y="125.514" width="67.681" height="0.96"/>
-<rect x="56.939" y="143.753" width="67.438" height="0.96"/>
-<rect x="126.299" y="143.753" width="67.438" height="0.96"/>
-<polyline points="195.659,143.753 263.1,143.753 263.1,144.713 195.659,144.713 "/>
-<rect x="265.02" y="143.753" width="67.68" height="0.96"/>
-<rect x="334.615" y="143.273" width="45.604" height="1.92"/>
-<rect x="447.139" y="143.753" width="67.683" height="0.96"/>
-<polyline points="516.738,143.753 584.419,143.753 584.419,144.713 516.738,144.713 "/>
-<rect x="586.341" y="143.753" width="67.681" height="0.96"/>
-<rect x="56.939" y="161.994" width="67.438" height="0.96"/>
-<rect x="126.299" y="161.994" width="67.438" height="0.96"/>
-<polyline points="195.659,161.994 263.1,161.994 263.1,162.954 195.659,162.954 "/>
-<rect x="265.02" y="161.994" width="67.68" height="0.96"/>
-<rect x="334.615" y="161.514" width="45.604" height="1.92"/>
-<rect x="56.939" y="180.233" width="67.438" height="0.96"/>
-<rect x="126.299" y="180.233" width="67.438" height="0.96"/>
-<polyline points="195.659,180.233 263.1,180.233 263.1,181.193 195.659,181.193 "/>
-<rect x="265.02" y="180.233" width="67.68" height="0.96"/>
-<rect x="334.615" y="179.753" width="45.604" height="1.92"/>
-<rect x="56.939" y="198.474" width="67.438" height="0.96"/>
-<rect x="126.299" y="198.474" width="67.438" height="0.96"/>
-<polyline points="195.659,198.474 263.1,198.474 263.1,199.434 195.659,199.434 "/>
-<rect x="265.02" y="198.474" width="67.68" height="0.96"/>
-<rect x="334.615" y="197.994" width="45.604" height="1.92"/>
-<rect x="56.939" y="216.233" width="323.279" height="1.92"/>
-<rect x="56.939" y="234.474" width="277.68" height="1.92"/>
-<rect x="55.02" y="53.994" width="1.92" height="234.96"/>
-<rect x="159.179" y="271.434" width="1.921" height="17.52"/>
-<rect x="193.739" y="55.914" width="1.925" height="233.04"/>
-<rect x="332.698" y="55.914" width="1.92" height="233.04"/>
-<rect x="378.3" y="94.793" width="1.92" height="123.36"/>
-<rect x="23.084" y="342.034" width="409.65" height="0.96"/>
-<rect x="22.499" y="309.874" width="0.96" height="33.12"/>
-<rect x="52.779" y="310.833" width="0.96" height="32.16"/>
-<rect x="23.084" y="374.194" width="409.65" height="0.959"/>
-<rect x="22.71" y="406.353" width="207.563" height="0.961"/>
-<rect x="549.615" y="218.153" width="1.92" height="18.24"/>
-<rect x="22.499" y="374.194" width="0.96" height="33.119"/>
-<rect x="52.779" y="375.153" width="0.96" height="32.16"/>
-<rect x="194.326" y="310.833" width="0.96" height="96.479"/>
-<rect x="230.219" y="310.833" width="0.96" height="96.479"/>
-<rect x="22.71" y="438.513" width="208.47" height="0.96"/>
-<rect x="264.499" y="342.994" width="0.96" height="32.159"/>
-<rect x="22.499" y="438.513" width="0.96" height="33.12"/>
-<rect x="52.779" y="439.473" width="0.96" height="32.16"/>
-<rect x="23.75" y="502.833" width="408.984" height="0.96"/>
-<rect x="22.499" y="502.833" width="0.96" height="33.12"/>
-<rect x="124.378" y="55.914" width="1.92" height="233.04"/>
-<rect x="230.219" y="439.473" width="0.96" height="96.48"/>
-<rect x="263.1" y="55.914" width="1.92" height="233.04"/>
-<rect x="386.179" y="342.994" width="0.961" height="160.8"/>
-<rect x="445.219" y="53.994" width="1.92" height="182.4"/>
-<rect x="514.819" y="55.914" width="1.92" height="180.48"/>
-<rect x="584.42" y="55.914" width="1.921" height="180.48"/>
-<rect x="654.02" y="55.914" width="1.922" height="180.48"/>
-<rect x="431.779" y="342.994" width="0.96" height="160.8"/>
-<rect x="697.458" y="94.793" width="1.922" height="68.64"/>
-<rect x="480.02" y="218.153" width="1.922" height="18.24"/>
-<rect x="592.098" y="407.313" width="0.96" height="32.152"/>
-<rect x="619.219" y="218.153" width="1.92" height="18.24"/>
-<rect x="89.579" y="271.434" width="1.92" height="17.52"/>
-<rect x="194.326" y="439.473" width="0.96" height="96.48"/>
-<rect x="228.299" y="271.434" width="1.921" height="17.52"/>
-<rect x="297.899" y="271.434" width="1.92" height="17.52"/>
-<rect x="52.779" y="503.793" width="0.96" height="32.16"/>
-<rect x="264.499" y="471.633" width="0.96" height="32.16"/>
-<rect x="463.46" y="407.313" width="0.96" height="32.152"/>
-<rect x="447.139" y="53.994" width="208.803" height="1.92"/>
-<rect x="447.139" y="79.673" width="208.803" height="1.92"/>
-<rect x="447.139" y="92.874" width="252.24" height="1.92"/>
-<rect x="447.139" y="106.073" width="252.24" height="1.92"/>
-<rect x="655.938" y="125.034" width="43.44" height="1.92"/>
-<rect x="655.938" y="143.273" width="43.44" height="1.92"/>
-<rect x="447.139" y="161.514" width="252.24" height="1.92"/>
-<rect x="447.139" y="179.753" width="208.803" height="1.92"/>
-<rect x="447.139" y="197.994" width="208.803" height="1.92"/>
-<rect x="447.139" y="216.233" width="208.803" height="1.92"/>
-<rect x="447.139" y="234.474" width="208.803" height="1.92"/>
-<rect x="56.939" y="251.994" width="277.68" height="1.92"/>
-<rect x="56.939" y="269.514" width="277.68" height="1.92"/>
-<rect x="56.939" y="287.034" width="277.68" height="1.92"/>
-<rect x="22.71" y="309.874" width="208.47" height="0.96"/>
-<rect x="432.739" y="406.353" width="160.317" height="0.961"/>
-<rect x="432.739" y="438.513" width="160.317" height="0.96"/>
-<rect x="22.5" y="470.673" width="410.235" height="0.96"/>
-<rect x="22.71" y="534.994" width="207.563" height="0.96"/>
-<path fill="#FFCC00" d="M608.656,406.353c8.646,0,15.842,7.44,15.842,16.32c0,9.12-7.196,16.563-15.842,16.563h-15.84v-32.884"/>
-<text transform="matrix(1 0 0 1 596.418 429.3936)" font-family="'Arial-BoldMT'" font-size="18">1</text>
-<polygon fill="#666666" points="195.622,106.859 195.607,125.292 333.365,125.584 333.385,107.15 "/>
-<polygon fill="#666666" points="56.622,125.906 56.607,143.766 194.368,144.047 194.384,126.187 "/>
-<polygon fill="#666666" points="126.122,180.859 126.107,198.82 263.368,199.104 263.384,181.143 "/>
-<polygon fill="#666666" points="264.614,199.359 264.607,216.808 333.377,217.084 333.385,199.635 "/>
-<polygon fill="#666666" points="56.114,198.859 56.107,216.308 124.876,216.584 124.884,199.135 "/>
-<polygon fill="#666666" points="56.114,162.681 56.107,180.13 124.876,180.406 124.884,162.957 "/>
-<polygon fill="#666666" points="126.114,144.359 126.107,161.808 193.876,162.084 193.884,144.635 "/>
-<polygon fill="#666666" points="195.614,162.614 195.607,180.194 263.126,180.472 263.134,162.892 "/>
-<polygon fill="#666666" points="264.114,143.859 264.107,162.292 332.877,162.584 332.885,144.15 "/>
-<polygon fill="#666666" points="447.202,144.359 447.197,161.808 515.221,162.084 515.229,144.635 "/>
-<polygon fill="#666666" points="516.516,126.047 516.509,143.628 585.1,143.905 585.108,126.325 "/>
-<polygon fill="#666666" points="585.987,107.339 585.98,125.478 654.004,125.764 654.012,107.625 "/>
-<path fill="none" stroke="#000000" stroke-width="2" d="M547.196,470.854h248.909v74.103H547.196V470.854L547.196,470.854z"/>
-<path fill="none" stroke="#000000" d="M547.196,471.33h230.938"/>
-<path fill="none" stroke="#000000" d="M547.196,489.632H794.19"/>
-<path fill="none" stroke="#000000" d="M547.196,507.935H794.19"/>
-<path fill="none" stroke="#000000" d="M547.196,526.244h247.791"/>
-<text transform="matrix(0.8981 0 0 1 648.8369 465.1768)" font-family="'Arial-BoldMT'" font-size="13.1793">Results</text>
-<text transform="matrix(0.9378 0 0 1 553.9102 484.5361)" font-family="'ArialMT'" font-size="10.981">1</text>
-<text transform="matrix(0.8981 0 0 1 568.6787 484.4453)" font-family="'ArialMT'" font-size="10.981">%r1first-s-last-s-club</text>
-<text transform="matrix(0.9378 0 0 1 553.9102 502.8418)" font-family="'ArialMT'" font-size="10.981">2</text>
-<text transform="matrix(0.8981 0 0 1 568.6787 502.75)" font-family="'ArialMT'" font-size="10.981">%r2first-s-last-s-club</text>
-<text transform="matrix(0.9378 0 0 1 553.9102 521.0771)" font-family="'ArialMT'" font-size="10.981">3</text>
-<text transform="matrix(0.8981 0 0 1 568.6787 521.0566)" font-family="'ArialMT'" font-size="10.981">%r3first-s-last-s-club</text>
-<text transform="matrix(0.9378 0 0 1 553.9102 539.4414)" font-family="'ArialMT'" font-size="10.981">3</text>
-<text transform="matrix(0.8981 0 0 1 568.6787 539.3594)" font-family="'ArialMT'" font-size="10.981">%r4first-s-last-s-club</text>
-<rect x="564.308" y="471.402" width="1.346" height="73.921"/>
-<text transform="matrix(1 0 0 1 54.6709 12.0117)" font-family="'Arial-BoldMT'" font-size="14">%i-competition</text>
-<text transform="matrix(1 0 0 1 54.6709 29.502)" font-family="'Arial-BoldMT'" font-size="14">%i-catname</text>
-<text transform="matrix(1.0292 0 0 1 428.6719 29.1602)" font-family="'Arial-BoldMT'" font-size="13.6032">%i-date</text>
-<text transform="matrix(1.0292 0 0 1 428.6719 11.6699)" font-family="'Arial-BoldMT'" font-size="13.6032">%i-place</text>
-<text transform="matrix(1 0 0 1 165 52.5352)" font-family="'Arial-BoldMT'" font-size="14.04">POOL A</text>
-<text transform="matrix(1 0 0 1 522.667 52.5352)" font-family="'Arial-BoldMT'" font-size="14.04">POOL B</text>
-<image overflow="visible" enable-background="new    " width="604" height="272" xlink:href="data:image/jpeg;base64,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" transform="matrix(0.1489 0 0 0.1445 729.9697 3.6685)">
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   id="Layer_1"
+   sodipodi:docname="2-7-1.svg"
+   inkscape:version="0.48.2 r9819"
+   x="0px"
+   y="0px"
+   width="1052.363px"
+   height="744.094px"
+   viewBox="0 0 1052.363 744.094"
+   enable-background="new 0 0 1052.363 744.094"
+   xml:space="preserve"><metadata
+   id="metadata371"><rdf:RDF><cc:Work
+       rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title /></cc:Work></rdf:RDF></metadata><defs
+   id="defs369" />
+<sodipodi:namedview
+   id="namedview643"
+   inkscape:current-layer="Layer_1"
+   inkscape:window-y="-8"
+   inkscape:window-x="-8"
+   inkscape:window-height="706"
+   inkscape:window-width="1366"
+   inkscape:pageshadow="2"
+   inkscape:pageopacity="0"
+   bordercolor="#666666"
+   showgrid="false"
+   pagecolor="#ffffff"
+   guidetolerance="10"
+   inkscape:cy="534.77182"
+   gridtolerance="10"
+   inkscape:cx="600.46545"
+   objecttolerance="10"
+   inkscape:zoom="2.0146944"
+   borderopacity="1"
+   inkscape:window-maximized="1">
+	</sodipodi:namedview>
+
+
+
+
+
+
+
+
+
+
+
+<path
+   style="fill:#ffcc00"
+   id="path3783"
+   inkscape:connector-curvature="0"
+   d="m 774.24278,546.36027 c 10.79295,0 19.78356,9.28942 19.78356,20.37274 0,11.39057 -8.99165,20.68526 -19.78356,20.68526 h -19.78145 v -41.06644" /><rect
+   style="fill:#ffff9a"
+   id="rect3559"
+   x="593.33862"
+   y="547.37244"
+   width="160.71478"
+   height="39.309563" /><rect
+   style="fill:#ffcc00"
+   id="rect3557"
+   x="553.7475"
+   y="547.02155"
+   width="39.490452"
+   height="39.660538" /><rect
+   style="fill:#ffffcc"
+   id="rect3545-76"
+   x="256.28421"
+   y="587.11395"
+   width="44.428482"
+   height="40.199772" /><rect
+   style="fill:#ffffcc"
+   id="rect3545-2"
+   x="255.93323"
+   y="426.36752"
+   width="45.130432"
+   height="39.497822" /><rect
+   style="fill:#ffffcc"
+   id="rect3545-15"
+   x="40.785702"
+   y="587.11401"
+   width="37.75996"
+   height="40.199772" /><rect
+   style="fill:#ffffcc"
+   id="rect3545-1"
+   x="41.136677"
+   y="426.01657"
+   width="37.408985"
+   height="40.550747" /><rect
+   style="fill:#ffffcc"
+   id="rect3545-7"
+   x="301.20895"
+   y="467.0806"
+   width="42.673607"
+   height="39.497822" /><rect
+   style="fill:#ffffcc"
+   id="rect3545"
+   x="496.35092"
+   y="466.55414"
+   width="56.712597"
+   height="39.497822" /><rect
+   style="fill:#00ccff"
+   id="rect3547-4-5"
+   x="301.45148"
+   y="627.53967"
+   width="42.188599"
+   height="40.072647" /><rect
+   style="fill:#ccffff"
+   id="rect3549-5"
+   x="343.90359"
+   y="627.65112"
+   width="151.7243"
+   height="39.849747" /><rect
+   style="fill:#ccffff"
+   id="rect3549-4"
+   x="78.448051"
+   y="667.21802"
+   width="176.99449"
+   height="40.551697" /><rect
+   style="fill:#ccffff"
+   id="rect3549"
+   x="79.268661"
+   y="506.91577"
+   width="176.29254"
+   height="39.1478" /><rect
+   style="fill:#00ccff"
+   id="rect3547-8-2"
+   x="496.59341"
+   y="627.53961"
+   width="56.929535"
+   height="40.072647" /><rect
+   style="fill:#00ccff"
+   id="rect3547-8-8"
+   x="256.5267"
+   y="668.25269"
+   width="44.294445"
+   height="39.370697" /><rect
+   style="fill:#00ccff"
+   id="rect3547-8"
+   x="256.5267"
+   y="506.80432"
+   width="44.294445"
+   height="40.072647" /><rect
+   style="fill:#00ccff"
+   id="rect3547-4"
+   x="41.028206"
+   y="668.25269"
+   width="37.274952"
+   height="39.370697" /><rect
+   style="fill:#00ccff"
+   id="rect3547"
+   x="40.677238"
+   y="506.83218"
+   width="37.274952"
+   height="39.721672" /><polyline
+   style="fill:#00ccff"
+   transform="matrix(0.85870064,0,0,0.73310121,386.68231,14.165537)"
+   id="polyline3531-48-9"
+   points="317.18,214.618 418.018,214.618 418.018,246.233 317.18,246.233 " /><polyline
+   style="fill:#00ccff"
+   transform="matrix(0.85870064,0,0,0.73310121,-16.276065,129.07989)"
+   id="polyline3531-48-0"
+   points="317.18,214.618 418.018,214.618 418.018,246.233 317.18,246.233 " /><polyline
+   style="fill:#00ccff"
+   transform="matrix(0.85870064,0,0,0.73310121,-103.31781,13.960175)"
+   id="polyline3531-48-4"
+   points="317.18,214.618 418.018,214.618 418.018,246.233 317.18,246.233 " /><polyline
+   style="fill:#00ccff"
+   transform="matrix(0.85870064,0,0,0.73310121,-15.925089,60.639815)"
+   id="polyline3531-48-17"
+   points="317.18,214.618 418.018,214.618 418.018,246.233 317.18,246.233 " /><polyline
+   style="fill:#00ccff"
+   transform="matrix(0.85870064,0,0,0.73310121,70.414702,106.26652)"
+   id="polyline3531-48-5"
+   points="317.18,214.618 418.018,214.618 418.018,246.233 317.18,246.233 " /><polyline
+   style="fill:#00ccff"
+   transform="matrix(0.85870064,0,0,0.73310121,70.414703,83.453162)"
+   id="polyline3531-48-1"
+   points="317.18,214.618 418.018,214.618 418.018,246.233 317.18,246.233 " /><polyline
+   style="fill:#00ccff"
+   transform="matrix(0.85870064,0,0,0.73310121,70.6392,38.003108)"
+   id="polyline3531-48"
+   points="317.18,214.618 418.018,214.618 418.018,246.233 317.18,246.233 " /><polyline
+   style="fill:#00ccff"
+   transform="matrix(0.85870064,0,0,0.73310121,473.68468,60.639808)"
+   id="polyline3531-2"
+   points="317.18,214.618 418.018,214.618 418.018,246.233 317.18,246.233 " /><polyline
+   style="fill:#00ccff"
+   transform="matrix(0.85870064,0,0,0.73310121,472.98274,37.475472)"
+   id="polyline3531-8"
+   points="317.18,214.618 418.018,214.618 418.018,246.233 317.18,246.233 " /><polygon
+   id="polygon337"
+   points="657.494,218.566 572.269,218.221 572.263,240.081 657.484,240.427 "
+   transform="matrix(1.0041179,0,0,1,-2.7075101,0)"
+   style="fill:#666666" /><polygon
+   id="polygon339"
+   fill="#666666"
+   points="745.031,217.652 745.041,195.627 659.107,195.279 659.097,217.305 " /><polygon
+   id="polygon341"
+   fill="#666666"
+   points="831.355,194.924 831.365,172.2 746.142,171.841 746.132,194.566 " /><polygon
+   id="polygon335"
+   fill="#666666"
+   points="429.04,241.053 429.05,217.959 342.893,217.594 342.884,240.688 " /><polygon
+   id="polygon325"
+   points="429.677,287.472 343.519,287.125 343.51,308.986 429.666,309.332 "
+   transform="matrix(1,0,0,1.0316094,0,-9.7777926)"
+   style="fill:#666666" /><polygon
+   id="polygon327"
+   fill="#666666"
+   points="168.452,308.706 168.462,286.845 82.306,286.499 82.297,308.36 " /><polygon
+   id="polygon323"
+   fill="#666666"
+   points="341.958,286.806 341.978,264.304 170.013,263.948 169.995,286.45 " /><polygon
+   id="polygon333"
+   fill="#666666"
+   points="341.654,263.464 341.665,241.439 257.074,241.091 257.065,263.115 " /><polygon
+   id="polygon331"
+   fill="#666666"
+   points="254.897,240.427 254.907,218.566 170.003,218.221 169.995,240.081 " /><polygon
+   id="polygon321"
+   fill="#666666"
+   points="255.513,217.83 255.533,195.454 82.942,195.103 82.923,217.478 " /><polygon
+   id="polygon319"
+   points="257.084,171.24 257.065,194.333 429.651,194.699 429.677,171.604 "
+   style="fill:#666666"
+   transform="matrix(1,0,0,1.0149612,0,-2.5619556)" /><rect
+   id="rect25"
+   x="301.449"
+   y="466.471"
+   fill="#FFFFCC"
+   width="42.83"
+   height="40.492"
+   style="fill:none;stroke:none" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<text
+   id="text63"
+   transform="matrix(1 0 0 1 34.5088 150.1079)"
+   font-family="'ArialMT'"
+   font-size="11.4257">%t7</text>
+
+
+
+
+
+
+
+
+<text
+   id="text67"
+   transform="matrix(1 0 0 1 42.7671 166.645)"
+   font-family="'ArialMT'"
+   font-size="11.4257">%t8</text>
+
+
+
+
+
+
+
+
+<text
+   id="text71"
+   transform="matrix(1 0 0 1 836.4829 167.5483)"
+   font-family="'ArialMT'"
+   font-size="11.2754">%t19</text>
+
+
+
+
+
+
+
+
+<text
+   id="text73"
+   transform="matrix(1 0 0 1 59.9097 188.3989)"
+   font-family="'ArialMT'"
+   font-size="11.4257">1</text>
+
+
+
+
+
+
+
+
+<text
+   id="text75"
+   transform="matrix(1 0 0 1 548.7632 188.3989)"
+   font-family="'ArialMT'"
+   font-size="11.4257">3</text>
+
+
+
+
+
+
+
+
+<text
+   id="text77"
+   transform="matrix(1 0 0 1 59.9097 211.2505)"
+   font-family="'ArialMT'"
+   font-size="11.4257">2</text>
+
+
+
+
+
+
+
+
+<text
+   id="text79"
+   transform="matrix(1 0 0 1 548.7632 211.2505)"
+   font-family="'ArialMT'"
+   font-size="11.4257">6</text>
+
+
+
+
+
+
+
+
+<text
+   id="text81"
+   transform="matrix(1 0 0 1 59.9097 234.103)"
+   font-family="'ArialMT'"
+   font-size="11.4257">4</text>
+
+
+
+
+
+
+
+
+<text
+   id="text83"
+   transform="matrix(1 0 0 1 548.7632 234.103)"
+   font-family="'ArialMT'"
+   font-size="11.4257">9</text>
+
+
+
+
+
+
+
+
+<text
+   id="text85"
+   transform="matrix(1 0 0 1 59.9097 256.9546)"
+   font-family="'ArialMT'"
+   font-size="11.4257">5</text>
+
+
+
+
+
+
+
+
+<text
+   id="text89"
+   transform="matrix(1 0 0 1 59.9097 279.8062)"
+   font-family="'ArialMT'"
+   font-size="11.4257">7</text>
+
+
+
+
+
+
+
+
+<text
+   id="text93"
+   transform="matrix(1 0 0 1 59.9097 302.6577)"
+   font-family="'ArialMT'"
+   font-size="11.4257">8</text>
+
+
+
+
+
+
+
+
+<text
+   id="text97"
+   transform="matrix(1 0 0 1 14.5088 327.5073)"
+   font-family="'ArialMT'"
+   font-size="11.4257">%t35 %t21</text>
+
+
+
+
+
+
+
+
+<text
+   id="text101"
+   transform="matrix(1 0 0 1 14.5088 349.4585)"
+   font-family="'ArialMT'"
+   font-size="11.4257">%t35 %t20</text>
+
+
+
+
+
+
+
+
+<text
+   id="text103"
+   transform="matrix(1 0 0 1 37.6826 371.4048)"
+   font-family="'ArialMT'"
+   font-size="11.4257">%t22</text>
+
+
+
+
+
+
+
+
+<text
+   id="text105"
+   transform="matrix(1 0 0 1 37.6826 393.356)"
+   font-family="'ArialMT'"
+   font-size="11.4257">%t21</text>
+
+
+
+
+
+
+
+
+<text
+   id="text107"
+   transform="matrix(1 0 0 1 35.7881 124.8511)"
+   font-family="'ArialMT'"
+   font-size="11.4257">%t6</text>
+
+
+
+
+
+
+
+
+<text
+   id="text111"
+   transform="matrix(1 0 0 1 144.0732 661.6099)"
+   font-family="'ArialMT'"
+   font-size="12.6284">%t19:</text>
+
+
+
+
+
+
+
+
+<text
+   id="text113"
+   transform="matrix(1 0 0 1 159.1069 500.4468)"
+   font-family="'ArialMT'"
+   font-size="12.6284">%t19:</text>
+
+
+
+
+
+
+
+
+<text
+   id="text115"
+   transform="matrix(1 0 0 1 417.8403 571.1069)"
+   font-family="'ArialMT'"
+   font-size="12.6284">%t19:</text>
+
+
+
+
+
+
+
+
+<text
+   id="text117"
+   transform="matrix(1 0 0 1 82.5859 390.3999)"
+   font-family="'ArialMT'"
+   font-size="8.7697">This pool</text>
+
+
+
+
+
+
+
+
+<text
+   id="text119"
+   transform="matrix(1 0 0 1 435.4307 166.3481)"
+   font-family="'ArialMT'"
+   font-size="11.2754">%t19</text>
+
+
+
+
+
+
+
+
+<rect
+   id="rect121"
+   x="83.339"
+   y="105.01"
+   width="347.883"
+   height="2.405" />
+<rect
+   id="rect123"
+   x="83.339"
+   y="137.181"
+   width="347.883"
+   height="2.405" />
+<rect
+   id="rect125"
+   x="83.339"
+   y="153.719"
+   width="405.01"
+   height="2.405" />
+<rect
+   id="rect127"
+   x="83.339"
+   y="170.255"
+   width="405.01"
+   height="2.406" />
+<rect
+   id="rect129"
+   x="83.339"
+   y="194.611"
+   width="84.488"
+   height="1.203" />
+<rect
+   id="rect131"
+   x="170.235"
+   y="194.611"
+   width="84.488"
+   height="1.203" />
+<polyline
+   id="polyline133"
+   points="257.131,194.611 341.622,194.611 341.622,195.814 257.131,195.814 " />
+<rect
+   id="rect135"
+   x="344.027"
+   y="194.611"
+   width="84.791"
+   height="1.203" />
+<rect
+   id="rect137"
+   x="431.218"
+   y="194.01"
+   width="57.133"
+   height="2.405" />
+<rect
+   id="rect139"
+   x="572.189"
+   y="194.611"
+   width="84.795"
+   height="1.203" />
+<polyline
+   id="polyline141"
+   points="659.384,194.611 744.177,194.611 744.177,195.814 659.384,195.814 " />
+<rect
+   id="rect143"
+   x="746.585"
+   y="194.611"
+   width="84.791"
+   height="1.203" />
+<rect
+   id="rect145"
+   x="83.339"
+   y="217.461"
+   width="84.488"
+   height="1.203" />
+<rect
+   id="rect147"
+   x="170.235"
+   y="217.461"
+   width="84.488"
+   height="1.203" />
+<polyline
+   id="polyline149"
+   points="257.131,217.461 341.622,217.461 341.622,218.664 257.131,218.664 " />
+<rect
+   id="rect151"
+   x="344.027"
+   y="217.461"
+   width="84.791"
+   height="1.203" />
+<rect
+   id="rect153"
+   x="431.218"
+   y="216.86"
+   width="57.133"
+   height="2.406" />
+<rect
+   id="rect155"
+   x="572.189"
+   y="217.461"
+   width="84.795"
+   height="1.203" />
+<polyline
+   id="polyline157"
+   points="659.384,217.461 744.177,217.461 744.177,218.664 659.384,218.664 " />
+<rect
+   id="rect159"
+   x="746.585"
+   y="217.461"
+   width="84.791"
+   height="1.203" />
+<rect
+   id="rect161"
+   x="83.339"
+   y="240.314"
+   width="84.488"
+   height="1.203" />
+<rect
+   id="rect163"
+   x="170.235"
+   y="240.314"
+   width="84.488"
+   height="1.203" />
+<polyline
+   id="polyline165"
+   points="257.131,240.314 341.622,240.314 341.622,241.517 257.131,241.517 " />
+<rect
+   id="rect167"
+   x="344.027"
+   y="240.314"
+   width="84.791"
+   height="1.203" />
+<rect
+   id="rect169"
+   x="431.218"
+   y="239.713"
+   width="57.133"
+   height="2.405" />
+<rect
+   id="rect171"
+   x="83.339"
+   y="263.164"
+   width="84.488"
+   height="1.203" />
+<rect
+   id="rect173"
+   x="170.235"
+   y="263.164"
+   width="84.488"
+   height="1.203" />
+<polyline
+   id="polyline175"
+   points="257.131,263.164 341.622,263.164 341.622,264.367 257.131,264.367 " />
+<rect
+   id="rect177"
+   x="344.027"
+   y="263.164"
+   width="84.791"
+   height="1.203" />
+<rect
+   id="rect179"
+   x="431.218"
+   y="262.563"
+   width="57.133"
+   height="2.405" />
+<rect
+   id="rect181"
+   x="83.339"
+   y="286.017"
+   width="84.488"
+   height="1.203" />
+<rect
+   id="rect183"
+   x="170.235"
+   y="286.017"
+   width="84.488"
+   height="1.203" />
+<polyline
+   id="polyline185"
+   points="257.131,286.017 341.622,286.017 341.622,287.22 257.131,287.22 " />
+<rect
+   id="rect187"
+   x="344.027"
+   y="286.017"
+   width="84.791"
+   height="1.203" />
+<rect
+   id="rect189"
+   x="431.218"
+   y="285.416"
+   width="57.133"
+   height="2.406" />
+<rect
+   id="rect191"
+   x="83.339"
+   y="308.266"
+   width="405.01"
+   height="2.406" />
+<rect
+   id="rect193"
+   x="83.339"
+   y="331.119"
+   width="347.883"
+   height="2.405" />
+<rect
+   id="rect195"
+   x="80.936"
+   y="105.01"
+   width="2.405"
+   height="294.362" />
+<rect
+   id="rect197"
+   x="211.428"
+   y="377.422"
+   width="2.407"
+   height="21.949" />
+<rect
+   id="rect199"
+   x="254.725"
+   y="107.415"
+   width="2.412"
+   height="291.957" />
+<rect
+   id="rect201"
+   x="428.815"
+   y="107.415"
+   width="2.406"
+   height="291.957" />
+<rect
+   id="rect203"
+   x="485.947"
+   y="156.124"
+   width="2.405"
+   height="154.548" />
+<rect
+   id="rect205"
+   x="40.925"
+   y="465.872"
+   width="513.217"
+   height="1.203" />
+<rect
+   id="rect207"
+   x="40.192"
+   y="425.581"
+   width="1.203"
+   height="41.494" />
+<rect
+   id="rect209"
+   x="78.128"
+   y="426.782"
+   width="1.203"
+   height="40.291" />
+<rect
+   id="rect211"
+   x="40.925"
+   y="506.163"
+   width="513.217"
+   height="1.201" />
+<rect
+   id="rect213"
+   x="40.457"
+   y="546.452"
+   width="260.04"
+   height="1.205" />
+<rect
+   id="rect215"
+   x="700.574"
+   y="310.671"
+   width="2.406"
+   height="22.851" />
+<rect
+   id="rect217"
+   x="40.192"
+   y="506.163"
+   width="1.203"
+   height="41.492" />
+<rect
+   id="rect219"
+   x="78.128"
+   y="507.364"
+   width="1.203"
+   height="40.291" />
+<rect
+   id="rect221"
+   x="255.46"
+   y="426.782"
+   width="1.203"
+   height="120.871" />
+<rect
+   id="rect223"
+   x="300.428"
+   y="426.782"
+   width="1.203"
+   height="120.871" />
+<rect
+   id="rect225"
+   x="40.457"
+   y="586.743"
+   width="261.175"
+   height="1.203" />
+<rect
+   id="rect227"
+   x="343.375"
+   y="467.075"
+   width="1.202"
+   height="40.289" />
+<rect
+   id="rect229"
+   x="40.192"
+   y="586.743"
+   width="1.203"
+   height="41.494" />
+<rect
+   id="rect231"
+   x="78.128"
+   y="587.946"
+   width="1.203"
+   height="40.291" />
+<rect
+   id="rect233"
+   x="40.707073"
+   y="667.32501"
+   width="513.43494"
+   height="1.201" />
+<rect
+   id="rect235"
+   x="40.192"
+   y="667.325"
+   width="1.203"
+   height="41.492" />
+<rect
+   id="rect237"
+   x="167.829"
+   y="107.415"
+   width="2.405"
+   height="291.957" />
+<rect
+   id="rect239"
+   x="300.428"
+   y="587.946"
+   width="1.203"
+   height="120.871" />
+<rect
+   id="rect241"
+   x="341.622"
+   y="107.415"
+   width="2.405"
+   height="291.957" />
+<rect
+   id="rect243"
+   x="495.817"
+   y="467.075"
+   width="1.204"
+   height="201.453" />
+<rect
+   id="rect245"
+   x="569.785"
+   y="105.01"
+   width="2.404"
+   height="228.514" />
+<rect
+   id="rect247"
+   x="656.98"
+   y="107.415"
+   width="2.406"
+   height="226.109" />
+<rect
+   id="rect249"
+   x="744.177"
+   y="107.415"
+   width="2.408"
+   height="226.109" />
+<rect
+   id="rect251"
+   x="831.375"
+   y="107.415"
+   width="2.408"
+   height="226.109" />
+<rect
+   id="rect253"
+   x="552.947"
+   y="467.075"
+   width="1.203"
+   height="201.453" />
+<rect
+   id="rect255"
+   x="885.794"
+   y="156.124"
+   width="2.408"
+   height="85.993" />
+<rect
+   id="rect257"
+   x="613.384"
+   y="310.671"
+   width="2.408"
+   height="22.851" />
+<rect
+   id="rect259"
+   x="753.796"
+   y="547.655"
+   width="1.203"
+   height="40.281" />
+<rect
+   id="rect261"
+   x="787.775"
+   y="310.671"
+   width="2.406"
+   height="22.851" />
+<rect
+   id="rect263"
+   x="124.231"
+   y="377.422"
+   width="2.405"
+   height="21.949" />
+<rect
+   id="rect265"
+   x="255.46"
+   y="587.946"
+   width="1.203"
+   height="120.871" />
+<rect
+   id="rect267"
+   x="298.022"
+   y="377.422"
+   width="2.407"
+   height="21.949" />
+<rect
+   id="rect269"
+   x="385.219"
+   y="377.422"
+   width="2.405"
+   height="21.949" />
+<rect
+   id="rect271"
+   x="78.128"
+   y="668.526"
+   width="1.203"
+   height="40.291" />
+<rect
+   id="rect273"
+   x="343.375"
+   y="628.237"
+   width="1.202"
+   height="40.289" />
+<rect
+   id="rect275"
+   x="592.636"
+   y="547.655"
+   width="1.203"
+   height="40.281" />
+<rect
+   id="rect277"
+   x="572.189"
+   y="105.01"
+   width="261.594"
+   height="2.405" />
+<rect
+   id="rect279"
+   x="572.189"
+   y="137.181"
+   width="261.594"
+   height="2.405" />
+<rect
+   id="rect281"
+   x="572.189"
+   y="153.719"
+   width="316.012"
+   height="2.405" />
+<rect
+   id="rect283"
+   x="572.189"
+   y="170.255"
+   width="316.012"
+   height="2.406" />
+<rect
+   id="rect285"
+   x="833.777"
+   y="194.01"
+   width="54.422"
+   height="2.405" />
+<rect
+   id="rect287"
+   x="833.777"
+   y="216.86"
+   width="54.422"
+   height="2.406" />
+<rect
+   id="rect289"
+   x="572.189"
+   y="239.713"
+   width="316.012"
+   height="2.405" />
+<rect
+   id="rect291"
+   x="572.189"
+   y="262.563"
+   width="261.594"
+   height="2.405" />
+<rect
+   id="rect293"
+   x="572.189"
+   y="285.416"
+   width="261.594"
+   height="2.406" />
+<rect
+   id="rect295"
+   x="572.189"
+   y="308.266"
+   width="261.594"
+   height="2.406" />
+<rect
+   id="rect297"
+   x="572.189"
+   y="331.119"
+   width="261.594"
+   height="2.405" />
+<rect
+   id="rect299"
+   x="83.339"
+   y="353.068"
+   width="347.883"
+   height="2.405" />
+<rect
+   id="rect301"
+   x="83.339"
+   y="375.017"
+   width="347.883"
+   height="2.405" />
+<rect
+   id="rect303"
+   x="83.339"
+   y="396.967"
+   width="347.883"
+   height="2.404" />
+<rect
+   id="rect305"
+   x="40.457"
+   y="425.581"
+   width="261.175"
+   height="1.203" />
+<rect
+   id="rect307"
+   x="554.15"
+   y="546.452"
+   width="200.848"
+   height="1.205" />
+<rect
+   id="rect309"
+   x="554.15"
+   y="586.743"
+   width="200.848"
+   height="1.203" />
+<rect
+   id="rect311"
+   x="40.194"
+   y="627.034"
+   width="513.95"
+   height="1.203" />
+<rect
+   id="rect313"
+   x="40.457"
+   y="707.616"
+   width="260.04"
+   height="1.203" />
+
+<text
+   id="text317"
+   transform="matrix(1 0 0 1 759.2095 575.3169)"
+   font-family="'Arial-BoldMT'"
+   font-size="22.5508">1</text>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<polygon
+   id="polygon329"
+   fill="#666666"
+   points="168.452,263.381 168.462,241.521 82.306,241.175 82.297,263.035 " />
+
+
+
+
+
+
+<path
+   id="path343"
+   inkscape:connector-curvature="0"
+   fill="none"
+   stroke="#000000"
+   stroke-width="2.5056"
+   d="M697.542,627.26  h311.838v92.838H697.542V627.26L697.542,627.26z" />
+<path
+   id="path345"
+   inkscape:connector-curvature="0"
+   fill="none"
+   stroke="#000000"
+   stroke-width="1.2528"
+   d="M697.542,627.856  h289.324" />
+<path
+   id="path347"
+   inkscape:connector-curvature="0"
+   fill="none"
+   stroke="#000000"
+   stroke-width="1.2528"
+   d="M697.542,650.786  h309.439" />
+<path
+   id="path349"
+   inkscape:connector-curvature="0"
+   fill="none"
+   stroke="#000000"
+   stroke-width="1.2528"
+   d="M697.542,673.715  h309.439" />
+<path
+   id="path351"
+   inkscape:connector-curvature="0"
+   fill="none"
+   stroke="#000000"
+   stroke-width="1.2528"
+   d="M697.542,696.653  h310.438" />
+<text
+   id="text353"
+   transform="matrix(0.8981 0 0 1 824.8804 620.147)"
+   font-family="'Arial-BoldMT'"
+   font-size="16.5113">%t18</text>
+
+
+
+
+
+
+
+
+<text
+   id="text355"
+   transform="matrix(0.9378 0 0 1 705.9556 644.4009)"
+   font-family="'ArialMT'"
+   font-size="13.7572">1</text>
+
+
+
+
+
+
+
+
+<text
+   id="text357"
+   transform="matrix(0.8981 0 0 1 724.4565 644.2876)"
+   font-family="'ArialMT'"
+   font-size="13.7572">%r1first-s-last-s-club</text>
+
+
+
+
+
+
+
+
+<text
+   id="text359"
+   transform="matrix(0.9378 0 0 1 705.9556 667.3345)"
+   font-family="'ArialMT'"
+   font-size="13.7572">2</text>
+
+
+
+
+
+
+
+
+<text
+   id="text361"
+   transform="matrix(0.8981 0 0 1 724.4565 667.2202)"
+   font-family="'ArialMT'"
+   font-size="13.7572">%r2first-s-last-s-club</text>
+
+
+
+
+
+
+
+
+<text
+   id="text363"
+   transform="matrix(0.9378 0 0 1 705.9556 690.1802)"
+   font-family="'ArialMT'"
+   font-size="13.7572">3</text>
+
+
+
+
+
+
+
+
+<text
+   id="text365"
+   transform="matrix(0.8981 0 0 1 724.4565 690.1548)"
+   font-family="'ArialMT'"
+   font-size="13.7572">%r3first-s-last-s-club</text>
+
+
+
+
+
+
+
+
+<text
+   id="text367"
+   transform="matrix(0.9378 0 0 1 705.9556 713.187)"
+   font-family="'ArialMT'"
+   font-size="13.7572">3</text>
+
+
+
+
+
+
+
+
+<text
+   id="text369"
+   transform="matrix(0.8981 0 0 1 724.4565 713.0845)"
+   font-family="'ArialMT'"
+   font-size="13.7572">%r4first-s-last-s-club</text>
+
+
+
+
+
+
+
+
+<rect
+   id="rect371"
+   x="718.982"
+   y="627.946"
+   width="1.686"
+   height="92.611" />
+<text
+   id="text373"
+   transform="matrix(1 0 0 1 80.498 52.4126)"
+   font-family="'Arial-BoldMT'"
+   font-size="17.5395">%i-competition</text>
+
+
+
+
+
+
+
+
+<text
+   id="text375"
+   transform="matrix(1 0 0 1 80.498 74.3247)"
+   font-family="'Arial-BoldMT'"
+   font-size="17.5395">%i-catname</text>
+
+
+
+
+
+
+
+
+<text
+   id="text377"
+   transform="matrix(1.0292 0 0 1 549.0532 73.8979)"
+   font-family="'Arial-BoldMT'"
+   font-size="17.0424">%i-date</text>
+
+
+
+
+
+
+
+
+<text
+   id="text379"
+   transform="matrix(1.0292 0 0 1 549.0532 51.9858)"
+   font-family="'Arial-BoldMT'"
+   font-size="17.0424">%i-place</text>
+
+
+
+
+
+
+
+
+<text
+   id="text381"
+   transform="matrix(1 0 0 1 218.7202 103.1812)"
+   font-family="'Arial-BoldMT'"
+   font-size="17.5896">POOL A</text>
+
+
+
+
+
+
+
+
+<text
+   id="text383"
+   transform="matrix(1 0 0 1 666.812 103.1812)"
+   font-family="'Arial-BoldMT'"
+   font-size="17.5896">POOL B</text>
+
+
+
+
+
+
+
+
+<image
+   overflow="visible"
+   enable-background="new    "
+   width="604"
+   height="272"
+   id="image385"
+   xlink:href="data:image/jpeg;base64,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"
+   transform="matrix(0.1865 0 0 0.181 926.5249 41.9609)">
 </image>
-<text transform="matrix(1 0 0 1 56.9746 65.8164)" font-family="'ArialMT'" font-size="8">%c1first</text>
-<text transform="matrix(1 0 0 1 56.9746 76.8164)" font-family="'ArialMT'" font-size="8">%c1last</text>
-<text transform="matrix(1 0 0 1 81.6416 90.4316)" font-family="'ArialMT'" font-size="8">%c1grd</text>
-<text transform="matrix(1 0 0 1 56.9746 102.6309)" font-family="'ArialMT'" font-size="6">%c1club</text>
-<text transform="matrix(1 0 0 1 84.6416 247.7656)" font-family="'ArialMT'" font-size="10.69">%c1w</text>
-<text transform="matrix(1 0 0 1 84.6416 230.3145)" font-family="'ArialMT'" font-size="10.69">%c1p</text>
-<text transform="matrix(1 0 0 1 84.6416 265.7656)" font-family="'ArialMT'" font-size="10.69">%c1r</text>
-<text transform="matrix(1 0 0 1 126.9746 65.8164)" font-family="'ArialMT'" font-size="8">%c2first</text>
-<text transform="matrix(1 0 0 1 126.9746 76.8164)" font-family="'ArialMT'" font-size="8">%c2last</text>
-<text transform="matrix(1 0 0 1 151.6416 90.4316)" font-family="'ArialMT'" font-size="8">%c2grd</text>
-<text transform="matrix(1 0 0 1 126.9746 102.6309)" font-family="'ArialMT'" font-size="6">%c2club</text>
-<text transform="matrix(1 0 0 1 154.6416 247.7656)" font-family="'ArialMT'" font-size="10.69">%c2w</text>
-<text transform="matrix(1 0 0 1 154.6416 230.3145)" font-family="'ArialMT'" font-size="10.69">%c2p</text>
-<text transform="matrix(1 0 0 1 154.6416 265.7656)" font-family="'ArialMT'" font-size="10.69">%c2r</text>
-<text transform="matrix(1 0 0 1 195.9746 65.8164)" font-family="'ArialMT'" font-size="8">%c3first</text>
-<text transform="matrix(1 0 0 1 195.9746 76.8164)" font-family="'ArialMT'" font-size="8">%c3last</text>
-<text transform="matrix(1 0 0 1 220.6416 90.4316)" font-family="'ArialMT'" font-size="8">%c3grd</text>
-<text transform="matrix(1 0 0 1 195.9746 102.6309)" font-family="'ArialMT'" font-size="6">%c3club</text>
-<text transform="matrix(1 0 0 1 223.6416 247.7656)" font-family="'ArialMT'" font-size="10.69">%c3w</text>
-<text transform="matrix(1 0 0 1 223.6416 230.3145)" font-family="'ArialMT'" font-size="10.69">%c3p</text>
-<text transform="matrix(1 0 0 1 223.6416 265.7656)" font-family="'ArialMT'" font-size="10.69">%c3r</text>
-<text transform="matrix(1 0 0 1 265.4746 65.8164)" font-family="'ArialMT'" font-size="8">%c4first</text>
-<text transform="matrix(1 0 0 1 265.4746 76.8164)" font-family="'ArialMT'" font-size="8">%c4last</text>
-<text transform="matrix(1 0 0 1 290.1416 90.4316)" font-family="'ArialMT'" font-size="8">%c4grd</text>
-<text transform="matrix(1 0 0 1 265.4746 102.6309)" font-family="'ArialMT'" font-size="6">%c4club</text>
-<text transform="matrix(1 0 0 1 293.1416 247.7656)" font-family="'ArialMT'" font-size="10.69">%c4w</text>
-<text transform="matrix(1 0 0 1 293.1416 230.3145)" font-family="'ArialMT'" font-size="10.69">%c4p</text>
-<text transform="matrix(1 0 0 1 293.1416 265.7656)" font-family="'ArialMT'" font-size="10.69">%c4r</text>
-<text transform="matrix(1 0 0 1 447.9756 65.3164)" font-family="'ArialMT'" font-size="8">%c5first</text>
-<text transform="matrix(1 0 0 1 447.9756 76.3164)" font-family="'ArialMT'" font-size="8">%c5last</text>
-<text transform="matrix(1 0 0 1 471.1416 89.9316)" font-family="'ArialMT'" font-size="8">%c5grd</text>
-<text transform="matrix(1 0 0 1 447.9756 102.1309)" font-family="'ArialMT'" font-size="6">%c5club</text>
-<text transform="matrix(1 0 0 1 474.1416 193.2656)" font-family="'ArialMT'" font-size="10.69">%c5w</text>
-<text transform="matrix(1 0 0 1 474.1416 175.8145)" font-family="'ArialMT'" font-size="10.69">%c5p</text>
-<text transform="matrix(1 0 0 1 474.1416 211.2656)" font-family="'ArialMT'" font-size="10.69">%c5r</text>
-<text transform="matrix(1 0 0 1 516.9756 65.3164)" font-family="'ArialMT'" font-size="8">%c6first</text>
-<text transform="matrix(1 0 0 1 516.9756 76.3164)" font-family="'ArialMT'" font-size="8">%c6last</text>
-<text transform="matrix(1 0 0 1 540.1416 89.9316)" font-family="'ArialMT'" font-size="8">%c6grd</text>
-<text transform="matrix(1 0 0 1 516.9756 102.1309)" font-family="'ArialMT'" font-size="6">%c6club</text>
-<text transform="matrix(1 0 0 1 543.1416 193.2656)" font-family="'ArialMT'" font-size="10.69">%c6w</text>
-<text transform="matrix(1 0 0 1 543.1416 175.8145)" font-family="'ArialMT'" font-size="10.69">%c6p</text>
-<text transform="matrix(1 0 0 1 543.1416 211.2656)" font-family="'ArialMT'" font-size="10.69">%c6r</text>
-<text transform="matrix(1 0 0 1 586.9756 65.3164)" font-family="'ArialMT'" font-size="8">%c7first</text>
-<text transform="matrix(1 0 0 1 586.9756 76.3164)" font-family="'ArialMT'" font-size="8">%c7last</text>
-<text transform="matrix(1 0 0 1 610.1416 89.9316)" font-family="'ArialMT'" font-size="8">%c7grd</text>
-<text transform="matrix(1 0 0 1 586.9756 102.1309)" font-family="'ArialMT'" font-size="6">%c7club</text>
-<text transform="matrix(1 0 0 1 613.1416 193.2656)" font-family="'ArialMT'" font-size="10.69">%c7w</text>
-<text transform="matrix(1 0 0 1 613.1416 175.8145)" font-family="'ArialMT'" font-size="10.69">%c7p</text>
-<text transform="matrix(1 0 0 1 613.1416 211.2656)" font-family="'ArialMT'" font-size="10.69">%c7r</text>
-<text transform="matrix(1 0 0 1 337.1499 120.0313)" font-family="'ArialMT'" font-size="10.69">%m1time</text>
-<text transform="matrix(1 0 0 1 337.1499 139.0313)" font-family="'ArialMT'" font-size="10.69">%m2time</text>
-<text transform="matrix(1 0 0 1 658.6484 120.0313)" font-family="'ArialMT'" font-size="10.69">%m3time</text>
-<text transform="matrix(1 0 0 1 337.1499 158.5313)" font-family="'ArialMT'" font-size="10.69">%m4time</text>
-<text transform="matrix(1 0 0 1 337.1499 176.0313)" font-family="'ArialMT'" font-size="10.69">%m5time</text>
-<text transform="matrix(1 0 0 1 658.6484 139.0313)" font-family="'ArialMT'" font-size="10.69">%m6time</text>
-<text transform="matrix(1 0 0 1 337.1499 194.5313)" font-family="'ArialMT'" font-size="10.69">%m7time</text>
-<text transform="matrix(1 0 0 1 337.1499 212.5313)" font-family="'ArialMT'" font-size="10.69">%m8time</text>
-<text transform="matrix(1 0 0 1 658.6484 157.5313)" font-family="'ArialMT'" font-size="10.69">%m9time</text>
-<text transform="matrix(1 0 0 1 126.3374 281.793)" font-family="'ArialMT'" font-size="7">This pool</text>
-<text transform="matrix(1 0 0 1 195.8374 281.793)" font-family="'ArialMT'" font-size="7">This pool</text>
-<text transform="matrix(1 0 0 1 264.8374 281.793)" font-family="'ArialMT'" font-size="7">This pool</text>
-<text transform="matrix(1 0 0 1 446.8369 228.293)" font-family="'ArialMT'" font-size="7">This pool</text>
-<text transform="matrix(1 0 0 1 516.3369 228.293)" font-family="'ArialMT'" font-size="7">This pool</text>
-<text transform="matrix(1 0 0 1 586.3369 228.293)" font-family="'ArialMT'" font-size="7">This pool</text>
-<rect id="m1l-1" x="74.667" y="112.16" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="0.25" width="10" height="10"/>
-<text transform="matrix(1 0 0 1 84.6665 120.1602)" font-family="'MyriadPro-Regular'" font-size="12">%m1p1-1==0'LOSS'</text>
-<rect id="m1l-2" x="143.667" y="112.16" fill="#00CCFF" stroke="#00CCFF" stroke-width="0.25" width="10" height="10"/>
-<text transform="matrix(1 0 0 1 153.6665 120.1602)" font-family="'MyriadPro-Regular'" font-size="12">%m1p2-1==0'LOSS'</text>
-<rect id="m2l-1" x="214.667" y="131.16" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="0.25" width="10" height="10"/>
-<text transform="matrix(1 0 0 1 224.6665 139.1602)" font-family="'MyriadPro-Regular'" font-size="12">%m2p1-1==0'LOSS'</text>
-<rect id="m2l-2" x="280.667" y="130.16" fill="#00CCFF" stroke="#00CCFF" stroke-width="0.25" width="10" height="10"/>
-<text transform="matrix(1 0 0 1 290.6665 138.1602)" font-family="'MyriadPro-Regular'" font-size="12">%m2p2-1==0'LOSS'</text>
-<rect id="m4l-2" x="214.667" y="149.16" fill="#00CCFF" stroke="#00CCFF" stroke-width="0.25" width="10" height="10"/>
-<text transform="matrix(1 0 0 1 224.6665 157.1602)" font-family="'MyriadPro-Regular'" font-size="12">%m4p2-1==0'LOSS'</text>
-<rect id="m5l-2" x="280.667" y="167.66" fill="#00CCFF" stroke="#00CCFF" stroke-width="0.25" width="10" height="10"/>
-<text transform="matrix(1 0 0 1 290.6665 175.6602)" font-family="'MyriadPro-Regular'" font-size="12">%m5p2-1==0'LOSS'</text>
-<rect id="m7l-2" x="280.667" y="185.16" fill="#00CCFF" stroke="#00CCFF" stroke-width="0.25" width="10" height="10"/>
-<text transform="matrix(1 0 0 1 290.6665 193.1602)" font-family="'MyriadPro-Regular'" font-size="12">%m7p2-1==0'LOSS'</text>
-<rect id="m8l-2" x="214.667" y="204.66" fill="#00CCFF" stroke="#00CCFF" stroke-width="0.25" width="10" height="10"/>
-<text transform="matrix(1 0 0 1 224.6665 212.6602)" font-family="'MyriadPro-Regular'" font-size="12">%m8p2-1==0'LOSS'</text>
-<rect id="m3l-2" x="533.668" y="112.66" fill="#00CCFF" stroke="#00CCFF" stroke-width="0.25" width="10" height="10"/>
-<text transform="matrix(1 0 0 1 543.667 120.6602)" font-family="'MyriadPro-Regular'" font-size="12">%m3p2-1==0'LOSS'</text>
-<rect id="m6l-2" x="602.168" y="131.66" fill="#00CCFF" stroke="#00CCFF" stroke-width="0.25" width="10" height="10"/>
-<text transform="matrix(1 0 0 1 612.167 139.6602)" font-family="'MyriadPro-Regular'" font-size="12">%m6p2-1==0'LOSS'</text>
-<rect id="m9l-2" x="602.168" y="149.16" fill="#00CCFF" stroke="#00CCFF" stroke-width="0.25" width="10" height="10"/>
-<text transform="matrix(1 0 0 1 612.167 157.1602)" font-family="'MyriadPro-Regular'" font-size="12">%m9p2-1==0'LOSS'</text>
-<rect id="m3l-1" x="74.667" y="149.16" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="0.25" width="10" height="10"/>
-<text transform="matrix(1 0 0 1 84.6665 157.1602)" font-family="'MyriadPro-Regular'" font-size="12">%m4p1-1==0'LOSS'</text>
-<rect id="m5l-1" x="143.667" y="167.66" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="0.25" width="10" height="10"/>
-<text transform="matrix(1 0 0 1 153.6665 175.6602)" font-family="'MyriadPro-Regular'" font-size="12">%m5p1-1==0'LOSS'</text>
-<rect id="m6l-1" x="461.168" y="130.66" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="0.25" width="10" height="10"/>
-<text transform="matrix(1 0 0 1 471.167 138.6602)" font-family="'MyriadPro-Regular'" font-size="12">%m6p1-1==0'LOSS'</text>
-<rect id="m7l-1" x="74.667" y="186.16" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="0.25" width="10" height="10"/>
-<text transform="matrix(1 0 0 1 84.6665 194.1602)" font-family="'MyriadPro-Regular'" font-size="12">%m7p1-1==0'LOSS'</text>
-<rect id="m8l-1" x="143.667" y="204.16" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="0.25" width="10" height="10"/>
-<text transform="matrix(1 0 0 1 153.6665 213.1602)" font-family="'MyriadPro-Regular'" font-size="12">%m8p1-1==0'LOSS'</text>
-<rect id="m9l-1" x="533.668" y="148.66" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="0.25" width="10" height="10"/>
-<text transform="matrix(1 0 0 1 543.667 157.1602)" font-family="'MyriadPro-Regular'" font-size="12">%m9p1-1==0'LOSS'</text>
-<rect id="m4l-1" x="461.168" y="113.16" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="0.25" width="10" height="10"/>
-<text transform="matrix(1 0 0 1 471.167 121.1602)" font-family="'MyriadPro-Regular'" font-size="12">%m3p1-1==0'LOSS'</text>
-<rect id="m10l-1" x="196.088" y="324.522" fill="#FFFFCC" stroke="#FFFFCC" stroke-width="0.25" width="10" height="10"/>
-<text transform="matrix(1 0 0 1 206.0874 330.5215)" font-family="'MyriadPro-Regular'" font-size="9">%m10p1-1==0'LOSS'</text>
-<text transform="matrix(1 0 0 1 57.5459 330.248)" font-family="'ArialMT'" font-size="9">%m10-1-hm1-first-s-last</text>
-<text transform="matrix(1 0 0 1 24.7749 330.248)" font-family="'ArialMT'" font-size="9">%m10-1-grd</text>
-<text transform="matrix(1 0 0 1 57.5459 352.6436)" font-family="'ArialMT'" font-size="8">%m10-1-hm1-club</text>
-<text transform="matrix(1 0 0 1 197.1499 363.3643)" font-family="'ArialMT'" font-size="10.69">%m10time</text>
-<rect id="m10l-2" x="196.088" y="388.565" fill="#00CCFF" stroke="#00CCFF" stroke-width="0.25" width="10" height="10"/>
-<text transform="matrix(1 0 0 1 206.0874 394.5645)" font-family="'MyriadPro-Regular'" font-size="9">%m10p2-1==0'LOSS'</text>
-<text transform="matrix(1 0 0 1 57.5459 394.293)" font-family="'ArialMT'" font-size="9">%m10-2-hm1-first-s-last</text>
-<text transform="matrix(1 0 0 1 24.7749 394.293)" font-family="'ArialMT'" font-size="9">%m10-2-grd</text>
-<text transform="matrix(1 0 0 1 57.5459 415.8096)" font-family="'ArialMT'" font-size="8">%m10-2-hm1-club</text>
-<rect id="m11l-1" x="196.088" y="452.022" fill="#FFFFCC" stroke="#FFFFCC" stroke-width="0.25" width="10" height="10"/>
-<text transform="matrix(1 0 0 1 206.0874 458.0215)" font-family="'MyriadPro-Regular'" font-size="9">%m11p1-1==0'LOSS'</text>
-<text transform="matrix(1 0 0 1 58.0459 457.748)" font-family="'ArialMT'" font-size="9">%m11-1-hm1-first-s-last</text>
-<text transform="matrix(1 0 0 1 25.2749 457.748)" font-family="'ArialMT'" font-size="9">%m11-1-grd</text>
-<text transform="matrix(1 0 0 1 58.0459 480.1436)" font-family="'ArialMT'" font-size="8">%m11-1-hm1-club</text>
-<text transform="matrix(1 0 0 1 197.6499 489.8643)" font-family="'ArialMT'" font-size="10.69">%m11time</text>
-<rect id="m11l-2" x="196.088" y="516.065" fill="#00CCFF" stroke="#00CCFF" stroke-width="0.25" width="10" height="10"/>
-<text transform="matrix(1 0 0 1 206.0874 522.0645)" font-family="'MyriadPro-Regular'" font-size="9">%m11p2-1==0'LOSS'</text>
-<text transform="matrix(1 0 0 1 58.0459 521.793)" font-family="'ArialMT'" font-size="9">%m11-2-hm1-first-s-last</text>
-<text transform="matrix(1 0 0 1 25.2749 521.793)" font-family="'ArialMT'" font-size="9">%m11-2-grd</text>
-<text transform="matrix(1 0 0 1 58.0459 544.3086)" font-family="'ArialMT'" font-size="8">%m11-2-hm1-club</text>
-<rect id="m12l-1" x="390.089" y="357.022" fill="#FFFFCC" stroke="#FFFFCC" stroke-width="0.25" width="10" height="10"/>
-<text transform="matrix(1 0 0 1 400.0874 363.0215)" font-family="'MyriadPro-Regular'" font-size="9">%m12p1-1==0'LOSS'</text>
-<text transform="matrix(1 0 0 1 265.5459 362.748)" font-family="'ArialMT'" font-size="9">%m12-1-hm1-first-s-last</text>
-<text transform="matrix(1 0 0 1 232.7749 362.748)" font-family="'ArialMT'" font-size="9">%m12-1-grd</text>
-<text transform="matrix(1 0 0 1 265.5459 384.1436)" font-family="'ArialMT'" font-size="8">%m12-1-hm1-club</text>
-<text transform="matrix(1 0 0 1 388.1499 426.8643)" font-family="'ArialMT'" font-size="10.69">%m12time</text>
-<rect id="m12l-2" x="395.089" y="484.065" fill="#00CCFF" stroke="#00CCFF" stroke-width="0.25" width="10" height="10"/>
-<text transform="matrix(1 0 0 1 405.0874 490.0645)" font-family="'MyriadPro-Regular'" font-size="9">%m12p2-1==0'LOSS'</text>
-<text transform="matrix(1 0 0 1 266.5459 489.793)" font-family="'ArialMT'" font-size="9">%m12-2-hm1-first-s-last</text>
-<text transform="matrix(1 0 0 1 233.7749 489.793)" font-family="'ArialMT'" font-size="9">%m12-2-grd</text>
-<text transform="matrix(1 0 0 1 266.5459 512.8086)" font-family="'ArialMT'" font-size="8">%m12-2-hm1-club</text>
-<text transform="matrix(1 0 0 1 474.0869 426.5762)" font-family="'ArialMT'" font-size="9">%m12-winner-first-s-last</text>
-<text transform="matrix(1 0 0 1 474.0869 449.2422)" font-family="'ArialMT'" font-size="8">%m12-winner-club</text>
-<text transform="matrix(1 0 0 1 434.6924 426.1934)" font-family="'ArialMT'" font-size="9">%m12-winner-grd</text>
-<text transform="matrix(1 0 0 1 0 333.0352)" font-family="'Arial-BoldMT'" font-size="14.04">A1</text>
-<text transform="matrix(1 0 0 1 0 523.0352)" font-family="'Arial-BoldMT'" font-size="14.04">A2</text>
-<text transform="matrix(1 0 0 1 0 396.0352)" font-family="'Arial-BoldMT'" font-size="14.04">B2</text>
-<text transform="matrix(1 0 0 1 0 460.0352)" font-family="'Arial-BoldMT'" font-size="14.04">B1</text>
+<text
+   id="text387"
+   transform="translate(83.3843,119.8208)"
+   font-size="10.0226"
+   style="font-size:10.02260017px;font-family:ArialMT">%c1first</text>
+
+
+
+
+
+
+
+
+<text
+   id="text389"
+   transform="translate(83.3843,133.6011)"
+   font-size="10.0226"
+   style="font-size:10.02260017px;font-family:ArialMT">%c1last</text>
+
+
+
+
+
+
+
+
+<text
+   id="text391"
+   transform="translate(114.2876,150.6587)"
+   font-size="10.0226"
+   style="font-size:10.02260017px;font-family:ArialMT">%c1grd</text>
+
+
+
+
+
+
+
+
+<text
+   id="text393"
+   transform="translate(83.3843,165.9419)"
+   font-size="7.5169"
+   style="font-size:7.51690006px;font-family:ArialMT">%c1club</text>
+
+
+
+
+
+
+
+
+<text
+   id="text395"
+   transform="matrix(1 0 0 1 118.0459 347.77)"
+   font-family="'ArialMT'"
+   font-size="13.3926">%c1w</text>
+
+
+
+
+
+
+
+
+<text
+   id="text397"
+   transform="matrix(1 0 0 1 118.0459 325.9067)"
+   font-family="'ArialMT'"
+   font-size="13.3926">%c1p</text>
+
+
+
+
+
+
+
+
+<text
+   id="text399"
+   transform="matrix(1 0 0 1 118.0459 370.3208)"
+   font-family="'ArialMT'"
+   font-size="13.3926">%c1r</text>
+
+
+
+
+
+
+
+
+<text
+   id="text401"
+   transform="translate(171.0815,119.8208)"
+   font-size="10.0226"
+   style="font-size:10.02260017px;font-family:ArialMT">%c2first</text>
+
+
+
+
+
+
+
+
+<text
+   id="text403"
+   transform="translate(171.0815,133.6011)"
+   font-size="10.0226"
+   style="font-size:10.02260017px;font-family:ArialMT">%c2last</text>
+
+
+
+
+
+
+
+
+<text
+   id="text405"
+   transform="translate(201.9849,150.6587)"
+   font-size="10.0226"
+   style="font-size:10.02260017px;font-family:ArialMT">%c2grd</text>
+
+
+
+
+
+
+
+
+<text
+   id="text407"
+   transform="translate(171.0815,165.9419)"
+   font-size="7.5169"
+   style="font-size:7.51690006px;font-family:ArialMT">%c2club</text>
+
+
+
+
+
+
+
+
+<text
+   id="text409"
+   transform="matrix(1 0 0 1 205.7432 347.77)"
+   font-family="'ArialMT'"
+   font-size="13.3926">%c2w</text>
+
+
+
+
+
+
+
+
+<text
+   id="text411"
+   transform="matrix(1 0 0 1 205.7432 325.9067)"
+   font-family="'ArialMT'"
+   font-size="13.3926">%c2p</text>
+
+
+
+
+
+
+
+
+<text
+   id="text413"
+   transform="matrix(1 0 0 1 205.7432 370.3208)"
+   font-family="'ArialMT'"
+   font-size="13.3926">%c2r</text>
+
+
+
+
+
+
+
+
+<text
+   id="text415"
+   transform="translate(257.5259,119.8208)"
+   font-size="10.0226"
+   style="font-size:10.02260017px;font-family:ArialMT">%c3first</text>
+
+
+
+
+
+
+
+
+<text
+   id="text417"
+   transform="translate(257.5259,133.6011)"
+   font-size="10.0226"
+   style="font-size:10.02260017px;font-family:ArialMT">%c3last</text>
+
+
+
+
+
+
+
+
+<text
+   id="text419"
+   transform="translate(288.4292,150.6587)"
+   font-size="10.0226"
+   style="font-size:10.02260017px;font-family:ArialMT">%c3grd</text>
+
+
+
+
+
+
+
+
+<text
+   id="text421"
+   transform="translate(257.5259,165.9419)"
+   font-size="7.5169"
+   style="font-size:7.51690006px;font-family:ArialMT">%c3club</text>
+
+
+
+
+
+
+
+
+<text
+   id="text423"
+   transform="matrix(1 0 0 1 292.188 347.77)"
+   font-family="'ArialMT'"
+   font-size="13.3926">%c3w</text>
+
+
+
+
+
+
+
+
+<text
+   id="text425"
+   transform="matrix(1 0 0 1 292.188 325.9067)"
+   font-family="'ArialMT'"
+   font-size="13.3926">%c3p</text>
+
+
+
+
+
+
+
+
+<text
+   id="text427"
+   transform="matrix(1 0 0 1 292.188 370.3208)"
+   font-family="'ArialMT'"
+   font-size="13.3926">%c3r</text>
+
+
+
+
+
+
+
+
+<text
+   id="text429"
+   transform="translate(344.5972,119.8208)"
+   font-size="10.0226"
+   style="font-size:10.02260017px;font-family:ArialMT">%c4first</text>
+
+
+
+
+
+
+
+
+<text
+   id="text431"
+   transform="translate(344.5972,133.6011)"
+   font-size="10.0226"
+   style="font-size:10.02260017px;font-family:ArialMT">%c4last</text>
+
+
+
+
+
+
+
+
+<text
+   id="text433"
+   transform="translate(375.5005,150.6587)"
+   font-size="10.0226"
+   style="font-size:10.02260017px;font-family:ArialMT">%c4grd</text>
+
+
+
+
+
+
+
+
+<text
+   id="text435"
+   transform="translate(344.5972,165.9419)"
+   font-size="7.5169"
+   style="font-size:7.51690006px;font-family:ArialMT">%c4club</text>
+
+
+
+
+
+
+
+
+<text
+   id="text437"
+   transform="matrix(1 0 0 1 379.2588 347.77)"
+   font-family="'ArialMT'"
+   font-size="13.3926">%c4w</text>
+
+
+
+
+
+
+
+
+<text
+   id="text439"
+   transform="matrix(1 0 0 1 379.2588 325.9067)"
+   font-family="'ArialMT'"
+   font-size="13.3926">%c4p</text>
+
+
+
+
+
+
+
+
+<text
+   id="text441"
+   transform="matrix(1 0 0 1 379.2588 370.3208)"
+   font-family="'ArialMT'"
+   font-size="13.3926">%c4r</text>
+
+
+
+
+
+
+
+
+<text
+   id="text443"
+   transform="translate(573.2378,119.1938)"
+   font-size="10.0226"
+   style="font-size:10.02260017px;font-family:ArialMT">%c5first</text>
+
+
+
+
+
+
+
+
+<text
+   id="text445"
+   transform="translate(573.2378,132.9751)"
+   font-size="10.0226"
+   style="font-size:10.02260017px;font-family:ArialMT">%c5last</text>
+
+
+
+
+
+
+
+
+<text
+   id="text447"
+   transform="translate(602.2612,150.0327)"
+   font-size="10.0226"
+   style="font-size:10.02260017px;font-family:ArialMT">%c5grd</text>
+
+
+
+
+
+
+
+
+<text
+   id="text449"
+   transform="translate(573.2378,165.3159)"
+   font-size="7.5169"
+   style="font-size:7.51690006px;font-family:ArialMT">%c5club</text>
+
+
+
+
+
+
+
+
+<text
+   id="text451"
+   transform="matrix(1 0 0 1 606.019 279.4917)"
+   font-family="'ArialMT'"
+   font-size="13.3926">%c5w</text>
+
+
+
+
+
+
+
+
+<text
+   id="text453"
+   transform="matrix(1 0 0 1 606.019 257.6284)"
+   font-family="'ArialMT'"
+   font-size="13.3926">%c5p</text>
+
+
+
+
+
+
+
+
+<text
+   id="text455"
+   transform="matrix(1 0 0 1 606.019 302.0415)"
+   font-family="'ArialMT'"
+   font-size="13.3926">%c5r</text>
+
+
+
+
+
+
+
+
+<text
+   id="text457"
+   transform="translate(659.6831,119.1938)"
+   font-size="10.0226"
+   style="font-size:10.02260017px;font-family:ArialMT">%c6first</text>
+
+
+
+
+
+
+
+
+<text
+   id="text459"
+   transform="translate(659.6831,132.9751)"
+   font-size="10.0226"
+   style="font-size:10.02260017px;font-family:ArialMT">%c6last</text>
+
+
+
+
+
+
+
+
+<text
+   id="text461"
+   transform="translate(688.7046,150.0327)"
+   font-size="10.0226"
+   style="font-size:10.02260017px;font-family:ArialMT">%c6grd</text>
+
+
+
+
+
+
+
+
+<text
+   id="text463"
+   transform="translate(659.6831,165.3159)"
+   font-size="7.5169"
+   style="font-size:7.51690006px;font-family:ArialMT">%c6club</text>
+
+
+
+
+
+
+
+
+<text
+   id="text465"
+   transform="matrix(1 0 0 1 692.4644 279.4917)"
+   font-family="'ArialMT'"
+   font-size="13.3926">%c6w</text>
+
+
+
+
+
+
+
+
+<text
+   id="text467"
+   transform="matrix(1 0 0 1 692.4644 257.6284)"
+   font-family="'ArialMT'"
+   font-size="13.3926">%c6p</text>
+
+
+
+
+
+
+
+
+<text
+   id="text469"
+   transform="matrix(1 0 0 1 692.4644 302.0415)"
+   font-family="'ArialMT'"
+   font-size="13.3926">%c6r</text>
+
+
+
+
+
+
+
+
+<text
+   id="text471"
+   transform="translate(747.3804,119.1938)"
+   font-size="10.0226"
+   style="font-size:10.02260017px;font-family:ArialMT">%c7first</text>
+
+
+
+
+
+
+
+
+<text
+   id="text473"
+   transform="translate(747.3804,132.9751)"
+   font-size="10.0226"
+   style="font-size:10.02260017px;font-family:ArialMT">%c7last</text>
+
+
+
+
+
+
+
+
+<text
+   id="text475"
+   transform="translate(776.4019,150.0327)"
+   font-size="10.0226"
+   style="font-size:10.02260017px;font-family:ArialMT">%c7grd</text>
+
+
+
+
+
+
+
+
+<text
+   id="text477"
+   transform="translate(747.3804,165.3159)"
+   font-size="7.5169"
+   style="font-size:7.51690006px;font-family:ArialMT">%c7club</text>
+
+
+
+
+
+
+
+
+<text
+   id="text479"
+   transform="matrix(1 0 0 1 780.1616 279.4917)"
+   font-family="'ArialMT'"
+   font-size="13.3926">%c7w</text>
+
+
+
+
+
+
+
+
+<text
+   id="text481"
+   transform="matrix(1 0 0 1 780.1616 257.6284)"
+   font-family="'ArialMT'"
+   font-size="13.3926">%c7p</text>
+
+
+
+
+
+
+
+
+<text
+   id="text483"
+   transform="matrix(1 0 0 1 780.1616 302.0415)"
+   font-family="'ArialMT'"
+   font-size="13.3926">%c7r</text>
+
+
+
+
+
+
+
+
+<text
+   id="text485"
+   transform="matrix(1 0 0 1 434.3931 187.7417)"
+   font-family="'ArialMT'"
+   font-size="13.3926">%m1time</text>
+
+
+
+
+
+
+
+
+<text
+   id="text487"
+   transform="matrix(1 0 0 1 434.3931 211.5454)"
+   font-family="'ArialMT'"
+   font-size="13.3926">%m2time</text>
+
+
+
+
+
+
+
+
+<text
+   id="text489"
+   transform="matrix(1 0 0 1 837.1733 187.7417)"
+   font-family="'ArialMT'"
+   font-size="13.3926">%m3time</text>
+
+
+
+
+
+
+
+
+<text
+   id="text491"
+   transform="matrix(1 0 0 1 434.3931 235.9751)"
+   font-family="'ArialMT'"
+   font-size="13.3926">%m4time</text>
+
+
+
+
+
+
+
+
+<text
+   id="text493"
+   transform="matrix(1 0 0 1 434.3931 257.8999)"
+   font-family="'ArialMT'"
+   font-size="13.3926">%m5time</text>
+
+
+
+
+
+
+
+
+<text
+   id="text495"
+   transform="matrix(1 0 0 1 837.1733 211.5454)"
+   font-family="'ArialMT'"
+   font-size="13.3926">%m6time</text>
+
+
+
+
+
+
+
+
+<text
+   id="text497"
+   transform="matrix(1 0 0 1 434.3931 281.0767)"
+   font-family="'ArialMT'"
+   font-size="13.3926">%m7time</text>
+
+
+
+
+
+
+
+
+<text
+   id="text499"
+   transform="matrix(1 0 0 1 434.3931 303.6274)"
+   font-family="'ArialMT'"
+   font-size="13.3926">%m8time</text>
+
+
+
+
+
+
+
+
+<text
+   id="text501"
+   transform="matrix(1 0 0 1 837.1733 234.7231)"
+   font-family="'ArialMT'"
+   font-size="13.3926">%m9time</text>
+
+
+
+
+
+
+
+
+<text
+   id="text503"
+   transform="matrix(1 0 0 1 170.2832 390.3999)"
+   font-family="'ArialMT'"
+   font-size="8.7697">This pool</text>
+
+
+
+
+
+
+
+
+<text
+   id="text505"
+   transform="matrix(1 0 0 1 257.354 390.3999)"
+   font-family="'ArialMT'"
+   font-size="8.7697">This pool</text>
+
+
+
+
+
+
+
+
+<text
+   id="text507"
+   transform="matrix(1 0 0 1 343.7988 390.3999)"
+   font-family="'ArialMT'"
+   font-size="8.7697">This pool</text>
+
+
+
+
+
+
+
+
+<text
+   id="text509"
+   transform="matrix(1 0 0 1 571.812 323.3745)"
+   font-family="'ArialMT'"
+   font-size="8.7697">This pool</text>
+
+
+
+
+
+
+
+
+<text
+   id="text511"
+   transform="matrix(1 0 0 1 658.8823 323.3745)"
+   font-family="'ArialMT'"
+   font-size="8.7697">This pool</text>
+
+
+
+
+
+
+
+
+<text
+   id="text513"
+   transform="matrix(1 0 0 1 746.5796 323.3745)"
+   font-family="'ArialMT'"
+   font-size="8.7697">This pool</text>
+
+
+
+
+
+
+
+
+<rect
+   id="m1l-1"
+   x="105.549"
+   y="181.881"
+   fill="#FFFFFF"
+   stroke="#FFFFFF"
+   stroke-width="0.3132"
+   width="12.528"
+   height="12.528" />
+<text
+   id="text516"
+   transform="matrix(1 0 0 1 118.0771 191.9038)"
+   font-family="'MyriadPro-Regular'"
+   font-size="13">%m1p1-1==0'LOSS'</text>
+
+
+
+
+
+
+
+
+<rect
+   id="m1l-2"
+   x="191.994"
+   y="181.881"
+   fill="#00CCFF"
+   stroke="#00CCFF"
+   stroke-width="0.3132"
+   width="12.528"
+   height="12.528" />
+<text
+   id="text519"
+   transform="matrix(1 0 0 1 204.5215 191.9038)"
+   font-family="'MyriadPro-Regular'"
+   font-size="13">%m1p2-1==0'LOSS'</text>
+
+
+
+
+
+
+
+
+<rect
+   id="m2l-1"
+   x="280.944"
+   y="203.685"
+   fill="#FFFFFF"
+   stroke="#FFFFFF"
+   stroke-width="0.3132"
+   width="12.528"
+   height="12.528" />
+<text
+   id="text522"
+   transform="matrix(1 0 0 1 293.4717 215.7065)"
+   font-family="'MyriadPro-Regular'"
+   font-size="13">%m2p1-1==0'LOSS'</text>
+
+
+
+
+
+
+
+
+<rect
+   id="m2l-2"
+   x="363.63"
+   y="203.432"
+   fill="#00CCFF"
+   stroke="#00CCFF"
+   stroke-width="0.3132"
+   width="12.528"
+   height="12.528" />
+<text
+   id="text525"
+   transform="matrix(1 0 0 1 376.1577 214.4546)"
+   font-family="'MyriadPro-Regular'"
+   font-size="13">%m2p2-1==0'LOSS'</text>
+
+
+
+
+
+
+
+
+<rect
+   id="m4l-2"
+   x="280.944"
+   y="226.235"
+   fill="#00CCFF"
+   stroke="#00CCFF"
+   stroke-width="0.3132"
+   width="12.528"
+   height="12.528" />
+<text
+   id="text528"
+   transform="matrix(1 0 0 1 293.4717 238.2573)"
+   font-family="'MyriadPro-Regular'"
+   font-size="13">%m4p2-1==0'LOSS'</text>
+
+
+
+
+
+
+
+
+<rect
+   id="m5l-2"
+   x="363.63"
+   y="249.413"
+   fill="#00CCFF"
+   stroke="#00CCFF"
+   stroke-width="0.3132"
+   width="12.528"
+   height="12.528" />
+
+
+<rect
+   id="m7l-2"
+   x="363.63"
+   y="272.337"
+   fill="#00CCFF"
+   stroke="#00CCFF"
+   stroke-width="0.3132"
+   width="12.528"
+   height="12.528" />
+<text
+   id="text534"
+   transform="matrix(1 0 0 1 376.1577 283.3589)"
+   font-family="'MyriadPro-Regular'"
+   font-size="13">%m7p2-1==0'LOSS'</text>
+
+
+
+
+
+
+
+
+<rect
+   id="m8l-2"
+   x="280.944"
+   y="294.767"
+   fill="#00CCFF"
+   stroke="#00CCFF"
+   stroke-width="0.3132"
+   width="12.528"
+   height="12.528" />
+<text
+   id="text537"
+   transform="matrix(1 0 0 1 293.4717 305.7896)"
+   font-family="'MyriadPro-Regular'"
+   font-size="13">%m8p2-1==0'LOSS'</text>
+
+
+
+
+
+
+
+
+<rect
+   id="m3l-2"
+   x="680.595"
+   y="180.507"
+   fill="#00CCFF"
+   stroke="#00CCFF"
+   stroke-width="0.3132"
+   width="12.527"
+   height="12.528" />
+<text
+   id="text540"
+   transform="matrix(1 0 0 1 693.1226 191.5298)"
+   font-family="'MyriadPro-Regular'"
+   font-size="13">%m3p2-1==0'LOSS'</text>
+
+
+
+
+
+
+
+
+<rect
+   id="m6l-2"
+   x="766.414"
+   y="203.311"
+   fill="#00CCFF"
+   stroke="#00CCFF"
+   stroke-width="0.3132"
+   width="12.527"
+   height="12.528" />
+<text
+   id="text543"
+   transform="matrix(1 0 0 1 778.9399 215.3335)"
+   font-family="'MyriadPro-Regular'"
+   font-size="13">%m6p2-1==0'LOSS'</text>
+
+
+
+
+
+
+
+
+<rect
+   id="m9l-2"
+   x="766.414"
+   y="226.235"
+   fill="#00CCFF"
+   stroke="#00CCFF"
+   stroke-width="0.3132"
+   width="12.527"
+   height="12.528" />
+<text
+   id="text546"
+   transform="matrix(1 0 0 1 778.9399 237.2573)"
+   font-family="'MyriadPro-Regular'"
+   font-size="13">%m9p2-1==0'LOSS'</text>
+
+
+
+
+
+
+
+
+<rect
+   id="m4l-1"
+   x="105.549"
+   y="226.235"
+   fill="#FFFFFF"
+   stroke="#FFFFFF"
+   stroke-width="0.3132"
+   width="12.528"
+   height="12.528" />
+<text
+   id="text549"
+   transform="matrix(1 0 0 1 118.0771 238.2573)"
+   font-family="'MyriadPro-Regular'"
+   font-size="13">%m4p1-1==0'LOSS'</text>
+
+
+
+
+
+
+
+
+<rect
+   id="m5l-1"
+   x="191.994"
+   y="249.413"
+   fill="#FFFFFF"
+   stroke="#FFFFFF"
+   stroke-width="0.3132"
+   width="12.528"
+   height="12.528" />
+<text
+   id="text552"
+   transform="matrix(1 0 0 1 204.5215 261.4351)"
+   font-family="'MyriadPro-Regular'"
+   font-size="13">%m5p1-1==0'LOSS'</text>
+
+
+
+
+
+
+
+
+<rect
+   id="m6l-1"
+   x="589.765"
+   y="203.058"
+   fill="#FFFFFF"
+   stroke="#FFFFFF"
+   stroke-width="0.3132"
+   width="12.529"
+   height="12.528" />
+<text
+   id="text555"
+   transform="matrix(1 0 0 1 602.2925 214.0806)"
+   font-family="'MyriadPro-Regular'"
+   font-size="13">%m6p1-1==0'LOSS'</text>
+
+
+
+
+
+
+
+
+<rect
+   id="m7l-1"
+   x="105.549"
+   y="272.59"
+   fill="#FFFFFF"
+   stroke="#FFFFFF"
+   stroke-width="0.3132"
+   width="12.528"
+   height="12.528" />
+<text
+   id="text558"
+   transform="matrix(1 0 0 1 118.0771 284.6118)"
+   font-family="'MyriadPro-Regular'"
+   font-size="13">%m7p1-1==0'LOSS'</text>
+
+
+
+
+
+
+
+
+<rect
+   id="m8l-1"
+   x="191.994"
+   y="294.75101"
+   width="12.527"
+   height="12.527"
+   style="fill:#ffffff;stroke:#ffffff;stroke-width:0.3132" />
+<text
+   id="text561"
+   transform="matrix(1 0 0 1 204.5215 306.0259)"
+   font-family="'MyriadPro-Regular'"
+   font-size="13">%m8p1-1==0'LOSS'</text>
+
+
+
+
+
+
+
+
+<rect
+   id="m9l-1"
+   x="680.595"
+   y="226.609"
+   fill="#FFFFFF"
+   stroke="#FFFFFF"
+   stroke-width="0.3132"
+   width="12.527"
+   height="12.528" />
+<text
+   id="text564"
+   transform="matrix(1 0 0 1 693.1226 237.2573)"
+   font-family="'MyriadPro-Regular'"
+   font-size="13">%m9p1-1==0'LOSS'</text>
+
+
+
+
+
+
+
+
+<rect
+   id="m3l-1"
+   x="589.765"
+   y="181.134"
+   fill="#FFFFFF"
+   stroke="#FFFFFF"
+   stroke-width="0.3132"
+   width="12.529"
+   height="12.528"
+   inkscape:label="#m3l-1" />
+<text
+   id="text567"
+   font-size="13"
+   x="602.29248"
+   y="191.5298"
+   style="font-size:13px;font-family:MyriadPro-Regular">%m3p1-1==0'LOSS'</text>
+
+
+
+
+
+
+
+
+<rect
+   id="m10l-1"
+   x="257.668"
+   y="443.932"
+   fill="#FFFFFF"
+   stroke="#FFFFFF"
+   stroke-width="0.3132"
+   width="12.528"
+   height="12.529"
+   style="fill:#ffffcc;fill-opacity:1" />
+<text
+   id="text570"
+   transform="matrix(1 0 0 1 270.1953 451.4478)"
+   font-family="'MyriadPro-Regular'"
+   font-size="11.2754">%m10p1-1==0'LOSS'</text>
+
+
+
+
+
+
+
+
+<text
+   id="text572"
+   transform="matrix(1 0 0 1 84.0996 451.106)"
+   font-family="'ArialMT'"
+   font-size="11.2754">%m10-1-hm1-first-s-last</text>
+
+
+
+
+
+
+
+
+<text
+   id="text574"
+   font-size="11.2754"
+   font-family="'ArialMT'"
+   transform="matrix(1 0 0 1 43.0435 451.106)">%m10-1-grd</text>
+
+
+
+
+
+
+
+
+<text
+   id="text576"
+   transform="matrix(1 0 0 1 84.0996 479.1636)"
+   font-family="'ArialMT'"
+   font-size="10.0226">%m10-1-hm1-club</text>
+
+
+
+
+
+
+
+
+<text
+   id="text578"
+   transform="matrix(1 0 0 1 258.9985 492.5942)"
+   font-family="'ArialMT'"
+   font-size="13.3926">%m10time</text>
+
+
+
+
+
+
+
+
+<rect
+   id="m10l-2"
+   x="257.668"
+   y="524.167"
+   fill="#00CCFF"
+   stroke="#00CCFF"
+   stroke-width="0.3132"
+   width="12.528"
+   height="12.529" />
+<text
+   id="text581"
+   transform="matrix(1 0 0 1 270.1953 531.6821)"
+   font-family="'MyriadPro-Regular'"
+   font-size="11.2754">%m10p2-1==0'LOSS'</text>
+
+
+
+
+
+
+
+
+<text
+   id="text583"
+   transform="matrix(1 0 0 1 84.0996 531.3423)"
+   font-family="'ArialMT'"
+   font-size="11.2754">%m10-2-hm1-first-s-last</text>
+
+
+
+
+
+
+
+
+<text
+   id="text585"
+   transform="matrix(1 0 0 1 43.0435 531.3423)"
+   font-family="'ArialMT'"
+   font-size="11.2754">%m10-2-grd</text>
+
+
+
+
+
+
+
+
+<text
+   id="text587"
+   transform="matrix(1 0 0 1 84.0996 558.2993)"
+   font-family="'ArialMT'"
+   font-size="10.0226">%m10-2-hm1-club</text>
+
+
+
+
+
+
+
+
+<rect
+   id="m11l-1"
+   x="257.668"
+   y="603.667"
+   fill="#FFFFFF"
+   stroke="#FFFFFF"
+   stroke-width="0.3132"
+   width="12.528"
+   height="12.529"
+   style="fill:#ffffcc;fill-opacity:1" />
+<text
+   id="text590"
+   transform="matrix(1 0 0 1 270.1953 611.1831)"
+   font-family="'MyriadPro-Regular'"
+   font-size="11.2754">%m11p1-1==0'LOSS'</text>
+
+
+
+
+
+
+
+
+<text
+   id="text592"
+   transform="matrix(1 0 0 1 84.7261 610.8403)"
+   font-family="'ArialMT'"
+   font-size="11.2754">%m11-1-hm1-first-s-last</text>
+
+
+
+
+
+
+
+
+<text
+   id="text594"
+   transform="matrix(1 0 0 1 43.6699 610.8403)"
+   font-family="'ArialMT'"
+   font-size="11.2754">%m11-1-grd</text>
+
+
+
+
+
+
+
+
+<text
+   id="text596"
+   transform="matrix(1 0 0 1 84.7261 638.8979)"
+   font-family="'ArialMT'"
+   font-size="10.0226">%m11-1-hm1-club</text>
+
+
+
+
+
+
+
+
+<text
+   id="text598"
+   transform="matrix(1 0 0 1 259.625 651.0757)"
+   font-family="'ArialMT'"
+   font-size="13.3926">%m11time</text>
+
+
+
+
+
+
+
+
+<rect
+   id="m11l-2"
+   x="257.668"
+   y="683.901"
+   fill="#00CCFF"
+   stroke="#00CCFF"
+   stroke-width="0.3132"
+   width="12.528"
+   height="12.529" />
+<text
+   id="text601"
+   transform="matrix(1 0 0 1 270.1953 691.4175)"
+   font-family="'MyriadPro-Regular'"
+   font-size="11.2754">%m11p2-1==0'LOSS'</text>
+
+
+
+
+
+
+
+
+<text
+   id="text603"
+   transform="matrix(1 0 0 1 84.7261 691.0767)"
+   font-family="'ArialMT'"
+   font-size="11.2754">%m11-2-hm1-first-s-last</text>
+
+
+
+
+
+
+
+
+<text
+   id="text605"
+   transform="matrix(1 0 0 1 43.6699 691.0767)"
+   font-family="'ArialMT'"
+   font-size="11.2754">%m11-2-grd</text>
+
+
+
+
+
+
+
+
+<text
+   id="text607"
+   transform="matrix(1 0 0 1 84.7261 719.2847)"
+   font-family="'ArialMT'"
+   font-size="10.0226">%m11-2-hm1-club</text>
+
+
+
+
+
+
+
+
+<rect
+   id="m12l-1"
+   x="500.717"
+   y="484.649"
+   fill="#FFFFF"
+   stroke="#FFFFFF"
+   stroke-width="0.3132"
+   width="12.527"
+   height="12.527"
+   style="fill:#ffffcc;fill-opacity:1" />
+<text
+   id="text610"
+   transform="matrix(1 0 0 1 513.2427 492.1646)"
+   font-family="'MyriadPro-Regular'"
+   font-size="11.2754">%m12p1-1==0'LOSS'</text>
+
+
+
+
+
+
+
+
+<text
+   id="text612"
+   transform="matrix(1 0 0 1 344.6865 491.8218)"
+   font-family="'ArialMT'"
+   font-size="11.2754">%m12-1-hm1-first-s-last</text>
+
+
+
+
+
+
+
+
+<text
+   id="text614"
+   transform="matrix(1 0 0 1 303.6304 491.8218)"
+   font-family="'ArialMT'"
+   font-size="11.2754">%m12-1-grd</text>
+
+
+
+
+
+
+
+
+<text
+   id="text616"
+   transform="matrix(1 0 0 1 344.6865 518.6274)"
+   font-family="'ArialMT'"
+   font-size="10.0226">%m12-1-hm1-club</text>
+
+
+
+
+
+
+
+
+<text
+   id="text618"
+   transform="matrix(1 0 0 1 498.2871 572.1479)"
+   font-family="'ArialMT'"
+   font-size="13.3926">%m12time</text>
+
+
+
+
+
+
+
+
+<rect
+   id="m12l-2"
+   x="506.98"
+   y="643.811"
+   fill="#00CCFF"
+   stroke="#00CCFF"
+   stroke-width="0.3132"
+   width="12.528"
+   height="12.527" />
+<text
+   id="text621"
+   transform="matrix(1 0 0 1 519.5068 651.3267)"
+   font-family="'MyriadPro-Regular'"
+   font-size="11.2754">%m12p2-1==0'LOSS'</text>
+
+
+
+
+
+
+
+
+<text
+   id="text623"
+   transform="matrix(1 0 0 1 345.939 650.9868)"
+   font-family="'ArialMT'"
+   font-size="11.2754">%m12-2-hm1-first-s-last</text>
+
+
+
+
+
+
+
+
+<text
+   id="text625"
+   transform="matrix(1 0 0 1 304.8828 650.9868)"
+   font-family="'ArialMT'"
+   font-size="11.2754">%m12-2-grd</text>
+
+
+
+
+
+
+
+
+<text
+   id="text627"
+   transform="matrix(1 0 0 1 345.939 679.8208)"
+   font-family="'ArialMT'"
+   font-size="10.0226">%m12-2-hm1-club</text>
+
+
+
+
+
+
+
+
+<text
+   id="text629"
+   transform="matrix(1 0 0 1 605.9507 571.7876)"
+   font-family="'ArialMT'"
+   font-size="11.2754">%m12-winner-first-s-last</text>
+
+
+
+
+
+
+
+
+<text
+   id="text631"
+   transform="matrix(1 0 0 1 605.9507 600.1841)"
+   font-family="'ArialMT'"
+   font-size="10.0226">%m12-winner-club</text>
+
+
+
+
+
+
+
+
+<text
+   id="text633"
+   transform="matrix(1 0 0 1 556.5972 571.3081)"
+   font-family="'ArialMT'"
+   font-size="11.2754">%m12-winner-grd</text>
+
+
+
+
+
+
+
+
+<text
+   id="text635"
+   transform="matrix(1 0 0 1 12.0054 454.5972)"
+   font-family="'Arial-BoldMT'"
+   font-size="17.5896">A1</text>
+
+
+
+
+
+
+
+
+<text
+   id="text637"
+   transform="matrix(1 0 0 1 12.0054 692.6333)"
+   font-family="'Arial-BoldMT'"
+   font-size="17.5896">A2</text>
+
+
+
+
+
+
+
+
+<text
+   id="text639"
+   transform="matrix(1 0 0 1 12.0054 533.5249)"
+   font-family="'Arial-BoldMT'"
+   font-size="17.5896">B2</text>
+
+
+
+
+
+
+
+
+<text
+   id="text641"
+   transform="matrix(1 0 0 1 12.0054 613.7056)"
+   font-family="'Arial-BoldMT'"
+   font-size="17.5896">B1</text>
+
+
+
+
+
+
+
+
+<text
+   id="text97-1"
+   transform="matrix(1 0 0 1 506.6855 257.1177)"
+   font-family="'ArialMT'"
+   font-size="11.4257">%t35 %t21</text>
+
+
+
+
+
+
+
+
+<text
+   id="text101-7"
+   transform="matrix(1 0 0 1 506.6855 279.0688)"
+   font-family="'ArialMT'"
+   font-size="11.4257">%t35 %t20</text>
+
+
+
+
+
+
+
+
+<text
+   id="text103-4"
+   transform="matrix(1 0 0 1 529.8589 301.0151)"
+   font-family="'ArialMT'"
+   font-size="11.4257">%t22</text>
+
+
+
+
+
+
+
+
+<text
+   id="text105-0"
+   transform="matrix(1 0 0 1 529.8589 322.9663)"
+   font-family="'ArialMT'"
+   font-size="11.4257">%t21</text>
+
+
+
+
+
+
+
+
+<text
+   id="text63-9"
+   transform="matrix(1 0 0 1 530.2759 150.1089)"
+   font-family="'ArialMT'"
+   font-size="11.4257">%t7</text>
+
+
+
+
+
+
+
+
+<text
+   id="text67-4"
+   transform="matrix(1 0 0 1 538.5347 166.645)"
+   font-family="'ArialMT'"
+   font-size="11.4257">%t8</text>
+
+
+
+
+
+
+
+
+<text
+   id="text107-8"
+   transform="matrix(1 0 0 1 531.5552 124.8521)"
+   font-family="'ArialMT'"
+   font-size="11.4257">%t6</text>
+
+
+
+
+
+
+
+
+<circle
+   fill="#FFFFFF"
+   stroke="#1D1D1B"
+   stroke-miterlimit="10"
+   cx="301.632"
+   cy="426.784"
+   r="9.548"
+   id="circle336" />
+<text
+   id="text3972_1_"
+   transform="matrix(1 0 0 1 295.1182 430.6899)"
+   font-family="'MyriadPro-Regular'"
+   font-size="12">10</text>
+
+
+
+
+
+
+
+
+<circle
+   fill="#FFFFFF"
+   stroke="#1D1D1B"
+   stroke-miterlimit="10"
+   cx="302.631"
+   cy="586.743"
+   r="9.548"
+   id="circle339" />
+<text
+   id="text3972_2_"
+   transform="matrix(1 0 0 1 297.1172 590.6489)"
+   font-family="'MyriadPro-Regular'"
+   font-size="12">11</text>
+
+
+
+
+
+
+
+
+<circle
+   fill="#FFFFFF"
+   stroke="#1D1D1B"
+   stroke-miterlimit="10"
+   cx="553.458"
+   cy="465.856"
+   r="9.548"
+   id="circle342" />
+<text
+   id="text3972_3_"
+   transform="matrix(1 0 0 1 546.9448 469.7622)"
+   font-family="'MyriadPro-Regular'"
+   font-size="12">12</text>
+
+
+
+
+
+
+
+
+<text
+   id="text315_6_"
+   transform="matrix(1 0 0 1 305.6299 451.106)"
+   font-family="'MyriadPro-Regular'"
+   font-size="10.0078">%m10-s1-1</text>
+
+
+
+
+
+
+
+
+<text
+   id="text317_6_"
+   transform="matrix(1 0 0 1 306.8945 531.4302)"
+   font-family="'MyriadPro-Regular'"
+   font-size="10.0078">%m10-s2-1</text>
+
+
+
+
+
+
+
+
+<text
+   id="text315_1_"
+   transform="matrix(1 0 0 1 306.5005 611.1821)"
+   font-family="'MyriadPro-Regular'"
+   font-size="10.0078">%m11-s1-1</text>
+
+
+
+
+
+
+
+
+<text
+   id="text317_1_"
+   transform="matrix(1 0 0 1 306.207 690.6333)"
+   font-family="'MyriadPro-Regular'"
+   font-size="10.0078">%m11-s2-1</text>
+
+
+
+
+
+
+
+
+<text
+   id="text315_2_"
+   font-size="10.0078"
+   x="558.81689"
+   y="491.59421"
+   style="font-size:10.0078001px;font-family:MyriadPro-Regular">%m12-s1-1</text>
+
+
+
+
+
+
+
+
+<text
+   id="text317_2_"
+   font-size="10.0078"
+   x="559.79248"
+   y="651.32672"
+   style="font-size:10.0078001px;font-family:MyriadPro-Regular">%m12-s2-1</text>
+
+
+
+
+
+
+
+
+<text
+   id="text315_3_"
+   transform="matrix(1 0 0 1 103.8174 180.5068)"
+   font-family="'MyriadPro-Regular'"
+   font-size="10.0078">%m1-s1-1</text>
+
+
+
+
+
+
+
+
+<text
+   id="text317_3_"
+   transform="matrix(1 0 0 1 194.2588 180.4004)"
+   font-family="'MyriadPro-Regular'"
+   font-size="10.0078">%m1-s2-1</text>
+
+
+
+
+
+
+
+
+<text
+   id="text315_4_"
+   transform="matrix(1 0 0 1 279.9448 203.6851)"
+   font-family="'MyriadPro-Regular'"
+   font-size="10.0078">%m2-s1-1</text>
+
+
+
+
+
+
+
+
+<text
+   id="text317_4_"
+   transform="matrix(1 0 0 1 364.6304 203.6846)"
+   font-family="'MyriadPro-Regular'"
+   font-size="10.0078">%m2-s2-1</text>
+
+
+
+
+
+
+
+
+<text
+   id="text315_5_"
+   transform="matrix(1 0 0 1 103.9678 225.9106)"
+   font-family="'MyriadPro-Regular'"
+   font-size="10.0078">%m4-s1-1</text>
+
+
+
+
+
+
+
+
+<text
+   id="text317_5_"
+   transform="matrix(1 0 0 1 279.9443 226.2358)"
+   font-family="'MyriadPro-Regular'"
+   font-size="10.0078">%m4-s2-1</text>
+
+
+
+
+
+
+
+
+<text
+   id="text315_7_"
+   transform="matrix(1 0 0 1 194.2583 249.4131)"
+   font-family="'MyriadPro-Regular'"
+   font-size="10.0078">%m5-s1-1</text>
+
+
+
+
+
+
+
+
+<text
+   id="text317_7_"
+   transform="matrix(1 0 0 1 364.6299 249.4126)"
+   font-family="'MyriadPro-Regular'"
+   font-size="10.0078">%m5-s2-1</text>
+
+
+
+
+
+
+
+
+<text
+   id="text315_8_"
+   transform="matrix(1 0 0 1 104.4697 272.4673)"
+   font-family="'MyriadPro-Regular'"
+   font-size="10.0078">%m7-s1-1</text>
+
+
+
+
+
+
+
+
+<text
+   id="text317_8_"
+   transform="matrix(1 0 0 1 363.6294 272.5894)"
+   font-family="'MyriadPro-Regular'"
+   font-size="10.0078">%m7-s2-1</text>
+
+
+
+
+
+
+
+
+<text
+   id="text315_9_"
+   transform="matrix(1 0 0 1 194.2583 295.6025)"
+   font-family="'MyriadPro-Regular'"
+   font-size="10.0078">%m8-s1-1</text>
+
+
+
+
+
+
+
+
+<text
+   id="text317_9_"
+   transform="matrix(1 0 0 1 280.9438 295.7505)"
+   font-family="'MyriadPro-Regular'"
+   font-size="10.0078">%m8-s2-1</text>
+
+
+
+
+
+
+
+
+<text
+   id="text315_10_"
+   transform="matrix(1 0 0 1 589.7651 180.4536)"
+   font-family="'MyriadPro-Regular'"
+   font-size="10.0078">%m3-s1-1</text>
+
+
+
+
+
+
+
+
+<text
+   id="text317_10_"
+   transform="matrix(1 0 0 1 680.2065 180.3472)"
+   font-family="'MyriadPro-Regular'"
+   font-size="10.0078">%m3-s2-1</text>
+
+
+
+
+
+
+
+
+<text
+   id="text315_11_"
+   transform="matrix(1 0 0 1 591.2183 203.5225)"
+   font-family="'MyriadPro-Regular'"
+   font-size="10.0078">%m6-s1-1</text>
+
+
+
+
+
+
+
+
+<text
+   id="text317_11_"
+   transform="matrix(1 0 0 1 767.1948 203.8477)"
+   font-family="'MyriadPro-Regular'"
+   font-size="10.0078">%m6-s2-1</text>
+
+
+
+
+
+
+
+
+<text
+   id="text315_12_"
+   transform="matrix(1 0 0 1 681.3247 226.9111)"
+   font-family="'MyriadPro-Regular'"
+   font-size="10.0078">%m9-s1-1</text>
+
+
+
+
+
+
+
+
+<text
+   id="text317_12_"
+   transform="matrix(1 0 0 1 769.0103 226.9106)"
+   font-family="'MyriadPro-Regular'"
+   font-size="10.0078">%m9-s2-1</text>
+
+
+
+
+
+
+
+<text
+   y="261.43509"
+   x="376.15771"
+   style="font-size:13px;font-family:MyriadPro-Regular"
+   id="text534-7"
+   font-size="13">%m5p2-1==0'LOSS'</text>
+
+
+
+
 </svg>
