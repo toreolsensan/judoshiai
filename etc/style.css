@@ -11,6 +11,15 @@ H3 { font-family: Verdana, Arial;
      color: #003060; 
 }
 
+a.dflt {
+    background-color: #E0E8EF;
+    font-family: Verdana, Arial;
+    font-size: 14px;
+    font-weight: normal;
+    text-decoration: none;
+    color: black;
+}
+
 table.categorylinks {
     font-family: Verdana, Arial; 
     background-color: #c8d7e6;

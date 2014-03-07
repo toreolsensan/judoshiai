@@ -43,6 +43,7 @@ gchar *installation_dir = NULL;
 GTimer *timer;
 gboolean blue_wins_voting = FALSE, white_wins_voting = FALSE;
 gboolean hansokumake_to_blue = FALSE, hansokumake_to_white = FALSE;
+gboolean result_hikiwake = FALSE;
 static PangoFontDescription *font;
 gint mode = 0;
 GKeyFile *keyfile;
@@ -961,6 +962,7 @@ void voting_result(GtkWidget *w,
     white_wins_voting = FALSE;
     hansokumake_to_blue = FALSE;
     hansokumake_to_white = FALSE;
+    result_hikiwake = FALSE;
 
     switch (ptr_to_gint(data)) {
     case HANTEI_BLUE:
@@ -990,6 +992,10 @@ void voting_result(GtkWidget *w,
         else
             set_text(MY_LABEL(comment), _("Hansokumake to white"));
         hansokumake_to_white = TRUE;
+        break;
+    case HIKIWAKE:
+        set_text(MY_LABEL(comment), _("Hikiwake"));
+        result_hikiwake = TRUE;
         break;
     case CLEAR_SELECTION:
         set_text(MY_LABEL(comment), "");

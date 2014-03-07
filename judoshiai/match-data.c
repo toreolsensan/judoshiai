@@ -2379,20 +2379,31 @@ gint num_matches_left(gint index, gint competitors)
 
 gint num_matches_estimate(gint index)
 {
-    struct compsys systm = get_cat_system(index);
+    struct category_data *catdata = avl_get_category(index);
+    gint mul = 1;
+
+    if (!catdata)
+        return 5;
+
+    struct compsys systm = catdata->system;
+
+    if (catdata->deleted & TEAM_EVENT) {
+        mul = find_num_weight_classes(catdata->category);
+        if (mul == 0) mul = 1;
+    }
 
     if (system_is_french(systm.system)) {
-        return french_num_matches[systm.table][systm.system - SYSTEM_FRENCH_8];
+        return mul*french_num_matches[systm.table][systm.system - SYSTEM_FRENCH_8];
     }
 
     gint n = num_matches(systm.system, systm.numcomp);
     switch (systm.system) {
-    case SYSTEM_POOL:  return n;
-    case SYSTEM_DPOOL: return n + 3;
-    case SYSTEM_QPOOL: return n + 7;
-    case SYSTEM_DPOOL2: return n + 6;
-    case SYSTEM_BEST_OF_3: return 3;
+    case SYSTEM_POOL:  return mul*n;
+    case SYSTEM_DPOOL: return mul*(n + 3);
+    case SYSTEM_QPOOL: return mul*(n + 7);
+    case SYSTEM_DPOOL2: return mul*(n + 6);
+    case SYSTEM_BEST_OF_3: return mul*3;
     }
 
-    return 1;
+    return mul;
 }

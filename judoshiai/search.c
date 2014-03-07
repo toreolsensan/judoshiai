@@ -22,13 +22,23 @@ extern void view_on_row_activated (GtkTreeView        *treeview,
 #define NUM_RESULTS 10
 
 struct find_data {
-    GtkWidget *name;
+    GtkWidget *name, *dialog;
     GtkWidget *results[NUM_RESULTS];
     gint       index[NUM_RESULTS];
     GtkTreeIter iter[NUM_RESULTS];
     gboolean   valid[NUM_RESULTS];
-    void     (*callback)(gint);
+    void     (*callback)(gint, gpointer);
+    void      *args;
 } findstruct;
+
+static void search_end(GtkWidget *widget, 
+		       GdkEvent *event,
+		       gpointer data)
+{
+    gint i;
+    g_free(data);
+    gtk_widget_destroy(widget);
+}
 
 static gboolean button_pressed(GtkWidget *button, 
 			       gpointer userdata)
@@ -39,7 +49,8 @@ static gboolean button_pressed(GtkWidget *button,
     for (i = 0; i < NUM_RESULTS && data->valid[i]; i++) {
         if (data->results[i] == button) {
             if (data->callback) {
-                data->callback(data->index[i]);
+                data->callback(data->index[i], data->args);
+                search_end(data->dialog, NULL, data);
                 return TRUE;
             } else {
                 GtkTreeIter iter;
@@ -126,15 +137,7 @@ out:
     g_free(name);
 }
 
-static void search_end(GtkWidget *widget, 
-		       GdkEvent *event,
-		       gpointer data)
-{
-    g_free(data);
-    gtk_widget_destroy(widget);
-}
-
-void search_competitor(GtkWidget *w, gpointer arg)
+void search_competitor_args(GtkWidget *w, gpointer cb, gpointer args)
 {
     GtkWidget *dialog, *tmp;
     gint i;
@@ -142,7 +145,8 @@ void search_competitor(GtkWidget *w, gpointer arg)
     struct find_data *data = g_malloc(sizeof(*data));
     memset(data, 0, sizeof(*data));
 
-    data->callback = arg;
+    data->callback = cb;
+    data->args = args;
 
     dialog = gtk_dialog_new_with_buttons (_("Search"),
                                           NULL,
@@ -150,6 +154,7 @@ void search_competitor(GtkWidget *w, gpointer arg)
                                           GTK_STOCK_OK, GTK_RESPONSE_OK,
                                           NULL);
 
+    data->dialog = dialog;
     data->name = tmp = gtk_entry_new();
     //gtk_entry_set_max_length(GTK_ENTRY(tmp), 30);
     gtk_entry_set_text(GTK_ENTRY(tmp), "");
@@ -172,4 +177,7 @@ void search_competitor(GtkWidget *w, gpointer arg)
     gtk_widget_show_all(dialog);
 }
 
-
+void search_competitor(GtkWidget *w, gpointer cb)
+{
+    search_competitor_args(w, cb, NULL);
+}

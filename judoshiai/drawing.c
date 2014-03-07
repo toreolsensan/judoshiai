@@ -1342,7 +1342,9 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
         break;
     }
 
-    if (catname && (catname[0] == '?' || catname[0] == '_')) {
+    struct category_data *catdata = avl_get_category(mdata->mcategory_ix);
+    if ((catname && (catname[0] == '?' || catname[0] == '_')) ||
+        (catdata && (catdata->deleted & TEAM))) {
         //SHOW_MESSAGE("Cannot draw %s", catname);
         g_free(catname);
         g_free(mdata);

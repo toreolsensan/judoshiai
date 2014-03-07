@@ -336,6 +336,7 @@ void view_popup_menu(GtkWidget *treeview,
                      gchar *regcategory,
                      gboolean visible)
 {
+    gboolean team = FALSE;
     GtkWidget *menu, *menuitem;
     gint matched = db_category_match_status(ptr_to_gint(userdata));
     //db_matched_matches_exist(ptr_to_gint(userdata));
@@ -345,6 +346,11 @@ void view_popup_menu(GtkWidget *treeview,
 
     dest_category = strdup(regcategory);
     dest_category_ix = ptr_to_gint(userdata);
+
+    struct category_data *catdata = avl_get_category(dest_category_ix);
+    if (catdata && (catdata->deleted & TEAM))
+        team = TRUE;
+
     menu = gtk_menu_new();
 
     menuitem = gtk_menu_item_new_with_label(_("Expand All"));
@@ -393,44 +399,48 @@ void view_popup_menu(GtkWidget *treeview,
                          (GCallback) view_popup_menu_move_judoka, userdata);
         gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
 
-        menuitem = gtk_menu_item_new_with_label(_("Compose Unofficial Category"));
-        g_signal_connect(menuitem, "activate",
-                         (GCallback) create_new_category, userdata);
-        gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
+        if (!team) {
+            menuitem = gtk_menu_item_new_with_label(_("Compose Unofficial Category"));
+            g_signal_connect(menuitem, "activate",
+                             (GCallback) create_new_category, userdata);
+            gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
 
-        gtk_menu_shell_append(GTK_MENU_SHELL(menu), gtk_separator_menu_item_new());
+            gtk_menu_shell_append(GTK_MENU_SHELL(menu), gtk_separator_menu_item_new());
 
-        menuitem = gtk_menu_item_new_with_label(_("Draw Selected"));
-        g_signal_connect(menuitem, "activate",
-                         (GCallback) view_popup_menu_draw_category, userdata);
-        gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
+            menuitem = gtk_menu_item_new_with_label(_("Draw Selected"));
+            g_signal_connect(menuitem, "activate",
+                             (GCallback) view_popup_menu_draw_category, userdata);
+            gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
 
-        menuitem = gtk_menu_item_new_with_label(_("Draw and Print Selected"));
-        g_signal_connect(menuitem, "activate",
-                         (GCallback) view_popup_menu_draw_and_print_category, userdata);
-        gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
+            menuitem = gtk_menu_item_new_with_label(_("Draw and Print Selected"));
+            g_signal_connect(menuitem, "activate",
+                             (GCallback) view_popup_menu_draw_and_print_category, userdata);
+            gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
 
-        menuitem = gtk_menu_item_new_with_label(_("Draw Manually"));
-        g_signal_connect(menuitem, "activate",
-                         (GCallback) view_popup_menu_draw_category_manually, userdata);
-        gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
+            menuitem = gtk_menu_item_new_with_label(_("Draw Manually"));
+            g_signal_connect(menuitem, "activate",
+                             (GCallback) view_popup_menu_draw_category_manually, userdata);
+            gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
+        }
 
         gtk_menu_shell_append(GTK_MENU_SHELL(menu), gtk_separator_menu_item_new());
     } else if ((matched & MATCH_MATCHED) == 0) {
         gtk_menu_shell_append(GTK_MENU_SHELL(menu), gtk_separator_menu_item_new());
 
-        menuitem = gtk_menu_item_new_with_label(_("Remove Drawing"));
-        g_signal_connect(menuitem, "activate",
-                         (GCallback) view_popup_menu_remove_draw, userdata);
-        gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
+        if (!team) {
+            menuitem = gtk_menu_item_new_with_label(_("Remove Drawing"));
+            g_signal_connect(menuitem, "activate",
+                             (GCallback) view_popup_menu_remove_draw, userdata);
+            gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
 
-        menuitem = gtk_menu_item_new_with_label(_("Edit Drawing"));
-        g_signal_connect(menuitem, "activate",
-                         (GCallback) view_popup_menu_draw_category_manually, 
-                         gint_to_ptr(ptr_to_gint(userdata) | 0x01000000));
-        gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
+            menuitem = gtk_menu_item_new_with_label(_("Edit Drawing"));
+            g_signal_connect(menuitem, "activate",
+                             (GCallback) view_popup_menu_draw_category_manually, 
+                             gint_to_ptr(ptr_to_gint(userdata) | 0x01000000));
+            gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
 
-        gtk_menu_shell_append(GTK_MENU_SHELL(menu), gtk_separator_menu_item_new());
+            gtk_menu_shell_append(GTK_MENU_SHELL(menu), gtk_separator_menu_item_new());
+        }
     }
 
     menuitem = gtk_menu_item_new_with_label(_("Copy Competitors"));
@@ -447,20 +457,22 @@ void view_popup_menu(GtkWidget *treeview,
         gtk_menu_shell_append(GTK_MENU_SHELL(menu), gtk_separator_menu_item_new());
     }
 
-    menuitem = gtk_menu_item_new_with_label(_("Show Sheet"));
-    g_signal_connect(menuitem, "activate",
-                     (GCallback) show_category_window, userdata);
-    gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
+    if (!team) {
+        menuitem = gtk_menu_item_new_with_label(_("Show Sheet"));
+        g_signal_connect(menuitem, "activate",
+                         (GCallback) show_category_window, userdata);
+        gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
 
-    menuitem = gtk_menu_item_new_with_label(_("Print Selected Sheets (Printer)"));
-    g_signal_connect(menuitem, "activate",
-                     (GCallback) print_doc, gint_to_ptr(ptr_to_gint(userdata) | PRINT_SHEET | PRINT_TO_PRINTER));
-    gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
+        menuitem = gtk_menu_item_new_with_label(_("Print Selected Sheets (Printer)"));
+        g_signal_connect(menuitem, "activate",
+                         (GCallback) print_doc, gint_to_ptr(ptr_to_gint(userdata) | PRINT_SHEET | PRINT_TO_PRINTER));
+        gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
 
-    menuitem = gtk_menu_item_new_with_label(_("Print Selected Sheets (PDF)"));
-    g_signal_connect(menuitem, "activate",
-                     (GCallback) print_doc, gint_to_ptr(ptr_to_gint(userdata) | PRINT_SHEET | PRINT_TO_PDF));
-    gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
+        menuitem = gtk_menu_item_new_with_label(_("Print Selected Sheets (PDF)"));
+        g_signal_connect(menuitem, "activate",
+                         (GCallback) print_doc, gint_to_ptr(ptr_to_gint(userdata) | PRINT_SHEET | PRINT_TO_PDF));
+        gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
+    }
 
     menuitem = gtk_menu_item_new_with_label(_("Print Selected Accreditation Cards"));
     g_signal_connect(menuitem, "activate",

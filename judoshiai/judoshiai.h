@@ -149,6 +149,7 @@ enum french_systems {
 #define F_BACK           0x0200
 #define F_SYSTEM_MASK    0x00ff
 
+// competitor flags
 #define DELETED       0x01
 #define HANSOKUMAKE   0x02
 #define JUDOGI_OK     0x20
@@ -156,6 +157,9 @@ enum french_systems {
 #define GENDER_MALE   0x80
 #define GENDER_FEMALE 0x100
 #define POOL_TIE3     0x200
+// category flags
+#define TEAM          0x04
+#define TEAM_EVENT    0x08
 
 #define NEXT_MATCH_NUM 20
 #define INFO_MATCH_NUM 10
@@ -214,6 +218,8 @@ enum special_match_types {
 #define DB_UPDATE_LAST_MATCH_TIME    0x00000100
 #define DB_RESET_LAST_MATCH_TIME_B   0x00000200
 #define DB_RESET_LAST_MATCH_TIME_W   0x00000400
+#define DB_FIND_TEAM_WINNER          0x00000800
+#define DB_PRINT_CAT_MATCHES         0x00001000
 
 #define DB_GET_SYSTEM                32
 #define DB_MAKE_PNG                  64
@@ -359,7 +365,11 @@ enum {
 #define _T(_txt) print_texts[_txt##text][print_lang]
 
 #define MATCH_STATUS_TATAMI_MASK  0xf
-#define MATCH_STATUS_TATAMI_SHIFT   0
+#define MATCH_STATUS_TATAMI_SHIFT 0
+
+#define MATCH_CATEGORY_MASK       0x00ffff
+#define MATCH_CATEGORY_SUB_MASK   0xff0000
+#define MATCH_CATEGORY_SUB_SHIFT  16
 
 #define FREEZE_MATCHES    0
 #define UNFREEZE_EXPORTED 1
@@ -641,6 +651,12 @@ struct judoka_rectangle {
 extern struct judoka_rectangle judoka_rectangles[];
 extern gint judoka_rectangle_cnt;
 
+struct popup_data {
+    gint category;
+    gint number;
+    gboolean is_blue;
+};
+extern struct popup_data popupdata;
 
 extern avl_tree *categories_tree;
 extern struct category_data category_queue[NUM_TATAMIS+1];
@@ -831,6 +847,7 @@ extern struct compsys db_get_system(gint num);
 extern gint db_get_tatami(gint num);
 extern void db_set_category_positions(gint category, gint competitor, gint position);
 extern gint db_get_competitors_position(gint competitor, gint *catindex);
+extern void db_create_default_teams(gint index);
 
 extern void db_read_competitor_statistics(gint *numcomp, gint *numweighted);
 extern void db_add_competitors(const gchar *competition, gboolean with_weight, gboolean weighted, 
@@ -868,6 +885,10 @@ extern void set_judogi_status(gint index, gint flags);
 extern gint get_judogi_status(gint index);
 extern gint db_force_match_number(gint category);
 extern void update_next_matches_coach_info(void);
+extern void db_event_matches_update(guint category);
+extern void db_print_category_matches(struct category_data *catdata, FILE *f);
+extern void db_change_competitor(gint category, gint number, gboolean is_blue, gint index);
+
 
 extern void db_synchronize(char *name_2);
 extern void db_print_competitors(FILE *f);
@@ -1035,6 +1056,9 @@ extern void set_webpassword_dialog(GtkWidget *w, gpointer data);
 extern gint pwcrc32(const guchar *str, gint len);
 
 /* set_categories */
+extern gint find_num_weight_classes(const gchar *category);
+extern gchar *get_weight_class_name(const gchar *category, gint num);
+extern gchar *get_weight_class_name_by_index(gint index, gint num);
 extern gint find_age_index(const gchar *category);
 extern void read_cat_definitions(void);
 extern void set_categories_dialog(GtkWidget *w, gpointer arg);
@@ -1051,7 +1075,7 @@ extern void set_category_graph_page(GtkWidget *notebook);
 extern void init_trees(void);
 extern struct category_data *avl_get_category(gint index);
 extern void avl_set_category(gint index, const gchar *category, gint tatami, 
-                             gint group, struct compsys system);
+                             gint group, struct compsys system, gint deleted);
 extern void avl_set_category_rest_times(void);
 extern gint avl_get_category_status_by_name(const gchar *name);
 extern void set_category_to_queue(struct category_data *data);
@@ -1080,7 +1104,8 @@ extern void set_match_graph_page(GtkWidget *notebook);
 extern void set_graph_rest_time(gint tatami, time_t rest_end, gint flags);
 
 /* search */
-extern void search_competitor(GtkWidget *w, gpointer arg);
+extern void search_competitor(GtkWidget *w, gpointer cb);
+extern void search_competitor_args(GtkWidget *w, gpointer cb, gpointer args);
 
 /* sql_dialog */
 extern void sql_window(GtkWidget *w, gpointer data);

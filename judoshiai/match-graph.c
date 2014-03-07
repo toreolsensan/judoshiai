@@ -230,7 +230,21 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
             cairo_select_font_face(c, MY_FONT, 0, CAIRO_FONT_WEIGHT_BOLD);
             cairo_move_to(c, left+5, y_pos+extents.height);
 
-            snprintf(buf, sizeof(buf), "%s #%d", catdata ? catdata->category : "?", m->number);
+            if (catdata) {
+                if (catdata->deleted & TEAM_EVENT) {
+                    gint ageix = find_age_index(catdata->category);
+                    if (ageix >= 0 && m->number > 0 && 
+                        category_definitions[ageix].weights[m->number-1].weighttext[0]) {
+                        snprintf(buf, sizeof(buf), "%s #%d%s", catdata->category, 
+                                 m->category >> MATCH_CATEGORY_SUB_SHIFT,
+                                 category_definitions[ageix].weights[m->number-1].weighttext);
+                    } else
+                        snprintf(buf, sizeof(buf), "%s", catdata->category);
+                } else 
+                    snprintf(buf, sizeof(buf), "%s #%d", catdata->category, m->number);
+            } else
+                snprintf(buf, sizeof(buf), "?");
+
             cairo_show_text(c, buf);
             //cairo_show_text(c, catdata ? catdata->category : "?");
 

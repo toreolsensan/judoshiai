@@ -14,6 +14,8 @@
 #include "sqlite3.h"
 #include "judoshiai.h"
 
+static void db_print_one_match(struct match *m);
+
 //#define TATAMI_DEBUG 1
 
 gboolean auto_arrange = FALSE;
@@ -39,6 +41,9 @@ static gint next_match_tatami;
 
 static gint match_count, matched_matches_count;
 static gint bluecomp, whitecomp, bluepts, whitepts;
+
+static gint team1_wins, team2_wins, no_team_wins;
+
 
 /* Use mutex when calling db_next_match(). */
 GStaticMutex next_match_mutex = G_STATIC_MUTEX_INIT;
@@ -74,6 +79,38 @@ void db_matches_init(void)
     for (i = 0; i <= NUM_TATAMIS; i++)
         for (j = 0; j < NEXT_MATCH_NUM; j++)
             next_matches[i][j].number = INVALID_MATCH;
+}
+
+static void change_team_competitors_to_real_persons(gint category, gint number, guint *comp1, guint *comp2)
+{
+    struct judoka *jc = get_data(category);
+    if (jc) {
+        gchar *wcname = get_weight_class_name(jc->last, number-1);
+        free_judoka(jc);
+        if (wcname) {
+            GtkTreeIter iter;
+            struct judoka *jb = get_data(*comp1);
+            if (jb) {
+                if (find_iter_name_2(&iter, NULL, NULL, jb->last, wcname)) {
+                    guint ix;
+                    gtk_tree_model_get(current_model, &iter,
+                                       COL_INDEX, &ix, -1);
+                    *comp1 = ix;
+                }
+                free_judoka(jb);
+            } // jb
+            struct judoka *jw = get_data(*comp2);
+            if (jw) {
+                if (find_iter_name_2(&iter, NULL, NULL, jw->last, wcname)) {
+                    guint ix;
+                    gtk_tree_model_get(current_model, &iter,
+                                       COL_INDEX, &ix, -1);
+                    *comp2 = ix;
+                }
+                free_judoka(jw);
+            } // jw
+        } // wcname
+    } // jc
 }
 
 static int db_callback_matches(void *data, int argc, char **argv, char **azColName)
@@ -168,6 +205,11 @@ static int db_callback_matches(void *data, int argc, char **argv, char **azColNa
         if (catdata == NULL)
             return 0;
 
+        gboolean team = (catdata->deleted & TEAM_EVENT) != 0;
+
+        if (team && (m.category & MATCH_CATEGORY_SUB_MASK) == 0)
+            return 0;
+
         m.tatami = m.forcedtatami ? m.forcedtatami : catdata->tatami;
         m.group = catdata->group;
 
@@ -187,6 +229,11 @@ static int db_callback_matches(void *data, int argc, char **argv, char **azColNa
             free_judoka(cat);
         }
 #endif
+        // team event may have named competitors
+        if (team) {
+            change_team_competitors_to_real_persons(m.category, m.number, &m.blue, &m.white);
+        } // team
+
         // coach info
         if (m.blue > 0 && m.blue < 10000) {
             if (current_round != coach_info[m.blue].round) {
@@ -252,12 +299,19 @@ static int db_callback_matches(void *data, int argc, char **argv, char **azColNa
             } else if (next_match[i].forcednumber == 0) {
                 if (next_match[i].group > m.group) insert = TRUE;
                 else if (next_match[i].group == m.group) {
-                    gint a = (100000*m.number)/num_matches_estimate(m.category);
-                    gint b = (100000*next_match[i].number)/num_matches_estimate(next_match[i].category);
-                    if (b > a) insert = TRUE;
-                    else if (b == a) {
-                        if (next_match[i].category > m.category)
-                            insert = TRUE;
+                    if (team) {
+                        if (next_match[i].category == m.category) {
+                            if (next_match[i].number > m.number)
+                                insert = TRUE;
+                        }
+                    } else {
+                        gint a = (100000*m.number)/num_matches_estimate(m.category);
+                        gint b = (100000*next_match[i].number)/num_matches_estimate(next_match[i].category);
+                        if (b > a) insert = TRUE;
+                        else if (b == a) {
+                            if (next_match[i].category > m.category)
+                                insert = TRUE;
+                        }
                     }
                 }
             }
@@ -297,6 +351,12 @@ static int db_callback_matches(void *data, int argc, char **argv, char **azColNa
             avl_reset_competitor_last_match_time(m.blue);
         if (m.white > COMPETITOR && (flags & DB_RESET_LAST_MATCH_TIME_W))
             avl_reset_competitor_last_match_time(m.white);
+    } else if (flags & DB_FIND_TEAM_WINNER) {
+        if (m.blue_points) team1_wins++;
+        if (m.white_points) team2_wins++;
+        if (m.blue_points == 0 && m.white_points == 0) no_team_wins++;
+    } else if (flags & DB_PRINT_CAT_MATCHES) {
+        db_print_one_match(&m);
     }
 
     return 0;
@@ -688,9 +748,28 @@ void db_set_match(struct match *m1)
             m.date != m1->date ||
             m.legend != m1->legend)
             db_update_match(m1);
-    } else
+    } else {
         db_add_match(m1);
 
+        // is this a team event?
+        struct category_data *cat = avl_get_category(m1->category);
+        if (cat && (cat->deleted & TEAM_EVENT)) {
+            struct match subm;
+            memset(&subm, 0, sizeof(subm));
+            subm.category = m1->category | (m1->number << MATCH_CATEGORY_SUB_SHIFT);
+            gint i = find_age_index(cat->category);
+            if (i >= 0) {
+                gint j;
+                for (j = 0; j < NUM_CAT_DEF_WEIGHTS && category_definitions[i].weights[j].weighttext[0]; j++) {
+                    subm.number = j + 1;
+                    subm.blue = m1->blue;
+                    subm.white = m1->white;
+                    //change_team_competitors_to_real_persons(subm.category, j+1, &subm.blue, &subm.white);
+                    db_add_match(&subm);
+                }
+            }
+        }
+    }
 
     // clear coach info
     if (m1->blue > 0 && m1->blue < 10000) {
@@ -723,9 +802,9 @@ void db_read_matches(void)
 
 void db_remove_matches(guint category)
 {
-    gchar buffer[100];
+    gchar buffer[256];
 
-    sprintf(buffer, "DELETE FROM matches WHERE \"category\"=%d", category);
+    sprintf(buffer, "DELETE FROM matches WHERE \"category\"&%d=%d", MATCH_CATEGORY_MASK, category);
                 
     db_exec(db_name, buffer, NULL, db_callback_matches);
 }
@@ -807,8 +886,8 @@ void db_read_matches_of_category(gint category)
 {
     gchar buffer[200];
 
-    sprintf(buffer, "SELECT * FROM matches WHERE \"category\"=%d",
-            category);
+    sprintf(buffer, "SELECT * FROM matches WHERE \"category\"&%d=%d",
+            MATCH_CATEGORY_MASK, category);
 
     db_exec(db_name, buffer, (gpointer)ADD_MATCH, db_callback_matches);
 }
@@ -892,7 +971,7 @@ struct match *db_next_matchXXX(gint category, gint tatami)
             "SELECT matches.* "
             "FROM matches, categories "
             "WHERE categories.\"tatami\"=%d AND categories.\"index\"=matches.\"category\" "
-            "AND categories.\"deleted\"=0 "
+            "AND categories.\"deleted\"&1=0 "
             "AND (matches.\"comment\"=%d OR matches.\"comment\"=%d)"
             "AND matches.\"forcedtatami\"=0",
             tatami, COMMENT_MATCH_1, COMMENT_MATCH_2);
@@ -908,7 +987,7 @@ struct match *db_next_matchXXX(gint category, gint tatami)
             "SELECT matches.* "
             "FROM matches, categories "
             "WHERE categories.\"tatami\"=%d AND categories.\"index\"=matches.\"category\" "
-            "AND categories.\"deleted\"=0 AND matches.\"comment\">%d "
+            "AND categories.\"deleted\"&1=0 AND matches.\"comment\">%d "
             "AND matches.\"forcedtatami\"=0",
             tatami, COMMENT_EMPTY);
     db_exec(db_name, buffer, (gpointer)DB_REMOVE_COMMENT, db_callback_matches);
@@ -924,7 +1003,7 @@ struct match *db_next_matchXXX(gint category, gint tatami)
             "WHERE EXISTS (SELECT * FROM categories WHERE "
             "categories.\"tatami\"=%d AND (matches.\"blue_points\">0 OR "
             "matches.\"white_points\">0) AND categories.\"index\"=matches.\"category\" "
-            "AND matches.\"comment\">%d AND categories.\"deleted\"=0 "
+            "AND matches.\"comment\">%d AND categories.\"deleted\"&1=0 "
             "AND matches.\"forcedtatami\"=0)",
             COMMENT_EMPTY, tatami, COMMENT_EMPTY);
     db_exec(db_name, buffer, 0, 0);
@@ -997,7 +1076,7 @@ struct match *db_next_matchXXX(gint category, gint tatami)
             "UPDATE matches SET \"comment\"=%d "
             "WHERE EXISTS (SELECT * FROM categories WHERE categories.\"tatami\"=%d AND "
             "categories.\"index\"=matches.\"category\" "
-            "AND categories.\"deleted\"=0 "
+            "AND categories.\"deleted\"&1=0 "
             "AND (matches.\"comment\"=%d OR matches.\"comment\"=%d) "
             "AND matches.\"forcedtatami\"=0)",
             COMMENT_EMPTY, tatami, COMMENT_MATCH_1, COMMENT_MATCH_2);
@@ -1034,7 +1113,7 @@ struct match *db_next_matchXXX(gint category, gint tatami)
             "SELECT matches.* "
             "FROM matches, categories "
             "WHERE categories.\"tatami\"=%d AND categories.\"index\"=matches.\"category\" "
-            "AND categories.\"deleted\"=0 AND matches.\"comment\">%d "
+            "AND categories.\"deleted\"&1=0 AND matches.\"comment\">%d "
             "AND matches.\"forcedtatami\"=0",
             tatami, COMMENT_EMPTY);
     db_exec(db_name, buffer, (gpointer)ADD_MATCH, db_callback_matches);
@@ -1096,11 +1175,11 @@ struct match *db_next_match(gint category, gint tatami)
     db_cmd((gpointer)SAVE_MATCH, db_callback_matches,
 	   "SELECT matches.* "
 	   "FROM matches, categories "
-	   "WHERE categories.\"tatami\"=%d AND categories.\"index\"=matches.\"category\" "
-	   "AND categories.\"deleted\"=0 "
+	   "WHERE categories.\"tatami\"=%d AND categories.\"index\"=matches.\"category\"&%d "
+	   "AND categories.\"deleted\"&1=0 "
 	   "AND (matches.\"comment\"=%d OR matches.\"comment\"=%d)"
 	   "AND matches.\"forcedtatami\"=0",
-	   tatami, COMMENT_MATCH_1, COMMENT_MATCH_2);
+	   tatami, MATCH_CATEGORY_MASK, COMMENT_MATCH_1, COMMENT_MATCH_2);
 
     db_cmd((gpointer)SAVE_MATCH, db_callback_matches,
 	   "SELECT * FROM matches WHERE \"forcedtatami\"=%d "
@@ -1111,10 +1190,10 @@ struct match *db_next_match(gint category, gint tatami)
     db_cmd((gpointer)DB_REMOVE_COMMENT, db_callback_matches,
 	   "SELECT matches.* "
 	   "FROM matches, categories "
-	   "WHERE categories.\"tatami\"=%d AND categories.\"index\"=matches.\"category\" "
-	   "AND categories.\"deleted\"=0 AND matches.\"comment\">%d "
+	   "WHERE categories.\"tatami\"=%d AND categories.\"index\"=matches.\"category\"&%d "
+	   "AND categories.\"deleted\"&1=0 AND matches.\"comment\">%d "
 	   "AND matches.\"forcedtatami\"=0",
-	   tatami, COMMENT_EMPTY);
+	   tatami, MATCH_CATEGORY_MASK, COMMENT_EMPTY);
 
     db_cmd((gpointer)DB_REMOVE_COMMENT, db_callback_matches,
 	   "SELECT * FROM matches WHERE \"forcedtatami\"=%d "
@@ -1126,10 +1205,10 @@ struct match *db_next_match(gint category, gint tatami)
 	   "UPDATE matches SET \"comment\"=%d "
 	   "WHERE EXISTS (SELECT * FROM categories WHERE "
 	   "categories.\"tatami\"=%d AND (matches.\"blue_points\">0 OR "
-	   "matches.\"white_points\">0) AND categories.\"index\"=matches.\"category\" "
-	   "AND matches.\"comment\">%d AND categories.\"deleted\"=0 "
+	   "matches.\"white_points\">0) AND categories.\"index\"=matches.\"category\"&%d "
+	   "AND matches.\"comment\">%d AND categories.\"deleted\"&1=0 "
 	   "AND matches.\"forcedtatami\"=0)",
-	   COMMENT_EMPTY, tatami, COMMENT_EMPTY);
+	   COMMENT_EMPTY, tatami, MATCH_CATEGORY_MASK, COMMENT_EMPTY);
 
     db_cmd(NULL, NULL,
 	   "UPDATE matches SET \"comment\"=%d "
@@ -1240,11 +1319,11 @@ struct match *db_next_match(gint category, gint tatami)
     db_cmd(NULL, NULL,
 	   "UPDATE matches SET \"comment\"=%d "
 	   "WHERE EXISTS (SELECT * FROM categories WHERE categories.\"tatami\"=%d AND "
-	   "categories.\"index\"=matches.\"category\" "
-	   "AND categories.\"deleted\"=0 "
+	   "categories.\"index\"=matches.\"category\"&%d "
+	   "AND categories.\"deleted\"&1=0 "
 	   "AND (matches.\"comment\"=%d OR matches.\"comment\"=%d) "
 	   "AND matches.\"forcedtatami\"=0)",
-	   COMMENT_EMPTY, tatami, COMMENT_MATCH_1, COMMENT_MATCH_2);
+	   COMMENT_EMPTY, tatami, MATCH_CATEGORY_MASK, COMMENT_MATCH_1, COMMENT_MATCH_2);
 
     db_cmd(NULL, NULL,
 	   "UPDATE matches SET \"comment\"=%d "
@@ -1274,10 +1353,10 @@ struct match *db_next_match(gint category, gint tatami)
     db_cmd((gpointer)ADD_MATCH, db_callback_matches,
 	   "SELECT matches.* "
 	   "FROM matches, categories "
-	   "WHERE categories.\"tatami\"=%d AND categories.\"index\"=matches.\"category\" "
-	   "AND categories.\"deleted\"=0 AND matches.\"comment\">%d "
+	   "WHERE categories.\"tatami\"=%d AND categories.\"index\"=matches.\"category\"&%d "
+	   "AND categories.\"deleted\"&1=0 AND matches.\"comment\">%d "
 	   "AND matches.\"forcedtatami\"=0",
-	   tatami, COMMENT_EMPTY);
+	   tatami, MATCH_CATEGORY_MASK, COMMENT_EMPTY);
 
     db_cmd((gpointer)ADD_MATCH, db_callback_matches,
 	   "SELECT * FROM matches "
@@ -1388,11 +1467,11 @@ void db_set_comment(gint category, gint number, gint comment)
         sprintf(buffer, 
                 "SELECT matches.* "
                 "FROM matches, categories "
-                "WHERE categories.\"tatami\"=%d AND categories.\"index\"=matches.\"category\" "
-                "AND categories.\"deleted\"=0 "
+                "WHERE categories.\"tatami\"=%d AND categories.\"index\"=matches.\"category\"&%d "
+                "AND categories.\"deleted\"&1=0 "
                 "AND (matches.\"comment\"=%d OR matches.\"comment\"=%d) "
                 "AND matches.\"forcedtatami\"=0",
-                tatami, COMMENT_MATCH_1, COMMENT_MATCH_2);
+                tatami, MATCH_CATEGORY_MASK, COMMENT_MATCH_1, COMMENT_MATCH_2);
         db_exec(db_name, buffer, (gpointer)SAVE_MATCH, db_callback_matches);
         sprintf(buffer, 
                 "SELECT * FROM matches WHERE \"forcedtatami\"=%d "
@@ -1404,10 +1483,10 @@ void db_set_comment(gint category, gint number, gint comment)
         sprintf(buffer, 
                 "UPDATE matches SET \"comment\"=%d "
                 "WHERE EXISTS (SELECT * FROM categories WHERE categories.\"tatami\"=%d AND "
-                "categories.\"index\"=matches.\"category\" "
-                "AND categories.\"deleted\"=0 AND matches.\"comment\"=%d "
+                "categories.\"index\"=matches.\"category\"&%d "
+                "AND categories.\"deleted\"&1=0 AND matches.\"comment\"=%d "
                 "AND matches.\"forcedtatami\"=0)",
-                COMMENT_EMPTY, tatami, comment);
+                COMMENT_EMPTY, tatami, MATCH_CATEGORY_MASK, comment);
         db_exec(db_name, buffer, 0, 0);
 
         sprintf(buffer, 
@@ -1606,3 +1685,106 @@ void update_next_matches_coach_info(void)
     }
 }
 
+void db_event_matches_update(guint category)
+{
+    gint number = category >> MATCH_CATEGORY_SUB_SHIFT;
+    gint category1 = category & MATCH_CATEGORY_MASK;
+    team1_wins = team2_wins = no_team_wins = 0;
+    db_exec_str(gint_to_ptr(DB_FIND_TEAM_WINNER), db_callback_matches,
+                "SELECT * FROM matches WHERE \"category\"=%d",
+                category);
+
+    if (no_team_wins || (team1_wins == team2_wins)) {
+        db_exec_str(NULL, NULL,
+                    "UPDATE matches SET \"blue_points\"=0, \"white_points\"=0 "
+                    "WHERE \"category\"=%d AND \"number\"=%d",
+                    category1, number);
+    } else  if (team1_wins > team2_wins) {
+        db_exec_str(NULL, NULL,
+                    "UPDATE matches SET \"blue_points\"=10 "
+                    "WHERE \"category\"=%d AND \"number\"=%d",
+                    category1, number);
+    } else {
+        db_exec_str(NULL, NULL,
+                    "UPDATE matches SET \"white_points\"=10 "
+                    "WHERE \"category\"=%d AND \"number\"=%d",
+                    category1, number);
+    }
+}
+
+static FILE *matches_file = NULL;
+
+static void db_print_one_match(struct match *m)
+{
+    if (m->blue_points == 0 && m->white_points == 0)
+        return;
+
+    struct judoka *j1 = get_data(m->blue);
+    struct judoka *j2 = get_data(m->white);
+    if (j1 == NULL || j2 == NULL)
+        goto out;
+
+    if (m->category & MATCH_CATEGORY_SUB_MASK)
+        fprintf(matches_file, 
+                "<tr><td>%d/%d</td>", m->category >> MATCH_CATEGORY_SUB_SHIFT, m->number);
+    else 
+        fprintf(matches_file, 
+                "<tr><td>%d</td>", m->number);
+
+    fprintf(matches_file, 
+            "<td onclick=\"top.location.href='%d.html'\" "
+            "style=\"cursor: pointer\">%s %s</td>"
+
+            "<td class=\"%s\">%d%d%d/%d%s</td>"
+            "<td align=\"center\">%d - %d</td>"
+            "<td class=\"%s\">%d%d%d/%d%s</td>"
+
+            "<td onclick=\"top.location.href='%d.html'\" "
+            "style=\"cursor: pointer\">%s %s</td>"
+
+            "<td>%d:%02d</td></tr>\r\n",
+            j1->index,
+            utf8_to_html(firstname_lastname() ? j1->first : j1->last), 
+            utf8_to_html(firstname_lastname() ? j1->last : j1->first),
+
+            prop_get_int_val(PROP_WHITE_FIRST) ? "wscore" : "bscore",
+            (m->blue_score>>16)&15, (m->blue_score>>12)&15, (m->blue_score>>8)&15, 
+            m->blue_score&7, m->blue_score&8?"H":"",
+
+            m->blue_points,
+            m->white_points, 
+
+            prop_get_int_val(PROP_WHITE_FIRST) ? "bscore" : "wscore",
+            (m->white_score>>16)&15, (m->white_score>>12)&15, (m->white_score>>8)&15, 
+            m->white_score&7, m->white_score&8?"H":"",
+
+            j2->index,
+            utf8_to_html(firstname_lastname() ? j2->first : j2->last), 
+            utf8_to_html(firstname_lastname() ? j2->last : j2->first), m->match_time/60, m->match_time%60);
+
+ out:
+    free_judoka(j1);
+    free_judoka(j2);
+}
+
+void db_print_category_matches(struct category_data *catdata, FILE *f)
+{
+    matches_file = f;
+
+    if (catdata->deleted & TEAM_EVENT)
+        db_exec_str(gint_to_ptr(DB_PRINT_CAT_MATCHES), db_callback_matches,
+                    "SELECT * FROM matches WHERE \"category\"&%d=%d AND \"category\"&%d>0", 
+                    MATCH_CATEGORY_MASK, catdata->index, MATCH_CATEGORY_SUB_MASK);
+    else
+        db_exec_str(gint_to_ptr(DB_PRINT_CAT_MATCHES), db_callback_matches,
+                    "SELECT * FROM matches WHERE \"category\"=%d", catdata->index);
+}
+
+void db_change_competitor(gint category, gint number, gboolean is_blue, gint index)
+{
+    db_exec_str(NULL, NULL,
+                "UPDATE matches SET \"%s\"=%d "
+                "WHERE \"category\"=%d AND \"number\"=%d",
+                is_blue ? "blue" : "white", index,
+                category, number);
+}

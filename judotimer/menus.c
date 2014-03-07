@@ -193,7 +193,7 @@ static void change_menu_label(GtkWidget *item, const gchar *new_text)
 static GtkWidget *menubar, *match, *preferences, *help, *matchmenu, *preferencesmenu, *helpmenu;
 static GtkWidget *separator1, *separator2, *quit, *viewlog, *showcomp_act, *show_video;
 static GtkWidget *match0, *match1, *match2, *match3, *match4, *match5, *gs;
-static GtkWidget *blue_wins, *white_wins, *red_background, *full_screen, *rules_no_koka;
+static GtkWidget *blue_wins, *white_wins, *red_background, *full_screen, *rules_no_koka, *hikiwake;
 static GtkWidget *rules_leave_points, *rules_stop_ippon, *whitefirst, *showcomp, *confirm_match;
 static GtkWidget *tatami_sel, *tatami_sel_none, *tatami_sel_1,  *tatami_sel_2,  *tatami_sel_3,  *tatami_sel_4;
 static GtkWidget *tatami_sel_5, *tatami_sel_6, *tatami_sel_7, *tatami_sel_8, *tatami_sel_9, *tatami_sel_10;
@@ -334,6 +334,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     white_wins = gtk_menu_item_new_with_label(_("Hantei: white wins"));
     hansokumake_blue = gtk_menu_item_new_with_label(_("Hansoku-make to blue"));
     hansokumake_white = gtk_menu_item_new_with_label(_("Hansoku-make to white"));
+    hikiwake = gtk_menu_item_new_with_label(_("Hikiwake"));
     clear_selection = gtk_menu_item_new_with_label(_("Clear selection"));
     switch_sides  = gtk_check_menu_item_new_with_label("Switch sides");
     separator2 = gtk_separator_menu_item_new();
@@ -354,6 +355,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_menu_shell_append (GTK_MENU_SHELL (matchmenu), white_wins);
     gtk_menu_shell_append (GTK_MENU_SHELL (matchmenu), hansokumake_blue);
     gtk_menu_shell_append (GTK_MENU_SHELL (matchmenu), hansokumake_white);
+    gtk_menu_shell_append (GTK_MENU_SHELL (matchmenu), hikiwake);
     gtk_menu_shell_append (GTK_MENU_SHELL (matchmenu), clear_selection);
     gtk_menu_shell_append (GTK_MENU_SHELL (matchmenu), switch_sides);
     gtk_menu_shell_append (GTK_MENU_SHELL (matchmenu), separator2);
@@ -374,6 +376,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     g_signal_connect(G_OBJECT(white_wins),  "activate", G_CALLBACK(voting_result), (gpointer)HANTEI_WHITE);
     g_signal_connect(G_OBJECT(hansokumake_blue), "activate", G_CALLBACK(voting_result), (gpointer)HANSOKUMAKE_BLUE);
     g_signal_connect(G_OBJECT(hansokumake_white), "activate", G_CALLBACK(voting_result), (gpointer)HANSOKUMAKE_WHITE);
+    g_signal_connect(G_OBJECT(hikiwake),    "activate", G_CALLBACK(voting_result), (gpointer)HIKIWAKE);
     g_signal_connect(G_OBJECT(clear_selection), "activate", G_CALLBACK(voting_result), (gpointer)CLEAR_SELECTION);
     g_signal_connect(G_OBJECT(switch_sides), "activate", G_CALLBACK(toggle_switch_sides), (gpointer)0);
 
@@ -856,6 +859,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
         change_menu_label(hansokumake_blue,  _("Hansoku-make to blue"));
         change_menu_label(hansokumake_white, _("Hansoku-make to white"));
     }
+    change_menu_label(hikiwake,          _("Hikiwake"));
     change_menu_label(clear_selection,   _("Clear selection"));
     change_menu_label(switch_sides,      _("Switch sides"));
 

@@ -197,9 +197,15 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
             }
 
             cairo_restore(c);
-				
-            matches_left += n;//catdata->match_count - catdata->matched_matches_count;
-            matches_time += n*mt;
+
+            gint mul = 1;
+            if (catdata->deleted & TEAM_EVENT) {
+                mul = find_num_weight_classes(catdata->category);
+                if (mul == 0) mul = 1;
+            }
+
+            matches_left += n*mul;//catdata->match_count - catdata->matched_matches_count;
+            matches_time += n*mt*mul;
 
             struct judoka *j = get_data(catdata->index);
             if (j) {
@@ -226,7 +232,7 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
 
         loop:
             catdata = catdata->next;
-        }
+        } // while cat queue
 
         cairo_save(c);
         cairo_set_line_width(c, THICK_LINE);
@@ -280,7 +286,7 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
             cairo_stroke(c);
             cairo_restore(c);
         }
-    }
+    } // for tatamis
 
     cairo_save(c);
     cairo_set_line_width(c, THICK_LINE);
@@ -558,7 +564,7 @@ static gboolean cannot_move_category(gint cat) {
 
     for (i = 1; i <= NUM_TATAMIS; i++) {
         struct match *m = get_cached_next_matches(i);
-        if (m[0].category == cat && m[0].number < 1000 &&
+        if ((m[0].category & MATCH_CATEGORY_MASK) == cat && m[0].number < 1000 &&
             (m[0].blue >= COMPETITOR || m[0].white >= COMPETITOR))
             return TRUE;
     }

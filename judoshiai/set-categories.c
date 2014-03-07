@@ -590,6 +590,50 @@ struct offial_category official_categories[NUM_DRAWS][2][10] = {
 struct cat_def category_definitions[NUM_CATEGORIES];
 gint num_categories = 0;
 
+static gint find_cat_data_index(const gchar *category)
+{
+    gint i;
+    for (i = 0; i < num_categories; i++)
+        if (strcmp(category_definitions[i].agetext, category) == 0)
+            return i;
+    return -1;
+}
+
+static gint find_cat_data_index_by_index(gint index)
+{
+    gint r = -1;
+    struct judoka *j = get_data(index);
+    if (j) r = find_cat_data_index(j->last);
+    free_judoka(j);
+    return r;
+}
+
+gint find_num_weight_classes(const gchar *category)
+{
+    gint j, i = find_cat_data_index(category);
+    if (i < 0) return 0;
+    for (j = 0; j < NUM_CAT_DEF_WEIGHTS && category_definitions[i].weights[j].weighttext[0]; j++) ;
+    return j;
+}
+
+gchar *get_weight_class_name(const gchar *category, gint num)
+{
+    gint j, i = find_cat_data_index(category);
+    if (i < 0) return NULL;
+    if (num < 0 || num >= NUM_CAT_DEF_WEIGHTS) return NULL;
+    gchar *r = category_definitions[i].weights[num].weighttext;
+    return r[0] == 0 ? NULL : r;
+}
+
+gchar *get_weight_class_name_by_index(gint index, gint num)
+{
+    gint j, i = find_cat_data_index_by_index(index);
+    if (i < 0) return NULL;
+    if (num < 0 || num >= NUM_CAT_DEF_WEIGHTS) return NULL;
+    gchar *r = category_definitions[i].weights[num].weighttext;
+    return r[0] == 0 ? NULL : r;
+}
+
 gint find_age_index(const gchar *category)
 {
     gint i, male = -1, female = -1;

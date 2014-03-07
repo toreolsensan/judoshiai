@@ -68,7 +68,7 @@ static GtkWidget *menubar,
     *competitor_new, *competitor_search, *competitor_select_from_tournament, *competitor_add_from_text_file,
     *competitor_add_all_from_shiai, *competitor_update_weights, *competitor_remove_unweighted,
     *competitor_restore_removed, *competitor_bar_code_search, *competitor_print_weigh_notes, *competitor_print_with_template,
-    *category_new, *category_remove_empty, *category_create_official, 
+    *category_new, *category_team_new, *category_team_event_new, *category_remove_empty, *category_create_official, 
     *category_print_all, *category_print_all_pdf, *category_print_matches,
     *category_properties, *category_to_tatamis[NUM_TATAMIS],
     *draw_all_categories, 
@@ -211,6 +211,8 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
 
     /* Create the Category menu content. */
     category_new             = gtk_menu_item_new_with_label(_("New Category"));
+    category_team_event_new  = gtk_menu_item_new_with_label("");
+    category_team_new        = gtk_menu_item_new_with_label("");
     category_remove_empty    = gtk_menu_item_new_with_label(_("Remove Empty"));
     category_create_official = gtk_menu_item_new_with_label(_("Create Categories"));
     category_print_all       = gtk_menu_item_new_with_label(_("Print All"));
@@ -224,6 +226,8 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     }
 
     gtk_menu_shell_append(GTK_MENU_SHELL(categories_menu), category_new);
+    gtk_menu_shell_append(GTK_MENU_SHELL(categories_menu), category_team_event_new);
+    gtk_menu_shell_append(GTK_MENU_SHELL(categories_menu), category_team_new);
     gtk_menu_shell_append(GTK_MENU_SHELL(categories_menu), gtk_separator_menu_item_new());
     gtk_menu_shell_append(GTK_MENU_SHELL(categories_menu), category_remove_empty);
     gtk_menu_shell_append(GTK_MENU_SHELL(categories_menu), category_create_official);
@@ -238,6 +242,8 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
         gtk_menu_shell_append(GTK_MENU_SHELL(categories_menu), category_to_tatamis[i]);
 
     g_signal_connect(G_OBJECT(category_new),             "activate", G_CALLBACK(new_regcategory), 0);
+    g_signal_connect(G_OBJECT(category_team_new),        "activate", G_CALLBACK(new_regcategory), (gpointer)1);
+    g_signal_connect(G_OBJECT(category_team_event_new),  "activate", G_CALLBACK(new_regcategory), (gpointer)2);
     g_signal_connect(G_OBJECT(category_remove_empty),    "activate", G_CALLBACK(remove_empty_regcategories), 0);
     g_signal_connect(G_OBJECT(category_create_official), "activate", G_CALLBACK(create_categories), 0);
     g_signal_connect(G_OBJECT(category_print_all),       "activate", G_CALLBACK(print_doc), 
@@ -686,6 +692,8 @@ void set_menu_active(void)
     //SET_SENSITIVE(competitor_print_with_template , DB_OK);
 
     SET_SENSITIVE(category_new            , DB_OK);
+    SET_SENSITIVE(category_team_new       , DB_OK);
+    SET_SENSITIVE(category_team_event_new , DB_OK);
     SET_SENSITIVE(category_remove_empty   , DB_OK);
     SET_SENSITIVE(category_create_official, DB_OK);
     SET_SENSITIVE(category_print_all      , DB_OK);
@@ -744,6 +752,8 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     //change_menu_label(competitor_print_with_template , _("Print Competitors With Template"));
 
     change_menu_label(category_new            , _("New Category"));
+    change_menu_label(category_team_new       , _("New Team"));
+    change_menu_label(category_team_event_new , _("New Team Category"));
     change_menu_label(category_remove_empty   , _("Remove Empty"));
     change_menu_label(category_create_official, _("Create Categories"));
     change_menu_label(category_print_all      , _("Print All"));

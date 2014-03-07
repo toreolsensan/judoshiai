@@ -220,9 +220,13 @@ static gint make_left_frame(FILE *f)
             gtk_tree_model_get(current_model, &iter,
                                COL_INDEX, &index,
                                -1);
+
+            struct category_data *catdata = avl_get_category(index);
+            gboolean team = catdata && (catdata->deleted & TEAM);
+
             j = get_data(index);
             if (j) {
-                if (j->last && j->last[0] != '?' && j->last[0] != '_') {
+                if (j->last && j->last[0] != '?' && j->last[0] != '_' && team == FALSE) {
                     if (!automatic_web_page_update) {
                         fprintf(f, 
                                 "<tr><td class=\"categorylinksleft\"><a href=\"%s.html\">%s</a></td>"
@@ -237,7 +241,7 @@ static gint make_left_frame(FILE *f)
                     }
                 }
                 free_judoka(j);
-            }
+            } // j
         }
 
         ok = gtk_tree_model_iter_next(current_model, &iter);
@@ -715,7 +719,7 @@ void write_html(gint cat)
         }
     }
 
-    fprintf(f, "  </table></td>\r\n");
+    fprintf(f, "  </table><br><a href=\"%d.html\" class=\"dflt\">%s</a>\r\n</td>\r\n", cat, _("Matches"));
 
     make_bottom_frame(f);
     fclose(f);
@@ -899,6 +903,22 @@ void write_comp_stat(gint index)
     make_top_frame(f);
     make_left_frame(f);
 
+    struct category_data *catdata = NULL;
+    if (index >= 10000) catdata = avl_get_category(index);
+    if (catdata) {
+        fprintf(f, "<td valign=\"top\"><table class=\"compstat\">"
+                "<tr><th colspan=\"7\">%s</th></tr>\r\n"
+                "<tr><td class=\"cshdr\">#<td class=\"cshdr\">%s<td class=\"cshdr\">IWY/S"
+                "<td align=\"center\" class=\"cshdr\">%s<td class=\"cshdr\">IWY/S"
+                "<td class=\"cshdr\">%s<td class=\"cshdr\">%s</tr>\r\n",
+                j->last,
+                _T(name), _T(points), _T(name), _T(time));
+        
+        db_print_category_matches(catdata, f);
+
+        goto end_cat;
+    }
+
     fprintf(f, "<td valign=\"top\"><table class=\"compstat\">"
             "<tr><th colspan=\"7\">%s %s, %s</th></tr>\r\n"
             "<tr><td class=\"cshdr\">%s<td class=\"cshdr\">%s<td class=\"cshdr\">IWY/S"
@@ -923,10 +943,14 @@ void write_comp_stat(gint index)
         gint blue = atoi(db_get_data(i, "blue"));
         gint white = atoi(db_get_data(i, "white"));
         gint cat = atoi(db_get_data(i, "category"));
+        struct category_data *catdata = avl_get_category(cat);
         struct judoka *j1 = get_data(blue);
         struct judoka *j2 = get_data(white);
         struct judoka *c = get_data(cat);
         if (j1 == NULL || j2 == NULL || c == NULL)
+            goto done;
+
+        if (catdata && (catdata->deleted & TEAM_EVENT) && (cat & MATCH_CATEGORY_SUB_MASK) == 0)
             goto done;
 
         gint blue_score = atoi(db_get_data(i, "blue_score"));
@@ -976,10 +1000,11 @@ void write_comp_stat(gint index)
 
     db_close_table();
 
+ end_cat:
     fprintf(f, "</table></td>");
 
     make_bottom_frame(f);
-out:
+ out:
     if (f)
         fclose(f);
     free_judoka(j);
@@ -1154,6 +1179,15 @@ void make_png_all(GtkWidget *w, gpointer data)
             snprintf(buf, sizeof(buf), "%s %d%%", _("Competitors:"), 100*i/saved_competitor_cnt);
             progress_show((gdouble)i/(gdouble)saved_competitor_cnt, buf);
             write_comp_stat(saved_competitors[i]);
+        }
+
+        /* category matches */
+        for (i = 1; i <= NUM_TATAMIS; i++) {
+            struct category_data *queue = &category_queue[i];
+            while (queue) {
+                write_comp_stat(queue->index);
+                queue = queue->next;
+            }
         }
 
         /* statistics */

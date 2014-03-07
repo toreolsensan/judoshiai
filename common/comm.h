@@ -73,6 +73,7 @@ enum message_types {
 #define MATCH_FLAG_JUDOGI_MASK   (MATCH_FLAG_JUDOGI1_OK | MATCH_FLAG_JUDOGI1_NOK | \
                                   MATCH_FLAG_JUDOGI2_OK | MATCH_FLAG_JUDOGI2_NOK)
 #define MATCH_FLAG_REPECHAGE     0x8000
+#define MATCH_FLAG_TEAM_EVENT    0x10000
 
 struct msg_next_match {
     int tatami;

@@ -48,6 +48,7 @@
 #define HANTEI_WHITE      2
 #define HANSOKUMAKE_BLUE  3
 #define HANSOKUMAKE_WHITE 4
+#define HIKIWAKE          5
 
 #define MODE_NORMAL 0
 #define MODE_MASTER 1
@@ -70,6 +71,7 @@ extern gboolean blue_wins_voting;
 extern gboolean white_wins_voting;
 extern gboolean hansokumake_to_blue;
 extern gboolean hansokumake_to_white;
+extern gboolean result_hikiwake;
 extern gint osaekomi_winner;
 extern gchar *installation_dir;
 extern gulong my_ip_address, node_ip_addr;
@@ -129,7 +131,7 @@ extern int clock_running(void);
 extern void show_message(char *cat1, char *blue1, char *white1,
                          char *cat2, char *blue2, char *white2, gint flags);
 extern void send_result(int bluepts[4], int whitepts[4], char blue_vote, char white_vote,
-			char blue_hansokumake, char white_hansokumake, gint legend);
+			char blue_hansokumake, char white_hansokumake, gint legend, gint hikiwake);
 extern void update_status(void);
 extern void reset(guint key, struct msg_next_match *msg);
 extern int get_match_time(void);

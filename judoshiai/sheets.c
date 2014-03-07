@@ -2757,15 +2757,25 @@ gboolean change_current_page(GtkWidget *sheet_page,
 
                         guint data;
                         if (i > 0) {
+                            popupdata.category = next_matches_info[t][0].catnum;
+                            popupdata.number = next_matches_info[t][0].matchnum;
+                            popupdata.is_blue = j == 0;
+                            data = i;
+                            /*
                             data = (next_matches_info[t][0].catnum << 18) | 
                                 (next_matches_info[t][0].matchnum << 5) | 
                                 (j == 0 ? 16 : 0) |
                                 i;
+                            */
                             set_points(NULL, gint_to_ptr(data));
                         } else if (next_matches_info[t][0].won_catnum >= 10000) {
                             gint wcat = next_matches_info[t][0].won_catnum;
                             gint wnum = next_matches_info[t][0].won_matchnum;
-                            data = (wcat << 18) | (wnum << 5);
+                            popupdata.category = wcat;
+                            popupdata.number = wnum;
+                            popupdata.is_blue = 0;
+                            data = 0;
+                            //data = (wcat << 18) | (wnum << 5);
                             set_points(NULL, gint_to_ptr(data));
                             db_set_comment(next_matches_info[t][1].catnum,
                                            next_matches_info[t][1].matchnum,

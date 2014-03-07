@@ -83,7 +83,7 @@ static int db_callback_categories(void *data, int argc, char **argv, char **azCo
 
     display_one_judoka(&j);
 
-    avl_set_category(j.index, j.last, j.belt, j.birthyear, category_system);
+    avl_set_category(j.index, j.last, j.belt, j.birthyear, category_system, j.deleted);
 
     return 0;
 }
@@ -97,14 +97,14 @@ void db_add_category(int num, struct judoka *j)
         g_print("%s: ERROR, num = %d\n", __FUNCTION__, num);
         return;
     }
-
+    g_print("add cat del=0x%x\n", j->deleted);
     db_exec_str(NULL, db_callback_categories, 
             "INSERT INTO categories VALUES ("
             "%d, \"%s\", %d, %d, %d, 0, 0, 0, 0, "
             "0, 0, 0, 0, 0, 0, 0, 0)", 
                 num, j->last, j->belt, j->deleted, j->birthyear);
 
-    avl_set_category(num, j->last, j->belt, j->birthyear, cs);
+    avl_set_category(num, j->last, j->belt, j->birthyear, cs, j->deleted);
 }
 
 void db_update_category(int num, struct judoka *j)
@@ -180,7 +180,7 @@ struct compsys db_get_system(gint num)
     char buffer[1000];
 
     BZERO(category_system);
-    sprintf(buffer, "SELECT * FROM categories WHERE \"index\"=%d", num);
+    sprintf(buffer, "SELECT * FROM categories WHERE \"index\"=%d", num & MATCH_CATEGORY_MASK);
 
     db_exec(db_name, buffer, (gpointer)DB_GET_SYSTEM, db_callback_categories);
 
@@ -191,7 +191,7 @@ gint db_get_tatami(gint num)
 {
     char buffer[128];
 
-    sprintf(buffer, "SELECT * FROM categories WHERE \"index\"=%d", num);
+    sprintf(buffer, "SELECT * FROM categories WHERE \"index\"=%d", num & MATCH_CATEGORY_MASK);
 
     db_exec(db_name, buffer, (gpointer)DB_GET_SYSTEM, db_callback_categories);
 
@@ -238,3 +238,111 @@ gint db_get_competitors_position(gint competitor, gint *catindex)
 
     return 0;
 }
+
+#define NUM_TEAM_MEMBERS 32
+static gint team_members[NUM_TEAM_MEMBERS];
+static gint num_team_members = 0;
+static gchar weighttexts[NUM_CAT_DEF_WEIGHTS][16];
+static gint num_weights = 0;
+
+static int db_callback_team_members(void *data, int argc, char **argv, char **azColName)
+{
+    gint i;
+
+    for (i = 0; i < argc; i++) {
+        g_print(" %s=%s\n", azColName[i], argv[i]);
+        if (IS(index) && num_team_members < NUM_TEAM_MEMBERS)
+            team_members[num_team_members++] = my_atoi(argv[i]);
+    }
+    return 0;
+}
+
+static int db_callback_weight_classes(void *data, int argc, char **argv, char **azColName)
+{
+    gint i;
+
+    for (i = 0; i < argc; i++) {
+        g_print(" %s=%s\n", azColName[i], argv[i]);
+        if (IS(weighttext) && num_weights < NUM_CAT_DEF_WEIGHTS)
+            snprintf(weighttexts[num_weights++], 16, "%s", argv[i]);
+    }
+    return 0;
+}
+
+void db_create_default_teams(gint index)
+{
+    num_team_members = num_weights = 0;
+    db_exec_str(NULL, db_callback_team_members,
+                "SELECT \"index\" FROM competitors WHERE EXISTS (SELECT * FROM categories "
+                "WHERE categories.\"index\"=%d AND categories.\"category\"=competitors.\"category\")",
+                index);
+    db_exec_str(NULL, db_callback_weight_classes,
+                "SELECT \"weighttext\" FROM catdef WHERE EXISTS (SELECT * FROM categories "
+                "WHERE categories.\"index\"=%d AND categories.\"category\"=catdef.\"agetext\")",
+                index);
+
+    if (num_weights == 0)
+        return;
+
+    struct compsys system;
+    system.numcomp = num_weights;
+    system.system = system.table = system.wishsys = 0;
+
+    gint i;
+    for (i = 0; i < num_team_members; i++) {
+        struct judoka *j1 = get_data(team_members[i]);
+        if (!j1) continue;
+
+        GtkTreeIter iter;
+        if (find_iter_category(&iter, j1->last)) {
+            g_print("team category %s exists already\n", j1->last);
+            continue;
+        }
+
+        struct judoka j;
+        memset(&j, 0, sizeof(j));
+        j.index = current_category_index++;
+        j.last = j1->last;
+        j.first = "";
+        j.birthyear = 0;
+        j.club = "";
+        j.country = "";
+        j.regcategory = "";
+        j.belt = 0;
+        j.weight = compress_system(system);
+        j.visible = FALSE;
+        j.category = "";
+        j.deleted = TEAM;
+        j.id = "";
+        j.comment = "";
+        j.coachid = "";
+
+        gint ret = display_one_judoka(&j);
+        if (ret >= 0) {
+            db_add_category(ret, &j);
+            db_set_system(ret, system);
+        }
+
+        j.visible = TRUE;
+        j.weight = 0;
+        j.deleted = 0;
+        j.club = j1->last;
+
+        gint k;
+        for (k = 0; k < num_weights; k++) {
+            j.index = current_index++;
+            j.first = weighttexts[k];
+            j.last = j1->last;
+            j.category = j1->last;
+            j.regcategory = weighttexts[k];
+
+            db_add_judoka(j.index, &j);
+            ret = display_one_judoka(&j);
+            if (ret >= 0) g_print("display_one_judoka returned %d\n", ret);
+        }
+
+        free_judoka(j1);
+    }
+
+}
+

@@ -202,6 +202,44 @@ static void category_cell_data_func (GtkTreeViewColumn *col,
     g_object_set(renderer, "text", buf, NULL);
 }
 
+static void number_cell_data_func (GtkTreeViewColumn *col,
+                                  GtkCellRenderer   *renderer,
+                                  GtkTreeModel      *model,
+                                  GtkTreeIter       *iter,
+                                  gpointer           user_data)
+{
+    gchar  buf[128];
+    gboolean visible;
+    guint number, cat;
+
+    gtk_tree_model_get(model, iter,
+                       COL_MATCH_CAT,    &cat,
+                       COL_MATCH_NUMBER, &number,
+                       COL_MATCH_VIS,    &visible, 
+                       -1);
+
+    if (visible) {
+        if (number & MATCH_CATEGORY_SUB_MASK) {
+            gchar *wcname = get_weight_class_name_by_index(cat, (number & MATCH_CATEGORY_MASK) - 1);
+            if (wcname)
+                g_snprintf(buf, sizeof(buf), "%d/%s",
+                           number >> MATCH_CATEGORY_SUB_SHIFT,
+                           wcname);
+            else
+                g_snprintf(buf, sizeof(buf), "%d/%d", 
+                           number >> MATCH_CATEGORY_SUB_SHIFT,
+                           number & MATCH_CATEGORY_MASK);
+        } else
+            g_snprintf(buf, sizeof(buf), "%d", number); 
+
+        g_object_set(renderer, "text", buf, NULL);
+    } else {
+        g_object_set(renderer, "text", "", NULL);
+    }
+
+}  
+
+
 static void group_cell_data_func (GtkTreeViewColumn *col,
                                   GtkCellRenderer   *renderer,
                                   GtkTreeModel      *model,
@@ -1544,9 +1582,12 @@ void send_next_matches(gint category, gint tatami, struct match *nm)
         if (cat && is_repechage(cat->system, nm[0].number))
             msg.u.next_match.flags |= MATCH_FLAG_REPECHAGE;
 
+        if (cat && (cat->deleted & TEAM_EVENT))
+            msg.u.next_match.flags |= MATCH_FLAG_TEAM_EVENT;
+
         if (!tatami)
             tatami = db_find_match_tatami(nm[0].category, nm[0].number);
-        g = get_data(nm[0].category);
+        g = get_data(nm[0].category & MATCH_CATEGORY_MASK);
         j1 = get_data(nm[0].blue);
         j2 = get_data(nm[0].white);
 
@@ -1561,7 +1602,7 @@ void send_next_matches(gint category, gint tatami, struct match *nm)
                 gint rest_time = msg.u.next_match.rest_time;
                 time_t now = time(NULL);
 
-                if (now < last_time + rest_time) {
+                if ((nm[0].category & MATCH_CATEGORY_SUB_MASK) == 0 && now < last_time + rest_time) {
                     msg.u.next_match.rest_time = last_time + rest_time;
                     if (last_time1 > last_time2)
                         msg.u.next_match.minutes |= MATCH_FLAG_BLUE_REST;
@@ -1574,9 +1615,18 @@ void send_next_matches(gint category, gint tatami, struct match *nm)
 
             msg.u.next_match.tatami = tatami;
 
-            snprintf(msg.u.next_match.cat_1, 
-                     sizeof(msg.u.next_match.cat_1),
-                     "%s", g->last);
+            if (nm[0].category & MATCH_CATEGORY_SUB_MASK) {
+                gint ix = find_age_index(g->last);
+                if (ix >= 0 && nm[0].number > 0 && nm[0].number < NUM_CAT_DEF_WEIGHTS) {
+                    snprintf(msg.u.next_match.cat_1, 
+                             sizeof(msg.u.next_match.cat_1),
+                             "%s", category_definitions[ix].weights[nm[0].number-1].weighttext);
+                }
+            } else
+                snprintf(msg.u.next_match.cat_1, 
+                         sizeof(msg.u.next_match.cat_1),
+                         "%s", g->last);
+
             snprintf(msg.u.next_match.blue_1, 
                      sizeof(msg.u.next_match.blue_1),
                      "%s\t%s\t%s\t%s", j1->last, j1->first, j1->country, j1->club);
@@ -1616,7 +1666,7 @@ void send_next_matches(gint category, gint tatami, struct match *nm)
         free_judoka(j2);
     } else {
         if (tatami == 0 && category) {
-            g = get_data(category);
+            g = get_data(category  & MATCH_CATEGORY_MASK);
             if (g) {
                 tatami = g->belt;
                 free_judoka(g);
@@ -1640,15 +1690,23 @@ void send_next_matches(gint category, gint tatami, struct match *nm)
     if (nm[1].number < 1000) {
         if (!tatami)
             tatami = db_find_match_tatami(nm[1].category, nm[1].number);
-        g = get_data(nm[1].category);
+        g = get_data(nm[1].category & MATCH_CATEGORY_MASK);
         j1 = get_data(nm[1].blue);
         j2 = get_data(nm[1].white);
 
         if (g) {
             gchar buf[100];
 
-            snprintf(msg.u.next_match.cat_2, sizeof(msg.u.next_match.cat_2),
-                     "%s", g->last);
+            if (nm[1].category & MATCH_CATEGORY_SUB_MASK) {
+                gint ix = find_age_index(g->last);
+                if (ix >= 0 && nm[1].number > 0 && nm[1].number < NUM_CAT_DEF_WEIGHTS) {
+                    snprintf(msg.u.next_match.cat_2, 
+                             sizeof(msg.u.next_match.cat_2),
+                             "%s", category_definitions[ix].weights[nm[1].number-1].weighttext);
+                }
+            } else
+                snprintf(msg.u.next_match.cat_2, sizeof(msg.u.next_match.cat_2),
+                         "%s", g->last);
             if (j1)
                 snprintf(msg.u.next_match.blue_2, sizeof(msg.u.next_match.blue_2),
                          "%s\t%s\t%s\t%s", j1->last, j1->first, j1->country, j1->club); 
@@ -1689,7 +1747,7 @@ void send_next_matches(gint category, gint tatami, struct match *nm)
         free_judoka(j2);
     } else {
         if (tatami == 0 && category) {
-            g = get_data(category);
+            g = get_data(category & MATCH_CATEGORY_MASK);
             if (g) {
                 tatami = g->belt;
                 free_judoka(g);
@@ -1718,6 +1776,13 @@ void update_matches(guint category, struct compsys sys, gint tatami)
     struct match *nm;
 
     if (category) {
+        struct category_data *catdata = avl_get_category(category);
+        if (catdata && (catdata->deleted & TEAM_EVENT)) {
+            db_event_matches_update(category);
+        }
+
+        category &= MATCH_CATEGORY_MASK;
+
         if (sys.system == 0)
             sys = db_get_system(category);
 
@@ -1810,22 +1875,32 @@ error:
     db_close_table();
 }
 
+struct popup_data popupdata;
+
 void set_points(GtkWidget *menuitem, gpointer userdata)
 {
     guint data = ptr_to_gint(userdata);
-    guint category = data >> 18;
-    guint number = (data >> 5) & 0x1fff;
-    gboolean is_blue = (data & 16) != 0;
+    guint category = popupdata.category;
+    guint number = popupdata.number;
+    gboolean is_blue = popupdata.is_blue;
     guint points = data & 0xf;
     struct compsys sys = db_get_system(category);
+    gboolean hikiwake = points == 11;
 
-    db_set_points(category, number, 0, 
-                  is_blue ? points : 0,
-                  is_blue ? 0 : points, 0, 0, 0);
+    if (hikiwake) {
+        db_set_points(category, number, 0, 1, 1, 0, 0, 0); 
+    } else {
+        db_set_points(category, number, 0, 
+                      is_blue ? points : 0,
+                      is_blue ? 0 : points, 0, 0, 0);
+    }
 
     db_read_match(category, number);
         
-    log_match(category, number, is_blue ? points : 0, is_blue ? 0 : points);
+    if (hikiwake)
+        log_match(category, number, 1, 1);
+    else 
+        log_match(category, number, is_blue ? points : 0, is_blue ? 0 : points);
 
     update_matches(category, sys, db_find_match_tatami(category, number));
 
@@ -1836,8 +1911,8 @@ void set_points(GtkWidget *menuitem, gpointer userdata)
     msg.u.set_points.category     = category;
     msg.u.set_points.number       = number;
     msg.u.set_points.sys          = sys.system;
-    msg.u.set_points.blue_points  = is_blue ? points : 0;
-    msg.u.set_points.white_points = is_blue ? 0 : points;
+    msg.u.set_points.blue_points  = hikiwake ? 1 : (is_blue ? points : 0);
+    msg.u.set_points.white_points = hikiwake ? 1 : (is_blue ? 0 : points);
     send_packet(&msg);
 
     db_force_match_number(category);
@@ -1909,7 +1984,7 @@ void set_points_and_score(struct message *msg)
             winscore = msg->u.result.blue_score;
             losescore = msg->u.result.white_score;
         }
-    } else if (msg->u.result.blue_vote == msg->u.result.white_vote)
+    } else if (msg->u.result.blue_vote == 0 && msg->u.result.white_vote == 0)
         return;
 
     if ((winscore & 0xffff0) != (losescore & 0xffff0)) {
@@ -1933,6 +2008,9 @@ void set_points_and_score(struct message *msg)
             white_pts = 1;
         else
             blue_pts = 1;
+    } else if (msg->u.result.blue_vote && msg->u.result.white_vote) { // hikiwake
+            blue_pts = 1;
+            white_pts = 1;
     } else {
         if (msg->u.result.blue_vote > msg->u.result.white_vote)
             blue_pts = 1;
@@ -2031,8 +2109,8 @@ static void view_match_popup_menu(GtkWidget *treeview,
 static void set_comment(GtkWidget *menuitem, gpointer userdata)
 {
     guint data = ptr_to_gint(userdata);
-    guint category = data>>16;
-    guint number = (data&0xfffc) >> 2;
+    guint category = popupdata.category;
+    guint number = popupdata.number;
     guint cmd = data & 0x3;
     struct compsys sys;
     sys = db_get_system(category);
@@ -2076,26 +2154,29 @@ static void view_next_match_popup_menu(GtkWidget *treeview,
 {
     GtkWidget *menu, *menuitem;
 
+    popupdata.category = category;
+    popupdata.number = number;
+
     menu = gtk_menu_new();
 
     menuitem = gtk_menu_item_new_with_label(_("Next match"));
     g_signal_connect(menuitem, "activate",
-                     (GCallback) set_comment, gint_to_ptr((category<<16)|(number<<2)|COMMENT_MATCH_1));
+                     (GCallback) set_comment, gint_to_ptr(COMMENT_MATCH_1));
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
 
     menuitem = gtk_menu_item_new_with_label(_("Preparing"));
     g_signal_connect(menuitem, "activate",
-                     (GCallback) set_comment, gint_to_ptr((category<<16)|(number<<2)|COMMENT_MATCH_2));
+                     (GCallback) set_comment, gint_to_ptr(COMMENT_MATCH_2));
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
 
     menuitem = gtk_menu_item_new_with_label(_("Delay the match"));
     g_signal_connect(menuitem, "activate",
-                     (GCallback) set_comment, gint_to_ptr((category<<16)|(number<<2)|COMMENT_WAIT));
+                     (GCallback) set_comment, gint_to_ptr(COMMENT_WAIT));
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
 
     menuitem = gtk_menu_item_new_with_label(_("Remove comment"));
     g_signal_connect(menuitem, "activate",
-                     (GCallback) set_comment, gint_to_ptr((category<<16)|(number<<2)));
+                     (GCallback) set_comment, gint_to_ptr(0));
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
 
     gtk_widget_show_all(menu);
@@ -2107,6 +2188,36 @@ static void view_next_match_popup_menu(GtkWidget *treeview,
                    gdk_event_get_time((GdkEvent*)event));
 }
 
+static void change_competitor(gint index, gpointer data)
+{
+    struct match *nm;
+    gint tatami = db_get_tatami(popupdata.category);
+
+    db_change_competitor(popupdata.category, popupdata.number, popupdata.is_blue, index);
+    db_read_match(popupdata.category, popupdata.number);
+
+    g_static_mutex_lock(&next_match_mutex);
+    nm = db_next_match(popupdata.category, tatami);
+    if (nm)
+        send_next_matches(popupdata.category, tatami, nm);
+    g_static_mutex_unlock(&next_match_mutex);
+
+    send_matches(tatami);
+}
+
+static void view_match_competitor_popup_menu(GtkWidget *treeview, 
+                                         GdkEventButton *event, 
+                                         guint category,
+                                         guint number,
+                                         gboolean is_blue)
+{
+    popupdata.category = category;
+    popupdata.number = number;
+    popupdata.is_blue = is_blue;
+
+    search_competitor_args(NULL, change_competitor, &popupdata);
+}
+
 static void view_match_points_popup_menu(GtkWidget *treeview, 
                                          GdkEventButton *event, 
                                          guint category,
@@ -2114,37 +2225,47 @@ static void view_match_points_popup_menu(GtkWidget *treeview,
                                          gboolean is_blue)
 {
     GtkWidget *menu, *menuitem;
-    guint data;
+    //guint data;
 
-    data = (category << 18) | (number << 5) | (is_blue ? 16: 0);
+    //data = (category << 18) | (number << 5) | (is_blue ? 16: 0);
+    popupdata.category = category;
+    popupdata.number = number;
+    popupdata.is_blue = is_blue;
 
     menu = gtk_menu_new();
 
     menuitem = gtk_menu_item_new_with_label("10");
     g_signal_connect(menuitem, "activate",
-                     (GCallback) set_points, gint_to_ptr(data + 10));
+                     (GCallback) set_points, gint_to_ptr(10));
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
     menuitem = gtk_menu_item_new_with_label("7");
     g_signal_connect(menuitem, "activate",
-                     (GCallback) set_points, gint_to_ptr(data + 7));
+                     (GCallback) set_points, gint_to_ptr(7));
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
     menuitem = gtk_menu_item_new_with_label("5");
     g_signal_connect(menuitem, "activate",
-                     (GCallback) set_points, gint_to_ptr(data + 5));
+                     (GCallback) set_points, gint_to_ptr(5));
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
     menuitem = gtk_menu_item_new_with_label("3");
     g_signal_connect(menuitem, "activate",
-                     (GCallback) set_points, gint_to_ptr(data + 3));
+                     (GCallback) set_points, gint_to_ptr(3));
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
     menuitem = gtk_menu_item_new_with_label("1");
     g_signal_connect(menuitem, "activate",
-                     (GCallback) set_points, gint_to_ptr(data + 1));
+                     (GCallback) set_points, gint_to_ptr(1));
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
     menuitem = gtk_menu_item_new_with_label("0");
     g_signal_connect(menuitem, "activate",
-                     (GCallback) set_points, gint_to_ptr(data));
+                     (GCallback) set_points, gint_to_ptr(0));
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
-        
+
+    if (category & MATCH_CATEGORY_SUB_MASK) {
+        menuitem = gtk_menu_item_new_with_label("Hikiwake");
+        g_signal_connect(menuitem, "activate",
+                         (GCallback) set_points, gint_to_ptr(11));
+        gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
+    }
+
     gtk_widget_show_all(menu);
 
     gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL,
@@ -2242,8 +2363,10 @@ static gboolean view_onButtonPressed(GtkWidget *treeview,
         GtkTreeModel *model;
         GtkTreeIter iter;
         GtkTreeViewColumn *col, *blue_pts_col, *white_pts_col, *blue_score_col, *white_score_col;
+        GtkTreeViewColumn *blue_col, *white_col;
         guint category, number, blue, white, w, b, blue_score, white_score;
         gboolean visible, handled = FALSE;
+        guint category1, number1;
 
         if (gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(treeview),
                                           (gint) event->x, 
@@ -2263,6 +2386,8 @@ static gboolean view_onButtonPressed(GtkWidget *treeview,
                                COL_MATCH_BLUE, &b,
                                COL_MATCH_WHITE, &w,
                                -1);
+            category1 = category | (number & MATCH_CATEGORY_SUB_MASK);
+            number1 = number & MATCH_CATEGORY_MASK;
 
             if (category == 0) {
                 if (event->button == 3) {
@@ -2281,47 +2406,61 @@ static gboolean view_onButtonPressed(GtkWidget *treeview,
             white_pts_col = gtk_tree_view_get_column (GTK_TREE_VIEW(treeview), COL_MATCH_WHITE_POINTS);
             blue_score_col = gtk_tree_view_get_column (GTK_TREE_VIEW(treeview), COL_MATCH_BLUE_SCORE);
             white_score_col = gtk_tree_view_get_column (GTK_TREE_VIEW(treeview), COL_MATCH_WHITE_SCORE);
+            blue_col = gtk_tree_view_get_column (GTK_TREE_VIEW(treeview), COL_MATCH_BLUE);
+            white_col = gtk_tree_view_get_column (GTK_TREE_VIEW(treeview), COL_MATCH_WHITE);
 
             if (!visible && event->button == 3) {
                 view_match_popup_menu(treeview, event, 
-                                      category,
-                                      number,
+                                      category1,
+                                      number1,
                                       visible);
+                handled = TRUE;
+            } else if (visible && event->button == 3 && col == blue_col && (number & MATCH_CATEGORY_SUB_MASK)) { 
+                view_match_competitor_popup_menu(treeview, event, 
+                                                 category1,
+                                                 number1,
+                                                 TRUE);
+                handled = TRUE;
+            } else if (visible && event->button == 3 && col == white_col && (number & MATCH_CATEGORY_SUB_MASK)) { 
+                view_match_competitor_popup_menu(treeview, event, 
+                                                 category1,
+                                                 number1,
+                                                 FALSE);
                 handled = TRUE;
             } else if (visible && event->button == 3 && col == blue_pts_col 
                        /*&&
                          b != GHOST && w != GHOST*/) {
                 view_match_points_popup_menu(treeview, event, 
-                                             category,
-                                             number,
+                                             category1,
+                                             number1,
                                              TRUE);
                 handled = TRUE;
             } else if (visible && event->button == 3 && col == white_pts_col 
                        /*&&
                          b != GHOST && w != GHOST*/) {
                 view_match_points_popup_menu(treeview, event, 
-                                             category,
-                                             number,
+                                             category1,
+                                             number1,
                                              FALSE);
                 handled = TRUE;
             } else if (visible && event->button == 3 && col == blue_score_col) {
                 view_match_score_popup_menu(treeview, event, 
-                                            category,
-                                            number,
+                                            category1,
+                                            number1,
                                             blue_score,
                                             TRUE);
                 handled = TRUE;
             } else if (visible && event->button == 3 && col == white_score_col) {
                 view_match_score_popup_menu(treeview, event, 
-                                            category,
-                                            number,
+                                            category1,
+                                            number1,
                                             white_score,
                                             FALSE);
                 handled = TRUE;
             } else if (visible && event->button == 3 && b != GHOST && w != GHOST) {
                 view_next_match_popup_menu(treeview, event, 
-                                           category,
-                                           number,
+                                           category1,
+                                           number1,
                                            visible);
                 handled = TRUE;
             }
@@ -2434,6 +2573,9 @@ static GtkWidget *create_view_and_model(void)
                                                              COL_MATCH_VIS,
                                                              NULL);
     col = gtk_tree_view_get_column (GTK_TREE_VIEW (view), col_offset - 1);
+    gtk_tree_view_column_set_cell_data_func(col, renderer, 
+                                            number_cell_data_func, 
+                                            NULL, NULL);
 
     /* --- Column blue --- */
 
@@ -2766,11 +2908,24 @@ void set_match(struct match *m)
     GtkTreeModel *model;
     gboolean ok, iter_set = FALSE;
     gint grp = -1, num = -1;
+    struct match m1 = *m;
 
     set_competitor_position_drawn(m->blue);
     set_competitor_position_drawn(m->white);
-
+    
     g_static_mutex_lock(&set_match_mutex);
+
+    struct category_data *c = avl_get_category(m->category & MATCH_CATEGORY_MASK);
+    if (c && (c->deleted & TEAM_EVENT)) { // team event
+        if (m->category & MATCH_CATEGORY_SUB_MASK) {
+            m1.category = m->category & MATCH_CATEGORY_MASK;
+            m1.number = m->number | (m->category & MATCH_CATEGORY_SUB_MASK);
+        } else {
+            g_static_mutex_unlock(&set_match_mutex);
+            return;
+        }
+    }
+    m = &m1;
 
     /* Find info about category */
     if (find_iter(&cat, m->category) == FALSE) {

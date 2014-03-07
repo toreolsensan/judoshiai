@@ -362,7 +362,7 @@ struct compsys get_cat_system(gint index)
     if (catdata)
         return catdata->system;
 
-    return db_get_system(index);
+    return db_get_system(index & MATCH_CATEGORY_MASK);
 }
 
 #define COMPETITORS_MASK   0x0000ffff

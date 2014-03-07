@@ -142,7 +142,7 @@ static gint compare_categories_order(struct category_data *cat1, struct category
 void set_category_to_queue(struct category_data *data)
 {
     struct category_data *queue;
-	
+
     /* Remove from the old queue */
     if (data->prev) {
         struct category_data *p = data->prev;
@@ -155,7 +155,7 @@ void set_category_to_queue(struct category_data *data)
         }
     }
 
-    if (data->deleted) {
+    if (data->deleted & DELETED) {
         data->next = data->prev = NULL;
         return;
     }
@@ -183,7 +183,7 @@ void set_category_to_queue(struct category_data *data)
 }
 
 void avl_set_category(gint index, const gchar *category, gint tatami, 
-                      gint group, struct compsys system)
+                      gint group, struct compsys system, gint deleted)
 {
     struct category_data *data;
     void *data1;
@@ -200,6 +200,7 @@ void avl_set_category(gint index, const gchar *category, gint tatami,
     data->group = group;
     data->system = system;
     data->rest_time = get_category_rest_time(category);
+    data->deleted = deleted;
 
     if (avl_get_by_key(categories_tree, data, &data1) == 0) {
         /* data exists */
@@ -263,7 +264,7 @@ struct category_data *avl_get_category(gint index)
     if (!categories_tree)
         return NULL;
 
-    data.index = index;
+    data.index = index & MATCH_CATEGORY_MASK;
     if (avl_get_by_key(categories_tree, &data, &data1) == 0) {
         return data1;
     }

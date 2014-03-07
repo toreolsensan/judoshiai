@@ -307,13 +307,13 @@ void update_clock(void)
                     gint len = strlen(matchlist);
                     if (current_match <= len) {
                         if (matchlist[current_match-1] == '1')
-                            send_result(res[0][0], res[0][1], 0, 0, 0, 0, 0);
+                            send_result(res[0][0], res[0][1], 0, 0, 0, 0, 0, 0);
                         else
-                            send_result(res[1][0], res[1][1], 0, 0, 0, 0, 0);
+                            send_result(res[1][0], res[1][1], 0, 0, 0, 0, 0, 0);
                     }
                 } else {
                     gint ix = (current_category + current_match) & 7;
-                    send_result(res[ix][0], res[ix][1], 0, 0, 0, 0, (ix&3)==2 ? 0x100 + ix : ix);
+                    send_result(res[ix][0], res[ix][1], 0, 0, 0, 0, (ix&3)==2 ? 0x100 + ix : ix, 0);
                 }
                 last_cat = current_category;
                 last_num = current_match;
@@ -862,7 +862,7 @@ void reset(guint key, struct msg_next_match *msg)
     }
 
     if (key == GDK_9 ||
-        (demo == 0 && bp == wp &&
+        (demo == 0 && bp == wp && result_hikiwake == FALSE &&
          blue_wins_voting == white_wins_voting &&
          total > 0.0 && st[0].elap >= total && key != GDK_0)) {
         asking = TRUE;
@@ -890,10 +890,14 @@ void reset(guint key, struct msg_next_match *msg)
         memset(&msg, 0, sizeof(msg));
         msg.type = MSG_UPDATE_LABEL;
         msg.u.update_label.label_num = START_WINNER;
-        snprintf(msg.u.update_label.text, sizeof(msg.u.update_label.text), 
-                 "%s\t%s\t\t", 
-                 winner == BLUE ? saved_last1 : saved_last2,
-                 winner == BLUE ? saved_first1 : saved_first2);
+        if (result_hikiwake)
+            snprintf(msg.u.update_label.text, sizeof(msg.u.update_label.text), 
+                     "%s\t\t\t", _("Hikiwake"));
+        else
+            snprintf(msg.u.update_label.text, sizeof(msg.u.update_label.text), 
+                     "%s\t%s\t\t", 
+                     winner == BLUE ? saved_last1 : saved_last2,
+                     winner == BLUE ? saved_first1 : saved_first2);
         strncpy(msg.u.update_label.text2, saved_cat,
                 sizeof(msg.u.update_label.text2)-1);
         msg.u.update_label.text3[0] = winner;
@@ -941,12 +945,12 @@ void reset(guint key, struct msg_next_match *msg)
         if (sides_switched) {
             send_result(st[0].whitepts, st[0].bluepts,
                         white_wins_voting, blue_wins_voting,
-                        hansokumake_to_white, hansokumake_to_blue, legend);
+                        hansokumake_to_white, hansokumake_to_blue, legend, result_hikiwake);
             clear_switch_sides();
         } else
             send_result(st[0].bluepts, st[0].whitepts,
                         blue_wins_voting, white_wins_voting,
-                        hansokumake_to_blue, hansokumake_to_white, legend);
+                        hansokumake_to_blue, hansokumake_to_white, legend, result_hikiwake);
         st[0].match_time = 0;
         gs_cat = gs_num = 0;
     }
@@ -960,6 +964,7 @@ void reset(guint key, struct msg_next_match *msg)
     white_wins_voting = 0;
     hansokumake_to_blue = 0;
     hansokumake_to_white = 0;
+    if (key != GDK_0) result_hikiwake = 0;
     st[0].osaekomi_winner = 0;
     st[0].big_displayed = FALSE;
 

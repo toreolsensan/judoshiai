@@ -32,6 +32,7 @@ struct model_iter {
 #define NUM_WCLASSES 100
 #define NEW_JUDOKA 0x7ffffff1
 #define NEW_WCLASS 0x7ffffff2
+#define IS_NEW_WCLASS(_x) (_x >= NEW_WCLASS && _x <= NEW_WCLASS + 2)
 
 GtkWidget *competitor_dialog = NULL; 
 GtkWindow *bcdialog = NULL;
@@ -105,12 +106,13 @@ static void judoka_edited_callback(GtkWidget *widget,
     gchar *realcategory = NULL;
 
     weight_entry = NULL;
-
-    if (catdata)
-        system = catdata->system;
-
     memset(&edited, 0, sizeof(edited));
         
+    if (catdata) {
+        system = catdata->system;
+        edited.deleted = catdata->deleted & (TEAM | TEAM_EVENT);
+    }
+
     edited.index    = judoka_tmp->index;
     edited.visible  = judoka_tmp->visible;
     edited.category = judoka_tmp->category;
@@ -221,7 +223,7 @@ static void judoka_edited_callback(GtkWidget *widget,
         const gchar *lastname = edited.last;
 
         if (edited.first == NULL || edited.first[0] == 0)
-            edited.first = g_strdup("?");
+            edited.first = g_strdup(" ");
 
         const gchar *firstname = edited.first;
         gchar *letter = g_utf8_strup(firstname, 1);
@@ -255,7 +257,7 @@ static void judoka_edited_callback(GtkWidget *widget,
         }
 
         db_add_judoka(edited.index, &edited);
-    } else if (ix == NEW_WCLASS){
+    } else if (IS_NEW_WCLASS(ix)){
         edited.index = 0;
     } else {
         edited.index = ix;
@@ -263,6 +265,7 @@ static void judoka_edited_callback(GtkWidget *widget,
             db_update_judoka(edited.index, &edited);
         } else {
             /* update displayed category for competitors */
+            gboolean create_teams = (edited.deleted & HANSOKUMAKE) != 0;
             GtkTreeIter iter, comp;
             if (find_iter(&iter, ix)) {
                 gboolean ok = gtk_tree_model_iter_children(current_model, &comp, &iter);
@@ -273,9 +276,14 @@ static void judoka_edited_callback(GtkWidget *widget,
                                        -1);
                     ok = gtk_tree_model_iter_next(current_model, &comp);
                 }
-				
             }
-                        
+
+            // create default teams
+            edited.deleted &= ~HANSOKUMAKE;
+            if (create_teams) {
+                db_create_default_teams(edited.index);
+            }
+
             /* update database */
             db_update_category(edited.index, &edited);
             db_set_system(edited.index, system);
@@ -285,8 +293,12 @@ static void judoka_edited_callback(GtkWidget *widget,
     }
 
     ret = display_one_judoka(&edited);
-    if (ix == NEW_WCLASS && ret >= 0) {
+    if (IS_NEW_WCLASS(ix) && ret >= 0) {
         edited.index = ret;
+        if (ix == NEW_WCLASS+1)
+            edited.deleted |= TEAM;
+        else if (ix == NEW_WCLASS+2)
+            edited.deleted |= TEAM_EVENT;
         db_add_category(ret, &edited);
         db_set_system(ret, system);
     }
@@ -400,7 +412,7 @@ void view_on_row_activated(GtkTreeView        *treeview,
                            GtkTreeViewColumn  *col,
                            gpointer            userdata)
 {
-    GtkTreeModel *model;
+    GtkTreeModel *model = NULL;
     GtkTreeIter   iter;
     int i;
     GtkWidget *dialog, *table, *tmp;
@@ -413,7 +425,7 @@ void view_on_row_activated(GtkTreeView        *treeview,
 	*id = NULL,
         *comment = NULL,
         *coachid = NULL;
-    guint belt, index, birthyear;
+    guint belt, index = 0, birthyear;
     gint weight, seeding = 0, clubseeding = 0;
     gboolean visible;
     guint deleted;
@@ -637,34 +649,51 @@ void view_on_row_activated(GtkTreeView        *treeview,
         struct category_data *catdata = NULL;
         catdata = avl_get_category(index);
 
-        judoka_tmp->last = set_entry(table, 0, _("Category:"), last ? last : "");
+        if ((catdata && (catdata->deleted & TEAM)) ||
+            ptr_to_gint(userdata) == NEW_WCLASS+1) {
+            judoka_tmp->last = set_entry(table, 0, _("Team:"), last ? last : "");
+        } else {
+            judoka_tmp->last = set_entry(table, 0, _("Category:"), last ? last : "");
 
-        tmp = gtk_label_new(_("System:"));
-        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, 1, 2);
-        judoka_tmp->system = tmp = gtk_combo_box_new_text();
+            tmp = gtk_label_new(_("System:"));
+            gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, 1, 2);
+            judoka_tmp->system = tmp = gtk_combo_box_new_text();
 
-	for (i = 0; i < NUM_SYSTEMS; i++)
-	    gtk_combo_box_append_text(GTK_COMBO_BOX(tmp), get_system_name_for_menu(i));
+            for (i = 0; i < NUM_SYSTEMS; i++)
+                gtk_combo_box_append_text(GTK_COMBO_BOX(tmp), get_system_name_for_menu(i));
 
-        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, 1, 2);
-        gtk_combo_box_set_active(GTK_COMBO_BOX(tmp), 
-                                 catdata ? 
-                                 get_system_menu_selection(catdata->system.wishsys) :
-                                 CAT_SYSTEM_DEFAULT);
+            gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, 1, 2);
+            gtk_combo_box_set_active(GTK_COMBO_BOX(tmp), 
+                                     catdata ? 
+                                     get_system_menu_selection(catdata->system.wishsys) :
+                                     CAT_SYSTEM_DEFAULT);
 
-        tmp = gtk_label_new(_("Tatami:"));
-        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, 2, 3);
-        judoka_tmp->belt = tmp = gtk_combo_box_new_text();
-        gtk_combo_box_append_text(GTK_COMBO_BOX(tmp), "?");
-        for (i = 0; i < NUM_TATAMIS; i++) {
-            char buf[10];
-            sprintf(buf, "T %d", i+1);
-            gtk_combo_box_append_text(GTK_COMBO_BOX(tmp), buf);
+            tmp = gtk_label_new(_("Tatami:"));
+            gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, 2, 3);
+            judoka_tmp->belt = tmp = gtk_combo_box_new_text();
+            gtk_combo_box_append_text(GTK_COMBO_BOX(tmp), "?");
+            for (i = 0; i < NUM_TATAMIS; i++) {
+                char buf[10];
+                sprintf(buf, "T %d", i+1);
+                gtk_combo_box_append_text(GTK_COMBO_BOX(tmp), buf);
+            }
+            gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, 2, 3);
+            gtk_combo_box_set_active(GTK_COMBO_BOX(tmp), belt);
+
+            judoka_tmp->birthyear = set_entry(table, 3, _("Group:"), birthyear_s);
+
+            if (treeview && model && index && catdata && (catdata->deleted & TEAM_EVENT)) {
+                tmp = gtk_label_new(_("Create default members:"));
+                gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, 4, 5);
+                judoka_tmp->hansokumake = gtk_check_button_new();
+                gtk_table_attach_defaults(GTK_TABLE(table), judoka_tmp->hansokumake, 1, 2, 4, 5);
+                gint n = gtk_tree_model_iter_n_children(model, &iter);
+                if (n <= 1) {
+                    gtk_widget_set_sensitive(tmp, FALSE);
+                    gtk_widget_set_sensitive(judoka_tmp->hansokumake, FALSE);
+                }
+            }
         }
-        gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, 2, 3);
-        gtk_combo_box_set_active(GTK_COMBO_BOX(tmp), belt);
-
-        judoka_tmp->birthyear = set_entry(table, 3, _("Group:"), birthyear_s);
     }
 
     g_free(last); 
@@ -683,12 +712,12 @@ void view_on_row_activated(GtkTreeView        *treeview,
 
 void new_judoka(GtkWidget *w, gpointer data)
 {
-    view_on_row_activated(NULL, NULL, NULL, (gpointer)NEW_JUDOKA);
+    view_on_row_activated(NULL, NULL, NULL, gint_to_ptr(NEW_JUDOKA));
 }
 
 void new_regcategory(GtkWidget *w, gpointer data)
 {
-    view_on_row_activated(NULL, NULL, NULL, (gpointer)NEW_WCLASS);
+    view_on_row_activated(NULL, NULL, NULL, gint_to_ptr(NEW_WCLASS+ptr_to_gint(data)));
 }
 
 static void print_competitors_callback(GtkWidget *widget, 
@@ -908,6 +937,7 @@ void last_name_cell_data_func (GtkTreeViewColumn *col,
             //status = weight;
             struct category_data *catdata = avl_get_category(index);
             if (catdata) {
+                deleted = catdata->deleted;
                 status = catdata->match_status;
                 defined = catdata->defined;
                 tie = catdata->tie;
@@ -943,6 +973,11 @@ void last_name_cell_data_func (GtkTreeViewColumn *col,
                          "cell-background", "Lightblue", 
                          "cell-background-set", TRUE, 
                          NULL);
+        else if (deleted & TEAM)
+            g_object_set(renderer, 
+                         "cell-background", "Lightgreen", 
+                         "cell-background-set", TRUE, 
+                         NULL);
         else if (((status & SYSTEM_DEFINED /*REAL_MATCH_EXISTS*/) && (status & MATCH_UNMATCHED) == 0))
             g_object_set(renderer, 
                          "cell-background", "Green", 
@@ -963,9 +998,13 @@ void last_name_cell_data_func (GtkTreeViewColumn *col,
                          "cell-background-set", FALSE, 
                          NULL);
 
-        if (last[0] == '_')
+        if (last[0] == '_' || (deleted & TEAM))
             g_object_set(renderer, 
                          "foreground", "Gray", FALSE, 
+                         NULL);
+        else if (deleted & TEAM_EVENT)
+            g_object_set(renderer, 
+                         "foreground", "Blue", FALSE, 
                          NULL);
         else if (defined)
             g_object_set(renderer, 
@@ -1011,8 +1050,12 @@ void first_name_cell_data_func (GtkTreeViewColumn *col,
         buf[0] = 0;
         gint n = gtk_tree_model_iter_n_children(model, iter);
         struct category_data *data = avl_get_category(index);
-        if (data)
-            g_snprintf(buf, sizeof(buf), "%s", get_system_description(index, n));
+        if (data) {
+            if (data->deleted & TEAM)
+                g_snprintf(buf, sizeof(buf), "%s", _("Team"));
+            else
+                g_snprintf(buf, sizeof(buf), "%s", get_system_description(index, n));
+        }
     }
 
     g_object_set(renderer, "text", buf, NULL);

@@ -97,7 +97,7 @@ void cancel_rest_time(gboolean blue, gboolean white)
 }
 
 void send_result(int bluepts[4], int whitepts[4], char blue_vote, char white_vote, 
-		 char blue_hansokumake, char white_hansokumake, gint legend)
+		 char blue_hansokumake, char white_hansokumake, gint legend, gint hikiwake)
 {
     memset(&msgout, 0, sizeof(msgout));
 
@@ -113,13 +113,13 @@ void send_result(int bluepts[4], int whitepts[4], char blue_vote, char white_vot
 
     msgout.u.result.blue_score = array2int(bluepts); 
     msgout.u.result.white_score = array2int(whitepts);
-    msgout.u.result.blue_vote = blue_vote; 
-    msgout.u.result.white_vote = white_vote;
+    msgout.u.result.blue_vote = hikiwake ? 1 : blue_vote; 
+    msgout.u.result.white_vote = hikiwake ? 1 : white_vote;
     msgout.u.result.blue_hansokumake = blue_hansokumake;
     msgout.u.result.white_hansokumake = white_hansokumake;
 
     if (msgout.u.result.blue_score != msgout.u.result.white_score ||
-        msgout.u.result.blue_vote != msgout.u.result.white_vote ||
+        msgout.u.result.blue_vote != msgout.u.result.white_vote || hikiwake ||
         msgout.u.result.blue_hansokumake || msgout.u.result.white_hansokumake) {
 #if 0
         if (demo)

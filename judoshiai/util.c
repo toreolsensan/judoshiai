@@ -282,7 +282,7 @@ struct judoka *get_data(guint index)
 {
     GtkTreeIter iter;
 
-    if (find_iter(&iter, index) == FALSE) 
+    if (find_iter(&iter, index & MATCH_CATEGORY_MASK) == FALSE) 
         return NULL;
 
     return get_data_by_iter(&iter);
