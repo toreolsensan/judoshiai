@@ -169,6 +169,13 @@ gint get_matchnum_by_pos(struct compsys systm, gint pos, gint num)
         return num_matches(systm.system, systm.numcomp) + 
             num_matches(SYSTEM_POOL, 4) + 1 - pos;
 
+    case SYSTEM_DPOOL3:
+        if (pos == 1)
+            return num_matches(systm.system, systm.numcomp) + 2;
+        else if (pos == 3)
+            return num_matches(systm.system, systm.numcomp) + 1;
+        return 0;
+
     case SYSTEM_FRENCH_8:
     case SYSTEM_FRENCH_16:
     case SYSTEM_FRENCH_32:
@@ -1756,6 +1763,7 @@ static const gint system_menu_order[NUM_SYSTEMS] = {
     CAT_SYSTEM_POOL,
     CAT_SYSTEM_DPOOL,
     CAT_SYSTEM_DPOOL2,
+    CAT_SYSTEM_DPOOL3,
     CAT_SYSTEM_QPOOL,
     CAT_SYSTEM_REPECHAGE,
     CAT_SYSTEM_ENKELT_AATERKVAL,
@@ -1822,6 +1830,7 @@ struct compsys wish_to_system(gint sys, gint numcomp)
         case CAT_SYSTEM_DPOOL: ret.system = SYSTEM_DPOOL; break;
         case CAT_SYSTEM_QPOOL: ret.system = SYSTEM_QPOOL; break;
         case CAT_SYSTEM_DPOOL2: ret.system = SYSTEM_DPOOL2; break;
+        case CAT_SYSTEM_DPOOL3: ret.system = SYSTEM_DPOOL3; break;
         case CAT_SYSTEM_BEST_OF_3: ret.system = SYSTEM_BEST_OF_3; break;
         }
     }
@@ -1846,6 +1855,7 @@ gchar *get_system_description(gint index, gint competitors)
     case SYSTEM_DPOOL: return _("Double Pool");
     case SYSTEM_QPOOL: return _("Quad Pool");
     case SYSTEM_DPOOL2: return _("Double Pool 2");
+    case SYSTEM_DPOOL3: return _("Double Pool 3");
     case SYSTEM_BEST_OF_3: return _("Best of 3");
     }
 
@@ -1888,6 +1898,7 @@ static gchar *get_system_name(gint num)
     case CAT_SYSTEM_DPOOL: return _("Double Pool");
     case CAT_SYSTEM_QPOOL: return _("Quad Pool");
     case CAT_SYSTEM_DPOOL2: return _("Double Pool 2");
+    case CAT_SYSTEM_DPOOL3: return _("Double Pool 3");
     case CAT_SYSTEM_REPECHAGE: return (draw_system == DRAW_UKRAINIAN) ? _("UKR Double Repechage") : _("FIN Double Repechage");
     case CAT_SYSTEM_DUBBELT_AATERKVAL: return _("SWE Double Repechage");
     case CAT_SYSTEM_DIREKT_AATERKVAL: return _("SWE Direct Repechage");
@@ -1936,6 +1947,7 @@ gboolean system_is_french(gint sys)
     case SYSTEM_DPOOL:
     case SYSTEM_QPOOL:
     case SYSTEM_DPOOL2:
+    case SYSTEM_DPOOL3:
     case SYSTEM_BEST_OF_3:
         return FALSE;
     }
@@ -1950,6 +1962,7 @@ gboolean system_wish_is_french(gint wish)
     case CAT_SYSTEM_DPOOL:
     case CAT_SYSTEM_QPOOL:
     case CAT_SYSTEM_DPOOL2:
+    case CAT_SYSTEM_DPOOL3:
     case CAT_SYSTEM_BEST_OF_3:
         return FALSE;
     }
@@ -2273,12 +2286,16 @@ gint num_pages(struct compsys sys)
         return 2;
     if (sys.system == SYSTEM_DPOOL && sys.numcomp > 10)
         return 2;
+    if (sys.system == SYSTEM_DPOOL3 && sys.numcomp > 10)
+        return 2;
+
     return 1;
 }
 
 gint db_position_to_real(struct compsys sys, gint pos)
 {
-    if (sys.system == SYSTEM_POOL || sys.system == SYSTEM_DPOOL2|| sys.system == SYSTEM_BEST_OF_3)
+    if (sys.system == SYSTEM_POOL || sys.system == SYSTEM_DPOOL2 || 
+        sys.system == SYSTEM_DPOOL3 ||sys.system == SYSTEM_BEST_OF_3)
         return pos;
 
     if (pos == 1 || pos == 2 || pos == 3 || pos == 5 || pos == 7)
@@ -2371,6 +2388,7 @@ gint num_matches_left(gint index, gint competitors)
     case SYSTEM_DPOOL: return n + 3;
     case SYSTEM_QPOOL: return n + 7;
     case SYSTEM_DPOOL2: return n + 6;
+    case SYSTEM_DPOOL3: return n + 2;
     case SYSTEM_BEST_OF_3: return n;
     }
 
@@ -2402,6 +2420,7 @@ gint num_matches_estimate(gint index)
     case SYSTEM_DPOOL: return mul*(n + 3);
     case SYSTEM_QPOOL: return mul*(n + 7);
     case SYSTEM_DPOOL2: return mul*(n + 6);
+    case SYSTEM_DPOOL3: return mul*(n + 2);
     case SYSTEM_BEST_OF_3: return mul*3;
     }
 

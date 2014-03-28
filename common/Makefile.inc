@@ -1,4 +1,4 @@
-SHIAI_VER_NUM=2.4-prealpha1
+SHIAI_VER_NUM=2.4-prealpha2
 SHIAI_VERSION="\"$(SHIAI_VER_NUM)\""
 
 OBJS=

@@ -123,6 +123,7 @@ static gint make_key(struct compsys systm, gint pagenum)
         systm.system == SYSTEM_DPOOL ||
         systm.system == SYSTEM_QPOOL ||
         systm.system == SYSTEM_DPOOL2 ||
+        systm.system == SYSTEM_DPOOL3 ||
         systm.system == SYSTEM_BEST_OF_3)
         return (systm.system<<24)|(systm.numcomp<<8)|pagenum;
 
@@ -322,6 +323,7 @@ gint paint_svg(struct paint_data *pd)
 
     case SYSTEM_DPOOL:
     case SYSTEM_DPOOL2:
+    case SYSTEM_DPOOL3:
         num_pool_a = num_judokas - num_judokas/2;
         num_pool_b = num_judokas - num_pool_a;
         memset(yes_a, 0, sizeof(yes_a));
@@ -566,6 +568,7 @@ gint paint_svg(struct paint_data *pd)
                     systm.system == SYSTEM_QPOOL ||
                     systm.system == SYSTEM_DPOOL ||
                     systm.system == SYSTEM_DPOOL2 ||
+                    systm.system == SYSTEM_DPOOL3 ||
                     systm.system == SYSTEM_BEST_OF_3)
                     j = pmp->j[comp];
 
@@ -601,7 +604,9 @@ gint paint_svg(struct paint_data *pd)
                                     }
                                 }
                             }
-                        } else if (systm.system == SYSTEM_DPOOL || systm.system == SYSTEM_DPOOL2) {
+                        } else if (systm.system == SYSTEM_DPOOL || 
+                                   systm.system == SYSTEM_DPOOL2 ||
+                                   systm.system == SYSTEM_DPOOL3) {
                             gint k;
                             if (comp <= num_pool_a) {
                                 if (pmp->finished) {
@@ -660,7 +665,23 @@ gint paint_svg(struct paint_data *pd)
                         write_judoka(handle, 1, j, dfile);
                         set_competitor_position(j->index, COMP_POS_DRAWN | res);
                     }
-                } else if (systm.system == SYSTEM_DPOOL || systm.system == SYSTEM_QPOOL) {
+                } else if (systm.system == SYSTEM_DPOOL3) {
+                    gint ix = 0;
+                    gint mnum = num_matches(systm.system, num_judokas);
+                    mnum += 1;
+                    switch (res) {
+                    case 1: ix = WINNER(mnum + 1); break;
+                    case 2: ix = LOSER(mnum + 1); break;
+                    case 3: ix = WINNER(mnum); break;
+                    }
+                    struct judoka *j = get_data(ix);
+                    if (j) {
+                        write_judoka(handle, 1, j, dfile);
+                        set_competitor_position(j->index, COMP_POS_DRAWN | res);
+                        free_judoka(j);
+                    }
+                } else if (systm.system == SYSTEM_DPOOL ||
+                           systm.system == SYSTEM_QPOOL) {
                     gint ix = 0;
                     gint mnum = num_matches(systm.system, num_judokas);
                     mnum += (systm.system == SYSTEM_DPOOL) ? 1 : 5;
@@ -870,6 +891,7 @@ gint paint_svg(struct paint_data *pd)
     case SYSTEM_POOL:
     case SYSTEM_DPOOL:
     case SYSTEM_DPOOL2:
+    case SYSTEM_DPOOL3:
     case SYSTEM_QPOOL:
     case SYSTEM_BEST_OF_3:
         /* clean up */

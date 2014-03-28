@@ -185,7 +185,8 @@ static double paint_comp(struct paint_data *pd, struct pool_matches *unused1, in
     /*if (flags & REPECHAGE)
       pos++;*/
 
-    only_last = pos || (flags & F_SYSTEM_MASK) == SYSTEM_DPOOL || (flags & F_REPECHAGE);
+    only_last = pos || (flags & F_SYSTEM_MASK) == SYSTEM_DPOOL || 
+        (flags & F_REPECHAGE) || (flags & F_SYSTEM_MASK) == SYSTEM_DPOOL;
 
     cairo_text_extents(pd->c, "Hj", &extents);
     //small = (white_y - blue_y) < 2.0*extents.height && pos == 0;
@@ -912,7 +913,7 @@ static gdouble row_height[13] = {
 };
 
 static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg, gint num_judokas, 
-                        gboolean dpool2)
+                        gint dpool_type)
 {
     struct pool_matches pm;
     gint i;
@@ -922,6 +923,8 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
     gboolean yes_a[21], yes_b[21];
     gint c_a[21], c_b[21];
     gboolean twopages = FALSE, page1 = TRUE, page2 = TRUE;
+    gboolean dpool2 = dpool_type == SYSTEM_DPOOL2;
+    gboolean dpool3 = dpool_type == SYSTEM_DPOOL3;
 
     if (num_judokas > 10 || dpool2) {
         twopages = TRUE;
@@ -1101,13 +1104,13 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
         cairo_text_extents(pd->c, "B2", &extents);
 
         cairo_move_to(pd->c, OFFSET_X, pos_match_f + extents.height*1.2);
-        cairo_show_text(pd->c, "A1");
+        cairo_show_text(pd->c, dpool3 ? "A2" : "A1");
         cairo_move_to(pd->c, OFFSET_X, pos_match_f + NAME_S*1 + extents.height*1.2);
-        cairo_show_text(pd->c, "B2");
+        cairo_show_text(pd->c, dpool3 ? "B2" : "B2");
         cairo_move_to(pd->c, OFFSET_X, pos_match_f + NAME_S*2 + extents.height*1.2);
-        cairo_show_text(pd->c, "B1");
+        cairo_show_text(pd->c, dpool3 ? "A1" : "B1");
         cairo_move_to(pd->c, OFFSET_X, pos_match_f + NAME_S*3 + extents.height*1.2);
-        cairo_show_text(pd->c, "A2");
+        cairo_show_text(pd->c, dpool3 ? "B1" : "A2");
 
 
         /* first semifinal */
@@ -1115,6 +1118,12 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
                         pos_match_f, pos_match_f + NAME_S, 
                         pm.m[i].blue, pm.m[i].white,
                         pm.m[i].blue_points, pm.m[i].white_points, SYSTEM_DPOOL, 0, 0, i);
+
+        if (dpool3)
+            paint_comp(pd, &pm, 1, 
+                       x1, 0,
+                       pm.m[i].blue, pm.m[i].white,
+                       pm.m[i].blue_points, pm.m[i].white_points, SYSTEM_DPOOL, 0, 0, i);
 
         i++;
 
@@ -1124,34 +1133,53 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
                         pm.m[i].blue, pm.m[i].white,
                         pm.m[i].blue_points, pm.m[i].white_points, SYSTEM_DPOOL, 0, 0, i);
 
-        i++;
+        if (dpool3)
+            paint_comp(pd, &pm, 1, 
+                       x2, 0,
+                       pm.m[i].blue, pm.m[i].white,
+                       pm.m[i].blue_points, pm.m[i].white_points, SYSTEM_DPOOL, 0, 0, i);
+            
+        if (!dpool3) {
+            i++;
 
-        /* final */
-        x2 = paint_comp(pd, &pm, 1, 
-                        x1, x2,
-                        pm.m[i].blue, pm.m[i].white,
-                        pm.m[i].blue_points, pm.m[i].white_points, SYSTEM_DPOOL, 0, 0, i);
+            /* final */
+            x2 = paint_comp(pd, &pm, 1, 
+                            x1, x2,
+                            pm.m[i].blue, pm.m[i].white,
+                            pm.m[i].blue_points, pm.m[i].white_points, SYSTEM_DPOOL, 0, 0, i);
 
-        x2 = paint_comp(pd, &pm, 2, 
-                        x2, 0,
-                        pm.m[i].blue, pm.m[i].white,
-                        pm.m[i].blue_points, pm.m[i].white_points, SYSTEM_DPOOL, 0, 0, i);
-
+            x2 = paint_comp(pd, &pm, 2, 
+                            x2, 0,
+                            pm.m[i].blue, pm.m[i].white,
+                            pm.m[i].blue_points, pm.m[i].white_points, SYSTEM_DPOOL, 0, 0, i);
+        }
     }
 
     if (!dpool2) {
         i = num_matches(pd->systm.system, num_judokas) + 1;
     
-        if (pm.m[i].blue_points)
-            bronze1 = pm.m[i].white;
-        else
-            bronze1 = pm.m[i].blue;
+        if (dpool3) {
+            if (pm.m[i].blue_points)
+                bronze1 = pm.m[i].blue;
+            else
+                bronze1 = pm.m[i].white;
+        } else {
+            if (pm.m[i].blue_points)
+                bronze1 = pm.m[i].white;
+            else
+                bronze1 = pm.m[i].blue;
+        }
+
         i++;
-        if (pm.m[i].blue_points)
-            bronze2 = pm.m[i].white;
-        else
-            bronze2 = pm.m[i].blue;
-        i++;
+
+        if (!dpool3) {
+            if (pm.m[i].blue_points)
+                bronze2 = pm.m[i].white;
+            else
+                bronze2 = pm.m[i].blue;
+            i++;
+        }
+
         if (pm.m[i].blue_points || pm.m[i].white == GHOST) {
             gold = pm.m[i].blue;
             silver = pm.m[i].white;
@@ -1219,7 +1247,7 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
 
     if (page2) {
         /* results */
-        result_table.num_rows = 4;
+        result_table.num_rows = dpool3 ? 3 : 4;
         if (twopages)
             result_table.position_y = POOL_JUDOKAS_Y + 5*ROW_HEIGHT + 3*NAME_S;
         else
@@ -1233,7 +1261,8 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
         WRITE_TABLE(result_table, 1, 0, "1");
         WRITE_TABLE(result_table, 2, 0, "2");
         WRITE_TABLE(result_table, 3, 0, "3");
-        WRITE_TABLE(result_table, 4, 0, "3");
+        if (!dpool3)
+            WRITE_TABLE(result_table, 4, 0, "3");
                 
         if (gold && (j1 = get_data(gold))) {
             WRITE_TABLE_H_2(result_table, 1, 1, j1->deleted, j1->index, "%s", get_name_and_club_text(j1, 0));
@@ -1250,7 +1279,7 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
             set_competitor_position(j1->index, COMP_POS_DRAWN | 3);
             free_judoka(j1);
         }
-        if (gold && (j1 = get_data(bronze2))) {
+        if (dpool3 == FALSE && gold && (j1 = get_data(bronze2))) {
             WRITE_TABLE_H_2(result_table, 4, 1, j1->deleted, j1->index, "%s", get_name_and_club_text(j1, 0));
             set_competitor_position(j1->index, COMP_POS_DRAWN | 3);
             free_judoka(j1);
@@ -2189,14 +2218,18 @@ void paint_category(struct paint_data *pd)
         break;
 
     case SYSTEM_DPOOL:
-        paint_dpool(pd, category, ctg, num_judokas, FALSE);
+        paint_dpool(pd, category, ctg, num_judokas, SYSTEM_DPOOL);
         break;
 
     case SYSTEM_DPOOL2:
         if (pd->page == 0)
-            paint_dpool(pd, category, ctg, num_judokas, TRUE);
+            paint_dpool(pd, category, ctg, num_judokas, SYSTEM_DPOOL2);
         else
             paint_pool(pd, category, ctg, num_judokas, TRUE);
+        break;
+
+    case SYSTEM_DPOOL3:
+        paint_dpool(pd, category, ctg, num_judokas, SYSTEM_DPOOL3);
         break;
 
     case SYSTEM_QPOOL:

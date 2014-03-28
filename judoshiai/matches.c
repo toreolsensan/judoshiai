@@ -590,6 +590,8 @@ gint num_matches(gint sys, gint num_judokas)
         return num_matches_table_d[num_judokas]; 
     else if (sys == SYSTEM_DPOOL2)
         return num_matches_table_d[num_judokas]; 
+    else if (sys == SYSTEM_DPOOL3)
+        return num_matches_table_d[num_judokas]; 
     else if (sys == SYSTEM_QPOOL)
         return num_matches_table_q[num_judokas]; 
     else
@@ -605,7 +607,7 @@ void fill_pool_struct(gint category, gint num, struct pool_matches *pm, gboolean
 
     sys = get_cat_system(category);
     sysq = sys.system == SYSTEM_QPOOL;
-    sysd = sys.system == SYSTEM_DPOOL || sys.system == SYSTEM_DPOOL2;
+    sysd = sys.system == SYSTEM_DPOOL || sys.system == SYSTEM_DPOOL2 || sys.system == SYSTEM_DPOOL3;
 
     memset(pm, 0, sizeof(*pm));
     pm->finished = TRUE;
@@ -761,7 +763,7 @@ gboolean pool_finished(gint numcomp, gint nummatches, gint sys, gboolean yes[], 
         if (sys == SYSTEM_QPOOL) {
             blue = poolsq[numcomp][i-1][0];
             white = poolsq[numcomp][i-1][1];
-        } else if (sys == SYSTEM_DPOOL || sys == SYSTEM_DPOOL2) {
+        } else if (sys == SYSTEM_DPOOL || sys == SYSTEM_DPOOL2 || sys == SYSTEM_DPOOL3) {
             blue = poolsd[numcomp][i-1][0];
             white = poolsd[numcomp][i-1][1];
         } else {
@@ -797,6 +799,7 @@ static void update_pool_matches(gint category, gint num)
     case SYSTEM_DPOOL: num_pools = 2; num_knockouts = 3; break;
     case SYSTEM_QPOOL: num_pools = 4; num_knockouts = 7; break;
     case SYSTEM_DPOOL2: num_pools = 2; num_knockouts = 0; break;
+    case SYSTEM_DPOOL3: num_pools = 2; num_knockouts = 2; break;
     }
 
     if (automatic_sheet_update || automatic_web_page_update)
@@ -909,6 +912,44 @@ static void update_pool_matches(gint category, gint num)
                     }
                 }
             }
+            set_match(&ma);
+            db_set_match(&ma);
+        }
+
+        goto out;
+    }
+
+    if (sys.system == SYSTEM_DPOOL3) {
+        if (MATCHED_POOL_P(last_match+1) == FALSE) {
+            struct match ma;
+
+            memset(&ma, 0, sizeof(ma));
+            ma.category = category;
+            ma.number = last_match+1;
+
+            if (pool_done[0])
+                ma.blue = (pm.j[c[0][2]]->deleted & HANSOKUMAKE) ? GHOST : pm.j[c[0][2]]->index;
+
+            if (pool_done[1])
+                ma.white = (pm.j[c[1][2]]->deleted & HANSOKUMAKE) ? GHOST : pm.j[c[1][2]]->index;
+
+            set_match(&ma);
+            db_set_match(&ma);
+        }
+
+        if (MATCHED_POOL_P(last_match+2) == FALSE) {
+            struct match ma;
+
+            memset(&ma, 0, sizeof(ma));
+            ma.category = category;
+            ma.number = last_match+2;
+
+            if (pool_done[0])
+                ma.blue = (pm.j[c[0][1]]->deleted & HANSOKUMAKE) ? GHOST : pm.j[c[0][1]]->index;
+
+            if (pool_done[1])
+                ma.white = (pm.j[c[1][1]]->deleted & HANSOKUMAKE) ? GHOST : pm.j[c[1][1]]->index;
+
             set_match(&ma);
             db_set_match(&ma);
         }
@@ -1432,6 +1473,15 @@ gint get_match_number_flag(gint category, gint number)
 	    return MATCH_FLAG_GOLD;
 	return 0;
 
+    case SYSTEM_DPOOL3:
+        matchnum = num_matches(cat->system.system, cat->system.numcomp) + 2;
+
+	if (number == matchnum - 1)
+	    return MATCH_FLAG_BRONZE_A;
+	else if (number == matchnum)
+	    return MATCH_FLAG_GOLD;
+	return 0;
+
     case SYSTEM_FRENCH_8:
     case SYSTEM_FRENCH_16:
     case SYSTEM_FRENCH_32:
@@ -1550,6 +1600,7 @@ void update_matches_small(guint category, struct compsys sys_or_tatami)
     case SYSTEM_POOL:
     case SYSTEM_DPOOL:
     case SYSTEM_DPOOL2:
+    case SYSTEM_DPOOL3:
     case SYSTEM_QPOOL:
     case SYSTEM_BEST_OF_3:
         update_pool_matches(category, sys_or_tatami.numcomp);
@@ -1790,6 +1841,7 @@ void update_matches(guint category, struct compsys sys, gint tatami)
         case SYSTEM_POOL:
         case SYSTEM_DPOOL:
         case SYSTEM_DPOOL2:
+        case SYSTEM_DPOOL3:
         case SYSTEM_QPOOL:
         case SYSTEM_BEST_OF_3:
             update_pool_matches(category, sys.numcomp);
@@ -2799,6 +2851,7 @@ void set_match_pages(GtkWidget *notebook)
             case SYSTEM_POOL:
             case SYSTEM_DPOOL:
             case SYSTEM_DPOOL2:
+            case SYSTEM_DPOOL3:
             case SYSTEM_QPOOL:
             case SYSTEM_BEST_OF_3:
                 update_pool_matches(catdata->index, sys.numcomp);

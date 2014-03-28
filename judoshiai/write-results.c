@@ -306,23 +306,32 @@ static void dqpool_results(FILE *f, gint category, struct judoka *ctg, gint num_
     fill_pool_struct(category, num_judokas, &pm, FALSE);
 
     i = num_matches(sys.system, num_judokas) + 
-        (sys.system == SYSTEM_DPOOL ? 1 : 5);
+        ((sys.system == SYSTEM_DPOOL || sys.system == SYSTEM_DPOOL3) ? 1 : 5);
 
-    /* first semifinal */
-    if (pm.m[i].blue_points)
-        bronze1 = pm.m[i].white;
-    else
-        bronze1 = pm.m[i].blue;
+    if (sys.system == SYSTEM_DPOOL3) {
+        if (pm.m[i].blue_points)
+            bronze1 = pm.m[i].blue;
+        else
+            bronze1 = pm.m[i].white;
 
-    i++;
+        i++;
+    } else {
+        /* first semifinal */
+        if (pm.m[i].blue_points)
+            bronze1 = pm.m[i].white;
+        else
+            bronze1 = pm.m[i].blue;
 
-    /* second semifinal */
-    if (pm.m[i].blue_points)
-        bronze2 = pm.m[i].white;
-    else
-        bronze2 = pm.m[i].blue;
+        i++;
 
-    i++;
+        /* second semifinal */
+        if (pm.m[i].blue_points)
+            bronze2 = pm.m[i].white;
+        else
+            bronze2 = pm.m[i].blue;
+        
+        i++;
+    }
 
     /* final */
     if (pm.m[i].blue_points || pm.m[i].white == GHOST) {
@@ -351,7 +360,7 @@ static void dqpool_results(FILE *f, gint category, struct judoka *ctg, gint num_
         db_set_category_positions(category, bronze1, 3);
         free_judoka(j1);
     }
-    if (gold && (j1 = get_data(bronze2))) {
+    if (sys.system != SYSTEM_DPOOL3 && gold && (j1 = get_data(bronze2))) {
         write_result(f, 3, j1->first, j1->last, j1->club, j1->country);
         avl_set_competitor_position(bronze2, 3);
         db_set_category_positions(category, bronze2, 4);
@@ -532,6 +541,7 @@ static void write_cat_result(FILE *f, gint category)
         break;
 
     case SYSTEM_DPOOL:
+    case SYSTEM_DPOOL3:
     case SYSTEM_QPOOL:
         dqpool_results(f, category, ctg, num_judokas, sys);
         break;
