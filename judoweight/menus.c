@@ -10,7 +10,12 @@
 #include <string.h>
 #include <locale.h>
 #include <gtk/gtk.h>
+
+#if (GTKVER == 3)
+#include <gdk/gdkkeysyms-compat.h>
+#else
 #include <gdk/gdkkeysyms.h>
+#endif
 
 #include "judoweight.h"
 #include "language.h"
@@ -26,7 +31,7 @@ static GtkWidget *quit, *manual;
 static GtkWidget *node_ip, *my_ip, *preference_serial, *about;
 static GtkWidget *light, *menu_light, *lang_menu_item;
 
-static GtkTooltips *menu_tips;
+//static GtkTooltips *menu_tips;
 
 static void about_judoinfo( GtkWidget *w,
 			    gpointer   data )
@@ -117,7 +122,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
 {
     GtkAccelGroup *group;
 
-    menu_tips = gtk_tooltips_new ();
+    //    menu_tips = gtk_tooltips_new ();
     group = gtk_accel_group_new ();
     menubar = gtk_menu_bar_new ();
 
@@ -141,7 +146,9 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_menu_shell_append (GTK_MENU_SHELL (menubar), lang_menu_item); 
 
     gtk_menu_shell_append (GTK_MENU_SHELL (menubar), menu_light); 
+#if (GTKVER != 3)
     gtk_menu_item_set_right_justified(GTK_MENU_ITEM(menu_light), TRUE);
+#endif
     g_signal_connect(G_OBJECT(menu_light), "button_press_event",
                      G_CALLBACK(ask_node_ip_address), (gpointer)NULL);
 

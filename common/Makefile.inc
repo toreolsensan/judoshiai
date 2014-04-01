@@ -1,6 +1,8 @@
 SHIAI_VER_NUM=2.4-prealpha2
 SHIAI_VERSION="\"$(SHIAI_VER_NUM)\""
 
+GTKVER=3
+
 OBJS=
 
 ### Target executable type ###
@@ -68,29 +70,31 @@ endif
 ### Cross compilation ###
 ifeq ($(TARGETOS),WIN32)
 CFLAGS=-Wall -g \
--I/opt/win32/gtk/include/gtk-2.0 \
--I/opt/win32/gtk/lib/gtk-2.0/include \
--I/opt/win32/gtk/include/atk-1.0 \
--I/opt/win32/gtk/include/cairo \
--I/opt/win32/gtk/include/pango-1.0 \
--I/opt/win32/gtk/include/glib-2.0 \
--I/opt/win32/gtk/lib/glib-2.0/include \
--I/opt/win32/gtk/include/freetype2 \
--I/opt/win32/gtk/include \
--I/opt/win32/gtk/include/libpng14   \
--I/opt/win32/gtk/include/cairo \
--I/opt/win32/gtk/include/freetype2 \
--I/opt/win32/gtk/include \
--I/opt/win32/gtk/include/libpng14   \
+-I$(DEVELDIR)/include/gtk-$(GTKVER).0 \
+-I$(DEVELDIR)/lib/gtk-$(GTKVER).0/include \
+-I$(DEVELDIR)/include/atk-1.0 \
+-I$(DEVELDIR)/include/cairo \
+-I$(DEVELDIR)/include/pango-1.0 \
+-I$(DEVELDIR)/include/glib-2.0 \
+-I$(DEVELDIR)/lib/glib-2.0/include \
+-I$(DEVELDIR)/include/freetype2 \
+-I$(DEVELDIR)/include \
+-I$(DEVELDIR)/include/libpng14   \
+-I$(DEVELDIR)/include/cairo \
+-I$(DEVELDIR)/include/freetype2 \
+-I$(DEVELDIR)/include \
+-I$(DEVELDIR)/include/libpng14   \
+-I$(DEVELDIR)/include/gdk-pixbuf-2.0 \
 -I/opt/win32/w32api/include \
 -I/opt/win32/rsvg/include \
 -I/opt/win32/curl/include \
 -I../common -mms-bitfields \
 -DSHIAI_VERSION=$(SHIAI_VERSION) \
--DENABLE_NLS
+-DENABLE_NLS \
+-DGTKVER=$(GTKVER)
 
-LIBS=-L/opt/win32/gtk/lib \
--lgtk-win32-2.0 -lgdk-win32-2.0 -latk-1.0 -lgio-2.0 -lgdk_pixbuf-2.0 \
+LIBS=-L$(DEVELDIR)/lib $(DEVELDIR)/lib/glib-2.0.lib  \
+-lgtk-win32-$(GTKVER).0 -lgdk-win32-$(GTKVER).0 -latk-1.0 -lgio-2.0 -lgdk_pixbuf-2.0 \
 -lpangowin32-1.0 -lgdi32 -lpangocairo-1.0 -lpango-1.0 -lgobject-2.0 \
 -lgmodule-2.0 -lgthread-2.0 -lglib-2.0 -lintl -lcairo \
 -L/opt/win32/rsvg/bin -lcroco-0.6-3 -lrsvg-2-2 -lxml2-2 \

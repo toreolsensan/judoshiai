@@ -10,6 +10,29 @@
 #define gint_to_ptr( p ) ((void*)(uintptr_t) (p) )
 
 
+#if (GTKVER == 3)
+#define GdkRegion	cairo_region_t
+#define GdkRectangle	cairo_rectangle_int_t
+#define gdk_region_new	cairo_region_create
+#define gdk_region_copy	cairo_region_copy
+#define gdk_region_destroy	cairo_region_destroy
+#define gdk_region_rectangle	cairo_region_create_rectangle
+#define gdk_region_get_clipbox	cairo_region_get_extents
+#define gdk_region_get_rectangles	cairo_region_num_rectangles_xxx
+//   and cairo_region_get_rectangle
+#define gdk_region_empty	cairo_region_is_empty
+#define gdk_region_equal	cairo_region_equal
+#define gdk_region_point_in	cairo_region_contains_point
+#define gdk_region_rect_in	cairo_region_contains_rectangle
+#define gdk_region_offset	cairo_region_translate
+#define gdk_region_union_with_rect	cairo_region_union_rectangle
+#define gdk_region_intersect	cairo_region_intersect
+#define gdk_region_union	cairo_region_union
+#define gdk_region_subtract	cairo_region_subtract
+#define gdk_region_xor	cairo_region_xor
+#endif
+
+
 #define SPRINTF(_buf, _fmt...) do {gint _n = snprintf(_buf, sizeof(_buf), _fmt); \
         if (_n >= sizeof(_buf)) g_print("Buffer overflow! %s:%d\n", __FILE__, __LINE__); } while (0)
 

@@ -35,7 +35,9 @@
 #include <glib.h>
 #include <gdk/gdkkeysyms.h>
 #ifdef WIN32
+#if (GTKVER != 3)
 #include <glib/gwin32.h>
+#endif
 #endif
 
 #include "judoinfo.h"

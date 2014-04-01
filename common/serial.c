@@ -333,8 +333,11 @@ void set_serial_dialog(GtkWidget *w, gpointer data)
                                           GTK_STOCK_OK, GTK_RESPONSE_OK,
                                           NULL);
 
+#if (GTKVER == 3)
+    table = gtk_grid_new();
+#else
     table = gtk_table_new(2, 4, FALSE);
-
+#endif
     used = gtk_check_button_new();
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(used), serial_used);
 
@@ -342,18 +345,47 @@ void set_serial_dialog(GtkWidget *w, gpointer data)
     gtk_entry_set_max_length(GTK_ENTRY(device), 20);
     gtk_entry_set_text(GTK_ENTRY(device), serial_device[0] ? serial_device : "COM1");
 
+#if (GTKVER == 3)
+    baudrate = gtk_combo_box_text_new();
+    for (i = 0; i < NUM_BAUDRATES; i++)
+        gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(baudrate), NULL, serial_baudrates[i].text);
+    gtk_combo_box_set_active(GTK_COMBO_BOX(baudrate), serial_baudrate);
+#else
     baudrate = gtk_combo_box_new_text();
     for (i = 0; i < NUM_BAUDRATES; i++)
         gtk_combo_box_append_text((GtkComboBox *)baudrate, serial_baudrates[i].text);
     gtk_combo_box_set_active((GtkComboBox *)baudrate, serial_baudrate);
+#endif
 
+#if (GTKVER == 3)
+    devtype = gtk_combo_box_text_new();
+    gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(devtype), NULL, "Normal");
+    gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(devtype), NULL, "Stathmos/Allvåg");
+    gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(devtype), NULL, "AP-1");
+    gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(devtype), NULL, "My Weight");
+    gtk_combo_box_set_active(GTK_COMBO_BOX(devtype), device_type);
+#else
     devtype = gtk_combo_box_new_text();
     gtk_combo_box_append_text((GtkComboBox *)devtype, "Normal");
     gtk_combo_box_append_text((GtkComboBox *)devtype, "Stathmos/Allvåg");
     gtk_combo_box_append_text((GtkComboBox *)devtype, "AP-1");
     gtk_combo_box_append_text((GtkComboBox *)devtype, "My Weight");
     gtk_combo_box_set_active((GtkComboBox *)devtype, device_type);
+#endif
 
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(table), gtk_label_new(_("In Use")), 0, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(table), used, 1, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(table), gtk_label_new(_("Device")), 0, 1, 1, 1);
+    gtk_grid_attach(GTK_GRID(table), device, 1, 1, 1, 1);
+    gtk_grid_attach(GTK_GRID(table), gtk_label_new(_("Baudrate")), 0, 2, 1, 1);
+    gtk_grid_attach(GTK_GRID(table), baudrate, 1, 2, 1, 1);
+    gtk_grid_attach(GTK_GRID(table), gtk_label_new(_("Type")), 0, 3, 1, 1);
+    gtk_grid_attach(GTK_GRID(table), devtype, 1, 3, 1, 1);
+
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_action_area(GTK_DIALOG(dialog))), 
+                       table, FALSE, FALSE, 0);//XXXXXXXXXXX
+#else
     gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new(_("In Use")), 0, 1, 0, 1);
     gtk_table_attach_defaults(GTK_TABLE(table), used, 1, 2, 0, 1);
     gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new(_("Device")), 0, 1, 1, 2);
@@ -364,6 +396,8 @@ void set_serial_dialog(GtkWidget *w, gpointer data)
     gtk_table_attach_defaults(GTK_TABLE(table), devtype, 1, 2, 3, 4);
 
     gtk_box_pack_start_defaults(GTK_BOX(GTK_DIALOG(dialog)->vbox), table);
+#endif
+
     gtk_widget_show_all(dialog);
 
     if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_OK) {

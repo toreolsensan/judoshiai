@@ -11,12 +11,12 @@ RELFILE=$(RELDIR)/bin/judoshiai$(SUFF)
 RUNDIR=$(DEVELDIR)
 
 all:
-	make -C common
-	make -C judoshiai
-	make -C judotimer
+	#make -C common
+	#make -C judoshiai
+	#make -C judotimer
 	make -C judoinfo
 	make -C judoweight
-	make -C judojudogi
+	#make -C judojudogi
 	make -C doc
 	rm -rf $(RELDIR)
 	mkdir -p $(RELDIR)/bin
@@ -38,18 +38,18 @@ all:
 	mkdir -p $(RELDIR)/doc
 	mkdir -p $(RELDIR)/licenses
 	mkdir -p $(RELDIR)/etc
-	cp $(JUDOSHIAIFILE) $(RELDIR)/bin/
-	cp $(JUDOTIMERFILE) $(RELDIR)/bin/
+	#cp $(JUDOSHIAIFILE) $(RELDIR)/bin/
+	#cp $(JUDOTIMERFILE) $(RELDIR)/bin/
 	cp $(JUDOINFOFILE) $(RELDIR)/bin/
 	cp $(JUDOWEIGHTFILE) $(RELDIR)/bin/
-	cp $(JUDOJUDOGIFILE) $(RELDIR)/bin/
+	#cp $(JUDOJUDOGIFILE) $(RELDIR)/bin/
 ### Windows executable ###
 ifeq ($(TGT),WIN32)
 	cp $(RUNDIR)/bin/*.dll $(RELDIR)/bin/
 	cp $(SOUNDDIR)/bin/*.dll $(RELDIR)/bin/
 	cp $(RSVGDIR)/bin/*.dll $(RELDIR)/bin/
 	cp $(CURLDIR)/bin/*.dll $(RELDIR)/bin/
-	cp -r $(RUNDIR)/lib/gtk-2.0 $(RELDIR)/lib/
+	cp -r $(RUNDIR)/lib/gtk-$(GTKVER).0 $(RELDIR)/lib/
 	cp -r $(RUNDIR)/share/locale/fi $(RELDIR)/share/locale/
 	cp -r $(RUNDIR)/share/locale/sv $(RELDIR)/share/locale/
 	cp -r $(RUNDIR)/share/locale/es $(RELDIR)/share/locale/

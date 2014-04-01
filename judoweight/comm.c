@@ -35,7 +35,7 @@
 #include <glib.h>
 #include <gdk/gdkkeysyms.h>
 #ifdef WIN32
-#include <glib/gwin32.h>
+//#include <glib/gwin32.h>
 #endif
 
 #include "judoweight.h"
@@ -86,9 +86,6 @@ gboolean msg_accepted(struct message *m)
 
 void msg_received(struct message *input_msg)
 {
-    gint tatami;
-    gint position;
-    struct name_data *j;
     gchar  buf[16];
 
     if (input_msg->sender == my_address)

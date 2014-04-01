@@ -359,10 +359,17 @@ void ask_node_ip_address( GtkWidget *w,
     label = gtk_label_new(_("IP address:"));
     address = gtk_entry_new();
     gtk_entry_set_text(GTK_ENTRY(address), addrstr);
+#if (GTKVER == 3)
+    hbox = gtk_grid_new();
+    gtk_container_set_border_width(GTK_CONTAINER(hbox), 10);
+    gtk_grid_attach(GTK_GRID(hbox), label, 0, 0, 1, 1);
+    gtk_grid_attach_next_to(GTK_GRID(hbox), address, label, GTK_POS_RIGHT, 1, 1);
+#else
     hbox = gtk_hbox_new(FALSE, 5);
     gtk_container_set_border_width(GTK_CONTAINER(hbox), 10);
     gtk_box_pack_start_defaults(GTK_BOX(hbox), label);
     gtk_box_pack_start_defaults(GTK_BOX(hbox), address);
+#endif
 
     if (connection_ok && node_ip_addr == 0) {
         gulong myaddr = ntohl(tmp_node_addr);
@@ -374,9 +381,14 @@ void ask_node_ip_address( GtkWidget *w,
         label = gtk_label_new(_("(Connection OK)"));
     else
         label = gtk_label_new(_("(Connection broken)"));
+#if (GTKVER == 3)
+    gtk_grid_attach_next_to(GTK_GRID(hbox), label, address, GTK_POS_RIGHT, 1, 1);
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_action_area(GTK_DIALOG(dialog))), 
+ 		      hbox, TRUE, TRUE, 0);
+#else
     gtk_box_pack_start_defaults(GTK_BOX(hbox), label);
-
     gtk_box_pack_start_defaults(GTK_BOX(GTK_DIALOG(dialog)->vbox), hbox);
+#endif
     gtk_widget_show_all(dialog);
 
     g_signal_connect(G_OBJECT(dialog), "response",
@@ -398,8 +410,11 @@ void show_my_ip_addresses( GtkWidget *w,
                                           GTK_DIALOG_DESTROY_WITH_PARENT,
                                           GTK_STOCK_OK, GTK_RESPONSE_OK,
                                           NULL);
-
+#if (GTKVER == 3)
+    vbox = gtk_grid_new();
+#else
     vbox = gtk_vbox_new(FALSE, 5);
+#endif
     gtk_container_set_border_width(GTK_CONTAINER(vbox), 10);
 
     for (i = 0; i < addrcnt; i++) {
@@ -415,11 +430,19 @@ void show_my_ip_addresses( GtkWidget *w,
 
         label = gtk_label_new(addrstr);
         g_object_set(label, "use-markup", TRUE, NULL);
+#if (GTKVER == 3)
+        gtk_grid_attach(GTK_GRID(vbox), label, 0, 0, 1, 1);
+#else
         gtk_box_pack_start_defaults(GTK_BOX(vbox), label);
+#endif
     }
 
+#if (GTKVER == 3)
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_action_area(GTK_DIALOG(dialog))), 
+ 		      vbox, TRUE, TRUE, 0);
+#else
     gtk_box_pack_start_defaults(GTK_BOX(GTK_DIALOG(dialog)->vbox), vbox);
-
+#endif
     gtk_widget_show_all(dialog);
 
     g_signal_connect(G_OBJECT(dialog), "response",
@@ -595,7 +618,7 @@ gint send_msg(gint fd, struct message *msg)
     out[k++] = COMM_ESCAPE;
     out[k++] = COMM_END;
 
-    if ((err = send(fd, out, k, 0)) != k) {
+    if ((err = send(fd, (char *)out, k, 0)) != k) {
         g_print("send_msg error: sent %d/%d octets\n", err, k);
         return -1;
     }
@@ -728,7 +751,7 @@ gpointer client_thread(gpointer args)
                 static gboolean escape = FALSE;
                 static guchar p[512];
                                 
-                if ((n = recv(comm_fd, inbuf, sizeof(inbuf), 0)) > 0) {
+                if ((n = recv(comm_fd, (char *)inbuf, sizeof(inbuf), 0)) > 0) {
                     gint i;
                     for (i = 0; i < n; i++) {
                         guchar c = inbuf[i];
@@ -907,7 +930,7 @@ gpointer ssdp_thread(gpointer args)
     struct sockaddr_in clientsock;
     static gchar inbuf[1024];
     fd_set read_fd, fds;
-    guint socklen;
+    gint socklen;
     struct ip_mreq mreq;
 
 #ifdef WIN32
@@ -948,7 +971,7 @@ gpointer ssdp_thread(gpointer args)
     memset(&mreq, 0, sizeof(mreq));
     mreq.imr_multiaddr.s_addr = inet_addr(SSDP_MULTICAST);
     mreq.imr_interface.s_addr = htonl(INADDR_ANY);
-    if (setsockopt(sock_in, IPPROTO_IP, IP_ADD_MEMBERSHIP, &mreq, sizeof(mreq)) == -1) {
+    if (setsockopt(sock_in, IPPROTO_IP, IP_ADD_MEMBERSHIP, (void *)&mreq, sizeof(mreq)) == -1) {
         perror("SSDP setsockopt");
     }
 
