@@ -746,8 +746,22 @@ void db_set_match(struct match *m1)
             m.forcedtatami != m1->forcedtatami ||
             m.forcednumber != m1->forcednumber ||
             m.date != m1->date ||
-            m.legend != m1->legend)
+            m.legend != m1->legend) {
             db_update_match(m1);
+
+            // is this a team event?
+            struct category_data *cat = avl_get_category(m1->category);
+            if (cat && (cat->deleted & TEAM_EVENT) && (m1->category & MATCH_CATEGORY_SUB_MASK) == 0) {
+                db_exec_str(NULL, NULL, "UPDATE matches SET \"blue\"=%d "
+                            "WHERE \"category\"=%d AND \"blue\"=0",
+                            m1->blue, 
+                            m1->category | (m1->number << MATCH_CATEGORY_SUB_SHIFT));
+                db_exec_str(NULL, NULL, "UPDATE matches SET \"white\"=%d "
+                            "WHERE \"category\"=%d AND \"white\"=0",
+                            m1->white, 
+                            m1->category | (m1->number << MATCH_CATEGORY_SUB_SHIFT));
+            }
+        }
     } else {
         db_add_match(m1);
 
