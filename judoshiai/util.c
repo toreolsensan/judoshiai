@@ -427,7 +427,12 @@ gint ask_question(gchar *message)
                                           NULL);
         
     label = gtk_label_new (message);
+#if (GTKVER == 3)
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), 
+                       label, FALSE, FALSE, 0);
+#else
     gtk_container_add (GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), label);
+#endif
     gtk_widget_show_all(dialog);
 
     response = gtk_dialog_run (GTK_DIALOG (dialog));

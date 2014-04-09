@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <initguid.h>
 #include <winsock2.h>
+#include <ws2tcpip.h>
 
 #else /* UNIX */
 
@@ -33,9 +34,15 @@
 
 #include <gtk/gtk.h>
 #include <glib.h>
+
+#if (GTKVER == 3)
+#include <gdk/gdkkeysyms-compat.h>
+#else
 #include <gdk/gdkkeysyms.h>
+#endif
+
 #ifdef WIN32
-#include <glib/gwin32.h>
+//#include <glib/gwin32.h>
 #endif
 
 #include "judotimer.h"
@@ -59,7 +66,6 @@ int current_match;
 time_t traffic_last_rec_time;
 static struct message msgout;
 static time_t result_send_time;
-static gint last_category = 0, last_match = 0;
 
 void copy_packet(struct message *msg)
 {
@@ -310,25 +316,25 @@ static struct {
 
 static volatile struct message message_queue[MSG_QUEUE_LEN];
 static volatile gint msg_put = 0, msg_get = 0;
-static GStaticMutex msg_mutex = G_STATIC_MUTEX_INIT;
+G_LOCK_DEFINE_STATIC(msg_mutex);
 
 void send_label_msg(struct message *msg)
 {
     msg->sender = tatami;
-    g_static_mutex_lock(&msg_mutex);
+    G_LOCK(msg_mutex);
     message_queue[msg_put++] = *msg;
     if (msg_put >= MSG_QUEUE_LEN)
         msg_put = 0;
 
     if (msg_put == msg_get)
         g_print("MASTER MSG QUEUE FULL!\n");
-    g_static_mutex_unlock(&msg_mutex);
+    G_UNLOCK(msg_mutex);
 }
 
 gpointer master_thread(gpointer args)
 {
     SOCKET node_fd, tmp_fd;
-    guint alen;
+    socklen_t alen;
     struct sockaddr_in my_addr, caller;
     gint reuse = 1;
     fd_set read_fd, fds;
@@ -376,7 +382,7 @@ gpointer master_thread(gpointer args)
 
         /* messages to send */
 
-        g_static_mutex_lock(&msg_mutex);
+        G_LOCK(msg_mutex);
         if (msg_get != msg_put) {
             for (i = 0; i < NUM_CONNECTIONS; i++) {
                 if (connections[i].fd == 0)
@@ -392,7 +398,7 @@ gpointer master_thread(gpointer args)
             if (msg_get >= MSG_QUEUE_LEN)
                 msg_get = 0;
         }
-        g_static_mutex_unlock(&msg_mutex);
+        G_UNLOCK(msg_mutex);
 
         if (r <= 0)
             continue;
@@ -423,8 +429,8 @@ gpointer master_thread(gpointer args)
 
             connections[i].fd = tmp_fd;
             connections[i].addr = caller.sin_addr.s_addr;
-            g_print("Master: new connection[%d]: fd=%d addr=%x\n", 
-                    i, tmp_fd, caller.sin_addr.s_addr);
+            g_print("Master: new connection[%d]: fd=%d addr=%s\n", 
+                    i, tmp_fd, inet_ntoa(caller.sin_addr));
             FD_SET(tmp_fd, &read_fd);
         }
 
@@ -437,7 +443,7 @@ gpointer master_thread(gpointer args)
             if (!(FD_ISSET(connections[i].fd, &fds)))
                 continue;
 
-            r = recv(connections[i].fd, inbuf, sizeof(inbuf), 0);
+            r = recv(connections[i].fd, (char *)inbuf, sizeof(inbuf), 0);
             if (r <= 0) {
                 g_print("Master: connection %d fd=%d closed\n", i, connections[i].fd);
                 closesocket(connections[i].fd);

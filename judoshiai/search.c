@@ -35,7 +35,6 @@ static void search_end(GtkWidget *widget,
 		       GdkEvent *event,
 		       gpointer data)
 {
-    gint i;
     g_free(data);
     gtk_widget_destroy(widget);
 }
@@ -159,12 +158,21 @@ void search_competitor_args(GtkWidget *w, gpointer cb, gpointer args)
     //gtk_entry_set_max_length(GTK_ENTRY(tmp), 30);
     gtk_entry_set_text(GTK_ENTRY(tmp), "");
     g_signal_connect(G_OBJECT(tmp), "changed", G_CALLBACK(lookup), data);
+#if (GTKVER == 3)
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), 
+                       tmp, FALSE, FALSE, 0);
+#else
     gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), tmp);
-
+#endif
     for (i = 0; i < NUM_RESULTS; i++) {
         data->results[i] = tmp = gtk_button_new_with_label("");
         g_object_set(tmp, "xalign", 0.0, NULL);
+#if (GTKVER == 3)
+        gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), 
+                           tmp, FALSE, FALSE, 0);
+#else
         gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), tmp);
+#endif
         g_signal_connect(G_OBJECT(data->results[i]), 
                          "clicked",
                          G_CALLBACK(button_pressed), 

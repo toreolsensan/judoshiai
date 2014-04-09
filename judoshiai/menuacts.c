@@ -100,7 +100,11 @@ void open_shiai_from_net(GtkWidget *w, gpointer data)
 {
     GtkWidget *places[NUM_OTHERS];
     GtkWidget *dialog;
+#if (GTKVER == 3)
+    GtkWidget *table = gtk_grid_new();
+#else
     GtkWidget *table = gtk_table_new(1, NUM_OTHERS, FALSE);
+#endif
     gint i;
 
     dialog = gtk_file_chooser_dialog_new (_("Tournament from the net"),
@@ -112,7 +116,11 @@ void open_shiai_from_net(GtkWidget *w, gpointer data)
 
     for (i = 0; i < NUM_OTHERS; i++) {
         places[i] = gtk_check_button_new_with_label(other_info(i));
+#if (GTKVER == 3)
+        gtk_grid_attach(GTK_GRID(table), places[i], 0, i, 1, 1);
+#else
         gtk_table_attach_defaults(GTK_TABLE(table), places[i], 0, 1, i, i+1);
+#endif
     }
 
     gtk_widget_show_all(table);
@@ -209,10 +217,15 @@ void open_shiai(GtkWidget *w, gpointer data)
 
         g_free (name);
 
+#if (GTKVER == 3)
+        gdk_window_set_cursor(gtk_widget_get_window(GTK_WIDGET(dialog)), wait_cursor);
+        open_shiai_display();
+        gdk_window_set_cursor(gtk_widget_get_window(GTK_WIDGET(dialog)), NULL);
+#else
         gdk_window_set_cursor(GTK_WIDGET(dialog)->window, wait_cursor);
         open_shiai_display();
         gdk_window_set_cursor(GTK_WIDGET(dialog)->window, NULL);
-
+#endif
         valid_ascii_string(database_name);
     }
 
@@ -223,11 +236,19 @@ void font_dialog(GtkWidget *w, gpointer data)
 {
     GtkWidget *dialog;
 
+#if (GTKVER == 3)
+    dialog = gtk_font_chooser_dialog_new(_("Select sheet font"), NULL);
+    gtk_font_chooser_set_font(GTK_FONT_CHOOSER(dialog), get_font_face());
+#else
     dialog = gtk_font_selection_dialog_new (_("Select sheet font"));
     gtk_font_selection_dialog_set_font_name(GTK_FONT_SELECTION_DIALOG(dialog), get_font_face());
-
+#endif
     if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_OK) {
+#if (GTKVER == 3)
+        gchar *font = gtk_font_chooser_get_font(GTK_FONT_CHOOSER(dialog));
+#else
         gchar *font = gtk_font_selection_dialog_get_font_name(GTK_FONT_SELECTION_DIALOG(dialog));
+#endif
         set_font(font);
         g_print("font=%s\n", font);
     }
@@ -301,32 +322,52 @@ void set_club_text(GtkWidget *w, gpointer data)
 
 void set_club_abbr(GtkWidget *menu_item, gpointer data)
 {
+#if (GTKVER == 3)
+    club_abbr = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item));
+#else
     club_abbr = GTK_CHECK_MENU_ITEM(menu_item)->active;
+#endif
     g_key_file_set_integer(keyfile, "preferences", "clubabbr", club_abbr);
 }
 
 void toggle_automatic_sheet_update(GtkWidget *menu_item, gpointer data)
 {
+#if (GTKVER == 3)
+    automatic_sheet_update = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item));
+#else
     automatic_sheet_update = GTK_CHECK_MENU_ITEM(menu_item)->active;
+#endif
     g_key_file_set_boolean(keyfile, "preferences", "automatic_sheet_update", automatic_sheet_update);
 }
 
 void toggle_automatic_web_page_update(GtkWidget *menu_item, gpointer data)
 {
+#if (GTKVER == 3)
+    automatic_web_page_update = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item));
+#else
     automatic_web_page_update = GTK_CHECK_MENU_ITEM(menu_item)->active;
+#endif
     if (automatic_web_page_update)
         get_output_directory();
 }
 
 void toggle_weights_in_sheets(GtkWidget *menu_item, gpointer data)
 {
+#if (GTKVER == 3)
+    weights_in_sheets = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item));
+#else
     weights_in_sheets = GTK_CHECK_MENU_ITEM(menu_item)->active;
+#endif
     g_key_file_set_boolean(keyfile, "preferences", "weightvisible", weights_in_sheets);
 }
 
 void toggle_grade_visible(GtkWidget *menu_item, gpointer data)
 {
+#if (GTKVER == 3)
+    grade_visible = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item));
+#else
     grade_visible = GTK_CHECK_MENU_ITEM(menu_item)->active;
+#endif
     g_key_file_set_boolean(keyfile, "preferences", "gradevisible", grade_visible);
 }
 
@@ -338,37 +379,43 @@ void toggle_name_layout(GtkWidget *menu_item, gpointer data)
 
 void toggle_pool_style(GtkWidget *menu_item, gpointer data)
 {
+#if (GTKVER == 3)
+    pool_style = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item));
+#else
     pool_style = GTK_CHECK_MENU_ITEM(menu_item)->active;
+#endif
     g_key_file_set_boolean(keyfile, "preferences", "poolstyle", pool_style);
 }
 
 void toggle_belt_colors(GtkWidget *menu_item, gpointer data)
 {
+#if (GTKVER == 3)
+    belt_colors = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item));
+#else
     belt_colors = GTK_CHECK_MENU_ITEM(menu_item)->active;
+#endif
     g_key_file_set_boolean(keyfile, "preferences", "beltcolors", pool_style);
 }
 
 void toggle_mirror(GtkWidget *menu_item, gpointer data)
 {
-    if (GTK_CHECK_MENU_ITEM(menu_item)->active) {
-        mirror_display = TRUE;
-        g_key_file_set_boolean(keyfile, "preferences", "mirror", TRUE);
-    } else {
-        mirror_display = FALSE;
-        g_key_file_set_boolean(keyfile, "preferences", "mirror", FALSE);
-    }
+#if (GTKVER == 3)
+    mirror_display = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item));
+#else
+    mirror_display = GTK_CHECK_MENU_ITEM(menu_item)->active;
+#endif
+    g_key_file_set_boolean(keyfile, "preferences", "mirror", mirror_display);
     refresh_window();
 }
 
 void toggle_auto_arrange(GtkWidget *menu_item, gpointer data)
 {
-    if (GTK_CHECK_MENU_ITEM(menu_item)->active) {
-        auto_arrange = TRUE;
-        g_key_file_set_boolean(keyfile, "preferences", "autoarrange", TRUE);
-    } else {
-        auto_arrange = FALSE;
-        g_key_file_set_boolean(keyfile, "preferences", "autoarrange", FALSE);
-    }
+#if (GTKVER == 3)
+    auto_arrange = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item));
+#else
+    auto_arrange = GTK_CHECK_MENU_ITEM(menu_item)->active;
+#endif
+    g_key_file_set_boolean(keyfile, "preferences", "autoarrange", auto_arrange);
 }
 
 static gboolean with_weight;
@@ -390,18 +437,27 @@ static void get_competitors(void)
                                           GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
                                           NULL);
 
+#if (GTKVER == 3)
+    vbox = gtk_grid_new();
+#else
     vbox = gtk_vbox_new(FALSE, 0);
+#endif
     cleanup = gtk_check_button_new_with_label(_("Clean up duplicates and update reg. categories"));
     gtk_widget_show(cleanup);
     only_weighted = gtk_check_button_new_with_label(_("Weighed only"));
     gtk_widget_show(only_weighted);
     with_weights = gtk_check_button_new_with_label(_("With weights"));
     gtk_widget_show(with_weights);
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(vbox), with_weights,  0, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(vbox), only_weighted, 0, 1, 1, 1);
+    gtk_grid_attach(GTK_GRID(vbox), cleanup,       0, 2, 1, 1);
+#else
     gtk_box_pack_start(GTK_BOX(vbox), with_weights, FALSE, TRUE, 2);
     gtk_box_pack_start(GTK_BOX(vbox), only_weighted, FALSE, TRUE, 2);
     gtk_box_pack_start(GTK_BOX(vbox), cleanup, FALSE, TRUE, 2);
+#endif
     gtk_file_chooser_set_extra_widget(GTK_FILE_CHOOSER(dialog), vbox);
-
     gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter);
 
     if (database_name[0] == 0) {

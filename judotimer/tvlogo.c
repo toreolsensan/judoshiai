@@ -68,7 +68,6 @@
 
 #include <gtk/gtk.h>
 #include <librsvg/rsvg.h>
-#include <librsvg/rsvg-cairo.h>
 
 #include "judotimer.h"
 
@@ -259,6 +258,21 @@ void ask_tvlogo_settings( GtkWidget *w,
     gtk_entry_set_text(GTK_ENTRY(vlc->y), buf);
     gtk_entry_set_width_chars(GTK_ENTRY(vlc->y), 4);
 
+#if (GTKVER == 3)
+    hbox = gtk_grid_new();
+    gtk_grid_attach(GTK_GRID(hbox), gtk_label_new("VLC port:"), 0, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(hbox), vlc->port,                  1, 0, 1, 1);
+
+    hbox1 = gtk_grid_new();
+    gtk_grid_attach(GTK_GRID(hbox1), gtk_label_new(_("X:")), 0, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(hbox1), vlc->x,                 1, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(hbox1), gtk_label_new(_("Y:")), 2, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(hbox1), vlc->y,                 3, 0, 1, 1);
+
+    hbox2 = gtk_grid_new();
+    gtk_grid_attach(GTK_GRID(hbox2), gtk_label_new(_("Scale:")), 0, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(hbox2), vlc->scale,                 1, 0, 1, 1);
+#else
     hbox = gtk_hbox_new(FALSE, 4);
     gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new("VLC port:"), FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(hbox), vlc->port, FALSE, FALSE, 0);
@@ -272,6 +286,7 @@ void ask_tvlogo_settings( GtkWidget *w,
     hbox2 = gtk_hbox_new(FALSE, 4);
     gtk_box_pack_start(GTK_BOX(hbox2), gtk_label_new(_("Scale:")), FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(hbox2), vlc->scale, FALSE, FALSE, 5);
+#endif
 
     if (vlc_connection_ok)
         label = gtk_label_new(_("(Connection OK)"));
@@ -289,11 +304,23 @@ void ask_tvlogo_settings( GtkWidget *w,
     gtk_box_pack_start(GTK_BOX(hbox3), vlc->srvport, FALSE, FALSE, 0);
     */
 
+#if (GTKVER == 3)
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), 
+                       hbox, FALSE, FALSE, 4);
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), 
+                       hbox1, FALSE, FALSE, 4);
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), 
+                       hbox2, FALSE, FALSE, 4);
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), 
+                       label, FALSE, FALSE, 4);
+#else
     gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), hbox, FALSE, FALSE, 4);
     gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), hbox1, FALSE, FALSE, 4);
     gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), hbox2, FALSE, FALSE, 4);
     gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), label, FALSE, FALSE, 4);
     //gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), hbox3, FALSE, FALSE, 4);
+#endif
+
     gtk_widget_show_all(dialog);
 
     g_signal_connect(G_OBJECT(dialog), "response",

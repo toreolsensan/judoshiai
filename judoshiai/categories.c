@@ -54,7 +54,7 @@ void create_categories(GtkWidget *w, gpointer data)
     db_read_competitor_statistics(&num_comp, &num_weighted);
     gint cnt = 0;
 
-    gdk_window_set_cursor(GTK_WIDGET(main_window)->window, wait_cursor);
+    gdk_window_set_cursor(gtk_widget_get_window(GTK_WIDGET(main_window)), wait_cursor);
 
     gtk_tree_model_foreach(GTK_TREE_MODEL(current_model),
                            (GtkTreeModelForeachFunc) for_each_row,
@@ -137,8 +137,11 @@ void create_categories(GtkWidget *w, gpointer data)
     g_list_foreach(rr_list, (GFunc) gtk_tree_row_reference_free, NULL);
     g_list_free(rr_list);        
 
+#if (GTKVER == 3)
+    gdk_window_set_cursor(gtk_widget_get_window(GTK_WIDGET(main_window)), NULL);
+#else
     gdk_window_set_cursor(GTK_WIDGET(main_window)->window, NULL);
-
+#endif
     progress_show(0.0, "");
 }
 
@@ -225,8 +228,11 @@ void locate_to_tatamis(GtkWidget *w, gpointer data)
     for (i = 0; i < NUM_TATAMIS; i++)
         group_num[i] = 1;
 
+#if (GTKVER == 3)
+    gdk_window_set_cursor(gtk_widget_get_window(GTK_WIDGET(main_window)), wait_cursor);
+#else
     gdk_window_set_cursor(GTK_WIDGET(main_window)->window, wait_cursor);
-
+#endif
     ok = gtk_tree_model_get_iter_first(current_model, &iter);
     while (ok) {
         struct judoka *j;
@@ -286,8 +292,11 @@ void locate_to_tatamis(GtkWidget *w, gpointer data)
 
     progress_show(0.0, "");
 
+#if (GTKVER == 3)
+    gdk_window_set_cursor(gtk_widget_get_window(GTK_WIDGET(main_window)), NULL);
+#else
     gdk_window_set_cursor(GTK_WIDGET(main_window)->window, NULL);
-
+#endif
     SYS_LOG_INFO(_("All the categories located to the tatamis"));
 }
 

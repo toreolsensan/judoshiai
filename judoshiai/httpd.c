@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <initguid.h>
 #include <winsock2.h>
+#include <ws2tcpip.h>
 
 #else /* UNIX */
 
@@ -899,7 +900,7 @@ void set_competitor(http_parser_t *parser)
     DEF_STR(regcategory);
     DEF_STR(belt);
     DEF_STR(weight);
-    DEF_INT(visible);
+    //DEF_INT(visible);
     DEF_STR(category);
     DEF_INT(deleted);
     DEF_INT(seeding);
@@ -926,7 +927,7 @@ void set_competitor(http_parser_t *parser)
             GET_HTML_STR(regcategory);
             GET_HTML_STR(belt);
             GET_HTML_STR(weight);
-            GET_HTML_INT(visible);
+            //GET_HTML_INT(visible);
             GET_HTML_STR(category);
             //GET_HTML_INT(deleted);
             GET_HTML_INT(seeding);
@@ -1222,7 +1223,7 @@ gpointer analyze_http(gpointer param)
 gpointer httpd_thread(gpointer args)
 {
     SOCKET serv_fd, tmp_fd;
-    unsigned int alen;
+    socklen_t alen;
     struct sockaddr_in my_addr, caller;
     fd_set read_fd, fds;
     int reuse = 1;

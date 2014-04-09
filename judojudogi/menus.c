@@ -10,7 +10,12 @@
 #include <string.h>
 #include <locale.h>
 #include <gtk/gtk.h>
+
+#if (GTKVER == 3)
+#include <gdk/gdkkeysyms-compat.h>
+#else
 #include <gdk/gdkkeysyms.h>
+#endif
 
 #include "judojudogi.h"
 #include "language.h"
@@ -28,7 +33,7 @@ static GtkWidget *light, *menu_light;
 static GtkWidget *writefile, *lang_menu_item;
 
 gboolean show_tatami[NUM_TATAMIS];
-static GtkTooltips *menu_tips;
+//static GtkTooltips *menu_tips;
 
 extern void toggle_full_screen(GtkWidget *menu_item, gpointer data);
 extern void toggle_small_display(GtkWidget *menu_item, gpointer data);
@@ -55,9 +60,15 @@ static void tatami_selection(GtkWidget *w,
     gchar buf[32];
     gint tatami = ptr_to_gint(data);
     sprintf(buf, "tatami%d", tatami);
+#if (GTKVER == 3)
+    show_tatami[tatami-1] = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(w));
+    g_key_file_set_boolean(keyfile, "preferences", buf, 
+                           gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(w)));
+#else
     show_tatami[tatami-1] = GTK_CHECK_MENU_ITEM(w)->active;
     g_key_file_set_boolean(keyfile, "preferences", buf, 
                            GTK_CHECK_MENU_ITEM(w)->active);
+#endif
 
     refresh_window();
 }
@@ -149,7 +160,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     GtkAccelGroup *group;
     gint i;
 
-    menu_tips = gtk_tooltips_new ();
+    //menu_tips = gtk_tooltips_new ();
     group = gtk_accel_group_new ();
     menubar = gtk_menu_bar_new ();
 
@@ -173,7 +184,12 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_menu_shell_append (GTK_MENU_SHELL (menubar), lang_menu_item); 
 
     gtk_menu_shell_append (GTK_MENU_SHELL (menubar), menu_light); 
+#if (GTKVER == 3)
+    gtk_widget_set_halign(menu_light, GTK_ALIGN_FILL);
+    //gtk_widget_set_hexpand(menu_light, TRUE);
+#else
     gtk_menu_item_set_right_justified(GTK_MENU_ITEM(menu_light), TRUE);
+#endif
     g_signal_connect(G_OBJECT(menu_light), "button_press_event",
                      G_CALLBACK(ask_node_ip_address), (gpointer)NULL);
 

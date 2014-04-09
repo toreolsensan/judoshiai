@@ -1260,7 +1260,11 @@ void make_next_matches_html(void)
     fprintf(f, "</tr>\r\n");
 
     // next matches
+#if (GTKVER == 3)
+    G_LOCK(next_match_mutex);
+#else
     g_static_mutex_lock(&next_match_mutex);
+#endif
     for (k = 0; k < INFO_MATCH_NUM; k++) {
         //gchar *bgcolor = (k & 1) ? "bgcolor=\"#a0a0a0\"" : "bgcolor=\"#f0f0f0\"";
         gchar *class_ul = (k & 1) ? "class=\"cul1\"" : "class=\"cul2\"";
@@ -1317,7 +1321,11 @@ void make_next_matches_html(void)
 
         fprintf(f, "</tr>\r\n");
     }
+#if (GTKVER == 3)
+    G_UNLOCK(next_match_mutex);
+#else
     g_static_mutex_unlock(&next_match_mutex);
+#endif
 
     fprintf(f, "</table></td>\n");
     make_bottom_frame(f);
@@ -1337,7 +1345,11 @@ int get_output_directory(void)
                                          GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
                                          NULL);
 
+#if (GTKVER == 3)
+    vbox = gtk_grid_new();
+#else
     vbox = gtk_vbox_new(FALSE, 1);
+#endif
     gtk_widget_show(vbox);
     auto_update = gtk_check_button_new_with_label(_("Automatic Web Page Update"));
     gtk_widget_show(auto_update);
@@ -1349,10 +1361,17 @@ int get_output_directory(void)
                                      g_key_file_get_boolean(keyfile, "preferences", "printsvg", &error));
         gtk_widget_show(svg);
     }
+#if (GTKVER == 3)
+    gtk_grid_attach_next_to(GTK_GRID(vbox), statistics, NULL, GTK_POS_BOTTOM, 1, 1);
+    gtk_grid_attach_next_to(GTK_GRID(vbox), auto_update, NULL, GTK_POS_BOTTOM, 1, 1);
+    if (svg)
+        gtk_grid_attach_next_to(GTK_GRID(vbox), svg, NULL, GTK_POS_BOTTOM, 1, 1);
+#else
     gtk_box_pack_start(GTK_BOX(vbox), statistics, FALSE, TRUE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), auto_update, FALSE, TRUE, 0);
     if (svg)
         gtk_box_pack_start(GTK_BOX(vbox), svg, FALSE, TRUE, 0);
+#endif
 
     gtk_file_chooser_set_extra_widget(GTK_FILE_CHOOSER(dialog), vbox);
 

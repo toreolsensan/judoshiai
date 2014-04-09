@@ -84,7 +84,11 @@ void db_validation(GtkWidget *w, gpointer data)
     gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER_ON_PARENT);
     gtk_window_set_destroy_with_parent(GTK_WINDOW(window), TRUE);
 
+#if (GTKVER == 3)
+    vbox = gtk_grid_new();
+#else
     vbox = gtk_vbox_new(FALSE, 1);
+#endif
     gtk_container_set_border_width (GTK_CONTAINER (vbox), 1);
     gtk_container_add (GTK_CONTAINER (window), vbox);
 
@@ -93,11 +97,21 @@ void db_validation(GtkWidget *w, gpointer data)
 
     GtkWidget *scrolled_window = gtk_scrolled_window_new(NULL, NULL);
     gtk_container_set_border_width(GTK_CONTAINER(scrolled_window), 10);
+#if (GTKVER == 3) && GTK_CHECK_VERSION(3,8,0)
+    gtk_container_add(GTK_CONTAINER(scrolled_window), result);
+#else
     gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_window), result);
+#endif
 
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(vbox), scrolled_window, 0, 0, 1, 1);
+    gtk_widget_set_hexpand(scrolled_window, TRUE);
+    gtk_widget_set_vexpand(scrolled_window, TRUE);
+    gtk_grid_attach(GTK_GRID(vbox), ok,              0, 1, 1, 1);
+#else
     gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), ok, FALSE, TRUE, 0);
-
+#endif
     gtk_widget_show_all(GTK_WIDGET(window));
     buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(result));
 

@@ -14,7 +14,6 @@
 #include <cairo.h>
 #include <cairo-pdf.h>
 #include <librsvg/rsvg.h>
-#include <librsvg/rsvg-cairo.h>
 
 #include "judoshiai.h"
 
@@ -803,7 +802,7 @@ gint paint_svg(struct paint_data *pd)
                 WRITE1(">", 1);
         } else { // *p != '%'
             //g_print("%c", *p);
-            if (strncmp(p, "xlink:href=\"flag", 16) == 0) {
+            if (strncmp((char *)p, "xlink:href=\"flag", 16) == 0) {
                 p += 16;
                 while (*p && *p != '"') p++;
                 if (*p == '"') p++;
@@ -977,7 +976,8 @@ gint paint_svg(struct paint_data *pd)
     if (pd->c)
         cairo_restore(pd->c);
 
-    rsvg_handle_free(handle);
+    g_object_unref(handle);
+    //rsvg_handle_free(handle);
 
     return TRUE;
 }
@@ -1071,7 +1071,8 @@ void read_svg_files(gboolean ok)
                             rsvg_handle_get_dimensions(h, &dim);
                             svg_data[num_svg].width = dim.width;
                             svg_data[num_svg].height = dim.height;
-                            rsvg_handle_free(h);
+                            g_object_unref(h);
+                            //rsvg_handle_free(h);
 
                             g_print("read key=0x%x pos=%d file=%s w=%d h=%d\n", 
                                     key, num_svg, fname, svg_data[num_svg].width, svg_data[num_svg].height);
@@ -1118,7 +1119,7 @@ void read_svg_files(gboolean ok)
                                                            dimensions.width+1, dimensions.height+1);
                 cairo_t *c = cairo_create(legends[l].cs);
                 cairo_translate(c, -position.x, -position.y);
-                gboolean r = rsvg_handle_render_cairo_sub(legends_h, c, buf);
+                rsvg_handle_render_cairo_sub(legends_h, c, buf);
                 cairo_show_page(c);
                 cairo_destroy(c);
 
@@ -1126,7 +1127,8 @@ void read_svg_files(gboolean ok)
                 snprintf(buf, sizeof(buf), "#legend%d", l);
             }            
 
-            rsvg_handle_free(legends_h);
+            g_object_unref(legends_h);
+            //rsvg_handle_free(legends_h);
         }
     } // if dir
 }

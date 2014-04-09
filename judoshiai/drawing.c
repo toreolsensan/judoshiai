@@ -1036,7 +1036,7 @@ static gboolean draw_one_comp(struct mdata *mdata)
             }
 
             gint min_mates = 10000, min_clubmates = 10000;
-            gint min_mates_ix = 0, min_clubmates_ix = 0;
+            gint min_mates_ix = 0;
             for (i = 0; i < 4; i++) {
                 if (mates[i] < min_mates) {
                     min_mates = mates[i];
@@ -1044,7 +1044,6 @@ static gboolean draw_one_comp(struct mdata *mdata)
                 }
                 if (clubmates[i] < min_clubmates) {
                     min_clubmates = clubmates[i];
-                    min_clubmates_ix = i;
                 }
             }
 
@@ -1436,26 +1435,42 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
     gtk_widget_set_size_request(GTK_WIDGET(dialog), FRAME_WIDTH, FRAME_HEIGHT);
     gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
 
+#if (GTKVER == 3)
+    hbox = gtk_grid_new();
+    vbox1 = gtk_grid_new();
+    vbox2 = gtk_grid_new();
+    gint r1 = 0, r2 = 0;
+#else
     hbox = gtk_hbox_new(FALSE, 5);
     vbox1 = gtk_vbox_new(FALSE, 5);
     vbox2 = gtk_vbox_new(FALSE, 5);
-
+#endif
     gtk_container_set_border_width(GTK_CONTAINER(vbox1), 10);
     gtk_container_set_border_width(GTK_CONTAINER(vbox2), 10);
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(hbox), vbox2, 0, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(hbox), vbox1, 1, 0, 1, 1);
 
+    gtk_grid_attach(GTK_GRID(vbox1), gtk_label_new(_("Number")),     0, r1++, 1, 1);
+    gtk_grid_attach(GTK_GRID(vbox2), gtk_label_new(_("Competitor")), 0, r2++, 1, 1);
+#else
     gtk_box_pack_start_defaults(GTK_BOX(hbox), vbox2);
     gtk_box_pack_start_defaults(GTK_BOX(hbox), vbox1);
 
     gtk_box_pack_start(GTK_BOX(vbox1), gtk_label_new(_("Number")), FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox2), gtk_label_new(_("Competitor")), FALSE, FALSE, 0);
-
+#endif
     // Create the positions table.
     for (i = 1; i <= mdata->mpositions; i++) {
         sprintf(buf, "%2d.                    ", get_competitor_number(i, mdata));
         mdata->mpos[i].eventbox = eventbox = gtk_event_box_new();
         mdata->mpos[i].label = label = gtk_label_new(buf);
         gtk_container_add(GTK_CONTAINER(eventbox), label);
+#if (GTKVER == 3)
+        gtk_grid_attach(GTK_GRID(vbox1), eventbox, 0, r1++, 1, 1);
+#else
         gtk_box_pack_start(GTK_BOX(vbox1), eventbox, FALSE, FALSE, 0);
+#endif
         g_signal_connect(G_OBJECT(eventbox), "button_press_event",
                          G_CALLBACK(select_number), mdata);
         g_object_set(label, "xalign", 0.0, NULL);
@@ -1476,6 +1491,14 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
             gtk_widget_modify_bg(eventbox, GTK_STATE_NORMAL, &bg2);
 
         if (mdata->mfrench_sys >= 0 && i < mdata->mpositions) {
+#if (GTKVER == 3)
+            if ((i & 1) == 0)
+                gtk_grid_attach(GTK_GRID(vbox1), gtk_separator_new(GTK_ORIENTATION_HORIZONTAL), 0, r1++, 1, 1);
+            if ((i & 3) == 0)
+                gtk_grid_attach(GTK_GRID(vbox1), gtk_separator_new(GTK_ORIENTATION_HORIZONTAL), 0, r1++, 1, 1);
+            if ((i & 7) == 0)
+                gtk_grid_attach(GTK_GRID(vbox1), gtk_separator_new(GTK_ORIENTATION_HORIZONTAL), 0, r1++, 1, 1);
+#else
             if ((i & 1) == 0)
                 gtk_box_pack_start(GTK_BOX(vbox1), 
                                    gtk_hseparator_new(), FALSE, FALSE, 0);
@@ -1485,6 +1508,7 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
             if ((i & 7) == 0)
                 gtk_box_pack_start(GTK_BOX(vbox1), 
                                    gtk_hseparator_new(), FALSE, FALSE, 0);
+#endif
         }
     }        
 
@@ -1493,7 +1517,11 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
         eventbox = gtk_event_box_new();
         GtkWidget *delete = gtk_image_new_from_stock(GTK_STOCK_CUT, GTK_ICON_SIZE_LARGE_TOOLBAR);
         gtk_container_add(GTK_CONTAINER(eventbox), delete);
+#if (GTKVER == 3)
+        gtk_grid_attach(GTK_GRID(vbox1), eventbox, 0, r1++, 1, 1);
+#else
         gtk_box_pack_start(GTK_BOX(vbox1), eventbox, FALSE, FALSE, 0);
+#endif
         g_signal_connect(G_OBJECT(eventbox), "button_press_event",
                          G_CALLBACK(remove_competitor), mdata);
     }
@@ -1541,7 +1569,11 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
         mdata->mcomp[i].eventbox = eventbox = gtk_event_box_new();
         label = mdata->mcomp[i].label;
         gtk_container_add(GTK_CONTAINER(eventbox), label);
+#if (GTKVER == 3)
+        gtk_grid_attach(GTK_GRID(vbox2), eventbox, 0, r2++, 1, 1);
+#else
         gtk_box_pack_start(GTK_BOX(vbox2), eventbox, FALSE, FALSE, 0);
+#endif
         g_signal_connect(G_OBJECT(eventbox), "button_press_event",
                          G_CALLBACK(select_competitor), mdata);
                 
@@ -1549,18 +1581,29 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
         g_object_set(label, "xalign", 0.0, NULL);
     }        
 
+#if (GTKVER == 3)
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), 
+                       gtk_label_new(_("Select first a competitor and then a number.")), FALSE, FALSE, 0);
+#else
     gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), 
                        gtk_label_new(_("Select first a competitor and then a number.")),
                        FALSE, FALSE, 0);
-
+#endif
     GtkWidget *scrolled_window = gtk_scrolled_window_new(NULL, NULL);
     //gtk_container_set_border_width(GTK_CONTAINER(scrolled_window), 10);
+#if (GTKVER == 3) && GTK_CHECK_VERSION(3,8,0)
+    gtk_container_add(GTK_CONTAINER(scrolled_window), hbox);
+#else
     gtk_scrolled_window_add_with_viewport(
         GTK_SCROLLED_WINDOW(scrolled_window), hbox);
-
+#endif
+#if (GTKVER == 3)
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), 
+                       scrolled_window, FALSE, FALSE, 0);
+#else
     gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), scrolled_window,
                        TRUE, TRUE, 0);
-
+#endif
     if (mdata->hidden == FALSE)
         gtk_widget_show_all(dialog);
 
@@ -1646,8 +1689,11 @@ void draw_all(GtkWidget *w, gpointer data)
     gint num_cats = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(current_model), NULL);
     gint cnt = 0;
 
+#if (GTKVER == 3)
+    gdk_window_set_cursor(gtk_widget_get_window(GTK_WIDGET(main_window)), wait_cursor);
+#else
     gdk_window_set_cursor(GTK_WIDGET(main_window)->window, wait_cursor);
-
+#endif
     for (i = 0; i <= number_of_tatamis; i++) {
         struct category_data *catdata = category_queue[i].next;
         while (catdata) {
@@ -1664,7 +1710,11 @@ void draw_all(GtkWidget *w, gpointer data)
         }
     }
 
+#if (GTKVER == 3)
+    gdk_window_set_cursor(gtk_widget_get_window(GTK_WIDGET(main_window)), NULL);
+#else
     gdk_window_set_cursor(GTK_WIDGET(main_window)->window, NULL);
+#endif
     SYS_LOG_INFO(_("All the categories has been drawn"));
 
     for (i = 1; i <= NUM_TATAMIS; i++) {

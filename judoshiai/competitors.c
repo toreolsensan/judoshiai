@@ -9,7 +9,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <gtk/gtk.h>
+
+#if (GTKVER == 3)
+#include <gdk/gdkkeysyms-compat.h>
+#else
 #include <gdk/gdkkeysyms.h>
+#endif
 
 #include "sqlite3.h"
 #include "judoshiai.h"
@@ -133,7 +138,11 @@ static void judoka_edited_callback(GtkWidget *widget,
         edited.regcategory = g_strdup(gtk_entry_get_text(GTK_ENTRY(judoka_tmp->regcategory)));
 
     if (judoka_tmp->realcategory)
+#if (GTKVER == 3)
+        realcategory = g_strdup(gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(judoka_tmp->realcategory)));
+#else
         realcategory = g_strdup(gtk_combo_box_get_active_text(GTK_COMBO_BOX(judoka_tmp->realcategory)));
+#endif
     if (!realcategory)
         realcategory = g_strdup("?");
 
@@ -393,11 +402,19 @@ static GtkWidget *set_entry(GtkWidget *table, int row,
     GtkWidget *tmp;
 
     tmp = gtk_label_new(text);
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(table), tmp, 0, row, 1, 1);
+#else
     gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, row, row+1);
+#endif
     tmp = gtk_entry_new();
     gtk_entry_set_max_length(GTK_ENTRY(tmp), 20);
     gtk_entry_set_text(GTK_ENTRY(tmp), deftxt ? deftxt : "");
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(table), tmp, 1, row, 1, 1);
+#else
     gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, row, row+1);
+#endif
     SET_ACCESS_NAME(tmp, text);
 
     return tmp;
@@ -508,8 +525,13 @@ void view_on_row_activated(GtkTreeView        *treeview,
     g_signal_connect(G_OBJECT(dialog), "response",
                      G_CALLBACK(judoka_edited_callback), (gpointer)judoka_tmp);
 
+#if (GTKVER == 3)
+    table = gtk_grid_new();
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), table, FALSE, FALSE, 0);
+#else
     table = gtk_table_new(2, 15, FALSE);
     gtk_container_add(GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), table);
+#endif
 
     if (visible) {
         gint row = 0;
@@ -519,12 +541,23 @@ void view_on_row_activated(GtkTreeView        *treeview,
         judoka_tmp->birthyear = set_entry(table, row++, _("Year of Birth:"), birthyear_s);
 
         tmp = gtk_label_new(_("Grade:"));
+#if (GTKVER == 3)
+        gtk_grid_attach(GTK_GRID(table), tmp, 0, row, 1, 1);
+
+        judoka_tmp->belt = tmp = gtk_combo_box_text_new();
+        for (i = 0; i < NUM_BELTS && ((belts[i] && belts[i][0]) || (i == 0 && belts[i])); i++)
+            gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(tmp), NULL, belts[i]);
+        gtk_grid_attach(GTK_GRID(table), tmp, 1, row, 1, 1);
+        gtk_combo_box_set_active(GTK_COMBO_BOX(tmp), belt);
+#else
         gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, row, row+1);
+
         judoka_tmp->belt = tmp = gtk_combo_box_new_text();
         for (i = 0; i < NUM_BELTS && ((belts[i] && belts[i][0]) || (i == 0 && belts[i])); i++)
             gtk_combo_box_append_text((GtkComboBox *)tmp, belts[i]);
         gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, row, row+1);
         gtk_combo_box_set_active((GtkComboBox *)tmp, belt);
+#endif
         row++;
 
         judoka_tmp->club = set_entry(table, row++, _("Club:"), club);
@@ -532,8 +565,13 @@ void view_on_row_activated(GtkTreeView        *treeview,
         judoka_tmp->regcategory = set_entry(table, row++, _("Reg. Category:"), regcategory);
 
         tmp = gtk_label_new(_("Category:"));
+#if (GTKVER == 3)
+        gtk_grid_attach(GTK_GRID(table), tmp, 0, row, 1, 1);
+        judoka_tmp->realcategory = tmp = gtk_combo_box_text_new();
+#else
         gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, row, row+1);
         judoka_tmp->realcategory = tmp = gtk_combo_box_new_text();
+#endif
 
         gint active = 0, loop = 0;
         gboolean ok = gtk_tree_model_get_iter_first(current_model, &iter);
@@ -547,27 +585,47 @@ void view_on_row_activated(GtkTreeView        *treeview,
 
             if (strcmp(category, cat1) == 0)
                 active = loop;
+#if (GTKVER == 3)
+            gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(tmp), NULL, cat1);
+#else
             gtk_combo_box_append_text((GtkComboBox *)tmp, cat1);
+#endif
             g_free(cat1);
             ok = gtk_tree_model_iter_next(current_model, &iter);
             loop++;
         }
 
+#if (GTKVER == 3)
+        gtk_grid_attach(GTK_GRID(table), tmp, 1, row, 1, 1);
+#else
         gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, row, row+1);
-        gtk_combo_box_set_active((GtkComboBox *)tmp, active);
+#endif
+        gtk_combo_box_set_active(GTK_COMBO_BOX(tmp), active);
         row++;
 
         if (serial_used) {
+#if (GTKVER == 3)
+            gtk_grid_attach(GTK_GRID(table), gtk_label_new(_("Weight:")), 0, row, 1, 1);
+#else
             gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new(_("Weight:")), 0, 1, row, row+1);
+#endif
             judoka_tmp->weight = gtk_entry_new();
             gtk_entry_set_max_length(GTK_ENTRY(judoka_tmp->weight), 7);
             gtk_entry_set_width_chars(GTK_ENTRY(judoka_tmp->weight), 7);
             gtk_entry_set_text(GTK_ENTRY(judoka_tmp->weight), weight_s);
-            GtkWidget *whbox = gtk_hbox_new(FALSE, 5);
+
             GtkWidget *wbutton = gtk_button_new_with_label("---");
+#if (GTKVER == 3)
+            GtkWidget *whbox = gtk_grid_new();
+            gtk_grid_attach(GTK_GRID(whbox), judoka_tmp->weight, 0, 0, 1, 1);
+            gtk_grid_attach(GTK_GRID(whbox), wbutton,            1, 0, 1, 1);
+            gtk_grid_attach(GTK_GRID(table), whbox, 1, row, 1, 1);
+#else
+            GtkWidget *whbox = gtk_hbox_new(FALSE, 5);
             gtk_box_pack_start_defaults(GTK_BOX(whbox), judoka_tmp->weight);
             gtk_box_pack_start_defaults(GTK_BOX(whbox), wbutton);
             gtk_table_attach_defaults(GTK_TABLE(table), whbox, 1, 2, row, row+1);
+#endif
             weight_entry = wbutton;
             if (last && last[0])
                 gtk_widget_grab_focus(wbutton);
@@ -583,6 +641,18 @@ void view_on_row_activated(GtkTreeView        *treeview,
         row++;
 
         tmp = gtk_label_new(_("Seeding:"));
+#if (GTKVER == 3)
+        gtk_grid_attach(GTK_GRID(table), tmp, 0, row, 1, 1);
+        judoka_tmp->seeding = tmp = gtk_combo_box_text_new();
+        gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(tmp), NULL, _("No seeding"));
+        gchar buf[8];
+        for (i = 0; i < NUM_SEEDED; i++) {
+            snprintf(buf, sizeof(buf), "%d", i+1); 
+            gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(tmp), NULL, buf);
+        }
+        gtk_grid_attach(GTK_GRID(table), tmp, 1, row, 1, 1);
+        gtk_combo_box_set_active(GTK_COMBO_BOX(tmp), seeding);
+#else
         gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, row, row+1);
         judoka_tmp->seeding = tmp = gtk_combo_box_new_text();
         gtk_combo_box_append_text((GtkComboBox *)tmp, _("No seeding"));
@@ -593,6 +663,7 @@ void view_on_row_activated(GtkTreeView        *treeview,
         }
         gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, row, row+1);
         gtk_combo_box_set_active((GtkComboBox *)tmp, seeding);
+#endif
         row++;
 
         judoka_tmp->clubseeding = set_entry(table, row++, _("Club Seeding:"), clubseeding_s);
@@ -602,6 +673,20 @@ void view_on_row_activated(GtkTreeView        *treeview,
         judoka_tmp->coachid = set_entry(table, row++, _("Coach Id:"), coachid);
 
         tmp = gtk_label_new(_("Gender:"));
+#if (GTKVER == 3)
+        gtk_grid_attach(GTK_GRID(table), tmp, 0, row, 1, 1);
+        judoka_tmp->gender = tmp = gtk_combo_box_text_new();
+        gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(tmp), NULL, "?");
+        gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(tmp), NULL, _("Male"));
+        gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(tmp), NULL, _("Female"));
+        gtk_grid_attach(GTK_GRID(table), tmp, 1, row, 1, 1);
+        if (deleted & GENDER_MALE)
+            gtk_combo_box_set_active(GTK_COMBO_BOX(tmp), 1);
+        else if (deleted & GENDER_FEMALE)
+            gtk_combo_box_set_active(GTK_COMBO_BOX(tmp), 2);
+        else
+            gtk_combo_box_set_active(GTK_COMBO_BOX(tmp), 0);
+#else
         gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, row, row+1);
         judoka_tmp->gender = tmp = gtk_combo_box_new_text();
         gtk_combo_box_append_text((GtkComboBox *)tmp, "?");
@@ -614,10 +699,25 @@ void view_on_row_activated(GtkTreeView        *treeview,
             gtk_combo_box_set_active((GtkComboBox *)tmp, 2);
         else
             gtk_combo_box_set_active((GtkComboBox *)tmp, 0);
+#endif
         row++;
 
 #ifdef JUDOGI_CONTROL
         tmp = gtk_label_new(_("Control:"));
+#if (GTKVER == 3)
+        gtk_grid_attach(GTK_GRID(table), tmp, 0, row, 1, 1);
+        judoka_tmp->judogi = tmp = gtk_combo_box_text_new();
+        gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(tmp), NULL, "?");
+        gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(tmp), NULL, _("OK"));
+        gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(tmp), NULL, _("NOK"));
+        gtk_grid_attach(GTK_GRID(table), tmp, 1, row, 1, 1);
+        if (deleted & JUDOGI_OK)
+            gtk_combo_box_set_active(GTK_COMBO_BOX(tmp), 1);
+        else if (deleted & JUDOGI_NOK)
+            gtk_combo_box_set_active(GTK_COMBO_BOX(tmp), 2);
+        else
+            gtk_combo_box_set_active(GTK_COMBO_BOX(tmp), 0);
+#else
         gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, row, row+1);
         judoka_tmp->judogi = tmp = gtk_combo_box_new_text();
         gtk_combo_box_append_text((GtkComboBox *)tmp, "?");
@@ -630,12 +730,21 @@ void view_on_row_activated(GtkTreeView        *treeview,
             gtk_combo_box_set_active((GtkComboBox *)tmp, 2);
         else
             gtk_combo_box_set_active((GtkComboBox *)tmp, 0);
+#endif
         row++;
 #endif
         tmp = gtk_label_new("Hansoku-make:");
+#if (GTKVER == 3)
+        gtk_grid_attach(GTK_GRID(table), tmp, 0, row, 1, 1);
+#else
         gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, row, row+1);
+#endif
         judoka_tmp->hansokumake = gtk_check_button_new();
+#if (GTKVER == 3)
+        gtk_grid_attach(GTK_GRID(table), judoka_tmp->hansokumake, 1, row, 1, 1);
+#else
         gtk_table_attach_defaults(GTK_TABLE(table), judoka_tmp->hansokumake, 1, 2, row, row+1);
+#endif
         if (deleted & HANSOKUMAKE)
             gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(judoka_tmp->hansokumake), TRUE);
 
@@ -656,6 +765,15 @@ void view_on_row_activated(GtkTreeView        *treeview,
             judoka_tmp->last = set_entry(table, 0, _("Category:"), last ? last : "");
 
             tmp = gtk_label_new(_("System:"));
+#if (GTKVER == 3)
+            gtk_grid_attach(GTK_GRID(table), tmp, 0, 1, 1, 1);
+            judoka_tmp->system = tmp = gtk_combo_box_text_new();
+
+            for (i = 0; i < NUM_SYSTEMS; i++)
+                gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(tmp), NULL, get_system_name_for_menu(i));
+
+            gtk_grid_attach(GTK_GRID(table), tmp, 1, 1, 1, 1);
+#else
             gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, 1, 2);
             judoka_tmp->system = tmp = gtk_combo_box_new_text();
 
@@ -663,12 +781,24 @@ void view_on_row_activated(GtkTreeView        *treeview,
                 gtk_combo_box_append_text(GTK_COMBO_BOX(tmp), get_system_name_for_menu(i));
 
             gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, 1, 2);
+#endif
             gtk_combo_box_set_active(GTK_COMBO_BOX(tmp), 
                                      catdata ? 
                                      get_system_menu_selection(catdata->system.wishsys) :
                                      CAT_SYSTEM_DEFAULT);
 
             tmp = gtk_label_new(_("Tatami:"));
+#if (GTKVER == 3)
+            gtk_grid_attach(GTK_GRID(table), tmp, 0, 2, 1, 1);
+            judoka_tmp->belt = tmp = gtk_combo_box_text_new();
+            gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(tmp), NULL, "?");
+            for (i = 0; i < NUM_TATAMIS; i++) {
+                char buf[10];
+                sprintf(buf, "T %d", i+1);
+                gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(tmp), NULL, buf);
+            }
+            gtk_grid_attach(GTK_GRID(table), tmp, 1, 2, 1, 1);
+#else
             gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, 2, 3);
             judoka_tmp->belt = tmp = gtk_combo_box_new_text();
             gtk_combo_box_append_text(GTK_COMBO_BOX(tmp), "?");
@@ -678,15 +808,24 @@ void view_on_row_activated(GtkTreeView        *treeview,
                 gtk_combo_box_append_text(GTK_COMBO_BOX(tmp), buf);
             }
             gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, 2, 3);
+#endif
             gtk_combo_box_set_active(GTK_COMBO_BOX(tmp), belt);
 
             judoka_tmp->birthyear = set_entry(table, 3, _("Group:"), birthyear_s);
 
             if (treeview && model && index && catdata && (catdata->deleted & TEAM_EVENT)) {
                 tmp = gtk_label_new(_("Create default members:"));
+#if (GTKVER == 3)
+                gtk_grid_attach(GTK_GRID(table), tmp, 0, 4, 1, 1);
+#else
                 gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, 4, 5);
+#endif
                 judoka_tmp->hansokumake = gtk_check_button_new();
+#if (GTKVER == 3)
+                gtk_grid_attach(GTK_GRID(table), judoka_tmp->hansokumake, 1, 4, 1, 1);
+#else
                 gtk_table_attach_defaults(GTK_TABLE(table), judoka_tmp->hansokumake, 1, 2, 4, 5);
+#endif
                 gint n = gtk_tree_model_iter_n_children(model, &iter);
                 if (n <= 1) {
                     gtk_widget_set_sensitive(tmp, FALSE);
@@ -787,15 +926,24 @@ void print_competitors_dialog(const gchar *cid, gint ix)
         g_object_set(tmp, "xalign", 0.0, NULL);
     }
 
+#if (GTKVER == 3)
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), 
+                       tmp, FALSE, FALSE, 0);
+#else
     gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), tmp);
-
+#endif
     for (i = 0; i < num_selected_judokas; i++) {
         j = get_data(selected_judokas[i]);
         if (j) {
             snprintf(buf, sizeof(buf), "    %s %s", j->first, j->last);
             tmp = gtk_label_new(buf);
             g_object_set(tmp, "xalign", 0.0, NULL);
+#if (GTKVER == 3)
+            gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), 
+                               tmp, FALSE, FALSE, 0);
+#else
             gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), tmp);
+#endif
             free_judoka(j);
         }
     }
@@ -1638,8 +1786,12 @@ void set_judokas_page(GtkWidget *notebook)
     /****/
 #endif
     /* pack the table into the scrolled window */
+#if (GTKVER == 3) && GTK_CHECK_VERSION(3,8,0)
+    gtk_container_add(GTK_CONTAINER(judokas_scrolled_window), view);
+#else
     gtk_scrolled_window_add_with_viewport (
         GTK_SCROLLED_WINDOW(judokas_scrolled_window), view);
+#endif
 
     competitor_label = gtk_label_new (_("Competitors"));
     gtk_notebook_append_page(GTK_NOTEBOOK(notebook), judokas_scrolled_window, competitor_label);
@@ -2131,15 +2283,25 @@ void barcode_search(GtkWidget *w, gpointer data)
     /* Create a non-modal dialog with one OK button. */
     dialog = gtk_dialog_new_with_buttons (_("Bar code search"), GTK_WINDOW(main_window),
                                           GTK_DIALOG_DESTROY_WITH_PARENT,
+                                          GTK_STOCK_CANCEL,
+                                          GTK_RESPONSE_REJECT,
                                           NULL);
 
+#if (GTKVER != 3)
     gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
-
+#endif
     label = gtk_label_new (_("Type the barcode:"));
     //barcode = gtk_label_new ("000000");
     bcentry = gtk_entry_new();
     gtk_widget_set_can_focus(GTK_WIDGET(bcentry), TRUE);
 
+#if (GTKVER == 3)
+    hbox = gtk_grid_new();
+    gtk_grid_attach(GTK_GRID(hbox), label, 0, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(hbox), bcentry, 1, 0, 1, 1);
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), 
+                       hbox, FALSE, FALSE, 0);
+#else
     hbox = gtk_hbox_new (FALSE, 5);
     gtk_container_set_border_width (GTK_CONTAINER (hbox), 10);
     gtk_box_pack_start_defaults (GTK_BOX (hbox), label);
@@ -2147,6 +2309,7 @@ void barcode_search(GtkWidget *w, gpointer data)
     gtk_box_pack_start_defaults (GTK_BOX (hbox), bcentry);
 
     gtk_box_pack_start_defaults(GTK_BOX (GTK_DIALOG (dialog)->vbox), hbox);
+#endif
     gtk_widget_show_all(dialog);
 
     bcdialog = (void *)dialog;

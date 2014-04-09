@@ -134,7 +134,7 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
     gdouble left = 0;
     gdouble right;
     time_t now = time(NULL);
-    gboolean update_later = FALSE;
+    //gboolean update_later = FALSE;
     gboolean upper = TRUE, horiz = (display_type == HORIZONTAL_DISPLAY);
 
     if (horiz) {
@@ -214,7 +214,7 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
                 cairo_move_to(c, left+5+colwidth/2, y_pos+extents.height);
                 cairo_show_text(c, buf);
                 cairo_restore(c);
-                update_later = TRUE;
+                //update_later = TRUE;
             } else if (m->number == 1) {
                 cairo_save(c);
                 cairo_set_source_rgb(c, 1.0, 0.0, 0.0);
@@ -473,7 +473,6 @@ static gboolean expose(GtkWidget *widget, GdkEventExpose *event, gpointer userda
 #if (GTKVER == 3)
     pd.paper_width = gtk_widget_get_allocated_width(widget);
     pd.paper_height = gtk_widget_get_allocated_height(widget);
-    g_print("paper = %fx%f\n", pd.paper_width, pd.paper_height);
 #else
     pd.paper_width = widget->allocation.width;
     pd.paper_height = widget->allocation.height;
@@ -750,6 +749,7 @@ int main( int   argc,
     gth = g_thread_create((GThreadFunc)ssdp_thread,
                           (gpointer)&run_flag, FALSE, NULL);
 #endif
+    gth = gth; // make compiler happy
 
     gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER_ALWAYS);
 	
@@ -784,22 +784,27 @@ gint application_type(void)
 void refresh_window(void)
 {
     GtkWidget *widget;
-    GdkRegion *region;
     widget = GTK_WIDGET(main_window);
+
 #if (GTKVER == 3)
-    if (gtk_widget_get_parent_window(widget)) {
+    if (gtk_widget_get_window(widget)) {
+        gdk_window_invalidate_rect(gtk_widget_get_window(widget), NULL, TRUE);
+        gdk_window_process_updates(gtk_widget_get_window(widget), TRUE);
+        /*
         cairo_rectangle_int_t r;
         r.x = 0;
         r.y = 0;
         r.width = gtk_widget_get_allocated_width(widget);
         r.height = gtk_widget_get_allocated_height(widget);
         region = cairo_region_create_rectangle(&r);
-        gdk_window_invalidate_region(gtk_widget_get_parent_window(widget), region, TRUE);
-        gdk_window_process_updates(gtk_widget_get_parent_window(widget), TRUE);
+        gdk_window_invalidate_region(gtk_widget_get_window(widget), region, TRUE);
+        gdk_window_process_updates(gtk_widget_get_window(widget), TRUE);
         cairo_region_destroy(region);
+        */
     }
 #else
     if (widget->window) {
+        GdkRegion *region;
         region = gdk_drawable_get_clip_region(widget->window);
         gdk_window_invalidate_region(widget->window, region, TRUE);
         gdk_window_process_updates(widget->window, TRUE);

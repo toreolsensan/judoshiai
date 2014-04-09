@@ -44,9 +44,12 @@ static gint bluecomp, whitecomp, bluepts, whitepts;
 
 static gint team1_wins, team2_wins, no_team_wins;
 
-
 /* Use mutex when calling db_next_match(). */
+#if (GTKVER == 3)
+G_LOCK_DEFINE(next_match_mutex);
+#else
 GStaticMutex next_match_mutex = G_STATIC_MUTEX_INIT;
+#endif
 
 // data for coach info
 static struct {
@@ -73,6 +76,10 @@ struct match *get_cached_next_matches(gint tatami)
 void db_matches_init(void)
 {
     gint i, j;
+
+#if (GTKVER == 3)
+    g_mutex_init(&G_LOCK_NAME(next_match_mutex));
+#endif
 
     memset(&next_matches, 0, sizeof(next_matches));
 

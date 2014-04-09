@@ -303,18 +303,28 @@ static GtkWidget *set_text_entry(GtkWidget *table, int row,
     GtkWidget *tmp;
 
     tmp = gtk_label_new(text);
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(table), tmp, 0, row, 1, 1);
+#else
     gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, row, row + 1);
-
+#endif
     data->labels[row] = tmp = gtk_label_new("        ");
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(table), tmp, 2, row, 1, 1);
+#else
     gtk_table_attach_defaults(GTK_TABLE(table), tmp, 2, 3, row, row + 1);
-
+#endif
     tmp = gtk_entry_new();
     gtk_entry_set_max_length(GTK_ENTRY(tmp), 20);
     gtk_entry_set_text(GTK_ENTRY(tmp), deftxt ? deftxt : "");
 
     g_signal_connect(G_OBJECT(tmp), "changed", G_CALLBACK(selecter), data);
 
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(table), tmp, 1, row, 1, 1);
+#else
     gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, row, row + 1);
+#endif
     return tmp;
 }
 
@@ -325,20 +335,36 @@ static GtkWidget *set_col_entry(GtkWidget *table, int row,
     gint i;
 
     tmp = gtk_label_new(text);
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(table), tmp, 0, row, 1, 1);
+#else
     gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, row, row + 1);
-
+#endif
     data->labels[row] = tmp = gtk_label_new("        ");
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(table), tmp, 2, row, 1, 1);
+
+    tmp = gtk_combo_box_text_new();
+    for (i = 0; i < MAX_NUM_COLUMNS; i++) {
+        gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(tmp), NULL, combotxts[i]);
+    }
+#else
     gtk_table_attach_defaults(GTK_TABLE(table), tmp, 2, 3, row, row + 1);
 
     tmp = gtk_combo_box_new_text();
     for (i = 0; i < MAX_NUM_COLUMNS; i++) {
         gtk_combo_box_append_text(GTK_COMBO_BOX(tmp), combotxts[i]);
     }
+#endif
     gtk_combo_box_set_active(GTK_COMBO_BOX(tmp), defpos);
 
     g_signal_connect(G_OBJECT(tmp), "changed", G_CALLBACK(selecter), data);
 
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(table), tmp, 1, row, 1, 1);
+#else
     gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, row, row + 1);
+#endif
     return tmp;
 }
 
@@ -463,10 +489,17 @@ void import_txt_dialog(GtkWidget *w, gpointer arg)
                                           NULL);
 
     data->lineread = gtk_label_new("");
+#if (GTKVER == 3)
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), 
+                       data->lineread, FALSE, FALSE, 0);
+    table = gtk_grid_new();
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), 
+                       table, FALSE, FALSE, 0);
+#else
     gtk_container_add(GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), data->lineread);
-
     table = gtk_table_new(3, 16, FALSE);
     gtk_container_add(GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), table);
+#endif
 
     data->fields[TXT_LAST]      = set_col_entry (table, 0, _("Last Name:"),        data->columns[TXT_LAST],   data);
     data->fields[TXT_FIRST]     = set_col_entry (table, 1, _("First Name:"),       data->columns[TXT_FIRST],  data);

@@ -1296,7 +1296,7 @@ static void paint_qpool(struct paint_data *pd, gint category, struct judoka *ctg
     struct pool_matches pm;
     gint i, j, pool;
     struct judoka *j1 = NULL;
-    gint pos[4], gold = 0, silver = 0, bronze1 = 0, bronze2 = 0;
+    gint gold = 0, silver = 0, bronze1 = 0, bronze2 = 0;
     double pos_match[4], pos_match_f, pos_judoka[4];
     gboolean yes[4][21];
     gint c[4][21];
@@ -1309,7 +1309,7 @@ static void paint_qpool(struct paint_data *pd, gint category, struct judoka *ctg
 
     for (i = 0; i < 4; i++) {
         pool_size[i] = size;
-        pos[i] = 1;
+        //pos[i] = 1;
     }
 
     for (i = 0; i < rem; i++)
@@ -2161,12 +2161,12 @@ void paint_category(struct paint_data *pd)
     cairo_save(pd->c);
     if (use_logo != NULL) {
         cairo_surface_t *image;
-        gint w, h;
+        gint w;
 
         cairo_save(pd->c);
         image = cairo_image_surface_create_from_png(use_logo);
         w = cairo_image_surface_get_width(image);
-        h = cairo_image_surface_get_height(image);
+        // gint h = cairo_image_surface_get_height(image);
         cairo_scale(pd->c, pd->paper_width/w, pd->paper_width/w);
         cairo_set_source_surface(pd->c, image, 0, 0);
         cairo_paint(pd->c);
@@ -2184,7 +2184,7 @@ void paint_category(struct paint_data *pd)
         cairo_move_to(pd->c, (W(0.95)-extents.width), H(0.05));
         cairo_show_text(pd->c, buf);
     } else {
-        gdouble textw, texth;
+        gdouble texth;
         snprintf(buf, sizeof(buf)-1, "%s  %s  %s   %s", 
                  prop_get_str_val(PROP_NAME),
                  prop_get_str_val(PROP_DATE),
@@ -2195,7 +2195,7 @@ void paint_category(struct paint_data *pd)
                                CAIRO_FONT_WEIGHT_BOLD);
         cairo_set_font_size(pd->c, NAME_H*1.2);
         cairo_text_extents(pd->c, buf, &extents);
-        textw = extents.width;
+        // gdouble textw = extents.width;
         texth = extents.height;
         cairo_move_to(pd->c, (W(1.0)-extents.width)/2.0, H(0.05));
         cairo_show_text(pd->c, buf);
@@ -2479,13 +2479,21 @@ static gboolean expose_cat(GtkWidget *widget, GdkEventExpose *event, gpointer us
         g_free(file);
     }
 
+#if (GTKVER == 3)
+    if (pd->landscape)
+        pd->paper_height = SIZEX*gtk_widget_get_allocated_width(widget)/SIZEY;
+    else
+        pd->paper_height = SIZEY*gtk_widget_get_allocated_width(widget)/SIZEX;
+    pd->paper_width = gtk_widget_get_allocated_width(widget);
+    pd->total_width = gtk_widget_get_allocated_width(widget);
+#else
     if (pd->landscape)
         pd->paper_height = SIZEX*widget->allocation.width/SIZEY;
     else
         pd->paper_height = SIZEY*widget->allocation.width/SIZEX;
     pd->paper_width = widget->allocation.width;
     pd->total_width = widget->allocation.width;
-
+#endif
     if (pd->scroll) {
         GtkAdjustment *adj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(pd->scroll));
         //gdouble lower = gtk_adjustment_get_lower(GTK_ADJUSTMENT(adj));
@@ -2495,7 +2503,11 @@ static gboolean expose_cat(GtkWidget *widget, GdkEventExpose *event, gpointer us
         gtk_scrolled_window_set_vadjustment(GTK_SCROLLED_WINDOW(pd->scroll), adj);
     }
 
+#if (GTKVER == 3)
+    pd->c = gdk_cairo_create(gtk_widget_get_window(widget));
+#else
     pd->c = gdk_cairo_create(widget->window);
+#endif
     //guint64 start = rdtsc();
     paint_category(pd);
     //guint64 stop = rdtsc();
@@ -2541,11 +2553,15 @@ static gboolean print_cat(GtkWidget *window,
 
             GtkWidget *widget;
             widget = GTK_WIDGET(window);
+#if (GTKVER == 3)
+            gdk_window_invalidate_rect(gtk_widget_get_window(widget), NULL, TRUE);
+#else
             if (widget->window) {
                 GdkRegion *region = gdk_drawable_get_clip_region(GDK_DRAWABLE(widget->window));
                 gdk_window_invalidate_region(GDK_WINDOW(widget->window), region, TRUE);
                 gdk_window_process_updates(GDK_WINDOW(widget->window), TRUE);
             }
+#endif
             return TRUE;
         }
     }
@@ -2572,8 +2588,11 @@ void category_window(gint cat)
 
     GtkWidget *scrolled_window = gtk_scrolled_window_new(NULL, NULL);
     gtk_container_set_border_width(GTK_CONTAINER(scrolled_window), 10);
+#if (GTKVER == 3) && GTK_CHECK_VERSION(3,8,0)
+    gtk_container_add(GTK_CONTAINER(scrolled_window), darea);
+#else
     gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_window), darea);
-
+#endif
     gtk_container_add(GTK_CONTAINER(window), scrolled_window);
     gtk_widget_show_all(GTK_WIDGET(window));
 
@@ -2582,6 +2601,16 @@ void category_window(gint cat)
     pd->scroll = scrolled_window;
     pd->category = cat;
 
+#if (GTKVER == 3)
+    if (print_landscape(cat)) {
+        pd->paper_height = SIZEX*gtk_widget_get_allocated_width(darea)/SIZEY;
+        pd->landscape = TRUE;
+    } else {    
+        pd->paper_height = SIZEY*gtk_widget_get_allocated_width(darea)/SIZEX;
+    }
+    pd->paper_width = gtk_widget_get_allocated_width(darea);
+    pd->total_width = gtk_widget_get_allocated_width(darea);
+#else
     if (print_landscape(cat)) {
         pd->paper_height = SIZEX*darea->allocation.width/SIZEY;
         pd->landscape = TRUE;
@@ -2590,6 +2619,7 @@ void category_window(gint cat)
     }
     pd->paper_width = darea->allocation.width;
     pd->total_width = darea->allocation.width;
+#endif
     //XXXpd->row_height = 1;
 
     gtk_widget_add_events(darea, 
@@ -2601,9 +2631,13 @@ void category_window(gint cat)
                       G_CALLBACK (delete_event_cat), pd);
     g_signal_connect (G_OBJECT (window), "destroy",
                       G_CALLBACK (destroy_cat), pd);
- 
+#if (GTKVER == 3) 
+    g_signal_connect(G_OBJECT(darea), 
+                     "draw", G_CALLBACK(expose_cat), pd);
+#else
     g_signal_connect(G_OBJECT(darea), 
                      "expose-event", G_CALLBACK(expose_cat), pd);
+#endif
 }
 
 /* This is called when we need to draw the windows contents */
@@ -2613,12 +2647,16 @@ static gboolean expose(GtkWidget *widget, GdkEventExpose *event, gpointer userda
     memset(&pd, 0, sizeof(pd));
     pd.category = current_category;
     pd.page = current_page;
+#if (GTKVER == 3)
+    pd.c = gdk_cairo_create(gtk_widget_get_window(widget));
+#else
     pd.c = gdk_cairo_create(widget->window);
+#endif
     //XXX pd.row_height = 1;
 
-    gdouble orig_paper_height = pd.paper_height = widget->allocation.height;
+    gdouble orig_paper_height = pd.paper_height = gtk_widget_get_allocated_height(widget);
     gdouble orig_paper_width = pd.paper_width = SIZEX*pd.paper_height/SIZEY;
-    pd.total_width = widget->allocation.width;
+    pd.total_width = gtk_widget_get_allocated_width(widget);
 
     if (userdata == NULL) {
         if (zoom < 1.1) {
@@ -2776,7 +2814,11 @@ gboolean change_current_page(GtkWidget *sheet_page,
                         x <= point_click_areas[t][j][i].x2 &&
                         y >= point_click_areas[t][j][i].y1 &&
                         y <= point_click_areas[t][j][i].y2) {
+#if (GTKVER == 3)
+                        cairo_t *c = gdk_cairo_create(gtk_widget_get_window(sheet_page));
+#else
                         cairo_t *c = gdk_cairo_create(sheet_page->window);
+#endif
                         cairo_set_source_rgb(c, 0.0, 1.0, 0.0);
                         cairo_rectangle(c, point_click_areas[t][j][i].x1,
                                         point_click_areas[t][j][i].y1,
@@ -2863,7 +2905,9 @@ void set_sheet_page(GtkWidget *notebook)
     sheet_label = gtk_label_new(_("Sheets"));
     //GtkWidget *window = gtk_window_new(GTK_WINDOW_POPUP);
     darea = gtk_drawing_area_new();
+#if (GTKVER != 3)
     GTK_WIDGET_SET_FLAGS(darea, GTK_CAN_FOCUS);
+#endif
     gtk_widget_add_events(darea, 
                           GDK_BUTTON_PRESS_MASK | 
                           GDK_BUTTON_RELEASE_MASK |
@@ -2878,8 +2922,13 @@ void set_sheet_page(GtkWidget *notebook)
     g_signal_connect(G_OBJECT(main_window), 
                      "expose-event", G_CALLBACK(expose), NULL);
 #endif
+#if (GTKVER == 3)
+    g_signal_connect(G_OBJECT(darea), 
+                     "draw", G_CALLBACK(expose), NULL);
+#else
     g_signal_connect(G_OBJECT(darea), 
                      "expose-event", G_CALLBACK(expose), NULL);
+#endif
     g_signal_connect(G_OBJECT(darea), 
                      "screen-changed", G_CALLBACK(screen_changed), NULL);
     g_signal_connect(G_OBJECT(darea), 

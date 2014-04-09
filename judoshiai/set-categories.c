@@ -618,7 +618,7 @@ gint find_num_weight_classes(const gchar *category)
 
 gchar *get_weight_class_name(const gchar *category, gint num)
 {
-    gint j, i = find_cat_data_index(category);
+    gint i = find_cat_data_index(category);
     if (i < 0) return NULL;
     if (num < 0 || num >= NUM_CAT_DEF_WEIGHTS) return NULL;
     gchar *r = category_definitions[i].weights[num].weighttext;
@@ -627,7 +627,7 @@ gchar *get_weight_class_name(const gchar *category, gint num)
 
 gchar *get_weight_class_name_by_index(gint index, gint num)
 {
-    gint j, i = find_cat_data_index_by_index(index);
+    gint i = find_cat_data_index_by_index(index);
     if (i < 0) return NULL;
     if (num < 0 || num >= NUM_CAT_DEF_WEIGHTS) return NULL;
     gchar *r = category_definitions[i].weights[num].weighttext;
@@ -1025,8 +1025,28 @@ void set_categories_dialog(GtkWidget *w, gpointer arg)
     scrolled_window = gtk_scrolled_window_new(NULL, NULL);
     gtk_widget_set_size_request(scrolled_window, FRAME_WIDTH, FRAME_HEIGHT);
     gtk_container_set_border_width(GTK_CONTAINER(scrolled_window), 4);
-    gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), scrolled_window);
+#if (GTKVER == 3)
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), 
+                       scrolled_window, FALSE, FALSE, 0);
+    vbox = gtk_grid_new();
+    gint r = 0;
 
+    for (i = 0; i < NUM_CATEGORIES; i++)
+        tables[i] = gtk_grid_new();
+
+    gtk_grid_attach(GTK_GRID(vbox), gtk_label_new(_("----- Men -----")), 0, r++, 1, 1);
+    for (i = 0; i < NUM_CATEGORIES/2; i++) {
+        gtk_grid_attach(GTK_GRID(vbox), tables[i], 0, r++, 1, 1);
+        gtk_grid_attach(GTK_GRID(vbox), gtk_label_new(" "), 0, r++, 1, 1);
+    }
+
+    gtk_grid_attach(GTK_GRID(vbox), gtk_label_new(_("----- Women -----")), 0, r++, 1, 1);
+    for (i = NUM_CATEGORIES/2; i < NUM_CATEGORIES; i++) {
+        gtk_grid_attach(GTK_GRID(vbox), tables[i], 0, r++, 1, 1);
+        gtk_grid_attach(GTK_GRID(vbox), gtk_label_new(" "), 0, r++, 1, 1);
+    }
+#else
+    gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), scrolled_window);
     vbox = gtk_vbox_new(FALSE, 1);
     gtk_container_set_border_width(GTK_CONTAINER(vbox), 1);
 
@@ -1044,10 +1064,25 @@ void set_categories_dialog(GtkWidget *w, gpointer arg)
         gtk_box_pack_start(GTK_BOX(vbox), tables[i], FALSE, TRUE, 0);
         gtk_box_pack_start(GTK_BOX(vbox), gtk_label_new(" "), FALSE, TRUE, 0);
     }
+#endif
 
+
+#if (GTKVER == 3) && GTK_CHECK_VERSION(3,8,0)
+    gtk_container_add(GTK_CONTAINER(scrolled_window), vbox);
+#else
     gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_window), vbox);
+#endif
 
     for (i = 0; i < NUM_CATEGORIES; i++) {
+#if (GTKVER == 3)
+        gtk_grid_attach(GTK_GRID(tables[i]), gtk_label_new(_("Highest age:")),      0, 0, 1, 1);
+        gtk_grid_attach(GTK_GRID(tables[i]), gtk_label_new(_("Age text:")),         0, 1, 1, 1);
+        gtk_grid_attach(GTK_GRID(tables[i]), gtk_label_new(_("Match time:")),       2, 0, 1, 1);
+        gtk_grid_attach(GTK_GRID(tables[i]), gtk_label_new(_("Rest time:")),        2, 2, 1, 1);
+        gtk_grid_attach(GTK_GRID(tables[i]), gtk_label_new(_("Golden Score:")),     2, 1, 1, 1);
+        gtk_grid_attach(GTK_GRID(tables[i]), gtk_label_new(_("Pin times (IWYK):")), 4, 0, 4, 1);
+        gtk_grid_attach(GTK_GRID(tables[i]), gtk_label_new(_("Rep. time:")),        4, 2, 3, 1);
+#else
         gtk_table_attach_defaults(GTK_TABLE(tables[i]), gtk_label_new(_("Highest age:")),      0, 1, 0, 1);
         gtk_table_attach_defaults(GTK_TABLE(tables[i]), gtk_label_new(_("Age text:")),         0, 1, 1, 2);
         gtk_table_attach_defaults(GTK_TABLE(tables[i]), gtk_label_new(_("Match time:")),       2, 3, 0, 1);
@@ -1055,81 +1090,131 @@ void set_categories_dialog(GtkWidget *w, gpointer arg)
         gtk_table_attach_defaults(GTK_TABLE(tables[i]), gtk_label_new(_("Golden Score:")),     2, 3, 1, 2);
         gtk_table_attach_defaults(GTK_TABLE(tables[i]), gtk_label_new(_("Pin times (IWYK):")), 4, 8, 0, 1);
         gtk_table_attach_defaults(GTK_TABLE(tables[i]), gtk_label_new(_("Rep. time:")),        4, 7, 2, 3);
-
+#endif
         /* age */
         tmp = fields[i].age = gtk_entry_new();
         gtk_entry_set_max_length(GTK_ENTRY(tmp), 4);
         gtk_entry_set_width_chars(GTK_ENTRY(tmp), 10);
+#if (GTKVER == 3)
+        gtk_grid_attach(GTK_GRID(tables[i]), tmp, 1, 0, 1, 1);
+#else
         gtk_table_attach_defaults(GTK_TABLE(tables[i]), tmp, 1, 2, 0, 1);
-
+#endif
         /* age text */
         tmp = fields[i].agetext = gtk_entry_new();
         gtk_entry_set_max_length(GTK_ENTRY(tmp), 20);
         gtk_entry_set_width_chars(GTK_ENTRY(tmp), 10);
+#if (GTKVER == 3)
+        gtk_grid_attach(GTK_GRID(tables[i]), tmp, 1, 1, 1, 1);
+#else
         gtk_table_attach_defaults(GTK_TABLE(tables[i]), tmp, 1, 2, 1, 2);
+#endif
 
         /* match time */
         tmp = fields[i].matchtime = gtk_entry_new();
         gtk_entry_set_max_length(GTK_ENTRY(tmp), 3);
         gtk_entry_set_width_chars(GTK_ENTRY(tmp), 3);
+#if (GTKVER == 3)
+        gtk_grid_attach(GTK_GRID(tables[i]), tmp, 3, 0, 1, 1);
+#else
         gtk_table_attach_defaults(GTK_TABLE(tables[i]), tmp, 3, 4, 0, 1);
+#endif
 
         /* rest time */
         tmp = fields[i].resttime = gtk_entry_new();
         gtk_entry_set_max_length(GTK_ENTRY(tmp), 3);
         gtk_entry_set_width_chars(GTK_ENTRY(tmp), 3);
+#if (GTKVER == 3)
+        gtk_grid_attach(GTK_GRID(tables[i]), tmp, 3, 2, 1, 1);
+#else
         gtk_table_attach_defaults(GTK_TABLE(tables[i]), tmp, 3, 4, 2, 3);
+#endif
 
         /* golden score time */
         tmp = fields[i].gstime = gtk_entry_new();
         gtk_entry_set_max_length(GTK_ENTRY(tmp), 3);
         gtk_entry_set_width_chars(GTK_ENTRY(tmp), 3);
+#if (GTKVER == 3)
+        gtk_grid_attach(GTK_GRID(tables[i]), tmp, 3, 1, 1, 1);
+#else
         gtk_table_attach_defaults(GTK_TABLE(tables[i]), tmp, 3, 4, 1, 2);
+#endif
 
         /* repechage time */
         tmp = fields[i].reptime = gtk_entry_new();
         gtk_entry_set_max_length(GTK_ENTRY(tmp), 3);
         gtk_entry_set_width_chars(GTK_ENTRY(tmp), 3);
+#if (GTKVER == 3)
+        gtk_grid_attach(GTK_GRID(tables[i]), tmp, 7, 2, 1, 1);
+#else
         gtk_table_attach_defaults(GTK_TABLE(tables[i]), tmp, 7, 8, 2, 3);
+#endif
 
         /* pin time ippon */
         tmp = fields[i].pini = gtk_entry_new();
         gtk_entry_set_max_length(GTK_ENTRY(tmp), 2);
         gtk_entry_set_width_chars(GTK_ENTRY(tmp), 2);
+#if (GTKVER == 3)
+        gtk_grid_attach(GTK_GRID(tables[i]), tmp, 4, 1, 1, 1);
+#else
         gtk_table_attach_defaults(GTK_TABLE(tables[i]), tmp, 4, 5, 1, 2);
+#endif
 
         /* pin time waza-ari */
         tmp = fields[i].pinw = gtk_entry_new();
         gtk_entry_set_max_length(GTK_ENTRY(tmp), 2);
         gtk_entry_set_width_chars(GTK_ENTRY(tmp), 2);
+#if (GTKVER == 3)
+        gtk_grid_attach(GTK_GRID(tables[i]), tmp, 5, 1, 1, 1);
+#else
         gtk_table_attach_defaults(GTK_TABLE(tables[i]), tmp, 5, 6, 1, 2);
+#endif
 
         /* pin time yuko */
         tmp = fields[i].piny = gtk_entry_new();
         gtk_entry_set_max_length(GTK_ENTRY(tmp), 2);
         gtk_entry_set_width_chars(GTK_ENTRY(tmp), 2);
+#if (GTKVER == 3)
+        gtk_grid_attach(GTK_GRID(tables[i]), tmp, 6, 1, 1, 1);
+#else
         gtk_table_attach_defaults(GTK_TABLE(tables[i]), tmp, 6, 7, 1, 2);
+#endif
 
         /* pin time koka */
         tmp = fields[i].pink = gtk_entry_new();
         gtk_entry_set_max_length(GTK_ENTRY(tmp), 2);
         gtk_entry_set_width_chars(GTK_ENTRY(tmp), 2);
+#if (GTKVER == 3)
+        gtk_grid_attach(GTK_GRID(tables[i]), tmp, 7, 1, 1, 1);
+#else
         gtk_table_attach_defaults(GTK_TABLE(tables[i]), tmp, 7, 8, 1, 2);
+#endif
 
         /* weights */
+#if (GTKVER == 3)
+        gtk_grid_attach(GTK_GRID(tables[i]), gtk_label_new(_("Highest weight (g):")), 8, 0, 1, 1);
+        gtk_grid_attach(GTK_GRID(tables[i]), gtk_label_new(_("Weight text:")),        8, 1, 1, 1);
+#else
         gtk_table_attach_defaults(GTK_TABLE(tables[i]), gtk_label_new(_("Highest weight (g):")), 8, 9, 0, 1);
         gtk_table_attach_defaults(GTK_TABLE(tables[i]), gtk_label_new(_("Weight text:")),    8, 9, 1, 2);
-
+#endif
         for (j = 0; j < NUM_CAT_DEF_WEIGHTS; j++) {
             tmp = fields[i].weights[j].weight = gtk_entry_new();
             gtk_entry_set_max_length(GTK_ENTRY(tmp), 12);
             gtk_entry_set_width_chars(GTK_ENTRY(tmp), 6);
+#if (GTKVER == 3)
+            gtk_grid_attach(GTK_GRID(tables[i]), tmp, j+9, 0, 1, 1);
+#else
             gtk_table_attach_defaults(GTK_TABLE(tables[i]), tmp, j+9, j+10, 0, 1);
-
+#endif
             tmp = fields[i].weights[j].weighttext = gtk_entry_new();
             gtk_entry_set_max_length(GTK_ENTRY(tmp), 12);
             gtk_entry_set_width_chars(GTK_ENTRY(tmp), 6);
+#if (GTKVER == 3)
+            gtk_grid_attach(GTK_GRID(tables[i]), tmp, j+9, 1, 1, 1);
+#else
             gtk_table_attach_defaults(GTK_TABLE(tables[i]), tmp, j+9, j+10, 1, 2);
+#endif
         }
     }
 

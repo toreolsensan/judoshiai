@@ -1564,7 +1564,11 @@ static void select_schedule_pdf(GtkWidget *w, GdkEventButton *event, gpointer ar
 void print_schedule(void)
 {
     GtkWidget *dialog;
+#if (GTKVER == 3)
+    GtkWidget *table = gtk_grid_new();
+#else
     GtkWidget *table = gtk_table_new(3, 6, FALSE);
+#endif
     //GSList *layout_group = NULL;
     GSList *print_group = NULL;
     GtkWidget *landscape, *start, *resolution, *fixed;
@@ -1581,48 +1585,82 @@ void print_schedule(void)
                                           GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
                                           NULL);
 
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(table), gtk_label_new(_("Print To:")), 0, 0, 1, 2);
+#else
     gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new(_("Print To:")), 0, 1, 0, 2);
-
+#endif
     s->print_printer = gtk_radio_button_new_with_label(print_group, _("Printer"));
     print_group = gtk_radio_button_get_group(GTK_RADIO_BUTTON(s->print_printer));
     s->print_pdf = gtk_radio_button_new_with_label(print_group, _("PDF"));
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(s->print_pdf), flags & PRINT_TO_PDF);
 
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(table), s->print_printer, 1, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(table), s->print_pdf,     1, 1, 1, 1);
+#else
     gtk_table_attach_defaults(GTK_TABLE(table), s->print_printer, 1, 2, 0, 1);
     gtk_table_attach_defaults(GTK_TABLE(table), s->print_pdf, 1, 2, 1, 2);
-
+#endif
     if (!schedule_pdf_out) {
         gchar *dirname = g_path_get_dirname(database_name);
         schedule_pdf_out = g_build_filename(dirname, _T(schedulefile), NULL);
         g_free(dirname);
     }
     s->pdf_file = gtk_button_new_with_label(schedule_pdf_out);
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(table), s->pdf_file, 2, 1, 1, 1);
+
+    gtk_grid_attach(GTK_GRID(table), gtk_label_new(_("Start time:")), 0, 2, 1, 1);
+#else
     gtk_table_attach_defaults(GTK_TABLE(table), s->pdf_file, 2, 3, 1, 2);
 
     gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new(_("Start time:")), 0, 1, 2, 3);
+#endif
     start = gtk_entry_new();
     gtk_entry_set_max_length(GTK_ENTRY(start), 5);
     gtk_entry_set_text(GTK_ENTRY(start), prop_get_str_val(PROP_TIME));
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(table), start, 1, 2, 1, 1);
+
+    gtk_grid_attach(GTK_GRID(table), gtk_label_new(_("Resolution (min):")), 0, 3, 1, 1);
+#else
     gtk_table_attach_defaults(GTK_TABLE(table), start, 1, 2, 2, 3);
 
     gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new(_("Resolution (min):")), 0, 1, 3, 4);
+#endif
     resolution = gtk_entry_new();
     gtk_entry_set_max_length(GTK_ENTRY(resolution), 3);
     snprintf(buf, sizeof(buf), "%d", print_resolution);
     gtk_entry_set_text(GTK_ENTRY(resolution), buf);
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(table), resolution, 1, 3, 1, 1);
+#else
     gtk_table_attach_defaults(GTK_TABLE(table), resolution, 1, 2, 3, 4);
-
+#endif
     landscape = gtk_check_button_new_with_label(_("Landscape"));
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(table), landscape, 0, 4, 1, 1);
+#else
     gtk_table_attach_defaults(GTK_TABLE(table), landscape, 0, 1, 4, 5);
+#endif
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(landscape), flags & PRINT_LANDSCAPE);
 
     fixed = gtk_check_button_new_with_label(_("Compressed timeline"));
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(table), fixed, 0, 5, 1, 1);
+#else
     gtk_table_attach_defaults(GTK_TABLE(table), fixed, 0, 1, 5, 6);
+#endif
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(fixed), !print_fixed);
 
     gtk_widget_show_all(table);
+#if (GTKVER == 3)
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), 
+                       table, FALSE, FALSE, 0);
+#else
     gtk_container_add(GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), table);
-
+#endif
     g_signal_connect(G_OBJECT(s->pdf_file), "button-press-event", G_CALLBACK(select_schedule_pdf), 
 		     (gpointer)s);
 
@@ -1978,37 +2016,62 @@ void print_matches(GtkWidget *menuitem, gpointer userdata)
 
     gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter);
 
+#if (GTKVER == 3)
+    vbox = gtk_grid_new();
+#else
     vbox = gtk_vbox_new(FALSE, 1);
+#endif
     gtk_widget_show(vbox);
 
     not_started = gtk_check_button_new_with_label(_("Print Not Started Categories"));
     gtk_widget_show(not_started);
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(vbox), not_started, 0, 0, 1, 1);
+#else
     gtk_box_pack_start(GTK_BOX(vbox), not_started, FALSE, TRUE, 0);
-
+#endif
     started = gtk_check_button_new_with_label(_("Print Started Categories"));
     gtk_widget_show(started);
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(vbox), started, 0, 1, 1, 1);
+#else
     gtk_box_pack_start(GTK_BOX(vbox), started, FALSE, TRUE, 0);
-
+#endif
     finished = gtk_check_button_new_with_label(_("Print Finished Categories"));
     gtk_widget_show(finished);
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(vbox), finished, 0, 2, 1, 1);
+#else
     gtk_box_pack_start(GTK_BOX(vbox), finished, FALSE, TRUE, 0);
-
+#endif
     unmatched = gtk_check_button_new_with_label(_("Print Unmatched"));
     gtk_widget_show(unmatched);
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(vbox), unmatched, 0, 3, 1, 1);
+#else
     gtk_box_pack_start(GTK_BOX(vbox), unmatched, FALSE, TRUE, 0);
-
+#endif
     p_result = gtk_check_button_new_with_label(_("Print Result"));
     gtk_widget_show(p_result);
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(vbox), p_result, 0, 4, 1, 1);
+#else
     gtk_box_pack_start(GTK_BOX(vbox), p_result, FALSE, TRUE, 0);
-
+#endif
     p_iwyks = gtk_check_button_new_with_label(_("Print IWYKS"));
     gtk_widget_show(p_iwyks);
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(vbox), p_iwyks, 0, 5, 1, 1);
+#else
     gtk_box_pack_start(GTK_BOX(vbox), p_iwyks, FALSE, TRUE, 0);
-
+#endif
     p_comment = gtk_check_button_new_with_label(_("Print Comment"));
     gtk_widget_show(p_comment);
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(vbox), p_comment, 0, 6, 1, 1);
+#else
     gtk_box_pack_start(GTK_BOX(vbox), p_comment, FALSE, TRUE, 0);
-
+#endif
     gtk_file_chooser_set_extra_widget(GTK_FILE_CHOOSER(dialog), vbox);
 
     if (database_name[0] == 0) {
@@ -2177,7 +2240,11 @@ static void select_template(GtkWidget *w, GdkEventButton *event, gpointer *arg)
 void print_accreditation_cards(gboolean all)
 {
     GtkWidget *dialog;
+#if (GTKVER == 3)
+    GtkWidget *table = gtk_grid_new();
+#else
     GtkWidget *table = gtk_table_new(3, 5, FALSE);
+#endif
     GSList *layout_group = NULL;
     GSList *print_group = NULL;
     GtkWidget *one_per_page;
@@ -2192,39 +2259,60 @@ void print_accreditation_cards(gboolean all)
                                           GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
                                           NULL);
 
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(table), gtk_label_new(_("Layout:")), 0, 0, 1, 2);
+    gtk_grid_attach(GTK_GRID(table), gtk_label_new(_("Print To:")), 0, 2, 1, 2);
+#else
     gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new(_("Layout:")), 0, 1, 0, 2);
     gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new(_("Print To:")), 0, 1, 2, 4);
-
+#endif
     s->layout_default = gtk_radio_button_new_with_label(layout_group, _("Default"));
     layout_group = gtk_radio_button_get_group(GTK_RADIO_BUTTON(s->layout_default));
     s->layout_template = gtk_radio_button_new_with_label(layout_group, _("Template"));
 
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(table), s->layout_default,  1, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(table), s->layout_template, 1, 1, 1, 1);
+#else
     gtk_table_attach_defaults(GTK_TABLE(table), s->layout_default, 1, 2, 0, 1);
     gtk_table_attach_defaults(GTK_TABLE(table), s->layout_template, 1, 2, 1, 2);
-
+#endif
     s->print_printer = gtk_radio_button_new_with_label(print_group, _("Printer"));
     print_group = gtk_radio_button_get_group(GTK_RADIO_BUTTON(s->print_printer));
     s->print_pdf = gtk_radio_button_new_with_label(print_group, _("PDF"));
 
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(table), s->print_printer,  1, 2, 1, 1);
+    gtk_grid_attach(GTK_GRID(table), s->print_pdf,      1, 3, 1, 1);
+#else
     gtk_table_attach_defaults(GTK_TABLE(table), s->print_printer, 1, 2, 2, 3);
     gtk_table_attach_defaults(GTK_TABLE(table), s->print_pdf, 1, 2, 3, 4);
-
+#endif
     one_per_page = gtk_check_button_new_with_label(_("One Card Per Page"));
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(table), one_per_page,  0, 4, 3, 1);
+#else
     gtk_table_attach_defaults(GTK_TABLE(table), one_per_page, 0, 3, 4, 5);
-
+#endif
     if (!template_in)
         template_in = g_build_filename(installation_dir, "etc", "accreditation-card-example.txt", NULL);
     s->template_file = gtk_button_new_with_label(template_in);
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(table), s->template_file,  2, 1, 1, 1);
+#else
     gtk_table_attach_defaults(GTK_TABLE(table), s->template_file, 2, 3, 1, 2);
-
+#endif
     if (!pdf_out) {
         gchar *dirname = g_path_get_dirname(database_name);
         pdf_out = g_build_filename(dirname, "output.pdf", NULL);
         g_free(dirname);
     }
     s->pdf_file = gtk_button_new_with_label(pdf_out);
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(table), s->pdf_file,  2, 3, 1, 1);
+#else
     gtk_table_attach_defaults(GTK_TABLE(table), s->pdf_file, 2, 3, 3, 4);
-
+#endif
     gtk_widget_set_sensitive(GTK_WIDGET(s->template_file), FALSE);
     gtk_widget_set_sensitive(GTK_WIDGET(s->pdf_file), FALSE);
 
@@ -2244,8 +2332,12 @@ void print_accreditation_cards(gboolean all)
     update_print_struct(NULL, s);
 
     gtk_widget_show_all(table);
+#if (GTKVER == 3)
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), 
+                       table, FALSE, FALSE, 0);
+#else
     gtk_container_add(GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), table);
-
+#endif
     g_signal_connect(G_OBJECT(s->layout_default), "toggled", G_CALLBACK(update_print_struct), 
 		     (gpointer)s);
     g_signal_connect(G_OBJECT(s->layout_template), "toggled", G_CALLBACK(update_print_struct), 

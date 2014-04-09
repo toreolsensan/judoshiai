@@ -1856,12 +1856,19 @@ void update_matches(guint category, struct compsys sys, gint tatami)
         }
     }
 
+#if (GTKVER == 3)
+    G_LOCK(next_match_mutex);
+#else
     g_static_mutex_lock(&next_match_mutex);
+#endif
     nm = db_next_match(tatami ? 0 : category, tatami);
     if (nm)
         send_next_matches(category, tatami, nm);
+#if (GTKVER == 3)
+    G_UNLOCK(next_match_mutex);
+#else
     g_static_mutex_unlock(&next_match_mutex);
-
+#endif
     if (category)
         update_category_status_info(category);
 
@@ -2248,12 +2255,19 @@ static void change_competitor(gint index, gpointer data)
     db_change_competitor(popupdata.category, popupdata.number, popupdata.is_blue, index);
     db_read_match(popupdata.category, popupdata.number);
 
+#if (GTKVER == 3)
+    G_LOCK(next_match_mutex);
+#else
     g_static_mutex_lock(&next_match_mutex);
+#endif
     nm = db_next_match(popupdata.category, tatami);
     if (nm)
         send_next_matches(popupdata.category, tatami, nm);
+#if (GTKVER == 3)
+    G_UNLOCK(next_match_mutex);
+#else
     g_static_mutex_unlock(&next_match_mutex);
-
+#endif
     send_matches(tatami);
 }
 
@@ -2381,6 +2395,19 @@ static void view_match_score_popup_menu(GtkWidget *treeview,
     s->yuko = gtk_spin_button_new_with_range(0.0, 10.0, 1.0);
     s->shido = gtk_spin_button_new_with_range(0.0, 4.0, 1.0);
 
+#if (GTKVER == 3)
+    table = gtk_grid_new();
+    gtk_grid_attach(GTK_GRID(table), gtk_label_new("I"), 0, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(table), gtk_label_new("W"), 1, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(table), gtk_label_new("Y"), 2, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(table), gtk_label_new("/"), 3, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(table), gtk_label_new("S"), 4, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(table), s->ippon,           0, 1, 1, 1);
+    gtk_grid_attach(GTK_GRID(table), s->wazaari,         1, 1, 1, 1);
+    gtk_grid_attach(GTK_GRID(table), s->yuko,            2, 1, 1, 1);
+    gtk_grid_attach(GTK_GRID(table), gtk_label_new("/"), 3, 1, 1, 1);
+    gtk_grid_attach(GTK_GRID(table), s->shido,           4, 1, 1, 1);
+#else
     table = gtk_table_new(2, 6, TRUE);
     gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new("I"), 0, 1, 0, 1);
     gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new("W"), 1, 2, 0, 1);
@@ -2392,13 +2419,18 @@ static void view_match_score_popup_menu(GtkWidget *treeview,
     gtk_table_attach_defaults(GTK_TABLE(table), s->yuko, 2, 3, 1, 2);
     gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new("/"), 3, 4, 1, 2);
     gtk_table_attach_defaults(GTK_TABLE(table), s->shido, 4, 5, 1, 2);
-
+#endif
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(s->ippon), (score>>16)&15);
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(s->wazaari), (score>>12)&15);
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(s->yuko), (score>>8)&15);
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(s->shido), score&15);
 
+#if (GTKVER == 3)
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), 
+                       table, FALSE, FALSE, 0);
+#else
     gtk_box_pack_start_defaults(GTK_BOX(GTK_DIALOG(dialog)->vbox), table);
+#endif
     gtk_widget_show_all(dialog);
 
     g_signal_connect(G_OBJECT(dialog), "response", G_CALLBACK(set_score), s);
@@ -2810,18 +2842,23 @@ void set_match_pages(GtkWidget *notebook)
         competitor_positions[i] = 0;
 
     for (i = 0; i < NUM_TATAMIS; i++) {
+#if (GTKVER == 3)
+        match_pages[i] = vbox = gtk_grid_new();
+#else
         match_pages[i] = vbox = gtk_vbox_new(FALSE, 1);
-
         gtk_container_set_border_width(GTK_CONTAINER(vbox), 1);
-
+#endif
         scrolled_window = gtk_scrolled_window_new(NULL, NULL);
         gtk_container_set_border_width(GTK_CONTAINER(scrolled_window), 10);
 
         match_view[i] = view = create_view_and_model();
 
+#if (GTKVER == 3) && GTK_CHECK_VERSION(3,8,0)
+        gtk_container_add(GTK_CONTAINER(scrolled_window), view);
+#else
         gtk_scrolled_window_add_with_viewport(
             GTK_SCROLLED_WINDOW(scrolled_window), view);
-
+#endif
         sprintf(buffer, "Tatami %d", i+1);
         label = gtk_label_new (buffer);
 
@@ -2831,12 +2868,18 @@ void set_match_pages(GtkWidget *notebook)
         gtk_misc_set_alignment(GTK_MISC(match1), 0.0, 0.0);
         gtk_misc_set_alignment(GTK_MISC(match2), 0.0, 0.0);
 
+#if (GTKVER == 3)
+        gtk_grid_attach(GTK_GRID(vbox), match1, 0, 0, 1, 1);
+        gtk_grid_attach(GTK_GRID(vbox), match2, 0, 1, 1, 1);
+        gtk_grid_attach(GTK_GRID(vbox), scrolled_window, 0, 2, 1, 1);
+        gtk_widget_set_hexpand(scrolled_window, TRUE);
+        gtk_widget_set_vexpand(scrolled_window, TRUE);
+#else
         gtk_box_pack_start(GTK_BOX(vbox), match1, FALSE, TRUE, 0);
         gtk_box_pack_start(GTK_BOX(vbox), match2, FALSE, TRUE, 0);
         gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
-
+#endif
         gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox, label);
-
     }
 
     db_read_matches();
@@ -2952,7 +2995,11 @@ static gboolean find_group_iter(GtkTreeModel *model,
 
 #define T g_print("FILE %s LINE %d\n",__FILE__,  __LINE__)
 
+#if (GTKVER == 3)
+G_LOCK_DEFINE_STATIC(set_match_mutex);
+#else
 static GStaticMutex set_match_mutex = G_STATIC_MUTEX_INIT;
+#endif
 
 void set_match(struct match *m)
 {
@@ -2966,7 +3013,11 @@ void set_match(struct match *m)
     set_competitor_position_drawn(m->blue);
     set_competitor_position_drawn(m->white);
     
+#if (GTKVER == 3)
+    G_LOCK(set_match_mutex);
+#else
     g_static_mutex_lock(&set_match_mutex);
+#endif
 
     struct category_data *c = avl_get_category(m->category & MATCH_CATEGORY_MASK);
     if (c && (c->deleted & TEAM_EVENT)) { // team event
@@ -2974,7 +3025,11 @@ void set_match(struct match *m)
             m1.category = m->category & MATCH_CATEGORY_MASK;
             m1.number = m->number | (m->category & MATCH_CATEGORY_SUB_MASK);
         } else {
+#if (GTKVER == 3)
+            G_UNLOCK(set_match_mutex);
+#else
             g_static_mutex_unlock(&set_match_mutex);
+#endif
             return;
         }
     }
@@ -2983,7 +3038,11 @@ void set_match(struct match *m)
     /* Find info about category */
     if (find_iter(&cat, m->category) == FALSE) {
         g_print("CANNOT FIND CAT %d (num=%d)\n", m->category, m->number);
+#if (GTKVER == 3)
+        G_UNLOCK(set_match_mutex);
+#else
         g_static_mutex_unlock(&set_match_mutex);
+#endif
         //assert(0);
         return; /* error */
     }
@@ -3034,7 +3093,11 @@ void set_match(struct match *m)
 
     if (tatami == 0) {
         //g_print("TATAMI NOT SET\n");
+#if (GTKVER == 3)
+        G_UNLOCK(set_match_mutex);
+#else
         g_static_mutex_unlock(&set_match_mutex);
+#endif
         return; /* tatami not set */
     }
 
@@ -3154,7 +3217,11 @@ update:
                        COL_MATCH_STATUS,       m->forcedtatami,
                        -1);
 
+#if (GTKVER == 3)
+    G_UNLOCK(set_match_mutex);
+#else
     g_static_mutex_unlock(&set_match_mutex);
+#endif
 }
 
 static gint remove_category_from_matches(gint category)
@@ -3202,9 +3269,17 @@ void category_refresh(gint category)
     GtkTreeIter cat_iter;
     struct compsys sys;
 
+#if (GTKVER == 3)
+    G_LOCK(set_match_mutex);
+#else
     g_static_mutex_lock(&set_match_mutex);
+#endif
     old_tatami = remove_category_from_matches(category);
+#if (GTKVER == 3)
+    G_UNLOCK(set_match_mutex);
+#else
     g_static_mutex_unlock(&set_match_mutex);
+#endif
 
     /* Find info about category */
     if (find_iter(&cat_iter, category) == FALSE) {

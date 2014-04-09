@@ -99,9 +99,15 @@ void ftp_to_server(GtkWidget *w, gpointer data)
                                           NULL);
 
     GETINT(proto, "ftpproto");
+#if (GTKVER == 3)
+    uri->proto = gtk_combo_box_text_new();
+    gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(uri->proto), NULL, "ftp");
+    gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(uri->proto), NULL, "http");
+#else
     uri->proto = gtk_combo_box_new_text();
     gtk_combo_box_append_text(GTK_COMBO_BOX(uri->proto), "ftp");
     gtk_combo_box_append_text(GTK_COMBO_BOX(uri->proto), "http");
+#endif
     gtk_combo_box_set_active(GTK_COMBO_BOX(uri->proto), proto);
 
     GETSTR(ftp_server, "ftpserver");
@@ -156,6 +162,45 @@ void ftp_to_server(GtkWidget *w, gpointer data)
 
     //gtk_container_set_border_width(GTK_CONTAINER(hbox), 10);
 
+#if (GTKVER == 3)
+    hbox = gtk_grid_new();
+    gtk_grid_attach_next_to(GTK_GRID(hbox), uri->proto, NULL, GTK_POS_RIGHT, 1, 1);
+    gtk_grid_attach_next_to(GTK_GRID(hbox), gtk_label_new("://"), NULL, GTK_POS_RIGHT, 1, 1);
+    gtk_grid_attach_next_to(GTK_GRID(hbox), uri->address, NULL, GTK_POS_RIGHT, 1, 1);
+    gtk_grid_attach_next_to(GTK_GRID(hbox), gtk_label_new(":"), NULL, GTK_POS_RIGHT, 1, 1);
+    gtk_grid_attach_next_to(GTK_GRID(hbox), uri->port, NULL, GTK_POS_RIGHT, 1, 1);
+    gtk_grid_attach_next_to(GTK_GRID(hbox), gtk_label_new("/"), NULL, GTK_POS_RIGHT, 1, 1);
+    gtk_grid_attach_next_to(GTK_GRID(hbox), uri->path, NULL, GTK_POS_RIGHT, 1, 1);
+
+    hbox2 = gtk_grid_new();
+    gtk_grid_attach_next_to(GTK_GRID(hbox2), gtk_label_new(_("User:")), NULL, GTK_POS_RIGHT, 1, 1);
+    gtk_grid_attach_next_to(GTK_GRID(hbox2), uri->user, NULL, GTK_POS_RIGHT, 1, 1);
+    gtk_grid_attach_next_to(GTK_GRID(hbox2), gtk_label_new(_("Password:")), NULL, GTK_POS_RIGHT, 1, 1);
+    gtk_grid_attach_next_to(GTK_GRID(hbox2), uri->password, NULL, GTK_POS_RIGHT, 1, 1);
+
+    hbox1 = gtk_grid_new();
+    gtk_grid_attach_next_to(GTK_GRID(hbox1), proxy_lbl, NULL, GTK_POS_RIGHT, 1, 1);
+    gtk_grid_attach_next_to(GTK_GRID(hbox1), uri->proxy_address, NULL, GTK_POS_RIGHT, 1, 1);
+    gtk_grid_attach_next_to(GTK_GRID(hbox1), gtk_label_new(":"), NULL, GTK_POS_RIGHT, 1, 1);
+    gtk_grid_attach_next_to(GTK_GRID(hbox1), uri->proxy_port, NULL, GTK_POS_RIGHT, 1, 1);
+
+    hbox3 = gtk_grid_new();
+    gtk_grid_attach_next_to(GTK_GRID(hbox3), gtk_label_new(_("Proxy User:")), NULL, GTK_POS_RIGHT, 1, 1);
+    gtk_grid_attach_next_to(GTK_GRID(hbox3), uri->proxy_user, NULL, GTK_POS_RIGHT, 1, 1);
+    gtk_grid_attach_next_to(GTK_GRID(hbox3), gtk_label_new(_("Proxy Password:")), NULL, GTK_POS_RIGHT, 1, 1);
+    gtk_grid_attach_next_to(GTK_GRID(hbox3), uri->proxy_password, NULL, GTK_POS_RIGHT, 1, 1);
+
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), 
+                       hbox, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), 
+                       hbox2, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), 
+                       hbox1, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), 
+                       hbox3, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), 
+                       uri->do_it, FALSE, FALSE, 0);
+#else
     hbox = gtk_hbox_new(FALSE, 4);
     gtk_box_pack_start(GTK_BOX(hbox), uri->proto, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new("://"), FALSE, FALSE, 0);
@@ -188,6 +233,7 @@ void ftp_to_server(GtkWidget *w, gpointer data)
     gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), hbox1, FALSE, FALSE, 4);
     gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), hbox3, FALSE, FALSE, 4);
     gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), uri->do_it, FALSE, FALSE, 4);
+#endif
     gtk_widget_show_all(dialog);
 
     g_signal_connect(G_OBJECT(dialog), "response",

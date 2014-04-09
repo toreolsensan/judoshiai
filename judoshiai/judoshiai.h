@@ -822,7 +822,12 @@ extern const gchar *esc_quote(const gchar *txt);
 /* db */
 
 #define DB_MATCH_ROW 1
+#if (GTKVER == 3)
+G_LOCK_EXTERN(next_match_mutex);
+G_LOCK_EXTERN(send_mutex);
+#else
 extern GStaticMutex next_match_mutex;
+#endif
 
 extern void db_new(const char *dbname);
 extern gint db_init(const char *db);

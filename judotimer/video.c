@@ -67,7 +67,7 @@
 
 #include <gtk/gtk.h>
 #include <librsvg/rsvg.h>
-#include <librsvg/rsvg-cairo.h>
+//#include <librsvg/rsvg-cairo.h>
 
 #include "judotimer.h"
 
@@ -307,7 +307,7 @@ gpointer video_thread(gpointer args)
 
         n += snprintf((gchar *)buf + n, sizeof(buf) - n, "\r\n");
 
-        send(comm_fd, buf, n, 0);
+        send(comm_fd, (char *)buf, n, 0);
 
         connection_ok = TRUE;
         header_found = FALSE;
@@ -587,6 +587,27 @@ void ask_video_ip_address( GtkWidget *w,
 
     //gtk_container_set_border_width(GTK_CONTAINER(hbox), 10);
 
+#if (GTKVER == 3)
+    hbox = gtk_grid_new();
+    gtk_grid_attach(GTK_GRID(hbox), gtk_label_new("http://"), 0, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(hbox), uri->address,             1, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(hbox), gtk_label_new(":"),       2, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(hbox), uri->port,                3, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(hbox), gtk_label_new("/"),       4, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(hbox), uri->path,                5, 0, 1, 1);
+
+    hbox2 = gtk_grid_new();
+    gtk_grid_attach(GTK_GRID(hbox2), gtk_label_new(_("User:")),     0, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(hbox2), uri->user,                     1, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(hbox2), gtk_label_new(_("Password:")), 2, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(hbox2), uri->password,                 3, 0, 1, 1);
+
+    hbox1 = gtk_grid_new();
+    gtk_grid_attach(GTK_GRID(hbox1), gtk_label_new(_("Proxy:")), 0, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(hbox1), uri->proxy_address,         1, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(hbox1), gtk_label_new(":"),         2, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(hbox1), uri->proxy_port,            3, 0, 1, 1);
+#else
     hbox = gtk_hbox_new(FALSE, 4);
     gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new("http://"), FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(hbox), uri->address, FALSE, FALSE, 0);
@@ -606,16 +627,29 @@ void ask_video_ip_address( GtkWidget *w,
     gtk_box_pack_start(GTK_BOX(hbox1), uri->proxy_address, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(hbox1), gtk_label_new(":"), FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(hbox1), uri->proxy_port, FALSE, FALSE, 0);
+#endif
 
     if (connection_ok)
         label = gtk_label_new(_("(Connection OK)"));
     else
         label = gtk_label_new(_("(Connection broken)"));
 
+#if (GTKVER == 3)
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), 
+                       hbox, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), 
+                       hbox2, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), 
+                       hbox1, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), 
+                       label, FALSE, FALSE, 0);
+#else
     gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), hbox, FALSE, FALSE, 4);
     gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), hbox2, FALSE, FALSE, 4);
     gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), hbox1, FALSE, FALSE, 4);
     gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), label, FALSE, FALSE, 4);
+#endif
+
     gtk_widget_show_all(dialog);
 
     g_signal_connect(G_OBJECT(dialog), "response",
@@ -919,8 +953,13 @@ static gboolean expose_video(GtkWidget *widget, GdkEventExpose *event, gpointer 
     GError *err = NULL;
     static GdkPixbuf *pb;//, *pb1, *pb2;
 
+#if (GTKVER == 3)
+    width = gtk_widget_get_allocated_width(widget);
+    height = gtk_widget_get_allocated_height(widget);
+#else
     width = widget->allocation.width;
     height = widget->allocation.height;
+#endif
 
     if (view) {
         if (!frame_now)
@@ -965,8 +1004,11 @@ static gboolean expose_video(GtkWidget *widget, GdkEventExpose *event, gpointer 
     gdouble x = (scale*pixwidth < width) ? (width/scale - pixwidth)/2.0 : 0;
     gdouble y = (scale*pixheight < height) ? (height/scale - pixheight)/2.0 : 0;
 
+#if (GTKVER == 3)
+    cairo_t *c = gdk_cairo_create(gtk_widget_get_window(widget));
+#else
     cairo_t *c = gdk_cairo_create(widget->window);
-
+#endif
     cairo_scale(c, scale, scale);
     gdk_cairo_set_source_pixbuf(c, pb, x, y);
     cairo_paint(c);
@@ -997,7 +1039,6 @@ static gboolean refresh_video(gpointer data)
 {
     static gdouble lastval = -100.0;
     GtkWidget *widget;
-    GdkRegion *region;
 
     if (video_window == NULL)
         return FALSE;
@@ -1064,11 +1105,19 @@ static gboolean refresh_video(gpointer data)
 
  refresh:
     widget = GTK_WIDGET(data);
+#if (GTKVER == 3)
+    if (gtk_widget_get_window(widget)) {
+        gdk_window_invalidate_rect(gtk_widget_get_window(widget), NULL, TRUE);
+        gdk_window_process_updates(gtk_widget_get_window(widget), TRUE);
+    }
+#else
     if (widget->window) {
+        GdkRegion *region;
         region = gdk_drawable_get_clip_region(widget->window);
         gdk_window_invalidate_region(widget->window, region, TRUE);
         gdk_window_process_updates(widget->window, TRUE);
     }
+#endif
     return TRUE;
 }
 
@@ -1095,21 +1144,35 @@ void create_video_window(void)
     gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 
     //setup vbox
+#if (GTKVER == 3)
+    vbox = gtk_grid_new();
+#else
     vbox = gtk_vbox_new(FALSE, 0);
+#endif
     gtk_container_add(GTK_CONTAINER(window), vbox);
 
     //setup player widget
     player_widget = gtk_drawing_area_new();
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(vbox), player_widget, 0, 0, 1, 1);
+#else
     gtk_box_pack_start(GTK_BOX(vbox), player_widget, TRUE, TRUE, 0);
+#endif
 
     // slider
+#if (GTKVER == 3)
+    slider = gtk_scale_new_with_range(GTK_ORIENTATION_HORIZONTAL, 0.0, 100.0, 10.0);
+    gtk_grid_attach(GTK_GRID(vbox), slider, 0, 1, 1, 1);
+    hbuttonbox = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
+#else
     slider = gtk_hscale_new_with_range(0.0, 100.0, 10.0);
     gtk_box_pack_start(GTK_BOX(vbox), slider, FALSE, FALSE, 0);
+    hbuttonbox = gtk_hbutton_box_new();
+#endif
 
     //setup controls
     //playpause_button = gtk_button_new_from_stock(GTK_STOCK_MEDIA_PLAY);
 
-    hbuttonbox = gtk_hbutton_box_new();
     gtk_container_set_border_width(GTK_CONTAINER(hbuttonbox), 5);
     gtk_button_box_set_layout(GTK_BUTTON_BOX(hbuttonbox), GTK_BUTTONBOX_START);
 

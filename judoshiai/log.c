@@ -170,8 +170,12 @@ void set_log_page(GtkWidget *notebook)
 
     add_columns(GTK_TREE_VIEW(treeview));
 
+#if (GTKVER == 3) && GTK_CHECK_VERSION(3,8,0)
+    gtk_container_add(GTK_CONTAINER(log_scrolled_window), treeview);
+#else
     gtk_scrolled_window_add_with_viewport(
         GTK_SCROLLED_WINDOW(log_scrolled_window), treeview);
+#endif
 
     log_label = gtk_label_new (_("Log"));
     gtk_notebook_append_page(GTK_NOTEBOOK(notebook), log_scrolled_window, log_label);

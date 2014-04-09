@@ -10,7 +10,12 @@
 #include <string.h>
 #include <locale.h>
 #include <gtk/gtk.h>
+
+#if (GTKVER == 3)
+#include <gdk/gdkkeysyms-compat.h>
+#else
 #include <gdk/gdkkeysyms.h>
+#endif
 
 #include "judoshiai.h"
 #include "language.h"

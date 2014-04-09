@@ -443,6 +443,7 @@ void row_activated(GtkTreeView        *treeview,
         j->category = g_strdup("?");
         db_add_judoka(j->index, j);
         ret = display_one_judoka(j);
+        ret = ret; // make compiler happy while this value is not used
 #if 0
         if (ret >= 0) {
             /* new category */
@@ -793,11 +794,14 @@ void set_old_shiai_display(GtkWidget *w, gpointer data)
         view = create_view_and_model(dbname);
 
     	/* pack the table into the scrolled window */
-    	gtk_scrolled_window_add_with_viewport (
-                GTK_SCROLLED_WINDOW(judokas_scrolled_window), view);
-	gtk_container_add (GTK_CONTAINER (window), judokas_scrolled_window);
+#if (GTKVER == 3) && GTK_CHECK_VERSION(3,8,0)
+    gtk_container_add(GTK_CONTAINER(judokas_scrolled_window), view);
+#else
+    gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(judokas_scrolled_window), view);
+#endif
+    gtk_container_add (GTK_CONTAINER (window), judokas_scrolled_window);
 
-	gtk_widget_show_all(window);
+    gtk_widget_show_all(window);
 
 
 out:

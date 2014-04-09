@@ -15,7 +15,7 @@
 #include <gdk/gdkkeysyms.h>
 
 #ifdef WIN32
-#include <glib/gwin32.h>
+//#include <glib/gwin32.h>
 #endif
 
 #include "judoshiai.h"

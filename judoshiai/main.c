@@ -13,7 +13,13 @@
 
 #include <gtk/gtk.h>
 #include <glib.h>
+#include <glib/gstdio.h>
+
+#if (GTKVER == 3)
+#include <gdk/gdkkeysyms-compat.h>
+#else
 #include <gdk/gdkkeysyms.h>
+#endif
 
 #include <curl/curl.h>
 
@@ -26,7 +32,8 @@
 #include <winnt.h>
 #endif
 
-#include <glib/gwin32.h>
+#include <process.h>
+//#include <glib/gwin32.h>
 //#include "dbghelp.h"
 #else
 #include <sys/types.h>
@@ -206,8 +213,13 @@ void open_shiai_display(void)
 
     notebook = gtk_notebook_new();
     gtk_notebook_set_tab_pos((GtkNotebook *)notebook, GTK_POS_TOP);
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(main_vbox), notebook, 0, 2, 1, 1);
+    gtk_widget_set_hexpand(notebook, TRUE);
+    gtk_widget_set_vexpand(notebook, TRUE);
+#else
     gtk_box_pack_end(GTK_BOX(main_vbox), notebook, TRUE, TRUE, 0);
-
+#endif
     set_judokas_page(notebook);
     set_sheet_page(notebook);
     set_category_graph_page(notebook);
@@ -318,7 +330,11 @@ int main( int   argc,
     memset(&next_matches_info, 0, sizeof(next_matches_info));
 
 #ifdef WIN32
+#if (GTKVER == 3)
+    installation_dir = g_win32_get_package_installation_directory_of_module(NULL);
+#else
     installation_dir = g_win32_get_package_installation_directory(NULL, NULL);
+#endif
 #else
     gbr_init(NULL);
     installation_dir = gbr_find_prefix(NULL);
@@ -381,9 +397,11 @@ ok:
             setlocale(LC_ALL, 0), g_get_home_dir(), g_get_user_config_dir());
 #endif
 
+#if (GTKVER != 3)
     g_thread_init(NULL);    /* Initialize GLIB thread support */
     gdk_threads_init();     /* Initialize GDK locks */
     gdk_threads_enter();    /* Acquire GDK locks */ 
+#endif
 
     gtk_init (&argc, &argv);
 
@@ -405,13 +423,23 @@ ok:
 
     gtk_container_set_border_width (GTK_CONTAINER (window), 10);
     
+#if (GTKVER == 3)
+    main_vbox = gtk_grid_new();
+#else
     main_vbox = gtk_vbox_new(FALSE, 1);
+#endif
     gtk_container_set_border_width (GTK_CONTAINER (main_vbox), 1);
     gtk_container_add (GTK_CONTAINER (window), main_vbox);
     gtk_widget_show(main_vbox);
 
     menubar = get_menubar_menu (window);
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(main_vbox), menubar, 0, 0, 1, 1);
+    gtk_widget_set_hexpand(menubar, TRUE);
+    //gtk_widget_set_halign(menubar, GTK_ALIGN_FILL);
+#else
     gtk_box_pack_start(GTK_BOX(main_vbox), menubar, FALSE, TRUE, 0);
+#endif
     gtk_widget_show(menubar);
 
     //notes = gtk_label_new("");
@@ -419,8 +447,11 @@ ok:
     //gtk_widget_show(notes);
 
     progress_bar = gtk_progress_bar_new();
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(main_vbox), progress_bar, 0, 1, 1, 1);
+#else
     gtk_box_pack_start (GTK_BOX (main_vbox), progress_bar, FALSE, FALSE, 0);
-
+#endif
     gtk_widget_show_all(window);
 
 #if 0
@@ -465,6 +496,29 @@ ok:
         curl_global_init(CURL_GLOBAL_NOTHING);
 
         /* Create a bg thread using glib */
+        gth = gth; // make compiler happy
+#if (GTKVER == 3)
+    gth = g_thread_new("Node",
+                       (GThreadFunc)node_thread,
+                       (gpointer)&run_flag); 
+
+    gth = g_thread_new("HTTPD",
+                       (GThreadFunc)httpd_thread,
+                       (gpointer)&run_flag); 
+
+    gth = g_thread_new("Serial",
+                       (GThreadFunc)serial_thread,
+                       (gpointer)&run_flag); 
+
+    gth = g_thread_new("FTP",
+                       (GThreadFunc)ftp_thread,
+                       (gpointer)&run_flag); 
+
+    gth = g_thread_new("SSDP",
+                       (GThreadFunc)ssdp_thread,
+                       (gpointer)&run_flag);
+#else // GTKVER != 3
+
 #if 0 // NO SERVER THREAD
         gth = g_thread_create((GThreadFunc)server_thread,
                               (gpointer)&run_flag, FALSE, NULL); 
@@ -494,6 +548,7 @@ ok:
 
         gth = g_thread_create((GThreadFunc)ssdp_thread,
                               (gpointer)&run_flag, FALSE, NULL); 
+#endif // GTKVER == 3
 
         g_timeout_add(1000, check_for_connection_status, NULL);
 
@@ -519,7 +574,9 @@ ok:
      * mouse event). */
     gtk_main();
     
+#if (GTKVER != 3)    
     gdk_threads_leave();  /* release GDK locks */
+#endif
 
     run_flag = FALSE;     /* flag threads to stop and exit */
     //g_thread_join(gth);   /* wait for thread to exit */ 
@@ -544,9 +601,23 @@ void refresh_window(void)
     GtkWidget *widget;
     GdkRegion *region;
     widget = GTK_WIDGET(main_window);
+#if (GTKVER == 3)
+    if (gtk_widget_get_window(widget)) {
+        cairo_rectangle_int_t r;
+        r.x = 0;
+        r.y = 0;
+        r.width = gtk_widget_get_allocated_width(widget);
+        r.height = gtk_widget_get_allocated_height(widget);
+        region = cairo_region_create_rectangle(&r);
+        gdk_window_invalidate_region(gtk_widget_get_window(widget), region, TRUE);
+        gdk_window_process_updates(gtk_widget_get_window(widget), TRUE);
+        cairo_region_destroy(region);
+    }
+#else
     if (widget->window) {
         region = gdk_drawable_get_clip_region(widget->window);
         gdk_window_invalidate_region(widget->window, region, TRUE);
         gdk_window_process_updates(widget->window, TRUE);
     }
+#endif
 }

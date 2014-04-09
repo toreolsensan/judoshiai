@@ -318,27 +318,51 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
 static gboolean expose(GtkWidget *widget, GdkEventExpose *event, gpointer userdata)
 {
     static cairo_surface_t *cs = NULL;
+#if (GTKVER == 3)
+    cairo_t *c = gdk_cairo_create(gtk_widget_get_window(widget));
+#else
     cairo_t *c = gdk_cairo_create(widget->window);
+#endif
     static gint oldw = 0, oldh = 0;
 
+#if (GTKVER == 3)
+    if (cs && (oldw != gtk_widget_get_allocated_width(widget) || 
+               oldh != gtk_widget_get_allocated_height(widget))) {
+#else
     if (cs && (oldw != widget->allocation.width || oldh != widget->allocation.height)) {
+#endif
         cairo_surface_destroy(cs);
         cs = NULL;
     }
 
     if (!cs) {
+#if (GTKVER == 3)
+        cs = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 
+                                        gtk_widget_get_allocated_width(widget), 
+                                        gtk_widget_get_allocated_height(widget));
+        oldw = gtk_widget_get_allocated_width(widget);
+        oldh = gtk_widget_get_allocated_height(widget);
+#else
         cs = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 
                                         widget->allocation.width, widget->allocation.height);
         oldw = widget->allocation.width;
         oldh = widget->allocation.height;
+#endif
     }
 
     if (button_drag) {
+#if (GTKVER == 3)
+        paint(c, gtk_widget_get_allocated_width(widget), gtk_widget_get_allocated_height(widget), cs);
+#else
         paint(c, widget->allocation.width, widget->allocation.height, cs);
+#endif
     } else {
         cairo_t *c1 = cairo_create(cs);
+#if (GTKVER == 3)
+        paint(c1, gtk_widget_get_allocated_width(widget), gtk_widget_get_allocated_height(widget), NULL);
+#else
         paint(c1, widget->allocation.width, widget->allocation.height, NULL);
-
+#endif
         cairo_set_source_surface(c, cs, 0, 0);
         cairo_paint(c);
         cairo_destroy(c1);
@@ -385,7 +409,9 @@ void set_category_graph_page(GtkWidget *notebook)
     w.darea = gtk_drawing_area_new();
     gtk_widget_set_size_request(w.darea, 600, 6000);
 
+#if (GTKVER != 3)
     GTK_WIDGET_SET_FLAGS(w.darea, GTK_CAN_FOCUS);
+#endif
     gtk_widget_add_events(w.darea, 
                           GDK_BUTTON_PRESS_MASK | 
                           GDK_BUTTON_RELEASE_MASK |
@@ -395,16 +421,25 @@ void set_category_graph_page(GtkWidget *notebook)
 	
 
     /* pack the table into the scrolled window */
+#if (GTKVER == 3) && GTK_CHECK_VERSION(3,8,0)
+    gtk_container_add(GTK_CONTAINER(w.scrolled_window), w.darea);
+#else
     gtk_scrolled_window_add_with_viewport (
         GTK_SCROLLED_WINDOW(w.scrolled_window), w.darea);
+#endif
 
     cat_graph_label = gtk_label_new (_("Categories"));
     gtk_notebook_append_page(GTK_NOTEBOOK(notebook), w.scrolled_window, cat_graph_label);
 
     gtk_widget_show(w.darea);
 
+#if (GTKVER == 3)
+    g_signal_connect(G_OBJECT(w.darea), 
+                     "draw", G_CALLBACK(expose), w.darea);
+#else
     g_signal_connect(G_OBJECT(w.darea), 
                      "expose-event", G_CALLBACK(expose), w.darea);
+#endif
     g_signal_connect(G_OBJECT(w.darea), 
                      "button-press-event", G_CALLBACK(mouse_click), NULL);
 #if 0
@@ -439,8 +474,11 @@ static gboolean mouse_click(GtkWidget *sheet_page,
 			    GdkEventButton *event, 
 			    gpointer userdata)
 {
+#if (GTKVER == 3)
+    gdk_window_set_cursor(gtk_widget_get_window(GTK_WIDGET(main_window)), hand_cursor);
+#else
     gdk_window_set_cursor(GTK_WIDGET(main_window)->window, hand_cursor);
-
+#endif
     button_drag = FALSE;
 
     /* single click with the right mouse button? */
@@ -492,7 +530,11 @@ static gboolean motion_notify(GtkWidget *sheet_page,
     GtkAdjustment *adj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(w->scrolled_window));
     gdouble adjnow = gtk_adjustment_get_value(adj);
 	
+#if (GTKVER == 3)
+    if (y - adjnow > gtk_widget_get_allocated_height(w->scrolled_window) - 50) {
+#else
     if (y - adjnow > w->scrolled_window->allocation.height - 50) {
+#endif
         scroll_up_down = SCROLL_DOWN;
     } else if (y - adjnow < 20.0) {
         scroll_up_down = SCROLL_UP;
@@ -520,8 +562,11 @@ static gboolean release_notify(GtkWidget *sheet_page,
 			       GdkEventButton *event, 
 			       gpointer userdata)
 {
+#if (GTKVER == 3)
+    gdk_window_set_cursor(gtk_widget_get_window(GTK_WIDGET(main_window)), NULL);
+#else
     gdk_window_set_cursor(GTK_WIDGET(main_window)->window, NULL);
-
+#endif
     if (!button_drag)
         return FALSE;
 

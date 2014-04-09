@@ -36,9 +36,15 @@
 
 #include <gtk/gtk.h>
 #include <glib.h>
+
+#if (GTKVER == 3)
+#include <gdk/gdkkeysyms-compat.h>
+#else
 #include <gdk/gdkkeysyms.h>
+#endif
+
 #ifdef WIN32
-#include <glib/gwin32.h>
+//#include <glib/gwin32.h>
 #endif
 
 #include <time.h>
@@ -666,11 +672,20 @@ static gboolean expose_ask(GtkWidget *widget, GdkEventExpose *event, gpointer us
         first_wname = saved_first2;
     }
 
+#if (GTKVER == 3)
+    width = gtk_widget_get_allocated_width(widget);
+    height = gtk_widget_get_allocated_height(widget);
+#else
     width = widget->allocation.width;
     height = widget->allocation.height;
+#endif
 
     cairo_text_extents_t extents;
+#if (GTKVER == 3)
+    cairo_t *c = gdk_cairo_create(gtk_widget_get_window(widget));
+#else
     cairo_t *c = gdk_cairo_create(widget->window);
+#endif
 
     cairo_set_source_rgb(c, 0.0, 0.0, 0.0);
     cairo_rectangle(c, 0.0, 0.0, width, FIRST_BLOCK_HEIGHT);
@@ -735,37 +750,70 @@ static void create_ask_window(void)
 
     gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 
+#if (GTKVER == 3)
+    vbox = gtk_grid_new();
+#else
     vbox = gtk_vbox_new(FALSE, 1);
+#endif
     gtk_container_set_border_width (GTK_CONTAINER (vbox), 1);
 
-
     if (mode != MODE_SLAVE) {
+#if (GTKVER == 3)
+        hbox = gtk_grid_new();
+#else
         hbox = gtk_hbox_new(FALSE, 1);
+#endif
         lbl = gtk_label_new(_("Start New Match?"));
         ok = gtk_button_new_with_label(_("OK"));
         nok = gtk_button_new_with_label(_("Cancel"));
 
         gint i;
+#if (GTKVER == 3)
+        legend_widget = gtk_combo_box_text_new();
+#else
         legend_widget = gtk_combo_box_new_text();
+#endif
         for (i = 0; legends[i]; i++)
+#if (GTKVER == 3)
+            gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(legend_widget), NULL, legends[i]);
+#else
             gtk_combo_box_append_text(GTK_COMBO_BOX(legend_widget), legends[i]);
+#endif
+#if (GTKVER == 3)
+        gtk_grid_attach(GTK_GRID(hbox), lbl, 0, 0, 1, 1);
+        gtk_grid_attach(GTK_GRID(hbox), ok, 1, 0, 1, 1);
+        gtk_grid_attach(GTK_GRID(hbox), nok, 2, 0, 1, 1);
+        gtk_grid_attach(GTK_GRID(hbox), legend_widget, 3, 0, 1, 1);
 
+        gtk_grid_attach(GTK_GRID(vbox), hbox, 0, 0, 1, 1);
+#else
         gtk_box_pack_start(GTK_BOX(hbox), lbl, FALSE, TRUE, 5);
         gtk_box_pack_start(GTK_BOX(hbox), ok, FALSE, TRUE, 5);
         gtk_box_pack_start(GTK_BOX(hbox), nok, FALSE, TRUE, 5);
         gtk_box_pack_start(GTK_BOX(hbox), legend_widget, FALSE, TRUE, 5);
 
         gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 0);
+#endif
     } else {
         lbl = gtk_label_new(_("- - -"));
+#if (GTKVER == 3)
+        gtk_grid_attach(GTK_GRID(vbox), lbl, 0, 0, 1, 1);
+#else
         gtk_box_pack_start(GTK_BOX(vbox), lbl, FALSE, TRUE, 5);
+#endif
     }
 
     if (show_competitor_names && get_winner()) {
         ask_area = gtk_drawing_area_new();
+#if (GTKVER == 3)
+        gtk_grid_attach(GTK_GRID(vbox), ask_area, 0, 1, 1, 1);
+        g_signal_connect(G_OBJECT(ask_area), 
+                         "draw", G_CALLBACK(expose_ask), NULL);
+#else
         gtk_box_pack_start(GTK_BOX(vbox), ask_area, TRUE, TRUE, 5);
         g_signal_connect(G_OBJECT(ask_area), 
                          "expose-event", G_CALLBACK(expose_ask), NULL);
+#endif
     }
 
     gtk_container_add (GTK_CONTAINER (window), vbox);
@@ -1305,7 +1353,11 @@ void clock_key(guint key, guint event_state)
         return;
 
         extern GtkWidget *main_window;
+#if (GTKVER == 3)
+        gdk_window_invalidate_rect(gtk_widget_get_window(main_window), NULL, TRUE);
+#else
         gdk_window_invalidate_rect(main_window->window, NULL, TRUE);
+#endif
         return;
     }
 
@@ -1575,7 +1627,7 @@ static void gen_random_key(void)
     extern int current_match;
     /*static int last_category, last_match;*/
     /*static gboolean wait_for_new_match = FALSE;*/
-    static guint last_time = 0, now = 0, /*wait_set_time = 0,*/ next_time = 0;
+    static guint /*last_time = 0, */now = 0, /*wait_set_time = 0,*/ next_time = 0;
     /*
       static guint keys[NUM_KEYS] =
       {GDK_F1, GDK_F2, GDK_F3,
@@ -1591,7 +1643,7 @@ static void gen_random_key(void)
     if (now < next_time /*last_time + 40*/)
         return;
 
-    last_time = now;
+    //last_time = now;
 
     if (st[0].running) {
         if (st[0].bluepts[0] == 0 && st[0].whitepts[0] == 0) {
@@ -1652,7 +1704,7 @@ static void gen_random_key(void)
             wait_for_new_match = TRUE;
             wait_set_time = now;
             key = GDK_0;
-            last_time += 20;
+            //last_time += 20;
         } else
             key = GDK_space;
     } else if (st[0].oRunning) {

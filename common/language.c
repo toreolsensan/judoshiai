@@ -141,7 +141,7 @@ static gboolean lang_dialog(GtkWidget *eventbox, GdkEventButton *event, void *pa
     }
 
 #if (GTKVER == 3)
-    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_action_area(GTK_DIALOG(dialog))), 
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), 
  		      table, TRUE, TRUE, 0);
 #else
     gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), table);
@@ -153,10 +153,10 @@ static gboolean lang_dialog(GtkWidget *eventbox, GdkEventButton *event, void *pa
 
 GtkWidget *get_language_menu(GtkWidget *window, cb_t cb)
 {
-    GtkAccelGroup *group;
+    //GtkAccelGroup *group;
     gint i;
 
-    group = gtk_accel_group_new ();
+    //group = gtk_accel_group_new ();
     lang_menu = gtk_image_menu_item_new();
 
     for (i = 0; i < NUM_LANGS; i++) {

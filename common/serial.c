@@ -383,8 +383,8 @@ void set_serial_dialog(GtkWidget *w, gpointer data)
     gtk_grid_attach(GTK_GRID(table), gtk_label_new(_("Type")), 0, 3, 1, 1);
     gtk_grid_attach(GTK_GRID(table), devtype, 1, 3, 1, 1);
 
-    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_action_area(GTK_DIALOG(dialog))), 
-                       table, FALSE, FALSE, 0);//XXXXXXXXXXX
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), 
+                       table, FALSE, FALSE, 0);
 #else
     gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new(_("In Use")), 0, 1, 0, 1);
     gtk_table_attach_defaults(GTK_TABLE(table), used, 1, 2, 0, 1);

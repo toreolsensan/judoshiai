@@ -14,7 +14,8 @@
 #include <glib.h>
 #include <gdk/gdkkeysyms.h>
 #ifdef WIN32
-#include <glib/gwin32.h>
+#include <process.h>
+//#include <glib/gwin32.h>
 #else
 #include <sys/types.h>
 #include <unistd.h>
@@ -132,7 +133,7 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
     gdouble left = 0;
     gdouble right;
     time_t now = time(NULL);
-    gboolean update_later = FALSE;
+    //gboolean update_later = FALSE;
     gboolean upper = TRUE, horiz = (display_type == HORIZONTAL_DISPLAY);
 
     if (horiz) {
@@ -201,7 +202,7 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
                 cairo_move_to(c, left+5+colwidth/2, y_pos+extents.height);
                 cairo_show_text(c, buf);
                 cairo_restore(c);
-                update_later = TRUE;
+                //update_later = TRUE;
             } else if (m->number == 1) {
                 cairo_save(c);
                 cairo_set_source_rgb(c, 1.0, 0.0, 0.0);
@@ -411,9 +412,13 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
 /* This is called when we need to draw the windows contents */
 static gboolean expose(GtkWidget *widget, GdkEventExpose *event, gpointer userdata)
 {
+#if (GTKVER == 3)
+    cairo_t *c = gdk_cairo_create(gtk_widget_get_window(widget));
+    paint(c, gtk_widget_get_allocated_width(widget), gtk_widget_get_allocated_height(widget), userdata);
+#else
     cairo_t *c = gdk_cairo_create(widget->window);
-
     paint(c, widget->allocation.width, widget->allocation.height, userdata);
+#endif
 
     cairo_show_page(c);
     cairo_destroy(c);
@@ -423,7 +428,11 @@ static gboolean expose(GtkWidget *widget, GdkEventExpose *event, gpointer userda
 
 void toggle_full_screen(GtkWidget *menu_item, gpointer data)
 {
+#if (GTKVER == 3)
+    if (gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item))) {
+#else
     if (GTK_CHECK_MENU_ITEM(menu_item)->active) {
+#endif
         gtk_window_fullscreen(GTK_WINDOW(main_window));
         g_key_file_set_boolean(keyfile, "preferences", "fullscreen", TRUE);
     } else {
@@ -435,7 +444,11 @@ void toggle_full_screen(GtkWidget *menu_item, gpointer data)
 
 void toggle_small_display(GtkWidget *menu_item, gpointer data)
 {
+#if (GTKVER == 3)
+    if (gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item))) {
+#else
     if (GTK_CHECK_MENU_ITEM(menu_item)->active) {
+#endif
         num_lines = NUM_LINES-1;
         display_type = ptr_to_gint(data);
         g_key_file_set_integer(keyfile, "preferences", "displaytype", ptr_to_gint(data));
@@ -456,7 +469,11 @@ void toggle_small_display(GtkWidget *menu_item, gpointer data)
 
 void toggle_mirror(GtkWidget *menu_item, gpointer data)
 {
+#if (GTKVER == 3)
+    if (gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item))) {
+#else
     if (GTK_CHECK_MENU_ITEM(menu_item)->active) {
+#endif
         mirror_display = TRUE;
         g_key_file_set_boolean(keyfile, "preferences", "mirror", TRUE);
     } else {
@@ -468,7 +485,11 @@ void toggle_mirror(GtkWidget *menu_item, gpointer data)
 
 void toggle_whitefirst(GtkWidget *menu_item, gpointer data)
 {
+#if (GTKVER == 3)
+    if (gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item))) {
+#else
     if (GTK_CHECK_MENU_ITEM(menu_item)->active) {
+#endif
         white_first = TRUE;
         g_key_file_set_boolean(keyfile, "preferences", "whitefirst", TRUE);
     } else {
@@ -480,7 +501,11 @@ void toggle_whitefirst(GtkWidget *menu_item, gpointer data)
 
 void toggle_redbackground(GtkWidget *menu_item, gpointer data)
 {
+#if (GTKVER == 3)
+    red_background = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item));
+#else
     red_background = GTK_CHECK_MENU_ITEM(menu_item)->active;
+#endif
     g_key_file_set_boolean(keyfile, "preferences", "redbackground", red_background);
     expose(darea, 0, 0);
 }
@@ -605,7 +630,11 @@ int main( int   argc,
     font = pango_font_description_from_string("Sans bold 12");
 
 #ifdef WIN32
+#if (GTKVER == 3)
+    installation_dir = g_win32_get_package_installation_directory_of_module(NULL);
+#else
     installation_dir = g_win32_get_package_installation_directory(NULL, NULL);
+#endif
 #else
     gbr_init(NULL);
     installation_dir = gbr_find_prefix(NULL);
@@ -629,9 +658,11 @@ int main( int   argc,
     srand(now); //srandom(now);
     my_address = now + getpid()*10000;
 
+#if (GTKVER != 3)
     g_thread_init(NULL);    /* Initialize GLIB thread support */
     gdk_threads_init();     /* Initialize GDK locks */
     gdk_threads_enter();    /* Acquire GDK locks */ 
+#endif
 
     gtk_init (&argc, &argv);
 
@@ -651,8 +682,12 @@ int main( int   argc,
     
     gtk_container_set_border_width (GTK_CONTAINER (window), 10);
 
+#if (GTKVER == 3)
+    main_vbox = gtk_grid_new();
+#else
     main_vbox = gtk_vbox_new(FALSE, 0);
     gtk_container_set_border_width (GTK_CONTAINER (main_vbox), 1);
+#endif
     gtk_container_add (GTK_CONTAINER (window), main_vbox);
     gtk_widget_show(main_vbox);
 
@@ -660,25 +695,53 @@ int main( int   argc,
     menubar = get_menubar_menu(window);
     gtk_widget_show(menubar);
 
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(main_vbox), menubar, 0, 0, 1, 1);
+    gtk_widget_set_hexpand(menubar, TRUE);
+    //gtk_widget_set_halign(menubar, GTK_ALIGN_FILL);
+#else
     gtk_box_pack_start(GTK_BOX(main_vbox), menubar, FALSE, TRUE, 0);
+#endif
 
     /* judoka info */
     name_box = gtk_label_new("?");
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(main_vbox), name_box, 0, 1, 1, 1);
+#else
     gtk_box_pack_start(GTK_BOX(main_vbox), name_box, FALSE, TRUE, 0);
+#endif
 
+#if (GTKVER == 3)
+    GtkWidget *hbox = gtk_grid_new();
+#else
     GtkWidget *hbox = gtk_hbox_new(FALSE, 0);
+#endif
     GtkWidget *tmp = gtk_label_new(_("ID:"));
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(hbox), tmp, 0, 0, 1, 1);
+#else
     gtk_box_pack_start(GTK_BOX(hbox), tmp, FALSE, TRUE, 0);
-
+#endif
     id_box = gtk_entry_new();
     gtk_entry_set_width_chars(GTK_ENTRY(id_box), 16);
+
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(hbox), id_box, 1, 0, 1, 1);
+#else
     gtk_box_pack_start(GTK_BOX(hbox), id_box, FALSE, TRUE, 0);
+#endif
 
     ok_button = gtk_button_new_with_label(_("OK"));
     nok_button = gtk_button_new_with_label(_("NOK"));
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(hbox), ok_button, 2, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(hbox), nok_button, 3, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(main_vbox), hbox, 0, 2, 1, 1);
+#else
     gtk_box_pack_start(GTK_BOX(hbox), ok_button, FALSE, TRUE, 0);
     gtk_box_pack_start(GTK_BOX(hbox), nok_button, FALSE, TRUE, 0);
     gtk_box_pack_start(GTK_BOX(main_vbox), hbox, FALSE, TRUE, 0);
+#endif
     
     g_signal_connect(G_OBJECT(id_box), 
                      "activate", G_CALLBACK(on_enter), id_box);
@@ -689,15 +752,28 @@ int main( int   argc,
 
     /* next fights */
     darea = gtk_drawing_area_new();
+#if (GTKVER != 3)    
     GTK_WIDGET_SET_FLAGS(darea, GTK_CAN_FOCUS);
+#endif
     gtk_widget_add_events(darea, GDK_BUTTON_PRESS_MASK);
 
     gtk_widget_show(darea);
 
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(main_vbox), darea, 0, 3, 1, 1);
+    gtk_widget_set_hexpand(darea, TRUE);
+    gtk_widget_set_vexpand(darea, TRUE);
+#else
     gtk_box_pack_start_defaults(GTK_BOX(main_vbox), darea);
+#endif
 
+#if (GTKVER == 3)
+    g_signal_connect(G_OBJECT(darea), 
+                     "draw", G_CALLBACK(expose), NULL);
+#else
     g_signal_connect(G_OBJECT(darea), 
                      "expose-event", G_CALLBACK(expose), NULL);
+#endif
     g_signal_connect(G_OBJECT(darea), 
                      "button-press-event", G_CALLBACK(button_pressed), NULL);
 
@@ -716,13 +792,27 @@ int main( int   argc,
     open_comm_socket();
 	
     /* Create a bg thread using glib */
+#if (GTKVER == 3)
+    gth = g_thread_new("Client",
+                       (GThreadFunc)client_thread,
+                       (gpointer)&run_flag); 
+#else	
     gth = g_thread_create((GThreadFunc)client_thread,
                           (gpointer)&run_flag, FALSE, NULL); 
+#endif
 
     extern gpointer ssdp_thread(gpointer args);
     g_snprintf(ssdp_id, sizeof(ssdp_id), "JudoJudogi");
+
+#if (GTKVER == 3)
+    gth = g_thread_new("SSDP",
+                       (GThreadFunc)ssdp_thread,
+                       (gpointer)&run_flag); 
+#else	
     gth = g_thread_create((GThreadFunc)ssdp_thread,
                           (gpointer)&run_flag, FALSE, NULL);
+#endif
+    gth = gth; // make compiler happy
 
     gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER_ALWAYS);
 	
@@ -736,7 +826,9 @@ int main( int   argc,
      * mouse event). */
     gtk_main();
     
+#if (GTKVER != 3)    
     gdk_threads_leave();  /* release GDK locks */
+#endif
     run_flag = FALSE;     /* flag threads to stop and exit */
     //g_thread_join(gth);   /* wait for thread to exit */ 
 
@@ -758,11 +850,25 @@ void refresh_window(void)
     GtkWidget *widget;
     GdkRegion *region;
     widget = GTK_WIDGET(main_window);
+#if (GTKVER == 3)
+    if (gtk_widget_get_window(widget)) {
+        cairo_rectangle_int_t r;
+        r.x = 0;
+        r.y = 0;
+        r.width = gtk_widget_get_allocated_width(widget);
+        r.height = gtk_widget_get_allocated_height(widget);
+        region = cairo_region_create_rectangle(&r);
+        gdk_window_invalidate_region(gtk_widget_get_window(widget), region, TRUE);
+        gdk_window_process_updates(gtk_widget_get_window(widget), TRUE);
+        cairo_region_destroy(region);
+    }
+#else
     if (widget->window) {
         region = gdk_drawable_get_clip_region(widget->window);
         gdk_window_invalidate_region(widget->window, region, TRUE);
         gdk_window_process_updates(widget->window, TRUE);
     }
+#endif
 }
 
 static gint find_box(gdouble x, gdouble y)

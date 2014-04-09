@@ -518,24 +518,48 @@ static const gchar *draw_system_names[NUM_DRAWS] =
 void properties(GtkWidget *w, gpointer data)
 {
     GtkWidget *dialog, *tmp, *reset;
+#if (GTKVER == 3)
+    GtkWidget *hbox = gtk_grid_new();
+    GtkWidget *hbox1 = gtk_grid_new();
+    GtkWidget *vbox1 = gtk_grid_new();
+    GtkWidget *vbox2 = gtk_grid_new();
+    GtkWidget *table2 = gtk_grid_new();
+    GtkWidget *table3 = gtk_grid_new();
+    GtkWidget *table4 = gtk_grid_new();
+    GtkWidget *table5 = gtk_grid_new();
+    GtkWidget *table6 = gtk_grid_new();
+
+    gtk_grid_set_column_spacing(GTK_GRID(vbox1), 5);
+    gtk_grid_set_row_spacing(GTK_GRID(vbox1), 5);
+    gtk_grid_set_column_spacing(GTK_GRID(vbox2), 5);
+    gtk_grid_set_row_spacing(GTK_GRID(vbox2), 5);
+    gtk_grid_set_column_spacing(GTK_GRID(hbox1), 5);
+    gtk_grid_set_row_spacing(GTK_GRID(hbox1), 5);
+    gtk_grid_set_column_spacing(GTK_GRID(hbox), 5);
+    gtk_grid_set_row_spacing(GTK_GRID(hbox), 5);
+#else
     GtkWidget *hbox = gtk_hbox_new(FALSE, 8);
     GtkWidget *hbox1 = gtk_hbox_new(TRUE, 8);
     GtkWidget *vbox1 = gtk_vbox_new(FALSE, 8);
     GtkWidget *vbox2 = gtk_vbox_new(FALSE, 8);
-    GtkWidget *tables[NUM_TBLS]; 
     GtkWidget *table2 = gtk_table_new(1, 3, FALSE);
     GtkWidget *table3 = gtk_table_new(3, 8, FALSE);
     GtkWidget *table4 = gtk_table_new(1, 3, FALSE);
     GtkWidget *table5 = gtk_table_new(8, 4, FALSE);
     GtkWidget *table6 = gtk_table_new(2, 2, FALSE);
+#endif
+    GtkWidget *tables[NUM_TBLS]; 
     gint       num_comp, num_weighted;
     gint       row[NUM_TBLS] = {0}, col[NUM_TBLS] = {0}, i;
     gint       tbl = 0;
     gchar      buf[16];
 
     for (i = 0; i < NUM_TBLS; i++)
+#if (GTKVER == 3)
+        tables[i] = gtk_grid_new();
+#else
         tables[i] = gtk_table_new(1, 1, FALSE);
-
+#endif
     db_read_competitor_statistics(&num_comp, &num_weighted);
 
     dialog = gtk_dialog_new_with_buttons (_("Tournament properties"),
@@ -546,8 +570,13 @@ void properties(GtkWidget *w, gpointer data)
                                           NULL);
 
     for (i = 0; i < NUM_TBLS; i++) {
+#if (GTKVER == 3)
+        gtk_grid_set_column_spacing(GTK_GRID(tables[i]), 5);
+        gtk_grid_set_row_spacing(GTK_GRID(tables[i]), 5);
+#else
         gtk_table_set_col_spacings(GTK_TABLE(tables[i]), 5);
         gtk_table_set_row_spacings(GTK_TABLE(tables[i]), 5);
+#endif
     }
 
     for (i = 0; i < NUM_PROPERTIES; i++) {
@@ -560,8 +589,11 @@ void properties(GtkWidget *w, gpointer data)
             if (props[i].col) col[tbl] = props[i].col - 1;
             tmp = gtk_label_new(_(props[i].label));
             gtk_misc_set_alignment(GTK_MISC(tmp), 1, 0.5);
+#if (GTKVER == 3)
+            gtk_grid_attach(GTK_GRID(tables[tbl]), tmp, col[tbl], row[tbl], 1, 1);
+#else
             gtk_table_attach_defaults(GTK_TABLE(tables[tbl]), tmp, col[tbl], col[tbl]+1, row[tbl], row[tbl]+1);
-
+#endif
             switch (props[i].type) {
             case PROP_TYPE_TEXT:
             case PROP_TYPE_INT:
@@ -569,15 +601,23 @@ void properties(GtkWidget *w, gpointer data)
                 //gtk_entry_set_text(GTK_ENTRY(tmp), props[i].value ? props[i].value : "");
                 tmp = gtk_entry_new();
                 gtk_entry_set_width_chars(GTK_ENTRY(tmp), 20);
+#if (GTKVER == 3)
+                gtk_grid_attach(GTK_GRID(tables[tbl]), tmp, col[tbl]+1, row[tbl], 1, 1);
+#else
                 gtk_table_attach_defaults(GTK_TABLE(tables[tbl]), tmp, 
                                           col[tbl]+1, col[tbl]+2, row[tbl], row[tbl]+1);
+#endif
                 break;
 
             case PROP_TYPE_CHECK:
                 //gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), (gboolean)props[i].intval);
                 tmp = gtk_check_button_new();
+#if (GTKVER == 3)
+                gtk_grid_attach(GTK_GRID(tables[tbl]), tmp, col[tbl]+1, row[tbl], 1, 1);
+#else
                 gtk_table_attach_defaults(GTK_TABLE(tables[tbl]), tmp, 
                                           col[tbl]+1, col[tbl]+2, row[tbl], row[tbl]+1);
+#endif
                 break;
             }
 
@@ -591,31 +631,57 @@ void properties(GtkWidget *w, gpointer data)
 
         tmp = gtk_entry_new();
         gtk_entry_set_width_chars(GTK_ENTRY(tmp), 3);
+#if (GTKVER == 3)
+        gtk_grid_attach(GTK_GRID(table3), tmp, 0, i+3, 1, 1);
+#else
         gtk_table_attach_defaults(GTK_TABLE(table3), tmp, 0, 1, i+3, i+4);
+#endif
         catwidgets[i].age = tmp;
 
         tmp = gtk_entry_new();
         gtk_entry_set_width_chars(GTK_ENTRY(tmp), 3);
+#if (GTKVER == 3)
+        gtk_grid_attach(GTK_GRID(table3), tmp, 1, i+3, 1, 1);
+#else
         gtk_table_attach_defaults(GTK_TABLE(table3), tmp, 1, 2, i+3, i+4);
+#endif
         catwidgets[i].min = tmp;
 
         tmp = gtk_entry_new();
         gtk_entry_set_width_chars(GTK_ENTRY(tmp), 3);
+#if (GTKVER == 3)
+        gtk_grid_attach(GTK_GRID(table3), tmp, 2, i+3, 1, 1);
+#else
         gtk_table_attach_defaults(GTK_TABLE(table3), tmp, 2, 3, i+3, i+4);
+#endif
         catwidgets[i].max = tmp;
 
+#if (GTKVER == 3)
+        tmp = gtk_combo_box_text_new();
+        gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(tmp), NULL, "?");
+	for (j = 1; j < NUM_SYSTEMS; j++)
+	    gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(tmp), NULL, get_system_name_for_menu(j));
+
+        gtk_grid_attach(GTK_GRID(table3), tmp, 3, i+3, 1, 1);
+#else
         tmp = gtk_combo_box_new_text();
         gtk_combo_box_append_text(GTK_COMBO_BOX(tmp), "?");
 	for (j = 1; j < NUM_SYSTEMS; j++)
 	    gtk_combo_box_append_text(GTK_COMBO_BOX(tmp), get_system_name_for_menu(j));
+
         gtk_table_attach_defaults(GTK_TABLE(table3), tmp, 3, 4, i+3, i+4);
+#endif
         catwidgets[i].sys = tmp;
     }
 
     for (i = 0; i < NUM_BELTS; i++) {
         tmp = gtk_entry_new();
         gtk_entry_set_width_chars(GTK_ENTRY(tmp), 5);
+#if (GTKVER == 3)
+        gtk_grid_attach(GTK_GRID(table5), tmp, i%8, i/8, 1, 1);
+#else
         gtk_table_attach_defaults(GTK_TABLE(table5), tmp, i%8, i%8+1, i/8, i/8+1);
+#endif
         belt_widgets[i] = tmp;
     }
 
@@ -623,77 +689,152 @@ void properties(GtkWidget *w, gpointer data)
 
     GtkWidget *frame = gtk_frame_new(_("General"));
     gtk_container_add(GTK_CONTAINER(frame), tables[0]);
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(vbox2), frame, 0, 0, 1, 1);
+#else
     gtk_box_pack_start_defaults(GTK_BOX(vbox2), frame);
-
+#endif
     frame = gtk_frame_new(_("Pool settings"));
     gtk_container_add(GTK_CONTAINER(frame), tables[1]);
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(vbox2), frame, 0, 1, 1, 1);
+#else
     gtk_box_pack_start_defaults(GTK_BOX(vbox2), frame);
-
+#endif
     // table6 -- statistics
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(table6), gtk_label_new(_("Competitors:")), 0, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(table6), gtk_label_new(_("Weighted:")), 0, 1, 1, 1);
+#else
     gtk_table_attach_defaults(GTK_TABLE(table6), gtk_label_new(_("Competitors:")), 0, 1, 0, 1);
     gtk_table_attach_defaults(GTK_TABLE(table6), gtk_label_new(_("Weighted:")), 0, 1, 1, 2);
+#endif
     sprintf(buf, "%d", num_comp);
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(table6), gtk_label_new(buf), 1, 0, 1, 1);
+#else
     gtk_table_attach_defaults(GTK_TABLE(table6), gtk_label_new(buf), 1, 2, 0, 1);
+#endif
     sprintf(buf, "%d", num_weighted);
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(table6), gtk_label_new(buf), 1, 1, 1, 1);
+#else
     gtk_table_attach_defaults(GTK_TABLE(table6), gtk_label_new(buf), 1, 2, 1, 2);
+#endif
     frame = gtk_frame_new(_("Statistics"));
     gtk_container_add(GTK_CONTAINER(frame), table6);
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(vbox2), frame, 0, 2, 1, 1);
+
+    gtk_grid_attach(GTK_GRID(hbox), vbox2, 0, 0, 1, 1);
+#else
     gtk_box_pack_start_defaults(GTK_BOX(vbox2), frame);
 
     gtk_box_pack_start(GTK_BOX(hbox), vbox2, FALSE, FALSE, 0);
-
+#endif
     // table4: category properties button
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(table4), gtk_label_new(" "), 0, 0, 1, 1);
+#else
     gtk_table_attach(GTK_TABLE(table4), gtk_label_new(" "), 0, 1, 0, 1, GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
+#endif
     tmp = gtk_button_new_with_label(_("Properties"));
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(table4), tmp, 0, 1, 1, 1);
+    gtk_grid_attach(GTK_GRID(table4), gtk_label_new(" "), 0, 2, 1, 1);
+#else
     gtk_table_attach(GTK_TABLE(table4), tmp, 0, 1, 1, 2, GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
     gtk_table_attach(GTK_TABLE(table4), gtk_label_new(" "), 0, 1, 2, 3, GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
+#endif
     g_signal_connect(G_OBJECT(tmp), "clicked", G_CALLBACK(set_categories_dialog), NULL);
     //gtk_box_pack_start(GTK_BOX(vbox1), table4, FALSE, FALSE, 0);
     frame = gtk_frame_new(_("Categories"));
     gtk_container_add(GTK_CONTAINER(frame), table4);
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(hbox1), frame, 0, 0, 1, 1);
+#else
     gtk_box_pack_start(GTK_BOX(hbox1), frame, FALSE, FALSE, 0);
-
+#endif
     // table2
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(table2), gtk_label_new(_("Reset to")), 0, 0, 1, 1);
+
+    tmp = gtk_combo_box_text_new();
+    for (i = 0; i < NUM_DRAWS; i++)
+        gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(tmp), NULL, _(draw_system_names[i]));
+    gtk_grid_attach(GTK_GRID(table2), tmp, 0, 1, 1, 1);
+#else
     gtk_table_attach(GTK_TABLE(table2), gtk_label_new(_("Reset to")), 0, 1, 0, 1, GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
 
     tmp = gtk_combo_box_new_text();
     for (i = 0; i < NUM_DRAWS; i++)
         gtk_combo_box_append_text(GTK_COMBO_BOX(tmp), _(draw_system_names[i]));
     gtk_table_attach(GTK_TABLE(table2), tmp, 0, 1, 1, 2, GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
+#endif
     gtk_combo_box_set_active(GTK_COMBO_BOX(tmp), draw_system);
     //g_signal_connect(G_OBJECT(tmp), "changed", G_CALLBACK(reset_props), NULL); 
 
     reset = gtk_button_new_from_stock(GTK_STOCK_APPLY);
     g_signal_connect(G_OBJECT(reset), "clicked", G_CALLBACK(reset_props1), tmp);
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(table2), reset, 0, 2, 1, 1);
+#else
     gtk_table_attach(GTK_TABLE(table2), reset, 0, 1, 2, 3, GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
-
+#endif
     frame = gtk_frame_new(_("Initialize"));
     gtk_container_add(GTK_CONTAINER(frame), table2);
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(hbox1), frame, 1, 0, 1, 1);
+
+    gtk_grid_attach(GTK_GRID(vbox1), hbox1, 0, 0, 1, 1);
+#else
     gtk_box_pack_start(GTK_BOX(hbox1), frame, FALSE, FALSE, 0);
 
     gtk_box_pack_start(GTK_BOX(vbox1), hbox1, FALSE, FALSE, 0);
-
+#endif
     // table3
     //gtk_table_attach_defaults(GTK_TABLE(table3), gtk_label_new(_("Default systems")), 0, 4, 0, 1);
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(table3), gtk_label_new(_("Players")), 1, 1, 2, 1);
+    gtk_grid_attach(GTK_GRID(table3), gtk_label_new(_("Max age")), 0, 2, 1, 1);
+    gtk_grid_attach(GTK_GRID(table3), gtk_label_new(_("Min")),     1, 2, 1, 1);
+    gtk_grid_attach(GTK_GRID(table3), gtk_label_new(_("Max")),     2, 2, 1, 1);
+    gtk_grid_attach(GTK_GRID(table3), gtk_label_new(_("System")),  3, 2, 1, 1);
+#else
     gtk_table_attach_defaults(GTK_TABLE(table3), gtk_label_new(_("Players")), 1, 3, 1, 2);
     gtk_table_attach_defaults(GTK_TABLE(table3), gtk_label_new(_("Max age")), 0, 1, 2, 3);
     gtk_table_attach_defaults(GTK_TABLE(table3), gtk_label_new(_("Min")), 1, 2, 2, 3);
     gtk_table_attach_defaults(GTK_TABLE(table3), gtk_label_new(_("Max")), 2, 3, 2, 3);
     gtk_table_attach_defaults(GTK_TABLE(table3), gtk_label_new(_("System")), 3, 4, 2, 3);
+#endif
 
     frame = gtk_frame_new(_("Default systems"));
     gtk_container_add(GTK_CONTAINER(frame), table3);
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(vbox1), frame, 0, 1, 2, 1);
+#else
     gtk_box_pack_start(GTK_BOX(vbox1), frame, FALSE, FALSE, 0);
+#endif
 
     frame = gtk_frame_new(_("Grade names"));
     gtk_container_add(GTK_CONTAINER(frame), table5);
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(vbox1), frame, 0, 2, 2, 1);
+
+    gtk_grid_attach(GTK_GRID(hbox), vbox1, 1, 0, 2, 1);
+#else
     gtk_box_pack_start(GTK_BOX(vbox1), frame, FALSE, FALSE, 0);
 
-
     gtk_box_pack_start_defaults(GTK_BOX(hbox), vbox1);
-    gtk_widget_show_all(hbox);
-    gtk_container_add(GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), hbox);
+#endif
 
+    gtk_widget_show_all(hbox);
+#if (GTKVER == 3)
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), 
+                       hbox, FALSE, FALSE, 0);
+#else
+    gtk_container_add(GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), hbox);
+#endif
     if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT) {
         widgets_to_values();
         props_save_to_db();

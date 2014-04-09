@@ -11,12 +11,12 @@ RELFILE=$(RELDIR)/bin/judoshiai$(SUFF)
 RUNDIR=$(DEVELDIR)
 
 all:
-	#make -C common
-	#make -C judoshiai
-	#make -C judotimer
+	make -C common
+	make -C judoshiai
+	make -C judotimer
 	make -C judoinfo
 	make -C judoweight
-	#make -C judojudogi
+	make -C judojudogi
 	make -C doc
 	rm -rf $(RELDIR)
 	mkdir -p $(RELDIR)/bin
@@ -38,13 +38,17 @@ all:
 	mkdir -p $(RELDIR)/doc
 	mkdir -p $(RELDIR)/licenses
 	mkdir -p $(RELDIR)/etc
-	#cp $(JUDOSHIAIFILE) $(RELDIR)/bin/
-	#cp $(JUDOTIMERFILE) $(RELDIR)/bin/
+	cp $(JUDOSHIAIFILE) $(RELDIR)/bin/
+	cp $(JUDOTIMERFILE) $(RELDIR)/bin/
 	cp $(JUDOINFOFILE) $(RELDIR)/bin/
 	cp $(JUDOWEIGHTFILE) $(RELDIR)/bin/
-	#cp $(JUDOJUDOGIFILE) $(RELDIR)/bin/
+	cp $(JUDOJUDOGIFILE) $(RELDIR)/bin/
 ### Windows executable ###
 ifeq ($(TGT),WIN32)
+ifeq ($(GTKVER),3)
+	mkdir -p $(RELDIR)/share/glib-2.0
+	cp -r $(RUNDIR)/share/glib-2.0/schemas $(RELDIR)/share/glib-2.0/
+endif
 	cp $(RUNDIR)/bin/*.dll $(RELDIR)/bin/
 	cp $(SOUNDDIR)/bin/*.dll $(RELDIR)/bin/
 	cp $(RSVGDIR)/bin/*.dll $(RELDIR)/bin/
@@ -157,5 +161,5 @@ clean:
 	make -C judoinfo clean
 	make -C judoweight clean
 	make -C judojudogi clean
-	make -C doc clean
+	#make -C doc clean
 	rm -rf $(RELEASEDIR)

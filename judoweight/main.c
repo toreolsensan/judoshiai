@@ -47,7 +47,7 @@ static GtkWidget *weight_box;
 static GtkWidget *judogi_box;
 #endif
 GtkWidget *weight_entry = NULL;
-static GtkWidget *confirm_box;
+static GtkWidget *confirm_box, *confirm_box2;
 
 static struct message saved;
 static gchar  *saved_id = NULL;
@@ -70,12 +70,24 @@ void set_display(struct msg_edit_competitor *msg)
     gdk_window_set_cursor(GTK_WIDGET(main_window)->window, NULL);
 #endif
     if (msg->operation == EDIT_OP_CONFIRM) {
+
+#if (GTKVER == 3)
+        snprintf(buf, sizeof(buf), "%s %s, %s/%s: %s (%s): %d.%02d",
+                 msg->last, msg->first, msg->country, msg->club, msg->category, msg->regcategory,
+                 msg->weight/1000, (msg->weight%1000)/10);
+        gtk_label_set_label(GTK_LABEL(confirm_box), buf);
+        snprintf(buf, sizeof(buf), "%s",
+                 (msg->deleted & JUDOGI_OK) ? "OK" :
+                 ((msg->deleted & JUDOGI_NOK) ? "NOK" : _("WARNING: NO CONTROL")));
+        gtk_label_set_label(GTK_LABEL(confirm_box2), buf);
+#else
         snprintf(buf, sizeof(buf), "%s %s, %s/%s: %s (%s): %d.%02d %s",
                  msg->last, msg->first, msg->country, msg->club, msg->category, msg->regcategory,
                  msg->weight/1000, (msg->weight%1000)/10,
                  (msg->deleted & JUDOGI_OK) ? "OK" :
                  ((msg->deleted & JUDOGI_NOK) ? "NOK" : _("WARNING: NO CONTROL")));
         gtk_label_set_label(GTK_LABEL(confirm_box), buf);
+#endif
         return;
     }
 
@@ -184,7 +196,7 @@ static void on_ok(GtkEntry *entry, gpointer user_data)
 #endif
     gtk_widget_grab_focus(id_box);
 #if (GTKVER == 3)
-    gdk_window_set_cursor(gtk_widget_get_window(main_window), wait_cursor);
+    gdk_window_set_cursor(gtk_widget_get_window(GTK_WIDGET(main_window)), wait_cursor);
 #else
     gdk_window_set_cursor(GTK_WIDGET(main_window)->window, wait_cursor);
 #endif
@@ -326,10 +338,13 @@ int main( int   argc,
     gtk_box_pack_start(GTK_BOX(main_vbox), menubar, FALSE, TRUE, 0);
 #endif
 
+    enum {c0 = 0, c1, c2, c3, c4, c5};
+
     /* */
     gint row = 0;
 #if (GTKVER == 3)
     GtkWidget *table = gtk_grid_new();
+    gtk_grid_set_row_spacing(GTK_GRID(table), 5);
 #else
     GtkWidget *table = gtk_table_new(5, 6, FALSE);
     gtk_table_set_col_spacings(GTK_TABLE(table), 5);
@@ -338,14 +353,21 @@ int main( int   argc,
     GtkWidget *tmp = w_id = gtk_label_new(_("ID:"));
     gtk_misc_set_alignment(GTK_MISC(tmp), 1, 0.5);
 #if (GTKVER == 3)
-    gtk_grid_attach(GTK_GRID(table), tmp, 0, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(table), tmp, c1, 0, 1, 1);
+    // extra space around grid to center it
+    tmp = gtk_label_new(" ");
+    gtk_grid_attach(GTK_GRID(table), tmp, c0, 0, 1, 1);
+    gtk_widget_set_hexpand(tmp, TRUE);
+    tmp = gtk_label_new(" ");
+    gtk_grid_attach(GTK_GRID(table), tmp, c4, 0, 1, 1);
+    gtk_widget_set_hexpand(tmp, TRUE);
 #else
     gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, row, row+1);
 #endif
     id_box = gtk_entry_new();
     gtk_entry_set_width_chars(GTK_ENTRY(id_box), 16);
 #if (GTKVER == 3)
-    gtk_grid_attach(GTK_GRID(table), id_box, 1, row, 1, 1);
+    gtk_grid_attach(GTK_GRID(table), id_box, c2, row, 1, 1);
 #else
     gtk_table_attach_defaults(GTK_TABLE(table), id_box, 1, 2, row, row+1);
 #endif
@@ -354,7 +376,7 @@ int main( int   argc,
     tmp = w_name = gtk_label_new(_("Name:"));
     gtk_misc_set_alignment(GTK_MISC(tmp), 1, 0.5);
 #if (GTKVER == 3)
-    gtk_grid_attach(GTK_GRID(table), tmp, 0, row, 1, 1);
+    gtk_grid_attach(GTK_GRID(table), tmp, c1, row, 1, 1);
 #else
     gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, row, row+1);
 #endif
@@ -362,7 +384,7 @@ int main( int   argc,
     //gtk_label_set_width_chars(GTK_LABEL(name_box), 60);
     gtk_misc_set_alignment(GTK_MISC(name_box), 0, 0.5);
 #if (GTKVER == 3)
-    gtk_grid_attach(GTK_GRID(table), name_box, 1, row, 3, 1);
+    gtk_grid_attach(GTK_GRID(table), name_box, c2, row, 3, 1);
 #else
     gtk_table_attach_defaults(GTK_TABLE(table), name_box, 1, 4, row, row+1);
 #endif
@@ -371,7 +393,7 @@ int main( int   argc,
     tmp = w_weight = gtk_label_new(_("Weight:"));
     gtk_misc_set_alignment(GTK_MISC(tmp), 1, 0.5);
 #if (GTKVER == 3)
-    gtk_grid_attach(GTK_GRID(table), tmp, 0, row, 1, 1);
+    gtk_grid_attach(GTK_GRID(table), tmp, c1, row, 1, 1);
 #else
     gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, row, row+1);
 #endif
@@ -384,8 +406,8 @@ int main( int   argc,
     //gtk_box_pack_start_defaults(GTK_BOX(whbox), weight_box);
     //gtk_box_pack_start_defaults(GTK_BOX(whbox), wbutton);
 #if (GTKVER == 3)
-    gtk_grid_attach(GTK_GRID(table), weight_box, 1, row, 1, 1);
-    gtk_grid_attach(GTK_GRID(table), wbutton, 2, row, 1, 1);
+    gtk_grid_attach(GTK_GRID(table), weight_box, c2, row, 1, 1);
+    gtk_grid_attach(GTK_GRID(table), wbutton, c3, row, 1, 1);
 #else
     gtk_table_attach_defaults(GTK_TABLE(table), weight_box, 1, 2, row, row+1);
     gtk_table_attach_defaults(GTK_TABLE(table), wbutton, 2, 3, row, row+1);
@@ -402,7 +424,7 @@ int main( int   argc,
     tmp = w_control = gtk_label_new(_("Control:"));
     gtk_misc_set_alignment(GTK_MISC(tmp), 1, 0.5);
 #if (GTKVER == 3)
-    gtk_grid_attach(GTK_GRID(table), tmp, 0, row, 1, 1);
+    gtk_grid_attach(GTK_GRID(table), tmp, c1, row, 1, 1);
 #else
     gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, row, row+1);
 #endif
@@ -411,7 +433,7 @@ int main( int   argc,
     gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(tmp), NULL, "?");
     gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(tmp), NULL, _("OK"));
     gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(tmp), NULL, _("NOK"));
-    gtk_grid_attach(GTK_GRID(table), tmp, 1, row, 1, 1);
+    gtk_grid_attach(GTK_GRID(table), tmp, c2, row, 1, 1);
 #else
     judogi_box = tmp = gtk_combo_box_new_text();
     gtk_combo_box_append_text((GtkComboBox *)tmp, "?");
@@ -432,7 +454,7 @@ int main( int   argc,
 
     tmp = w_ok = gtk_button_new_with_label(_("OK"));
 #if (GTKVER == 3)
-    gtk_grid_attach(GTK_GRID(table), tmp, 1, row, 1, 1);
+    gtk_grid_attach(GTK_GRID(table), tmp, c2, row, 1, 1);
 #else
     gtk_table_attach_defaults(GTK_TABLE(table), tmp, 1, 2, row, row+1);
 #endif
@@ -443,14 +465,17 @@ int main( int   argc,
     tmp = w_confirm = gtk_label_new(_("Confirm:"));
     gtk_misc_set_alignment(GTK_MISC(tmp), 1, 0.5);
 #if (GTKVER == 3)
-    gtk_grid_attach(GTK_GRID(table), tmp, 0, row, 1, 1);
+    gtk_grid_attach(GTK_GRID(table), tmp, c1, row, 1, 1);
 #else
     gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, row, row+1);
 #endif
     confirm_box = gtk_label_new("");
+    confirm_box2 = gtk_label_new("");
     gtk_misc_set_alignment(GTK_MISC(confirm_box), 0, 0.5);
+    gtk_misc_set_alignment(GTK_MISC(confirm_box2), 0, 0.5);
 #if (GTKVER == 3)
-    gtk_grid_attach(GTK_GRID(table), confirm_box, 1, row, 3, 1);
+    gtk_grid_attach(GTK_GRID(table), confirm_box, c2, row, 3, 1);
+    gtk_grid_attach(GTK_GRID(table), confirm_box2, c2, row+1, 3, 1);
 #else
     gtk_table_attach_defaults(GTK_TABLE(table), confirm_box, 1, 4, row, row+1);
 #endif
@@ -504,6 +529,7 @@ int main( int   argc,
     gth = g_thread_create((GThreadFunc)ssdp_thread,
                           (gpointer)&run_flag, FALSE, NULL);
 #endif
+    gth = gth; // make compiler happy
 
     gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER_ALWAYS);
 	
@@ -541,15 +567,15 @@ void refresh_window(void)
     widget = GTK_WIDGET(main_window);
 
 #if (GTKVER == 3)
-    if (gtk_widget_get_parent_window(widget)) {
+    if (gtk_widget_get_window(widget)) {
         cairo_rectangle_int_t r;
         r.x = 0;
         r.y = 0;
         r.width = gtk_widget_get_allocated_width(widget);
         r.height = gtk_widget_get_allocated_height(widget);
         region = cairo_region_create_rectangle(&r);
-        gdk_window_invalidate_region(gtk_widget_get_parent_window(widget), region, TRUE);
-        gdk_window_process_updates(gtk_widget_get_parent_window(widget), TRUE);
+        gdk_window_invalidate_region(gtk_widget_get_window(widget), region, TRUE);
+        gdk_window_process_updates(gtk_widget_get_window(widget), TRUE);
         cairo_region_destroy(region);
     }
 #else

@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <initguid.h>
 #include <winsock2.h>
+#include <ws2tcpip.h>
 
 #else /* UNIX */
 

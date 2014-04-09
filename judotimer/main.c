@@ -12,10 +12,16 @@
 
 #include <gtk/gtk.h>
 #include <glib.h>
+
+#if (GTKVER == 3)
+#include <gdk/gdkkeysyms-compat.h>
+#else
 #include <gdk/gdkkeysyms.h>
+#endif
 
 #ifdef WIN32
-#include <glib/gwin32.h>
+#include <process.h>
+//#include <glib/gwin32.h>
 #else
 #include <sys/types.h>
 #include <unistd.h>
@@ -1008,36 +1014,39 @@ void voting_result(GtkWidget *w,
 
 gboolean delete_big(gpointer data)
 {
-	big_dialog = FALSE;
-	gtk_window_set_title(GTK_WINDOW(main_window), "JudoTimer");
-	expose(darea, 0, 0);
-        send_label(STOP_BIG);
-        return FALSE;
+    big_dialog = FALSE;
+    gtk_window_set_title(GTK_WINDOW(main_window), "JudoTimer");
+    expose(darea, 0, 0);
+    send_label(STOP_BIG);
+    return FALSE;
 }
 
 static void show_big(void)
 {
-        cairo_text_extents_t extents;
-	cairo_t *c = gdk_cairo_create(darea->window);
+    cairo_text_extents_t extents;
+#if (GTKVER == 3)
+    cairo_t *c = gdk_cairo_create(gtk_widget_get_window(darea));
+#else
+    cairo_t *c = gdk_cairo_create(darea->window);
+#endif
+    cairo_set_source_rgb(c, 1.0, 1.0, 1.0);
+    cairo_rectangle(c, 0, 0,
+                    W(1.0), H(0.2));
+    cairo_fill(c);
 
-	cairo_set_source_rgb(c, 1.0, 1.0, 1.0);
-	cairo_rectangle(c, 0, 0,
-			W(1.0), H(0.2));
-	cairo_fill(c);
+    if (strlen(big_text) < 12)
+        cairo_set_font_size(c, H(0.1));
+    else
+        cairo_set_font_size(c, H(0.05));
+    cairo_text_extents(c, big_text, &extents);
 
-        if (strlen(big_text) < 12)
-                cairo_set_font_size(c, H(0.1));
-        else
-                cairo_set_font_size(c, H(0.05));
-        cairo_text_extents(c, big_text, &extents);
-
-	cairo_set_source_rgb(c, 0.0, 0.0, 0.0);
-	cairo_move_to(c, W(0.5)-extents.width/2.0,
-		      (H(0.2)- extents.height)/2.0 -
-		      extents.y_bearing);
-        cairo_show_text(c, big_text);
-	cairo_show_page(c);
-	cairo_destroy(c);
+    cairo_set_source_rgb(c, 0.0, 0.0, 0.0);
+    cairo_move_to(c, W(0.5)-extents.width/2.0,
+                  (H(0.2)- extents.height)/2.0 -
+                  extents.y_bearing);
+    cairo_show_text(c, big_text);
+    cairo_show_page(c);
+    cairo_destroy(c);
 }
 
 void display_big(gchar *txt, gint tmo_sec)
@@ -1082,7 +1091,11 @@ static void expose_label(cairo_t *c, gint w)
 
     if (!c) {
         delc = TRUE;
+#if (GTKVER == 3)
+        c = gdk_cairo_create(gtk_widget_get_window(darea));
+#else
         c = gdk_cairo_create(darea->window);
+#endif
     }
 
     cairo_save(c);
@@ -1196,33 +1209,41 @@ static void expose_label(cairo_t *c, gint w)
 /* This is called when we need to draw the windows contents */
 static gboolean expose(GtkWidget *widget, GdkEventExpose *event, gpointer userdata)
 {
-        static cairo_t *c = NULL;
-	gint i;
+    static cairo_t *c = NULL;
+    gint i;
 
-	c = gdk_cairo_create(widget->window);
+#if (GTKVER == 3)
+    c = gdk_cairo_create(gtk_widget_get_window(widget));
+#else
+    c = gdk_cairo_create(widget->window);
+#endif
 
-        paper_height = widget->allocation.height;
-        paper_width = widget->allocation.width;
+#if (GTKVER == 3)
+    paper_width = gtk_widget_get_allocated_width(widget);
+    paper_height = gtk_widget_get_allocated_height(widget);
+#else
+    paper_height = widget->allocation.height;
+    paper_width = widget->allocation.width;
+#endif
+    cairo_select_font_face(c, "arial",
+                           CAIRO_FONT_SLANT_NORMAL,
+                           CAIRO_FONT_WEIGHT_BOLD);
 
-        cairo_select_font_face(c, "arial",
-                               CAIRO_FONT_SLANT_NORMAL,
-                               CAIRO_FONT_WEIGHT_BOLD);
+    cairo_set_source_rgb(c, 0.0, 0.0, 0.0);
+    cairo_rectangle(c, 0.0, 0.0, paper_width, paper_height);
+    cairo_fill(c);
 
-	cairo_set_source_rgb(c, 0.0, 0.0, 0.0);
-	cairo_rectangle(c, 0.0, 0.0, paper_width, paper_height);
-	cairo_fill(c);
+    cairo_show_page(c);
+    cairo_destroy(c);
 
-	cairo_show_page(c);
-	cairo_destroy(c);
+    for (i = 0; i < num_labels; i++) {
+        expose_label(NULL, i);
+    }
 
-	for (i = 0; i < num_labels; i++) {
-		expose_label(NULL, i);
-	}
+    if (big_dialog)
+        show_big();
 
-	if (big_dialog)
-		show_big();
-
-        return FALSE;
+    return FALSE;
 }
 
 static gboolean button_pressed(GtkWidget *widget,
@@ -1519,7 +1540,11 @@ int main( int   argc,
     bgcolor_points = color_black;
 
 #ifdef WIN32
+#if (GTKVER == 3)
+    installation_dir = g_win32_get_package_installation_directory_of_module(NULL);
+#else
     installation_dir = g_win32_get_package_installation_directory(NULL, NULL);
+#endif
 #else
     gbr_init(NULL);
     installation_dir = gbr_find_prefix(NULL);
@@ -1550,10 +1575,11 @@ int main( int   argc,
             g_get_user_config_dir(),
             installation_dir);
 
+#if (GTKVER != 3)
     g_thread_init(NULL);    /* Initialize GLIB thread support */
     gdk_threads_init();     /* Initialize GDK locks */
     gdk_threads_enter();    /* Acquire GDK locks */
-
+#endif
     gtk_init (&argc, &argv);
 
     main_window = window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
@@ -1572,7 +1598,11 @@ int main( int   argc,
 
     gtk_container_set_border_width (GTK_CONTAINER (window), 0);
 
+#if (GTKVER == 3)
+    main_vbox = gtk_grid_new();
+#else
     main_vbox = gtk_vbox_new(FALSE, 0);
+#endif
     gtk_container_set_border_width (GTK_CONTAINER (main_vbox), 0);
     gtk_container_add (GTK_CONTAINER (window), main_vbox);
     gtk_widget_show(main_vbox);
@@ -1581,18 +1611,36 @@ int main( int   argc,
     menubar = get_menubar_menu(window);
     gtk_widget_show(menubar);
 
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(main_vbox), menubar, 0, 0, 1, 1);
+    gtk_widget_set_hexpand(menubar, TRUE);
+#else
     gtk_box_pack_start(GTK_BOX(main_vbox), menubar, FALSE, TRUE, 0);
+#endif
 
     darea = gtk_drawing_area_new();
+#if (GTKVER != 3)
     GTK_WIDGET_SET_FLAGS(darea, GTK_CAN_FOCUS);
+#endif
     gtk_widget_add_events(darea, GDK_BUTTON_PRESS_MASK);
 
     gtk_widget_show(darea);
 
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(main_vbox), darea, 0, 1, 1, 1);
+    gtk_widget_set_hexpand(darea, TRUE);
+    gtk_widget_set_vexpand(darea, TRUE);
+#else
     gtk_box_pack_start_defaults(GTK_BOX(main_vbox), darea);
+#endif
 
+#if (GTKVER == 3)
+    g_signal_connect(G_OBJECT(darea), 
+                     "draw", G_CALLBACK(expose), NULL);
+#else
     g_signal_connect(G_OBJECT(darea),
                      "expose-event", G_CALLBACK(expose), NULL);
+#endif
     g_signal_connect(G_OBJECT(darea),
                      "button-press-event", G_CALLBACK(button_pressed), NULL);
 
@@ -1769,6 +1817,28 @@ int main( int   argc,
     open_comm_socket();
 
     /* Create a bg thread using glib */
+    gth = gth;
+#if (GTKVER == 3)
+    gth = g_thread_new("Client",
+                       (GThreadFunc)client_thread,
+                       (gpointer)&run_flag); 
+    gth = g_thread_new("Master",
+                       (GThreadFunc)master_thread,
+                       (gpointer)&run_flag); 
+    gth = g_thread_new("Video",
+                       (GThreadFunc)video_thread,
+                       (gpointer)&run_flag); 
+    gth = g_thread_new("TVlogo",
+                       (GThreadFunc)tvlogo_thread,
+                       (gpointer)&run_flag); 
+    gth = g_thread_new("Sound",
+                       (GThreadFunc)sound_thread,
+                       (gpointer)&run_flag); 
+    extern gpointer ssdp_thread(gpointer args);
+    gth = g_thread_new("SSDP",
+                       (GThreadFunc)ssdp_thread,
+                       (gpointer)&run_flag); 
+#else
     gth = g_thread_create((GThreadFunc)client_thread,
                           (gpointer)&run_flag, FALSE, NULL);
     gth = g_thread_create((GThreadFunc)master_thread,
@@ -1783,11 +1853,16 @@ int main( int   argc,
     extern gpointer ssdp_thread(gpointer args);
     gth = g_thread_create((GThreadFunc)ssdp_thread,
                           (gpointer)&run_flag, FALSE, NULL);
+#endif
 
     gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER_ALWAYS);
 
     cursor = gdk_cursor_new(GDK_HAND2);
+#if (GTKVER == 3)
+    gdk_window_set_cursor(gtk_widget_get_window(GTK_WIDGET(main_window)), cursor);
+#else
     gdk_window_set_cursor(GTK_WIDGET(main_window)->window, cursor);
+#endif
 
     for (i = 1; i < argc; i++) {
         if (argv[i][0] == '-' && argv[i][1] == 'd') {
@@ -1806,7 +1881,9 @@ int main( int   argc,
      * mouse event). */
     gtk_main();
 
+#if (GTKVER != 3)    
     gdk_threads_leave();  /* release GDK locks */
+#endif
     run_flag = FALSE;     /* flag threads to stop and exit */
     //g_thread_join(gth);   /* wait for thread to exit */
 
@@ -1886,21 +1963,29 @@ static void set_colors(void)
 
 void toggle_color(GtkWidget *menu_item, gpointer data)
 {
-        if (GTK_CHECK_MENU_ITEM(menu_item)->active) {
-                bgcolor = &color_red;
-		g_key_file_set_string(keyfile, "preferences", "color", "red");
-        } else {
-                bgcolor = &color_blue;
-		g_key_file_set_string(keyfile, "preferences", "color", "blue");
-	}
+#if (GTKVER == 3)
+    if (gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item))) {
+#else
+    if (GTK_CHECK_MENU_ITEM(menu_item)->active) {
+#endif
+        bgcolor = &color_red;
+        g_key_file_set_string(keyfile, "preferences", "color", "red");
+    } else {
+        bgcolor = &color_blue;
+        g_key_file_set_string(keyfile, "preferences", "color", "blue");
+    }
 
-        set_colors();
-	expose(darea, 0, 0);
+    set_colors();
+    expose(darea, 0, 0);
 }
 
 void toggle_full_screen(GtkWidget *menu_item, gpointer data)
 {
+#if (GTKVER == 3)
+    fullscreen = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item));
+#else
     fullscreen = GTK_CHECK_MENU_ITEM(menu_item)->active;
+#endif
     if (fullscreen) {
         gtk_window_fullscreen(GTK_WINDOW(main_window));
         g_key_file_set_boolean(keyfile, "preferences", "fullscreen", TRUE);
@@ -1913,42 +1998,54 @@ void toggle_full_screen(GtkWidget *menu_item, gpointer data)
 
 void toggle_rules_no_koka(GtkWidget *menu_item, gpointer data)
 {
-        if (GTK_CHECK_MENU_ITEM(menu_item)->active) {
-		rules_no_koka_dsp = TRUE;
-		set_text(MY_LABEL(wazaari), "I");
-		set_text(MY_LABEL(yuko), "W");
-		set_text(MY_LABEL(koka), "Y");
-		g_key_file_set_boolean(keyfile, "preferences", "rulesnokoka", TRUE);
-        } else {
-		rules_no_koka_dsp = FALSE;
-		set_text(MY_LABEL(wazaari), "W");
-		set_text(MY_LABEL(yuko), "Y");
-		set_text(MY_LABEL(koka), "K");
-		g_key_file_set_boolean(keyfile, "preferences", "rulesnokoka", FALSE);
-	}
-	expose(darea, 0, 0);
+#if (GTKVER == 3)
+    if (gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item))) {
+#else
+    if (GTK_CHECK_MENU_ITEM(menu_item)->active) {
+#endif
+        rules_no_koka_dsp = TRUE;
+        set_text(MY_LABEL(wazaari), "I");
+        set_text(MY_LABEL(yuko), "W");
+        set_text(MY_LABEL(koka), "Y");
+        g_key_file_set_boolean(keyfile, "preferences", "rulesnokoka", TRUE);
+    } else {
+        rules_no_koka_dsp = FALSE;
+        set_text(MY_LABEL(wazaari), "W");
+        set_text(MY_LABEL(yuko), "Y");
+        set_text(MY_LABEL(koka), "K");
+        g_key_file_set_boolean(keyfile, "preferences", "rulesnokoka", FALSE);
+    }
+    expose(darea, 0, 0);
 }
 
 void toggle_rules_leave_points(GtkWidget *menu_item, gpointer data)
 {
-        if (GTK_CHECK_MENU_ITEM(menu_item)->active) {
-		rules_leave_score = TRUE;
-		g_key_file_set_boolean(keyfile, "preferences", "rulesleavepoints", TRUE);
-        } else {
-		rules_leave_score = FALSE;
-		g_key_file_set_boolean(keyfile, "preferences", "rulesleavepoints", FALSE);
-	}
+#if (GTKVER == 3)
+    if (gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item))) {
+#else
+    if (GTK_CHECK_MENU_ITEM(menu_item)->active) {
+#endif
+        rules_leave_score = TRUE;
+        g_key_file_set_boolean(keyfile, "preferences", "rulesleavepoints", TRUE);
+    } else {
+        rules_leave_score = FALSE;
+        g_key_file_set_boolean(keyfile, "preferences", "rulesleavepoints", FALSE);
+    }
 }
 
 void toggle_rules_stop_ippon(GtkWidget *menu_item, gpointer data)
 {
-        if (GTK_CHECK_MENU_ITEM(menu_item)->active) {
-		rules_stop_ippon_2 = TRUE;
-		g_key_file_set_boolean(keyfile, "preferences", "stopippon", TRUE);
-        } else {
-		rules_stop_ippon_2 = FALSE;
-		g_key_file_set_boolean(keyfile, "preferences", "stopippon", FALSE);
-	}
+#if (GTKVER == 3)
+    if (gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item))) {
+#else
+    if (GTK_CHECK_MENU_ITEM(menu_item)->active) {
+#endif
+        rules_stop_ippon_2 = TRUE;
+        g_key_file_set_boolean(keyfile, "preferences", "stopippon", TRUE);
+    } else {
+        rules_stop_ippon_2 = FALSE;
+        g_key_file_set_boolean(keyfile, "preferences", "stopippon", FALSE);
+    }
 }
 
 /*
@@ -1961,25 +2058,41 @@ void toggle_rules_no_free_shido(GtkWidget *menu_item, gpointer data)
 
 void toggle_rules_eq_score_less_shido_wins(GtkWidget *menu_item, gpointer data)
 {
+#if (GTKVER == 3)
+    rule_eq_score_less_shido_wins = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item));
+#else
     rule_eq_score_less_shido_wins = GTK_CHECK_MENU_ITEM(menu_item)->active;
+#endif
     g_key_file_set_boolean(keyfile, "preferences", "ruleseqscorelessshidowins", rule_eq_score_less_shido_wins);
 }
 
 void toggle_rules_short_pin_times(GtkWidget *menu_item, gpointer data)
 {
+#if (GTKVER == 3)
+    rule_short_pin_times = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item));
+#else
     rule_short_pin_times = GTK_CHECK_MENU_ITEM(menu_item)->active;
+#endif
     g_key_file_set_boolean(keyfile, "preferences", "rulesshortpintimes", rule_short_pin_times);
 }
 
 void toggle_confirm_match(GtkWidget *menu_item, gpointer data)
 {
+#if (GTKVER == 3)
+    rules_confirm_match = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item));
+#else
     rules_confirm_match = GTK_CHECK_MENU_ITEM(menu_item)->active;
+#endif
     g_key_file_set_boolean(keyfile, "preferences", "confirmmatch", rules_confirm_match);
 }
 
 void toggle_whitefirst(GtkWidget *menu_item, gpointer data)
 {
+#if (GTKVER == 3)
+    white_first = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item));
+#else
     white_first = GTK_CHECK_MENU_ITEM(menu_item)->active;
+#endif
     g_key_file_set_boolean(keyfile, "preferences", "whitefirst", white_first);
     set_colors();
     expose(darea, 0, 0);
@@ -1987,7 +2100,11 @@ void toggle_whitefirst(GtkWidget *menu_item, gpointer data)
 
 void toggle_show_comp(GtkWidget *menu_item, gpointer data)
 {
+#if (GTKVER == 3)
+    show_competitor_names = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item));
+#else
     show_competitor_names = GTK_CHECK_MENU_ITEM(menu_item)->active;
+#endif
     g_key_file_set_boolean(keyfile, "preferences", "showcompetitornames", show_competitor_names);
 }
 
@@ -1999,8 +2116,11 @@ void toggle_switch_sides(GtkWidget *menu_item, gpointer data)
 {
     gchar *tmp;
 
+#if (GTKVER == 3)
+    sides_switched = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item));
+#else
     sides_switched = GTK_CHECK_MENU_ITEM(menu_item)->active;
-
+#endif
     SWITCH_TEXTS(saved_last1, saved_last2);
     SWITCH_TEXTS(saved_first1, saved_first2);
 
@@ -2613,12 +2733,20 @@ static gchar *get_font_face()
 void font_dialog(GtkWidget *w, gpointer data)
 {
     GtkWidget *dialog;
-
+#if (GTKVER == 3)
+    dialog = gtk_font_chooser_dialog_new(_("Select font"), NULL);
+    gtk_font_chooser_set_font(GTK_FONT_CHOOSER(dialog), get_font_face());
+#else
     dialog = gtk_font_selection_dialog_new (_("Select font"));
     gtk_font_selection_dialog_set_font_name(GTK_FONT_SELECTION_DIALOG(dialog), get_font_face());
+#endif
 
     if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_OK) {
+#if (GTKVER == 3)
+        gchar *font = gtk_font_chooser_get_font(GTK_FONT_CHOOSER(dialog));
+#else
         gchar *font = gtk_font_selection_dialog_get_font_name(GTK_FONT_SELECTION_DIALOG(dialog));
+#endif
         set_font(font);
     }
 
@@ -2690,7 +2818,7 @@ void write_tv_logo(struct msg_update_label *msg)
     //cairo_t *tvc1 = NULL, *tvc2 = NULL;
     gdouble row1 = RL1*tvlogo_scale, row2 = RL2*tvlogo_scale;
     gdouble width1 = WL1*tvlogo_scale, width2 = WL2*tvlogo_scale;
-    gdouble col1 = CL1*tvlogo_scale, col2 = CL2*tvlogo_scale;
+    gdouble col2 = CL2*tvlogo_scale;
     gdouble d1 = row1*(1-FS), d2 = row2*(1-FS);
     static glong wait_stop_competitors = 0;
 

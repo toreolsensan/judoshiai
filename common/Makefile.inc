@@ -22,6 +22,7 @@ endif
 
 ### Cross compilation (host=Linux, target=Windows) ###
 ifeq ($(TARGETOS),WIN32)
+
 CC=i586-mingw32msvc-gcc
 LD=i586-mingw32msvc-gcc
 SUFF=.exe
@@ -35,21 +36,9 @@ INNOSETUP=wine "/opt/win32/Inno Setup 5/ISCC.exe"
 OBJDIR=obj-win32
 RELEASEDIR=release-win32
 
-### Windows ###
-else 
-ifeq ($(OS),Windows_NT)
-CC=gcc
-LD=gcc
-SUFF=.exe
-DEVELDIR=c:/msys/1.0/home/hjokinen/gtk+-bundle_2.20
-RESHACKER=ResHacker.exe
-WINDRES=windres.exe
-INNOSETUP="C:\\Program Files\\Inno Setup 5\\ISCC.exe"
-OBJDIR=obj-win32
-RELEASEDIR=release-win32
-
 ### Linux ###
 else
+
 CC=gcc
 LD=gcc
 SUFF=
@@ -61,7 +50,6 @@ OBJDIR=obj-linux
 RELEASEDIR=release-linux
 
 endif
-endif
 
 ###################
 # CFLAGS and LIBS #
@@ -69,6 +57,7 @@ endif
 
 ### Cross compilation ###
 ifeq ($(TARGETOS),WIN32)
+
 CFLAGS=-Wall -g \
 -I$(DEVELDIR)/include/gtk-$(GTKVER).0 \
 -I$(DEVELDIR)/lib/gtk-$(GTKVER).0/include \
@@ -86,7 +75,7 @@ CFLAGS=-Wall -g \
 -I$(DEVELDIR)/include/libpng14   \
 -I$(DEVELDIR)/include/gdk-pixbuf-2.0 \
 -I/opt/win32/w32api/include \
--I/opt/win32/rsvg/include \
+-I/opt/win32/rsvg/include/librsvg-2.0 \
 -I/opt/win32/curl/include \
 -I../common -mms-bitfields \
 -DSHIAI_VERSION=$(SHIAI_VERSION) \
@@ -94,6 +83,7 @@ CFLAGS=-Wall -g \
 -DGTKVER=$(GTKVER)
 
 LIBS=-L$(DEVELDIR)/lib $(DEVELDIR)/lib/glib-2.0.lib  \
+-L/opt/win32/gtk/bin \
 -lgtk-win32-$(GTKVER).0 -lgdk-win32-$(GTKVER).0 -latk-1.0 -lgio-2.0 -lgdk_pixbuf-2.0 \
 -lpangowin32-1.0 -lgdi32 -lpangocairo-1.0 -lpango-1.0 -lgobject-2.0 \
 -lgmodule-2.0 -lgthread-2.0 -lglib-2.0 -lintl -lcairo \
@@ -101,28 +91,21 @@ LIBS=-L$(DEVELDIR)/lib $(DEVELDIR)/lib/glib-2.0.lib  \
 -L/opt/win32/curl/bin -lcurl \
 -L/opt/win32/w32api/lib -lws2_32 -mwindows
 
-### Native compilations ###
+### Linux ###
 else
+
 PKGCONFIG=pkg-config
 
-CFLAGS=-Wall $(shell $(PKGCONFIGPATH) $(PKGCONFIG) --cflags gtk+-2.0) \
+CFLAGS=-Wall $(shell $(PKGCONFIGPATH) $(PKGCONFIG) --cflags gtk+-$(GTKVER).0) \
        $(shell $(PKGCONFIGPATH) $(PKGCONFIG) --cflags cairo) \
        $(shell $(PKGCONFIGPATH) $(PKGCONFIG) --cflags librsvg-2.0) \
-       -DENABLE_BINRELOC -DENABLE_NLS \
+       $(shell $(PKGCONFIGPATH) $(PKGCONFIG) --cflags glib-2.0) \
+       -DENABLE_BINRELOC -DENABLE_NLS -DGTKVER=$(GTKVER) \
        -I$(DEVELDIR)/include -I../common -DSHIAI_VERSION=$(SHIAI_VERSION)
 
-LIBS=$(shell $(PKGCONFIGPATH) $(PKGCONFIG) --libs gtk+-2.0 gthread-2.0 cairo librsvg-2.0) \
+LIBS=$(shell $(PKGCONFIGPATH) $(PKGCONFIG) --libs gtk+-$(GTKVER).0 gthread-2.0 cairo librsvg-2.0 glib-2.0) \
  $(shell curl-config --libs) -ldl
 
-## Windows ##
-ifeq ($(OS),Windows_NT)
-CFLAGS += -mms-bitfields
-LIBS += -lws2_32  -mwindows
-
-## Linux ##
-else
 OBJS += $(OBJDIR)/binreloc.o
-
-endif
 
 endif

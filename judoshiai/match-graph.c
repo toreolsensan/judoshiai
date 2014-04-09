@@ -453,26 +453,33 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
 static gboolean expose(GtkWidget *widget, GdkEventExpose *event, gpointer userdata)
 {
     static cairo_surface_t *cs = NULL;
+#if (GTKVER == 3)
+    cairo_t *c = gdk_cairo_create(gtk_widget_get_window(widget));
+    gint allocw = gtk_widget_get_allocated_width(widget);
+    gint alloch = gtk_widget_get_allocated_height(widget);
+#else
     cairo_t *c = gdk_cairo_create(widget->window);
+    gint allocw = widget->allocation.width;
+    gint alloch = widget->allocation.height;
+#endif
     static gint oldw = 0, oldh = 0;
 
-    if (cs && (oldw != widget->allocation.width || oldh != widget->allocation.height)) {
+    if (cs && (oldw != allocw || oldh != alloch)) {
         cairo_surface_destroy(cs);
         cs = NULL;
     }
 
     if (!cs) {
-        cs = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 
-                                        widget->allocation.width, widget->allocation.height);
-        oldw = widget->allocation.width;
-        oldh = widget->allocation.height;
+        cs = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, allocw, alloch);
+        oldw = allocw;
+        oldh = alloch;
     }
 
     if (button_drag) {
-        paint(c, widget->allocation.width, widget->allocation.height, cs);
+        paint(c, allocw, alloch, cs);
     } else {
         cairo_t *c1 = cairo_create(cs);
-        paint(c1, widget->allocation.width, widget->allocation.height, NULL);
+        paint(c1, allocw, alloch, NULL);
 
         cairo_set_source_surface(c, cs, 0, 0);
         cairo_paint(c);
@@ -550,8 +557,9 @@ void set_match_graph_page(GtkWidget *notebook)
 
     w.darea = gtk_drawing_area_new();
     gtk_widget_set_size_request(w.darea, 600, 2000);
-
+#if (GTKVER != 3)
     GTK_WIDGET_SET_FLAGS(w.darea, GTK_CAN_FOCUS);
+#endif
     gtk_widget_add_events(w.darea, 
                           GDK_BUTTON_PRESS_MASK | 
                           GDK_BUTTON_RELEASE_MASK |
@@ -561,16 +569,25 @@ void set_match_graph_page(GtkWidget *notebook)
 	
 
     /* pack the table into the scrolled window */
+#if (GTKVER == 3) && GTK_CHECK_VERSION(3,8,0)
+    gtk_container_add(GTK_CONTAINER(w.scrolled_window), w.darea);
+#else
     gtk_scrolled_window_add_with_viewport (
         GTK_SCROLLED_WINDOW(w.scrolled_window), w.darea);
+#endif
 
     match_graph_label = gtk_label_new (_("Matches"));
     gtk_notebook_append_page(GTK_NOTEBOOK(notebook), w.scrolled_window, match_graph_label);
 
     gtk_widget_show(w.darea);
 
+#if (GTKVER == 3)
+    g_signal_connect(G_OBJECT(w.darea), 
+                     "draw", G_CALLBACK(expose), w.darea);
+#else
     g_signal_connect(G_OBJECT(w.darea), 
                      "expose-event", G_CALLBACK(expose), w.darea);
+#endif
     g_signal_connect(G_OBJECT(w.darea), 
                      "button-press-event", G_CALLBACK(mouse_click), NULL);
 #if 0
@@ -640,8 +657,11 @@ static gboolean mouse_click(GtkWidget *sheet_page,
 			    GdkEventButton *event, 
 			    gpointer userdata)
 {
+#if (GTKVER == 3)
+    gdk_window_set_cursor(gtk_widget_get_window(GTK_WIDGET(main_window)), hand_cursor);
+#else
     gdk_window_set_cursor(GTK_WIDGET(main_window)->window, hand_cursor);
-	
+#endif	
     button_drag = FALSE;
 
     /* single click with the right mouse button? */
@@ -758,6 +778,11 @@ static gboolean motion_notify(GtkWidget *sheet_page,
 {
     //static GTimeVal next_time, now;
     struct win_collection *w = userdata;
+#if (GTKVER == 3)
+    gint alloch = gtk_widget_get_allocated_height(w->scrolled_window);
+#else
+    gint alloch = w->scrolled_window->allocation.height;
+#endif
 
     if (button_drag == FALSE)
         return FALSE;
@@ -766,7 +791,7 @@ static gboolean motion_notify(GtkWidget *sheet_page,
     GtkAdjustment *adj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(w->scrolled_window));
     gdouble adjnow = gtk_adjustment_get_value(adj);
 	
-    if (y - adjnow > w->scrolled_window->allocation.height - 50) {
+    if (y - adjnow > alloch - 50) {
         scroll_up_down = SCROLL_DOWN;
     } else if (y - adjnow < 20.0) {
         scroll_up_down = SCROLL_UP;

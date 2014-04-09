@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <initguid.h>
 #include <winsock2.h>
+#include <ws2tcpip.h>
 
 #else /* UNIX */
 
@@ -438,11 +439,17 @@ void set_tatami_state(GtkWidget *menu_item, gpointer data)
     gchar buf[32];
     gint tatami = ptr_to_gint(data);
 
-    tatami_state[tatami-1] = GTK_CHECK_MENU_ITEM(menu_item)->active;
-
+#if (GTKVER == 3)
+    tatami_state[tatami-1] = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item));
     sprintf(buf, "tatami%d", tatami);
     g_key_file_set_integer(keyfile, "preferences", buf, 
-                           GTK_CHECK_MENU_ITEM(menu_item)->active);
+                           gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item)));
+#else
+    tatami_state[tatami-1] = GTK_CHECK_MENU_ITEM(menu_item)->active;
+    sprintf(buf, "tatami%d", tatami);
+    g_key_file_set_integer(keyfile, "preferences", buf, 
+                           GTK_CHECK_MENU_ITEM(menu_item)->active)a;
+#endif
 }
 
 
@@ -482,7 +489,7 @@ gchar *xml = "<?xml version=\"1.0\"?>\n"
 gpointer node_thread(gpointer args)
 {
     SOCKET node_fd, tmp_fd;
-    guint alen;
+    socklen_t alen;
     struct sockaddr_in my_addr, caller;
     gint reuse = 1;
     fd_set read_fd, fds;
@@ -537,7 +544,11 @@ gpointer node_thread(gpointer args)
         // Mutex may be locked for a long time if there are network problems
         // during send. Thus we send a copy to unlock the mutex immediatelly.
         msg_out_ready = FALSE;
+#if (GTKVER == 3)
+        G_LOCK(send_mutex);
+#else
         g_static_mutex_lock(&send_mutex);
+#endif
         if (msg_queue_get != msg_queue_put) {
             msg_out = msg_to_send[msg_queue_get];
             msg_queue_get++;
@@ -545,7 +556,11 @@ gpointer node_thread(gpointer args)
                 msg_queue_get = 0;
             msg_out_ready = TRUE;
         }
+#if (GTKVER == 3)
+        G_UNLOCK(send_mutex);
+#else
         g_static_mutex_unlock(&send_mutex);
+#endif
 
         if (msg_out_ready) {
             for (i = 0; i < NUM_CONNECTIONS; i++) {
@@ -603,8 +618,8 @@ gpointer node_thread(gpointer args)
             connections[i].fd = tmp_fd;
             connections[i].addr = caller.sin_addr.s_addr;
             connections[i].conn_type = 0;
-            g_print("Node: new connection[%d]: fd=%d addr=%x\n", 
-                    i, tmp_fd, caller.sin_addr.s_addr);
+            g_print("Node: new connection[%d]: fd=%d addr=%s\n", 
+                    i, tmp_fd, inet_ntoa(caller.sin_addr));
             FD_SET(tmp_fd, &read_fd);
         }
 
@@ -617,7 +632,7 @@ gpointer node_thread(gpointer args)
             if (!(FD_ISSET(connections[i].fd, &fds)))
                 continue;
 
-            r = recv(connections[i].fd, inbuf, sizeof(inbuf), 0);
+            r = recv(connections[i].fd, (char *)inbuf, sizeof(inbuf), 0);
             if (r > 0) {
                 guchar *p = connections[i].buf;
                 gint j, blen = sizeof(connections[i].buf);
@@ -679,7 +694,7 @@ G_LOCK_EXTERN(db);
 gpointer server_thread(gpointer args)
 {
     SOCKET serv_fd, tmp_fd;
-    guint alen;
+    socklen_t alen;
     struct sockaddr_in my_addr, caller;
     gint reuse = 1;
 
@@ -803,9 +818,12 @@ void show_node_connections( GtkWidget *w,
                                           GTK_STOCK_OK, GTK_RESPONSE_OK,
                                           NULL);
 
+#if (GTKVER == 3)
+    vbox = gtk_grid_new();
+#else
     vbox = gtk_vbox_new(FALSE, 5);
     gtk_container_set_border_width(GTK_CONTAINER(vbox), 10);
-
+#endif
     for (i = 0; i < NUM_CONNECTIONS; i++) {
         if (connections[i].fd == 0)
             continue;
@@ -823,10 +841,19 @@ void show_node_connections( GtkWidget *w,
                 (myaddr>>24)&0xff, (myaddr>>16)&0xff, 
                 (myaddr>>8)&0xff, (myaddr)&0xff, t);
         label = gtk_label_new(addrstr);
+#if (GTKVER == 3)
+        gtk_grid_attach(GTK_GRID(vbox), label, 0, i, 1, 1);
+#else
         gtk_box_pack_start_defaults(GTK_BOX(vbox), label);
+#endif
     }
 
+#if (GTKVER == 3)
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), 
+                       vbox, FALSE, FALSE, 0);
+#else
     gtk_box_pack_start_defaults(GTK_BOX(GTK_DIALOG(dialog)->vbox), vbox);
+#endif
     gtk_widget_show_all(dialog);
 
     g_signal_connect(G_OBJECT(dialog), "response",

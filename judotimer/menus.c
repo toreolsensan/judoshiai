@@ -10,7 +10,12 @@
 #include <string.h>
 #include <locale.h>
 #include <gtk/gtk.h>
+
+#if (GTKVER == 3)
+#include <gdk/gdkkeysyms-compat.h>
+#else
 #include <gdk/gdkkeysyms.h>
+#endif
 
 #include "judotimer.h"
 #include "language.h"
@@ -159,20 +164,42 @@ void manipulate_time(GtkWidget *w,
         gtk_entry_set_text(GTK_ENTRY(clock_sec), "00");
         gtk_entry_set_text(GTK_ENTRY(osaekomi), "00");
 
+#if (GTKVER == 3)
+        hbox = gtk_grid_new();
+#else
         hbox = gtk_hbox_new(FALSE, 5);
+#endif
         gtk_container_set_border_width(GTK_CONTAINER(hbox), 10);
 
         label = gtk_label_new(_("Clock:"));
+#if (GTKVER == 3)
+        gtk_grid_attach(GTK_GRID(hbox), label, 0, 0, 1, 1);
+        gtk_grid_attach(GTK_GRID(hbox), clock_min, 1, 0, 1, 1);
+#else
         gtk_box_pack_start_defaults(GTK_BOX(hbox), label);
         gtk_box_pack_start_defaults(GTK_BOX(hbox), clock_min);
+#endif
         label = gtk_label_new(":");
+#if (GTKVER == 3)
+        gtk_grid_attach(GTK_GRID(hbox), label, 2, 0, 1, 1);
+        gtk_grid_attach(GTK_GRID(hbox), clock_sec, 3, 0, 1, 1);
+#else
         gtk_box_pack_start_defaults(GTK_BOX(hbox), label);
         gtk_box_pack_start_defaults(GTK_BOX(hbox), clock_sec);
+#endif
         label = gtk_label_new("Osaekomi:");
+#if (GTKVER == 3)
+        gtk_grid_attach(GTK_GRID(hbox), label, 4, 0, 1, 1);
+        gtk_grid_attach(GTK_GRID(hbox), osaekomi, 5, 0, 1, 1);
+
+        gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), 
+                           hbox, FALSE, FALSE, 0);
+#else
         gtk_box_pack_start_defaults(GTK_BOX(hbox), label);
         gtk_box_pack_start_defaults(GTK_BOX(hbox), osaekomi);
 
         gtk_box_pack_start_defaults(GTK_BOX(GTK_DIALOG(dialog)->vbox), hbox);
+#endif
         gtk_widget_show_all(dialog);
 
         g_signal_connect(G_OBJECT(dialog), "response",
@@ -201,7 +228,7 @@ static GtkWidget *node_ip, *my_ip, *video_ip, *vlc_cport, *manual, *about, *quic
 static GtkWidget *light, *menu_light, *menu_switched, *timeset;
 static GtkWidget *inc_time, *dec_time, *inc_osaekomi, *dec_osaekomi, *clock_only, *set_time, *layout_sel;
 static GtkWidget *layout_sel_1, *layout_sel_2, *layout_sel_3, *layout_sel_4, *layout_sel_5, *layout_sel_6, *layout_sel_7;
-static GtkTooltips *menu_tips;
+//static GtkTooltips *menu_tips;
 static GtkWidget *mode_normal, *mode_master, *mode_slave;
 static GtkWidget *undo, *hansokumake_blue, *hansokumake_white, *clear_selection, *switch_sides;
 static GtkWidget *advertise, *sound, *lang_menu_item;
@@ -274,7 +301,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     GtkAccelGroup *group;
     GtkWidget *submenu;
 
-    menu_tips = gtk_tooltips_new ();
+    //menu_tips = gtk_tooltips_new ();
     group = gtk_accel_group_new ();
     menubar = gtk_menu_bar_new ();
 
@@ -313,13 +340,15 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
 
 
     gtk_menu_shell_append (GTK_MENU_SHELL (menubar), menu_switched);
+#if (GTKVER != 3)
     gtk_menu_item_set_right_justified(GTK_MENU_ITEM(menu_switched), TRUE);
-
+#endif
     gtk_menu_shell_append (GTK_MENU_SHELL (menubar), menu_light);
     g_signal_connect(G_OBJECT(menu_light), "button_press_event",
                      G_CALLBACK(ask_node_ip_address), (gpointer)NULL);
+#if (GTKVER != 3)
     gtk_menu_item_set_right_justified(GTK_MENU_ITEM(menu_light), TRUE);
-
+#endif
     /* Create the Contest menu content. */
     match0 = gtk_menu_item_new_with_label(_("Match duration: automatic"));
     //match1 = gtk_check_menu_item_new_with_label(_("Short pin times"));
@@ -942,8 +971,8 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(quick_guide,  _("Quick guide"));
     change_menu_label(about,        _("About"));
 
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (menu_tips), match0,
-                          _("Contest duration automatically from JudoShiai program"), NULL);
+    /*gtk_tooltips_set_tip (GTK_TOOLTIPS (menu_tips), match0,
+      _("Contest duration automatically from JudoShiai program"), NULL);*/
 
     change_language_1();
 
@@ -1127,8 +1156,11 @@ void start_log_view(GtkWidget *w, gpointer data)
 
     GtkWidget *scrolled_window = gtk_scrolled_window_new(NULL, NULL);
     gtk_container_set_border_width(GTK_CONTAINER(scrolled_window), 10);
+#if (GTKVER == 3) && GTK_CHECK_VERSION(3,8,0)
+    gtk_container_add(GTK_CONTAINER(scrolled_window), view);
+#else
     gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_window), view);
-
+#endif
     gtk_container_add(GTK_CONTAINER(window), scrolled_window);
     gtk_widget_show_all(GTK_WIDGET(window));
 
@@ -1138,7 +1170,7 @@ void start_log_view(GtkWidget *w, gpointer data)
                       G_CALLBACK (destroy_log_view), NULL);
 
     GtkAdjustment *adj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(scrolled_window));
-    gtk_adjustment_set_value(adj, adj->upper - adj->page_size);
+    gtk_adjustment_set_value(adj, gtk_adjustment_get_upper(adj) - gtk_adjustment_get_lower(adj));
     //gtk_scrolled_window_set_vadjustment(GTK_SCROLLED_WINDOW(scrolled_window), adj);
     //gtk_adjustment_value_changed(adj);
 }

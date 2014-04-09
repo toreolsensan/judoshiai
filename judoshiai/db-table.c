@@ -18,7 +18,12 @@ G_LOCK_EXTERN(db);
 
 static char **tablep = NULL;
 static int tablerows, tablecols;
+
+#if (GTKVER == 3)
+G_LOCK_DEFINE_STATIC(table_mutex);
+#else
 static GStaticMutex table_mutex = G_STATIC_MUTEX_INIT;
+#endif
 
 static void utf8error(sqlite3_context *context, int argc, sqlite3_value **argv)
 {
@@ -76,8 +81,11 @@ int db_get_table(char *command)
     char *zErrMsg = 0;
     int rc;
 
+#if (GTKVER == 3)
+    G_LOCK(table_mutex);
+#else
     g_static_mutex_lock(&table_mutex);
-
+#endif
     if (tablep) {
         g_print("ERROR: TABLE NOT CLOSED BEFORE OPENING!\n");
         sqlite3_free_table(tablep);
@@ -91,7 +99,11 @@ int db_get_table(char *command)
         fprintf(stderr, "Can't open database: %s\n", 
                 sqlite3_errmsg(db));
         G_UNLOCK(db);
+#if (GTKVER == 3)
+        G_UNLOCK(table_mutex);
+#else
         g_static_mutex_unlock(&table_mutex);
+#endif
         return -1;
     }
 
@@ -105,7 +117,11 @@ int db_get_table(char *command)
         sqlite3_free(zErrMsg);
         sqlite3_close(db);
         G_UNLOCK(db);
+#if (GTKVER == 3)
+        G_UNLOCK(table_mutex);
+#else
         g_static_mutex_unlock(&table_mutex);
+#endif
         return -1;
     }
 
@@ -122,7 +138,11 @@ void db_close_table(void)
     else
         g_print("ERROR: TABLE CLOSED TWICE!\n");
     tablep = NULL;
+#if (GTKVER == 3)
+    G_UNLOCK(table_mutex);
+#else
     g_static_mutex_unlock(&table_mutex);
+#endif
 }
 
 char *db_get_data(int row, char *name)

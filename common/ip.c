@@ -79,8 +79,13 @@ gulong my_ip_address = 0, node_ip_addr = 0, ssdp_ip_addr = 0;
 static gulong tmp_node_addr;
 gchar  my_hostname[100];
 gboolean connection_ok = FALSE;
+#if (GTKVER == 3)
+G_LOCK_DEFINE(send_mutex);
+G_LOCK_DEFINE_STATIC(rec_mutex);
+#else
 GStaticMutex send_mutex = G_STATIC_MUTEX_INIT;
 static GStaticMutex rec_mutex = G_STATIC_MUTEX_INIT;
+#endif
 
 static struct {
     gint rx;
@@ -383,7 +388,7 @@ void ask_node_ip_address( GtkWidget *w,
         label = gtk_label_new(_("(Connection broken)"));
 #if (GTKVER == 3)
     gtk_grid_attach_next_to(GTK_GRID(hbox), label, address, GTK_POS_RIGHT, 1, 1);
-    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_action_area(GTK_DIALOG(dialog))), 
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), 
  		      hbox, TRUE, TRUE, 0);
 #else
     gtk_box_pack_start_defaults(GTK_BOX(hbox), label);
@@ -431,14 +436,14 @@ void show_my_ip_addresses( GtkWidget *w,
         label = gtk_label_new(addrstr);
         g_object_set(label, "use-markup", TRUE, NULL);
 #if (GTKVER == 3)
-        gtk_grid_attach(GTK_GRID(vbox), label, 0, 0, 1, 1);
+        gtk_grid_attach_next_to(GTK_GRID(vbox), label, NULL, GTK_POS_BOTTOM, 1, 1);
 #else
         gtk_box_pack_start_defaults(GTK_BOX(vbox), label);
 #endif
     }
 
 #if (GTKVER == 3)
-    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_action_area(GTK_DIALOG(dialog))), 
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), 
  		      vbox, TRUE, TRUE, 0);
 #else
     gtk_box_pack_start_defaults(GTK_BOX(GTK_DIALOG(dialog)->vbox), vbox);
@@ -481,12 +486,20 @@ static gboolean already_in_rec_queue(volatile struct message *msg)
 
 void msg_to_queue(struct message *msg)
 {
+#if (GTKVER == 3)
+    G_LOCK(send_mutex);
+#else
     g_static_mutex_lock (&send_mutex);
+#endif
     msg_to_send[msg_queue_put] = *msg;
     msg_queue_put++;
     if (msg_queue_put >= MSG_QUEUE_LEN)
         msg_queue_put = 0;
+#if (GTKVER == 3)
+    G_UNLOCK(send_mutex);
+#else
     g_static_mutex_unlock (&send_mutex);
+#endif
 
     if (msg->type > 0 && msg->type < NUM_MESSAGES)
         msg_stat.txtype[(gint)msg->type]++;
@@ -497,9 +510,17 @@ struct message *get_rec_msg(void)
 {
     struct message *msg;
 
+#if (GTKVER == 3)
+    G_LOCK(rec_mutex);
+#else
     g_static_mutex_lock(&rec_mutex);
+#endif
     if (rec_msg_queue_put == rec_msg_queue_get) {
+#if (GTKVER == 3)
+        G_UNLOCK(rec_mutex);
+#else
         g_static_mutex_unlock(&rec_mutex);
+#endif
         return NULL;
     }
 
@@ -508,7 +529,11 @@ struct message *get_rec_msg(void)
     if (rec_msg_queue_get >= MSG_QUEUE_LEN)
         rec_msg_queue_get = 0;
 
+#if (GTKVER == 3)
+    G_UNLOCK(rec_mutex);
+#else
     g_static_mutex_unlock(&rec_mutex);
+#endif
 
     return msg;
 }
@@ -543,6 +568,8 @@ static gint conn_info_callback(gpointer data)
 
 void open_comm_socket(void)
 {
+    g_mutex_init(&G_LOCK_NAME(send_mutex));
+
 #ifdef WIN32
     WSADATA WSAData = {0};
 
@@ -573,10 +600,17 @@ struct message *put_to_rec_queue(volatile struct message *m)
     if (msg_accepted((struct message *)m) == FALSE)
         return NULL;
 
+#if (GTKVER == 3)
+    G_LOCK(rec_mutex);
+#else
     g_static_mutex_lock(&rec_mutex);
-
+#endif
     if (already_in_rec_queue(m)) {
+#if (GTKVER == 3)
+        G_UNLOCK(rec_mutex);
+#else
         g_static_mutex_unlock(&rec_mutex);
+#endif
         return NULL;
     }
 
@@ -585,7 +619,11 @@ struct message *put_to_rec_queue(volatile struct message *m)
     rec_msg_queue_put++;
     if (rec_msg_queue_put >= MSG_QUEUE_LEN)
         rec_msg_queue_put = 0;
+#if (GTKVER == 3)
+    G_UNLOCK(rec_mutex);
+#else
     g_static_mutex_unlock(&rec_mutex);
+#endif
     return ret;
 }
 
@@ -729,7 +767,11 @@ gpointer client_thread(gpointer args)
             // Mutex may be locked for a long time if there are network problems
             // during send. Thus we send a copy to unlock the mutex immediatelly.
             msg_out_ready = FALSE;
+#if (GTKVER == 3)
+            G_LOCK(send_mutex);
+#else
             g_static_mutex_lock(&send_mutex);
+#endif
             if (msg_queue_get != msg_queue_put) {
                 msg_out = msg_to_send[msg_queue_get];
                 msg_queue_get++;
@@ -737,8 +779,11 @@ gpointer client_thread(gpointer args)
                     msg_queue_get = 0;
                 msg_out_ready = TRUE;
             }
+#if (GTKVER == 3)
+            G_UNLOCK(send_mutex);
+#else
             g_static_mutex_unlock(&send_mutex);
-
+#endif
             if (msg_out_ready)
                 send_msg(comm_fd, &msg_out);
 
@@ -767,12 +812,20 @@ gpointer client_thread(gpointer args)
                             } else if (c == COMM_END) {
 				decode_msg(&m, p, ri);
                                 if (msg_accepted(&m)) {
+#if (GTKVER == 3)
+                                    G_LOCK(rec_mutex);
+#else
                                     g_static_mutex_lock(&rec_mutex);
+#endif
                                     rec_msgs[rec_msg_queue_put] = m;
                                     rec_msg_queue_put++;
                                     if (rec_msg_queue_put >= MSG_QUEUE_LEN)
                                         rec_msg_queue_put = 0;
+#if (GTKVER == 3)
+                                    G_UNLOCK(rec_mutex);
+#else
                                     g_static_mutex_unlock(&rec_mutex);
+#endif
                                 }
                             } else {
                                 g_print("Wrong char 0x%02x after esc!\n", c);
@@ -930,7 +983,7 @@ gpointer ssdp_thread(gpointer args)
     struct sockaddr_in clientsock;
     static gchar inbuf[1024];
     fd_set read_fd, fds;
-    gint socklen;
+    socklen_t socklen;
     struct ip_mreq mreq;
 
 #ifdef WIN32
@@ -1067,6 +1120,7 @@ gpointer ssdp_thread(gpointer args)
 
                     //g_print("SSDP %s send: '%s'\n", APPLICATION, resp);
                     ret = sendto(sock_out, resp, strlen(resp), 0, (struct sockaddr *)&clientsock, socklen);
+                    ret = ret; // make compiler happy
                     g_free(resp);
                 }
             } // len > 0

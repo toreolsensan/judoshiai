@@ -1366,7 +1366,7 @@ static void save_advertisement(GifRowType *ScreenBuffer,
 
 static gint read_gif(gchar *FileName)
 {
-    int	i, j, Size, Row, Col, Width, Height, ExtCode, Count;
+    int	i, j, Size, Row, Col, Width, Height, ExtCode/*, Count*/;
     GifRecordType RecordType;
     GifByteType *Extension;
     GifRowType *ScreenBuffer;
@@ -1432,7 +1432,7 @@ static gint read_gif(gchar *FileName)
             }
             if (GifFile->Image.Interlace) {
                 /* Need to perform 4 passes on the images: */
-                for (Count = i = 0; i < 4; i++)
+                for (/*Count =*/ i = 0; i < 4; i++)
                     for (j = Row + InterlacedOffset[i]; j < Row + Height;
                          j += InterlacedJumps[i]) {
                         //GifQprintf("\b\b\b\b%-4d", Count++);
@@ -1522,8 +1522,8 @@ static gboolean comp_names_pending = FALSE;
 static gboolean no_ads = FALSE;
 static time_t comp_names_start = 0;
 static gchar category[32];
-static gchar b_first[32], b_last[32], b_club[32], b_country[32];
-static gchar w_first[32], w_last[32], w_club[32], w_country[32];
+static gchar b_last[32];
+static gchar w_last[32];
 static GtkWidget *ok_button = NULL;
 
 static struct frame *get_current_frame(GtkWidget *widget)
@@ -1570,12 +1570,19 @@ void set_competitor_window_rest_time(gint min, gint tsec, gint sec, gboolean res
     rrest = rest;
     rflags = flags;
 
+#if (GTKVER == 3)
+    gdk_window_invalidate_rect(GDK_WINDOW(ad_window), NULL, TRUE);
+    /*if (gtk_widget_get_window(widget)) {
+        gdk_window_invalidate_rect(gtk_widget_get_window(widget), NULL, TRUE);
+        }*/
+#else
     GtkWidget *widget = GTK_WIDGET(ad_window);
     if (widget->window) {
         GdkRegion *region = gdk_drawable_get_clip_region(widget->window);
         gdk_window_invalidate_region(widget->window, region, TRUE);
         gdk_window_process_updates(widget->window, TRUE);
     }
+#endif
 }
 
 static gboolean expose_ad(GtkWidget *widget, GdkEventExpose *event, gpointer userdata)
@@ -1586,8 +1593,13 @@ static gboolean expose_ad(GtkWidget *widget, GdkEventExpose *event, gpointer use
     if (!no_ads)
         frame = get_current_frame(widget);
 
+#if (GTKVER == 3)
+    width = gtk_widget_get_allocated_width(widget);
+    height = gtk_widget_get_allocated_height(widget);
+#else
     width = widget->allocation.width;
     height = widget->allocation.height;
+#endif
 
     if (!frame) {
         if (comp_names_pending == FALSE)
@@ -1601,8 +1613,11 @@ static gboolean expose_ad(GtkWidget *widget, GdkEventExpose *event, gpointer use
 #define OTHER_BLOCK_HEIGHT ((height-FIRST_BLOCK_HEIGHT)/2.0)
 
         cairo_text_extents_t extents;
+#if (GTKVER == 3)
+        cairo_t *c = gdk_cairo_create(gtk_widget_get_window(widget));
+#else
         cairo_t *c = gdk_cairo_create(widget->window);
-
+#endif
         if (ok_button)
             gtk_widget_show(ok_button);
 
@@ -1694,7 +1709,11 @@ static gboolean expose_ad(GtkWidget *widget, GdkEventExpose *event, gpointer use
     gdouble x = (scale*frame->width < width) ? (width/scale - frame->width)/2.0 : 0;
     gdouble y = (scale*frame->height < height) ? (height/scale - frame->height)/2.0 : 0;
 
+#if (GTKVER == 3)
+    cairo_t *c = gdk_cairo_create(gtk_widget_get_window(widget));
+#else
     cairo_t *c = gdk_cairo_create(widget->window);
+#endif
 
     cairo_set_source_rgb(c, 0.0, 0.0, 0.0);
     cairo_rectangle(c, 0.0, 0.0, width, height);
@@ -1743,7 +1762,6 @@ static void destroy_ad( GtkWidget *widget,
 static gboolean refresh_frame(gpointer data)
 {
     GtkWidget *widget;
-    GdkRegion *region;
 
     if (ad_window == NULL)
         return FALSE;
@@ -1782,11 +1800,19 @@ static gboolean refresh_frame(gpointer data)
 
  update:
     widget = GTK_WIDGET(data);
+#if (GTKVER == 3)
+    if (gtk_widget_get_window(widget)) {
+        gdk_window_invalidate_rect(gtk_widget_get_window(widget), NULL, TRUE);
+        gdk_window_process_updates(gtk_widget_get_window(widget), TRUE);
+    }
+#else
     if (widget->window) {
+        GdkRegion *region;
         region = gdk_drawable_get_clip_region(widget->window);
         gdk_window_invalidate_region(widget->window, region, TRUE);
         gdk_window_process_updates(widget->window, TRUE);
     }
+#endif
     return TRUE;
 }
 
@@ -1884,16 +1910,30 @@ void display_ad_window(void)
     gtk_window_set_transient_for(GTK_WINDOW(window),GTK_WINDOW(main_window));
 
     GtkWidget *vbox;
+#if (GTKVER == 3)
+    vbox = gtk_grid_new();
+#else
     vbox = gtk_vbox_new(FALSE, 1);
+#endif
     gtk_container_set_border_width (GTK_CONTAINER (vbox), 1);
     if (mode != MODE_SLAVE) {
         ok_button = gtk_button_new_with_label(_("OK"));
+#if (GTKVER == 3)
+        gtk_grid_attach(GTK_GRID(vbox), ok_button, 0, 0, 1, 1);
+#else
         gtk_box_pack_start(GTK_BOX(vbox), ok_button, FALSE, TRUE, 5);
+#endif
     } else
         ok_button = NULL;
 
     GtkWidget *darea = gtk_drawing_area_new();
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(vbox), darea, 0, 1, 1, 1);
+    gtk_widget_set_hexpand(darea, TRUE);
+    gtk_widget_set_vexpand(darea, TRUE);
+#else
     gtk_box_pack_start(GTK_BOX(vbox), darea, TRUE, TRUE, 0);
+#endif
 
     gtk_container_add (GTK_CONTAINER (window), vbox);
     gtk_widget_show_all(GTK_WIDGET(window));
@@ -1905,8 +1945,13 @@ void display_ad_window(void)
                       G_CALLBACK (delete_event_ad), NULL);
     g_signal_connect (G_OBJECT (window), "destroy",
                       G_CALLBACK (destroy_ad), NULL);
+#if (GTKVER == 3)
+    g_signal_connect(G_OBJECT(darea), 
+                     "draw", G_CALLBACK(expose_ad), NULL);
+#else
     g_signal_connect(G_OBJECT(darea), 
                      "expose-event", G_CALLBACK(expose_ad), NULL);
+#endif
     g_signal_connect(G_OBJECT(window),
                      "key-press-event", G_CALLBACK(close_display), window);
     if (ok_button) 
@@ -1974,7 +2019,7 @@ void toggle_advertise(GtkWidget *menu_item, gpointer data)
                     read_gif(fullname);
                 else if (strstr(fname, ".png") && num_ads < NUM_ADS) {
                     struct frame *frame = g_malloc(sizeof(*frame));
-                    memset(frame, 0, sizeof(frame));
+                    memset(frame, 0, sizeof(*frame));
                     frame->surface = cairo_image_surface_create_from_png(fullname);
                     frame->width = cairo_image_surface_get_width(frame->surface);
                     frame->height = cairo_image_surface_get_height(frame->surface);
