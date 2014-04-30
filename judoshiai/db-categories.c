@@ -132,9 +132,9 @@ void db_update_category(int num, struct judoka *j)
         if (old->belt != j->belt) {
             db_exec_str(NULL, NULL, 
                         "UPDATE matches SET \"comment\"=0 "
-                        "WHERE \"category\"=%d AND "
+                        "WHERE \"category\"&%d=%d AND "
                         "(\"comment\"=%d OR \"comment\"=%d) ",
-                        num, COMMENT_MATCH_1, COMMENT_MATCH_2);
+                        MATCH_CATEGORY_MASK, num, COMMENT_MATCH_1, COMMENT_MATCH_2);
         }
 
         free_judoka(old);

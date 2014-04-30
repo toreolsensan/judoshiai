@@ -291,7 +291,7 @@ void update_clock(void)
             gen_random_key();
         else {
             static gint last_cat = 0, last_num = 0;
-            static gint res[8][2][4] = {
+            static gint res[9][2][4] = {
                 {{2,1,0,0},{0,2,0,2}},
                 {{0,0,3,0},{1,0,0,0}},
                 {{0,1,0,0},{0,2,0,0}},
@@ -300,17 +300,22 @@ void update_clock(void)
                 {{2,2,0,0},{0,0,0,1}},
                 {{0,4,0,0},{0,1,0,0}},
                 {{3,0,0,0},{1,2,0,0}},
+
+                {{0,1,0,1},{0,1,0,1}},
             };
 
             if (last_cat != current_category || last_num != current_match) {
                 if (matchlist) {
+                    static gint next_res = 0;
                     gint len = strlen(matchlist);
-                    if (current_match <= len) {
-                        if (matchlist[current_match-1] == '1')
-                            send_result(res[0][0], res[0][1], 0, 0, 0, 0, 0, 0);
-                        else
-                            send_result(res[1][0], res[1][1], 0, 0, 0, 0, 0, 0);
+                    switch (matchlist[next_res]) {
+                    case '0': send_result(res[8][0], res[8][1], 0, 0, 0, 0, 0, 1); break; // hikiwake
+                    case '1': send_result(res[0][0], res[0][1], 0, 0, 0, 0, 0, 0); break; // 1st wins by ippon
+                    case '2': send_result(res[0][1], res[0][0], 0, 0, 0, 0, 0, 0); break; // 2nd wins by ippon
+                    case '3': send_result(res[2][1], res[2][0], 0, 0, 0, 0, 0, 0); break; // 1st wins by yuko
+                    default: send_result(res[2][0], res[2][1], 0, 0, 0, 0, 0, 0);         // 2nd wins by yuko
                     }
+                    if (++next_res >= len) next_res = 0;
                 } else {
                     gint ix = (current_category + current_match) & 7;
                     send_result(res[ix][0], res[ix][1], 0, 0, 0, 0, (ix&3)==2 ? 0x100 + ix : ix, 0);

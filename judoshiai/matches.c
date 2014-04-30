@@ -413,8 +413,8 @@ static void comment_cell_data_func (GtkTreeViewColumn *col,
 
 #define MATCHED_FRENCH(x) (x < 0 ? MATCHED_FRENCH_1(-x) : MATCHED_FRENCH_1(x))
 
-#define WINNER_1(_a) (m[_a].blue_points ? m[_a].blue :			\
-		      (m[_a].white_points ? m[_a].white :		\
+#define WINNER_1(_a) (COMP_1_PTS_WIN(m[_a]) ? m[_a].blue :             \
+		      (COMP_2_PTS_WIN(m[_a]) ? m[_a].white :		\
 		       (m[_a].blue == GHOST ? m[_a].white :		\
 			(m[_a].white == GHOST ? m[_a].blue :            \
 			 (db_has_hansokumake(m[_a].blue) ? m[_a].white : \
@@ -422,8 +422,8 @@ static void comment_cell_data_func (GtkTreeViewColumn *col,
 
 #define WINNER(x) (x < 0 ? WINNER_1(-x) : WINNER_1(x))
 
-#define LOSER_1(_a) (m[_a].blue_points ? m[_a].white :			\
-		     (m[_a].white_points ? m[_a].blue :			\
+#define LOSER_1(_a) (COMP_1_PTS_WIN(m[_a]) ? m[_a].white :             \
+		     (COMP_2_PTS_WIN(m[_a]) ? m[_a].blue :             \
 		      (m[_a].blue == GHOST ? m[_a].blue :		\
 		       (m[_a].white == GHOST ? m[_a].white :		\
 			(db_has_hansokumake(m[_a].blue) ? m[_a].blue :  \
@@ -436,20 +436,20 @@ static void comment_cell_data_func (GtkTreeViewColumn *col,
 #define PREV_BLUE(_x) french_matches[table][sys][_x][0]
 #define PREV_WHITE(_x) french_matches[table][sys][_x][1]
 
-#define GET_PREV1(_x) ((m[_x].blue_points || m[_x].white == GHOST) ? PREV_BLUE(_x) : \
-                       ((m[_x].white_points || m[_x].blue == GHOST) ? PREV_WHITE(_x) : \
+#define GET_PREV1(_x) ((COMP_1_PTS_WIN(m[_x]) || m[_x].white == GHOST) ? PREV_BLUE(_x) : \
+                       ((COMP_2_PTS_WIN(m[_x]) || m[_x].blue == GHOST) ? PREV_WHITE(_x) : \
                         (db_has_hansokumake(m[_x].white) ? PREV_BLUE(_x) : PREV_WHITE(_x))))
 
-#define GET_PREV(_x) (_x < 0 ? (m[-_x].blue_points ? PREV_WHITE(-_x) : PREV_BLUE(-_x)) : GET_PREV1(_x))
+#define GET_PREV(_x) (_x < 0 ? (COMP_1_PTS_WIN(m[-_x]) ? PREV_WHITE(-_x) : PREV_BLUE(-_x)) : GET_PREV1(_x))
 
-#define GET_PREV_OTHER(_x) ((m[_x].blue_points || m[_x].white == GHOST) ? PREV_WHITE(_x) : \
-                            ((m[_x].white_points || m[_x].blue == GHOST) ? PREV_BLUE(_x) : \
+#define GET_PREV_OTHER(_x) ((COMP_1_PTS_WIN(m[_x]) || m[_x].white == GHOST) ? PREV_WHITE(_x) : \
+                            ((COMP_2_PTS_WIN(m[_x]) || m[_x].blue == GHOST) ? PREV_BLUE(_x) : \
                              (db_has_hansokumake(m[_x].white) ? PREV_WHITE(_x) : PREV_BLUE(_x))))
 
 #define GET_PREV_MATCHES(_x, _w, _l)                                    \
     do { gboolean b = FALSE;                                            \
-        if (m[_x].blue_points || m[_x].white == GHOST) b = TRUE;        \
-        else if (m[_x].white_points || m[_x].blue == GHOST) b = FALSE;  \
+        if (COMP_1_PTS_WIN(m[_x]) || m[_x].white == GHOST) b = TRUE;   \
+        else if (COMP_2_PTS_WIN(m[_x]) || m[_x].blue == GHOST) b = FALSE; \
         else if (db_has_hansokumake(m[_x].white)) b = TRUE;             \
         if (b) { _w = french_matches[table][sys][_x][0]; _l = french_matches[table][sys][_x][1];} \
         else { _w = french_matches[table][sys][_x][1]; _l = french_matches[table][sys][_x][0];} \
@@ -722,14 +722,16 @@ void fill_pool_struct(gint category, gint num, struct pool_matches *pm, gboolean
         if (pm->m[i].ignore)
             continue;
 
-        if (pm->m[i].blue_points && pm->yes[blue] == TRUE && pm->yes[white] == TRUE) {
+        if (COMP_1_PTS_WIN(pm->m[i]) && pm->yes[blue] == TRUE && pm->yes[white] == TRUE) {
             pm->wins[blue]++;
             pm->pts[blue] += pm->m[i].blue_points;
+            pm->pts[white] += pm->m[i].white_points; // team event points
             pm->mw[blue][white] = TRUE;
             pm->mw[white][blue] = FALSE;
-        } else if (pm->m[i].white_points && pm->yes[blue] == TRUE && pm->yes[white] == TRUE) {
+        } else if (COMP_2_PTS_WIN(pm->m[i]) && pm->yes[blue] == TRUE && pm->yes[white] == TRUE) {
             pm->wins[white]++;
             pm->pts[white] += pm->m[i].white_points;
+            pm->pts[blue] += pm->m[i].blue_points; // team event points
             pm->mw[blue][white] = FALSE;
             pm->mw[white][blue] = TRUE;
         } else if (pm->yes[blue] == TRUE && pm->yes[white] == TRUE)
@@ -738,8 +740,8 @@ void fill_pool_struct(gint category, gint num, struct pool_matches *pm, gboolean
 
     /* special case: two competitors and three matches */
     if (num == 2 && num_matches(sys.system, num) == 3 &&
-        ((pm->m[1].blue_points && pm->m[2].blue_points) ||
-         (pm->m[1].white_points && pm->m[2].white_points))) {
+        ((COMP_1_PTS_WIN(pm->m[1]) && COMP_1_PTS_WIN(pm->m[2])) ||
+         (COMP_2_PTS_WIN(pm->m[1]) && COMP_2_PTS_WIN(pm->m[2])))) {
         pm->finished = TRUE;
 
         db_set_comment(category, 3, COMMENT_WAIT);        
@@ -993,14 +995,14 @@ static void update_pool_matches(gint category, gint num)
             ma.number = i;
             
             if (MATCHED_POOL(m1)) {
-                if (pm.m[m1].blue_points || pm.m[m1].white == GHOST)
+                if (COMP_1_PTS_WIN(pm.m[m1]) || pm.m[m1].white == GHOST)
                     ma.blue = pm.m[m1].blue;
                 else
                     ma.blue = pm.m[m1].white;
             }
 
             if (MATCHED_POOL(m2)) {
-                if (pm.m[m2].blue_points || pm.m[m2].white == GHOST)
+                if (COMP_1_PTS_WIN(pm.m[m2]) || pm.m[m2].white == GHOST)
                     ma.white = pm.m[m2].blue;
                 else
                     ma.white = pm.m[m2].white;
@@ -1019,14 +1021,16 @@ static void update_pool_matches(gint category, gint num)
         ma.number = last_match+num_knockouts;
 
         if (MATCHED_POOL(last_match+num_knockouts-2)) {
-            if (pm.m[last_match+num_knockouts-2].blue_points || pm.m[last_match+num_knockouts-2].white == GHOST)
+            if (COMP_1_PTS_WIN(pm.m[last_match+num_knockouts-2]) || 
+                pm.m[last_match+num_knockouts-2].white == GHOST)
                 ma.blue = pm.m[last_match+num_knockouts-2].blue;
             else
                 ma.blue = pm.m[last_match+num_knockouts-2].white;
         }
         
         if (MATCHED_POOL(last_match+num_knockouts-1)) {
-            if (pm.m[last_match+num_knockouts-1].blue_points || pm.m[last_match+num_knockouts-1].white == GHOST)
+            if (COMP_1_PTS_WIN(pm.m[last_match+num_knockouts-1]) || 
+                pm.m[last_match+num_knockouts-1].white == GHOST)
                 ma.white = pm.m[last_match+num_knockouts-1].blue;
             else
                 ma.white = pm.m[last_match+num_knockouts-1].white;

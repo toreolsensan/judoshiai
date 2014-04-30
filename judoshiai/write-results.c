@@ -309,7 +309,7 @@ static void dqpool_results(FILE *f, gint category, struct judoka *ctg, gint num_
         ((sys.system == SYSTEM_DPOOL || sys.system == SYSTEM_DPOOL3) ? 1 : 5);
 
     if (sys.system == SYSTEM_DPOOL3) {
-        if (pm.m[i].blue_points)
+        if (COMP_1_PTS_WIN(pm.m[i]))
             bronze1 = pm.m[i].blue;
         else
             bronze1 = pm.m[i].white;
@@ -317,7 +317,7 @@ static void dqpool_results(FILE *f, gint category, struct judoka *ctg, gint num_
         i++;
     } else {
         /* first semifinal */
-        if (pm.m[i].blue_points)
+        if (COMP_1_PTS_WIN(pm.m[i]))
             bronze1 = pm.m[i].white;
         else
             bronze1 = pm.m[i].blue;
@@ -325,7 +325,7 @@ static void dqpool_results(FILE *f, gint category, struct judoka *ctg, gint num_
         i++;
 
         /* second semifinal */
-        if (pm.m[i].blue_points)
+        if (COMP_1_PTS_WIN(pm.m[i]))
             bronze2 = pm.m[i].white;
         else
             bronze2 = pm.m[i].blue;
@@ -334,10 +334,10 @@ static void dqpool_results(FILE *f, gint category, struct judoka *ctg, gint num_
     }
 
     /* final */
-    if (pm.m[i].blue_points || pm.m[i].white == GHOST) {
+    if (COMP_1_PTS_WIN(pm.m[i]) || pm.m[i].white == GHOST) {
         gold = pm.m[i].blue;
         silver = pm.m[i].white;
-    } else if (pm.m[i].white_points || pm.m[i].blue == GHOST) {
+    } else if (COMP_2_PTS_WIN(pm.m[i]) || pm.m[i].blue == GHOST) {
         gold = pm.m[i].white;
         silver = pm.m[i].blue;
     }
@@ -372,28 +372,28 @@ static void dqpool_results(FILE *f, gint category, struct judoka *ctg, gint num_
 }
 
 #define GET_WINNER_AND_LOSER(_w)                                        \
-    winner = (m[_w].blue_points || m[_w].white==GHOST) ? m[_w].blue :   \
-        ((m[_w].white_points || m[_w].blue==GHOST) ? m[_w].white : 0);  \
-    loser = (m[_w].blue_points || m[_w].white==GHOST) ? m[_w].white :   \
-        ((m[_w].white_points || m[_w].blue==GHOST) ? m[_w].blue : 0)
+    winner = (COMP_1_PTS_WIN(m[_w]) || m[_w].white==GHOST) ? m[_w].blue : \
+        ((COMP_2_PTS_WIN(m[_w]) || m[_w].blue==GHOST) ? m[_w].white : 0); \
+    loser = (COMP_1_PTS_WIN(m[_w]) || m[_w].white==GHOST) ? m[_w].white : \
+        ((COMP_2_PTS_WIN(m[_w]) || m[_w].blue==GHOST) ? m[_w].blue : 0)
 
 #define GET_GOLD(_w)                                                    \
-    gold = (m[_w].blue_points || m[_w].white==GHOST) ? m[_w].blue :     \
-        ((m[_w].white_points || m[_w].blue==GHOST) ? m[_w].white : 0);  \
-    silver = (m[_w].blue_points || m[_w].white==GHOST) ? m[_w].white :  \
-        ((m[_w].white_points || m[_w].blue==GHOST) ? m[_w].blue : 0)
+    gold = (COMP_1_PTS_WIN(m[_w]) || m[_w].white==GHOST) ? m[_w].blue : \
+        ((COMP_2_PTS_WIN(m[_w]) || m[_w].blue==GHOST) ? m[_w].white : 0); \
+    silver = (COMP_1_PTS_WIN(m[_w]) || m[_w].white==GHOST) ? m[_w].white : \
+        ((COMP_2_PTS_WIN(m[_w]) || m[_w].blue==GHOST) ? m[_w].blue : 0)
 
 #define GET_BRONZE1(_w)                                                 \
-    bronze1 = (m[_w].blue_points || m[_w].white==GHOST) ? m[_w].blue :  \
-        ((m[_w].white_points || m[_w].blue==GHOST) ? m[_w].white : 0);  \
-    fifth1 = (m[_w].blue_points && m[_w].white > GHOST) ? m[_w].white : \
-        ((m[_w].white_points && m[_w].blue > GHOST) ? m[_w].blue : 0)
+    bronze1 = (COMP_1_PTS_WIN(m[_w]) || m[_w].white==GHOST) ? m[_w].blue : \
+        ((COMP_2_PTS_WIN(m[_w]) || m[_w].blue==GHOST) ? m[_w].white : 0); \
+    fifth1 = (COMP_1_PTS_WIN(m[_w]) && m[_w].white > GHOST) ? m[_w].white : \
+        ((COMP_2_PTS_WIN(m[_w]) && m[_w].blue > GHOST) ? m[_w].blue : 0)
 
 #define GET_BRONZE2(_w)                                                 \
-    bronze2 = (m[_w].blue_points || m[_w].white==GHOST) ? m[_w].blue :  \
-        ((m[_w].white_points || m[_w].blue==GHOST) ? m[_w].white : 0);  \
-    fifth2 = (m[_w].blue_points && m[_w].white > GHOST) ? m[_w].white : \
-        ((m[_w].white_points && m[_w].blue > GHOST) ? m[_w].blue : 0)
+    bronze2 = (COMP_1_PTS_WIN(m[_w]) || m[_w].white==GHOST) ? m[_w].blue : \
+        ((COMP_2_PTS_WIN(m[_w]) || m[_w].blue==GHOST) ? m[_w].white : 0); \
+    fifth2 = (COMP_1_PTS_WIN(m[_w]) && m[_w].white > GHOST) ? m[_w].white : \
+        ((COMP_2_PTS_WIN(m[_w]) && m[_w].blue > GHOST) ? m[_w].blue : 0)
 
 static void french_results(FILE *f, gint category, struct judoka *ctg,
                            gint num_judokas, struct compsys systm, gint pagenum)

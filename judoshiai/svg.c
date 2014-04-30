@@ -18,15 +18,15 @@
 
 #include "judoshiai.h"
 
-#define WINNER(_a) (m[_a].blue_points ? m[_a].blue :			\
-		      (m[_a].white_points ? m[_a].white :		\
+#define WINNER(_a) (COMP_1_PTS_WIN(m[_a]) ? m[_a].blue :                \
+                    (COMP_2_PTS_WIN(m[_a]) ? m[_a].white :		\
 		       (m[_a].blue == GHOST ? m[_a].white :		\
 			(m[_a].white == GHOST ? m[_a].blue :            \
 			 (db_has_hansokumake(m[_a].blue) ? m[_a].white : \
 			  (db_has_hansokumake(m[_a].white) ? m[_a].blue : NO_COMPETITOR))))))
 
-#define LOSER(_a) (m[_a].blue_points ? m[_a].white :			\
-		     (m[_a].white_points ? m[_a].blue :			\
+#define LOSER(_a) (COMP_1_PTS_WIN(m[_a]) ? m[_a].white :                \
+                   (COMP_2_PTS_WIN(m[_a]) ? m[_a].blue :                \
 		      (m[_a].blue == GHOST ? m[_a].blue :		\
 		       (m[_a].white == GHOST ? m[_a].white :		\
 			(db_has_hansokumake(m[_a].blue) ? m[_a].blue :  \
@@ -869,8 +869,8 @@ gint paint_svg(struct paint_data *pd)
                 look_legend_state = 0;
             
             if (look_legend_state == 11) {
-                if ((m[look_match_num].blue_points && (look_match_comp & 1)) ||
-                    (m[look_match_num].white_points && (look_match_comp & 2))) {
+                if ((COMP_1_PTS_WIN(m[look_match_num]) && (look_match_comp & 1)) ||
+                    (COMP_2_PTS_WIN(m[look_match_num]) && (look_match_comp & 2))) {
                     gchar buf[16];
                     snprintf(buf, sizeof(buf), "%d", m[look_match_num].legend & 0xff);
                     WRITE(buf);
@@ -944,9 +944,9 @@ gint paint_svg(struct paint_data *pd)
             for (a = 0; a < 3; a++) {
                 if (a == 0)
                     snprintf(buf, sizeof(buf), "#m%dl", f);
-                else if (a == 1 && m[f].blue_points)
+                else if (a == 1 && COMP_1_PTS_WIN(m[f]))
                     snprintf(buf, sizeof(buf), "#m%dl-1", f);
-                else if (a == 2 && m[f].white_points)
+                else if (a == 2 && COMP_2_PTS_WIN(m[f]))
                     snprintf(buf, sizeof(buf), "#m%dl-2", f);
                 else
                     continue;

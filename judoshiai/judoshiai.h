@@ -237,6 +237,8 @@ enum special_match_types {
 #define COMP_POS_FINISHED 0x20
 #define COMP_POS_MASK     0x0f
 
+#define COMP_1_PTS_WIN(_m) (_m.blue_points && _m.blue_points > _m.white_points)
+#define COMP_2_PTS_WIN(_m) (_m.white_points && _m.white_points > _m.blue_points)
 
 enum {
     COL_INDEX = 0,
