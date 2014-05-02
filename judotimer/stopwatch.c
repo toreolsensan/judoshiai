@@ -317,7 +317,8 @@ void update_clock(void)
                     }
                     if (++next_res >= len) next_res = 0;
                 } else {
-                    gint ix = (current_category + current_match) & 7;
+                    static gint next_res = 0;
+                    gint ix = (next_res++ /*current_category + current_match*/) & 7;
                     send_result(res[ix][0], res[ix][1], 0, 0, 0, 0, (ix&3)==2 ? 0x100 + ix : ix, 0);
                 }
                 last_cat = current_category;
