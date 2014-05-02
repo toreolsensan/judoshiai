@@ -42,7 +42,7 @@ static gint next_match_tatami;
 static gint match_count, matched_matches_count;
 static gint bluecomp, whitecomp, bluepts, whitepts;
 
-static gint team1_wins, team2_wins, no_team_wins;
+static gint team1_wins, team2_wins, no_team_wins, team1_pts, team2_pts;
 
 /* Use mutex when calling db_next_match(). */
 #if (GTKVER == 3)
@@ -359,8 +359,14 @@ static int db_callback_matches(void *data, int argc, char **argv, char **azColNa
         if (m.white > COMPETITOR && (flags & DB_RESET_LAST_MATCH_TIME_W))
             avl_reset_competitor_last_match_time(m.white);
     } else if (flags & DB_FIND_TEAM_WINNER) {
-        if (m.blue_points) team1_wins++;
-        if (m.white_points) team2_wins++;
+        if (m.blue_points && m.white_points == 0) {
+            team1_wins++;
+            team1_pts += m.blue_points;
+        }
+        if (m.white_points && m.blue_points == 0) {
+            team2_wins++;
+            team2_pts += m.white_points;
+        }
         if (m.blue_points == 0 && m.white_points == 0) no_team_wins++;
     } else if (flags & DB_PRINT_CAT_MATCHES) {
         db_print_one_match(&m);
@@ -1710,27 +1716,37 @@ void db_event_matches_update(guint category)
 {
     gint number = category >> MATCH_CATEGORY_SUB_SHIFT;
     gint category1 = category & MATCH_CATEGORY_MASK;
-    team1_wins = team2_wins = no_team_wins = 0;
+    team1_wins = team2_wins = no_team_wins = team1_pts = team2_pts = 0;
     db_exec_str(gint_to_ptr(DB_FIND_TEAM_WINNER), db_callback_matches,
                 "SELECT * FROM matches WHERE \"category\"=%d",
                 category);
-
-    if (no_team_wins || (team1_wins == team2_wins)) {
+    /*g_print("cat=%d/%d nowins=%d t1wins=%d/%d t2wins=%d/%d\n",
+            category1, number,
+            no_team_wins, team1_wins, team1_pts, team2_wins, team2_pts);*/
+    if (no_team_wins || ((team1_wins == team2_wins) && (team1_pts == team2_pts))) {
         db_exec_str(NULL, NULL,
                     "UPDATE matches SET \"blue_points\"=0, \"white_points\"=0 "
                     "WHERE \"category\"=%d AND \"number\"=%d",
                     category1, number);
-    } else  if (team1_wins > team2_wins) {
-        db_exec_str(NULL, NULL,
-                    "UPDATE matches SET \"blue_points\"=10 "
-                    "WHERE \"category\"=%d AND \"number\"=%d",
-                    category1, number);
     } else {
         db_exec_str(NULL, NULL,
-                    "UPDATE matches SET \"white_points\"=10 "
+                    "UPDATE matches SET \"blue_points\"=%d, \"white_points\"=%d "
                     "WHERE \"category\"=%d AND \"number\"=%d",
-                    category1, number);
+                    team1_wins*1000+team1_pts, team2_wins*1000+team2_pts, category1, number);
     }
+    /*        
+    } else  if (team1_wins > team2_wins) {
+        db_exec_str(NULL, NULL,
+                    "UPDATE matches SET \"blue_points\"=%d "
+                    "WHERE \"category\"=%d AND \"number\"=%d",
+                    team1_wins, category1, number);
+    } else {
+        db_exec_str(NULL, NULL,
+                    "UPDATE matches SET \"white_points\"=%d "
+                    "WHERE \"category\"=%d AND \"number\"=%d",
+                    team2_wins, category1, number);
+    }
+    */
 }
 
 static FILE *matches_file = NULL;

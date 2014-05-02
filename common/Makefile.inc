@@ -1,4 +1,4 @@
-SHIAI_VER_NUM=2.4-prealpha2
+SHIAI_VER_NUM=2.4-prealpha3
 SHIAI_VERSION="\"$(SHIAI_VER_NUM)\""
 
 GTKVER=3
