@@ -18,8 +18,7 @@ void write_results(FILE *f);
 
 gboolean create_statistics = FALSE;
 
-#define SAVED_COMP_SIZE 2000
-static gint saved_competitors[SAVED_COMP_SIZE];
+static gint saved_competitors[TOTAL_NUM_COMPETITORS];
 static gint saved_competitor_cnt = 0;
 
 
@@ -131,7 +130,7 @@ void write_competitor(FILE *f, const gchar *first, const gchar *last, const gcha
                     category, index, category);
 
         saved_competitors[saved_competitor_cnt] = index;
-        if (saved_competitor_cnt < SAVED_COMP_SIZE)
+        if (saved_competitor_cnt < TOTAL_NUM_COMPETITORS)
             saved_competitor_cnt++;
 
         last_crc = 0; // this branch is called first and thus last_crc is initialised (many times)
@@ -1070,11 +1069,338 @@ static void init_club_data(void)
     db_close_table();
 }
 
+#define T g_print("LINE=%d t=%ld\n", __LINE__, time(NULL))
+
+static gint make_png_all_id = 0;
+
+static enum { 
+    MAKE_PNG_STATE_IDLE = 0,
+    MAKE_PNG_STATE_INDEX_HTML_1,
+    MAKE_PNG_STATE_INDEX_HTML_2, // 15 sec
+    MAKE_PNG_STATE_INDEX_HTML_3,
+    MAKE_PNG_STATE_NEXT_MATCHES,
+    MAKE_PNG_STATE_CAT_HTMLS_1,
+    MAKE_PNG_STATE_CAT_HTMLS_2, // 3 sec
+    MAKE_PNG_STATE_COMPETITORS_HTML_1,
+    MAKE_PNG_STATE_COMPETITORS_HTML_2,
+    MAKE_PNG_STATE_COMPETITORS_HTML_3,
+    MAKE_PNG_STATE_COMPETITORS2_HTML_1,
+    MAKE_PNG_STATE_COMPETITORS2_HTML_2,
+    MAKE_PNG_STATE_COMPETITORS2_HTML_3,
+    MAKE_PNG_STATE_MEDALS,
+    MAKE_PNG_STATE_COMP_STAT, // 23 s
+    MAKE_PNG_STATE_CAT_MATCHES,
+    MAKE_PNG_STATE_STATISTICS_HTML
+} 
+    make_png_all_state = MAKE_PNG_STATE_IDLE;
+
+static gint competitor_table[TOTAL_NUM_COMPETITORS];
+static gint competitor_count;
+
+static gint list_categories(gint *num_comp)
+{
+    GtkTreeIter iter;
+    gboolean ok;
+    gint comps = 0;
+
+    competitor_count = 0;
+    ok = gtk_tree_model_get_iter_first(current_model, &iter);
+
+    while (ok) {
+        gint n = gtk_tree_model_iter_n_children(current_model, &iter);
+        gint index;
+            
+        if (n >= 1 && n <= NUM_COMPETITORS) {
+            gtk_tree_model_get(current_model, &iter,
+                               COL_INDEX, &index,
+                               -1);
+            if (competitor_count < TOTAL_NUM_COMPETITORS)
+                competitor_table[competitor_count++] = index;
+            comps += n;
+        }
+            
+        ok = gtk_tree_model_iter_next(current_model, &iter);
+    }
+
+    if (num_comp) *num_comp = comps;
+
+    return competitor_count;
+}
+
+static gboolean make_png_all_bg(gpointer user_data)
+{
+    static FILE *f = NULL;
+    //static gchar fname[1024];
+    static gint i, num_cats, num_comps;
+
+    switch (make_png_all_state) {
+
+        /* 
+         * clean up
+         */
+    case MAKE_PNG_STATE_IDLE:
+        if (f) fclose(f);
+        f = NULL;
+        num_cats = gtk_tree_model_iter_n_children(current_model, NULL);
+        make_png_all_state = MAKE_PNG_STATE_INDEX_HTML_1;
+        return TRUE;
+
+        /* 
+         * index.html 
+         */
+    case MAKE_PNG_STATE_INDEX_HTML_1:
+        f = open_write("index.html");
+        if (!f) return FALSE;
+
+        make_top_frame(f);
+        make_left_frame(f);
+        if (create_statistics)
+            init_club_tree();
+
+        fprintf(f, "<td valign=\"top\"><table class=\"resultlist\">\n"
+                "<tr><td colspan=\"3\" align=\"center\"><h2>%s</h2></td></tr>\r\n",
+                _T(results));
+
+        num_cats = list_categories(&num_comps);
+        i = 0;
+        make_png_all_state = MAKE_PNG_STATE_INDEX_HTML_2;
+        return TRUE;
+
+    case MAKE_PNG_STATE_INDEX_HTML_2:
+        // print one category result to index.html
+        if (i < competitor_count) {
+            write_cat_result(f, competitor_table[i++]);
+
+            if (create_statistics)
+                progress_show(0.3*(gdouble)i/(gdouble)competitor_count, "");
+            else
+                progress_show(0.8*(gdouble)i/(gdouble)competitor_count, "");
+
+            return TRUE;
+        }
+        make_png_all_state = MAKE_PNG_STATE_INDEX_HTML_3;
+        return TRUE;
+
+    case MAKE_PNG_STATE_INDEX_HTML_3:
+        // finish page
+        fprintf(f, "</table></td>\n");
+        make_bottom_frame(f);
+        fclose(f);
+        f = NULL;
+        make_png_all_state = MAKE_PNG_STATE_NEXT_MATCHES;
+        return TRUE;
+
+        /* 
+         * netxmatches.html 
+         */
+    case MAKE_PNG_STATE_NEXT_MATCHES:
+        init_club_data();
+
+        if (automatic_web_page_update) {
+            make_next_matches_html(); 
+        }
+        make_png_all_state = MAKE_PNG_STATE_CAT_HTMLS_1;
+        return TRUE;
+        
+        /* 
+         * sheets 
+         */
+    case MAKE_PNG_STATE_CAT_HTMLS_1:
+        list_categories(NULL);
+        i = 0;
+        make_png_all_state = MAKE_PNG_STATE_CAT_HTMLS_2;
+        return TRUE;
+
+    case MAKE_PNG_STATE_CAT_HTMLS_2:
+        if (i < competitor_count) {
+            write_html(competitor_table[i++]);
+
+            if (create_statistics)
+                progress_show(0.3 + 0.06*(gdouble)i/(gdouble)competitor_count, "");
+            else
+                progress_show(0.8 + 0.2*(gdouble)i/(gdouble)competitor_count, "");
+
+            return TRUE;
+        }
+        make_png_all_state = MAKE_PNG_STATE_COMPETITORS_HTML_1;
+        return TRUE;
+
+        /* 
+         * competitors 
+         */
+    case MAKE_PNG_STATE_COMPETITORS_HTML_1:
+        f = open_write("competitors.html");
+        if (!f) return FALSE;
+        make_top_frame_1(f, "<script type=\"text/javascript\" src=\"coach.js\" charset=\"utf-8\"></script>");
+        make_left_frame(f);
+        saved_competitor_cnt = 0;
+        db_list_competitors(FALSE);
+
+        fprintf(f,
+                "<td><table class=\"competitors\">"
+                "<tr><td colspan=\"5\" align=\"center\"><h2>%s</h2></td></tr>\n", _T(competitor));
+        fprintf(f, "<tr><th>%s</th><th>%s</th><th><a href=\"competitors2.html\">%s</a></th><th>%s</th><th>&nbsp;%s&nbsp;</th></tr>\n", 
+                _T(name), grade_visible ? _T(grade) : "", 
+                (club_text & CLUB_TEXT_COUNTRY) ? _T(country) :_T(club), 
+                _T(category), create_statistics ? _T(position) : "");
+        write_competitor_for_coach_display(NULL); // init file
+
+        make_png_all_state = MAKE_PNG_STATE_COMPETITORS_HTML_2;
+        return TRUE;
+
+    case MAKE_PNG_STATE_COMPETITORS_HTML_2:
+        i = db_get_next_listed_competitor();
+        if (i) {
+            struct judoka *j = get_data(i);
+            if (j) {
+                const gchar *b = "?";
+                if (j->belt >= 0 && j->belt < 21)
+                    b = belts[j->belt];
+                write_competitor(f, j->first, j->last, b, 
+                                 get_club_text(j, CLUB_TEXT_ADDRESS), 
+                                 j->category, j->index, 0);
+                write_competitor_for_coach_display(j);
+            }
+            return TRUE;
+        }
+        make_png_all_state = MAKE_PNG_STATE_COMPETITORS_HTML_3;
+        return TRUE;
+
+    case MAKE_PNG_STATE_COMPETITORS_HTML_3:
+        fprintf(f, "</table></td>\n");
+        make_bottom_frame(f);
+        fclose(f);
+        f = NULL;
+        make_png_all_state = MAKE_PNG_STATE_COMPETITORS2_HTML_1;
+        return TRUE;
+
+        /*
+         * competitors 2
+         */
+    case MAKE_PNG_STATE_COMPETITORS2_HTML_1:
+        f = open_write("competitors2.html");
+        if (!f) return FALSE;
+        make_top_frame_1(f, "<script type=\"text/javascript\" src=\"coach.js\" charset=\"utf-8\"></script>");
+        make_left_frame(f);
+        db_list_competitors(TRUE);
+
+        fprintf(f,
+                "<td><table class=\"competitors\">"
+                "<tr><td colspan=\"6\" align=\"center\"><h2>%s</h2></td></tr>\n", _T(competitor));
+        fprintf(f, "<tr><th></th><th>%s</th><th><a href=\"competitors.html\">%s</a></th>"
+                "<th>%s</th><th>%s</th><th>&nbsp;%s&nbsp;</th></tr>\n", 
+                _T(club), _T(name), grade_visible ? _T(grade) : "", _T(category), create_statistics ? _T(position) : "");
+
+        make_png_all_state = MAKE_PNG_STATE_COMPETITORS2_HTML_2;
+        return TRUE;
+
+    case MAKE_PNG_STATE_COMPETITORS2_HTML_2:
+        i = db_get_next_listed_competitor();
+        if (i) {
+            struct judoka *j = get_data(i);
+            if (j) {
+                const gchar *b = "?";
+                if (j->belt >= 0 && j->belt < 21)
+                    b = belts[j->belt];
+                write_competitor(f, j->first, j->last, b, 
+                                 get_club_text(j, CLUB_TEXT_ADDRESS), 
+                                 j->category, j->index, TRUE);
+                //write_competitor_for_coach_display(j);
+            }
+            return TRUE;
+        }
+        make_png_all_state = MAKE_PNG_STATE_COMPETITORS2_HTML_3;
+        return TRUE;
+
+    case MAKE_PNG_STATE_COMPETITORS2_HTML_3:
+        fprintf(f, "</table></td>\n");
+        make_bottom_frame(f);
+        fclose(f);
+        f = NULL;
+        make_png_all_state = MAKE_PNG_STATE_MEDALS;
+        return TRUE;
+
+    case MAKE_PNG_STATE_MEDALS:
+        /* statistics */
+        if (create_statistics) {
+            /* medal list */
+            f = open_write("medals.html");
+            if (f) {
+                make_top_frame(f);
+                make_left_frame(f);
+                club_stat_print(f);
+                make_bottom_frame(f);
+                fclose(f);
+                f = NULL;
+            }
+        }
+        i = 0;
+        make_png_all_state = MAKE_PNG_STATE_COMP_STAT;
+        return TRUE;
+
+    case MAKE_PNG_STATE_COMP_STAT:
+        /* competitor stat */
+        if (create_statistics) {
+            if (i < saved_competitor_cnt) {
+                //gchar buf[32];
+                //snprintf(buf, sizeof(buf), "%s %d%%", _("Competitors:"), 100*i/saved_competitor_cnt);
+                write_comp_stat(saved_competitors[i]);
+                progress_show(0.36 + 0.64*(gdouble)i/(gdouble)saved_competitor_cnt, "");
+            }
+            if (++i < saved_competitor_cnt)
+                return TRUE;
+        }
+        make_png_all_state = MAKE_PNG_STATE_CAT_MATCHES;
+        return TRUE;
+
+    case MAKE_PNG_STATE_CAT_MATCHES:
+        /* category matches */
+        if (create_statistics) {
+            for (i = 1; i <= NUM_TATAMIS; i++) {
+                struct category_data *queue = &category_queue[i];
+                while (queue) {
+                    write_comp_stat(queue->index);
+                    queue = queue->next;
+                }
+            }
+        }
+        make_png_all_state = MAKE_PNG_STATE_STATISTICS_HTML;
+        return TRUE;
+
+    case MAKE_PNG_STATE_STATISTICS_HTML:
+        /* statistics */
+        if (create_statistics) {
+            f = open_write("statistics.html");
+            if (f) {
+                make_top_frame(f);
+                make_left_frame(f);
+                match_statistics(f);
+                make_bottom_frame(f);
+                fclose(f);
+                f = NULL;
+            }
+        }
+        make_png_all_state = MAKE_PNG_STATE_IDLE;
+        return FALSE;
+    }
+    return FALSE;
+}
+
+static void make_png_all_end(gpointer user_data)
+{
+    make_png_all_id = 0;
+    make_png_all_state = MAKE_PNG_STATE_IDLE;
+    progress_show(0.0, "");
+}
+
 void make_png_all(GtkWidget *w, gpointer data)
 {
     FILE *f;
     gchar fname[1024];
-    gint num_cats = 0, i;
+    gint /*num_cats = 0,*/ i;
+
+    if (make_png_all_id)
+        return;
 
     if (get_output_directory() < 0)
         return;
@@ -1128,6 +1454,13 @@ void make_png_all(GtkWidget *w, gpointer data)
         fclose(f);
     }
 
+    make_png_all_state = MAKE_PNG_STATE_IDLE;
+    make_png_all_id = g_idle_add_full(G_PRIORITY_LOW,
+                                      make_png_all_bg,
+                                      NULL,
+                                      make_png_all_end);
+    return;
+#if 0
     /* index.html */
     f = open_write("index.html");
     if (f) {
@@ -1142,7 +1475,7 @@ void make_png_all(GtkWidget *w, gpointer data)
 
     /* netxmatches.html */
     if (automatic_web_page_update) {
-        make_next_matches_html();
+        make_next_matches_html(); 
     }
 
     /* sheets */
@@ -1210,6 +1543,7 @@ void make_png_all(GtkWidget *w, gpointer data)
             fclose(f);
         }
     }
+#endif
     progress_show(0.0, "");
 }
 

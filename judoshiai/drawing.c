@@ -1291,7 +1291,7 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
 					struct mdata *mdata)
 {
     gint i;
-    GtkWidget *dialog = NULL, *hbox, *vbox1, *vbox2, *label, *eventbox;
+    GtkWidget *dialog = NULL, *hbox, *vbox1, *vbox2, *label, *eventbox, *tmp;
     GdkColor bg, bg1, bg2;
     gchar *catname = NULL;
     gchar buf[200];
@@ -1414,6 +1414,7 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
 	    snprintf(buf, sizeof(buf), "%s %s", j->first, j->last);
 
         mdata->mcomp[i+1].label = gtk_label_new(buf);
+        gtk_label_set_width_chars(GTK_LABEL(mdata->mcomp[i+1].label), 20);
         mdata->mcomp[i+1].index = index;
         mdata->mcomp[i+1].club = club;
         mdata->mcomp[i+1].country = country;
@@ -1448,8 +1449,14 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
     gtk_container_set_border_width(GTK_CONTAINER(vbox1), 10);
     gtk_container_set_border_width(GTK_CONTAINER(vbox2), 10);
 #if (GTKVER == 3)
-    gtk_grid_attach(GTK_GRID(hbox), vbox2, 0, 0, 1, 1);
-    gtk_grid_attach(GTK_GRID(hbox), vbox1, 1, 0, 1, 1);
+    tmp = gtk_label_new("");
+    gtk_grid_attach(GTK_GRID(hbox), tmp, 0, 0, 1, 1);
+    gtk_widget_set_hexpand(tmp, TRUE);
+    gtk_grid_attach(GTK_GRID(hbox), vbox2, 1, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(hbox), vbox1, 2, 0, 1, 1);
+    tmp = gtk_label_new("");
+    gtk_grid_attach(GTK_GRID(hbox), tmp, 3, 0, 1, 1);
+    gtk_widget_set_hexpand(tmp, TRUE);
 
     gtk_grid_attach(GTK_GRID(vbox1), gtk_label_new(_("Number")),     0, r1++, 1, 1);
     gtk_grid_attach(GTK_GRID(vbox2), gtk_label_new(_("Competitor")), 0, r2++, 1, 1);
@@ -1465,6 +1472,7 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
         sprintf(buf, "%2d.                    ", get_competitor_number(i, mdata));
         mdata->mpos[i].eventbox = eventbox = gtk_event_box_new();
         mdata->mpos[i].label = label = gtk_label_new(buf);
+        gtk_label_set_width_chars(GTK_LABEL(label), 20);
         gtk_container_add(GTK_CONTAINER(eventbox), label);
 #if (GTKVER == 3)
         gtk_grid_attach(GTK_GRID(vbox1), eventbox, 0, r1++, 1, 1);
@@ -1592,6 +1600,8 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
     GtkWidget *scrolled_window = gtk_scrolled_window_new(NULL, NULL);
     //gtk_container_set_border_width(GTK_CONTAINER(scrolled_window), 10);
 #if (GTKVER == 3) && GTK_CHECK_VERSION(3,8,0)
+    gtk_widget_set_hexpand(scrolled_window, TRUE);
+    gtk_widget_set_vexpand(scrolled_window, TRUE);
     gtk_container_add(GTK_CONTAINER(scrolled_window), hbox);
 #else
     gtk_scrolled_window_add_with_viewport(
@@ -1599,7 +1609,7 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
 #endif
 #if (GTKVER == 3)
     gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), 
-                       scrolled_window, FALSE, FALSE, 0);
+                       scrolled_window, TRUE, TRUE, 0);
 #else
     gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), scrolled_window,
                        TRUE, TRUE, 0);

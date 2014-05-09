@@ -902,6 +902,8 @@ extern void db_change_competitor(gint category, gint number, gboolean is_blue, g
 extern void db_synchronize(char *name_2);
 extern void db_print_competitors(FILE *f);
 extern void db_print_competitors_by_club(FILE *f);
+extern void db_list_competitors(gboolean by_club);
+extern gint db_get_next_listed_competitor(void);
 extern gint db_get_index_by_id(const gchar *id, gboolean *coach);
 extern void write_competitor_for_coach_display(struct judoka *j);
 extern int db_get_table(char *command);
@@ -948,8 +950,8 @@ extern gint compress_system(struct compsys d);
 extern struct compsys uncompress_system(gint system);
 
 /* set_one_judoka */
-extern gint set_category(GtkTreeIter *iter, guint index, 
-                         const gchar *category, guint tatami, guint group);
+/*extern gint set_category(GtkTreeIter *iter, guint index, 
+  const gchar *category, guint tatami, guint group, gint deleted);*/
 extern gint display_one_judoka(struct judoka *j);
 
 /* log */

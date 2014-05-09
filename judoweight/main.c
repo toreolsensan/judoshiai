@@ -47,16 +47,36 @@ static GtkWidget *weight_box;
 static GtkWidget *judogi_box;
 #endif
 GtkWidget *weight_entry = NULL;
-static GtkWidget *confirm_box, *confirm_box2;
+static GtkWidget *confirm_box, *confirm_box1, *confirm_control, 
+    *confirm_box21, *confirm_box2, 
+    *confirm_box31, *confirm_box3;
 
 static struct message saved;
 static gchar  *saved_id = NULL;
 static GdkCursor *wait_cursor = NULL;
-static GtkWidget *w_id, *w_name, *w_weight, *w_control, *w_ok, *w_confirm;
+static GtkWidget *w_id, *w_name, *w_weight, *w_control, *w_ok, *w_confirm; 
+gboolean password_protected, automatic_send, print_label;
+
+void set_weight_entry(gint weight)
+{
+    gchar  buf[16];
+
+    g_snprintf(buf, sizeof(buf), "%d.%02d", weight/1000, (weight%1000)/10);
+
+    if (!weight_entry) 
+        return;
+
+    gtk_button_set_label(GTK_BUTTON(weight_entry), buf);
+
+    if (automatic_send) {
+        gtk_entry_set_text(GTK_ENTRY(weight_box), gtk_button_get_label(GTK_BUTTON(weight_entry)));
+        gtk_widget_grab_focus(w_ok);
+    }
+}
 
 void set_display(struct msg_edit_competitor *msg)
 {
-    gchar buf[128];
+    gchar buf[128], buf1[16];
 
     if (!saved_id)
         return;
@@ -69,17 +89,55 @@ void set_display(struct msg_edit_competitor *msg)
 #else
     gdk_window_set_cursor(GTK_WIDGET(main_window)->window, NULL);
 #endif
+
+    gtk_label_set_label(GTK_LABEL(confirm_box), "");
+    gtk_label_set_label(GTK_LABEL(confirm_box1), "");
+    gtk_label_set_label(GTK_LABEL(confirm_box21), "");
+    gtk_label_set_label(GTK_LABEL(confirm_box2), "");
+    gtk_label_set_label(GTK_LABEL(confirm_box31), "");
+    gtk_label_set_label(GTK_LABEL(confirm_box3), "");
+    gtk_label_set_label(GTK_LABEL(confirm_control), "");
+
     if (msg->operation == EDIT_OP_CONFIRM) {
 
 #if (GTKVER == 3)
-        snprintf(buf, sizeof(buf), "%s %s, %s/%s: %s (%s): %d.%02d",
-                 msg->last, msg->first, msg->country, msg->club, msg->category, msg->regcategory,
+        snprintf(buf, sizeof(buf), "<span font_desc=\"30.0\">%s %s</span>",
+                 msg->first, msg->last);
+        gtk_label_set_markup(GTK_LABEL(confirm_box), buf);
+
+        snprintf(buf, sizeof(buf), "<span font_desc=\"30.0\">%s/%s</span>",
+                 msg->club, msg->country);
+        gtk_label_set_markup(GTK_LABEL(confirm_box1), buf);
+
+        snprintf(buf, sizeof(buf), "<span font_desc=\"20.0\">%s</span>",
+                 _("Weight:"));
+        gtk_label_set_markup(GTK_LABEL(confirm_box21), buf);
+
+        snprintf(buf, sizeof(buf), "<span font_desc=\"50.0\">%d.%02d kg</span>",
                  msg->weight/1000, (msg->weight%1000)/10);
-        gtk_label_set_label(GTK_LABEL(confirm_box), buf);
-        snprintf(buf, sizeof(buf), "%s",
-                 (msg->deleted & JUDOGI_OK) ? "OK" :
-                 ((msg->deleted & JUDOGI_NOK) ? "NOK" : _("WARNING: NO CONTROL")));
-        gtk_label_set_label(GTK_LABEL(confirm_box2), buf);
+        gtk_label_set_markup(GTK_LABEL(confirm_box2), buf);
+
+        snprintf(buf, sizeof(buf), "<span font_desc=\"20.0\">%s</span>",
+                 _("Category:"));
+        gtk_label_set_markup(GTK_LABEL(confirm_box31), buf);
+
+        if (msg->regcategory[0] && msg->estim_category[0] &&
+            strcmp(msg->regcategory, msg->estim_category))
+            snprintf(buf, sizeof(buf), "<span font_desc=\"50.0\" foreground=\"red\">%s</span>",
+                     msg->estim_category);
+            else
+                snprintf(buf, sizeof(buf), "<span font_desc=\"50.0\">%s</span>",
+                         msg->estim_category);
+        gtk_label_set_markup(GTK_LABEL(confirm_box3), buf);
+
+        if (msg->deleted & JUDOGI_OK)
+            snprintf(buf, sizeof(buf), "<span font_desc=\"30.0\" foreground=\"green\">OK</span>");
+        else if (msg->deleted & JUDOGI_NOK)
+            snprintf(buf, sizeof(buf), "<span font_desc=\"30.0\" foreground=\"red\">NOK</span>");
+        else
+            snprintf(buf, sizeof(buf), "%s",
+                     _("WARNING: NO CONTROL"));
+        gtk_label_set_markup(GTK_LABEL(confirm_control), buf);
 #else
         snprintf(buf, sizeof(buf), "%s %s, %s/%s: %s (%s): %d.%02d %s",
                  msg->last, msg->first, msg->country, msg->club, msg->category, msg->regcategory,
@@ -88,6 +146,26 @@ void set_display(struct msg_edit_competitor *msg)
                  ((msg->deleted & JUDOGI_NOK) ? "NOK" : _("WARNING: NO CONTROL")));
         gtk_label_set_label(GTK_LABEL(confirm_box), buf);
 #endif
+        // print label
+        if (print_label) {
+            gchar *labels[4];
+            time_t t = time(NULL);
+            struct tm *tm = localtime(&t);
+            snprintf(buf, sizeof(buf), "%04d-%02d-%02d %02d:%02d:%02d",
+                     tm->tm_year+1900,
+                     tm->tm_mon+1,
+                     tm->tm_mday,
+                     tm->tm_hour,
+                     tm->tm_min,
+                     tm->tm_sec);
+            snprintf(buf1, sizeof(buf1), "%d.%02d kg",
+                     msg->weight/1000, (msg->weight%1000)/10);        
+            labels[0] = buf;
+            labels[1] = buf1;
+            labels[2] = NULL;
+            do_print(labels);
+        }
+
         return;
     }
 
@@ -373,6 +451,7 @@ int main( int   argc,
 #endif
     row++;
 
+    // Name
     tmp = w_name = gtk_label_new(_("Name:"));
     gtk_misc_set_alignment(GTK_MISC(tmp), 1, 0.5);
 #if (GTKVER == 3)
@@ -390,6 +469,7 @@ int main( int   argc,
 #endif
     row++;
 
+    // Weight
     tmp = w_weight = gtk_label_new(_("Weight:"));
     gtk_misc_set_alignment(GTK_MISC(tmp), 1, 0.5);
 #if (GTKVER == 3)
@@ -397,14 +477,12 @@ int main( int   argc,
 #else
     gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, row, row+1);
 #endif
-    //GtkWidget *whbox = gtk_hbox_new(FALSE, 5);
     GtkWidget *wbutton = weight_entry = gtk_button_new_with_label("---");
-    //gtk_widget_set_size_request(GTK_WIDGET(wbutton), 70, 0);
+
     weight_box = gtk_entry_new();
-    //gtk_widget_set_size_request(GTK_WIDGET(weight_box), 300, 30);
     gtk_entry_set_width_chars(GTK_ENTRY(weight_box), 6);
-    //gtk_box_pack_start_defaults(GTK_BOX(whbox), weight_box);
-    //gtk_box_pack_start_defaults(GTK_BOX(whbox), wbutton);
+    gtk_editable_set_editable(GTK_EDITABLE(weight_box), !password_protected);
+
 #if (GTKVER == 3)
     gtk_grid_attach(GTK_GRID(table), weight_box, c2, row, 1, 1);
     gtk_grid_attach(GTK_GRID(table), wbutton, c3, row, 1, 1);
@@ -434,6 +512,10 @@ int main( int   argc,
     gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(tmp), NULL, _("OK"));
     gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(tmp), NULL, _("NOK"));
     gtk_grid_attach(GTK_GRID(table), tmp, c2, row, 1, 1);
+
+    confirm_control = gtk_label_new("");
+    gtk_misc_set_alignment(GTK_MISC(confirm_control), 0, 0.5);
+    gtk_grid_attach(GTK_GRID(table), confirm_control, c3, row, 3, 1);
 #else
     judogi_box = tmp = gtk_combo_box_new_text();
     gtk_combo_box_append_text((GtkComboBox *)tmp, "?");
@@ -465,17 +547,30 @@ int main( int   argc,
     tmp = w_confirm = gtk_label_new(_("Confirm:"));
     gtk_misc_set_alignment(GTK_MISC(tmp), 1, 0.5);
 #if (GTKVER == 3)
-    gtk_grid_attach(GTK_GRID(table), tmp, c1, row, 1, 1);
+    //gtk_grid_attach(GTK_GRID(table), tmp, c1, row, 1, 1);
 #else
-    gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, row, row+1);
+    //gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, row, row+1);
 #endif
     confirm_box = gtk_label_new("");
+    confirm_box1 = gtk_label_new("");
     confirm_box2 = gtk_label_new("");
+    confirm_box21 = gtk_label_new("");
+    confirm_box3 = gtk_label_new("");
+    confirm_box31 = gtk_label_new("");
     gtk_misc_set_alignment(GTK_MISC(confirm_box), 0, 0.5);
+    gtk_misc_set_alignment(GTK_MISC(confirm_box1), 0, 0.5);
+    gtk_misc_set_alignment(GTK_MISC(confirm_box21), 1, 0.5);
     gtk_misc_set_alignment(GTK_MISC(confirm_box2), 0, 0.5);
+    gtk_misc_set_alignment(GTK_MISC(confirm_box31), 1, 0.5);
+    gtk_misc_set_alignment(GTK_MISC(confirm_box3), 0, 0.5);
+
 #if (GTKVER == 3)
-    gtk_grid_attach(GTK_GRID(table), confirm_box, c2, row, 3, 1);
-    gtk_grid_attach(GTK_GRID(table), confirm_box2, c2, row+1, 3, 1);
+    gtk_grid_attach(GTK_GRID(table), confirm_box, c1, row, 5, 1);
+    gtk_grid_attach(GTK_GRID(table), confirm_box1, c1, row+1, 5, 1);
+    gtk_grid_attach(GTK_GRID(table), confirm_box21, c0, row+2, 1, 1);
+    gtk_grid_attach(GTK_GRID(table), confirm_box2, c1, row+2, 4, 1);
+    gtk_grid_attach(GTK_GRID(table), confirm_box31, c0, row+3, 1, 1);
+    gtk_grid_attach(GTK_GRID(table), confirm_box3, c1, row+3, 4, 1);
 #else
     gtk_table_attach_defaults(GTK_TABLE(table), confirm_box, 1, 4, row, row+1);
 #endif
@@ -489,13 +584,14 @@ int main( int   argc,
     g_signal_connect(G_OBJECT(id_box), 
                      "activate", G_CALLBACK(on_enter), id_box);
 
+    set_preferences();
+
     /* timers */
         
     timer = g_timer_new();
 
     gtk_widget_show_all(window);
 
-    set_preferences();
     change_language(NULL, NULL, gint_to_ptr(language));
 
     open_comm_socket();
@@ -591,7 +687,7 @@ gchar *logfile_name = NULL;
 
 void judoweight_log(gchar *format, ...)
 {
-    guint t;
+    time_t t;
     gchar buf[256];
     va_list args;
     va_start(args, format);
@@ -653,4 +749,150 @@ void change_language_1(void)
     gtk_label_set_label(GTK_LABEL(w_control), _("Control:"));
     gtk_button_set_label(GTK_BUTTON(w_ok), _("OK"));
     gtk_label_set_label(GTK_LABEL(w_confirm), _("Confirm:"));
+}
+
+gint weightpwcrc32 = 0;
+
+void set_password_dialog(GtkWidget *w, gpointer data )
+{
+    GtkWidget *dialog, *label, *old_label, *old_password, *password, *hbox;
+
+    dialog = gtk_dialog_new_with_buttons (_("Password"),
+                                          NULL,
+                                          GTK_DIALOG_MODAL,
+                                          GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                                          GTK_STOCK_OK, GTK_RESPONSE_OK,
+                                          NULL);
+
+    label = gtk_label_new(_("New Password:"));
+    password = gtk_entry_new();
+    gtk_entry_set_visibility(GTK_ENTRY(password), FALSE);
+
+    old_label = gtk_label_new(_("Old Password:"));
+    old_password = gtk_entry_new();
+    gtk_entry_set_visibility(GTK_ENTRY(old_password), FALSE);
+
+#if (GTKVER == 3)
+    hbox = gtk_grid_new();
+    gtk_grid_attach(GTK_GRID(hbox), old_label, 0, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(hbox), old_password, 1, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(hbox), label, 0, 1, 1, 1);
+    gtk_grid_attach(GTK_GRID(hbox), password, 1, 1, 1, 1);
+
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), 
+                       hbox, FALSE, FALSE, 0);
+#else
+    hbox = gtk_hbox_new(FALSE, 5);
+    gtk_container_set_border_width(GTK_CONTAINER(hbox), 10);
+    gtk_box_pack_start_defaults(GTK_BOX(hbox), label);
+    gtk_box_pack_start_defaults(GTK_BOX(hbox), password);
+
+    gtk_box_pack_start_defaults(GTK_BOX(GTK_DIALOG(dialog)->vbox), hbox);
+#endif
+    gtk_widget_show_all(dialog);
+
+    if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_OK) {
+        const gchar *old_pw = gtk_entry_get_text(GTK_ENTRY(old_password));
+        if (pwcrc32((guchar *)old_pw, strlen(old_pw)) == weightpwcrc32) {
+            const gchar *pw = gtk_entry_get_text(GTK_ENTRY(password));
+            weightpwcrc32 = pwcrc32((guchar *)pw, strlen(pw));
+            g_key_file_set_integer(keyfile, "preferences", "password", weightpwcrc32);
+        } else {
+            GtkWidget *msg;
+            msg = gtk_message_dialog_new (NULL,
+                                     0 /*GTK_DIALOG_DESTROY_WITH_PARENT*/,
+                                     GTK_MESSAGE_INFO,
+                                     GTK_BUTTONS_OK,
+                                          "%s", _("Wrong password!"));
+            g_signal_connect_swapped (msg, "response",
+                                      G_CALLBACK (gtk_widget_destroy),
+                                      msg);
+            gtk_widget_show(msg);
+        }
+    }
+
+    gtk_widget_destroy(dialog);
+}
+
+void set_password_protected(GtkWidget *menu_item, gpointer data) 
+{
+    if (weightpwcrc32) {
+        if (ask_password_dialog())
+            password_protected = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item));
+    } else
+        password_protected = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item));
+
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menu_item), password_protected);
+    g_key_file_set_boolean(keyfile, "preferences", "pwprotected", password_protected);
+
+    gtk_editable_set_editable(GTK_EDITABLE(weight_box), !password_protected);
+}
+
+void set_automatic_send(GtkWidget *menu_item, gpointer data)
+{
+    automatic_send = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item));
+    g_key_file_set_boolean(keyfile, "preferences", "autosend", automatic_send);
+}
+
+void set_print_label(GtkWidget *menu_item, gpointer data)
+{
+    print_label = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item));
+    g_key_file_set_boolean(keyfile, "preferences", "printlabel", print_label);
+}
+
+gboolean ask_password_dialog(void)
+{
+    GtkWidget *dialog, *label, *password, *hbox;
+    gboolean result = FALSE;
+
+    dialog = gtk_dialog_new_with_buttons (_("Password"),
+                                          NULL,
+                                          GTK_DIALOG_MODAL,
+                                          GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                                          GTK_STOCK_OK, GTK_RESPONSE_OK,
+                                          NULL);
+
+    label = gtk_label_new(_("Password:"));
+    password = gtk_entry_new();
+    gtk_entry_set_visibility(GTK_ENTRY(password), FALSE);
+    //gtk_widget_set_receives_default(ok button.., TRUE);
+    //gtk_entry_set_activates_default(GTK_ENTRY(password), TRUE);
+
+#if (GTKVER == 3)
+    hbox = gtk_grid_new();
+    gtk_grid_attach(GTK_GRID(hbox), label, 0, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(hbox), password, 1, 0, 1, 1);
+
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), 
+                       hbox, FALSE, FALSE, 0);
+#else
+    hbox = gtk_hbox_new(FALSE, 5);
+    gtk_container_set_border_width(GTK_CONTAINER(hbox), 10);
+    gtk_box_pack_start_defaults(GTK_BOX(hbox), label);
+    gtk_box_pack_start_defaults(GTK_BOX(hbox), password);
+
+    gtk_box_pack_start_defaults(GTK_BOX(GTK_DIALOG(dialog)->vbox), hbox);
+#endif
+    gtk_widget_show_all(dialog);
+
+    if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_OK) {
+        const gchar *pw = gtk_entry_get_text(GTK_ENTRY(password));
+        result = pwcrc32((guchar *)pw, strlen(pw)) == weightpwcrc32;
+        if (!result) {
+            GtkWidget *msg;
+            msg = gtk_message_dialog_new (NULL,
+                                     0 /*GTK_DIALOG_DESTROY_WITH_PARENT*/,
+                                     GTK_MESSAGE_INFO,
+                                     GTK_BUTTONS_OK,
+                                          "%s", _("Wrong password!"));
+            g_signal_connect_swapped (msg, "response",
+                                      G_CALLBACK (gtk_widget_destroy),
+                                      msg);
+            gtk_widget_show(msg);
+        }
+    }
+
+    gtk_widget_destroy(dialog);
+
+    return result;
 }

@@ -247,6 +247,7 @@ struct msg_edit_competitor {
     gchar comment[20];
     gchar coachid[20];
     gchar beltstr[16];
+    gchar estim_category[20];
 };
 
 struct msg_scale {

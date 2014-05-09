@@ -87,8 +87,6 @@ gboolean msg_accepted(struct message *m)
 
 void msg_received(struct message *input_msg)
 {
-    gchar  buf[16];
-
     if (input_msg->sender == my_address)
         return;
 
@@ -103,9 +101,7 @@ void msg_received(struct message *input_msg)
         break;
 
     case MSG_SCALE:
-        g_snprintf(buf, sizeof(buf), "%d.%02d", input_msg->u.scale.weight/1000, (input_msg->u.scale.weight%1000)/10);
-        if (weight_entry)
-            gtk_button_set_label(GTK_BUTTON(weight_entry), buf);
+        set_weight_entry(input_msg->u.scale.weight);
         break;
     }
 }

@@ -165,6 +165,7 @@ gint encode_msg(struct message *m, guchar *buf, gint buflen)
 	putstr(m->u.edit_competitor.comment);
 	putstr(m->u.edit_competitor.coachid);
 	putstr(m->u.edit_competitor.beltstr);
+	putstr(m->u.edit_competitor.estim_category);
 	break;
     }
 
@@ -331,6 +332,7 @@ gint decode_msg(struct message *m, guchar *buf, gint buflen)
 	getstr(m->u.edit_competitor.comment);
 	getstr(m->u.edit_competitor.coachid);
 	getstr(m->u.edit_competitor.beltstr);
+	getstr(m->u.edit_competitor.estim_category);
 	break;
     }
 

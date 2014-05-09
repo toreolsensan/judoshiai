@@ -274,6 +274,29 @@ void msg_received(struct message *input_msg)
                     CP2MSG_INT(seeding);
                     CP2MSG_INT(clubseeding);
 
+                    // find estimated category
+                    gchar *estim = NULL;
+
+                    if (j->regcategory == NULL || j->regcategory[0] == 0) {
+                        gint gender = 0;
+
+                        if (j->deleted & GENDER_FEMALE)
+                            gender = IS_FEMALE;
+                        else
+                            gender = IS_MALE;
+
+                        estim = find_correct_category(current_year - j->birthyear, 
+                                                      j->weight, 
+                                                      gender, 
+                                                      NULL, TRUE);
+                    } else {
+                        estim = find_correct_category(0, j->weight, 0, j->regcategory, FALSE);
+                    }
+
+                    strncpy(output_msg.u.edit_competitor.estim_category, 
+                            estim ? estim : "", sizeof(output_msg.u.edit_competitor.estim_category)-1);
+                    g_free(estim);
+
                     send_packet(&output_msg);
                 }
                 display_one_judoka(j);

@@ -28,6 +28,7 @@ extern void write_competitor(FILE *f, const gchar *first, const gchar *last, con
 #define CLEANUP                     128
 #define FIND_COMPETITOR_BY_COACHID  256
 #define UPDATE_WEIGHTS              512
+#define LIST_COMPETITORS           1024
 
 static FILE *print_file = NULL;
 static gint num_competitors;
@@ -36,6 +37,9 @@ static gint competitors_not_added, competitors_added;
 static gint competitor_by_id;
 static gboolean competitor_by_coach;
 static gint weights_updated;
+
+static gint competitor_list_next, competitor_list_count;
+static gint competitor_list[TOTAL_NUM_COMPETITORS];
 
 static int db_callback(void *data, int argc, char **argv, char **azColName)
 {
@@ -150,6 +154,12 @@ static int db_callback(void *data, int argc, char **argv, char **azColName)
                 free_judoka(j1);
             }
         }
+        return 0;
+    }
+
+    if (flags & LIST_COMPETITORS) {
+        if (competitor_list_count < TOTAL_NUM_COMPETITORS)
+            competitor_list[competitor_list_count++] = j.index;
         return 0;
     }
 
@@ -297,6 +307,43 @@ void db_print_competitors(FILE *f)
                 db_callback);
 
     fprintf(print_file, "</table></td>\n");
+}
+
+void db_list_competitors(gboolean by_club)
+{
+    competitor_list_count = competitor_list_next = 0;
+
+    if (by_club) {
+        if (club_text & CLUB_TEXT_COUNTRY) {
+            if (club_text & CLUB_TEXT_CLUB)
+                db_exec(db_name, "SELECT * FROM competitors ORDER BY \"country\" ASC, \"club\" ASC, \"last\" ASC, \"first\" ASC", 
+                        (void *)LIST_COMPETITORS, 
+                        db_callback);
+            else
+                db_exec(db_name, "SELECT * FROM competitors ORDER BY \"country\" ASC, \"last\" ASC, \"first\" ASC", 
+                        (void *)LIST_COMPETITORS, 
+                        db_callback);
+        } else
+            db_exec(db_name, "SELECT * FROM competitors ORDER BY \"club\" ASC, \"last\" ASC, \"first\" ASC", 
+                    (void *)LIST_COMPETITORS, 
+                    db_callback);
+    } else {
+        if (IS_LANG_IS)
+            db_exec(db_name, "SELECT * FROM competitors ORDER BY \"first\" ASC, \"last\" ASC", 
+                    (void *)LIST_COMPETITORS, 
+                    db_callback);
+        else
+            db_exec(db_name, "SELECT * FROM competitors ORDER BY \"last\" ASC, \"first\" ASC", 
+                    (void *)LIST_COMPETITORS, 
+                    db_callback);
+    }
+}
+
+gint db_get_next_listed_competitor(void)
+{
+    if (competitor_list_next < competitor_list_count)
+        return competitor_list[competitor_list_next++];
+    return 0;
 }
 
 void db_print_competitors_by_club(FILE *f)

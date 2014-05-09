@@ -6,7 +6,7 @@ $(OBJDIR):
 	mkdir -p $(OBJDIR)
 
 OBJS += $(OBJDIR)/main.o $(OBJDIR)/menus.o $(OBJDIR)/comm.o $(OBJDIR)/ip.o \
-	$(OBJDIR)/protocol.o $(OBJDIR)/serial.o $(OBJDIR)/language.o
+	$(OBJDIR)/protocol.o $(OBJDIR)/serial.o $(OBJDIR)/language.o $(OBJDIR)/print.o
 
 CFLAGS += -DAPPLICATION="\"judoweight\""
 CFLAGS += -DAPP_NUM=4

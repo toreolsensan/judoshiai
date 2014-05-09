@@ -109,6 +109,11 @@ void db_add_category(int num, struct judoka *j)
 
 void db_update_category(int num, struct judoka *j)
 {
+    while (j->index == 10010 && (j->deleted & 8) == 0) {
+        g_print("err %s:%d\n", __FUNCTION__, __LINE__);
+        sleep(1);
+    }
+
     if (num < 10000) {
         g_print("%s: ERROR, num = %d\n", __FUNCTION__, num);
         return;

@@ -30,7 +30,7 @@ static GtkWidget *menubar, *preferences, *help, *preferencesmenu, *helpmenu;
 static GtkWidget *quit, *manual;
 static GtkWidget *node_ip, *my_ip, *preference_serial, *about;
 static GtkWidget *light, *menu_light, *lang_menu_item;
-
+static GtkWidget *m_password_protected, *m_automatic_send, *password, *m_print_label;
 //static GtkTooltips *menu_tips;
 
 static void about_judoinfo( GtkWidget *w,
@@ -112,6 +112,14 @@ static GtkWidget *create_menu_item(GtkWidget *menu, void *cb, gint param)
     return w;
 }
 
+static GtkWidget *create_check_menu_item(GtkWidget *menu, void *cb, gint param)
+{
+    GtkWidget *w = gtk_check_menu_item_new_with_label("");
+    gtk_menu_shell_append (GTK_MENU_SHELL(menu), w);
+    g_signal_connect(G_OBJECT(w), "activate", G_CALLBACK(cb), gint_to_ptr(param));
+    return w;
+}
+
 static void create_separator(GtkWidget *menu)
 {
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), gtk_separator_menu_item_new());
@@ -157,6 +165,14 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     node_ip = create_menu_item(preferencesmenu, ask_node_ip_address, 0);
     my_ip   = create_menu_item(preferencesmenu, show_my_ip_addresses, 0);
     preference_serial = create_menu_item(preferencesmenu, set_serial_dialog, 0);
+
+    create_separator(preferencesmenu);
+    m_password_protected = create_check_menu_item(preferencesmenu, set_password_protected, 0);
+    m_automatic_send = create_check_menu_item(preferencesmenu, set_automatic_send, 0);
+    password = create_menu_item(preferencesmenu, set_password_dialog, 0);
+
+    create_separator(preferencesmenu);
+    m_print_label = create_check_menu_item(preferencesmenu, set_print_label, 0);
 
     create_separator(preferencesmenu);
     quit    = create_menu_item(preferencesmenu, destroy, 0);
@@ -214,6 +230,27 @@ void set_preferences(void)
     x1 = g_key_file_get_integer(keyfile, "preferences", "serialtype", &error);
     if (!error)
         serial_set_type(x1);
+
+    weightpwcrc32 = 0; // password is temporarily 0 to enable checkbox editing
+    error = NULL;
+    if (g_key_file_get_boolean(keyfile, "preferences", "pwprotected", &error)) {
+        gtk_menu_item_activate(GTK_MENU_ITEM(m_password_protected));
+    }
+
+    error = NULL;
+    if (g_key_file_get_boolean(keyfile, "preferences", "autosend", &error)) {
+        gtk_menu_item_activate(GTK_MENU_ITEM(m_automatic_send));
+    }
+
+    error = NULL;
+    if (g_key_file_get_boolean(keyfile, "preferences", "printlabel", &error)) {
+        gtk_menu_item_activate(GTK_MENU_ITEM(m_print_label));
+    }
+
+    error = NULL;
+    x1 = g_key_file_get_integer(keyfile, "preferences", "password", &error);
+    if (!error)
+        weightpwcrc32 = x1;
 }
 
 gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param)
@@ -229,6 +266,10 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(node_ip,      _("Communication node"));
     change_menu_label(my_ip,        _("Own IP addresses"));
     change_menu_label(preference_serial, _("Scale Serial Interface..."));
+    change_menu_label(m_password_protected, _("No manual edit"));
+    change_menu_label(m_automatic_send, _("Automatic send"));
+    change_menu_label(password,     _("Password"));
+    change_menu_label(m_print_label, _("Print label"));
 
     change_menu_label(manual,       _("Manual"));
     change_menu_label(about,        _("About"));

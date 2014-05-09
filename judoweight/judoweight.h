@@ -35,6 +35,7 @@
 #define JUDOGI_OK     0x20
 #define JUDOGI_NOK    0x40
 
+extern GtkWidget *main_window;
 extern GTimer *timer;
 extern gchar *installation_dir;
 extern gulong my_ip_address, node_ip_addr;
@@ -42,6 +43,8 @@ extern GKeyFile *keyfile;
 extern gint language;
 extern GtkWidget *weight_entry;
 extern gint my_address;
+extern gint weightpwcrc32;
+extern gboolean password_protected, automatic_send;
 
 extern gboolean this_is_shiai(void);
 extern void msg_to_queue(struct message *msg);
@@ -57,8 +60,15 @@ extern gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void
 extern void ask_node_ip_address( GtkWidget *w, gpointer data);
 extern void show_my_ip_addresses( GtkWidget *w, gpointer data);
 
+extern void set_weight_entry(gint weight);
 extern void set_display(struct msg_edit_competitor *msg);
 extern void judoweight_log(gchar *format, ...);
 extern void change_language_1(void);
+extern void set_password_dialog(GtkWidget *w, gpointer data );
+extern gboolean ask_password_dialog(void);
+extern void set_password_protected(GtkWidget *w, gpointer data);
+extern void set_automatic_send(GtkWidget *w, gpointer data);
+extern void set_print_label(GtkWidget *menu_item, gpointer data);
+extern void do_print(gpointer userdata);
 
 #endif
