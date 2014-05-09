@@ -943,8 +943,6 @@ extern gint compress_system(struct compsys d);
 extern struct compsys uncompress_system(gint system);
 
 /* set_one_judoka */
-extern gint set_category(GtkTreeIter *iter, guint index, 
-                         const gchar *category, guint tatami, guint group);
 extern gint display_one_judoka(struct judoka *j);
 
 /* log */

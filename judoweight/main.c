@@ -447,7 +447,7 @@ gchar *logfile_name = NULL;
 
 void judoweight_log(gchar *format, ...)
 {
-    guint t;
+    time_t t;
     gchar buf[256];
     va_list args;
     va_start(args, format);

@@ -1147,8 +1147,10 @@ static void make_manual_matches_callback(GtkWidget *widget,
         matches_refresh();
 out:
 
-    update_category_status_info(mdata->mcategory_ix);
     update_matches(mdata->mcategory_ix, (struct compsys){0,0,0,0}, 0);
+    category_refresh(mdata->mcategory_ix);
+    //update_category_status_info_all();
+    update_category_status_info(mdata->mcategory_ix);
 
     if (mdata->hidden == FALSE && ptr_to_gint(event) == GTK_RESPONSE_OK)
         category_window(mdata->mcategory_ix);
