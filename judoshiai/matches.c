@@ -1642,12 +1642,18 @@ void send_next_matches(gint category, gint tatami, struct match *nm)
 
         if (!tatami)
             tatami = db_find_match_tatami(nm[0].category, nm[0].number);
+
         g = get_data(nm[0].category & MATCH_CATEGORY_MASK);
         j1 = get_data(nm[0].blue);
         j2 = get_data(nm[0].white);
 
         if (g && j1 && j2) {
             gchar buf[100];
+
+            if (avl_get_competitor_status(nm[0].blue) & JUDOGI_OK)
+                msg.u.next_match.flags |= MATCH_FLAG_JUDOGI1_OK;
+            if (avl_get_competitor_status(nm[0].white) & JUDOGI_OK)
+                msg.u.next_match.flags |= MATCH_FLAG_JUDOGI2_OK;
 
             if (fill_in_next_match_message_data(g->last, &msg.u.next_match)) {
                 msg.u.next_match.minutes = 1<<20; //find_match_time(g->last);

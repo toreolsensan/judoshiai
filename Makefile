@@ -5,6 +5,7 @@ JUDOTIMERFILE=judotimer/$(OBJDIR)/judotimer$(SUFF)
 JUDOINFOFILE=judoinfo/$(OBJDIR)/judoinfo$(SUFF)
 JUDOWEIGHTFILE=judoweight/$(OBJDIR)/judoweight$(SUFF)
 JUDOJUDOGIFILE=judojudogi/$(OBJDIR)/judojudogi$(SUFF)
+JUDOPROXYFILE=judoproxy/$(OBJDIR)/judoproxy$(SUFF)
 
 RELDIR=$(RELEASEDIR)/judoshiai
 RELFILE=$(RELDIR)/bin/judoshiai$(SUFF)
@@ -17,6 +18,7 @@ all:
 	make -C judoinfo
 	make -C judoweight
 	make -C judojudogi
+	make -C judoproxy
 	make -C doc
 	rm -rf $(RELDIR)
 	mkdir -p $(RELDIR)/bin
@@ -43,6 +45,7 @@ all:
 	cp $(JUDOINFOFILE) $(RELDIR)/bin/
 	cp $(JUDOWEIGHTFILE) $(RELDIR)/bin/
 	cp $(JUDOJUDOGIFILE) $(RELDIR)/bin/
+	cp $(JUDOPROXYFILE) $(RELDIR)/bin/
 ### Windows executable ###
 ifeq ($(TGT),WIN32)
 ifeq ($(GTKVER),3)
@@ -129,16 +132,19 @@ install:
 	ln -sf /usr/lib/judoshiai/bin/judoinfo /usr/bin/judoinfo
 	ln -sf /usr/lib/judoshiai/bin/judoweight /usr/bin/judoweight
 	ln -sf /usr/lib/judoshiai/bin/judojudogi /usr/bin/judojudogi
+	ln -sf /usr/lib/judoshiai/bin/judoproxy /usr/bin/judoproxy
 	cp gnome/judoshiai.desktop /usr/share/applications/
 	cp gnome/judotimer.desktop /usr/share/applications/
 	cp gnome/judoinfo.desktop /usr/share/applications/
 	cp gnome/judoweight.desktop /usr/share/applications/
 	cp gnome/judojudogi.desktop /usr/share/applications/
+	cp gnome/judoproxy.desktop /usr/share/applications/
 	cp etc/judoshiai.png /usr/share/pixmaps/
 	cp etc/judotimer.png /usr/share/pixmaps/
 	cp etc/judoinfo.png /usr/share/pixmaps/
 	cp etc/judoweight.png /usr/share/pixmaps/
 	cp etc/judojudogi.png /usr/share/pixmaps/
+	cp etc/judoproxy.png /usr/share/pixmaps/
 	cp gnome/judoshiai.mime /usr/share/mime-info/
 	cp gnome/judoshiai.keys /usr/share/mime-info/
 	cp gnome/judoshiai.applications /usr/share/application-registry/
@@ -161,5 +167,6 @@ clean:
 	make -C judoinfo clean
 	make -C judoweight clean
 	make -C judojudogi clean
+	make -C judoproxy clean
 	#make -C doc clean
 	rm -rf $(RELEASEDIR)

@@ -122,6 +122,7 @@ gboolean         rest_time = FALSE;
 static gint      rest_flags = 0;
 gchar           *matchlist = NULL;
 static gint      gs_cat = 0, gs_num = 0;
+gboolean         require_judogi_ok = TRUE;
 
 static void log_scores(gchar *txt, gint who)
 {
@@ -1061,7 +1062,14 @@ void reset(guint key, struct msg_next_match *msg)
             yuko    = msg->pin_time_yuko;
             wazaari = msg->pin_time_wazaari;
             ippon   = msg->pin_time_ippon;
-            if (msg->rest_time) {
+            if (require_judogi_ok &&  
+                (!(msg->flags & MATCH_FLAG_JUDOGI1_OK) ||
+                 !(msg->flags & MATCH_FLAG_JUDOGI2_OK))) {
+                gchar buf[128];
+                snprintf(buf, sizeof(buf), "%s: %s", _("CONTROL"), 
+                         !(msg->flags & MATCH_FLAG_JUDOGI1_OK) ? get_name(BLUE) : get_name(WHITE));
+                display_big(buf, 2);
+            } else if (msg->rest_time) {
                 gchar buf[128];
                 snprintf(buf, sizeof(buf), "%s: %s", _("REST TIME"),
                          msg->minutes & MATCH_FLAG_BLUE_REST ?

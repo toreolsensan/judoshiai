@@ -127,7 +127,7 @@ static gboolean lang_dialog(GtkWidget *eventbox, GdkEventButton *event, void *pa
         GtkWidget *button = data->buttons[i] = gtk_button_new_with_label(lang_names_in_own_language[i]);
         gtk_button_set_image(GTK_BUTTON(button), get_picture(flags_files[i])/*flags[i]*/);
         gtk_button_set_image_position(GTK_BUTTON(button), GTK_POS_LEFT);
-        gtk_button_set_alignment(GTK_BUTTON(button), 0.0, 0.5);
+        //gtk_button_set_alignment(GTK_BUTTON(button), 0.0, 0.5); XXXXXX
 #if (GTKVER == 3)
         gtk_grid_attach(GTK_GRID(table), button, col, row, 1, 1);
         g_signal_connect(G_OBJECT(button), "clicked",

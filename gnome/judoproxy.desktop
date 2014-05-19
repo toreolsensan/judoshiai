@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=JudoProxy to connect two networks
+Comment=Connects networks
+Exec=judoproxy
+Icon=judoproxy.png
+Terminal=false
+Type=Application
+Categories=Application;Other;
+StartupNotify=true

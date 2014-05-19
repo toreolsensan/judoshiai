@@ -1133,6 +1133,8 @@ static gboolean make_png_all_bg(gpointer user_data)
     //static gchar fname[1024];
     static gint i, num_cats, num_comps;
 
+    num_cats = num_cats; // make compiler happy
+
     switch (make_png_all_state) {
 
         /* 

@@ -492,6 +492,74 @@ static gboolean expose(GtkWidget *widget, GdkEventExpose *event, gpointer userda
     return FALSE;
 }
 
+static gint mjpeg_width = 0, mjpeg_height = 0;
+
+static gboolean write_mjpeg_out(const gchar *buf, gsize count, GError **error, gpointer data)
+{
+    fwrite(buf, 1, count, stdout);
+    return TRUE;
+}
+
+static void convert_rgb_to_bgr(GdkPixbuf *pixbuf)
+{
+    gint width, height, rowstride, n_channels;
+    guchar *pixels, *p, c;
+    gint x, y;
+
+    n_channels = gdk_pixbuf_get_n_channels(pixbuf);
+    width      = gdk_pixbuf_get_width(pixbuf);
+    height     = gdk_pixbuf_get_height(pixbuf);
+    rowstride  = gdk_pixbuf_get_rowstride(pixbuf);
+    pixels     = gdk_pixbuf_get_pixels(pixbuf);
+
+    for (x = 0; x < width; x++) {
+        for (y = 0; y < height; y++) {
+            p = pixels + y * rowstride + x * n_channels;
+            c = p[0];
+            p[0] = p[2];
+            p[2] = c;
+        }
+    }
+}
+
+static gboolean write_mjpeg(gpointer data)
+{
+    cairo_surface_t *cs;
+    cairo_t *c;
+    GError *error = NULL;
+    static gint frame_num = 0;
+
+    if (mjpeg_width == 0 || mjpeg_height == 0)
+        return FALSE;
+
+    static GdkPixbuf *pixbuf = NULL;
+    if (!pixbuf)
+        pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, TRUE, 8, mjpeg_width, mjpeg_height);
+
+    if (frame_num == 0) {
+        cs = cairo_image_surface_create_for_data(gdk_pixbuf_get_pixels(pixbuf),
+                                                 CAIRO_FORMAT_RGB24,
+                                                 mjpeg_width, mjpeg_height,
+                                                 gdk_pixbuf_get_rowstride(pixbuf));
+
+        c = cairo_create(cs);
+        paint(c, mjpeg_width, mjpeg_height, NULL);
+        cairo_show_page(c);
+        cairo_destroy(c);
+        convert_rgb_to_bgr(pixbuf);
+    }
+
+    gdk_pixbuf_save_to_callback(pixbuf, write_mjpeg_out, gdk_pixbuf_get_pixels(pixbuf), "jpeg",
+                                &error, NULL);
+    //cairo_surface_write_to_png_stream(cs, write_func, NULL);
+    if (frame_num == 0)
+        cairo_surface_destroy(cs);
+
+    if (++frame_num > 50) frame_num = 0;
+    fflush(stdout);
+    return TRUE;
+}
+
 void toggle_full_screen(GtkWidget *menu_item, gpointer data)
 {
 #if (GTKVER == 3)
@@ -605,6 +673,7 @@ int main( int   argc,
     struct tm *tm;
     GThread   *gth = NULL;         /* thread id */
     gboolean   run_flag = TRUE;   /* used as exit flag for threads */
+    gint       i;
 
     putenv("UBUNTU_MENUPROXY=");
 
@@ -648,6 +717,16 @@ int main( int   argc,
 #endif
 
     gtk_init (&argc, &argv);
+
+    for (i = 1; i < argc-1; i++) {
+        if (!strcmp(argv[i], "-mjpeg")) {
+            gchar *p = strchr(argv[i+1], 'x');
+            if (p) {
+                mjpeg_width = atoi(argv[i+1]);
+                mjpeg_height = atoi(p+1);
+            }
+        }
+    }
 
     main_window = window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(main_window), "JudoInfo");
@@ -721,6 +800,8 @@ int main( int   argc,
 
     /*g_timeout_add(100, timeout, NULL);*/
     g_timeout_add(2000, refresh_graph, NULL);
+    if (mjpeg_width && mjpeg_height)
+        g_timeout_add(40, write_mjpeg, NULL);
 
     gtk_widget_show_all(window);
 

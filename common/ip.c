@@ -236,6 +236,13 @@ gint nodescan(guint network) // addr in network byte order
 static gulong addrs[16];
 static gint   addrcnt = 0;
 
+gulong get_addr(gint i) {
+    return addrs[i];
+}
+gint get_addrcnt(void) {
+    return addrcnt;
+}
+
 static gulong test_address(gulong a, gulong mask, gboolean is_not)
 {
     gint i;
@@ -934,6 +941,12 @@ gboolean ssdp_notify = TRUE;
 
 static void analyze_ssdp(gchar *rec, struct sockaddr_in *client)
 {
+#if (APP_NUM == APPLICATION_TYPE_PROXY)
+    extern void report_to_proxy(gchar *rec, struct sockaddr_in *client);
+    report_to_proxy(rec, client);
+    return;
+#endif
+
     if (connection_ok)
         return;
 
@@ -948,7 +961,7 @@ static void analyze_ssdp(gchar *rec, struct sockaddr_in *client)
 
     *p1 = 0;
 
-#if (APP_NUM == APPLICATION_TYPE_INFO) || (APP_NUM == APPLICATION_TYPE_WEIGHT) || (APP_NUM == APPLICATION_TYPE_JUDOGI)
+#if (APP_NUM == APPLICATION_TYPE_INFO) || (APP_NUM == APPLICATION_TYPE_WEIGHTR) || (APP_NUM == APPLICATION_TYPE_JUDOGI)
     if (strncmp(p+9, "JudoShiai", 9) == 0) {
         ssdp_ip_addr = client->sin_addr.s_addr;
         //g_print("SSDP %s: judoshiai addr=%lx\n", APPLICATION, ssdp_ip_addr);

@@ -222,7 +222,11 @@ void sql_window(GtkWidget *w, gpointer data)
     buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(result));
 
     PangoFontDescription *font_desc = pango_font_description_from_string("Courier 10");
+#if (GTKVER == 3)
+    gtk_widget_override_font (GTK_WIDGET(result), font_desc);
+#else
     gtk_widget_modify_font(GTK_WIDGET(result), font_desc);
+#endif
     pango_font_description_free (font_desc);
 
     g_signal_connect (G_OBJECT (window), "delete_event",

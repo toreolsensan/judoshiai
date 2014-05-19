@@ -30,6 +30,19 @@
 #define gdk_region_union	cairo_region_union
 #define gdk_region_subtract	cairo_region_subtract
 #define gdk_region_xor	cairo_region_xor
+
+#undef GTK_STOCK_CANCEL
+#define GTK_STOCK_CANCEL "_Cancel"
+#undef GTK_STOCK_PRINT
+#define GTK_STOCK_PRINT "_Print"
+#undef GTK_STOCK_OK
+#define GTK_STOCK_OK "_OK"
+#undef GTK_STOCK_OPEN
+#define GTK_STOCK_OPEN "_Open"
+#undef GTK_STOCK_SAVE
+#define GTK_STOCK_SAVE "_Save"
+#undef GTK_STOCK_APPLY
+#define GTK_STOCK_APPLY "_Apply"
 #endif
 
 
@@ -52,7 +65,8 @@
 #define APPLICATION_TYPE_INFO    3
 #define APPLICATION_TYPE_WEIGHT  4
 #define APPLICATION_TYPE_JUDOGI  5
-#define NUM_APPLICATION_TYPES    6
+#define APPLICATION_TYPE_PROXY   6
+#define NUM_APPLICATION_TYPES    7
 
 #define COMM_ESCAPE 0xff
 #define COMM_FF     0xfe

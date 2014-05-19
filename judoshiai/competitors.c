@@ -1459,7 +1459,8 @@ static GtkWidget *create_view_and_model(void)
     gint col_offset;
 
     current_view = view = gtk_tree_view_new();
-    //gtk_tree_view_set_enable_tree_lines(current_view, TRUE);
+    gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(current_view), TRUE);
+    //gtk_tree_view_set_enable_tree_lines(GTK_TREE_VIEW(current_view), TRUE);
 
     /* --- Column last name --- */
 

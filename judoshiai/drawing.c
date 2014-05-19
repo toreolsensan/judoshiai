@@ -575,7 +575,11 @@ static gint get_competitor_number(gint pos, struct mdata *mdata)
 // manually select position for the competitor
 static gboolean select_number(GtkWidget *eventbox, GdkEventButton *event, void *param)
 {
+#if (GTKVER == 3)
+    GdkRGBA bg;
+#else
     GdkColor bg;
+#endif
     gchar buf[200];
     gint num = 0, i, nxt;
     struct mdata *mdata = param;
@@ -588,9 +592,15 @@ static gboolean select_number(GtkWidget *eventbox, GdkEventButton *event, void *
 
     // undraw competitor
     if (num && mdata->mpos[num].judoka) {
+#if (GTKVER == 3)
+        gdk_rgba_parse(&bg, "#000000");
+        gtk_widget_override_color(mdata->mcomp[mdata->mpos[num].judoka].label, 
+                                  GTK_STATE_FLAG_NORMAL, &bg);
+#else
         gdk_color_parse("#000000", &bg); 
         gtk_widget_modify_fg(mdata->mcomp[mdata->mpos[num].judoka].label, 
                              GTK_STATE_NORMAL, &bg);
+#endif
         sprintf(buf, "%2d.", get_competitor_number(num, mdata));
         gtk_label_set_text(GTK_LABEL(mdata->mpos[num].label), buf);
         mdata->mcomp[mdata->mpos[num].judoka].pos = 0;
@@ -627,11 +637,17 @@ static gboolean select_number(GtkWidget *eventbox, GdkEventButton *event, void *
              gtk_label_get_text(GTK_LABEL(mdata->mcomp[mdata->selected].label)));
     gtk_label_set_text(GTK_LABEL(mdata->mpos[num].label), buf);
 
+#if (GTKVER == 3)
+    gdk_rgba_parse(&bg, "#7F7F7F");
+    gtk_widget_override_color(mdata->mcomp[mdata->selected].label, GTK_STATE_FLAG_NORMAL, &bg);
+    gdk_rgba_parse(&bg, "#FFFFFF");
+    gtk_widget_override_background_color(mdata->mcomp[mdata->selected].eventbox, GTK_STATE_FLAG_NORMAL, &bg);
+#else
     gdk_color_parse("#7F7F7F", &bg); 
     gtk_widget_modify_fg(mdata->mcomp[mdata->selected].label, GTK_STATE_NORMAL, &bg);
     gdk_color_parse("#FFFFFF", &bg); 
     gtk_widget_modify_bg(mdata->mcomp[mdata->selected].eventbox, GTK_STATE_NORMAL, &bg);
-
+#endif
     nxt = get_next_comp(mdata);
     if (nxt)
         select_competitor(mdata->mcomp[nxt].eventbox, NULL, mdata);
@@ -646,7 +662,11 @@ static gboolean select_number(GtkWidget *eventbox, GdkEventButton *event, void *
 static gboolean select_competitor(GtkWidget *eventbox, GdkEventButton *event, void *param)
 {
     guint index = 0;
+#if (GTKVER == 3)
+    GdkRGBA bg;
+#else
     GdkColor bg;
+#endif
     gint i;
     struct mdata *mdata = param;
 
@@ -661,12 +681,21 @@ static gboolean select_competitor(GtkWidget *eventbox, GdkEventButton *event, vo
         return FALSE;
     }
 
+#if (GTKVER == 3)
+    gdk_rgba_parse(&bg, "#FFFFFF"); 
+    for (i = 1; i <= mdata->mjudokas; i++)
+        gtk_widget_override_background_color(mdata->mcomp[i].eventbox, GTK_STATE_FLAG_NORMAL, &bg);
+
+    gdk_rgba_parse(&bg, "#E0E0FF"); 
+    gtk_widget_override_background_color(mdata->mcomp[index].eventbox, GTK_STATE_FLAG_NORMAL, &bg);
+#else
     gdk_color_parse("#FFFFFF", &bg); 
     for (i = 1; i <= mdata->mjudokas; i++)
         gtk_widget_modify_bg(mdata->mcomp[i].eventbox, GTK_STATE_NORMAL, &bg);
 
     gdk_color_parse("#E0E0FF", &bg); 
     gtk_widget_modify_bg(mdata->mcomp[index].eventbox, GTK_STATE_NORMAL, &bg);
+#endif
     mdata->selected = index;
 
     return TRUE;
@@ -1294,7 +1323,11 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
 {
     gint i;
     GtkWidget *dialog = NULL, *hbox, *vbox1, *vbox2, *label, *eventbox, *tmp;
+#if (GTKVER == 3)
+    GdkRGBA bg, bg1, bg2;
+#else
     GdkColor bg, bg1, bg2;
+#endif
     gchar *catname = NULL;
     gchar buf[200];
 
@@ -1302,9 +1335,15 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
     mdata->mjudokas = competitors;
 
     // colours for the tables
+#if (GTKVER == 3)
+    gdk_rgba_parse(&bg, "#FFFFFF");
+    gdk_rgba_parse(&bg1, "#AFAF9F");
+    gdk_rgba_parse(&bg2, "#AFAFBF");
+#else
     gdk_color_parse("#FFFFFF", &bg); 
     gdk_color_parse("#AFAF9F", &bg1); 
     gdk_color_parse("#AFAFBF", &bg2); 
+#endif
 
     // find the index of the category
     gtk_tree_model_get(current_model, parent,
@@ -1496,10 +1535,15 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
             (mdata->mfrench_sys == 3 && i > 48) ||
             (mdata->mfrench_sys == 3 && i > 32 && i <= 64) ||
             (mdata->mfrench_sys == 3 && i > 96))
+#if (GTKVER == 3)
+            gtk_widget_override_background_color(eventbox, GTK_STATE_FLAG_NORMAL, &bg1);
+        else
+            gtk_widget_override_background_color(eventbox, GTK_STATE_FLAG_NORMAL, &bg2);
+#else
             gtk_widget_modify_bg(eventbox, GTK_STATE_NORMAL, &bg1);
         else
             gtk_widget_modify_bg(eventbox, GTK_STATE_NORMAL, &bg2);
-
+#endif
         if (mdata->mfrench_sys >= 0 && i < mdata->mpositions) {
 #if (GTKVER == 3)
             if ((i & 1) == 0)
@@ -1525,7 +1569,11 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
     // cut button
     if (mdata->edit && mdata->mfrench_sys >= 0) {
         eventbox = gtk_event_box_new();
+#if (GTKVER == 3)
+        GtkWidget *delete = gtk_image_new_from_icon_name("edit-cut", 24);
+#else
         GtkWidget *delete = gtk_image_new_from_stock(GTK_STOCK_CUT, GTK_ICON_SIZE_LARGE_TOOLBAR);
+#endif
         gtk_container_add(GTK_CONTAINER(eventbox), delete);
 #if (GTKVER == 3)
         gtk_grid_attach(GTK_GRID(vbox1), eventbox, 0, r1++, 1, 1);
@@ -1587,7 +1635,11 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
         g_signal_connect(G_OBJECT(eventbox), "button_press_event",
                          G_CALLBACK(select_competitor), mdata);
                 
+#if (GTKVER == 3)
+        gtk_widget_override_background_color(eventbox, GTK_STATE_FLAG_NORMAL, &bg);
+#else
         gtk_widget_modify_bg(eventbox, GTK_STATE_NORMAL, &bg);
+#endif
         g_object_set(label, "xalign", 0.0, NULL);
     }        
 
@@ -1680,10 +1732,18 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
                              gtk_label_get_text(GTK_LABEL(mdata->mcomp[cnum].label)));
                     gtk_label_set_text(GTK_LABEL(mdata->mpos[i].label), buf);
 
+#if (GTKVER == 3)
+                    gdk_rgba_parse(&bg, "#7F7F7F"); 
+                    gtk_widget_override_color(mdata->mcomp[cnum].label, GTK_STATE_FLAG_NORMAL, &bg);
+                    gdk_rgba_parse(&bg, "#FFFFFF"); 
+                    gtk_widget_override_background_color(mdata->mcomp[cnum].eventbox, 
+                                                         GTK_STATE_FLAG_NORMAL, &bg);
+#else
                     gdk_color_parse("#7F7F7F", &bg); 
                     gtk_widget_modify_fg(mdata->mcomp[cnum].label, GTK_STATE_NORMAL, &bg);
                     gdk_color_parse("#FFFFFF", &bg); 
                     gtk_widget_modify_bg(mdata->mcomp[cnum].eventbox, GTK_STATE_NORMAL, &bg);
+#endif
                 }
             }
         } 
