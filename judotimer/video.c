@@ -1190,9 +1190,13 @@ void create_video_window(void)
 
     gtk_box_pack_start(GTK_BOX(vbox), hbuttonbox, FALSE, FALSE, 0);
 
+#if (GTKVER == 3)
+    g_signal_connect(G_OBJECT(player_widget), 
+                     "draw", G_CALLBACK(expose_video), NULL);
+#else
     g_signal_connect(G_OBJECT(player_widget), 
                      "expose-event", G_CALLBACK(expose_video), NULL);
-
+#endif
     gtk_widget_show_all(GTK_WIDGET(window));
 
     g_signal_connect (G_OBJECT(window), "delete_event",
