@@ -6,6 +6,7 @@ judotimer/obj-*
 judoinfo/obj-*
 judoweight/obj-*
 judojudogi/obj-*
+judoproxy/obj-*
 judoshiai/basic.output
 judoshiai/basic.tab.c
 judoshiai/basic.tab.h
