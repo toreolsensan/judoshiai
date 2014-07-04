@@ -39,7 +39,9 @@ static gboolean debug = FALSE;
     do { if (dfile) fwrite(_s, 1, _l, dfile);                            \
         if (!rsvg_handle_write(handle, (guchar *)_s, _l, &err)) {        \
             g_print("\nERROR %s: %s %d\n",                              \
-                    err->message, __FUNCTION__, __LINE__); err = NULL; return TRUE; } } while (0)
+                    err->message, __FUNCTION__, __LINE__); err = NULL;  \
+            fwrite(_s, 1, _l, stdout);                                  \
+            return TRUE; } } while (0)
 
 #define WRITE1(_s, _l)                                                  \
     do { gint _i; for (_i = 0; _i < _l; _i++) {                         \
@@ -392,6 +394,7 @@ gint paint_svg(struct paint_data *pd)
     case SYSTEM_FRENCH_32:
     case SYSTEM_FRENCH_64:
     case SYSTEM_FRENCH_128:
+    case SYSTEM_CUSTOM:
         memset(fm, 0, sizeof(fm));
         db_read_category_matches(category, fm);
         m = fm;
@@ -1136,4 +1139,42 @@ void read_svg_files(gboolean ok)
 gboolean svg_in_use(void)
 {
     return num_svg > 0;
+}
+
+void add_custom_svg(gchar *data, gsize len, gint table, gint page)
+{
+    struct compsys systm;
+    systm.system = SYSTEM_CUSTOM;
+    systm.numcomp = 0;
+    systm.table = table;
+    systm.wishsys = 0;
+    gint key = make_key(systm, page-1);
+
+    svg_data[num_svg].key = key;
+    svg_data[num_svg].data = data;
+    svg_data[num_svg].datalen = len;
+
+    RsvgHandle *h = rsvg_handle_new_from_data((guchar *)svg_data[num_svg].data, 
+                                              svg_data[num_svg].datalen, NULL);
+    if (h) {
+        RsvgDimensionData dim;
+        rsvg_handle_get_dimensions(h, &dim);
+        svg_data[num_svg].width = dim.width;
+        svg_data[num_svg].height = dim.height;
+        g_object_unref(h);
+        //rsvg_handle_free(h);
+
+        g_print("custom read key=0x%x pos=%d w=%d h=%d\n", 
+                key, num_svg, svg_data[num_svg].width, svg_data[num_svg].height);
+        num_svg++;
+
+        struct svg_props *info = find_svg_info(key);
+        if (!info) {
+            info = &svg_info[num_svg_info];
+            if (num_svg_info < NUM_SVG)
+                num_svg_info++;
+            info->key = key;
+        }
+        info->pages++;
+    }
 }

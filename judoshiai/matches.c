@@ -1433,6 +1433,139 @@ static void update_french_matches(gint category, struct compsys systm)
 
 }
 
+static void update_custom_matches(gint category, struct compsys systm)
+{
+    gint i;
+    struct match m[NUM_MATCHES];
+    struct custom_data *cd = get_custom_table(systm.table);
+    match_bare_t *t = cd->matches;
+    gint n = cd->num_matches;
+#define T(_n) t[_n-1]
+
+    if (automatic_sheet_update || automatic_web_page_update)
+        current_category = category;
+
+    memset(m, 0, sizeof(m));
+    db_read_category_matches(category, m);
+
+    for (i = 1; i <= n; i++) {
+        m[i].category = category;
+        m[i].number = i;
+        m[i].visible = TRUE;
+
+        if (T(i).c1.type == COMP_TYPE_MATCH) {
+            struct judoka *g = get_data(category);
+            gint prevm = T(i).c1.num;
+            gint comp = T(i).c1.pos;
+
+            if (MATCHED_FRENCH(prevm)) {
+                gint prevnum;
+
+                for (prevnum = 0; 
+                     prevnum < 8 && T(i).c1.prev[prevnum] && MATCHED_FRENCH(prevm); 
+                     prevnum++) {
+                    gint winner = WINNER(prevm);
+                    if (comp == 1) {
+                        if (winner == m[prevm].blue) prevm = T(prevm).c1.num;
+                        else prevm = T(prevm).c2.num;
+                    } else {
+                        if (winner == m[prevm].blue) prevm = T(prevm).c2.num;
+                        else prevm = T(prevm).c1.num;
+                    }
+                    comp = T(i).c1.prev[prevnum];
+                }
+
+                if (comp == 2) prevm = -prevm; // loser is negative
+
+                if (m[i].blue && 
+                    m[i].blue != WINNER_OR_LOSER(prevm) &&
+                    (m[i].blue_points || m[i].white_points)) {
+                    SHOW_MESSAGE("%s %s:%d (%d-%d) %s!", _("Match"),
+                                 g && g->last ? g->last : "?",
+                                 i, m[i].blue_points, m[i].white_points,
+                                 _("canceled"));
+                    m[i].blue_points = m[i].white_points = 0;
+                }
+                m[i].blue = WINNER_OR_LOSER(prevm);
+
+                if (db_has_hansokumake(m[i].blue) && prevm < 0 &&
+			!MATCHED(i))
+                    m[i].blue = GHOST;
+            } else if (m[i].blue) {
+                if (MATCHED(i))
+                    SHOW_MESSAGE("%s %s:%d (%d-%d) %s!", _("Match"),
+                                 g && g->last ? g->last : "?",
+                                 i, m[i].blue_points, m[i].white_points,
+                                 _("canceled"));
+                else
+                    SHOW_MESSAGE("%s %s:%d %s!", _("Match"),
+                                 g && g->last ? g->last : "?", i, _("changed"));
+                
+                m[i].blue = 0;
+            }
+
+            free_judoka(g);
+        } // if (T(i).c1.type == COMP_TYPE_MATCH)
+
+        if (T(i).c2.type == COMP_TYPE_MATCH) {
+            struct judoka *g = get_data(category);
+            gint prevm = T(i).c2.num;
+            gint comp = T(i).c2.pos;
+
+            if (MATCHED_FRENCH(prevm)) {
+                gint prevnum;
+
+                for (prevnum = 0; 
+                     prevnum < 8 && T(i).c2.prev[prevnum] && MATCHED_FRENCH(prevm); 
+                     prevnum++) {
+                    gint winner = WINNER(prevm);
+                    if (comp == 1) {
+                        if (winner == m[prevm].blue) prevm = T(prevm).c1.num;
+                        else prevm = T(prevm).c2.num;
+                    } else {
+                        if (winner == m[prevm].blue) prevm = T(prevm).c2.num;
+                        else prevm = T(prevm).c1.num;
+                    }
+                    comp = T(i).c2.prev[prevnum];
+                }
+
+                if (comp == 2) prevm = -prevm; // loser is negative
+
+                if (m[i].white && 
+                    m[i].white != WINNER_OR_LOSER(prevm) &&
+                    (m[i].white_points || m[i].white_points)) {
+                    SHOW_MESSAGE("%s %s:%d (%d-%d) %s!", _("Match"),
+                                 g && g->last ? g->last : "?",
+                                 i, m[i].blue_points, m[i].white_points,
+                                 _("canceled"));
+                    m[i].blue_points = m[i].white_points = 0;
+                }
+                m[i].white = WINNER_OR_LOSER(prevm);
+
+                if (db_has_hansokumake(m[i].white) && prevm < 0 &&
+			!MATCHED(i))
+                    m[i].white = GHOST;
+            } else if (m[i].white) {
+                if (MATCHED(i))
+                    SHOW_MESSAGE("%s %s:%d (%d-%d) %s!", _("Match"),
+                                 g && g->last ? g->last : "?",
+                                 i, m[i].blue_points, m[i].white_points,
+                                 _("canceled"));
+                else
+                    SHOW_MESSAGE("%s %s:%d %s!", _("Match"),
+                                 g && g->last ? g->last : "?", i, _("changed"));
+                
+                m[i].white = 0;
+            }
+
+            free_judoka(g);
+        } // if (T(i).c1.type == COMP_TYPE_MATCH)
+        
+        set_match(&m[i]);
+        db_set_match(&m[i]);
+    }
+}
+
 gint find_match_time(const gchar *cat)
 {
     if (strchr(cat, 'A') || strchr(cat, 'a'))
@@ -1862,6 +1995,9 @@ void update_matches(guint category, struct compsys sys, gint tatami)
         case SYSTEM_FRENCH_64:
         case SYSTEM_FRENCH_128:
             update_french_matches(category, sys);
+            break;
+        case SYSTEM_CUSTOM:
+            update_custom_matches(category, sys);
             break;
         }
     }
@@ -3002,8 +3138,6 @@ static gboolean find_group_iter(GtkTreeModel *model,
 
     return FALSE;
 }
-
-#define T g_print("FILE %s LINE %d\n",__FILE__,  __LINE__)
 
 #if (GTKVER == 3)
 G_LOCK_DEFINE_STATIC(set_match_mutex);

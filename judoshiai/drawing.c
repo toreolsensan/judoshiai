@@ -1128,7 +1128,28 @@ static void make_manual_matches_callback(GtkWidget *widget,
 
     db_remove_matches(mdata->mcategory_ix);
 
-    if (mdata->mfrench_sys < 0) {
+    if (mdata->mfrench_sys == -2) { // custom system
+        struct custom_data *ct =  get_custom_table(mdata->sys.table);
+        for (i = 0; i < ct->num_matches; i++) {
+            struct match m;
+            gint c;
+                
+            memset(&m, 0, sizeof(m));
+            m.category = mdata->mcategory_ix;
+            m.number = i+1;
+            if (ct->matches[i].c1.type == COMP_TYPE_COMPETITOR) {
+                c = mdata->mpos[ct->matches[i].c1.num].judoka;
+                m.blue = c ? mdata->mcomp[c].index : GHOST;
+            }
+            if (ct->matches[i].c2.type == COMP_TYPE_COMPETITOR) {
+                c = mdata->mpos[ct->matches[i].c2.num].judoka;
+                m.white = c ? mdata->mcomp[c].index : GHOST;
+            }
+
+            set_match(&m);
+            db_set_match(&m);
+        }
+    } else if (mdata->mfrench_sys < 0) {
         for (i = 0; i < num_matches(mdata->sys.system, mdata->mjudokas); i++) {
             struct match m;
                 
@@ -1200,6 +1221,14 @@ struct compsys get_system_for_category(gint index, gint competitors)
     if (systm.system)
         return systm;
 
+    if (wishsys == CAT_SYSTEM_CUSTOM) {
+        table = get_custom_table_number_by_competitors(competitors);
+        if (table < 0) wishsys = CAT_SYSTEM_DEFAULT;
+        else {
+            sys = SYSTEM_CUSTOM;
+        }
+    }
+
     if (wishsys == CAT_SYSTEM_DEFAULT) {
         cat = avl_get_category(index);
         if (cat) {
@@ -1211,7 +1240,8 @@ struct compsys get_system_for_category(gint index, gint competitors)
         }
     }
 
-    if (competitors == 2 && (wishsys == CAT_SYSTEM_BEST_OF_3 || wishsys == CAT_SYSTEM_DEFAULT)) {
+    if (wishsys == CAT_SYSTEM_CUSTOM) {
+    } else if (competitors == 2 && (wishsys == CAT_SYSTEM_BEST_OF_3 || wishsys == CAT_SYSTEM_DEFAULT)) {
         sys = SYSTEM_BEST_OF_3;
     } else if (competitors <= 5 && (wishsys == CAT_SYSTEM_POOL || wishsys == CAT_SYSTEM_DEFAULT)) {
         sys = SYSTEM_POOL;
@@ -1330,6 +1360,7 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
 #endif
     gchar *catname = NULL;
     gchar buf[200];
+    struct custom_data *custom_table = NULL;
 
     mdata->drawn = 0;
     mdata->mjudokas = competitors;
@@ -1363,6 +1394,11 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
     case SYSTEM_BEST_OF_3:
         mdata->mpositions = competitors;
         mdata->mfrench_sys = -1;
+        break;
+    case SYSTEM_CUSTOM:
+        mdata->mfrench_sys = -2;
+        custom_table = get_custom_table(mdata->sys.table);
+        mdata->mpositions = custom_table->competitors_max;
         break;
     case SYSTEM_FRENCH_8:
         mdata->mpositions = 8;

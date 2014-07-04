@@ -21,7 +21,8 @@ OBJS += $(OBJDIR)/main.o $(OBJDIR)/competitors.o $(OBJDIR)/sheets.o $(OBJDIR)/se
 	$(OBJDIR)/db-matches.o $(OBJDIR)/db-table.o $(OBJDIR)/write-results.o \
 	$(OBJDIR)/match-data.o $(OBJDIR)/serial.o \
 	$(OBJDIR)/basic.tab.o $(OBJDIR)/lex.yy.o $(OBJDIR)/medal-matches.o $(OBJDIR)/db-validate.o \
-	$(OBJDIR)/svg.o $(OBJDIR)/properties.o $(OBJDIR)/ftp.o $(OBJDIR)/language.o
+	$(OBJDIR)/svg.o $(OBJDIR)/properties.o $(OBJDIR)/ftp.o $(OBJDIR)/language.o \
+	$(OBJDIR)/custom-category-parser.o $(OBJDIR)/custom-category.o
 
 CFLAGS += -DAPPLICATION="\"judoshiai\""
 CFLAGS += -DAPP_NUM=1

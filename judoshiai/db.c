@@ -227,11 +227,13 @@ gint db_init(const char *dbname)
         return -2;
     }
 
+    db_name = dbname;
+
+    read_custom_from_db();
+
     db_matches_init();
 	
     init_trees();
-
-    db_name = dbname;
 
     db_exec(db_name, "SELECT * FROM \"info\"", NULL, db_info_cb);
     reset_props_1(NULL, NULL, TRUE); // initialize not initialized values
@@ -610,3 +612,112 @@ gboolean catdef_needs_init(void)
 
     return FALSE;
 }
+
+int db_create_blob_table(void)
+{
+    sqlite3 *db;
+    int rc = sqlite3_open(db_name, &db);
+    if (rc) {
+	fprintf(stderr, "%s: Can't open database: %s\n", __FUNCTION__, 
+		sqlite3_errmsg(db));
+        sqlite3_close(db);
+        return -1;
+    }
+
+    const char *zSql = "CREATE TABLE blobs(key INTEGER PRIMARY KEY, value BLOB)";
+    rc = sqlite3_exec(db, zSql, 0, 0, 0);
+
+    sqlite3_close(db);
+    return rc;
+}
+
+int db_write_blob (
+  int key,
+  const unsigned char *zBlob,    /* Pointer to blob of data */
+  int nBlob                      /* Length of data pointed to by zBlob */
+)
+{
+    sqlite3 *db;
+    int rc = sqlite3_open(db_name, &db);
+    if (rc) {
+	fprintf(stderr, "%s: Can't open database: %s\n", __FUNCTION__, 
+		sqlite3_errmsg(db));
+        sqlite3_close(db);
+        return -1;
+    }
+
+    const char *zSql = "INSERT INTO blobs(key, value) VALUES(?, ?)";
+    sqlite3_stmt *pStmt;
+
+    do {
+        rc = sqlite3_prepare(db, zSql, -1, &pStmt, 0);
+        if( rc!=SQLITE_OK ) {
+            sqlite3_close(db);
+            return rc;
+        }
+
+        sqlite3_bind_int(pStmt, 1, key);
+        sqlite3_bind_blob(pStmt, 2, zBlob, nBlob, SQLITE_STATIC);
+
+        rc = sqlite3_step(pStmt);
+        assert( rc!=SQLITE_ROW );
+
+        rc = sqlite3_finalize(pStmt);
+    } while ( rc==SQLITE_SCHEMA );
+
+    sqlite3_close(db);
+    return rc;
+}
+
+/*
+** Read a blob from database db. Return an SQLite error code.
+*/ 
+int db_read_blob(
+  int key,
+  unsigned char **pzBlob,    /* Set *pzBlob to point to the retrieved blob */
+  int *pnBlob                /* Set *pnBlob to the size of the retrieved blob */
+)
+{
+    sqlite3 *db;
+    int rc = sqlite3_open(db_name, &db);
+    if (rc) {
+	fprintf(stderr, "%s: Can't open database: %s\n", __FUNCTION__, 
+		sqlite3_errmsg(db));
+        sqlite3_close(db);
+        return -1;
+    }
+
+    const char *zSql = "SELECT value FROM blobs WHERE key = ?";
+    sqlite3_stmt *pStmt;
+
+    *pzBlob = 0;
+    *pnBlob = 0;
+
+    do {
+        rc = sqlite3_prepare(db, zSql, -1, &pStmt, 0);
+        if( rc!=SQLITE_OK ){
+            sqlite3_close(db);
+            return rc;
+        }
+
+        sqlite3_bind_int(pStmt, 1, key);
+
+        rc = sqlite3_step(pStmt);
+        if( rc==SQLITE_ROW ){
+            *pnBlob = sqlite3_column_bytes(pStmt, 0);
+            *pzBlob = (unsigned char *)malloc(*pnBlob);
+            memcpy(*pzBlob, sqlite3_column_blob(pStmt, 0), *pnBlob);
+        }
+
+        rc = sqlite3_finalize(pStmt);
+    } while( rc==SQLITE_SCHEMA );
+
+    sqlite3_close(db);
+    return rc;
+}
+
+void db_free_blob(unsigned char *zBlob)
+{
+    free(zBlob);
+}
+

@@ -10,6 +10,7 @@
 
 #include "comm.h"
 #include "avl.h"
+#include "custom-category.h"
 
 #ifdef ENABLE_NLS
 #include <libintl.h>
@@ -68,6 +69,7 @@
 #define SYSTEM_DPOOL2     10
 #define SYSTEM_BEST_OF_3  11
 #define SYSTEM_DPOOL3     12
+#define SYSTEM_CUSTOM     13
 
 #if 0
 #define SYSTEM_POOL_Z         (SYSTEM_POOL<<SYSTEM_MASK_SHIFT)
@@ -126,6 +128,7 @@ enum cat_systems {
     CAT_SYSTEM_DEN_DOUBLE_ELIMINATION,
     CAT_SYSTEM_EST_D_KLASS_ONE_BRONZE,
     CAT_SYSTEM_DPOOL3,
+    CAT_SYSTEM_CUSTOM,
     NUM_SYSTEMS
 };
 #define CAT_IJF_DOUBLE_REPECHAGE CAT_ESP_REPESCA_DOBLE
@@ -747,6 +750,8 @@ const char *db_name;
 extern guint selected_judokas[TOTAL_NUM_COMPETITORS];
 extern guint num_selected_judokas;
 
+/** Functions */
+
 extern void progress_show(gdouble progress, const gchar *text);
 extern gboolean this_is_shiai(void);
 extern void refresh_window(void);
@@ -921,6 +926,10 @@ extern void db_add_colums_to_cat_def_table(void);
 extern gboolean catdef_needs_init(void);
 extern gchar *db_get_col_data(gchar **data, gint numcols, gint row, gchar *name);
 extern gchar *db_get_row_col_data(gint row, gint col);
+extern int db_create_blob_table(void);
+extern int db_write_blob(int key, const unsigned char *zBlob, int nBlob);
+extern int db_read_blob(int key, unsigned char **pzBlob, int *pnBlob);
+extern void db_free_blob(unsigned char *zBlob);
 
 /* categories */
 extern void create_categories(GtkWidget *w, gpointer   data);
@@ -1179,6 +1188,7 @@ extern gint get_num_svg_pages(struct compsys systm);
 extern gint paint_svg(struct paint_data *pd);
 extern gboolean svg_in_use(void);
 extern gint get_svg_size(struct compsys systm, gint pagenum, gint *width, gint *height);
+extern void add_custom_svg(gchar *data, gsize len, gint table, gint page);
 
 /* properties */
 extern void init_property(gchar *prop, gchar *val);

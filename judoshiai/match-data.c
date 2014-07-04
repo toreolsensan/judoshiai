@@ -1780,7 +1780,8 @@ static const gint system_menu_order[NUM_SYSTEMS] = {
     CAT_SYSTEM_REPECHAGE_ONE_BRONZE,
     CAT_SYSTEM_DOUBLE_LOST,
     CAT_SYSTEM_GBR_KNOCK_OUT,
-    CAT_SYSTEM_DEN_DOUBLE_ELIMINATION
+    CAT_SYSTEM_DEN_DOUBLE_ELIMINATION,
+    CAT_SYSTEM_CUSTOM
 };
 
 const gint cat_system_to_table[NUM_SYSTEMS] = {
@@ -1803,7 +1804,8 @@ const gint cat_system_to_table[NUM_SYSTEMS] = {
     TABLE_GBR_KNOCK_OUT,
     0,
     TABLE_DEN_DOUBLE_ELIMINATION,
-    TABLE_EST_D_KLASS_ONE_BRONZE
+    TABLE_EST_D_KLASS_ONE_BRONZE,
+    0, 0
 };
 
 struct compsys wish_to_system(gint sys, gint numcomp)
@@ -1832,6 +1834,7 @@ struct compsys wish_to_system(gint sys, gint numcomp)
         case CAT_SYSTEM_DPOOL2: ret.system = SYSTEM_DPOOL2; break;
         case CAT_SYSTEM_DPOOL3: ret.system = SYSTEM_DPOOL3; break;
         case CAT_SYSTEM_BEST_OF_3: ret.system = SYSTEM_BEST_OF_3; break;
+        case CAT_SYSTEM_CUSTOM: ret.system = SYSTEM_CUSTOM; break;
         }
     }
 
@@ -1857,6 +1860,12 @@ gchar *get_system_description(gint index, gint competitors)
     case SYSTEM_DPOOL2: return _("Double Pool 2");
     case SYSTEM_DPOOL3: return _("Double Pool 3");
     case SYSTEM_BEST_OF_3: return _("Best of 3");
+    case SYSTEM_CUSTOM: 
+        {
+            struct custom_data *ct = get_custom_table(sys.table);
+            if (ct) return ct->name_long;
+            return _("Custom");
+        }
     }
 
     if (system_is_french(sys.system)) {
@@ -1916,6 +1925,7 @@ static gchar *get_system_name(gint num)
     case CAT_SYSTEM_BEST_OF_3: return _("Best of 3");
     case CAT_SYSTEM_DEN_DOUBLE_ELIMINATION: return _("DEN Double Elimination");
     case CAT_SYSTEM_EST_D_KLASS_ONE_BRONZE: return _("EST Double Elim One Bronze");
+    case CAT_SYSTEM_CUSTOM: return _("Customized");
     }
     return "";
 }
