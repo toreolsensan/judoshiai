@@ -1,0 +1,20 @@
+info "Ranskalainen 16" "Ranska16" 9 16
+
+svg page 1
+
+ko a_lohko: c1 c2 c3 c4 c5 c6 c7 c8
+ko b_lohko: c9 c10 c11 c12 c13 c14 c15 c16
+
+ko rep_a: a_lohko_2_1.1.p.2 a_lohko_2_1.2 a_lohko_2_2.1.p.2 a_lohko_2_2.2 
+ko rep_b: b_lohko_2_1.1.p.2 b_lohko_2_1.2 b_lohko_2_2.1.p.2 b_lohko_2_2.2 
+
+svg page 2
+
+pronssi_1: rep_a.1 b_lohko.2
+pronssi_2: rep_b.1 a_lohko.2
+finaali: a_lohko.1 b_lohko.1
+
+pos1 finaali.1
+pos2 finaali.2
+pos3 pronssi_1.1
+pos4 pronssi_2.1

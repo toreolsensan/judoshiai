@@ -1,0 +1,18 @@
+info "Ranskalainen 8" "Ranska8" 0 8
+
+svg page 1
+
+ko a_lohko: c1 c2 c3 c4
+ko b_lohko: c5 c6 c7 c8
+
+rep_a: a_lohko_1_1.2 a_lohko_1_2.2
+rep_b: b_lohko_1_1.2 b_lohko_1_2.2
+
+pronssi_1: rep_a.1 b_lohko.2
+pronssi_2: rep_b.1 a_lohko.2
+finaali: a_lohko.1 b_lohko.1
+
+pos1 finaali.1
+pos2 finaali.2
+pos3 pronssi_1.1
+pos4 pronssi_2.1
