@@ -87,14 +87,19 @@ static gboolean expose_video(GtkWidget *widget, GdkEventExpose *event, gpointer 
     if (!pb)
         return FALSE;
 
+#if (GTKVER == 3)
+    cairo_t *c = (cairo_t *)event;
+#else
     cairo_t *c = gdk_cairo_create(gtk_widget_get_window(widget));
+#endif
     gdk_cairo_set_source_pixbuf(c, pb, 0, 0);
     cairo_paint(c);
 
     g_object_unref(pb);
+#if (GTKVER != 3)
     cairo_show_page(c);
     cairo_destroy(c);
-
+#endif
     return FALSE;
 }
 

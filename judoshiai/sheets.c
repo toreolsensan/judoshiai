@@ -2488,8 +2488,7 @@ void paint_next_matches(struct paint_data *pd)
 }
 
 static GtkWidget *darea = NULL;
-gdouble zoom = 1.0, orig_zoom;
-static gdouble zoom_x_offset = 0.0, zoom_y_offset = 0.0, orig_x_offset, orig_y_offset;
+gdouble zoom = 1.0;
 static gdouble button_start_x, button_start_y;
 static gboolean button_drag = FALSE;
 
@@ -2504,6 +2503,15 @@ __inline__ guint64 rdtsc(void) {
     return (guint64)hi << 32 | lo;
 }
 #endif
+
+static void refresh_darea(void)
+{
+#if (GTKVER == 3)
+    gtk_widget_queue_draw(darea);
+#else
+    expose(darea, 0, 0);
+#endif
+}
 
 static gboolean expose_cat(GtkWidget *widget, GdkEventExpose *event, gpointer userdata)
 {
@@ -2541,7 +2549,11 @@ static gboolean expose_cat(GtkWidget *widget, GdkEventExpose *event, gpointer us
     }
 
 #if (GTKVER == 3)
-    pd->c = gdk_cairo_create(gtk_widget_get_window(widget));
+    pd->c = (cairo_t *)event;
+    paint_category(pd);
+    cairo_set_source_surface(pd->c, print_icon, 0, 0);
+    cairo_paint(pd->c);
+    return FALSE;
 #else
     pd->c = gdk_cairo_create(widget->window);
 #endif
@@ -2685,7 +2697,7 @@ static gboolean expose(GtkWidget *widget, GdkEventExpose *event, gpointer userda
     pd.category = current_category;
     pd.page = current_page;
 #if (GTKVER == 3)
-    pd.c = gdk_cairo_create(gtk_widget_get_window(widget));
+    pd.c = (cairo_t *)event;
 #else
     pd.c = gdk_cairo_create(widget->window);
 #endif
@@ -2702,15 +2714,6 @@ static gboolean expose(GtkWidget *widget, GdkEventExpose *event, gpointer userda
             pd.paper_width = zoom*orig_paper_width;
             pd.paper_height = zoom*orig_paper_height;
 
-            if (zoom_x_offset > 0.0)
-                zoom_x_offset = 0.0;
-            if (zoom_y_offset > 0.0)
-                zoom_y_offset = 0.0;
-            if (zoom_x_offset < orig_paper_width - pd.paper_width)
-                zoom_x_offset = orig_paper_width - pd.paper_width;
-            if (zoom_y_offset < orig_paper_height - pd.paper_height)
-                zoom_y_offset = orig_paper_height - pd.paper_height;
-
             cairo_surface_t *cs = 
                 cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 
                                            pd.paper_width, pd.paper_height);
@@ -2723,9 +2726,11 @@ static gboolean expose(GtkWidget *widget, GdkEventExpose *event, gpointer userda
             cairo_save(pd.c);
             cairo_rectangle(pd.c, 0.0, 0.0, orig_paper_width, orig_paper_height);
             cairo_clip(pd.c);
-            cairo_set_source_surface(pd.c, cs, zoom_x_offset, 
-                                     zoom_y_offset);
-            paint_category(&pd);
+            cairo_set_source_surface(pd.c, cs, 
+                                     -button_start_x*zoom + button_start_x, 
+                                     -button_start_y*zoom + button_start_y);
+            cairo_paint(pd.c);
+            //paint_category(&pd);
             cairo_restore(pd.c);
             cairo_surface_destroy(cs);
         }
@@ -2737,8 +2742,10 @@ static gboolean expose(GtkWidget *widget, GdkEventExpose *event, gpointer userda
     if (button_drag == FALSE)
         paint_next_matches(&pd);
 
+#if (GTKVER != 3)
     cairo_show_page(pd.c);
     cairo_destroy(pd.c);
+#endif
 
     return FALSE;
 }
@@ -2781,7 +2788,8 @@ void refresh_sheet_display(gboolean forced)
 
     current_page = 0;
 
-    expose(darea, 0, gint_to_ptr(forced == 0 && automatic_sheet_update == 0));
+    refresh_darea();
+    //expose(darea, 0, gint_to_ptr(forced == 0 && automatic_sheet_update == 0));
 
     if (automatic_web_page_update) {
         write_png(NULL, gint_to_ptr(current_category));
@@ -2798,6 +2806,23 @@ static void screen_changed(GtkWidget *widget, GdkScreen *old_screen, gpointer us
 #endif
 }
 
+static gboolean scroll_notify(GtkWidget *sheet_page, 
+                              GdkEventScroll *event, 
+                              gpointer userdata)
+{
+    button_start_x = event->x;
+    button_start_y = event->y;
+
+    if (!event->direction) zoom *= 1.2;
+    else zoom *= 0.8;
+    if (zoom < 1.1) zoom = 1.0;
+    else if (zoom > 3.0) zoom = 3.0;
+
+    refresh_darea();
+
+    return TRUE;
+}
+
 static gboolean motion_notify(GtkWidget *sheet_page, 
                               GdkEventMotion *event, 
                               gpointer userdata)
@@ -2806,19 +2831,16 @@ static gboolean motion_notify(GtkWidget *sheet_page,
         return FALSE;
 
     if (event->state & GDK_BUTTON3_MASK) {
-        zoom = orig_zoom + (event->y - button_start_y)*0.005;
+        zoom = (event->y - button_start_y)*0.005;
         if (zoom < 1.0)
             zoom = 1.0;
         else if (zoom > 3.0)
             zoom = 3.0;
-    } else {
-        if (zoom < 1.1)
-            return FALSE;
-
-        zoom_x_offset = orig_x_offset + event->x - button_start_x;
-        zoom_y_offset = orig_y_offset + event->y - button_start_y;
+    } else if (zoom < 1.1) {
+        return FALSE;
     }
-    expose(darea, 0, 0);
+    refresh_darea();
+    //expose(darea, 0, 0);
 	
     return TRUE;
 }
@@ -2828,6 +2850,8 @@ static gboolean release_notify(GtkWidget *sheet_page,
 			       gpointer userdata)
 {
     button_drag = FALSE;
+    zoom = 1.0;
+    refresh_darea();
     return FALSE;
 }
 
@@ -2914,22 +2938,21 @@ gboolean change_current_page(GtkWidget *sheet_page,
                 y <= category_click_areas[i].y2) {
                 current_page = 0;
                 current_category = category_click_areas[i].category;
-                expose(darea, 0, 0);
+                refresh_darea();
+                //expose(darea, 0, 0);
                 return TRUE;
             }
         }
 
         button_start_x = event->x;
         button_start_y = event->y;
-        orig_x_offset = zoom_x_offset;
-        orig_y_offset = zoom_y_offset;
-        orig_zoom = zoom;
         button_drag = TRUE;
 
         if (event->button == 1)
             current_page = next_page(current_category, current_page);
 
-        expose(darea, 0, 0);
+        refresh_darea();
+        //expose(darea, 0, 0);
 
         return TRUE;
     }
@@ -2950,7 +2973,8 @@ void set_sheet_page(GtkWidget *notebook)
                           GDK_BUTTON_RELEASE_MASK |
                           /*GDK_POINTER_MOTION_MASK |*/
                           GDK_POINTER_MOTION_HINT_MASK |
-                          GDK_BUTTON_MOTION_MASK);
+                          GDK_BUTTON_MOTION_MASK |
+                          GDK_SCROLL_MASK);
 
     gtk_notebook_append_page(GTK_NOTEBOOK(notebook), darea, sheet_label);
     //gtk_container_add (GTK_CONTAINER (main_window), darea);
@@ -2974,6 +2998,8 @@ void set_sheet_page(GtkWidget *notebook)
                      "button-release-event", G_CALLBACK(release_notify), NULL);
     g_signal_connect(G_OBJECT(darea), 
                      "motion-notify-event", G_CALLBACK(motion_notify), NULL);
+    g_signal_connect(G_OBJECT(darea), 
+                     "scroll-event", G_CALLBACK(scroll_notify), NULL);
 
     gtk_widget_show_all(notebook);
 }

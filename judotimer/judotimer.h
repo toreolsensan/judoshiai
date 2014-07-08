@@ -97,6 +97,7 @@ extern gboolean white_first;
 extern gboolean show_competitor_names;
 extern gchar saved_first1[32], saved_first2[32], saved_last1[32], saved_last2[32], saved_cat[16];
 extern gboolean fullscreen;
+extern gboolean require_judogi_ok;
 
 extern gboolean video_update;
 extern gchar  video_http_host[128];
@@ -158,6 +159,7 @@ extern void toggle_rules_short_pin_times(GtkWidget *menu_item, gpointer data);
 extern void toggle_confirm_match(GtkWidget *menu_item, gpointer data);
 extern void toggle_whitefirst(GtkWidget *menu_item, gpointer data);
 extern void toggle_show_comp(GtkWidget *menu_item, gpointer data);
+extern void toggle_judogi_control(GtkWidget *menu_item, gpointer data);
 extern void select_display_layout(GtkWidget *menu_item, gpointer data);
 extern void select_name_layout(GtkWidget *menu_item, gpointer data);
 extern gpointer client_thread(gpointer args);

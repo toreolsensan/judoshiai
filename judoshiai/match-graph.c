@@ -13,6 +13,7 @@
 
 #include "judoshiai.h"
 
+static void init_display(void);
 static gint find_box(gdouble x, gdouble y);
 static gboolean mouse_click(GtkWidget *sheet_page, 
 			    GdkEventButton *event, 
@@ -75,16 +76,33 @@ static gboolean pending_timeout = FALSE;
 
 gboolean mirror_display = FALSE;
 
+static struct win_collection {
+    GtkWidget *scrolled_window;
+    GtkWidget *darea;
+} w;
+
+void draw_match_graph(void)
+{
+    init_display();
+}
+
 void set_graph_rest_time(gint tatami, time_t rest_end, gint flags)
 {
     rest_times[tatami-1] = rest_end;
     rest_flags[tatami-1] = flags;
 }
 
+static void refresh_darea(void)
+{
+    gtk_widget_queue_draw(w.darea);
+    //gtk_widget_queue_draw_area(w.darea, 0, 0, 600, 2000);
+}
+#define refresh_window refresh_darea
+
 static gboolean refresh_graph(gpointer data)
 {
     pending_timeout = FALSE;
-    refresh_window();
+    init_display();
     return FALSE;
 }
 
@@ -409,6 +427,7 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
     cairo_restore(c);
 
  drag:
+#if 0
     if (button_drag) {
         cairo_set_line_width(c, THIN_LINE);
         cairo_text_extents(c, dragged_text, &extents);
@@ -441,28 +460,94 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
             cairo_restore(c);
         }
     }
-
+#endif
     if (update_later && pending_timeout == FALSE) {
         pending_timeout = TRUE;
         g_timeout_add(5000, refresh_graph, NULL);
     }
 }
 
+static cairo_surface_t *surface = NULL;
+static gdouble paper_width, paper_height;
+
+static void init_display(void)
+{
+    if (!surface) return;
+    cairo_t *c = cairo_create(surface);
+    paint(c, paper_width, paper_height, NULL);
+    cairo_destroy(c);
+    refresh_darea();
+}
+
+static gboolean configure_event_cb(GtkWidget         *widget,
+                                   GdkEventConfigure *event,
+                                   gpointer           data)
+{
+    if (surface)
+        cairo_surface_destroy(surface);
+
+    paper_width = gtk_widget_get_allocated_width(widget);
+    paper_height = gtk_widget_get_allocated_height(widget);
+
+    surface = gdk_window_create_similar_surface(gtk_widget_get_window(widget),
+                                                CAIRO_CONTENT_COLOR, paper_width, paper_height);
+
+    init_display();
+
+    /* We've handled the configure event, no need for further processing. */
+    return TRUE;
+}
 
 /* This is called when we need to draw the windows contents */
 static gboolean expose(GtkWidget *widget, GdkEventExpose *event, gpointer userdata)
 {
-    static cairo_surface_t *cs = NULL;
 #if (GTKVER == 3)
-    cairo_t *c = gdk_cairo_create(gtk_widget_get_window(widget));
-    gint allocw = gtk_widget_get_allocated_width(widget);
-    gint alloch = gtk_widget_get_allocated_height(widget);
+    cairo_t *c = (cairo_t *)event;
+    cairo_set_source_surface(c, surface, 0, 0);
+    cairo_paint(c);
+
+    if (button_drag) {
+        cairo_text_extents_t extents;
+    
+        cairo_set_line_width(c, THIN_LINE);
+        cairo_text_extents(c, dragged_text, &extents);
+        cairo_set_source_rgb(c, 1.0, 1.0, 1.0);
+        cairo_rectangle(c, dragged_x - extents.width/2.0, dragged_y - extents.height,
+                        extents.width + 4, extents.height + 4);
+        cairo_fill(c);
+        cairo_set_source_rgb(c, 0, 0, 0);
+        cairo_rectangle(c, dragged_x - extents.width/2.0 - 1, dragged_y - extents.height - 1,
+                        extents.width + 4, extents.height + 4);
+        cairo_stroke(c);
+        cairo_move_to(c, dragged_x - extents.width/2.0, dragged_y);
+        cairo_show_text(c, dragged_text);
+
+        gint t = dragged_t; //find_box(dragged_x, dragged_y);
+        if (t >= 0) {
+            gdouble snap_y;
+            if (point_click_areas[t].y2 - dragged_y < 
+                dragged_y - point_click_areas[t].y1)
+                snap_y = point_click_areas[t].y2;
+            else
+                snap_y = point_click_areas[t].y1;
+
+            cairo_save(c);
+            cairo_set_source_rgb(c, 0.0, 0.0, 1.0);
+            cairo_set_line_width(c, THICK_LINE);
+            cairo_move_to(c, point_click_areas[t].x1, snap_y);
+            cairo_line_to(c, point_click_areas[t].x2, snap_y);
+            cairo_stroke(c);
+            cairo_restore(c);
+        }
+    }
+
+    return FALSE;
 #else
+    static cairo_surface_t *cs = NULL;
+    static gint oldw = 0, oldh = 0;
     cairo_t *c = gdk_cairo_create(widget->window);
     gint allocw = widget->allocation.width;
     gint alloch = widget->allocation.height;
-#endif
-    static gint oldw = 0, oldh = 0;
 
     if (cs && (oldw != allocw || oldh != alloch)) {
         cairo_surface_destroy(cs);
@@ -488,14 +573,10 @@ static gboolean expose(GtkWidget *widget, GdkEventExpose *event, gpointer userda
 
     cairo_show_page(c);
     cairo_destroy(c);
+#endif
 
     return FALSE;
 }
-
-static struct win_collection {
-    GtkWidget *scrolled_window;
-    GtkWidget *darea;
-} w;
 
 static gint scroll_callback(gpointer userdata)
 {
@@ -557,49 +638,60 @@ void set_match_graph_page(GtkWidget *notebook)
 
     w.darea = gtk_drawing_area_new();
     gtk_widget_set_size_request(w.darea, 600, 2000);
-#if (GTKVER != 3)
+
+#if (GTKVER == 3)
+    gtk_widget_set_events(w.darea, gtk_widget_get_events(w.darea) |
+                          GDK_BUTTON_PRESS_MASK | 
+                          GDK_BUTTON_RELEASE_MASK |
+                          /*GDK_POINTER_MOTION_MASK |*/
+                          GDK_POINTER_MOTION_HINT_MASK |
+                          GDK_BUTTON_MOTION_MASK);
+#else
     GTK_WIDGET_SET_FLAGS(w.darea, GTK_CAN_FOCUS);
-#endif
     gtk_widget_add_events(w.darea, 
                           GDK_BUTTON_PRESS_MASK | 
                           GDK_BUTTON_RELEASE_MASK |
                           /*GDK_POINTER_MOTION_MASK |*/
                           GDK_POINTER_MOTION_HINT_MASK |
                           GDK_BUTTON_MOTION_MASK);
+#endif
 	
 
     /* pack the table into the scrolled window */
 #if (GTKVER == 3) && GTK_CHECK_VERSION(3,8,0)
+    //gtk_widget_set_hexpand(w.darea, TRUE);
+    //gtk_widget_set_vexpand(w.darea, TRUE);    
+    //gtk_widget_set_hexpand(w.scrolled_window, TRUE);
+    //gtk_widget_set_vexpand(w.scrolled_window, TRUE);    
+    //GtkWidget *viewport = gtk_viewport_new(NULL,NULL);
+    //gtk_container_add(GTK_CONTAINER(viewport), w.darea);
     gtk_container_add(GTK_CONTAINER(w.scrolled_window), w.darea);
 #else
     gtk_scrolled_window_add_with_viewport (
         GTK_SCROLLED_WINDOW(w.scrolled_window), w.darea);
 #endif
 
+    //gtk_widget_show(w.darea);
+    gtk_widget_show_all(w.scrolled_window);
+
     match_graph_label = gtk_label_new (_("Matches"));
     gtk_notebook_append_page(GTK_NOTEBOOK(notebook), w.scrolled_window, match_graph_label);
-
-    gtk_widget_show(w.darea);
 
 #if (GTKVER == 3)
     g_signal_connect(G_OBJECT(w.darea), 
                      "draw", G_CALLBACK(expose), w.darea);
+    g_signal_connect(G_OBJECT(w.darea),"configure-event",
+                     G_CALLBACK(configure_event_cb), NULL);
 #else
     g_signal_connect(G_OBJECT(w.darea), 
                      "expose-event", G_CALLBACK(expose), w.darea);
 #endif
     g_signal_connect(G_OBJECT(w.darea), 
                      "button-press-event", G_CALLBACK(mouse_click), NULL);
-#if 0
     g_signal_connect(G_OBJECT(w.darea), 
-                     "screen-changed", G_CALLBACK(screen_changed), NULL)
-#endif
-
-        g_signal_connect(G_OBJECT(w.darea), 
-			 "button-release-event", G_CALLBACK(release_notify), NULL);
+                     "button-release-event", G_CALLBACK(release_notify), NULL);
     g_signal_connect(G_OBJECT(w.darea), 
                      "motion-notify-event", G_CALLBACK(motion_notify), &w);
-
     g_timeout_add(500, scroll_callback, &w);
 
     gtk_widget_set_has_tooltip(w.darea, TRUE);
@@ -630,6 +722,8 @@ static void change_comment(GtkWidget *menuitem, gpointer userdata)
     db_set_comment(point_click_areas[t].category, point_click_areas[t].number, cmd);
     update_matches(0, (struct compsys){0,0,0,0}, db_find_match_tatami(point_click_areas[t].category, point_click_areas[t].number));
 
+    init_display();
+
     /* send comment to net */
     struct message msg;
     memset(&msg, 0, sizeof(msg));
@@ -651,6 +745,7 @@ static void freeze(GtkWidget *menuitem, gpointer userdata)
                       point_click_areas[t].category, 
                       point_click_areas[t].number,
                       arg);
+    init_display();
 }
 
 static gboolean mouse_click(GtkWidget *sheet_page, 
@@ -692,10 +787,9 @@ static gboolean mouse_click(GtkWidget *sheet_page,
                 snprintf(dragged_text, sizeof(dragged_text), "%s:%d",
                          catdata->category, dragged_match.number);
         }
-        refresh_window();
 
         button_drag = TRUE;
-
+        refresh_window();
         return TRUE;
 		    
     } else if (event->type == GDK_BUTTON_PRESS &&  
@@ -778,6 +872,7 @@ static gboolean motion_notify(GtkWidget *sheet_page,
 {
     //static GTimeVal next_time, now;
     struct win_collection *w = userdata;
+
 #if (GTKVER == 3)
     gint alloch = gtk_widget_get_allocated_height(w->scrolled_window);
 #else
@@ -818,8 +913,8 @@ static gboolean motion_notify(GtkWidget *sheet_page,
     g_time_val_add(&now, 500000);
     next_time = now;
 #endif
-    refresh_window();
 
+    refresh_window();
     return FALSE;
 }
 
@@ -852,13 +947,11 @@ static gboolean release_notify(GtkWidget *sheet_page,
                           dragged_match.number,
                           point_click_areas[t].tatami,
                           point_click_areas[t].position, after);
-        refresh_window();
-
+        init_display();
         return TRUE;
     }
 
     refresh_window();
-
     return FALSE;
 }
 

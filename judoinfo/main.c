@@ -92,6 +92,15 @@ static struct {
     gint num;
 } last_wins[NUM_TATAMIS];
 
+static void refresh_darea(void)
+{
+#if (GTKVER == 3)
+    gtk_widget_queue_draw(darea);
+#else
+    expose(darea, 0, 0);
+#endif
+}
+
 static gboolean delete_event( GtkWidget *widget,
                               GdkEvent  *event,
                               gpointer   data )
@@ -463,7 +472,7 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
 static gboolean expose(GtkWidget *widget, GdkEventExpose *event, gpointer userdata)
 {
 #if (GTKVER == 3)
-    cairo_t *c = gdk_cairo_create(gtk_widget_get_window(widget));
+    cairo_t *c = (cairo_t *)event;
 #else
     cairo_t *c = gdk_cairo_create(widget->window);
 #endif
@@ -484,10 +493,10 @@ static gboolean expose(GtkWidget *widget, GdkEventExpose *event, gpointer userda
               gtk_widget_get_allocated_height(widget), userdata);
 #else
         paint(c, widget->allocation.width, widget->allocation.height, userdata);
-#endif
 
     cairo_show_page(c);
     cairo_destroy(c);
+#endif
 
     return FALSE;
 }
@@ -573,7 +582,7 @@ void toggle_full_screen(GtkWidget *menu_item, gpointer data)
         gtk_window_unfullscreen(GTK_WINDOW(main_window));
         g_key_file_set_boolean(keyfile, "preferences", "fullscreen", FALSE);
     }
-    expose(darea, 0, 0);
+    refresh_darea();
 }
 
 void toggle_small_display(GtkWidget *menu_item, gpointer data)
@@ -598,7 +607,7 @@ void toggle_small_display(GtkWidget *menu_item, gpointer data)
             break;
         }
     }
-    expose(darea, 0, 0);
+    refresh_darea();
 }
 
 void toggle_mirror(GtkWidget *menu_item, gpointer data)
@@ -614,7 +623,7 @@ void toggle_mirror(GtkWidget *menu_item, gpointer data)
         mirror_display = FALSE;
         g_key_file_set_boolean(keyfile, "preferences", "mirror", FALSE);
     }
-    expose(darea, 0, 0);
+    refresh_darea();
 }
 
 void toggle_whitefirst(GtkWidget *menu_item, gpointer data)
@@ -630,7 +639,7 @@ void toggle_whitefirst(GtkWidget *menu_item, gpointer data)
         white_first = FALSE;
         g_key_file_set_boolean(keyfile, "preferences", "whitefirst", FALSE);
     }
-    expose(darea, 0, 0);
+    refresh_darea();
 }
 
 void toggle_redbackground(GtkWidget *menu_item, gpointer data)
@@ -641,7 +650,7 @@ void toggle_redbackground(GtkWidget *menu_item, gpointer data)
     red_background = GTK_CHECK_MENU_ITEM(menu_item)->active;
 #endif
     g_key_file_set_boolean(keyfile, "preferences", "redbackground", red_background);
-    expose(darea, 0, 0);
+    refresh_darea();
 }
 
 static gboolean key_press(GtkWidget *widget, GdkEventKey *event, gpointer userdata)

@@ -61,6 +61,22 @@ static gint     scroll_up_down = 0;
 static cairo_surface_t *anchor = NULL;
 static GtkWidget *cat_graph_label = NULL;
 
+static struct win_collection {
+    GtkWidget *scrolled_window;
+    GtkWidget *darea;
+} w;
+
+static void refresh_darea(void)
+{
+    gtk_widget_queue_draw(w.darea);
+    //gtk_widget_queue_draw_area(w.darea, 0, 0, 600, 2000);
+}
+#define refresh_window refresh_darea
+
+void draw_gategory_graph(void)
+{
+    refresh_darea();
+}
 
 static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointer userdata)
 {
@@ -319,7 +335,9 @@ static gboolean expose(GtkWidget *widget, GdkEventExpose *event, gpointer userda
 {
     static cairo_surface_t *cs = NULL;
 #if (GTKVER == 3)
-    cairo_t *c = gdk_cairo_create(gtk_widget_get_window(widget));
+    cairo_t *c = (cairo_t *)event;
+    paint(c, gtk_widget_get_allocated_width(widget), gtk_widget_get_allocated_height(widget), NULL);
+    return FALSE;
 #else
     cairo_t *c = gdk_cairo_create(widget->window);
 #endif
@@ -374,11 +392,6 @@ static gboolean expose(GtkWidget *widget, GdkEventExpose *event, gpointer userda
 
     return FALSE;
 }
-
-static struct win_collection {
-    GtkWidget *scrolled_window;
-    GtkWidget *darea;
-} w;
 
 static gint scroll_callback(gpointer userdata)
 {
@@ -597,6 +610,8 @@ static gboolean release_notify(GtkWidget *sheet_page,
         update_category_status_info_all();
 
         free_judoka(j);
+
+        refresh_window();
 
         return TRUE;
     }

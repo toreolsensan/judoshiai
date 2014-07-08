@@ -1614,7 +1614,7 @@ static gboolean expose_ad(GtkWidget *widget, GdkEventExpose *event, gpointer use
 
         cairo_text_extents_t extents;
 #if (GTKVER == 3)
-        cairo_t *c = gdk_cairo_create(gtk_widget_get_window(widget));
+        cairo_t *c = (cairo_t *)event;
 #else
         cairo_t *c = gdk_cairo_create(widget->window);
 #endif
@@ -1694,9 +1694,10 @@ static gboolean expose_ad(GtkWidget *widget, GdkEventExpose *event, gpointer use
         cairo_move_to(c, 10.0, THIRD_BLOCK_START + (OTHER_BLOCK_HEIGHT - extents.height)/2.0 - extents.y_bearing);
         cairo_show_text(c, w_last);
 
+#if (GTKVER != 3)
         cairo_show_page(c);
         cairo_destroy(c);
-
+#endif
         return FALSE;
     }
 
@@ -1710,7 +1711,7 @@ static gboolean expose_ad(GtkWidget *widget, GdkEventExpose *event, gpointer use
     gdouble y = (scale*frame->height < height) ? (height/scale - frame->height)/2.0 : 0;
 
 #if (GTKVER == 3)
-    cairo_t *c = gdk_cairo_create(gtk_widget_get_window(widget));
+    cairo_t *c = (cairo_t *)event;
 #else
     cairo_t *c = gdk_cairo_create(widget->window);
 #endif
@@ -1724,8 +1725,10 @@ static gboolean expose_ad(GtkWidget *widget, GdkEventExpose *event, gpointer use
     cairo_set_source_surface(c, frame->surface, x, y);
     cairo_paint(c);
 
+#if (GTKVER != 3)
     cairo_show_page(c);
     cairo_destroy(c);
+#endif
 
     return FALSE;
 }

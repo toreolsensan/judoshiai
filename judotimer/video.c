@@ -1005,7 +1005,7 @@ static gboolean expose_video(GtkWidget *widget, GdkEventExpose *event, gpointer 
     gdouble y = (scale*pixheight < height) ? (height/scale - pixheight)/2.0 : 0;
 
 #if (GTKVER == 3)
-    cairo_t *c = gdk_cairo_create(gtk_widget_get_window(widget));
+    cairo_t *c = (cairo_t *)event;
 #else
     cairo_t *c = gdk_cairo_create(widget->window);
 #endif
@@ -1029,9 +1029,10 @@ static gboolean expose_video(GtkWidget *widget, GdkEventExpose *event, gpointer 
     }
     
     g_object_unref(pb);
+#if (GTKVER != 3)
     cairo_show_page(c);
     cairo_destroy(c);
-
+#endif
     return FALSE;
 }
 
@@ -1154,6 +1155,8 @@ void create_video_window(void)
     //setup player widget
     player_widget = gtk_drawing_area_new();
 #if (GTKVER == 3)
+    gtk_widget_set_hexpand(player_widget, TRUE);
+    gtk_widget_set_vexpand(player_widget, TRUE);    
     gtk_grid_attach(GTK_GRID(vbox), player_widget, 0, 0, 1, 1);
 #else
     gtk_box_pack_start(GTK_BOX(vbox), player_widget, TRUE, TRUE, 0);
@@ -1188,7 +1191,11 @@ void create_video_window(void)
         gtk_box_pack_start(GTK_BOX(hbuttonbox), button_w[i], FALSE, FALSE, 0);
     }
 
+#if (GTKVER == 3)
+    gtk_grid_attach(GTK_GRID(vbox), hbuttonbox, 0, 2, 1, 1);
+#else
     gtk_box_pack_start(GTK_BOX(vbox), hbuttonbox, FALSE, FALSE, 0);
+#endif
 
 #if (GTKVER == 3)
     g_signal_connect(G_OBJECT(player_widget), 

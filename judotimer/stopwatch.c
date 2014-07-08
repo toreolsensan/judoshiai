@@ -122,7 +122,7 @@ gboolean         rest_time = FALSE;
 static gint      rest_flags = 0;
 gchar           *matchlist = NULL;
 static gint      gs_cat = 0, gs_num = 0;
-gboolean         require_judogi_ok = TRUE;
+gboolean         require_judogi_ok = FALSE;
 
 static void log_scores(gchar *txt, gint who)
 {
@@ -689,7 +689,7 @@ static gboolean expose_ask(GtkWidget *widget, GdkEventExpose *event, gpointer us
 
     cairo_text_extents_t extents;
 #if (GTKVER == 3)
-    cairo_t *c = gdk_cairo_create(gtk_widget_get_window(widget));
+    cairo_t *c = (cairo_t *)event;
 #else
     cairo_t *c = gdk_cairo_create(widget->window);
 #endif
@@ -732,8 +732,10 @@ static gboolean expose_ask(GtkWidget *widget, GdkEventExpose *event, gpointer us
     cairo_move_to(c, 10.0, THIRD_BLOCK_START + (OTHER_BLOCK_HEIGHT - extents.height)/2.0 - extents.y_bearing);
     cairo_show_text(c, first_wname);
 
+#if (GTKVER != 3)
     cairo_show_page(c);
     cairo_destroy(c);
+#endif
 
     return FALSE;
 }
@@ -813,6 +815,8 @@ static void create_ask_window(void)
     if (show_competitor_names && get_winner()) {
         ask_area = gtk_drawing_area_new();
 #if (GTKVER == 3)
+        gtk_widget_set_hexpand(ask_area, TRUE);
+        gtk_widget_set_vexpand(ask_area, TRUE);    
         gtk_grid_attach(GTK_GRID(vbox), ask_area, 0, 1, 1, 1);
         g_signal_connect(G_OBJECT(ask_area), 
                          "draw", G_CALLBACK(expose_ask), NULL);

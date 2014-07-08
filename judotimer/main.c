@@ -34,6 +34,7 @@
 static void show_big(void);
 static void expose_label(cairo_t *c, gint w);
 static gboolean expose(GtkWidget *widget, GdkEventExpose *event, gpointer userdata);
+static void init_display(void);
 gboolean delete_big(gpointer data);
 gint language = LANG_EN;
 
@@ -78,6 +79,8 @@ static gint  font_slant = CAIRO_FONT_SLANT_NORMAL, font_weight = CAIRO_FONT_WEIG
 static gdouble font_size = 1.0;
 
 gboolean update_tvlogo = FALSE; 
+static GtkWidget *darea = NULL;
+static cairo_surface_t *surface = NULL;
 
 static const gchar *num_to_str(guint num)
 {
@@ -95,6 +98,15 @@ static const gchar *pts_to_str(guint num)
                 return pts2str[num];
 
         return ".";
+}
+
+static void refresh_darea(void)
+{
+#if (GTKVER == 3)
+    gtk_widget_queue_draw(darea);
+#else
+    expose(darea, 0, 0);
+#endif
 }
 
 static gboolean delete_event( GtkWidget *widget,
@@ -389,7 +401,6 @@ gchar          current_directory[1024] = {0};
 gint           my_address;
 gboolean       clocks_only = FALSE;
 
-static GtkWidget *darea = NULL;
 static gint match1, match2, colon;
 static gint blue_name_1, white_name_1;
 static gint blue_name_2, white_name_2;
@@ -1016,7 +1027,7 @@ gboolean delete_big(gpointer data)
 {
     big_dialog = FALSE;
     gtk_window_set_title(GTK_WINDOW(main_window), "JudoTimer");
-    expose(darea, 0, 0);
+    init_display();
     send_label(STOP_BIG);
     return FALSE;
 }
@@ -1024,11 +1035,8 @@ gboolean delete_big(gpointer data)
 static void show_big(void)
 {
     cairo_text_extents_t extents;
-#if (GTKVER == 3)
-    cairo_t *c = gdk_cairo_create(gtk_widget_get_window(darea));
-#else
-    cairo_t *c = gdk_cairo_create(darea->window);
-#endif
+    cairo_t *c = cairo_create(surface);
+
     cairo_set_source_rgb(c, 1.0, 1.0, 1.0);
     cairo_rectangle(c, 0, 0,
                     W(1.0), H(0.2));
@@ -1047,31 +1055,33 @@ static void show_big(void)
     cairo_show_text(c, big_text);
     cairo_show_page(c);
     cairo_destroy(c);
+
+    refresh_darea();
 }
 
 void display_big(gchar *txt, gint tmo_sec)
 {
-	gtk_window_set_title(GTK_WINDOW(main_window), txt);
-	strncpy(big_text, txt, sizeof(big_text)-1);
-	big_end = time(NULL) + tmo_sec;
-	big_dialog = TRUE;
-	show_big();
-        send_label(START_BIG);
+    gtk_window_set_title(GTK_WINDOW(main_window), txt);
+    strncpy(big_text, txt, sizeof(big_text)-1);
+    big_end = time(NULL) + tmo_sec;
+    big_dialog = TRUE;
+    show_big();
+    send_label(START_BIG);
 }
 
 void reset_display(gint key)
 {
-        gint pts[4] = {0,0,0,0};
+    gint pts[4] = {0,0,0,0};
 
-        set_timer_run_color(FALSE);
-        set_timer_osaekomi_color(OSAEKOMI_DSP_NO, 0);
-        set_osaekomi_value(0, 0);
+    set_timer_run_color(FALSE);
+    set_timer_osaekomi_color(OSAEKOMI_DSP_NO, 0);
+    set_osaekomi_value(0, 0);
 
-        if (golden_score == FALSE || rules_leave_score == FALSE)
-            set_points(pts, pts);
+    if (golden_score == FALSE || rules_leave_score == FALSE)
+        set_points(pts, pts);
 
-//       set_text(MY_LABEL(comment), "");
-	//expose(darea, 0, 0);
+    //       set_text(MY_LABEL(comment), "");
+    //expose(darea, 0, 0);
 }
 
 static void expose_label(cairo_t *c, gint w)
@@ -1091,11 +1101,7 @@ static void expose_label(cairo_t *c, gint w)
 
     if (!c) {
         delc = TRUE;
-#if (GTKVER == 3)
-        c = gdk_cairo_create(gtk_widget_get_window(darea));
-#else
-        c = gdk_cairo_create(darea->window);
-#endif
+        c = cairo_create(surface);
     }
 
     cairo_save(c);
@@ -1201,21 +1207,70 @@ static void expose_label(cairo_t *c, gint w)
     cairo_restore(c);
 
     if (delc) {
-        cairo_show_page(c);
+        //??? cairo_show_page(c);
         cairo_destroy(c);
+
+        /* Now invalidate the affected region of the drawing area. */
+        gtk_widget_queue_draw_area(darea, x1, y1, wi, he);
     }
+}
+
+static void init_display(void)
+{
+    if (!surface) return;
+    cairo_t *c = cairo_create(surface);
+    gint i;
+#if 0    
+    cairo_select_font_face(c, "arial",
+                           CAIRO_FONT_SLANT_NORMAL,
+                           CAIRO_FONT_WEIGHT_BOLD);
+#endif
+    cairo_set_source_rgb(c, 0.0, 0.0, 0.0);
+    cairo_rectangle(c, 0.0, 0.0, paper_width, paper_height);
+    cairo_fill(c);
+
+    for (i = 0; i < num_labels; i++)
+        expose_label(c, i);
+
+    cairo_destroy(c);
+
+    if (big_dialog)
+        show_big();
+
+    refresh_darea();
+}
+
+static gboolean configure_event_cb(GtkWidget         *widget,
+                                   GdkEventConfigure *event,
+                                   gpointer           data)
+{
+    if (surface)
+        cairo_surface_destroy(surface);
+
+    paper_width = gtk_widget_get_allocated_width(widget);
+    paper_height = gtk_widget_get_allocated_height(widget);
+
+    surface = gdk_window_create_similar_surface(gtk_widget_get_window(widget),
+                                                CAIRO_CONTENT_COLOR, paper_width, paper_height);
+
+    init_display();
+
+    /* We've handled the configure event, no need for further processing. */
+    return TRUE;
 }
 
 /* This is called when we need to draw the windows contents */
 static gboolean expose(GtkWidget *widget, GdkEventExpose *event, gpointer userdata)
 {
-    static cairo_t *c = NULL;
     gint i;
 
 #if (GTKVER == 3)
-    c = gdk_cairo_create(gtk_widget_get_window(widget));
+    cairo_t *c = (cairo_t *)event;
+    cairo_set_source_surface(c, surface, 0, 0);
+    cairo_paint (c);
+    return FALSE;
 #else
-    c = gdk_cairo_create(widget->window);
+    cairo_t *c = gdk_cairo_create(widget->window);
 #endif
 
 #if (GTKVER == 3)
@@ -1233,15 +1288,17 @@ static gboolean expose(GtkWidget *widget, GdkEventExpose *event, gpointer userda
     cairo_rectangle(c, 0.0, 0.0, paper_width, paper_height);
     cairo_fill(c);
 
-    cairo_show_page(c);
-    cairo_destroy(c);
-
     for (i = 0; i < num_labels; i++) {
-        expose_label(NULL, i);
+        expose_label(c, i);
     }
 
     if (big_dialog)
         show_big();
+
+#if (GTKVER != 3)
+    cairo_show_page(c);
+    cairo_destroy(c);
+#endif
 
     return FALSE;
 }
@@ -1309,7 +1366,7 @@ static gboolean key_press(GtkWidget *widget, GdkEventKey *event, gpointer userda
             gtk_window_resize(GTK_WINDOW(main_window), 600,400);  //w7 bug.
             g_key_file_set_boolean(keyfile, "preferences", "fullscreen", FALSE);
         }
-        expose(darea, 0, 0);
+        refresh_darea();
         return FALSE;
     }
     if (event->keyval == GDK_v) // V is a menu accelerator
@@ -1637,6 +1694,8 @@ int main( int   argc,
 #if (GTKVER == 3)
     g_signal_connect(G_OBJECT(darea), 
                      "draw", G_CALLBACK(expose), NULL);
+    g_signal_connect (G_OBJECT(darea),"configure-event",
+                      G_CALLBACK(configure_event_cb), NULL);
 #else
     g_signal_connect(G_OBJECT(darea),
                      "expose-event", G_CALLBACK(expose), NULL);
@@ -1976,7 +2035,7 @@ void toggle_color(GtkWidget *menu_item, gpointer data)
     }
 
     set_colors();
-    expose(darea, 0, 0);
+    init_display();
 }
 
 void toggle_full_screen(GtkWidget *menu_item, gpointer data)
@@ -1993,7 +2052,7 @@ void toggle_full_screen(GtkWidget *menu_item, gpointer data)
         gtk_window_unfullscreen(GTK_WINDOW(main_window));
         g_key_file_set_boolean(keyfile, "preferences", "fullscreen", FALSE);
     }
-    expose(darea, 0, 0);
+    init_display();
 }
 
 void toggle_rules_no_koka(GtkWidget *menu_item, gpointer data)
@@ -2015,7 +2074,7 @@ void toggle_rules_no_koka(GtkWidget *menu_item, gpointer data)
         set_text(MY_LABEL(koka), "K");
         g_key_file_set_boolean(keyfile, "preferences", "rulesnokoka", FALSE);
     }
-    expose(darea, 0, 0);
+    init_display();
 }
 
 void toggle_rules_leave_points(GtkWidget *menu_item, gpointer data)
@@ -2095,7 +2154,7 @@ void toggle_whitefirst(GtkWidget *menu_item, gpointer data)
 #endif
     g_key_file_set_boolean(keyfile, "preferences", "whitefirst", white_first);
     set_colors();
-    expose(darea, 0, 0);
+    init_display();
 }
 
 void toggle_show_comp(GtkWidget *menu_item, gpointer data)
@@ -2106,6 +2165,16 @@ void toggle_show_comp(GtkWidget *menu_item, gpointer data)
     show_competitor_names = GTK_CHECK_MENU_ITEM(menu_item)->active;
 #endif
     g_key_file_set_boolean(keyfile, "preferences", "showcompetitornames", show_competitor_names);
+}
+
+void toggle_judogi_control(GtkWidget *menu_item, gpointer data)
+{
+#if (GTKVER == 3)
+    require_judogi_ok = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item));
+#else
+    require_judogi_ok = GTK_CHECK_MENU_ITEM(menu_item)->active;
+#endif
+    g_key_file_set_boolean(keyfile, "preferences", "judogicontrol", require_judogi_ok);
 }
 
 #define SWITCH_TEXTS(_a, _b) \
@@ -2617,7 +2686,7 @@ void select_display_layout(GtkWidget *menu_item, gpointer data)
     }
 
     set_colors();
-    expose(darea, 0, 0);
+    init_display();
 
     g_key_file_set_integer(keyfile, "preferences", "displaylayout", ptr_to_gint(data));
 
@@ -2634,7 +2703,7 @@ void select_display_layout(GtkWidget *menu_item, gpointer data)
 
 void select_name_layout(GtkWidget *menu_item, gpointer data)
 {
-    expose(darea, 0, 0);
+    init_display();
 
     selected_name_layout = ptr_to_gint(data); 
     g_key_file_set_integer(keyfile, "preferences", "namelayout", selected_name_layout);
@@ -2642,9 +2711,9 @@ void select_name_layout(GtkWidget *menu_item, gpointer data)
 
 void change_language_1(void)
 {
-        set_text(MY_LABEL(match1), _("Fight:"));
-        set_text(MY_LABEL(match2), _("Next:"));
-	expose(darea, 0, 0);
+    set_text(MY_LABEL(match1), _("Fight:"));
+    set_text(MY_LABEL(match2), _("Next:"));
+    init_display();
 }
 
 gboolean this_is_shiai(void)

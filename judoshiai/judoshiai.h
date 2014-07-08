@@ -1087,6 +1087,7 @@ extern gint get_category_rest_time(const gchar *cat);
 extern gint get_category_match_time(const gchar *cat);
 
 /* category_graph */
+extern void draw_gategory_graph(void);
 extern void set_category_graph_page(GtkWidget *notebook);
 
 /* trees */
@@ -1118,6 +1119,7 @@ extern void club_name_set(const gchar *club,
 extern struct club_name_data *club_name_get(const gchar *club);
 
 /* match_graph */
+extern void draw_match_graph(void);
 extern void set_match_graph_page(GtkWidget *notebook);
 extern void set_graph_rest_time(gint tatami, time_t rest_end, gint flags);
 

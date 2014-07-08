@@ -221,7 +221,7 @@ static GtkWidget *menubar, *match, *preferences, *help, *matchmenu, *preferences
 static GtkWidget *separator1, *separator2, *quit, *viewlog, *showcomp_act, *show_video;
 static GtkWidget *match0, *match1, *match2, *match3, *match4, *match5, *gs;
 static GtkWidget *blue_wins, *white_wins, *red_background, *full_screen, *rules_no_koka, *hikiwake;
-static GtkWidget *rules_leave_points, *rules_stop_ippon, *whitefirst, *showcomp, *confirm_match;
+static GtkWidget *rules_leave_points, *rules_stop_ippon, *whitefirst, *showcomp, *confirm_match, *judogi_control;
 static GtkWidget *tatami_sel, *tatami_sel_none, *tatami_sel_1,  *tatami_sel_2,  *tatami_sel_3,  *tatami_sel_4;
 static GtkWidget *tatami_sel_5, *tatami_sel_6, *tatami_sel_7, *tatami_sel_8, *tatami_sel_9, *tatami_sel_10;
 static GtkWidget *node_ip, *my_ip, *video_ip, *vlc_cport, *manual, *about, *quick_guide;
@@ -449,6 +449,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     rules_eq_score_less_shido_wins = gtk_check_menu_item_new_with_label("");
     rules_short_pin_times = gtk_check_menu_item_new_with_label("");
     confirm_match   = gtk_check_menu_item_new_with_label("");
+    judogi_control  = gtk_check_menu_item_new_with_label("");
     tatami_sel_none = gtk_radio_menu_item_new_with_label(NULL, "");
     tatami_sel_1    = gtk_radio_menu_item_new_with_label_from_widget((GtkRadioMenuItem *)tatami_sel_none, "");
     tatami_sel_2    = gtk_radio_menu_item_new_with_label_from_widget((GtkRadioMenuItem *)tatami_sel_none, "");
@@ -488,6 +489,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), confirm_match);
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), whitefirst);
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), showcomp);
+    gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), judogi_control);
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), gtk_separator_menu_item_new());
 
     layout_sel = gtk_menu_item_new_with_label("");
@@ -567,6 +569,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     g_signal_connect(G_OBJECT(confirm_match),   "activate", G_CALLBACK(toggle_confirm_match),  (gpointer)0);
     g_signal_connect(G_OBJECT(whitefirst),      "activate", G_CALLBACK(toggle_whitefirst),     (gpointer)0);
     g_signal_connect(G_OBJECT(showcomp),        "activate", G_CALLBACK(toggle_show_comp),      (gpointer)0);
+    g_signal_connect(G_OBJECT(judogi_control),  "activate", G_CALLBACK(toggle_judogi_control), (gpointer)0);
     g_signal_connect(G_OBJECT(layout_sel_1),    "activate", G_CALLBACK(select_display_layout), (gpointer)1);
     g_signal_connect(G_OBJECT(layout_sel_2),    "activate", G_CALLBACK(select_display_layout), (gpointer)2);
     g_signal_connect(G_OBJECT(layout_sel_3),    "activate", G_CALLBACK(select_display_layout), (gpointer)3);
@@ -690,6 +693,11 @@ void set_preferences(void)
     error = NULL;
     if (g_key_file_get_boolean(keyfile, "preferences", "whitefirst", &error)) {
         gtk_menu_item_activate(GTK_MENU_ITEM(whitefirst));
+    }
+
+    error = NULL;
+    if (g_key_file_get_boolean(keyfile, "preferences", "judogicontrol", &error)) {
+        gtk_menu_item_activate(GTK_MENU_ITEM(judogi_control));
     }
 
     error = NULL;
@@ -911,6 +919,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(clock_only, _("View clocks only"));
     change_menu_label(whitefirst, _("White first"));
     change_menu_label(showcomp, _("Show competitors"));
+    change_menu_label(judogi_control, _("Require judogi control"));
 
     change_menu_label(layout_sel,   _("Display layout"));
     change_menu_label(layout_sel_1, _("Display layout 1"));

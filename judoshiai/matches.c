@@ -1711,6 +1711,9 @@ void send_matches(gint tatami)
     if (t < 0 || t >= NUM_TATAMIS)
         return;
 
+    draw_match_graph();
+    draw_gategory_graph();
+
     memset(&msg, 0, sizeof(msg));
     msg.type = MSG_MATCH_INFO;
     msg.u.match_info.tatami   = tatami;
