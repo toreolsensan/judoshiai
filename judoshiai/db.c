@@ -716,6 +716,11 @@ int db_read_blob(
     return rc;
 }
 
+void db_delete_blob_line(int key)
+{
+    db_exec_str(NULL, NULL, "DELETE FROM blobs WHERE \"key\"=%d", key);
+}
+
 void db_free_blob(unsigned char *zBlob)
 {
     free(zBlob);

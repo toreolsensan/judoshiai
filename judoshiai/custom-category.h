@@ -4,7 +4,7 @@
 /** Custom brackets */
 
 #define NUM_CUSTOM_MATCHES   512
-#define NUM_POSITIONS         16
+#define NUM_CUST_POS          16
 #define NUM_ROUND_ROBIN_POOLS 16
 #define NUM_RR_MATCHES        64
 
@@ -27,6 +27,7 @@ typedef struct position_bare {
     int    type;
     int    match;
     int    pos;
+    int    real_contest_pos;
 } position_bare_t;
 
 typedef struct round_robin_bare {
@@ -45,13 +46,10 @@ struct custom_data {
     match_bare_t matches[NUM_CUSTOM_MATCHES];
     int num_matches;
 
-    position_bare_t positions[NUM_POSITIONS];
+    position_bare_t positions[NUM_CUST_POS];
     int num_positions;
 };
 
 extern int read_custom_category(char *name, struct custom_data *data);
-extern int get_custom_table_number_by_competitors(int num_comp);
-extern struct custom_data *get_custom_table(int table);
-extern void read_custom_from_db(void);
 
 #endif

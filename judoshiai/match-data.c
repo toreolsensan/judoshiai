@@ -2342,6 +2342,10 @@ static gboolean is_rep(gint t, gint s, gint f, gint m, gint level)
 
 gboolean is_repechage(struct compsys systm, gint m)
 {
+    if (systm.system == SYSTEM_CUSTOM) {
+        return FALSE;
+    }
+
     if (!system_is_french(systm.system))
         return FALSE;
 
@@ -2381,6 +2385,12 @@ gint num_matches_left(gint index, gint competitors)
             return cat->match_count - cat->matched_matches_count;
     }
 
+    if (systm.system == SYSTEM_CUSTOM) {
+        struct custom_data *cd = get_custom_table(systm.table);
+        if (cd) return cd->num_matches;
+        return 20; // error
+    }
+
     if (system_is_french(systm.system)) {
         gint sys = systm.system - SYSTEM_FRENCH_8;
         gint high = 8 << sys; // max number of competitors in this system
@@ -2418,6 +2428,12 @@ gint num_matches_estimate(gint index)
     if (catdata->deleted & TEAM_EVENT) {
         mul = find_num_weight_classes(catdata->category);
         if (mul == 0) mul = 1;
+    }
+
+    if (systm.system == SYSTEM_CUSTOM) {
+        struct custom_data *cd = get_custom_table(systm.table);
+        if (cd) return mul*cd->num_matches;
+        return mul*20; // error
     }
 
     if (system_is_french(systm.system)) {

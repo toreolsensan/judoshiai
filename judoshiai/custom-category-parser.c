@@ -55,7 +55,7 @@
   pos1 finaali.1
   pos2 finaali.2
   pos3 semari_a.2
-  pos3 semari_b.2
+  pos3 semari_b.2 3
   -----
  */
 
@@ -67,13 +67,13 @@ static FILE *f;
 typedef enum { 
     dummy, rr, ko, match, dot, colon, prev, ident, number, 
     competitor, eol, eof, pos, dash, lparen, rparen, order,
-    page, svg, info, err
+    page, svg, info, err, id
 } Symbol;
 
 static char *labels[] = {
     "", "rr", "ko", "match", "p", "colon", "prev", "ident", "number", 
     "competitor", "eol", "eof", "pos", "dash", "lparen", "rparen", "order",
-    "page", "svg", "info", "error"
+    "page", "svg", "info", "error", "id"
 };
 
 typedef struct symbol {
@@ -113,9 +113,10 @@ typedef struct position {
     sym_t *match;
     int    pos;
     int    page;
+    int    real_contest_pos;
 } position_t;
 
-static position_t positions[NUM_POSITIONS]; 
+static position_t positions[NUM_CUST_POS]; 
 
 typedef struct round_robin {
     sym_t *name;
@@ -241,7 +242,7 @@ static sym_t *get_sym(char *name) {
     return &symbols[num_symbols++];
 }
 
-static match_t *get_match(char *name) {
+static match_t *get_match_or_create(char *name) {
     int i;
 
     for (i = 0; i < num_matches; i++) {
@@ -252,6 +253,18 @@ static match_t *get_match(char *name) {
     
     matches[num_matches].name = get_sym(name); 
     return &matches[num_matches++];
+}
+
+static match_t *get_match(char *name) {
+    int i;
+
+    for (i = 0; i < num_matches; i++) {
+        if (!strcmp(matches[i].name->name, name)) {
+            return &matches[i];
+        }
+    }
+
+    return NULL;
 }
 
 static void getsym(void)
@@ -338,6 +351,11 @@ static void getsym(void)
         }
         line[n] = 0;
         ungetc(c, f);
+
+        if (!strcmp(line, "id")) {
+            sym = id;
+            goto out;
+        }
 
         if (!strcmp(line, "rr")) {
             sym = rr;
@@ -483,7 +501,7 @@ static void block(void)
     }
 
     if (accept(ident)) {
-        match_t *m = get_match(strvalue);
+        match_t *m = get_match_or_create(strvalue);
         m->ordernum = ordernum;
         m->number = linenum;
         m->page = pagenum;
@@ -517,7 +535,7 @@ static void block(void)
         for (i = 0; i < num_players-1; i++) {
             for (j = i+1; j < num_players; j++) {
                 sprintf(buf, "%s_%d_%d", round_robin_pools[num_round_robin_pools].name->name, i, j);
-                match_t *m = get_match(buf);
+                match_t *m = get_match_or_create(buf);
                 m->ordernum = ordernum;
                 m->number = linenum;
                 m->page = pagenum;
@@ -542,7 +560,7 @@ static void block(void)
         int i = 1, n, lev = 1;
         while (player()) {
             sprintf(buf, "%s_%d_%d", name->name, lev, i);
-            match_t *m = get_match(buf);
+            match_t *m = get_match_or_create(buf);
             if (i == 1) reference = get_sym(buf);
             else {
                 m->reference = reference;
@@ -569,7 +587,7 @@ static void block(void)
                     sprintf(buf, "%s", name->name);
                 else
                     sprintf(buf, "%s_%d_%d", name->name, lev, i+1);
-                match_t *m = get_match(buf), *m1, *m2;
+                match_t *m = get_match_or_create(buf), *m1, *m2;
 
                 if (n == 1) m->flags |= FLAG_LAST;
 
@@ -585,8 +603,8 @@ static void block(void)
                 m->c2.match = get_sym(buf);
                 m->c2.pos = 1;
 
-                m1 = get_match(m->c1.match->name);
-                m2 = get_match(m->c2.match->name);
+                m1 = get_match_or_create(m->c1.match->name);
+                m2 = get_match_or_create(m->c2.match->name);
                 if (m1 && m2) {
                     m->reference = reference;
                     m->x = x_shift*(lev-1); 
@@ -622,6 +640,9 @@ static void block(void)
         expect(number);
         positions[posval].pos = numvalue;
         positions[posval].page = pagenum;
+        if (accept(number)) {
+            positions[posval].real_contest_pos = numvalue;
+        }
         expect(eol);
         return;
     }
@@ -636,7 +657,9 @@ static void solve(sym_t *mname, int level, int pos) {
         return;
 
     m = get_match(mname->name);
-    //printf("-- %s level=%d curr=%d\n", mname, level, current_level);
+    if (!m) { // round robin
+        return;
+    }
 
     if (!m->level) {
         m->level = level;
@@ -733,6 +756,15 @@ static int get_match_num(char *name) {
     int i;
     for (i = 0; i < num_matches; i++) {
         if (!strcmp(matches[match_list[i]].name->name, name))
+            return i+1;
+    }
+    return 0;
+}
+
+static int get_rr_num(char *name) {
+    int i;
+    for (i = 0; i < num_round_robin_pools; i++) {
+        if (!strcmp(round_robin_pools[i].name->name, name))
             return i+1;
     }
     return 0;
@@ -849,6 +881,28 @@ static FILE *open_file(int page, double *y)
 
 #endif
 
+static struct player_bare get_palyer_bare(struct player *c)
+{
+    struct player_bare b;
+
+    if (c->comp) {
+        b.type = COMP_TYPE_COMPETITOR;
+        b.num = c->comp;
+    } else if (get_rr_num(c->match->name)) {
+        b.type = COMP_TYPE_ROUND_ROBIN;
+        b.num = get_rr_num(c->match->name);
+        b.pos = c->pos;
+    } else {
+        int j;
+        b.type = COMP_TYPE_MATCH;
+        b.num = get_match_num(c->match->name);
+        b.pos = c->pos;
+        for (j = 0; j < 8; j++)
+            b.prev[j] = c->prev[j];
+    }
+
+    return b;
+}
 
 int read_custom_category(char *name, struct custom_data *data)
 {
@@ -882,7 +936,7 @@ int read_custom_category(char *name, struct custom_data *data)
     if (stop)
         return -1;
 
-    for (i = 1; i < NUM_POSITIONS ; i++) {
+    for (i = 1; i < NUM_CUST_POS ; i++) {
         if (!positions[i].match)
             continue;
         
@@ -907,35 +961,21 @@ int read_custom_category(char *name, struct custom_data *data)
 
     for (i = 0; i < num_matches; i++) {
         match_t *m = &matches[match_list[i]];
-        if (m->c1.comp) {
-            data->matches[i].c1.type = COMP_TYPE_COMPETITOR;
-            data->matches[i].c1.num = m->c1.comp;
-        } else {
-            int j;
-            data->matches[i].c1.type = COMP_TYPE_MATCH;
-            data->matches[i].c1.num = get_match_num(m->c1.match->name);
-            data->matches[i].c1.pos = m->c1.pos;
-            for (j = 0; j < 8; j++)
-                data->matches[i].c1.prev[j] = m->c1.prev[j];
-        }
-        if (m->c2.comp) {
-            data->matches[i].c2.type = COMP_TYPE_COMPETITOR;
-            data->matches[i].c2.num = m->c2.comp;
-        } else {
-            int j;
-            data->matches[i].c2.type = COMP_TYPE_MATCH;
-            data->matches[i].c2.num = get_match_num(m->c2.match->name);
-            data->matches[i].c2.pos = m->c2.pos;
-            for (j = 0; j < 8; j++)
-                data->matches[i].c2.prev[j] = m->c2.prev[j];
-        }
+        data->matches[i].c1 = get_palyer_bare(&m->c1);
+        data->matches[i].c2 = get_palyer_bare(&m->c2);
     }
     data->num_matches = num_matches;
 
     for (i = 0; positions[i].match; i++) {
-        data->positions[i].type = COMP_TYPE_MATCH;
-        data->positions[i].match = get_match_num(positions[i].match->name);
+        if (get_rr_num(positions[i].match->name)) {
+            data->positions[i].type = COMP_TYPE_ROUND_ROBIN;
+            data->positions[i].match = get_rr_num(positions[i].match->name);
+        } else {
+            data->positions[i].type = COMP_TYPE_MATCH;
+            data->positions[i].match = get_match_num(positions[i].match->name);
+        }
         data->positions[i].pos = positions[i].pos;
+        data->positions[i].real_contest_pos = positions[i].real_contest_pos;
     }
     data->num_positions = i;
 
@@ -1024,14 +1064,14 @@ int main(int argc, char *argv[])
     for (i = 0; i < num_ord; i++) {
         fprintf(stderr, "Order c%d-c%d\n", match_order[i].first.comp, match_order[i].second.comp);
     }
-    for (i = 0; i < NUM_POSITIONS; i++) {
+    for (i = 0; i < NUM_CUST_POS; i++) {
         if (positions[i].match)
             fprintf(stderr, "Position %d match=%s pos=%d page=%d\n", 
                     i, positions[i].match->name, positions[i].pos, positions[i].page);
     }
 #endif
 
-    for (i = 1; i < NUM_POSITIONS ; i++) {
+    for (i = 1; i < NUM_CUST_POS ; i++) {
         if (!positions[i].match)
             continue;
         
@@ -1079,7 +1119,7 @@ int main(int argc, char *argv[])
         draw_match(out, j+1, m);
     }
 
-    for (j = 0; j < NUM_POSITIONS; j++) {
+    for (j = 0; j < NUM_CUST_POS; j++) {
         if (!positions[j].page || !positions[j].match) 
             continue;
 

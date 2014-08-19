@@ -1223,7 +1223,7 @@ struct compsys get_system_for_category(gint index, gint competitors)
 
     if (wishsys == CAT_SYSTEM_CUSTOM) {
         table = get_custom_table_number_by_competitors(competitors);
-        if (table < 0) wishsys = CAT_SYSTEM_DEFAULT;
+        if (table == 0) wishsys = CAT_SYSTEM_DEFAULT;
         else {
             sys = SYSTEM_CUSTOM;
         }

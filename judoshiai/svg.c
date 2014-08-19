@@ -128,6 +128,9 @@ static gint make_key(struct compsys systm, gint pagenum)
         systm.system == SYSTEM_BEST_OF_3)
         return (systm.system<<24)|(systm.numcomp<<8)|pagenum;
 
+    if (systm.system == SYSTEM_CUSTOM)
+        return systm.table | pagenum;
+
     return (systm.system<<24)|(systm.table<<16)|pagenum;
 }
 
@@ -698,6 +701,18 @@ gint paint_svg(struct paint_data *pd)
                         write_judoka(handle, 1, j, dfile);
                         set_competitor_position(j->index, COMP_POS_DRAWN | res);
                         free_judoka(j);
+                    }
+                } else if (systm.system == SYSTEM_CUSTOM) {
+                    gint real_res = res;
+                    gint ix = get_custom_pos(m, systm.table, res, &real_res);
+                    if (ix) {
+                        struct judoka *j = get_data(ix);
+                        if (j) {
+                            write_judoka(handle, 1, j, dfile);
+                            set_competitor_position(j->index, COMP_POS_DRAWN | real_res);
+                            free_judoka(j);
+                            g_print("pos=%d real=%d\n", res, real_res);
+                        }
                     }
                 } else {
                     gint ix = 0;
