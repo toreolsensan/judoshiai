@@ -229,7 +229,7 @@ static GtkWidget *light, *menu_light, *menu_switched, *timeset;
 static GtkWidget *inc_time, *dec_time, *inc_osaekomi, *dec_osaekomi, *clock_only, *set_time, *layout_sel;
 static GtkWidget *layout_sel_1, *layout_sel_2, *layout_sel_3, *layout_sel_4, *layout_sel_5, *layout_sel_6, *layout_sel_7;
 //static GtkTooltips *menu_tips;
-static GtkWidget *mode_normal, *mode_master, *mode_slave;
+static GtkWidget *mode_normal, /**mode_master,*/ *mode_slave;
 static GtkWidget *undo, *hansokumake_blue, *hansokumake_white, *clear_selection, *switch_sides;
 static GtkWidget *advertise, *sound, *lang_menu_item;
 static GtkWidget *name_layout, *name_layouts[NUM_NAME_LAYOUTS];
@@ -471,7 +471,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     dec_osaekomi    = gtk_menu_item_new_with_label("");
     set_time        = gtk_menu_item_new_with_label("");
     mode_normal     = gtk_radio_menu_item_new_with_label(NULL, "");
-    mode_master     = gtk_radio_menu_item_new_with_label_from_widget((GtkRadioMenuItem *)mode_normal, "");
+    //mode_master     = gtk_radio_menu_item_new_with_label_from_widget((GtkRadioMenuItem *)mode_normal, "");
     mode_slave      = gtk_radio_menu_item_new_with_label_from_widget((GtkRadioMenuItem *)mode_normal, "");
     advertise       = gtk_menu_item_new_with_label("");
     sound           = gtk_menu_item_new_with_label("");
@@ -550,7 +550,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
 
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), gtk_separator_menu_item_new());
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), mode_normal);
-    gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), mode_master);
+    //gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), mode_master);
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), mode_slave);
 
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), gtk_separator_menu_item_new());
@@ -602,7 +602,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     g_signal_connect(G_OBJECT(dec_osaekomi),    "activate", G_CALLBACK(manipulate_time),      (gpointer)3);
     g_signal_connect(G_OBJECT(set_time),        "activate", G_CALLBACK(manipulate_time),      (gpointer)4);
     g_signal_connect(G_OBJECT(mode_normal),     "activate", G_CALLBACK(mode_selection),       (gpointer)0);
-    g_signal_connect(G_OBJECT(mode_master),     "activate", G_CALLBACK(mode_selection),       (gpointer)1);
+    //g_signal_connect(G_OBJECT(mode_master),     "activate", G_CALLBACK(mode_selection),       (gpointer)1);
     g_signal_connect(G_OBJECT(mode_slave),      "activate", G_CALLBACK(mode_selection),       (gpointer)2);
     g_signal_connect(G_OBJECT(advertise),       "activate", G_CALLBACK(toggle_advertise),     (gpointer)0);
     g_signal_connect(G_OBJECT(sound),           "activate", G_CALLBACK(select_sound),         (gpointer)0);
@@ -969,7 +969,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(set_time,     _("Set clocks"));
 
     change_menu_label(mode_normal, _("Normal operation"));
-    change_menu_label(mode_master, _("Master mode"));
+    //change_menu_label(mode_master, _("Master mode"));
     change_menu_label(mode_slave,  _("Slave mode"));
 
     change_menu_label(advertise,    _("Advertise"));

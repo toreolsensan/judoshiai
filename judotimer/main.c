@@ -931,7 +931,7 @@ void show_message(gchar *cat_1,
     if (big_dialog)
         show_big();
 
-    if (mode == MODE_MASTER) {
+    if (mode != MODE_SLAVE) {
         struct message msg;
         memset(&msg, 0, sizeof(msg));
         msg.type = MSG_UPDATE_LABEL;
@@ -1399,7 +1399,7 @@ gboolean send_label(gint bigdsp)
         gint i;
         gboolean dosend = FALSE;
 
-        if (mode != MODE_MASTER)
+        if (mode == MODE_SLAVE)
                 return FALSE;
 
         memset(&msg, 0, sizeof(msg));
@@ -1475,7 +1475,7 @@ static gboolean timeout(void *param)
         vlc_conn = vlc_connection_ok;
     }
 
-    if (mode != MODE_MASTER)
+    if (mode == MODE_SLAVE)
         return TRUE;
 
     if (send_label(0)) // send second if one exists
@@ -2689,16 +2689,6 @@ void select_display_layout(GtkWidget *menu_item, gpointer data)
     init_display();
 
     g_key_file_set_integer(keyfile, "preferences", "displaylayout", ptr_to_gint(data));
-
-    /****
-         if (mode == MODE_MASTER) {
-         gint i;
-         for (i = 0; i < num_labels; i++)
-         labels[i].status = LABEL_STATUS_CHANGED | LABEL_STATUS_EXPOSE;
-
-         display_big(" ", 4);
-         }
-    ****/
 }
 
 void select_name_layout(GtkWidget *menu_item, gpointer data)
@@ -2730,10 +2720,8 @@ void set_ssdp_id(void)
 {
     if (mode == MODE_SLAVE)
         g_snprintf(ssdp_id, sizeof(ssdp_id), "JudoTimer tatami=%d slave", tatami);
-    else if (mode == MODE_MASTER)
-        g_snprintf(ssdp_id, sizeof(ssdp_id), "JudoTimer tatami=%d master", tatami);
     else
-        g_snprintf(ssdp_id, sizeof(ssdp_id), "JudoTimer tatami=%d", tatami);
+        g_snprintf(ssdp_id, sizeof(ssdp_id), "JudoTimer tatami=%d master", tatami);
 
     ssdp_notify = TRUE;
 }

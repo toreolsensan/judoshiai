@@ -245,7 +245,7 @@ void msg_received(struct message *input_msg)
 
             write_tv_logo(&(msg.u.update_label));
 
-            if (mode == MODE_MASTER)
+            if (mode != MODE_SLAVE)
                 send_label_msg(&msg);
         }
 
@@ -339,7 +339,7 @@ gpointer master_thread(gpointer args)
     gint reuse = 1;
     fd_set read_fd, fds;
 
-    while (mode != MODE_MASTER)
+    while (mode == MODE_SLAVE)
         g_usleep(1000000);
 
     if ((node_fd = socket(AF_INET, SOCK_STREAM, 0)) == INVALID_SOCKET) {

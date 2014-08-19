@@ -625,7 +625,7 @@ static void destroy_ask( GtkWidget *widget, gpointer   data )
     msg.u.update_label.label_num = STOP_WINNER;
     write_tv_logo(&(msg.u.update_label));
 
-    if (mode == MODE_MASTER)
+    if (mode != MODE_SLAVE)
         send_label_msg(&msg);
 
     legend_widget = NULL;
@@ -962,7 +962,7 @@ void reset(guint key, struct msg_next_match *msg)
         msg.u.update_label.text3[0] = winner;
         write_tv_logo(&(msg.u.update_label));
 
-        if (mode == MODE_MASTER)
+        if (mode != MODE_SLAVE)
             send_label_msg(&msg);
 
         return;
@@ -1144,7 +1144,7 @@ void reset(guint key, struct msg_next_match *msg)
 
     if (key != GDK_0) {
         display_ad_window();
-        if (mode == MODE_MASTER)
+        if (mode != MODE_SLAVE)
             send_label(START_ADVERTISEMENT);
     }
 }

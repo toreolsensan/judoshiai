@@ -1750,7 +1750,7 @@ static void destroy_ad( GtkWidget *widget,
 
     write_tv_logo(&(msg.u.update_label));
     
-    if (mode == MODE_MASTER)
+    if (mode != MODE_SLAVE)
         send_label_msg(&msg);
 
     ad_window = NULL;
