@@ -1,4 +1,5 @@
 G*
+.gdbinit
 common/*.mo
 doc/*.pdf
 judoshiai/obj-*
