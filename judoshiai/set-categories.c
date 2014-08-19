@@ -44,7 +44,7 @@ struct offial_category official_categories[NUM_DRAWS][2][10] = {
 
         }, { // women
             {
-                "Women", 1000, 300, 0, 600, // name, max age, match gs rest times 
+                "Women", 1000, 240, 0, 600, // name, max age, match gs rest times 
                 {{48000, "48"}, {52000, "52"}, {57000, "57"}, 
                  {63000, "63"}, {70000, "70"}, {78000, "78"}, {0, NULL}}
             }, {
@@ -86,7 +86,7 @@ struct offial_category official_categories[NUM_DRAWS][2][10] = {
             }, { NULL, 0, 0, 0, 0, {{0, NULL}}}
         }, { // women
             {
-                "N", 1000, 300, 0, 600, // name, max age, match gs rest times 
+                "N", 1000, 240, 0, 600, // name, max age, match gs rest times 
                 {{48000, "48"}, {52000, "52"}, {57000, "57"}, 
                  {63000, "63"}, {70000, "70"}, {78000, "78"}, {0, NULL}}
             }, {
@@ -140,7 +140,7 @@ struct offial_category official_categories[NUM_DRAWS][2][10] = {
             }, { NULL, 0, 0, 0, 0, {{0, NULL}}}
         }, { // women
             {
-                "Damer", 1000, 300, 0, 600, // name, max age, match gs rest times 
+                "Damer", 1000, 240, 0, 600, // name, max age, match gs rest times 
                 {{48000, "48"}, {52000, "52"}, {57000, "57"}, 
                  {63000, "63"}, {70000, "70"}, {78000, "78"}, {0, NULL}}
             }, {
@@ -195,7 +195,7 @@ struct offial_category official_categories[NUM_DRAWS][2][10] = {
             }, { NULL, 0, 0, 0, 0, {{0, NULL}}}
         }, { // women
             {
-                "N", 1000, 300, 0, 600, // name, max age, match gs rest times 
+                "N", 1000, 240, 0, 600, // name, max age, match gs rest times 
                 {{48000, "48"}, {52000, "52"}, {57000, "57"}, 
                  {63000, "63"}, {70000, "70"}, {78000, "78"}, {0, NULL}}
             }, {
@@ -256,7 +256,7 @@ struct offial_category official_categories[NUM_DRAWS][2][10] = {
             }, { NULL, 0, 0, 0, 0, {{0, NULL}}}
         }, { // women
             {
-                "Sen F ", 1000, 300, 180, 600, // name, max age, match gs rest times 
+                "Sen F ", 1000, 240, 180, 600, // name, max age, match gs rest times 
                 {{48000, "48"}, {52000, "52"}, {57000, "57"}, 
                  {63000, "63"}, {70000, "70"}, {78000, "78"}, {0, NULL}}
             }, {
@@ -322,7 +322,7 @@ struct offial_category official_categories[NUM_DRAWS][2][10] = {
             }, { NULL, 0, 0, 0, 0, {{0, NULL}}}
         }, { // women
             {
-                "SenD", 1000, 300, 0, 300, // name, max age, match gs rest times
+                "SenD", 1000, 240, 0, 300, // name, max age, match gs rest times
                 {{48000, "48"}, {52000, "52"}, {57000, "57"}, 
                  {63000, "63"}, {70000, "70"}, {78000, "78"}, {0, NULL}}
             }, {
@@ -378,7 +378,7 @@ struct offial_category official_categories[NUM_DRAWS][2][10] = {
             }, { NULL, 0, 0, 0, 0, {{0, NULL}}}
         }, { // women
             {
-                "Women", 1000, 300, 180, 600, // name, max age, match gs rest times 
+                "Women", 1000, 240, 180, 600, // name, max age, match gs rest times 
                 {{48000, "48"}, {52000, "52"}, {57000, "57"}, 
                  {63000, "63"}, {70000, "70"}, {78000, "78"}, {0, NULL}}
             }, {
@@ -428,7 +428,7 @@ struct offial_category official_categories[NUM_DRAWS][2][10] = {
             }, { NULL, 0, 0, 0, 0, {{0, NULL}}}
         }, { // women
             {
-                "Women", 1000, 300, 180, 300, // name, max age, match gs rest times 
+                "Women", 1000, 240, 180, 300, // name, max age, match gs rest times 
                 {{48000, "48"}, {52000, "52"}, {57000, "57"}, 
                  {63000, "63"}, {70000, "70"}, {78000, "78"}, {0, NULL}}
             }, {
@@ -474,7 +474,7 @@ struct offial_category official_categories[NUM_DRAWS][2][10] = {
             }, { NULL, 0, 0, 0, 0, {{0, NULL}}}
         }, { // women
             {
-                "Damer", 1000, 300, 180, 600, // name, max age, match gs rest times 
+                "Damer", 1000, 240, 180, 600, // name, max age, match gs rest times 
                 {{48000, "48"}, {52000, "52"}, {57000, "57"}, 
                  {63000, "63"}, {70000, "70"}, {78000, "78"}, {0, NULL}}
             }, {
@@ -509,7 +509,7 @@ struct offial_category official_categories[NUM_DRAWS][2][10] = {
 
         }, { // women
             {
-                "Women", 1000, 300, 0, 600, // name, max age, match gs rest times 
+                "Women", 1000, 240, 0, 600, // name, max age, match gs rest times 
                 {{48000, "48"}, {52000, "52"}, {57000, "57"}, 
                  {63000, "63"}, {70000, "70"}, {78000, "78"}, {0, NULL}}
             }, {
@@ -540,7 +540,7 @@ struct offial_category official_categories[NUM_DRAWS][2][10] = {
 
         }, { // women
             {
-                "Women", 1000, 300, 0, 600, // name, max age, match gs rest times 
+                "Women", 1000, 240, 0, 600, // name, max age, match gs rest times 
                 {{48000, "48"}, {52000, "52"}, {57000, "57"}, 
                  {63000, "63"}, {70000, "70"}, {78000, "78"}, {0, NULL}}
             }, {
@@ -571,7 +571,7 @@ struct offial_category official_categories[NUM_DRAWS][2][10] = {
 
         }, { // women
             {
-                "Women", 1000, 300, 0, 600, // name, max age, match gs rest times 
+                "Women", 1000, 240, 0, 600, // name, max age, match gs rest times 
                 {{48000, "48"}, {52000, "52"}, {57000, "57"}, 
                  {63000, "63"}, {70000, "70"}, {78000, "78"}, {0, NULL}}
             }, {
