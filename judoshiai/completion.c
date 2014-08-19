@@ -20,13 +20,47 @@
 
 #include "judoshiai.h"
 
-void complete_add_if_not_exist(GCompletion *completer, const gchar *txt)
-{
-    GList *items;
-    GList *completions;
+static gboolean found;
 
+static gboolean foreach_func (GtkTreeModel *model,
+                              GtkTreePath  *path,
+                              GtkTreeIter  *iter,
+                              gpointer      user_data)
+{
+    gchar *txt;
+    const gchar *find = user_data;
+
+    gtk_tree_model_get(model, iter, 0, &txt, -1);
+    found = strcmp(txt, find) == 0;
+    g_free(txt);
+    return found;
+}
+void complete_add_if_not_exist(
+#if (GTKVER == 3)
+                               GtkEntryCompletion *completer,
+#else
+                               GCompletion *completer, 
+#endif
+                               const gchar *txt)
+{
     if (txt == NULL || txt[0] == 0)
         return;
+
+#if (GTKVER == 3)
+    GtkTreeIter iter;
+    GtkListStore *model = GTK_LIST_STORE(gtk_entry_completion_get_model(completer));
+    if (!model) return;
+
+    found = FALSE;
+    gtk_tree_model_foreach(GTK_TREE_MODEL(model), foreach_func, (gpointer)txt);
+
+    if (!found) {
+        gtk_list_store_append(model, &iter);
+        gtk_list_store_set(model, &iter, 0, txt, -1);
+    }
+#else
+    GList *items;
+    GList *completions;
 
     completions = g_completion_complete_utf8(completer, txt, NULL);
     if (completions)
@@ -35,7 +69,25 @@ void complete_add_if_not_exist(GCompletion *completer, const gchar *txt)
     items = NULL;
     items = g_list_append(items, g_strdup(txt));
     g_completion_add_items(completer, items);	
+#endif
 }
+
+#if (GTKVER == 3)
+
+static gboolean on_match_select(GtkEntryCompletion *widget,
+                                GtkTreeModel       *model,
+                                GtkTreeIter        *iter,
+                                gpointer            user_data)
+{  
+    /** no usage at the moment
+    GValue value = {0, };
+    gtk_tree_model_get_value(model, iter, 0, &value);
+    g_value_unset(&value);
+    **/
+    return FALSE;
+} 
+
+#else
 
 int complete_cb(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
@@ -91,8 +143,24 @@ static gint complete_compare(const gchar *s1, const gchar *s2, gsize n)
     return result;
 }
 
-GCompletion *club_completer_new(void)
+#endif
+
+#if (GTKVER == 3)
+GtkEntryCompletion *
+#else
+GCompletion *
+#endif
+club_completer_new(void)
 {
+#if (GTKVER == 3)
+    GtkTreeIter iter;
+    GtkEntryCompletion *completer = g_object_ref(gtk_entry_completion_new());// ???
+    gtk_entry_completion_set_text_column(completer, 0);
+    g_signal_connect(G_OBJECT (completer), "match-selected",
+                     G_CALLBACK (on_match_select), NULL);    
+
+    GtkListStore *model = gtk_list_store_new(1, G_TYPE_STRING);
+#else
     GCompletion *completer;
     GList *items;
 
@@ -100,6 +168,7 @@ GCompletion *club_completer_new(void)
     g_completion_set_compare(completer, complete_compare);
 
     items = NULL;
+#endif
 
     gchar line[256];
     gchar *file = g_build_filename(installation_dir, "etc", "clubs.txt", NULL);
@@ -130,12 +199,21 @@ GCompletion *club_completer_new(void)
 	    club_name_set(line, p1, p2 ? p2 : "");
 	}
 		
+#if (GTKVER == 3)
+        gtk_list_store_append(model, &iter);
+        gtk_list_store_set(model, &iter, 0, line, -1);
+#else
         items = g_list_append(items, g_strdup(line));
+#endif
     }
 
     fclose(f);
 
+#if (GTKVER == 3)
+    gtk_entry_completion_set_model(completer, GTK_TREE_MODEL(model));
+#else
     g_completion_add_items(completer, items);	
+#endif
 
     return completer;
 }

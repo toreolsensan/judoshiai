@@ -448,8 +448,9 @@ void view_on_row_activated(GtkTreeView        *treeview,
     guint deleted;
     gchar weight_s[10], birthyear_s[10], clubseeding_s[10];
     GtkAccelGroup *accel_group;
-    /*if (editing_ongoing)
-      return;*/
+
+    if (editing_ongoing)
+        return;
 
     struct judoka_widget *judoka_tmp = g_malloc(sizeof(*judoka_tmp));
     memset(judoka_tmp, 0, sizeof(*judoka_tmp));
@@ -748,8 +749,12 @@ void view_on_row_activated(GtkTreeView        *treeview,
         if (deleted & HANSOKUMAKE)
             gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(judoka_tmp->hansokumake), TRUE);
 
+#if (GTKVER == 3)
+        gtk_entry_set_completion(GTK_ENTRY(judoka_tmp->club), club_completer);
+#else
         g_signal_connect(G_OBJECT(judoka_tmp->club), "key-press-event", 
                          G_CALLBACK(complete_cb), club_completer);
+#endif
         row++;
 
         judoka_tmp->comment = set_entry(table, row++, _("Comment:"), comment);
@@ -2275,6 +2280,7 @@ static void barcode_delete_callback(GtkWidget *widget,
                                     gpointer data)
 {
     bcdialog = NULL;
+    gtk_widget_destroy(widget);
 }
 
 void barcode_search(GtkWidget *w, gpointer data)

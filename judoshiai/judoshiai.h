@@ -728,7 +728,11 @@ extern gboolean one_bronze(gint table, gint sys);
 extern FILE *result_file;
 extern GKeyFile *keyfile;
 
+#if (GTKVER == 3)
+extern GtkEntryCompletion *club_completer;
+#else
 extern GCompletion *club_completer;
+#endif
 
 extern struct message hello_message;
 
@@ -929,6 +933,7 @@ extern gchar *db_get_row_col_data(gint row, gint col);
 extern int db_create_blob_table(void);
 extern int db_write_blob(int key, const unsigned char *zBlob, int nBlob);
 extern int db_read_blob(int key, unsigned char **pzBlob, int *pnBlob);
+extern void db_delete_blob_line(int key);
 extern void db_free_blob(unsigned char *zBlob);
 
 /* categories */
@@ -1059,9 +1064,14 @@ extern void set_preferences(void);
 extern gulong host2net(gulong a);
 extern struct message *put_to_rec_queue(volatile struct message *m);
 
+#if (GTKVER == 3)
+extern GtkEntryCompletion *club_completer_new(void);
+extern void complete_add_if_not_exist(GtkEntryCompletion *completer, const gchar *txt);
+#else
 extern GCompletion *club_completer_new(void);
-extern int complete_cb(GtkWidget *widget, GdkEventKey *event, gpointer data);
 extern void complete_add_if_not_exist(GCompletion *completer, const gchar *txt);
+extern int complete_cb(GtkWidget *widget, GdkEventKey *event, gpointer data);
+#endif
 
 /* old_shiai */
 extern void set_old_shiai_display(GtkWidget *w, gpointer data);
@@ -1206,5 +1216,10 @@ extern gint props_get_grade(gchar *b);
 /* ftp */
 extern gpointer ftp_thread(gpointer args);
 
+/* custom categories */
+extern gint get_custom_pos(struct match *m, gint table, gint pos, gint *real_res);
+extern guint get_custom_table_number_by_competitors(gint num_comp);
+extern struct custom_data *get_custom_table(guint table);
+extern void read_custom_from_db(void);
 
 #endif

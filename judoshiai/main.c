@@ -50,7 +50,11 @@ guint current_year;
 gchar *installation_dir = NULL;
 GKeyFile *keyfile;
 gchar *conffile, *lockfile;
+#if (GTKVER == 3)
+GtkEntryCompletion *club_completer;
+#else
 GCompletion *club_completer;
+#endif
 gint print_lang = 0, club_text = 0, club_abbr = 0, draw_system = 0;
 gboolean first_instance = FALSE;
 gint number_of_tatamis = 3;
