@@ -17,4 +17,4 @@ finaali: a_lohko.1 b_lohko.1
 pos1 finaali.1
 pos2 finaali.2
 pos3 pronssi_1.1
-pos4 pronssi_2.1
+pos4 pronssi_2.1 3
