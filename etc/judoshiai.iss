@@ -10,7 +10,7 @@ AppSupportURL=http://oh2ncp.kolumbus.fi
 AppUpdatesURL=http://oh2ncp.kolumbus.fi
 DefaultDirName={pf}\JudoShiai
 DefaultGroupName=JudoShiai
-OutputDir=release-win32
+OutputDir=RELDIR
 OutputBaseFilename=judoshiai-setup
 Compression=lzma
 SolidCompression=yes
@@ -35,7 +35,7 @@ spanish.BeveledLabel=Español
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "release-win32\judoshiai\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "RELDIR\judoshiai\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
