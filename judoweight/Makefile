@@ -1,12 +1,14 @@
 include ../common/Makefile.inc
 
+OBJDIR := $(JS_BUILD_DIR)/$(LASTPART)/$(OBJDIR)
+
 all: $(OBJDIR) $(OBJDIR)/judoweight$(SUFF)
 
 $(OBJDIR):
 	mkdir -p $(OBJDIR)
 
 OBJS += $(OBJDIR)/main.o $(OBJDIR)/menus.o $(OBJDIR)/comm.o $(OBJDIR)/ip.o \
-	$(OBJDIR)/protocol.o $(OBJDIR)/serial.o $(OBJDIR)/language.o $(OBJDIR)/print.o
+	$(OBJDIR)/protocol.o $(OBJDIR)/serial.o $(OBJDIR)/language.o $(OBJDIR)/print.o $(OBJDIR)/svg.o
 
 CFLAGS += -DAPPLICATION="\"judoweight\""
 CFLAGS += -DAPP_NUM=4

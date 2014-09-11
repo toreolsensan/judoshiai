@@ -3,6 +3,8 @@ PROF=
 
 include ../common/Makefile.inc
 
+OBJDIR := $(JS_BUILD_DIR)/$(LASTPART)/$(OBJDIR)
+
 all: $(OBJDIR) $(OBJDIR)/judoshiai$(SUFF)
 
 $(OBJDIR):

@@ -1,5 +1,7 @@
 include ../common/Makefile.inc
 
+OBJDIR := $(JS_BUILD_DIR)/$(LASTPART)/$(OBJDIR)
+
 all: $(OBJDIR) $(OBJDIR)/judotimer$(SUFF)
 
 $(OBJDIR):
