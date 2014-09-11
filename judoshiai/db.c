@@ -22,12 +22,17 @@ const char *db_name;
 
 G_LOCK_DEFINE(db);
 
+guint64 cumul_db_time = 0;
+gint    cumul_db_count = 0;
+
 gint db_exec(const char *dbn, char *cmd, void *data, void *dbcb)
 {
     sqlite3 *db;
     char *zErrMsg = 0;
     int rc;
+    guint64 start, stop;
 
+    start = rdtsc();
     if (db_name == dbn)
 	G_LOCK(db);
 
@@ -42,6 +47,14 @@ gint db_exec(const char *dbn, char *cmd, void *data, void *dbcb)
     }
 
     db_changes = 0;
+    rc = sqlite3_exec(db, "PRAGMA synchronous=OFF", NULL, NULL, &zErrMsg);
+    if (rc != SQLITE_OK && rc != SQLITE_ABORT && zErrMsg) {
+	g_print("SQL PRAGMA sync error: %s\n", zErrMsg);
+    }
+    rc = sqlite3_exec(db, "PRAGMA default_cache_size=10000", NULL, NULL, &zErrMsg);
+    if (rc != SQLITE_OK && rc != SQLITE_ABORT && zErrMsg) {
+	g_print("SQL PRAGMA cache error: %s\n", zErrMsg);
+    }
 
     //g_print("\nSQL: %s:\n  %s\n", db_name, cmd);
     rc = sqlite3_exec(db, cmd, dbcb, data, &zErrMsg);
@@ -59,6 +72,10 @@ gint db_exec(const char *dbn, char *cmd, void *data, void *dbcb)
 
     if (db_name == dbn)
 	G_UNLOCK(db);
+
+    stop = rdtsc();
+    cumul_db_time += stop - start;
+    cumul_db_count++;
 
     return rc;
 }
@@ -81,7 +98,13 @@ void db_close(void)
 	g_print("%s: maindb was not open!\n", __FUNCTION__);
 	return;
     }
-
+#if 0
+    char *zErrMsg = NULL;
+    gint rc = sqlite3_exec(maindb, "END TRANSACTION", NULL, NULL, &zErrMsg);
+    if (rc != SQLITE_OK && rc != SQLITE_ABORT && zErrMsg) {
+	g_print("SQL END TRANSACTION error: %s\n", zErrMsg);
+    }
+#endif
     sqlite3_close(maindb);
     maindb = NULL;
     G_UNLOCK(db);
@@ -89,6 +112,8 @@ void db_close(void)
 
 gint db_open(void)
 {
+    char *zErrMsg = NULL;
+
     if (maindb) {
 	g_print("%s: maindb was already open!\n", __FUNCTION__);
 	return -1;
@@ -111,6 +136,20 @@ gint db_open(void)
 	G_UNLOCK(db);
     }
 
+    rc = sqlite3_exec(maindb, "PRAGMA synchronous=OFF", NULL, NULL, &zErrMsg);
+    if (rc != SQLITE_OK && rc != SQLITE_ABORT && zErrMsg) {
+	g_print("SQL PRAGMA sync error: %s\n", zErrMsg);
+    }
+    rc = sqlite3_exec(maindb, "PRAGMA default_cache_size=10000", NULL, NULL, &zErrMsg);
+    if (rc != SQLITE_OK && rc != SQLITE_ABORT && zErrMsg) {
+	g_print("SQL PRAGMA cache error: %s\n", zErrMsg);
+    }
+#if 0
+    rc = sqlite3_exec(maindb, "BEGIN TRANSACTION", NULL, NULL, &zErrMsg);
+    if (rc != SQLITE_OK && rc != SQLITE_ABORT && zErrMsg) {
+	g_print("SQL BEGIN TRANSACTION error: %s\n", zErrMsg);
+    }
+#endif
     return rc;
 }
 
@@ -124,6 +163,7 @@ gint db_cmd(void *data, void *dbcb, gchar *format, ...)
 
     if (!maindb) {
 	g_print("db_cmd SQL error: maindb is null\n");
+        g_free(text);
 	return -1;
     }
 
