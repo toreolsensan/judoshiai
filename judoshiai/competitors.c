@@ -496,8 +496,14 @@ void view_on_row_activated(GtkTreeView        *treeview,
     judoka_tmp->visible = visible;
     judoka_tmp->category = g_strdup(category);
 
+    gchar titlebuf[64];
+    if (visible)
+        snprintf(titlebuf, sizeof(titlebuf), "%s [%d]", _("Competitor"), index);
+    else
+        snprintf(titlebuf, sizeof(titlebuf), "%s", _("Category"));
+
     competitor_dialog =
-        dialog = gtk_dialog_new_with_buttons (visible ? _("Competitor") : _("Category"),
+        dialog = gtk_dialog_new_with_buttons (titlebuf,
                                               GTK_WINDOW(main_window),
                                               GTK_DIALOG_DESTROY_WITH_PARENT,
                                               GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
