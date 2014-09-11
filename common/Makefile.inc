@@ -1,5 +1,11 @@
-SHIAI_VER_NUM=2.4-prealpha5
+SHIAI_VER_NUM=2.4-beta3
 SHIAI_VERSION="\"$(SHIAI_VER_NUM)\""
+
+ifndef JS_BUILD_DIR
+  JS_BUILD_DIR=/home/$(USER)/js-build
+endif
+
+LASTPART := $(shell basename $(CURDIR))
 
 GTKVER=3
 
@@ -34,7 +40,7 @@ RESHACKER=wine "C:\\bin\\ResHacker.exe"
 WINDRES=wine "/opt/win32/MinGW/bin/windres.exe"
 INNOSETUP=wine "/opt/win32/Inno Setup 5/ISCC.exe"
 OBJDIR=obj-win32
-RELEASEDIR=release-win32
+RELEASEDIR=$(JS_BUILD_DIR)/release-win32
 
 ### Linux ###
 else
@@ -47,7 +53,7 @@ RESHACKER=
 WINDRES=
 INNOSETUP=
 OBJDIR=obj-linux
-RELEASEDIR=release-linux
+RELEASEDIR=$(JS_BUILD_DIR)/release-linux
 
 endif
 

@@ -1,11 +1,11 @@
 include common/Makefile.inc
 
-JUDOSHIAIFILE=judoshiai/$(OBJDIR)/judoshiai$(SUFF)
-JUDOTIMERFILE=judotimer/$(OBJDIR)/judotimer$(SUFF)
-JUDOINFOFILE=judoinfo/$(OBJDIR)/judoinfo$(SUFF)
-JUDOWEIGHTFILE=judoweight/$(OBJDIR)/judoweight$(SUFF)
-JUDOJUDOGIFILE=judojudogi/$(OBJDIR)/judojudogi$(SUFF)
-JUDOPROXYFILE=judoproxy/$(OBJDIR)/judoproxy$(SUFF)
+JUDOSHIAIFILE=$(JS_BUILD_DIR)/judoshiai/$(OBJDIR)/judoshiai$(SUFF)
+JUDOTIMERFILE=$(JS_BUILD_DIR)/judotimer/$(OBJDIR)/judotimer$(SUFF)
+JUDOINFOFILE=$(JS_BUILD_DIR)/judoinfo/$(OBJDIR)/judoinfo$(SUFF)
+JUDOWEIGHTFILE=$(JS_BUILD_DIR)/judoweight/$(OBJDIR)/judoweight$(SUFF)
+JUDOJUDOGIFILE=$(JS_BUILD_DIR)/judojudogi/$(OBJDIR)/judojudogi$(SUFF)
+JUDOPROXYFILE=$(JS_BUILD_DIR)/judoproxy/$(OBJDIR)/judoproxy$(SUFF)
 
 RELDIR=$(RELEASEDIR)/judoshiai
 RELFILE=$(RELDIR)/bin/judoshiai$(SUFF)
@@ -115,7 +115,8 @@ setup:
 ifeq ($(TGT),WIN32)
 	sed "s/AppVerName=.*/AppVerName=Shiai $(SHIAI_VER_NUM)/" etc/judoshiai.iss >judoshiai1.iss
 	sed "s/OutputBaseFilename=.*/OutputBaseFilename=judoshiai-setup-$(SHIAI_VER_NUM)/" judoshiai1.iss >judoshiai2.iss
-	$(INNOSETUP) judoshiai2.iss
+	sed "s,RELDIR,$(RELEASEDIR)," judoshiai2.iss | tr '/' '\\' >judoshiai3.iss
+	$(INNOSETUP) judoshiai3.iss
 	rm -f judoshiai*.iss
 else
 	tar -C $(RELEASEDIR) -cf judoshiai.tar judoshiai
@@ -158,7 +159,7 @@ debian:
 	checkinstall -D --install=no --pkgname=judoshiai --pkgversion=$(SHIAI_VER_NUM) \
 	--maintainer=oh2ncp@kolumbus.fi --nodoc \
 	--requires libao4,libatk1.0-0,libcairo2,libcurl3,libgdk-pixbuf2.0-0,libgtk2.0-0,libpango-1.0-0,librsvg2-2,libcanberra-gtk-module
-	mv *.deb release-linux/
+	mv *.deb $(RELDIR)/
 	rm description-pak postinstall-pak postremove-pak
 
 clean:
