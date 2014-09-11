@@ -56,7 +56,7 @@ static double rowheight1;
 
 static gchar *pdf_out = NULL, *schedule_pdf_out = NULL, *template_in = NULL, *schedule_start = NULL;
 static gint print_flags = 0, print_resolution = 30;
-static gboolean print_fixed = TRUE;
+static gboolean print_fixed = TRUE, dialog_run = FALSE;
 
 typedef enum {
     BARCODE_PS, 
@@ -1883,7 +1883,10 @@ void do_print(GtkWidget *menuitem, gpointer userdata)
     gtk_print_operation_set_use_full_page(print, FALSE);
     gtk_print_operation_set_unit(print, GTK_UNIT_POINTS);
 
-    /*res = */gtk_print_operation_run(print, GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG,
+    /*res = */gtk_print_operation_run(print,
+                                      ptr_to_gint(userdata) & PRINT_TO_DEFAULT ? 
+                                      GTK_PRINT_OPERATION_ACTION_PRINT : 
+                                      GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG,
                                       GTK_WINDOW (main_window), NULL);
 
     g_object_unref(print);
@@ -2369,6 +2372,7 @@ void print_accreditation_cards(gboolean all)
         print_doc(NULL, gint_to_ptr(flags));
 
         print_flags = flags;
+        dialog_run = TRUE;
     }
 
     g_free(s);
@@ -2378,4 +2382,12 @@ void print_accreditation_cards(gboolean all)
 void print_weight_notes(GtkWidget *menuitem, gpointer userdata)
 {
     print_accreditation_cards(TRUE);    
+}
+
+void print_weight_notes_to_default_printer(GtkWidget *menuitem, gpointer userdata)
+{
+    if (dialog_run == FALSE)
+        print_accreditation_cards(FALSE);
+    else
+        print_doc(NULL, gint_to_ptr(print_flags | PRINT_TO_DEFAULT));
 }
