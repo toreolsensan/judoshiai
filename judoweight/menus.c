@@ -25,12 +25,13 @@ extern void set_serial_dialog(GtkWidget *w, gpointer data);
 extern void serial_set_device(gchar *dev);
 extern void serial_set_baudrate(gint baud);
 extern void serial_set_type(gint type);
+extern void set_svg_file(GtkWidget *menu_item, gpointer data);
 
 static GtkWidget *menubar, *preferences, *help, *preferencesmenu, *helpmenu;
 static GtkWidget *quit, *manual;
 static GtkWidget *node_ip, *my_ip, *preference_serial, *about;
 static GtkWidget *light, *menu_light, *lang_menu_item;
-static GtkWidget *m_password_protected, *m_automatic_send, *password, *m_print_label;
+static GtkWidget *m_password_protected, *m_automatic_send, *password, *m_print_label, *svgfile;
 //static GtkTooltips *menu_tips;
 
 static void about_judoinfo( GtkWidget *w,
@@ -173,6 +174,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
 
     create_separator(preferencesmenu);
     m_print_label = create_check_menu_item(preferencesmenu, set_print_label, 0);
+    svgfile = create_menu_item(preferencesmenu, set_svg_file, 0);
 
     create_separator(preferencesmenu);
     quit    = create_menu_item(preferencesmenu, destroy, 0);
@@ -251,6 +253,13 @@ void set_preferences(void)
     x1 = g_key_file_get_integer(keyfile, "preferences", "password", &error);
     if (!error)
         weightpwcrc32 = x1;
+
+    error = NULL;
+    str = g_key_file_get_string(keyfile, "preferences", "svgfile", &error);
+    if (!error) {
+        svg_file = str;
+        read_svg_file();
+    }
 }
 
 gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param)
@@ -270,6 +279,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(m_automatic_send, _("Automatic send"));
     change_menu_label(password,     _("Password"));
     change_menu_label(m_print_label, _("Print label"));
+    change_menu_label(svgfile,       _("SVG Templates"));
 
     change_menu_label(manual,       _("Manual"));
     change_menu_label(about,        _("About"));
