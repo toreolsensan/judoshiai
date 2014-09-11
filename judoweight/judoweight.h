@@ -35,6 +35,15 @@
 #define JUDOGI_OK     0x20
 #define JUDOGI_NOK    0x40
 
+struct paint_data {
+    cairo_t *c;
+    gdouble  paper_width;
+    gdouble  paper_height;
+    gdouble  paper_width_mm;
+    gdouble  paper_height_mm;
+    struct msg_edit_competitor msg;
+};
+
 extern GtkWidget *main_window;
 extern GTimer *timer;
 extern gchar *installation_dir;
@@ -45,6 +54,7 @@ extern GtkWidget *weight_entry;
 extern gint my_address;
 extern gint weightpwcrc32;
 extern gboolean password_protected, automatic_send;
+extern gchar *svg_file;
 
 extern gboolean this_is_shiai(void);
 extern void msg_to_queue(struct message *msg);
@@ -70,5 +80,8 @@ extern void set_password_protected(GtkWidget *w, gpointer data);
 extern void set_automatic_send(GtkWidget *w, gpointer data);
 extern void set_print_label(GtkWidget *menu_item, gpointer data);
 extern void do_print(gpointer userdata);
+extern void do_print_svg(struct paint_data *pd);
+extern void read_svg_file(void);
+extern gint paint_svg(struct paint_data *pd);
 
 #endif
