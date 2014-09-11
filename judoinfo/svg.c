@@ -190,7 +190,7 @@ gint paint_svg(struct paint_data *pd)
     
     guchar *p = (guchar *)svg_data;
     while(*p) {
-        if (*p == '%') {
+        if (*p == '%' && IS_LABEL_CHAR(p[1])) {
             memset(attr, 0, sizeof(attr));
             cnt = 0;
             p++;
@@ -277,6 +277,8 @@ gint paint_svg(struct paint_data *pd)
         rsvg_handle_render_cairo(handle, pd->c);
         cairo_restore(pd->c);
     }
+
+    g_object_unref(handle);
 
     return TRUE;
 }
