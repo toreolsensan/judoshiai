@@ -475,6 +475,7 @@ static void init_display(void)
     if (!surface) return;
     cairo_t *c = cairo_create(surface);
     paint(c, paper_width, paper_height, NULL);
+    cairo_show_page(c);
     cairo_destroy(c);
     refresh_darea();
 }
@@ -498,9 +499,21 @@ static gboolean configure_event_cb(GtkWidget         *widget,
     return TRUE;
 }
 
+static gboolean expose_scrolled(GtkWidget *widget, GdkEventExpose *event, gpointer userdata)
+{
+    static time_t last = 0;
+    time_t now = time(NULL);
+    if (now > last) 
+        gtk_widget_queue_draw(w.darea);
+    last = now;
+    return FALSE;
+}
+
 /* This is called when we need to draw the windows contents */
 static gboolean expose(GtkWidget *widget, GdkEventExpose *event, gpointer userdata)
 {
+    //static gint cnt = 0; 
+    //g_print("MATCH-GRAPH: expose %d\n", cnt++);
 #if (GTKVER == 3)
     cairo_t *c = (cairo_t *)event;
     cairo_set_source_surface(c, surface, 0, 0);
@@ -678,6 +691,8 @@ void set_match_graph_page(GtkWidget *notebook)
     gtk_notebook_append_page(GTK_NOTEBOOK(notebook), w.scrolled_window, match_graph_label);
 
 #if (GTKVER == 3)
+    g_signal_connect(G_OBJECT(w.scrolled_window), 
+                     "draw", G_CALLBACK(expose_scrolled), NULL);
     g_signal_connect(G_OBJECT(w.darea), 
                      "draw", G_CALLBACK(expose), w.darea);
     g_signal_connect(G_OBJECT(w.darea),"configure-event",
