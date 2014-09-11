@@ -47,6 +47,9 @@
 
 #include "judotimer.h"
 
+gboolean showflags = FALSE, showletter = FALSE;
+gdouble  flagsize = 7.0, namesize = 10.0;
+
 //#define T g_print("Error on line %d\n", __LINE__)
 #define T do {} while (0)
 
@@ -1524,6 +1527,7 @@ static time_t comp_names_start = 0;
 static gchar category[32];
 static gchar b_last[32];
 static gchar w_last[32];
+static gchar b_country[8], w_country[8];
 static GtkWidget *ok_button = NULL;
 
 static struct frame *get_current_frame(GtkWidget *widget)
@@ -1553,8 +1557,8 @@ static gboolean current_ad_has_one_frame(void)
     return FALSE;
 }
 
-static gint rmin, rtsec, rsec, rflags;
-static gboolean rrest;
+static gint rmin, rtsec, rsec, rflags, judogi_control_flags;
+static gboolean rrest, judogi_control;
 
 void set_competitor_window_rest_time(gint min, gint tsec, gint sec, gboolean rest, gint flags)
 {
@@ -1571,7 +1575,8 @@ void set_competitor_window_rest_time(gint min, gint tsec, gint sec, gboolean res
     rflags = flags;
 
 #if (GTKVER == 3)
-    gdk_window_invalidate_rect(GDK_WINDOW(ad_window), NULL, TRUE);
+    gtk_widget_queue_draw(GTK_WIDGET(ad_window));
+    //gdk_window_invalidate_rect(GDK_WINDOW(ad_window), NULL, TRUE);
     /*if (gtk_widget_get_window(widget)) {
         gdk_window_invalidate_rect(gtk_widget_get_window(widget), NULL, TRUE);
         }*/
@@ -1584,6 +1589,64 @@ void set_competitor_window_rest_time(gint min, gint tsec, gint sec, gboolean res
     }
 #endif
 }
+
+void set_competitor_window_judogi_control(gboolean control, gint flags)
+{
+    if (!ad_window)
+        return;
+
+    if (judogi_control == control && judogi_control_flags == flags) {
+        if (judogi_control)
+            gtk_widget_queue_draw(GTK_WIDGET(ad_window));
+        //gdk_window_invalidate_rect(GDK_WINDOW(ad_window), NULL, TRUE);
+        return;
+    }
+
+    judogi_control = control;
+    judogi_control_flags = flags;
+
+    gtk_widget_queue_draw(GTK_WIDGET(ad_window));
+    //gdk_window_invalidate_rect(GDK_WINDOW(ad_window), NULL, TRUE);
+}
+
+static gdouble name_start = 10.0;
+
+static void draw_flag(cairo_t *c, gdouble y, gdouble height, gchar *country, gdouble flag_size)
+{
+    gchar buf[32];
+    snprintf(buf, sizeof(buf), "%s.png", country);
+    gchar *file = g_build_filename(installation_dir, "etc", "flags-ioc", buf, NULL);
+    cairo_surface_t *image = cairo_image_surface_create_from_png(file);
+    if (image && cairo_surface_status(image) == CAIRO_STATUS_SUCCESS) {
+        gdouble icon_w = cairo_image_surface_get_width(image);
+        gdouble icon_h = cairo_image_surface_get_height(image);
+        gdouble flag_h = height*flag_size;
+        gdouble scale = flag_h/icon_h;
+        gdouble y1 = (y+(height-flag_h)/2.0);
+        cairo_save(c);
+        cairo_scale(c, scale, scale);
+        cairo_set_source_surface(c, image, 1.0/scale, y1/scale);
+        cairo_paint(c);
+        cairo_restore(c);
+        gdouble flag_w = flag_h*icon_w/icon_h;
+        if (flag_w > name_start) name_start = flag_w;
+        
+        // rectangle
+        cairo_set_source_rgb(c, 0.0, 0.0, 0.0);
+        cairo_set_line_width(c, 3);
+        cairo_move_to(c, 1, y1);
+        cairo_line_to(c, flag_w+1, y1);
+        cairo_line_to(c, flag_w+1, y1+flag_h);
+        cairo_line_to(c, 1, y1+flag_h);
+        cairo_line_to(c, 1, y1);
+        cairo_stroke(c);
+    }
+
+    cairo_surface_destroy(image);
+    g_free(file);
+}
+
+static cairo_surface_t *white_ctl = NULL, *blue_ctl = NULL;
 
 static gboolean expose_ad(GtkWidget *widget, GdkEventExpose *event, gpointer userdata)
 {
@@ -1621,10 +1684,12 @@ static gboolean expose_ad(GtkWidget *widget, GdkEventExpose *event, gpointer use
         if (ok_button)
             gtk_widget_show(ok_button);
 
+        // black rect on top
         cairo_set_source_rgb(c, 0.0, 0.0, 0.0);
         cairo_rectangle(c, 0.0, 0.0, width, FIRST_BLOCK_HEIGHT);
         cairo_fill(c);
         
+        // white area
         cairo_set_source_rgb(c, 1.0, 1.0, 1.0);
         if (white_first)
             cairo_rectangle(c, 0.0, SECOND_BLOCK_START, width, OTHER_BLOCK_HEIGHT);
@@ -1637,12 +1702,14 @@ static gboolean expose_ad(GtkWidget *widget, GdkEventExpose *event, gpointer use
         else
             cairo_set_source_rgb(c, 1.0, 0.0, 0.0);
 
+        // blue area
         if (white_first)
             cairo_rectangle(c, 0.0, THIRD_BLOCK_START, width, OTHER_BLOCK_HEIGHT);
         else
             cairo_rectangle(c, 0.0, SECOND_BLOCK_START, width, OTHER_BLOCK_HEIGHT);
         cairo_fill(c);
 
+        // write category
         cairo_set_font_size(c, 0.6*FIRST_BLOCK_HEIGHT);
 
         cairo_set_source_rgb(c, 1.0, 1.0, 1.0);
@@ -1650,6 +1717,7 @@ static gboolean expose_ad(GtkWidget *widget, GdkEventExpose *event, gpointer use
         cairo_move_to(c, 10.0, (FIRST_BLOCK_HEIGHT - extents.height)/2.0 - extents.y_bearing);
         cairo_show_text(c, category);
 
+        // rest time
         if (rrest) {
             gchar buf[16];
             snprintf(buf, sizeof(buf), "%d:%d%d", rmin, rtsec, rsec);
@@ -1675,24 +1743,75 @@ static gboolean expose_ad(GtkWidget *widget, GdkEventExpose *event, gpointer use
             }
         }
 
+        name_start = 10.0;
+
+        // flags
+        if (showflags && b_country[0] && w_country[0]) {
+            draw_flag(c, SECOND_BLOCK_START, OTHER_BLOCK_HEIGHT, b_country, 0.1*flagsize);
+            draw_flag(c, THIRD_BLOCK_START, OTHER_BLOCK_HEIGHT, w_country, 0.1*flagsize);
+        }
+
+        // name of the first competitor
         if (white_first)
             cairo_set_source_rgb(c, 0.0, 0.0, 0.0);
         else
             cairo_set_source_rgb(c, 1.0, 1.0, 1.0);
 
-        cairo_set_font_size(c, 0.6*OTHER_BLOCK_HEIGHT);
+        cairo_set_font_size(c, namesize*0.06*OTHER_BLOCK_HEIGHT);
         cairo_text_extents(c, b_last, &extents);
-        cairo_move_to(c, 10.0, SECOND_BLOCK_START + (OTHER_BLOCK_HEIGHT - extents.height)/2.0 - extents.y_bearing);
+        cairo_move_to(c, name_start+5.0, SECOND_BLOCK_START + (OTHER_BLOCK_HEIGHT - extents.height)/2.0 - extents.y_bearing);
         cairo_show_text(c, b_last);
 
+        // name of the second competitor
         if (white_first)
             cairo_set_source_rgb(c, 1.0, 1.0, 1.0);
         else
             cairo_set_source_rgb(c, 0.0, 0.0, 0.0);
 
         cairo_text_extents(c, w_last, &extents);
-        cairo_move_to(c, 10.0, THIRD_BLOCK_START + (OTHER_BLOCK_HEIGHT - extents.height)/2.0 - extents.y_bearing);
+        cairo_move_to(c, name_start+5.0, THIRD_BLOCK_START + (OTHER_BLOCK_HEIGHT - extents.height)/2.0 - extents.y_bearing);
         cairo_show_text(c, w_last);
+
+        // judogi control warning
+        if (judogi_control) {
+            if (!white_ctl) {
+                gchar *file = g_build_filename(installation_dir, "etc", "white-ctl.png", NULL);
+                white_ctl = cairo_image_surface_create_from_png(file);
+                g_free(file);
+            }
+            if (!blue_ctl) {
+                gchar *file = g_build_filename(installation_dir, "etc", "blue-ctl.png", NULL);
+                blue_ctl = cairo_image_surface_create_from_png(file);
+                g_free(file);
+            }
+
+            static gboolean even = FALSE;
+            if (even) {
+                gchar buf[16];
+                snprintf(buf, sizeof(buf), "%s", _("CTL"));
+                cairo_set_source_rgb(c, 0, 0, 0);
+                cairo_text_extents(c, buf, &extents);
+
+                if (!(judogi_control_flags & MATCH_FLAG_JUDOGI1_OK) && white_ctl) {
+                    gdouble scale = OTHER_BLOCK_HEIGHT/cairo_image_surface_get_height(white_ctl);
+                    cairo_save(c);
+                    cairo_scale(c, scale, scale);
+                    cairo_set_source_surface(c, white_ctl, (width - OTHER_BLOCK_HEIGHT)/scale, SECOND_BLOCK_START/scale);
+                    cairo_paint(c);
+                    cairo_restore(c);
+                }
+
+                if (!(judogi_control_flags & MATCH_FLAG_JUDOGI2_OK) && blue_ctl) {
+                    gdouble scale = OTHER_BLOCK_HEIGHT/cairo_image_surface_get_height(blue_ctl);
+                    cairo_save(c);
+                    cairo_scale(c, scale, scale);
+                    cairo_set_source_surface(c, blue_ctl, (width - OTHER_BLOCK_HEIGHT)/scale, THIRD_BLOCK_START/scale);
+                    cairo_paint(c);
+                    cairo_restore(c);
+                }
+            }
+            even = !even;
+        } 
 
 #if (GTKVER != 3)
         cairo_show_page(c);
@@ -1758,7 +1877,7 @@ static void destroy_ad( GtkWidget *widget,
     comp_names_pending = FALSE;
     comp_names_start = 0;
     ok_button = NULL;
-    rrest = FALSE;
+    rrest = judogi_control = FALSE;
     rsec = 0;
 }
 
@@ -1804,10 +1923,13 @@ static gboolean refresh_frame(gpointer data)
  update:
     widget = GTK_WIDGET(data);
 #if (GTKVER == 3)
+    gtk_widget_queue_draw(GTK_WIDGET(widget));
+    /*
     if (gtk_widget_get_window(widget)) {
         gdk_window_invalidate_rect(gtk_widget_get_window(widget), NULL, TRUE);
         gdk_window_process_updates(gtk_widget_get_window(widget), TRUE);
     }
+    */
 #else
     if (widget->window) {
         GdkRegion *region;
@@ -1971,6 +2093,92 @@ void display_ad_window(void)
 
 static gchar *ad_directory = NULL;
 
+void toggle_show_comp(GtkWidget *menu_item, gpointer data)
+{
+    GtkWidget *dialog, *show_flags, *show_letter, *show_names, *vbox, *label;
+
+    dialog = gtk_dialog_new_with_buttons (_("Show Competitors"),
+                                          GTK_WINDOW(main_window),
+                                          GTK_DIALOG_MODAL,
+                                          GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                                          GTK_STOCK_OK, GTK_RESPONSE_OK,
+                                          NULL);
+
+
+    vbox = gtk_grid_new();
+    gtk_grid_set_column_homogeneous(GTK_GRID(vbox), TRUE);
+    //gtk_grid_set_row_spacing(GTK_GRID(vbox), 5);
+
+    show_names   = gtk_check_button_new_with_label(_("Show Competitors"));
+    show_flags   = gtk_check_button_new_with_label(_("Show Flags"));
+    show_letter  = gtk_check_button_new_with_label(_("Show Initial of Name"));
+
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(show_names), show_competitor_names);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(show_flags), showflags);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(show_letter), showletter);
+
+    /*
+    GtkAdjustment *flag_adj = gtk_adjustment_new(flagsize, 3.0, 11.0, 1.0, 1.0, 1.0);
+    GtkWidget *flag_scale = gtk_scale_new(GTK_ORIENTATION_HORIZONTAL, GTK_ADJUSTMENT (flag_adj));
+    gtk_scale_set_digits(GTK_SCALE(flag_scale), 1);
+    gtk_scale_set_value_pos(GTK_SCALE(flag_scale), GTK_POS_TOP);
+    gtk_scale_set_draw_value(GTK_SCALE(flag_scale), TRUE);    
+    */
+    GtkWidget *flag_scale = gtk_spin_button_new_with_range(3.0, 10.0, 1.0);
+    gtk_spin_button_set_value(GTK_SPIN_BUTTON(flag_scale), flagsize);
+
+    /*
+    GtkAdjustment *name_adj = gtk_adjustment_new(namesize, 3.0, 11.0, 1.0, 1.0, 1.0);
+    GtkWidget *name_scale = gtk_scale_new(GTK_ORIENTATION_HORIZONTAL, GTK_ADJUSTMENT (name_adj));
+    gtk_scale_set_digits(GTK_SCALE(name_scale), 1);
+    gtk_scale_set_value_pos(GTK_SCALE(name_scale), GTK_POS_TOP);
+    gtk_scale_set_draw_value(GTK_SCALE(name_scale), TRUE);    
+    */
+    GtkWidget *name_scale = gtk_spin_button_new_with_range(3.0, 10.0, 1.0);
+    gtk_spin_button_set_value(GTK_SPIN_BUTTON(name_scale), namesize);
+
+    gtk_grid_attach(GTK_GRID(vbox), show_names,  0, 1, 1, 1);
+    gtk_grid_attach(GTK_GRID(vbox), show_flags,  0, 2, 1, 1);
+    gtk_grid_attach(GTK_GRID(vbox), show_letter, 1, 2, 1, 1);
+
+    label = gtk_label_new(_("Flag size:"));
+    gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+    gtk_grid_attach(GTK_GRID(vbox), label,  0, 3, 1, 1);
+
+    gtk_grid_attach(GTK_GRID(vbox), flag_scale,  1, 3, 1, 1);
+
+    label = gtk_label_new(_("Name size:"));
+    gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+    gtk_grid_attach(GTK_GRID(vbox), label,  0, 4, 1, 1);
+
+    gtk_grid_attach(GTK_GRID(vbox), name_scale,  1, 4, 1, 1);
+
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), 
+                       vbox, FALSE, FALSE, 0);
+
+    gtk_widget_show_all(dialog);
+
+    if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_OK) {
+        show_competitor_names = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(show_names));
+        showflags = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(show_flags));
+        showletter = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(show_letter));
+        /*
+        flagsize = gtk_adjustment_get_value(GTK_ADJUSTMENT(flag_adj));
+        namesize = gtk_adjustment_get_value(GTK_ADJUSTMENT(name_adj));
+        */
+        flagsize = gtk_spin_button_get_value(GTK_SPIN_BUTTON(flag_scale));
+        namesize = gtk_spin_button_get_value(GTK_SPIN_BUTTON(name_scale));
+
+        g_key_file_set_boolean(keyfile, "preferences", "showcompetitornames", show_competitor_names);
+        g_key_file_set_boolean(keyfile, "preferences", "showflags", showflags);
+        g_key_file_set_boolean(keyfile, "preferences", "showletter", showletter);
+        g_key_file_set_double(keyfile, "preferences", "flagsize", flagsize);
+        g_key_file_set_double(keyfile, "preferences", "namesize", namesize);
+    }
+
+    gtk_widget_destroy(dialog);
+}
+
 void toggle_advertise(GtkWidget *menu_item, gpointer data)
 {
     GtkWidget *dialog, *do_ads;
@@ -2037,7 +2245,9 @@ void toggle_advertise(GtkWidget *menu_item, gpointer data)
     }
 }
 
-void display_comp_window(gchar *cat, gchar *comp1, gchar *comp2)
+void display_comp_window(gchar *cat, gchar *comp1, gchar *comp2, 
+                         gchar *first1, gchar *first2, 
+                         gchar *country1, gchar *country2)
 {
     if (!show_competitor_names)
         return;
@@ -2045,8 +2255,27 @@ void display_comp_window(gchar *cat, gchar *comp1, gchar *comp2)
     gchar *p;
 
     strncpy(category, cat, sizeof(category)-1);
-    strncpy(b_last, comp1, sizeof(b_last)-1);
-    strncpy(w_last, comp2, sizeof(w_last)-1);
+
+    if (showletter) {
+        gchar buf[8];
+        if (first1[0]) {
+            g_utf8_strncpy(buf, first1, 1);
+            snprintf(b_last, sizeof(b_last), "%s.%s", buf, comp1);
+        } else 
+            strncpy(b_last, comp1, sizeof(b_last)-1);
+
+        if (first2[0]) {
+            g_utf8_strncpy(buf, first2, 1);
+            snprintf(w_last, sizeof(w_last), "%s.%s", buf, comp2);
+        } else 
+            strncpy(w_last, comp1, sizeof(w_last)-1);
+    } else {
+        strncpy(b_last, comp1, sizeof(b_last)-1);
+        strncpy(w_last, comp2, sizeof(w_last)-1);
+    }
+
+    strncpy(b_country, country1, sizeof(b_country)-1);
+    strncpy(w_country, country2, sizeof(w_country)-1);
     
     p = strchr(b_last, '\t');
     if (p) *p = 0;
