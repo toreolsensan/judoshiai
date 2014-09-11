@@ -148,22 +148,28 @@ void set_display(struct msg_edit_competitor *msg)
 #endif
         // print label
         if (print_label) {
-            gchar *labels[4];
-            time_t t = time(NULL);
-            struct tm *tm = localtime(&t);
-            snprintf(buf, sizeof(buf), "%04d-%02d-%02d %02d:%02d:%02d",
-                     tm->tm_year+1900,
-                     tm->tm_mon+1,
-                     tm->tm_mday,
-                     tm->tm_hour,
-                     tm->tm_min,
-                     tm->tm_sec);
-            snprintf(buf1, sizeof(buf1), "%d.%02d kg",
-                     msg->weight/1000, (msg->weight%1000)/10);        
-            labels[0] = buf;
-            labels[1] = buf1;
-            labels[2] = NULL;
-            do_print(labels);
+            if (svg_file) {
+                static struct paint_data pd;
+                pd.msg = *msg;
+                do_print_svg(&pd);
+            } else {
+                gchar *labels[4];
+                time_t t = time(NULL);
+                struct tm *tm = localtime(&t);
+                snprintf(buf, sizeof(buf), "%04d-%02d-%02d %02d:%02d:%02d",
+                         tm->tm_year+1900,
+                         tm->tm_mon+1,
+                         tm->tm_mday,
+                         tm->tm_hour,
+                         tm->tm_min,
+                         tm->tm_sec);
+                snprintf(buf1, sizeof(buf1), "%d.%02d kg",
+                         msg->weight/1000, (msg->weight%1000)/10);        
+                labels[0] = buf;
+                labels[1] = buf1;
+                labels[2] = NULL;
+                do_print(labels);
+            }
         }
 
         return;
