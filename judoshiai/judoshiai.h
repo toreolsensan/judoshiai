@@ -197,8 +197,9 @@ enum special_match_types {
 
 #define PRINT_ITEM_MASK      0xf0000000
 #define PRINT_DEST_MASK      0x01000000
-#define PRINT_DATA_MASK      0x00ffffff
+#define PRINT_DATA_MASK      0x007fffff
 #define PRINT_TO_PRINTER     0x00000000
+#define PRINT_TO_DEFAULT     0x00800000
 #define PRINT_TO_PDF         0x01000000
 #define PRINT_TEMPLATE       0x02000000
 #define PRINT_ONE_PER_PAGE   0x04000000
@@ -1048,6 +1049,8 @@ extern gpointer client_thread(gpointer args);
 extern gpointer httpd_thread(gpointer args);
 extern gpointer serial_thread(gpointer args);
 extern gpointer ssdp_thread(gpointer args);
+struct sockaddr_in;
+extern void add_client_ssdp_info(gchar *p, struct sockaddr_in *client);
 extern gchar *other_info(gint num);
 extern gint read_file_from_net(gchar *filename, gint num);
 extern gulong get_my_address();
@@ -1221,5 +1224,63 @@ extern gint get_custom_pos(struct match *m, gint table, gint pos, gint *real_res
 extern guint get_custom_table_number_by_competitors(gint num_comp);
 extern struct custom_data *get_custom_table(guint table);
 extern void read_custom_from_db(void);
+
+/* profiling stuff */
+extern guint64 cumul_db_time;
+extern gint    cumul_db_count;
+
+#if 1 // not compatible with ARM processor
+static __inline__ guint64 rdtsc(void) {
+    guint32 lo, hi;
+    __asm__ __volatile__ ("rdtsc" : "=a" (lo), "=d" (hi));
+    return (guint64)hi << 32 | lo;
+}
+
+#define NUM_PROF 32
+
+struct profiling_data {
+        guint64 time_stamp;
+        const gchar *func;
+        gint line;
+};
+
+#if 0
+extern struct profiling_data prof_data[NUM_PROF];
+extern gint num_prof_data;
+extern guint64 prof_start;
+extern gboolean prof_started;
+
+#define PROF_START do { memset(&prof_data, 0, sizeof(prof_data));       \
+        num_prof_data = 0; cumul_db_time = 0; cumul_db_count = 0;       \
+        prof_started = TRUE; prof_start = rdtsc(); } while (0)
+
+#define PROF do { if (prof_started && num_prof_data < NUM_PROF) { \
+            prof_data[num_prof_data].time_stamp = rdtsc();        \
+            prof_data[num_prof_data].func = __FUNCTION__;         \
+            prof_data[num_prof_data++].line = __LINE__; }} while (0)
+
+static inline void PROF_END(void) {
+    gint i;
+    guint64 stop = rdtsc(), prev = prof_start;
+    g_print("PROF:\n");
+    for (i = 0; i < num_prof_data; i++) {
+        g_print("%s:%d: %ld\n", prof_data[i].func, prof_data[i].line, (prof_data[i].time_stamp - prev)/1000);
+        prev = prof_data[i].time_stamp;
+    }
+
+    guint64 tot_time_div = (stop - prof_start)/100;
+    guint64 relative_time = cumul_db_time/tot_time_div;
+    g_print("\nDB-writes=%d db-time=%ld\n", cumul_db_count, relative_time);
+
+} 
+#else
+
+#define PROF_START do {} while(0)
+#define PROF do {} while(0)
+#define PROF_END(_x) do {} while(0)
+
+#endif
+
+#endif
 
 #endif
