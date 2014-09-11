@@ -99,7 +99,8 @@ static void mode_selection(GtkWidget *w,
 static void display_competitors(GtkWidget *w,
                                 gpointer   data )
 {
-    display_comp_window(saved_cat, saved_last1, saved_last2);
+    display_comp_window(saved_cat, saved_last1, saved_last2, 
+                        saved_first1, saved_first2, saved_country1, saved_country2);
 }
 
 static void display_video( GtkWidget *w,
@@ -427,7 +428,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     /* Create the Preferences menu content. */
     red_background  = gtk_check_menu_item_new_with_label("Red background");
     whitefirst      = gtk_check_menu_item_new_with_label("White first");
-    showcomp        = gtk_check_menu_item_new_with_label("");
+    showcomp        = gtk_menu_item_new_with_label("");
     clock_only      = gtk_check_menu_item_new_with_label("View only clocks");
     layout_sel_1    = gtk_radio_menu_item_new_with_label(NULL, "");
     layout_sel_2    = gtk_radio_menu_item_new_with_label_from_widget((GtkRadioMenuItem *)layout_sel_1, "");
@@ -759,9 +760,29 @@ void set_preferences(void)
 
     error = NULL;
     if (g_key_file_get_boolean(keyfile, "preferences", "showcompetitornames", &error)) {
-        gtk_menu_item_activate(GTK_MENU_ITEM(showcomp));
+        //gtk_menu_item_activate(GTK_MENU_ITEM(showcomp));
         show_competitor_names = TRUE;
     }
+
+    error = NULL;
+    if (g_key_file_get_boolean(keyfile, "preferences", "showflags", &error)) {
+        showflags = TRUE;
+    }
+
+    error = NULL;
+    if (g_key_file_get_boolean(keyfile, "preferences", "showletter", &error)) {
+        showletter = TRUE;
+    }
+
+    error = NULL;
+    d = g_key_file_get_double(keyfile, "preferences", "flagsize", &error);
+    if (!error) flagsize = d;
+    else flagsize = 7.0;
+
+    error = NULL;
+    d = g_key_file_get_double(keyfile, "preferences", "namesize", &error);
+    if (!error) namesize = d;
+    else namesize = 10.0;
 
     error = NULL;
     str = g_key_file_get_string(keyfile, "preferences", "displayfont", &error);
@@ -864,6 +885,7 @@ void set_preferences(void)
     set_ssdp_id();
 }
 
+extern gchar *menu_text_with_dots(gchar *text);
 gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param)
 {
     language = ptr_to_gint(param);
@@ -880,7 +902,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(match3, _("Contest duration: 3 min"));
     change_menu_label(match4, _("Contest duration: 4 min"));
     change_menu_label(match5, _("Contest duration: 5 min"));
-    change_menu_label(gs,     _("Golden Score"));
+    change_menu_label(gs,     menu_text_with_dots(_("Golden Score")));
 
     if (white_first) {
         change_menu_label(blue_wins,         _("Hantei: white wins"));
@@ -902,23 +924,23 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
 
     change_menu_label(viewlog,      _("View Log"));
     change_menu_label(showcomp_act, _("Show Competitors"));
-    change_menu_label(show_video,   _("Replay Video"));
+    change_menu_label(show_video,   menu_text_with_dots(_("Replay Video")));
     change_menu_label(quit,         _("Quit"));
 
-    change_menu_label(red_background, _("Red background"));
-    change_menu_label(full_screen, _("Full screen mode"));
-    change_menu_label(rules_no_koka, _("No koka"));
+    change_menu_label(red_background,     _("Red background"));
+    change_menu_label(full_screen,        _("Full screen mode"));
+    change_menu_label(rules_no_koka,      _("No koka"));
     change_menu_label(rules_leave_points, _("Leave points for GS"));
-    change_menu_label(rules_stop_ippon, _("Stop clock on Ippon"));
+    change_menu_label(rules_stop_ippon,   _("Stop clock on Ippon"));
 
     //change_menu_label(rules_no_free_shido, _("No free shido"));
     change_menu_label(rules_eq_score_less_shido_wins, _("If equal score less shido wins"));
     change_menu_label(rules_short_pin_times, _("Short pin times"));
 
     change_menu_label(confirm_match, _("Confirm New Match"));
-    change_menu_label(clock_only, _("View clocks only"));
-    change_menu_label(whitefirst, _("White first"));
-    change_menu_label(showcomp, _("Show competitors"));
+    change_menu_label(clock_only,    _("View clocks only"));
+    change_menu_label(whitefirst,    _("White first"));
+    change_menu_label(showcomp,      menu_text_with_dots(_("Show competitors")));
     change_menu_label(judogi_control, _("Require judogi control"));
 
     change_menu_label(layout_sel,   _("Display layout"));
@@ -956,25 +978,25 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(tatami_sel_9, _("Contest area 9"));
     change_menu_label(tatami_sel_10, _("Contest area 10"));
 
-    change_menu_label(node_ip,      _("Communication node"));
-    change_menu_label(my_ip,        _("Own IP addresses"));
-    change_menu_label(video_ip,     _("Video server"));
-    change_menu_label(vlc_cport,    _("VLC control"));
+    change_menu_label(node_ip,      menu_text_with_dots(_("Communication node")));
+    change_menu_label(my_ip,        menu_text_with_dots(_("Own IP addresses")));
+    change_menu_label(video_ip,     menu_text_with_dots(_("Video server")));
+    change_menu_label(vlc_cport,    menu_text_with_dots(_("VLC control")));
 
     change_menu_label(timeset,      _("Set time"));
     change_menu_label(inc_time,     _("Increment time"));
     change_menu_label(dec_time,     _("Decrement time"));
     change_menu_label(inc_osaekomi, _("Increment pin time"));
     change_menu_label(dec_osaekomi, _("Decrement pin time"));
-    change_menu_label(set_time,     _("Set clocks"));
+    change_menu_label(set_time,     menu_text_with_dots(_("Set clocks")));
 
     change_menu_label(mode_normal, _("Normal operation"));
     //change_menu_label(mode_master, _("Master mode"));
     change_menu_label(mode_slave,  _("Slave mode"));
 
-    change_menu_label(advertise,    _("Advertise"));
-    change_menu_label(sound,        _("Sound"));
-    change_menu_label(display_font, _("Font"));
+    change_menu_label(advertise,    menu_text_with_dots(_("Advertise")));
+    change_menu_label(sound,        menu_text_with_dots(_("Sound")));
+    change_menu_label(display_font, menu_text_with_dots(_("Font")));
 
     change_menu_label(manual,       _("Manual"));
     change_menu_label(quick_guide,  _("Quick guide"));
