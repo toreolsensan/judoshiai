@@ -1167,10 +1167,58 @@ struct match *db_next_matchXXX(gint category, gint tatami)
     return next_match;
 }
 
+#if 0
+static gint readtest(void)
+{
+    gint i, n;
+    sqlite3 *db;
+    gchar *zSql =
+        "SELECT * FROM matches "
+        "WHERE matches.\"blue_points\"=0 "
+        "AND matches.\"deleted\"&1=0 "
+        "AND matches.\"white_points\"=0 "
+        "AND matches.\"blue\"<>1 AND matches.\"white\"<>1 "
+        "AND (matches.\"blue\"=0 OR EXISTS (SELECT * FROM competitors WHERE "
+        "competitors.\"index\"=matches.\"blue\" AND competitors.\"deleted\"&3=0))"
+        "AND (matches.\"white\"=0 OR EXISTS (SELECT * FROM competitors WHERE "
+        "competitors.\"index\"=matches.\"white\" AND competitors.\"deleted\"&3=0))";
+    PROF;
+    int rc = sqlite3_open(db_name, &db);
+    if (rc) {
+	fprintf(stderr, "%s: Can't open database: %s\n", __FUNCTION__, 
+		sqlite3_errmsg(db));
+        sqlite3_close(db);
+        return -1;
+    }
+    PROF;
+
+    static sqlite3_stmt *pStmt = NULL;
+    rc = sqlite3_prepare(db, zSql, -1, &pStmt, 0);
+    PROF;
+    rc = sqlite3_step(pStmt);
+    n = sqlite3_column_count(pStmt);
+    PROF;
+    while(rc == SQLITE_ROW) {
+        /*
+        g_print("ROW:\n");
+        for (i = 0; i < n; i++)
+            g_print("  COL %s\n", sqlite3_column_text(pStmt, i));
+        */
+        rc = sqlite3_step(pStmt);
+    } while( rc==SQLITE_SCHEMA );
+    PROF;
+    rc = sqlite3_finalize(pStmt);
+    sqlite3_close(db);
+    PROF;
+    return rc;
+}
+#endif
+
 struct match *db_next_match(gint category, gint tatami)
 {
     gint i;
-
+    
+    PROF_START;
     current_round++;
 
     if (category) {
@@ -1195,7 +1243,9 @@ struct match *db_next_match(gint category, gint tatami)
     next_match_num = 0;
     next_match_tatami = tatami;
 
+    PROF;
     db_open();
+    //db_cmd(NULL, NULL, "begin transaction");
 
     /* save current match data */
     num_saved_matches = 0;
@@ -1256,7 +1306,9 @@ struct match *db_next_match(gint category, gint tatami)
 	   "competitors.\"index\"=matches.\"white\" AND competitors.\"deleted\"&3=0))",
 	   GHOST, GHOST /*COMPETITOR, COMPETITOR*/);
 
+    //db_cmd(NULL, NULL, "commit");
     db_close();
+    PROF;
 
     // Distribute matches from the same category far away
 #define CANNOT_MOVE(_i)  (next_match[_i].number == INVALID_MATCH ||     \
@@ -1339,8 +1391,10 @@ struct match *db_next_match(gint category, gint tatami)
             }
         }
     }
+    PROF;
 
     db_open();
+    //db_cmd(NULL, NULL, "begin transaction");
 
     /* remove all match comments */
     db_cmd(NULL, NULL,
@@ -1357,6 +1411,7 @@ struct match *db_next_match(gint category, gint tatami)
 	   "WHERE (\"comment\"=%d OR \"comment\"=%d) "
 	   "AND \"forcedtatami\"=%d",
 	   COMMENT_EMPTY, COMMENT_MATCH_1, COMMENT_MATCH_2, tatami);
+    //db_cmd(NULL, NULL, "commit");
 
     /* set new next match */
     if (next_match[0].number != INVALID_MATCH) {
@@ -1376,6 +1431,7 @@ struct match *db_next_match(gint category, gint tatami)
 	       COMMENT_MATCH_2, next_match[1].category, next_match[1].number);
     }
 
+    //db_cmd(NULL, NULL, "begin transaction");
     /* update the display */
     db_cmd((gpointer)ADD_MATCH, db_callback_matches,
 	   "SELECT matches.* "
@@ -1390,6 +1446,7 @@ struct match *db_next_match(gint category, gint tatami)
 	   "WHERE \"forcedtatami\"=%d "
 	   "AND \"comment\">%d",
 	   tatami, COMMENT_EMPTY);
+    //db_cmd(NULL, NULL, "commit");
 
     for (i = 0; i < num_saved_matches; i++) {
 	db_cmd((gpointer)ADD_MATCH, db_callback_matches,
@@ -1399,6 +1456,7 @@ struct match *db_next_match(gint category, gint tatami)
     num_saved_matches = 0;
 
     db_close();
+    PROF;
 
 #ifdef TATAMI_DEBUG
     if (tatami == TATAMI_DEBUG) {
@@ -1424,6 +1482,7 @@ struct match *db_next_match(gint category, gint tatami)
     }		
 
     update_next_matches_coach_info();
+    PROF_END();
 
     return next_match;
 }
