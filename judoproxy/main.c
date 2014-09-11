@@ -165,6 +165,7 @@ enum {
     PARAM_INT = 0,
     PARAM_BOOL,
     PARAM_STR,
+    PARAM_SCALE,
     PARAM_CMD,
     PARAM_NO_ARG,
     PARAM_NEW_LINE,
@@ -196,10 +197,10 @@ static struct {
     {" Framerate* ", "V_FPS", NULL, PARAM_STR, "25"},
 
     {"NL", NULL, NULL, PARAM_NEW_LINE, NULL},
-    {" Sharpness ", "V_SHARPNESS", "camera0", PARAM_STR, "0"},
-    {" Contrast ", "V_CONTRAST", "camera1", PARAM_STR, "0"},
-    {" Brightness ", "V_BRIGHTNESS", "camera2", PARAM_STR, "50"},
-    {" Saturation ", "V_SATURATION", "camera3", PARAM_STR, "0"},
+    {" Sharpness ", "V_SHARPNESS", "camera0", PARAM_SCALE, "0"},
+    {" Contrast ", "V_CONTRAST", "camera1", PARAM_SCALE, "0"},
+    {" Brightness ", "V_BRIGHTNESS", "camera2", PARAM_SCALE, "50"},
+    {" Saturation ", "V_SATURATION", "camera3", PARAM_SCALE, "0"},
 
     {"NL", NULL, NULL, PARAM_EMPTY_LINE, NULL},
     {" Video dir* ", "VIDEODIR", NULL, PARAM_STR, "/home/pi/video"},
@@ -209,14 +210,14 @@ static struct {
 
     {"NL", NULL, NULL, PARAM_NEW_LINE, NULL},
     {" Audio* ", "AUDIO", NULL, PARAM_STR, ""},
-    {" Zoom mode* ", "ZOOM", NULL, PARAM_STR, "1"},
-    {" Force zoom ", "PARAM2", "param2", PARAM_STR, "0"},
-    {" Force no zoom ", "PARAM3", "param3", PARAM_STR, "0"},
+    {" Zoom mode* ", "ZOOM", NULL, PARAM_BOOL, "1"},
+    {" Force zoom ", "PARAM2", "param2", PARAM_BOOL, "0"},
+    {" Force no zoom ", "PARAM3", "param3", PARAM_BOOL, "0"},
 
     {"NL", NULL, NULL, PARAM_EMPTY_LINE, NULL},
     {" Pixel thr ", "PARAM0", "param0", PARAM_STR, "20"},
     {" Movement thr ", "PARAM1", "param1", PARAM_STR, "30"},
-    {" Test mov ", "PARAM4", "param4", PARAM_STR, "0"},
+    {" Test mov ", "PARAM4", "param4", PARAM_BOOL, "0"},
     {" Same XY thr ", "PARAM5", "param5", PARAM_STR, "8"},
 
     {"NL", NULL, NULL, PARAM_NEW_LINE, NULL},
@@ -284,12 +285,21 @@ static void camera_ip_enter_callback( GtkWidget *widget,
 static void camera_callback_value(GtkWidget *widget,
                                   gpointer *data)
 {
+    gchar buf[16];
     gint i = ptr_to_gint(data)/1000; // tatami
     gint j = ptr_to_gint(data)%1000; // param num
     if (camera_params[j].typ == PARAM_STR) {
         const gchar *entry_text = gtk_entry_get_text(GTK_ENTRY(camera_values[i][j].value_w));
         UPDATE_TEXT(camera_values[i][j].value, entry_text);
         g_print("CAM ENTRY=%s tatami=%d param=%d\n", entry_text, i+1, j);
+    } else if (camera_params[j].typ == PARAM_SCALE) {
+        snprintf(buf, sizeof(buf), "%f", gtk_spin_button_get_value(GTK_SPIN_BUTTON(widget)));
+        UPDATE_TEXT(camera_values[i][j].value, buf);
+        //g_print("SCALE tatami=%d param=%d val=%f\n", i+1, j, gtk_spin_button_get_value(GTK_SPIN_BUTTON(widget)));
+    } else if (camera_params[j].typ == PARAM_BOOL) {
+        snprintf(buf, sizeof(buf), "%d", gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)));
+        UPDATE_TEXT(camera_values[i][j].value, buf);
+        //g_print("BOOL tatami=%d param=%d val=%d\n", i+1, j, gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)));
     } else {
         g_print("CAM BUTTON tatami=%d param=%d\n", i+1, j);
     }
@@ -456,6 +466,40 @@ int main( int   argc,
                 col = 0;
                 gtk_grid_attach(GTK_GRID(data_table), gtk_label_new(" "), col, row, 1, 1);
                 row++;
+            } else if (camera_params[j].typ == PARAM_SCALE) {
+                camera_values[i][j].name_w = gtk_label_new(camera_params[j].name);
+                gtk_misc_set_alignment(GTK_MISC(camera_values[i][j].name_w), 1, 0.5);
+
+                gdouble min, max, def = atof(camera_params[j].dflt);
+                if (def == 50.0) {
+                    min = 0.0; max = 100.0;
+                } else {
+                    min = -50.0; max = 50.0;
+                }
+                //GtkAdjustment *adj = gtk_adjustment_new(def, min, max, 1.0, 1.0, 1.0);
+                //GtkWidget *scale = gtk_spin_button_new(GTK_ADJUSTMENT(adj), 1.0, 0);
+                GtkWidget *scale = gtk_spin_button_new_with_range(min, max, 1.0);
+                gtk_spin_button_set_value(GTK_SPIN_BUTTON(scale), def);
+                camera_values[i][j].value_w = scale;
+                g_signal_connect(camera_values[i][j].value_w, "value-changed", 
+                                 G_CALLBACK(camera_callback_value), gint_to_ptr(i*1000+j));
+
+                gtk_grid_attach(GTK_GRID(data_table), camera_values[i][j].name_w, col, row, 1, 1);
+                gtk_grid_attach(GTK_GRID(data_table), camera_values[i][j].value_w, col+1, row, 1, 1);
+                col += 2;
+            } else if (camera_params[j].typ == PARAM_BOOL) {
+                camera_values[i][j].name_w = gtk_label_new(camera_params[j].name);
+                gtk_misc_set_alignment(GTK_MISC(camera_values[i][j].name_w), 1, 0.5);
+                GtkWidget *check = gtk_check_button_new();
+                gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check),
+                                             camera_params[j].dflt[0] == '1');
+                camera_values[i][j].value_w = check;
+                g_signal_connect(camera_values[i][j].value_w, "toggled", 
+                                 G_CALLBACK(camera_callback_value), gint_to_ptr(i*1000+j));
+
+                gtk_grid_attach(GTK_GRID(data_table), camera_values[i][j].name_w, col, row, 1, 1);
+                gtk_grid_attach(GTK_GRID(data_table), camera_values[i][j].value_w, col+1, row, 1, 1);
+                col += 2;
             } else {
                 camera_values[i][j].name_w = gtk_label_new(camera_params[j].name);
                 gtk_misc_set_alignment(GTK_MISC(camera_values[i][j].name_w), 1, 0.5);
