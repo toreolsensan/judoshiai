@@ -744,7 +744,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(tournament_properties, _("Properties"));
     change_menu_label(tournament_backup    , _("Tournament Backup"));
     change_menu_label(tournament_validation, _("Validate Database"));
-    change_menu_label(tournament_choose    , _("Load Custom Systems"));
+    change_menu_label(tournament_custom    , _("Load Custom Systems"));
     change_menu_label(sql_dialog,            _("SQL Dialog"));
     change_menu_label(tournament_quit      , _("Quit"));
 
