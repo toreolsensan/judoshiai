@@ -197,6 +197,22 @@ static gboolean check_for_connection_status(gpointer data)
     return TRUE;
 }
 
+#if 0
+static gboolean do_invalidation(gpointer data)
+{
+    g_print("invalidate\n");
+    gdk_window_invalidate_rect(gtk_widget_get_window(main_window), NULL, TRUE);
+    return FALSE;
+}
+
+static gboolean change_page(GtkNotebook *notebook, gint arg1, gpointer user_data)
+{
+    g_print("notebook page change\n");
+    g_timeout_add(1000, do_invalidation, NULL);
+    return FALSE;
+}
+#endif
+
 void open_shiai_display(void)
 {
     gint r;
@@ -241,7 +257,10 @@ void open_shiai_display(void)
 
     gategories_refresh();
     update_match_pages_visibility();
-
+#if 0
+    g_signal_connect(G_OBJECT(notebook), 
+                     "switch-page", G_CALLBACK(change_page), NULL);
+#endif
     SYS_LOG_INFO("%s %s", _("Tournament"), database_name);
 
     if (r == 55555)
@@ -408,6 +427,26 @@ ok:
 #endif
 
     gtk_init (&argc, &argv);
+
+    /*-------- CSS -------------------------------------------*/
+    gchar *file = g_build_filename(installation_dir, "etc", "gtk.css", NULL);
+
+    if (g_file_test(file, G_FILE_TEST_EXISTS)) {
+        GtkCssProvider *provider = gtk_css_provider_new();
+        gtk_css_provider_load_from_path(provider, file, NULL);
+
+        GdkDisplay *display = gdk_display_get_default();
+        GdkScreen *screen = gdk_display_get_default_screen(display);
+
+        gtk_style_context_add_provider_for_screen (screen,
+                                                   GTK_STYLE_PROVIDER (provider),
+                                                   GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+        g_object_unref (provider);
+    }
+
+    g_free(file);
+    /*--------------------------------------------------------*/
+
 
     wait_cursor = gdk_cursor_new(GDK_WATCH);
 
@@ -625,3 +664,9 @@ void refresh_window(void)
     }
 #endif
 }
+
+/*** profiling stuff ***/
+struct profiling_data prof_data[NUM_PROF];
+gint num_prof_data;
+guint64 prof_start;
+gboolean prof_started = FALSE;
