@@ -148,6 +148,22 @@ void view_popup_menu_print_cards(GtkWidget *menuitem, gpointer userdata)
     print_accreditation_cards(FALSE);
 }
 
+extern void print_weight_notes_to_default_printer(GtkWidget *menuitem, gpointer userdata);
+
+void view_popup_menu_print_cards_to_default(GtkWidget *menuitem, gpointer userdata)
+{
+    GtkTreeView *treeview = GTK_TREE_VIEW(current_view);
+    GtkTreeModel *model = current_model;
+    GtkTreeSelection *selection = 
+        gtk_tree_view_get_selection(GTK_TREE_VIEW(treeview));
+
+    num_selected_judokas = 0;
+    gtk_tree_model_foreach(model, for_each_row_selected, userdata);
+    gtk_tree_selection_unselect_all(selection);
+
+    print_weight_notes_to_default_printer(NULL, NULL);
+}
+
 static void view_popup_menu_change_category(GtkWidget *menuitem, gpointer userdata)
 {
     struct judoka *j = get_data(ptr_to_gint(userdata));
@@ -477,6 +493,11 @@ void view_popup_menu(GtkWidget *treeview,
     menuitem = gtk_menu_item_new_with_label(_("Print Selected Accreditation Cards"));
     g_signal_connect(menuitem, "activate",
                      (GCallback) view_popup_menu_print_cards, userdata);
+    gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
+
+    menuitem = gtk_menu_item_new_with_label(_("Print Selected Accreditation Cards To Default Printer"));
+    g_signal_connect(menuitem, "activate",
+                     (GCallback) view_popup_menu_print_cards_to_default, userdata);
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
 
     gtk_widget_show_all(menu);
