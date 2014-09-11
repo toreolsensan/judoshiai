@@ -59,6 +59,18 @@ static void draw_page(GtkPrintOperation *operation,
     }
 }
 
+static void draw_page_svg(GtkPrintOperation *operation,
+                          GtkPrintContext   *context,
+                          gint               page_nr,
+                          gpointer           user_data)
+{
+    struct paint_data *pd = user_data;
+    pd->c = gtk_print_context_get_cairo_context(context);
+    pd->paper_width = gtk_print_context_get_width(context);
+    pd->paper_height = gtk_print_context_get_height(context);
+    paint_svg(pd);
+}
+
 static void begin_print(GtkPrintOperation *operation,
                         GtkPrintContext   *context,
                         gpointer           user_data)
@@ -74,6 +86,24 @@ void do_print(gpointer userdata)
 
     g_signal_connect (print, "begin_print", G_CALLBACK (begin_print), userdata);
     g_signal_connect (print, "draw_page", G_CALLBACK (draw_page), userdata);
+
+    gtk_print_operation_set_use_full_page(print, FALSE);
+    gtk_print_operation_set_unit(print, GTK_UNIT_POINTS);
+    
+    gtk_print_operation_run(print, GTK_PRINT_OPERATION_ACTION_PRINT,
+                            GTK_WINDOW (main_window), NULL);
+
+    g_object_unref(print);
+}
+
+void do_print_svg(struct paint_data *pd)
+{
+    GtkPrintOperation *print;
+
+    print = gtk_print_operation_new();
+
+    g_signal_connect (print, "begin_print", G_CALLBACK (begin_print), pd);
+    g_signal_connect (print, "draw_page", G_CALLBACK (draw_page_svg), pd);
 
     gtk_print_operation_set_use_full_page(print, FALSE);
     gtk_print_operation_set_unit(print, GTK_UNIT_POINTS);
