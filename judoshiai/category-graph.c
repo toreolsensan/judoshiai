@@ -329,11 +329,21 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
     }
 }
 
+static gboolean expose_scrolled(GtkWidget *widget, GdkEventExpose *event, gpointer userdata)
+{
+    static time_t last = 0;
+    time_t now = time(NULL);
+    if (now > last) 
+        gtk_widget_queue_draw(w.darea);
+    last = now;
+    return FALSE;
+}
 
 /* This is called when we need to draw the windows contents */
 static gboolean expose(GtkWidget *widget, GdkEventExpose *event, gpointer userdata)
 {
-    static cairo_surface_t *cs = NULL;
+    //static gint cnt = 0; 
+    //g_print("CATEGORY GRAPH: expose %d\n", cnt++);
 #if (GTKVER == 3)
     cairo_t *c = (cairo_t *)event;
     paint(c, gtk_widget_get_allocated_width(widget), gtk_widget_get_allocated_height(widget), NULL);
@@ -341,6 +351,7 @@ static gboolean expose(GtkWidget *widget, GdkEventExpose *event, gpointer userda
 #else
     cairo_t *c = gdk_cairo_create(widget->window);
 #endif
+    static cairo_surface_t *cs = NULL;
     static gint oldw = 0, oldh = 0;
 
 #if (GTKVER == 3)
@@ -447,6 +458,8 @@ void set_category_graph_page(GtkWidget *notebook)
     gtk_widget_show(w.darea);
 
 #if (GTKVER == 3)
+    g_signal_connect(G_OBJECT(w.scrolled_window), 
+                     "draw", G_CALLBACK(expose_scrolled), NULL);
     g_signal_connect(G_OBJECT(w.darea), 
                      "draw", G_CALLBACK(expose), w.darea);
 #else
@@ -612,6 +625,8 @@ static gboolean release_notify(GtkWidget *sheet_page,
         free_judoka(j);
 
         refresh_window();
+
+        draw_match_graph();
 
         return TRUE;
     }
