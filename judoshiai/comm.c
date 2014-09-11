@@ -67,18 +67,78 @@ static struct {
 } others[NUM_OTHERS];
 
 #define NUM_CONNECTIONS 32
+#define SSDP_INFO_LEN 48
 static struct {
     guint fd;
     gulong addr;
+    gint id;
     guchar buf[512];
     gint ri;
     gboolean escape;
     gint conn_type;
+    gchar ssdp_info[SSDP_INFO_LEN];
 } connections[NUM_CONNECTIONS];
+
+static struct {
+    gulong addr;
+    gint id;
+    gchar ssdp_info[SSDP_INFO_LEN];
+} noconnections[NUM_CONNECTIONS];
 
 //static volatile struct message message_queue[MSG_QUEUE_LEN];
 //static volatile gint msg_put = 0, msg_get = 0;
 //static GStaticMutex msg_mutex = G_STATIC_MUTEX_INIT;
+
+void add_client_ssdp_info(gchar *rec, struct sockaddr_in *client)
+{
+    gint i, id;
+
+    gchar *p1, *p = strstr(rec, "UPnP/1.0 Judo");
+    if (!p)
+        return;
+    p += 9;
+
+    p1 = strchr(p, '\r');
+    if (!p1)
+        return;
+
+    *p1 = 0;
+    p1++;
+    p1 = strstr(p1, "uuid:");
+    if (!p1)
+        return;
+
+    p1 += 5;
+    sscanf(p1, "%x", &id);
+
+    // clear data
+    for (i = 0; i < NUM_CONNECTIONS; i++) {
+        if (client->sin_addr.s_addr == noconnections[i].addr &&
+            id == noconnections[i].id) {
+            noconnections[i].addr = 0;
+            noconnections[i].id = 0;
+        }
+    }
+
+    // first option: connection exists
+    for (i = 0; i < NUM_CONNECTIONS; i++) {
+        if (client->sin_addr.s_addr == connections[i].addr &&
+            id == connections[i].id) {
+            snprintf(connections[i].ssdp_info, SSDP_INFO_LEN, "%s", p);
+            return;
+        }
+    }
+
+    // second option: no connection yet (wrong config)
+    for (i = 0; i < NUM_CONNECTIONS; i++) {
+        if (noconnections[i].addr == 0) {
+            noconnections[i].addr = client->sin_addr.s_addr;
+            noconnections[i].id = id;
+            snprintf(noconnections[i].ssdp_info, SSDP_INFO_LEN, "%s", p);
+            return;
+        }
+    }
+}
 
 gchar *other_info(gint num)
 {
@@ -640,6 +700,7 @@ gpointer node_thread(gpointer args)
 
             connections[i].fd = tmp_fd;
             connections[i].addr = caller.sin_addr.s_addr;
+            connections[i].id = 0;
             connections[i].conn_type = 0;
             g_print("Node: new connection[%d]: fd=%d addr=%s\n", 
                     i, tmp_fd, inet_ntoa(caller.sin_addr));
@@ -685,8 +746,9 @@ gpointer node_thread(gpointer args)
                                     connections[i].conn_type) {
                                     connections[i].conn_type =
                                         msg.u.dummy.application_type;
-                                    g_print("Node: conn %d type %d\n",
-                                            i, connections[i].conn_type);
+                                    connections[i].id = msg.sender;
+                                    g_print("Node: conn=%d type=%d id=%08x\n",
+                                            i, connections[i].conn_type, connections[i].id);
                                 }
                             } else {
                                 put_to_rec_queue(&msg); // XXX
@@ -704,6 +766,7 @@ gpointer node_thread(gpointer args)
                 closesocket(connections[i].fd);
                 FD_CLR(connections[i].fd, &read_fd);
                 connections[i].fd = 0;
+                connections[i].ssdp_info[0] = 0;
             }
         }
     }
@@ -833,7 +896,7 @@ void show_node_connections( GtkWidget *w,
     gchar addrstr[128];
     gulong myaddr;
     GtkWidget *dialog, *vbox, *label;
-    gint i;
+    gint i, line = 0;
 
     dialog = gtk_dialog_new_with_buttons (_("Connections to this node"),
                                           NULL,
@@ -843,6 +906,8 @@ void show_node_connections( GtkWidget *w,
 
 #if (GTKVER == 3)
     vbox = gtk_grid_new();
+    gtk_grid_set_row_spacing(GTK_GRID(vbox), 5);
+    gtk_grid_set_column_spacing(GTK_GRID(vbox), 5);
 #else
     vbox = gtk_vbox_new(FALSE, 5);
     gtk_container_set_border_width(GTK_CONTAINER(vbox), 10);
@@ -860,15 +925,44 @@ void show_node_connections( GtkWidget *w,
         }
 
         myaddr = ntohl(connections[i].addr);
-        sprintf(addrstr, "%ld.%ld.%ld.%ld (%s)", 
+        snprintf(addrstr, sizeof(addrstr), "%ld.%ld.%ld.%ld", 
                 (myaddr>>24)&0xff, (myaddr>>16)&0xff, 
-                (myaddr>>8)&0xff, (myaddr)&0xff, t);
+                 (myaddr>>8)&0xff, (myaddr)&0xff);
         label = gtk_label_new(addrstr);
-#if (GTKVER == 3)
-        gtk_grid_attach(GTK_GRID(vbox), label, 0, i, 1, 1);
-#else
-        gtk_box_pack_start_defaults(GTK_BOX(vbox), label);
-#endif
+        gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+        gtk_grid_attach(GTK_GRID(vbox), label, 0, line, 1, 1);
+
+        label = gtk_label_new(t);
+        gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+        gtk_grid_attach(GTK_GRID(vbox), label, 1, line, 1, 1);
+
+        label = gtk_label_new(connections[i].ssdp_info);
+        gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+        gtk_grid_attach(GTK_GRID(vbox), label, 2, line++, 1, 1);
+    }
+
+    for (i = 0; i < NUM_CONNECTIONS; i++) {
+        if (noconnections[i].addr == 0)
+            continue;
+        
+        myaddr = ntohl(noconnections[i].addr);
+        snprintf(addrstr, sizeof(addrstr), "%ld.%ld.%ld.%ld", 
+                (myaddr>>24)&0xff, (myaddr>>16)&0xff, 
+                 (myaddr>>8)&0xff, (myaddr)&0xff);
+        label = gtk_label_new(addrstr);
+        gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+        gtk_grid_attach(GTK_GRID(vbox), label, 0, line, 1, 1);
+
+        if (my_address == noconnections[i].id)
+            label = gtk_label_new(_("THIS APPLICATION"));
+        else
+            label = gtk_label_new(_("NOT CONNECTED"));
+        gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+        gtk_grid_attach(GTK_GRID(vbox), label, 1, line, 1, 1);
+
+        label = gtk_label_new(noconnections[i].ssdp_info);
+        gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+        gtk_grid_attach(GTK_GRID(vbox), label, 2, line++, 1, 1);
     }
 
 #if (GTKVER == 3)
