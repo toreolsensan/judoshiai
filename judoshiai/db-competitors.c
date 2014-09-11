@@ -424,12 +424,14 @@ void db_update_weights(const gchar *competition, gint *updated)
 }
 
 static gboolean has_hansokumake;
- 
+
+#if 0 
 static int db_hansokumake_cb(void *data, int argc, char **argv, char **azColName)
 {
     has_hansokumake = TRUE;
     return 1;
 }
+#endif
 
 gboolean db_has_hansokumake(gint competitor)
 {
