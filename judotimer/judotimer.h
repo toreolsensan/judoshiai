@@ -96,8 +96,11 @@ extern gboolean sides_switched;
 extern gboolean white_first;
 extern gboolean show_competitor_names;
 extern gchar saved_first1[32], saved_first2[32], saved_last1[32], saved_last2[32], saved_cat[16];
+extern gchar saved_country1[8], saved_country2[8];
 extern gboolean fullscreen;
 extern gboolean require_judogi_ok;
+extern gboolean showflags, showletter;
+extern gdouble  flagsize, namesize;
 
 extern gboolean video_update;
 extern gchar  video_http_host[128];
@@ -212,12 +215,14 @@ extern void clear_switch_sides(void);
 extern void toggle_switch_sides(GtkWidget *menu_item, gpointer data);
 extern void light_switch_sides(gboolean yes);
 extern void parse_name(const gchar *s, gchar *first, gchar *last, gchar *club, gchar *country);
-extern void display_comp_window(gchar *cat, gchar *comp1, gchar *comp2);
+extern void display_comp_window(gchar *cat, gchar *comp1, gchar *comp2, 
+                                gchar *first1, gchar *first2, gchar *country1, gchar *country2);
 extern gboolean blue_background(void);
 extern void close_ad_window(void);
 extern void display_ask_window(gchar *name, gchar *cat, gchar winner);
 extern void close_ask_window(void);
 extern void set_competitor_window_rest_time(gint min, gint tsec, gint sec, gboolean rest, gint flags);
+extern void set_competitor_window_judogi_control(gboolean control, gint flags);
 extern void set_font(gchar *font);
 extern void font_dialog(GtkWidget *w, gpointer data);
 extern void create_video_window(void);
