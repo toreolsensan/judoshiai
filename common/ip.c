@@ -947,6 +947,12 @@ static void analyze_ssdp(gchar *rec, struct sockaddr_in *client)
     return;
 #endif
 
+#if (APP_NUM == APPLICATION_TYPE_SHIAI)
+    extern void add_client_ssdp_info(gchar *rec, struct sockaddr_in *client);
+    add_client_ssdp_info(rec, client);
+    return;
+#endif
+
     if (connection_ok)
         return;
 
@@ -961,7 +967,7 @@ static void analyze_ssdp(gchar *rec, struct sockaddr_in *client)
 
     *p1 = 0;
 
-#if (APP_NUM == APPLICATION_TYPE_INFO) || (APP_NUM == APPLICATION_TYPE_WEIGHTR) || (APP_NUM == APPLICATION_TYPE_JUDOGI)
+#if (APP_NUM == APPLICATION_TYPE_INFO) || (APP_NUM == APPLICATION_TYPE_WEIGHT) || (APP_NUM == APPLICATION_TYPE_JUDOGI)
     if (strncmp(p+9, "JudoShiai", 9) == 0) {
         ssdp_ip_addr = client->sin_addr.s_addr;
         //g_print("SSDP %s: judoshiai addr=%lx\n", APPLICATION, ssdp_ip_addr);
@@ -1049,7 +1055,8 @@ gpointer ssdp_thread(gpointer args)
     }
 
     gint ttl = 3;
-    setsockopt(sock_out, IPPROTO_IP, IP_MULTICAST_TTL, (void *)&ttl, sizeof(ttl));
+    if (setsockopt(sock_out, IPPROTO_IP, IP_MULTICAST_TTL, (void *)&ttl, sizeof(ttl)) < 0)
+        perror("ERROR: sockopt IP_MULTICAST_TTL\n");
 
     memset((gchar*)&name_out, 0, sizeof(name_out));
     name_out.sin_family = AF_INET;
@@ -1125,11 +1132,12 @@ gpointer ssdp_thread(gpointer args)
                                                   "LOCATION: http://%s/UPnP/desc.xml\r\n"
                                                   "SERVER:%s/1 UPnP/1.0 %s/%s\r\n"
                                                   ST "\r\n"
-                                                  "USN: uuid:23105808-cafe-babe-737%d-%012lx\r\n"
+                                                  "USN: uuid:%08x-cafe-babe-737%d-%012x\r\n"
                                                   "\r\n",
                                                   inet_ntoa(addr.sin_addr), os, 
                                                   ssdp_id,
-                                                  SHIAI_VERSION, application_type(), my_ip_address);
+                                                  SHIAI_VERSION, my_address,
+                                                  application_type(), htonl(my_ip_address));
 
                     //g_print("SSDP %s send: '%s'\n", APPLICATION, resp);
                     ret = sendto(sock_out, resp, strlen(resp), 0, (struct sockaddr *)&clientsock, socklen);
@@ -1139,32 +1147,46 @@ gpointer ssdp_thread(gpointer args)
             } // len > 0
         }
 
-        if (ssdp_notify) {
-            struct sockaddr_in addr;
-            addr.sin_addr.s_addr = my_ip_address;
+        time_t now = time(NULL);
+        static time_t last_notify = 0;
 
-            gchar *resp = g_strdup_printf("NOTIFY * HTTP/1.1\r\n"
-                                          "HOST: 239.255.255.250:1900\r\n"
-                                          "CACHE-CONTROL: max-age=1800\r\n"
-                                          "LOCATION: http://%s/UPnP/desc.xml\r\n"
-                                          NT "\r\n"
-                                          "NTS: ssdp-alive\r\n"
-                                          "SERVER:%s/1 UPnP/1.0 %s/%s\r\n"
-                                          "USN: uuid:23105808-cafe-babe-737%d-%012lx\r\n"
-                                          "\r\n",
-                                          inet_ntoa(addr.sin_addr), os, 
-                                          ssdp_id,
-                                          SHIAI_VERSION, application_type(), my_ip_address);
+        if (ssdp_notify || now > last_notify + 10) {
+            static gchar *resp = NULL;
+            static gint   resplen = 0;
+
+            if (ssdp_notify) {
+                g_free(resp);
+                resp = NULL;
+            }
+
+            if (resp == NULL) {
+                struct sockaddr_in addr;
+                addr.sin_addr.s_addr = my_ip_address;
+
+                resp = g_strdup_printf("NOTIFY * HTTP/1.1\r\n"
+                                       "HOST: 239.255.255.250:1900\r\n"
+                                       "CACHE-CONTROL: max-age=1800\r\n"
+                                       "LOCATION: http://%s/UPnP/desc.xml\r\n"
+                                       NT "\r\n"
+                                       "NTS: ssdp-alive\r\n"
+                                       "SERVER:%s/1 UPnP/1.0 %s/%s\r\n"
+                                       "USN: uuid:%08x-cafe-babe-737%d-%012x\r\n"
+                                       "\r\n",
+                                       inet_ntoa(addr.sin_addr), os, 
+                                       ssdp_id,
+                                       SHIAI_VERSION, my_address,
+                                       application_type(), htonl(my_ip_address));
+                resplen = strlen(resp);
+            }
 
             //g_print("SSDP %s send: '%s'\n", APPLICATION, resp);
-            ret = sendto(sock_out, resp, strlen(resp), 0, (struct sockaddr *)&name_out, sizeof(struct sockaddr_in));
-            g_free(resp);
+            ret = sendto(sock_out, resp, resplen, 0, (struct sockaddr *)&name_out, sizeof(struct sockaddr_in));
             ssdp_notify = FALSE;
+            last_notify = now;
         }
 
 #if (APP_NUM != APPLICATION_TYPE_SHIAI)
         static time_t last_time = 0;
-        time_t now = time(NULL);
         if (!connection_ok && now > last_time + 5) {
             last_time = now;
             ret = sendto(sock_out, ssdp_req_data, ssdp_req_data_len, 0, (struct sockaddr*) &name_out, 
@@ -1181,4 +1203,11 @@ gpointer ssdp_thread(gpointer args)
     g_print("SSDP OUT!\n");
     g_thread_exit(NULL);    /* not required just good pratice */
     return NULL;
+}
+
+gchar *menu_text_with_dots(gchar *text)
+{
+    static gchar buf[64];
+    snprintf(buf, sizeof(buf), "%s...", text);
+    return buf;
 }
