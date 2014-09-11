@@ -1,4 +1,22 @@
 RELEASE NOTE
+VERSION 2.4
+
+JudoShiai:
+----------
+
++ Better communication information.
++ Competitor's index visible in the header.
++ DB writing faster.
++ Accreditation card printing to default printer without dialog.
++ Looks tuning using CSS files.
+
+JudoTimer:
+----------
+
++ Judogi control display.
++ Country flags, first name, and control added to competitor advertisement.
+
+RELEASE NOTE
 VERSION 2.3.1
 
 Common:
