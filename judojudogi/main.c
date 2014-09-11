@@ -54,7 +54,7 @@ static struct message saved;
 static gchar  *saved_id = NULL;
 static GtkWidget *ok_button;
 static GtkWidget *nok_button;
-static GdkColor color_yellow, color_white, color_grey, color_green, color_darkgreen, 
+static GdkRGBA color_yellow, color_white, color_grey, color_green, color_darkgreen, 
     color_blue, color_red, color_darkred, color_black;
 
 #define MY_FONT "Arial"
@@ -596,7 +596,7 @@ void set_display(struct msg_edit_competitor *msg)
     if (!found) {
         saved.u.edit_competitor.index = 0;
         gtk_label_set_label(GTK_LABEL(name_box), _("No match soon! Please wait for a while."));
-        gtk_widget_modify_fg(GTK_WIDGET(name_box), GTK_STATE_NORMAL, &color_black);
+        gtk_widget_override_color(GTK_WIDGET(name_box), GTK_STATE_FLAG_NORMAL, &color_black);
         return;
     }
 
@@ -604,11 +604,11 @@ void set_display(struct msg_edit_competitor *msg)
     gtk_label_set_label(GTK_LABEL(name_box), buf);
 
     if (msg->matchflags & JUDOGI_OK)
-        gtk_widget_modify_fg(GTK_WIDGET(name_box), GTK_STATE_NORMAL, &color_darkgreen);
+        gtk_widget_override_color(GTK_WIDGET(name_box), GTK_STATE_FLAG_NORMAL, &color_darkgreen);
     else if (msg->matchflags & JUDOGI_NOK)
-        gtk_widget_modify_fg(GTK_WIDGET(name_box), GTK_STATE_NORMAL, &color_darkred);
+        gtk_widget_override_color(GTK_WIDGET(name_box), GTK_STATE_FLAG_NORMAL, &color_darkred);
     else
-        gtk_widget_modify_fg(GTK_WIDGET(name_box), GTK_STATE_NORMAL, &color_black);
+        gtk_widget_override_color(GTK_WIDGET(name_box), GTK_STATE_FLAG_NORMAL, &color_black);
 }
 
 int main( int   argc,
@@ -626,15 +626,15 @@ int main( int   argc,
 
     init_trees();
 
-    gdk_color_parse("#FFFF00", &color_yellow);
-    gdk_color_parse("#FFFFFF", &color_white);
-    gdk_color_parse("#404040", &color_grey);
-    gdk_color_parse("#00FF00", &color_green);
-    gdk_color_parse("#007700", &color_darkgreen);
-    gdk_color_parse("#0000FF", &color_blue);
-    gdk_color_parse("#FF0000", &color_red);
-    gdk_color_parse("#770000", &color_darkred);
-    gdk_color_parse("#000000", &color_black);
+    gdk_rgba_parse(&color_yellow, "#FFFF00");
+    gdk_rgba_parse(&color_white, "#FFFFFF");
+    gdk_rgba_parse(&color_grey, "#404040");
+    gdk_rgba_parse(&color_green, "#00FF00");
+    gdk_rgba_parse(&color_darkgreen, "#007700");
+    gdk_rgba_parse(&color_blue, "#0000FF");
+    gdk_rgba_parse(&color_red, "#FF0000");
+    gdk_rgba_parse(&color_darkred, "#770000");
+    gdk_rgba_parse(&color_black, "#000000");
 
     font = pango_font_description_from_string("Sans bold 12");
 
