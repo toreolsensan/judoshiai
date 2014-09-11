@@ -2696,6 +2696,7 @@ static gboolean expose(GtkWidget *widget, GdkEventExpose *event, gpointer userda
     memset(&pd, 0, sizeof(pd));
     pd.category = current_category;
     pd.page = current_page;
+
 #if (GTKVER == 3)
     pd.c = (cairo_t *)event;
 #else
