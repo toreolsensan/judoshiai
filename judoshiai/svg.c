@@ -421,7 +421,7 @@ gint paint_svg(struct paint_data *pd)
         }
 #endif
 
-        if (*p == '%') {
+        if (*p == '%' && IS_LABEL_CHAR(p[1])) {
             memset(attr, 0, sizeof(attr));
             cnt = 0;
             p++;
