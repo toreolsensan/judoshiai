@@ -813,6 +813,7 @@ static gchar *get_name_by_layout(gchar *first, gchar *last, gchar *club, gchar *
 }
 
 gchar saved_first1[32], saved_first2[32], saved_last1[32], saved_last2[32], saved_cat[16];
+gchar saved_country1[8], saved_country2[8];
 
 void show_message(gchar *cat_1,
                   gchar *blue_1,
@@ -830,6 +831,7 @@ void show_message(gchar *cat_1,
     b_first[0] = b_last[0] = b_club[0] = b_country[0] = 0;
     w_first[0] = w_last[0] = w_club[0] = w_country[0] = 0;
     saved_first1[0] = saved_first2[0] = saved_last1[0] = saved_last2[0] = saved_cat[0] = 0;
+    saved_country1[0] = saved_country2[0] = 0;
 
     if (sides_switched) {
         blue_1 = w_tmp;
@@ -844,6 +846,8 @@ void show_message(gchar *cat_1,
     strncpy(saved_first1, b_first, sizeof(saved_first1)-1);
     strncpy(saved_first2, w_first, sizeof(saved_first2)-1);
     strncpy(saved_cat, cat_1, sizeof(saved_cat)-1);
+    strncpy(saved_country1, b_country, sizeof(saved_country1)-1);
+    strncpy(saved_country2, w_country, sizeof(saved_country2)-1);
 
     if (dsp_layout == 6) {
         g_utf8_strncpy(buf, b_first, 1);
@@ -1497,7 +1501,7 @@ void update_label(struct msg_update_label *msg)
     } else if (w == START_ADVERTISEMENT) {
         display_ad_window();
     } else if (w == START_COMPETITORS) {
-        display_comp_window(msg->text3, msg->text, msg->text2);
+        display_comp_window(msg->text3, msg->text, msg->text2, "", "", "", "");
         write_tv_logo(msg);
         return;
     } else if (w == STOP_COMPETITORS) {
@@ -2157,6 +2161,7 @@ void toggle_whitefirst(GtkWidget *menu_item, gpointer data)
     init_display();
 }
 
+#if 0
 void toggle_show_comp(GtkWidget *menu_item, gpointer data)
 {
 #if (GTKVER == 3)
@@ -2166,6 +2171,7 @@ void toggle_show_comp(GtkWidget *menu_item, gpointer data)
 #endif
     g_key_file_set_boolean(keyfile, "preferences", "showcompetitornames", show_competitor_names);
 }
+#endif
 
 void toggle_judogi_control(GtkWidget *menu_item, gpointer data)
 {
