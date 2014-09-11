@@ -123,6 +123,8 @@ static gint      rest_flags = 0;
 gchar           *matchlist = NULL;
 static gint      gs_cat = 0, gs_num = 0;
 gboolean         require_judogi_ok = FALSE;
+static gboolean  jcontrol;
+static gint      jcontrol_flags;
 
 static void log_scores(gchar *txt, gint who)
 {
@@ -291,6 +293,15 @@ void update_clock(void)
             (array2int(st[0].bluepts) & 0xfffffff0) == (array2int(st[0].whitepts) & 0xfffffff0))
             ask_for_hantei();
 #endif
+    }
+
+    // judogi control display for ad
+    {
+        static gint cnt = 0;
+        if (++cnt >= 10) {
+            set_competitor_window_judogi_control(jcontrol, jcontrol_flags);
+            cnt = 0;
+        }
     }
 
     if (demo) {
@@ -1066,6 +1077,8 @@ void reset(guint key, struct msg_next_match *msg)
             yuko    = msg->pin_time_yuko;
             wazaari = msg->pin_time_wazaari;
             ippon   = msg->pin_time_ippon;
+
+            jcontrol = FALSE;
             if (require_judogi_ok &&  
                 (!(msg->flags & MATCH_FLAG_JUDOGI1_OK) ||
                  !(msg->flags & MATCH_FLAG_JUDOGI2_OK))) {
@@ -1073,6 +1086,8 @@ void reset(guint key, struct msg_next_match *msg)
                 snprintf(buf, sizeof(buf), "%s: %s", _("CONTROL"), 
                          !(msg->flags & MATCH_FLAG_JUDOGI1_OK) ? get_name(BLUE) : get_name(WHITE));
                 display_big(buf, 2);
+                jcontrol = TRUE;
+                jcontrol_flags = msg->flags;
             } else if (msg->rest_time) {
                 gchar buf[128];
                 snprintf(buf, sizeof(buf), "%s: %s", _("REST TIME"),
@@ -1367,7 +1382,8 @@ void clock_key(guint key, guint event_state)
     }
 
     if (key == GDK_t) {
-        display_comp_window(saved_cat, saved_last1, saved_last2);
+        display_comp_window(saved_cat, saved_last1, saved_last2, 
+                            saved_first1, saved_first2, saved_country1, saved_country2);
         return;
 
         extern GtkWidget *main_window;
