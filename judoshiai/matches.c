@@ -1699,6 +1699,12 @@ void send_match(gint tatami, gint pos, struct match *m)
             msg.u.match_info.rest_time = 0;
     }
     msg.u.match_info.flags |= MATCH_FLAG_JUDOGI_MASK & m->deleted;
+
+    if (avl_get_competitor_status(m->blue) & JUDOGI_OK)
+        msg.u.match_info.flags |= MATCH_FLAG_JUDOGI1_OK;
+    if (avl_get_competitor_status(m->white) & JUDOGI_OK)
+        msg.u.match_info.flags |= MATCH_FLAG_JUDOGI2_OK;
+
     send_packet(&msg);
 }
 
@@ -3427,7 +3433,6 @@ void category_refresh(gint category)
 #else
     g_static_mutex_unlock(&set_match_mutex);
 #endif
-
     /* Find info about category */
     if (find_iter(&cat_iter, category) == FALSE) {
         g_print("Error: %s %d (cat %d)\n", __FUNCTION__, __LINE__, category);
