@@ -29,9 +29,10 @@ $ sudo apt-get install librsvg2-dev libao-dev libmpg123-dev libcurl4-openssl-dev
 
 JudoShiai is under Subversion in Sourceforge:
 
-$ sudo apt-get install subversion
+$ sudo apt-get install git
 
-If you are behind a proxy you want to edit /etc/subversion/servers.
+If you are behind a proxy you want to edit /home/$USER/.gitconfig
+
 Get the JudoShiai software:
 
 $ git clone http://git.code.sf.net/p/judoshiai/judoshiai
