@@ -34,13 +34,11 @@ $ sudo apt-get install subversion
 If you are behind a proxy you want to edit /etc/subversion/servers.
 Get the JudoShiai software:
 
-$ svn checkout http://svn.code.sf.net/p/judoshiai/code/trunk judoshiai-code
-or
-$ svn checkout svn://svn.code.sf.net/p/judoshiai/code/trunk judoshiai-code
+$ git clone http://git.code.sf.net/p/judoshiai/judoshiai
 
 Change directory:
 
-$ cd judoshiai-code
+$ cd judoshiai
 
 Compile:
 
