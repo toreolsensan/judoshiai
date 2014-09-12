@@ -134,21 +134,20 @@ static gboolean add_competitor(gchar **tokens, gint num_cols, struct i_text *d)
         j.birthyear += 2000;
 #endif
 
-    if ((j.regcategory == 0 || j.regcategory[0] == 0) /*&& j.weight > 10000*/) {
-        gint gender = 0;
-        gint age = current_year - j.birthyear;
+    gint gender = 0;
 
-        if (valid_data(TXT_GENDER, tokens, num_cols, d)) {
-            if (strstr(tokens[d->columns[TXT_GENDER] - 1], d->girlstr)) {
-                gender = IS_FEMALE;
-                j.deleted |= GENDER_FEMALE;
-            } else {
-                gender = IS_MALE;
-                j.deleted |= GENDER_MALE;
-            }
+    if (valid_data(TXT_GENDER, tokens, num_cols, d)) {
+        if (strstr(tokens[d->columns[TXT_GENDER] - 1], d->girlstr)) {
+            gender = IS_FEMALE;
+            j.deleted |= GENDER_FEMALE;
         } else {
-            gender = find_gender(j.first);
+            gender = IS_MALE;
+            j.deleted |= GENDER_MALE;
         }
+    }
+
+    if ((j.regcategory == 0 || j.regcategory[0] == 0) /*&& j.weight > 10000*/) {
+        gint age = current_year - j.birthyear;
 
         j.regcategory = newcat = find_correct_category(age, j.weight, gender, NULL, TRUE);
         if (j.regcategory == NULL)
