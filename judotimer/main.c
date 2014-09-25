@@ -1311,6 +1311,9 @@ static gboolean button_pressed(GtkWidget *widget,
 			       GdkEventButton *event,
 			       gpointer userdata)
 {
+    if (!ACTIVE) // timer in slave mode
+        return FALSE;
+
         /* single click with the right mouse button? */
         if (event->type == GDK_BUTTON_PRESS  &&
             (event->button == 1 || event->button == 3)) {
@@ -1347,11 +1350,11 @@ static gboolean key_press(GtkWidget *widget, GdkEventKey *event, gpointer userda
         }
         return FALSE;
     }
-    if (event->keyval == GDK_n && ctl) {
+    if (event->keyval == GDK_n && ctl && ACTIVE) {
     	clock_key(GDK_0, FALSE);
         return FALSE;
     }
-    if (event->keyval == GDK_g && ctl) {
+    if (event->keyval == GDK_g && ctl && ACTIVE) {
     	clock_key(GDK_9, FALSE);
         return FALSE;
     }
@@ -1376,15 +1379,16 @@ static gboolean key_press(GtkWidget *widget, GdkEventKey *event, gpointer userda
     if (event->keyval == GDK_v) // V is a menu accelerator
         return FALSE;
 
-    if (event->keyval == GDK_D && (event->state & 5) == 5)
+    if (event->keyval == GDK_D && (event->state & 5) == 5 && ACTIVE)
         demo = 1;
-    else if (event->keyval == GDK_F && (event->state & 5) == 5)
+    else if (event->keyval == GDK_F && (event->state & 5) == 5 && ACTIVE)
         demo = 2;
     else
         demo = 0;
 
     //g_print("key=%x stat=%x\n", event->keyval, event->state);
-    if (event->keyval < GDK_0 || event->keyval > GDK_9 || event->keyval == GDK_6 || ctl)
+    if ((event->keyval < GDK_0 || event->keyval > GDK_9 || event->keyval == GDK_6 || ctl) &&
+        ACTIVE)
         clock_key(event->keyval, event->state);
 
     return FALSE;
