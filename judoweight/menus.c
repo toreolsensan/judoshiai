@@ -31,7 +31,8 @@ static GtkWidget *menubar, *preferences, *help, *preferencesmenu, *helpmenu;
 static GtkWidget *quit, *manual;
 static GtkWidget *node_ip, *my_ip, *preference_serial, *about;
 static GtkWidget *light, *menu_light, *lang_menu_item;
-static GtkWidget *m_password_protected, *m_automatic_send, *password, *m_print_label, *svgfile;
+static GtkWidget *m_password_protected, *m_automatic_send, *password, 
+    *m_print_label, *m_nomarg, *m_scale, *svgfile;
 //static GtkTooltips *menu_tips;
 
 static void about_judoinfo( GtkWidget *w,
@@ -174,6 +175,8 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
 
     create_separator(preferencesmenu);
     m_print_label = create_check_menu_item(preferencesmenu, set_print_label, 0);
+    m_nomarg = create_check_menu_item(preferencesmenu, set_nomarg, 0);
+    m_scale = create_check_menu_item(preferencesmenu, set_scale, 0);
     svgfile = create_menu_item(preferencesmenu, set_svg_file, 0);
 
     create_separator(preferencesmenu);
@@ -250,6 +253,16 @@ void set_preferences(void)
     }
 
     error = NULL;
+    if (g_key_file_get_boolean(keyfile, "preferences", "nomarg", &error)) {
+        gtk_menu_item_activate(GTK_MENU_ITEM(m_nomarg));
+    }
+
+    error = NULL;
+    if (g_key_file_get_boolean(keyfile, "preferences", "scale", &error)) {
+        gtk_menu_item_activate(GTK_MENU_ITEM(m_scale));
+    }
+
+    error = NULL;
     x1 = g_key_file_get_integer(keyfile, "preferences", "password", &error);
     if (!error)
         weightpwcrc32 = x1;
@@ -279,6 +292,8 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(m_automatic_send, _("Automatic send"));
     change_menu_label(password,     _("Password"));
     change_menu_label(m_print_label, _("Print label"));
+    change_menu_label(m_nomarg,      _("No margins"));
+    change_menu_label(m_scale,       _("Fit page"));
     change_menu_label(svgfile,       _("SVG Templates"));
 
     change_menu_label(manual,       _("Manual"));
