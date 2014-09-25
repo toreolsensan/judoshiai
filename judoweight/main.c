@@ -846,6 +846,18 @@ void set_print_label(GtkWidget *menu_item, gpointer data)
     g_key_file_set_boolean(keyfile, "preferences", "printlabel", print_label);
 }
 
+void set_nomarg(GtkWidget *menu_item, gpointer data)
+{
+    nomarg = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item));
+    g_key_file_set_boolean(keyfile, "preferences", "nomarg", nomarg);
+}
+
+void set_scale(GtkWidget *menu_item, gpointer data)
+{
+    scale = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item));
+    g_key_file_set_boolean(keyfile, "preferences", "scale", scale);
+}
+
 gboolean ask_password_dialog(void)
 {
     GtkWidget *dialog, *label, *password, *hbox;
