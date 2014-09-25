@@ -3470,6 +3470,9 @@ void category_refresh(gint category)
                    }
         *************/
     }
+
+    draw_gategory_graph();
+    draw_match_graph();
 }
 
 void gategories_refresh(void)
