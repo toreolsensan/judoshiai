@@ -1137,7 +1137,7 @@ gpointer ssdp_thread(gpointer args)
                                                   inet_ntoa(addr.sin_addr), os, 
                                                   ssdp_id,
                                                   SHIAI_VERSION, my_address,
-                                                  application_type(), htonl(my_ip_address));
+                                                  application_type(), (int)(htonl(my_ip_address)));
 
                     //g_print("SSDP %s send: '%s'\n", APPLICATION, resp);
                     ret = sendto(sock_out, resp, strlen(resp), 0, (struct sockaddr *)&clientsock, socklen);
@@ -1175,7 +1175,7 @@ gpointer ssdp_thread(gpointer args)
                                        inet_ntoa(addr.sin_addr), os, 
                                        ssdp_id,
                                        SHIAI_VERSION, my_address,
-                                       application_type(), htonl(my_ip_address));
+                                       application_type(), (int)(htonl(my_ip_address)));
                 resplen = strlen(resp);
             }
 
