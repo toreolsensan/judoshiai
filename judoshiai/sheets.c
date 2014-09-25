@@ -1755,6 +1755,75 @@ static void paint_french(struct paint_data *pd, gint category, struct judoka *ct
         set_competitor_position(m[i].white, COMP_POS_DRAWN);
     }
 
+    // print letters
+    gdouble letter_space, letter_start, letter_inc;
+    cairo_save(pd->c);
+    cairo_set_font_size(pd->c, text_h*2);
+    
+    letter_space = positions[last_match] - positions[first_match];
+
+    switch (sys) {
+    case FRENCH_8:
+        letter_start = positions[first_match] + text_h/2;
+        letter_inc = letter_space/3.0;
+        break;
+    case FRENCH_16:
+        letter_start = positions[first_match] + letter_space/14.0 + text_h/2;
+        letter_inc = letter_space*2.0/7.0;
+        break;
+    case FRENCH_32:
+        letter_start = positions[first_match] + letter_space*1.5/15.0 + text_h/2;
+        letter_inc = letter_space*4.0/15.0;
+        break;
+    case FRENCH_64:
+        letter_start = positions[first_match] + letter_space*3.5/15.0 + text_h/2;
+        letter_inc = letter_space*8.0/15.0;
+        break;
+    case FRENCH_128:
+        letter_start = positions[first_match] + letter_space/2.0 + text_h/2;
+        break;
+    }    
+
+    switch (sys) {
+    case FRENCH_8:
+    case FRENCH_16:
+    case FRENCH_32:
+        cairo_move_to(pd->c, W(0.02), letter_start);
+        cairo_show_text(pd->c, "A");
+        cairo_move_to(pd->c, W(0.02), letter_start+letter_inc);
+        cairo_show_text(pd->c, "B");
+        cairo_move_to(pd->c, W(0.02), letter_start+letter_inc*2.0);
+        cairo_show_text(pd->c, "C");
+        cairo_move_to(pd->c, W(0.02), letter_start+letter_inc*3.0);
+        cairo_show_text(pd->c, "D");
+        break;
+    case FRENCH_64:
+        if (pagenum == 0) {
+            cairo_move_to(pd->c, W(0.02), letter_start);
+            cairo_show_text(pd->c, "A");
+            cairo_move_to(pd->c, W(0.02), letter_start+letter_inc);
+            cairo_show_text(pd->c, "B");
+        } else if (pagenum == 1) {
+            cairo_move_to(pd->c, W(0.02), letter_start);
+            cairo_show_text(pd->c, "C");
+            cairo_move_to(pd->c, W(0.02), letter_start+letter_inc);
+            cairo_show_text(pd->c, "D");
+        }
+        // pagenum
+        
+        break;
+    case FRENCH_128:
+        cairo_move_to(pd->c, W(0.02), letter_start);
+        if      (pagenum == 0) cairo_show_text(pd->c, "A");
+        else if (pagenum == 1) cairo_show_text(pd->c, "B");
+        else if (pagenum == 2) cairo_show_text(pd->c, "C");
+        else if (pagenum == 3) cairo_show_text(pd->c, "D");
+        break;
+    }
+
+    cairo_restore(pd->c);
+
+    //
     last_pos = pos_y - H(0.01);
 
     gint special_flags = 0;
@@ -2236,6 +2305,13 @@ void paint_category(struct paint_data *pd)
         texth = extents.height;
         cairo_move_to(pd->c, (W(1.0)-extents.width)/2.0, H(0.05));
         cairo_show_text(pd->c, buf);
+
+        //pagenum
+        if (num_pages(sys) > 1) {
+            cairo_set_font_size(pd->c, NAME_H*0.8);
+            snprintf(buf, sizeof(buf)-1, "  (%d/%d)", pd->page+1, num_pages(sys));
+            cairo_show_text(pd->c, buf);
+        }
 
         snprintf(buf, sizeof(buf)-1, "%s: %d", _T(competitor), pd->systm.numcomp);
         cairo_set_font_size(pd->c, NAME_H*0.6);
