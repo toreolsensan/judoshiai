@@ -873,9 +873,12 @@ gint application_type(void)
 
 void refresh_window(void)
 {
+    gtk_widget_queue_draw(GTK_WIDGET(main_window));
+    return;
+
+#if 0
     GtkWidget *widget;
     widget = GTK_WIDGET(main_window);
-
 #if (GTKVER == 3)
     if (gtk_widget_get_window(widget)) {
         gdk_window_invalidate_rect(gtk_widget_get_window(widget), NULL, TRUE);
@@ -899,6 +902,7 @@ void refresh_window(void)
         gdk_window_invalidate_region(widget->window, region, TRUE);
         gdk_window_process_updates(widget->window, TRUE);
     }
+#endif
 #endif
 }
 
