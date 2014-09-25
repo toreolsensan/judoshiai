@@ -94,6 +94,7 @@ static void mode_selection(GtkWidget *w,
 {
     mode = ptr_to_gint(data);
     set_ssdp_id();
+    set_menu_active();
 }
 
 static void display_competitors(GtkWidget *w,
@@ -1204,4 +1205,60 @@ void start_log_view(GtkWidget *w, gpointer data)
     gtk_adjustment_set_value(adj, gtk_adjustment_get_upper(adj) - gtk_adjustment_get_lower(adj));
     //gtk_scrolled_window_set_vadjustment(GTK_SCROLLED_WINDOW(scrolled_window), adj);
     //gtk_adjustment_value_changed(adj);
+}
+
+#define SET_SENSITIVE(_menu, _yes) gtk_widget_set_sensitive(GTK_WIDGET(_menu), _yes)
+
+void set_menu_active(void)
+{
+    gint i;
+
+    SET_SENSITIVE(match0, ACTIVE);
+    SET_SENSITIVE(match1, ACTIVE);
+    SET_SENSITIVE(match2, ACTIVE);
+    SET_SENSITIVE(match3, ACTIVE);
+    SET_SENSITIVE(match4, ACTIVE);
+    SET_SENSITIVE(match5, ACTIVE);
+    SET_SENSITIVE(gs,     ACTIVE);
+
+    SET_SENSITIVE(blue_wins,         ACTIVE);
+    SET_SENSITIVE(white_wins,        ACTIVE);
+    SET_SENSITIVE(hansokumake_blue,  ACTIVE);
+    SET_SENSITIVE(hansokumake_white, ACTIVE);
+    SET_SENSITIVE(hikiwake,          ACTIVE);
+    SET_SENSITIVE(clear_selection,   ACTIVE);
+    SET_SENSITIVE(switch_sides,      ACTIVE);
+
+    SET_SENSITIVE(red_background,     ACTIVE);
+    SET_SENSITIVE(rules_no_koka,      ACTIVE);
+    SET_SENSITIVE(rules_leave_points, ACTIVE);
+    SET_SENSITIVE(rules_stop_ippon,   ACTIVE);
+
+    SET_SENSITIVE(rules_eq_score_less_shido_wins, ACTIVE);
+    SET_SENSITIVE(rules_short_pin_times, ACTIVE);
+
+    SET_SENSITIVE(confirm_match, ACTIVE);
+    SET_SENSITIVE(clock_only,    ACTIVE);
+    SET_SENSITIVE(whitefirst,    ACTIVE);
+    SET_SENSITIVE(judogi_control, ACTIVE);
+
+    SET_SENSITIVE(name_layout,   ACTIVE);
+    SET_SENSITIVE(name_layouts[0], ACTIVE);
+    SET_SENSITIVE(name_layouts[1], ACTIVE);
+    SET_SENSITIVE(name_layouts[2], ACTIVE);
+    SET_SENSITIVE(name_layouts[3], ACTIVE);
+    SET_SENSITIVE(name_layouts[4], ACTIVE);
+    SET_SENSITIVE(name_layouts[5], ACTIVE);
+    SET_SENSITIVE(name_layouts[6], ACTIVE);
+    SET_SENSITIVE(name_layouts[7], ACTIVE);
+    SET_SENSITIVE(name_layouts[8], ACTIVE);
+    SET_SENSITIVE(name_layouts[9], ACTIVE);
+    SET_SENSITIVE(name_layouts[10], ACTIVE);
+
+    SET_SENSITIVE(timeset,      ACTIVE);
+    SET_SENSITIVE(inc_time,     ACTIVE);
+    SET_SENSITIVE(dec_time,     ACTIVE);
+    SET_SENSITIVE(inc_osaekomi, ACTIVE);
+    SET_SENSITIVE(dec_osaekomi, ACTIVE);
+    SET_SENSITIVE(set_time,     ACTIVE);
 }
