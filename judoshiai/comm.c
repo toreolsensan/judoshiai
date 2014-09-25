@@ -314,6 +314,7 @@ void msg_received(struct message *input_msg)
                 j->deleted = input_msg->u.edit_competitor.deleted;
                 if (j->visible) {
                     db_update_judoka(j->index, j);
+                    make_backup();
 
                     memset(&output_msg, 0, sizeof(output_msg));
                     output_msg.type = MSG_EDIT_COMPETITOR;
