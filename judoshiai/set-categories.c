@@ -961,8 +961,8 @@ void read_cat_definitions(void)
         gint pintimewazaari = atoi(pintimewazaaristr);
         gint pintimeippon = atoi(pintimeipponstr);
 
-        //g_print("CAT DEF LINE: %s %d %s %d %d\n",
-        //	agetext, age, weighttext, weight, flags);
+        //g_print("CAT DEF LINE: %s %d %s %d %d matchtime=%d\n",
+        //	agetext, age, weighttext, weight, flags, matchtime);
 
         /* find existing category line */
         gint i;
@@ -1317,8 +1317,14 @@ void set_categories_dialog(GtkWidget *w, gpointer arg)
 
 	db_insert_cat_def_table_data_end();
         read_cat_definitions();
-
         db_cat_def_table_done();
+
+        // update next matches
+        gint t;
+        for (t = 1; t <= number_of_tatamis; t++) {
+            struct match *nm = get_cached_next_matches(t);
+            if (nm) send_next_matches(0, t, nm);
+        }
     } else if (response == Q_RESET) {
         db_delete_cat_def_table_data();
         init_cat_data();
