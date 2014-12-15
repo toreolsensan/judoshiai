@@ -32,7 +32,8 @@ const gchar *for_xgettext[] = {
     N_("Results in Polish"),
     N_("Results in Slovak"),
     N_("Results in Dutch"),
-    N_("Results in German")
+    N_("Results in German"),
+    N_("Results in Russian")
 };
 
 static void get_print_texts(gchar a, gchar b, gchar *filename)
