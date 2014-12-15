@@ -22,6 +22,7 @@ enum {
     LANG_NL,
     LANG_CS,
     LANG_DE,
+    LANG_RU,
     NUM_LANGS
 };
 
