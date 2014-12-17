@@ -89,6 +89,7 @@ enum message_types {
     MSG_UPDATE_LABEL,
     MSG_EDIT_COMPETITOR,
     MSG_SCALE,
+    MSG_11_MATCH_INFO,
     NUM_MESSAGES
 };
 
@@ -200,6 +201,10 @@ struct msg_match_info {
     int rest_time;
 };
 
+struct msg_11_match_info {
+    struct msg_match_info info[11];
+};
+
 struct msg_name_info {
     int index;
     char last[64];
@@ -280,6 +285,7 @@ struct message {
         struct msg_set_points  set_points;
         struct msg_hello       hello;
         struct msg_match_info  match_info;
+        struct msg_11_match_info  match_info_11;
         struct msg_name_info   name_info;
         struct msg_name_req    name_req;
         struct msg_cancel_rest_time cancel_rest_time;
