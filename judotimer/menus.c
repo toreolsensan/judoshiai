@@ -256,8 +256,9 @@ static void set_menu_item_picture(GtkImageMenuItem *menu_item, gchar *name)
 static gint light_callback(gpointer data)
 {
     extern gboolean connection_ok;
-    extern time_t traffic_last_rec_time;
     static gboolean last_ok = FALSE;
+#if 0
+    extern time_t traffic_last_rec_time;
     static gboolean yellow_set = FALSE;
 
     if (yellow_set == FALSE && connection_ok && time(NULL) > traffic_last_rec_time + 6) {
@@ -268,6 +269,7 @@ static gint light_callback(gpointer data)
         yellow_set = FALSE;
         last_ok = !connection_ok;
     }
+#endif
 
     if (connection_ok == last_ok)
         return TRUE;
