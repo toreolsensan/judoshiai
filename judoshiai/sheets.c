@@ -2568,18 +2568,6 @@ gdouble zoom = 1.0;
 static gdouble button_start_x, button_start_y;
 static gboolean button_drag = FALSE;
 
-#if 0 // not compatible with ARM processor
-__inline__ guint64 rdtsc(void) {
-    guint32 lo, hi;
-    __asm__ __volatile__ (      // serialize
-    "xorl %%eax,%%eax \n        cpuid"
-    ::: "%rax", "%rbx", "%rcx", "%rdx");
-    /* We cannot use "=A", since this would use %rax on x86_64 and return only the lower 32bits of the TSC */
-    __asm__ __volatile__ ("rdtsc" : "=a" (lo), "=d" (hi));
-    return (guint64)hi << 32 | lo;
-}
-#endif
-
 static void refresh_darea(void)
 {
 #if (GTKVER == 3)
@@ -2633,10 +2621,7 @@ static gboolean expose_cat(GtkWidget *widget, GdkEventExpose *event, gpointer us
 #else
     pd->c = gdk_cairo_create(widget->window);
 #endif
-    //guint64 start = rdtsc();
     paint_category(pd);
-    //guint64 stop = rdtsc();
-    //g_print("TIME = %lld\n", stop - start);
 
     cairo_set_source_surface(pd->c, print_icon, 0, 0);
     cairo_paint(pd->c);
