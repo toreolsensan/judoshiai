@@ -3,7 +3,7 @@
 /*
  * Copyright (C) 2006-2013 by Hannu Jokinen
  * Full copyright text is included in the software package.
- */ 
+ */
 
 #if defined(__WIN32__) || defined(WIN32)
 
@@ -40,7 +40,7 @@
 
 #include <gtk/gtk.h>
 #include <glib.h>
-#include <curl/curl.h>
+#include <webkit/webkit.h>
 
 #if (GTKVER == 3)
 #include <gdk/gdkkeysyms-compat.h>
@@ -80,7 +80,10 @@ void send_cmd_parameters(gint i);
 void scan_interfaces(void);
 static gint check_table(gpointer data);
 static gpointer connection_thread(gpointer args);
-
+static WebKitWebView *web_view;
+static gchar *video_dir = NULL;
+static GtkWidget *progress_bar = NULL;
+static WebKitDownload *cur_download = NULL;
 
 gchar         *program_path;
 GtkWidget     *main_vbox = NULL;
@@ -103,7 +106,7 @@ gboolean       red_background = FALSE;
 gchar         *filename = NULL;
 GtkWidget     *id_box = NULL, *name_box = NULL;
 GtkWidget     *connection_table;
-static GdkColor color_yellow, color_white, color_grey, color_green, color_darkgreen, 
+static GdkColor color_yellow, color_white, color_grey, color_green, color_darkgreen,
     color_blue, color_red, color_darkred, color_black;
 gboolean       connections_updated = FALSE;
 GtkWidget     *notebook;
@@ -136,6 +139,8 @@ static struct {
     GtkWidget *dev_table;
     gboolean changed;
     int fdin, fdout;
+    gchar *ssdp_msg;
+    gint   ssdp_msg_len;
     struct application {
         gchar     *text;
         GtkWidget *textw;
@@ -158,77 +163,6 @@ static struct {
     GtkWidget *scrolled_window;
     gboolean changed;
 } connections[NUM_CONNECTIONS];
-
-// camera parameters
-#define NUM_CAMERA_PARAMS 64
-enum {
-    PARAM_INT = 0,
-    PARAM_BOOL,
-    PARAM_STR,
-    PARAM_SCALE,
-    PARAM_CMD,
-    PARAM_NO_ARG,
-    PARAM_NEW_LINE,
-    PARAM_NEW_COLUMN,
-    PARAM_EMPTY_LINE
-};
-/*
-    CAM_PARAM_SHARPNESS,
-    CAM_PARAM_CONTRAST,
-    CAM_PARAM_BRIGHTNESS,
-    CAM_PARAM_SATURATION
-*/
-static struct {
-    gchar *name, *command_line, *dynamic;
-    gint typ;
-    gchar *dflt;
-} camera_params[NUM_CAMERA_PARAMS] = {
-    {"Preview", NULL, "preview", PARAM_CMD, NULL},
-    {"Rec stop", NULL, "stop", PARAM_CMD, NULL},
-    {"Rec start", NULL, "start", PARAM_CMD, NULL},
-    {"Restart", NULL, "quit", PARAM_CMD, NULL},
-    {"NC", NULL, NULL, PARAM_NEW_COLUMN, NULL},
-    {"Halt", NULL, "halt", PARAM_CMD, NULL},
-
-    {"NL", NULL, NULL, PARAM_EMPTY_LINE, NULL},
-    {" Width* ", "V_WIDTH", NULL, PARAM_STR, "640"},
-    {" Height* ", "V_HEIGHT", NULL, PARAM_STR, "360"},
-    {" Bitrate* ", "V_BITRATE", NULL, PARAM_STR, "500000"},
-    {" Framerate* ", "V_FPS", NULL, PARAM_STR, "25"},
-
-    {"NL", NULL, NULL, PARAM_NEW_LINE, NULL},
-    {" Sharpness ", "V_SHARPNESS", "camera0", PARAM_SCALE, "0"},
-    {" Contrast ", "V_CONTRAST", "camera1", PARAM_SCALE, "0"},
-    {" Brightness ", "V_BRIGHTNESS", "camera2", PARAM_SCALE, "50"},
-    {" Saturation ", "V_SATURATION", "camera3", PARAM_SCALE, "0"},
-
-    {"NL", NULL, NULL, PARAM_EMPTY_LINE, NULL},
-    {" Video dir* ", "VIDEODIR", NULL, PARAM_STR, "/home/pi/video"},
-    {" Tatami* ", "TATAMI", NULL, PARAM_STR, "1"},
-    {" Proxy address* ", "MASTERADDRESS", NULL, PARAM_STR, "0.0.0.0"},
-    {" Logo mode ", "LOGOMODE", "logo", PARAM_STR, "shiai"},
-
-    {"NL", NULL, NULL, PARAM_NEW_LINE, NULL},
-    {" Audio* ", "AUDIO", NULL, PARAM_STR, ""},
-    {" Zoom mode* ", "ZOOM", NULL, PARAM_BOOL, "1"},
-    {" Force zoom ", "PARAM2", "param2", PARAM_BOOL, "0"},
-    {" Force no zoom ", "PARAM3", "param3", PARAM_BOOL, "0"},
-
-    {"NL", NULL, NULL, PARAM_EMPTY_LINE, NULL},
-    {" Pixel thr ", "PARAM0", "param0", PARAM_STR, "20"},
-    {" Movement thr ", "PARAM1", "param1", PARAM_STR, "30"},
-    {" Test mov ", "PARAM4", "param4", PARAM_BOOL, "0"},
-    {" Same XY thr ", "PARAM5", "param5", PARAM_STR, "8"},
-
-    {"NL", NULL, NULL, PARAM_NEW_LINE, NULL},
-    {" Criteria ", "PARAM6", "param6", PARAM_STR, "5"},
-    {" Zoom hyst ", "PARAM7", "param7", PARAM_STR, "100"}
-};
-
-static struct {
-    GtkWidget *name_w, *value_w;
-    gchar *value;
-} camera_values[NUM_TATAMIS][NUM_CAMERA_PARAMS];
 
 static gboolean delete_event( GtkWidget *widget,
                               GdkEvent  *event,
@@ -268,6 +202,17 @@ static void enter_callback( GtkWidget *widget,
     connections[i].changed = TRUE;
 }
 
+static void reload_web( GtkWidget *widget,
+			GtkWidget *entry )
+{
+    gchar url[256];
+    gint i = ptr_to_gint(entry);
+    snprintf(url, sizeof(url), "http://%s:8888/index.html",
+	     inet_ntoa(connections[i].caller.sin_addr));
+    webkit_web_view_load_uri(web_view, url);
+    gtk_widget_grab_focus(GTK_WIDGET(web_view));
+}
+
 static void camera_ip_enter_callback( GtkWidget *widget,
                                       GtkWidget *entry )
 {
@@ -280,38 +225,65 @@ static void camera_ip_enter_callback( GtkWidget *widget,
     connections[i].changed = TRUE;
 }
 
-#define UPDATE_TEXT(_w, _t) do { g_free(_w); _w = g_strdup(_t); } while (0)
-
-static void camera_callback_value(GtkWidget *widget,
-                                  gpointer *data)
+gboolean download_req(WebKitWebView* webView, WebKitDownload *download, gboolean *handled)
 {
-    gchar buf[16];
-    gint i = ptr_to_gint(data)/1000; // tatami
-    gint j = ptr_to_gint(data)%1000; // param num
-    if (camera_params[j].typ == PARAM_STR) {
-        const gchar *entry_text = gtk_entry_get_text(GTK_ENTRY(camera_values[i][j].value_w));
-        UPDATE_TEXT(camera_values[i][j].value, entry_text);
-        g_print("CAM ENTRY=%s tatami=%d param=%d\n", entry_text, i+1, j);
-    } else if (camera_params[j].typ == PARAM_SCALE) {
-        snprintf(buf, sizeof(buf), "%f", gtk_spin_button_get_value(GTK_SPIN_BUTTON(widget)));
-        UPDATE_TEXT(camera_values[i][j].value, buf);
-        //g_print("SCALE tatami=%d param=%d val=%f\n", i+1, j, gtk_spin_button_get_value(GTK_SPIN_BUTTON(widget)));
-    } else if (camera_params[j].typ == PARAM_BOOL) {
-        snprintf(buf, sizeof(buf), "%d", gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)));
-        UPDATE_TEXT(camera_values[i][j].value, buf);
-        //g_print("BOOL tatami=%d param=%d val=%d\n", i+1, j, gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)));
-    } else {
-        g_print("CAM BUTTON tatami=%d param=%d\n", i+1, j);
-    }
-    send_parameter(i, j);
+    const gchar *uri = webkit_download_get_uri(download);
+    char *p = strrchr(uri, '/');
+    if (!p)
+	return FALSE;
+
+    gchar *dest = g_strdup_printf("file:///%s/%s", video_dir, p+1);
+    webkit_download_set_destination_uri(download, dest);
+    g_free(dest);
+
+    cur_download = download;
+    return TRUE;
 }
 
-static void camera_callback_preview(GtkWidget *widget,
-                                    gpointer *data)
+void update_progress(void)
 {
-    gint i = ptr_to_gint(data)/1000; // tatami
-    if (connections[i].caller.sin_addr.s_addr)
-        create_video_window(connections[i].caller);
+    if (0 && cur_download) {
+	gdouble prog = webkit_download_get_progress(cur_download);
+	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress_bar), prog);
+    }
+}
+
+static void load_changed (WebKitWebView  *web_view,
+                                   /*WebKitLoadEvent*/ int load_event,
+                                   gpointer        user_data)
+{
+    g_print("LOAD %d\n", load_event);
+#if 0
+    gchar *provisional_uri;
+    gchar *redirected_uri;
+    gchar *uri;
+
+    switch (load_event) {
+    case WEBKIT_LOAD_STARTED:
+        /* New load, we have now a provisional URI */
+        provisional_uri = webkit_web_view_get_uri (web_view);
+	g_print("provisional_uri=%s\n", provisional_uri);
+        /* Here we could start a spinner or update the
+         * location bar with the provisional URI */
+        break;
+    case WEBKIT_LOAD_REDIRECTED:
+        redirected_uri = webkit_web_view_get_uri (web_view);
+	g_print("redirected_uri=%s\n", redirected_uri);
+        break;
+    case WEBKIT_LOAD_COMMITTED:
+        /* The load is being performed. Current URI is
+         * the final one and it won't change unless a new
+         * load is requested or a navigation within the
+         * same page is performed */
+        uri = webkit_web_view_get_uri (web_view);
+	g_print("uri=%s\n", uri);
+        break;
+    case WEBKIT_LOAD_FINISHED:
+        /* Load finished, we can now stop the spinner */
+	g_print("finished\n");
+        break;
+    }
+#endif
 }
 
 int main( int   argc,
@@ -358,6 +330,11 @@ int main( int   argc,
 
     conffile = g_build_filename(g_get_user_data_dir(), "judoproxy.ini", NULL);
 
+    /* create video download dir */
+    video_dir = g_build_filename(g_get_home_dir(), "rpivideos", NULL);
+    g_print("Video dir = %s\n", video_dir);
+    g_mkdir_with_parents(video_dir, 0755);
+
     keyfile = g_key_file_new();
     g_key_file_load_from_file(keyfile, conffile, 0, NULL);
 
@@ -379,10 +356,10 @@ int main( int   argc,
 
     g_signal_connect (G_OBJECT (window), "delete_event",
                       G_CALLBACK (delete_event), NULL);
-    
+
     g_signal_connect (G_OBJECT (window), "destroy",
                       G_CALLBACK (destroy), NULL);
-    
+
     gtk_container_set_border_width (GTK_CONTAINER (window), 10);
 
     main_vbox = gtk_grid_new();
@@ -407,7 +384,7 @@ int main( int   argc,
     notebook = gtk_notebook_new();
     gtk_notebook_set_scrollable(GTK_NOTEBOOK(notebook), TRUE);
     gtk_widget_set_hexpand(notebook, TRUE);
-    gtk_widget_set_vexpand(notebook, TRUE);
+    //gtk_widget_set_vexpand(notebook, TRUE);
     gtk_notebook_set_tab_pos(GTK_NOTEBOOK(notebook), GTK_POS_TOP);
     /*
     GtkWidget *camera_table = gtk_grid_new();
@@ -415,23 +392,22 @@ int main( int   argc,
     gtk_grid_set_row_spacing(GTK_GRID(camera_table), 10);
     */
 
-#define SET_CAM_PARAM(_n, _t, _p, _v) do {                              \
-        set_camera_param(data_table, (j&1)?2:0, j/2+3, i, j, _n, _t, _p, _v); \
-        j++; \
-    } while (0)
-
     for (i = 0; i < NUM_TATAMIS; i++) {
         gchar buf[32];
-        connections[i].scrolled_window = gtk_scrolled_window_new(NULL, NULL);;
+        GtkWidget *data_table = gtk_grid_new();
+        connections[i].scrolled_window = data_table;
+        //connections[i].scrolled_window = gtk_scrolled_window_new(NULL, NULL);
         gtk_container_set_border_width(GTK_CONTAINER(connections[i].scrolled_window), 10);
 
         snprintf(buf, sizeof(buf), "T%d [--]", i+1);
-        gtk_notebook_append_page(GTK_NOTEBOOK(notebook), connections[i].scrolled_window, 
+        gtk_notebook_append_page(GTK_NOTEBOOK(notebook), connections[i].scrolled_window,
                                  gtk_label_new(buf));
 
-        GtkWidget *data_table = gtk_grid_new();
-        gtk_grid_attach(GTK_GRID(data_table), gtk_label_new(_("Camera")), 0, 0, 2, 1);
+        gtk_grid_attach(GTK_GRID(data_table), gtk_label_new(_("Camera")),    0, 0, 2, 1);
         gtk_grid_attach(GTK_GRID(data_table), gtk_label_new(_("JudoTimer")), 4, 0, 2, 1);
+
+	GtkWidget *reload = gtk_button_new_with_label(_("Reload"));
+        gtk_grid_attach(GTK_GRID(data_table), reload, 0, 1, 1, 1);
 
         connections[i].in_addr = gtk_entry_new();
         connections[i].out_addr = gtk_entry_new();
@@ -441,94 +417,47 @@ int main( int   argc,
         gtk_grid_attach(GTK_GRID(data_table), connections[i].out_addr, 6, 0, 2, 1);
         gtk_grid_attach(GTK_GRID(data_table), gtk_label_new(" "), 0, 1, 1, 1);
 
-        gint j = 0, row = 2, col = 0;
 
-        for (j = 0; camera_params[j].name; j++) {
-            if (camera_params[j].typ == PARAM_CMD) {
-                camera_values[i][j].name_w = gtk_button_new_with_label(camera_params[j].name);
-
-                if (strcmp(camera_params[j].dynamic, "preview") == 0)
-                    g_signal_connect(camera_values[i][j].name_w, "clicked", 
-                                     G_CALLBACK(camera_callback_preview), gint_to_ptr(i*1000+j));
-                else
-                    g_signal_connect(camera_values[i][j].name_w, "clicked", 
-                                     G_CALLBACK(camera_callback_value), gint_to_ptr(i*1000+j));
-
-                gtk_grid_attach(GTK_GRID(data_table), camera_values[i][j].name_w, col, row, 1, 1);
-                col++;
-            } else if (camera_params[j].typ == PARAM_NEW_LINE) {
-                row++;
-                col = 0;
-            } else if (camera_params[j].typ == PARAM_NEW_COLUMN) {
-                col++;
-            } else if (camera_params[j].typ == PARAM_EMPTY_LINE) {
-                row++;
-                col = 0;
-                gtk_grid_attach(GTK_GRID(data_table), gtk_label_new(" "), col, row, 1, 1);
-                row++;
-            } else if (camera_params[j].typ == PARAM_SCALE) {
-                camera_values[i][j].name_w = gtk_label_new(camera_params[j].name);
-                gtk_misc_set_alignment(GTK_MISC(camera_values[i][j].name_w), 1, 0.5);
-
-                gdouble min, max, def = atof(camera_params[j].dflt);
-                if (def == 50.0) {
-                    min = 0.0; max = 100.0;
-                } else {
-                    min = -50.0; max = 50.0;
-                }
-                //GtkAdjustment *adj = gtk_adjustment_new(def, min, max, 1.0, 1.0, 1.0);
-                //GtkWidget *scale = gtk_spin_button_new(GTK_ADJUSTMENT(adj), 1.0, 0);
-                GtkWidget *scale = gtk_spin_button_new_with_range(min, max, 1.0);
-                gtk_spin_button_set_value(GTK_SPIN_BUTTON(scale), def);
-                camera_values[i][j].value_w = scale;
-                g_signal_connect(camera_values[i][j].value_w, "value-changed", 
-                                 G_CALLBACK(camera_callback_value), gint_to_ptr(i*1000+j));
-
-                gtk_grid_attach(GTK_GRID(data_table), camera_values[i][j].name_w, col, row, 1, 1);
-                gtk_grid_attach(GTK_GRID(data_table), camera_values[i][j].value_w, col+1, row, 1, 1);
-                col += 2;
-            } else if (camera_params[j].typ == PARAM_BOOL) {
-                camera_values[i][j].name_w = gtk_label_new(camera_params[j].name);
-                gtk_misc_set_alignment(GTK_MISC(camera_values[i][j].name_w), 1, 0.5);
-                GtkWidget *check = gtk_check_button_new();
-                gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check),
-                                             camera_params[j].dflt[0] == '1');
-                camera_values[i][j].value_w = check;
-                g_signal_connect(camera_values[i][j].value_w, "toggled", 
-                                 G_CALLBACK(camera_callback_value), gint_to_ptr(i*1000+j));
-
-                gtk_grid_attach(GTK_GRID(data_table), camera_values[i][j].name_w, col, row, 1, 1);
-                gtk_grid_attach(GTK_GRID(data_table), camera_values[i][j].value_w, col+1, row, 1, 1);
-                col += 2;
-            } else {
-                camera_values[i][j].name_w = gtk_label_new(camera_params[j].name);
-                gtk_misc_set_alignment(GTK_MISC(camera_values[i][j].name_w), 1, 0.5);
-                camera_values[i][j].value_w = gtk_entry_new();
-                gtk_entry_set_width_chars(GTK_ENTRY(camera_values[i][j].value_w), 4);
-                gtk_entry_set_text(GTK_ENTRY(camera_values[i][j].value_w), camera_params[j].dflt);
-                g_signal_connect(camera_values[i][j].value_w, "activate", 
-                                 G_CALLBACK(camera_callback_value), gint_to_ptr(i*1000+j));
-                gtk_grid_attach(GTK_GRID(data_table), camera_values[i][j].name_w, col, row, 1, 1);
-                gtk_grid_attach(GTK_GRID(data_table), camera_values[i][j].value_w, col+1, row, 1, 1);
-                col += 2;
-            }
-        }
-
-        gtk_container_add(GTK_CONTAINER(connections[i].scrolled_window), data_table);
+        //gtk_container_add(GTK_CONTAINER(connections[i].scrolled_window), data_table);
         g_signal_connect (connections[i].out_addr, "activate",
                           G_CALLBACK(enter_callback),
                           gint_to_ptr(i));
         g_signal_connect (connections[i].in_addr, "activate",
                           G_CALLBACK(camera_ip_enter_callback),
                           gint_to_ptr(i));
+        g_signal_connect (reload, "clicked",
+                          G_CALLBACK(reload_web),
+                          gint_to_ptr(i));
     }
 
     gtk_notebook_set_current_page(GTK_NOTEBOOK(notebook), 0);
     gtk_grid_attach_next_to(GTK_GRID(main_vbox), notebook, NULL, GTK_POS_BOTTOM, 1, 1);
 
+    progress_bar = gtk_progress_bar_new();
+    gtk_grid_attach_next_to(GTK_GRID(main_vbox), progress_bar, NULL, GTK_POS_BOTTOM, 1, 1);
+
+    GtkWidget *w = GTK_WIDGET(gtk_scrolled_window_new(NULL, NULL));
+    web_view = WEBKIT_WEB_VIEW(webkit_web_view_new());
+    webkit_web_view_set_transparent(web_view, TRUE);
+
+    gtk_container_add(GTK_CONTAINER(w), GTK_WIDGET(web_view));
+    gtk_widget_set_vexpand(GTK_WIDGET(web_view), TRUE);
+
+    WebKitWebSettings *web_settings = webkit_web_settings_new();
+    //g_object_set(G_OBJECT(web_settings), "enable-java-applet", FALSE, NULL);
+    //g_object_set(G_OBJECT(web_settings), "enable-plugins", FALSE, NULL);
+    webkit_web_view_set_settings(web_view, web_settings);
+
+    gtk_grid_attach_next_to(GTK_GRID(main_vbox), GTK_WIDGET(w), NULL, GTK_POS_BOTTOM, 1, 1);
+    gtk_widget_grab_focus(GTK_WIDGET(web_view));
+
+    webkit_web_view_load_uri(web_view, "http://www.midiworld.com/files/959/");
+
+    g_signal_connect(web_view, "download-requested", G_CALLBACK(download_req), NULL);
+    g_signal_connect(web_view, "load-changed", G_CALLBACK(load_changed), NULL);
 
     /* timers */
-        
+
     timer = g_timer_new();
 
     gtk_widget_show_all(window);
@@ -545,15 +474,15 @@ int main( int   argc,
 
     gth = g_thread_new("Connection",
                        (GThreadFunc)connection_thread,
-                       (gpointer)&run_flag); 
+                       (gpointer)&run_flag);
 
     gth = g_thread_new("SSDP",
                        (GThreadFunc)proxy_ssdp_thread,
-                       (gpointer)&run_flag); 
+                       (gpointer)&run_flag);
     gth = gth; // make compiler happy
 
     gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER_ALWAYS);
-	
+
     cursor = gdk_cursor_new(GDK_HAND2);
     //gdk_window_set_cursor(GTK_WIDGET(main_window)->window, cursor);
 
@@ -564,9 +493,9 @@ int main( int   argc,
      * and waits for an event to occur (like a key press or
      * mouse event). */
     gtk_main();
-    
+
     run_flag = FALSE;     /* flag threads to stop and exit */
-    //g_thread_join(gth);   /* wait for thread to exit */ 
+    //g_thread_join(gth);   /* wait for thread to exit */
 
     return 0;
 }
@@ -635,7 +564,7 @@ void update_connections_table(void)
             gtk_entry_set_text(GTK_ENTRY(connections[i].in_addr), "");
         }
 
-        snprintf(buf, sizeof(buf), "T%d [%c%c]", i+1, 
+        snprintf(buf, sizeof(buf), "T%d [%c%c]", i+1,
                  stars & 1 ? '*' : '-', stars & 2 ? '*' : '-');
         gtk_notebook_set_tab_label_text(GTK_NOTEBOOK(notebook), connections[i].scrolled_window, buf);
     }
@@ -667,7 +596,6 @@ static void update_column(gint i)
             if (tatami > 0 && tatami <= NUM_TATAMIS && connections[tatami-1].fd_conn < 0) {
                 connections[tatami-1].caller.sin_addr.s_addr = iface[i].device[j].addr;
                 connections_updated = TRUE;
-                get_parameters(tatami-1);
             }
         }
     }
@@ -750,10 +678,10 @@ struct application *report_to_proxy(gchar *rec, struct sockaddr_in *client, gint
                         iface[i].device[j].addr = addr;
                         iface[i].device[j].apptype = get_app_type(p);
                         iface[i].changed = TRUE;
-                        g_print("new device if=%d dev=%d ifnum=%d addr=%s type=%d/%d %s\n", 
-                                i, j, ifnum, 
+                        g_print("new device if=%d dev=%d ifnum=%d addr=%s type=%d/%d %s\n",
+                                i, j, ifnum,
                                 inet_ntoa(client->sin_addr),
-                                iface[i].device[j].apptype.type, iface[i].device[j].apptype.tatami, 
+                                iface[i].device[j].apptype.type, iface[i].device[j].apptype.tatami,
                                 iface[i].device[j].text);
                         return &(iface[i].device[j]);
                     } else if (strncmp(iface[i].device[j].text, p, 7) == 0 &&
@@ -807,6 +735,11 @@ gpointer proxy_ssdp_thread(gpointer args)
     guint socklen;
     struct ip_mreq mreq;
     gint i;
+#ifdef WIN32
+    const gchar *os = "Windows";
+#else
+    const gchar *os = "Linux";
+#endif
 
     ssdp_req_data = g_strdup_printf("M-SEARCH * HTTP/1.1\r\n"
                                     "HOST: 239.255.255.250:1900\r\n"
@@ -896,11 +829,13 @@ gpointer proxy_ssdp_thread(gpointer args)
             perror("SSDP select");
             continue;
         }
-        
+
+	update_progress();
+
         for (i = 0; i < addrcnt; i++) {
             if (iface[i].fdin > 0 && FD_ISSET(iface[i].fdin, &read_fd)) {
                 socklen = sizeof(clientsock);
-                if ((len = recvfrom(iface[i].fdin, inbuf, sizeof(inbuf)-1, 0, 
+                if ((len = recvfrom(iface[i].fdin, inbuf, sizeof(inbuf)-1, 0,
                                     (struct sockaddr *)&clientsock, &socklen)) < 0) {
                     perror("SSDP recvfrom");
                     continue;
@@ -913,9 +848,10 @@ gpointer proxy_ssdp_thread(gpointer args)
                     appl = appl; // make compiler happy
                 }
             }
+
             if (iface[i].fdout > 0 && FD_ISSET(iface[i].fdout, &read_fd)) {
                 socklen = sizeof(clientsock);
-                if ((len = recvfrom(iface[i].fdout, inbuf, sizeof(inbuf)-1, 0, 
+                if ((len = recvfrom(iface[i].fdout, inbuf, sizeof(inbuf)-1, 0,
                                     (struct sockaddr *)&clientsock, &socklen)) < 0) {
                     perror("SSDP recvfrom");
                     continue;
@@ -934,11 +870,11 @@ gpointer proxy_ssdp_thread(gpointer args)
                             if (i == j || iface[j].fdout <= 0)
                                 continue;
 
-                            ret = sendto(iface[j].fdout, inbuf, len, 0, 
-                                         (struct sockaddr*) &name_out, 
+                            ret = sendto(iface[j].fdout, inbuf, len, 0,
+                                         (struct sockaddr*) &name_out,
                                          sizeof(struct sockaddr_in));
                             g_print("SSDP message forwarded to port %d\n", j);
-                        
+
                         } // for
                     } // if
 #endif
@@ -956,11 +892,37 @@ gpointer proxy_ssdp_thread(gpointer args)
                 if (iface[i].fdout <= 0)
                     continue;
 
-                ret = sendto(iface[i].fdout, ssdp_req_data, ssdp_req_data_len, 0, 
-                             (struct sockaddr*) &name_out, 
+		if (iface[i].ssdp_msg == NULL) {
+#define URN ":urn:judoshiai:service:all:" SHIAI_VERSION
+#define ST "ST" URN
+#define NT "NT" URN
+		    struct sockaddr_in a;
+		    a.sin_addr.s_addr = iface[i].addr;
+
+		    iface[i].ssdp_msg =
+			g_strdup_printf("NOTIFY * HTTP/1.1\r\n"
+					"HOST: 239.255.255.250:1900\r\n"
+					"CACHE-CONTROL: max-age=1800\r\n"
+					"LOCATION: http://%s/UPnP/desc.xml\r\n"
+					NT "\r\n"
+					"NTS: ssdp-alive\r\n"
+					"SERVER:%s/1 UPnP/1.0 %s/%s\r\n"
+					"USN: uuid:%08x-cafe-babe-737%d-%012x\r\n"
+					"\r\n",
+					inet_ntoa(a.sin_addr), os,
+					ssdp_id,
+					SHIAI_VERSION, my_address,
+					application_type(), iface[i].addr);
+		    iface[i].ssdp_msg_len = strlen(iface[i].ssdp_msg);
+		}
+
+                ret = sendto(iface[i].fdout, iface[i].ssdp_msg,
+			     iface[i].ssdp_msg_len, 0,
+                             (struct sockaddr*) &name_out,
                              sizeof(struct sockaddr_in));
+
                 //g_print("SSDP %s REQ SEND by timeout\n\n", APPLICATION);
-                if (ret != ssdp_req_data_len) {
+                if (ret != iface[i].ssdp_msg_len) {
                     perror("SSDP send req");
                 }
             } // for
@@ -1080,7 +1042,7 @@ static gpointer connection_thread(gpointer args)
     {
         struct timeval timeout;
         gint r, i;
-                
+
         fds = read_fd;
         timeout.tv_sec = 0;
         timeout.tv_usec = 100000;
@@ -1113,7 +1075,7 @@ static gpointer connection_thread(gpointer args)
                     g_print("Connection out %d to %s failed!\n", i, inet_ntoa(node.sin_addr));
                 } else {
                     FD_SET(connections[i].fd_out, &read_fd);
-                    g_print("Out connection %d (fd=%d) to %s\n", i, 
+                    g_print("Out connection %d (fd=%d) to %s\n", i,
                             connections[i].fd_out, inet_ntoa(node.sin_addr));
                     connections_updated = TRUE;
                 }
@@ -1126,8 +1088,8 @@ static gpointer connection_thread(gpointer args)
             if (FD_ISSET(connections[i].fd_listen, &fds)) {
                 guint alen = sizeof(connections[i].caller);
                 if (connections[i].fd_conn < 0) {
-                    if ((connections[i].fd_conn = accept(connections[i].fd_listen, 
-                                                         (struct sockaddr *)&connections[i].caller, 
+                    if ((connections[i].fd_conn = accept(connections[i].fd_listen,
+                                                         (struct sockaddr *)&connections[i].caller,
                                                          &alen)) < 0) {
                         perror("conn accept");
                         continue;
@@ -1136,6 +1098,7 @@ static gpointer connection_thread(gpointer args)
                         connections_updated = TRUE;
                         g_print("New connection in %d (fd=%d) from %s\n", i, connections[i].fd_conn,
                                 inet_ntoa(connections[i].caller.sin_addr));
+			//reload_web(NULL, gint_to_ptr(i));
                     }
                 } else {
                     g_print("Connection %d already in use.", i);
@@ -1155,7 +1118,7 @@ static gpointer connection_thread(gpointer args)
                         send(connections[i].fd_out, inbuf, r, 0);
                     }
                 }
-            }            
+            }
 
             if (connections[i].fd_out > 0 && FD_ISSET(connections[i].fd_out, &fds)) {
                 r = recv(connections[i].fd_out, inbuf, sizeof(inbuf), 0);
@@ -1170,8 +1133,8 @@ static gpointer connection_thread(gpointer args)
                         send(connections[i].fd_conn, inbuf, r, 0);
                     }
                 }
-            }            
-        
+            }
+
         } // for connections
 
 
@@ -1181,125 +1144,3 @@ static gpointer connection_thread(gpointer args)
     g_thread_exit(NULL);    /* not required just good pratice */
     return NULL;
 }
-
-#define PARAMETER_PORT_CMD_LINE 3345
-#define PARAMETER_PORT_DYNAMIC  3346
-
-void send_parameter(gint i, gint j)
-{
-    if (camera_params[j].dynamic)
-        send_parameter_2(connections[i].caller, PARAMETER_PORT_DYNAMIC, 
-                       camera_params[j].dynamic, 
-                       camera_params[j].typ != PARAM_CMD ? camera_values[i][j].value : NULL);
-    if (camera_params[j].command_line)
-        send_parameter_2(connections[i].caller, PARAMETER_PORT_CMD_LINE, 
-                       camera_params[j].command_line, camera_values[i][j].value);
-}
-
-void get_parameters(gint i)
-{
-    struct sockaddr_in rpi, addr = connections[i].caller;
-    SOCKET fd = socket(AF_INET, SOCK_STREAM, 0);
-    gchar buf[1024];
-
-    if (fd == INVALID_SOCKET) {
-        perror("out socket");
-        return;
-    }
-    g_print("Getting parameters for tatami %d\n", i);
-
-    memset(&rpi, 0, sizeof(rpi));
-    rpi.sin_family      = AF_INET;
-    rpi.sin_port        = htons(PARAMETER_PORT_CMD_LINE);
-    rpi.sin_addr        = addr.sin_addr;
-
-    if (connect(fd, (struct sockaddr *)&rpi, sizeof(rpi))) {
-        closesocket(fd);
-        g_print("Parameter connection to rpi %s failed!\n", inet_ntoa(rpi.sin_addr));
-        return;
-    }
-
-    if (send(fd, "GET=\n", 4, 0) < 0)
-        g_print("Parameter send to rpi %s failed!\n", inet_ntoa(rpi.sin_addr));
-
-    gint r = recv(fd, buf, sizeof(buf)-1, 0);
-    if (r > 0) {
-        buf[r] = 0;
-        g_print("REC: i=%d\n%s\n", i, buf);
-        gint j;
-        for (j = 0; camera_params[j].name; j++) {
-            if (!camera_params[j].command_line)
-                continue;
-
-            gchar *p = strstr(buf, camera_params[j].command_line);
-            if (!p)
-                continue;
-
-            p += strlen(camera_params[j].command_line);
-
-            if (*p != '=')
-                continue;
-
-            p++;
-            gchar val[64];
-            gint k = 0;
-            while (*p > ' ' && k < sizeof(val) - 1)
-                val[k++] = *p++;
-            val[k] = 0;
-
-            UPDATE_TEXT(camera_values[i][j].value, val);
-            gtk_entry_set_text(GTK_ENTRY(camera_values[i][j].value_w), val);
-        }
-    }
-    g_print("Done\n");
-
-    closesocket(fd);
-}
-
-void send_parameter_2(struct sockaddr_in addr, gint port, const gchar *param, const gchar *value)
-{
-    struct sockaddr_in rpi;
-    SOCKET fd = socket(AF_INET, SOCK_STREAM, 0);
-    gchar buf[128];
-
-    if (fd == INVALID_SOCKET) {
-        perror("out socket");
-        return;
-    }
-
-    if (param == NULL)
-        snprintf(buf, sizeof(buf), "#x=x\n");
-    if (value == NULL)
-        snprintf(buf, sizeof(buf), "%s\n", param);
-    else
-        snprintf(buf, sizeof(buf), "%s=%s\n", param, value);
-
-    memset(&rpi, 0, sizeof(rpi));
-    rpi.sin_family      = AF_INET;
-    rpi.sin_port        = htons(port);
-    rpi.sin_addr        = addr.sin_addr;
-    g_print("sending '%s'\n", buf);
-
-    if (connect(fd, (struct sockaddr *)&rpi, sizeof(rpi))) {
-        closesocket(fd);
-        g_print("Parameter connection to rpi %s failed!\n", inet_ntoa(rpi.sin_addr));
-        return;
-    }
-
-    if (send(fd, buf, strlen(buf), 0) < 0)
-        g_print("Parameter send to rpi %s failed!\n", inet_ntoa(rpi.sin_addr));
-
-    closesocket(fd);
-}
-
-void send_cmd_parameters(gint i)
-{
-    gint j;
-
-    for (j = 0; camera_params[j].name; j++) {
-        if (camera_params[j].command_line)
-            send_parameter_2(connections[i].caller, PARAMETER_PORT_CMD_LINE, 
-                             camera_params[j].command_line, camera_values[i][j].value);
-    }
-}
-
