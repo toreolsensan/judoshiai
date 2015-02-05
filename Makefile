@@ -18,7 +18,9 @@ all:
 	make -C judoinfo
 	make -C judoweight
 	make -C judojudogi
+ifeq ($(JUDOPROXY),YES)
 	make -C judoproxy
+endif
 	make -C doc
 	rm -rf $(RELDIR)
 	mkdir -p $(RELDIR)/bin
@@ -46,7 +48,9 @@ all:
 	cp $(JUDOINFOFILE) $(RELDIR)/bin/
 	cp $(JUDOWEIGHTFILE) $(RELDIR)/bin/
 	cp $(JUDOJUDOGIFILE) $(RELDIR)/bin/
+ifeq ($(JUDOPROXY),YES)
 	cp $(JUDOPROXYFILE) $(RELDIR)/bin/
+endif
 ### Windows executable ###
 ifeq ($(TGT),WIN32)
 ifeq ($(GTKVER),3)
@@ -57,6 +61,10 @@ endif
 	cp $(SOUNDDIR)/bin/*.dll $(RELDIR)/bin/
 	cp $(RSVGDIR)/bin/*.dll $(RELDIR)/bin/
 	cp $(CURLDIR)/bin/*.dll $(RELDIR)/bin/
+ifeq ($(JUDOPROXY),YES)
+	cp $(WEBKITDIR)/bin/*.dll $(RELDIR)/bin/
+	cp $(SOAPDIR)/bin/*.dll $(RELDIR)/bin/
+endif
 	cp -r $(RUNDIR)/lib/gtk-$(GTKVER).0 $(RELDIR)/lib/
 	cp -r $(RUNDIR)/share/locale/fi $(RELDIR)/share/locale/
 	cp -r $(RUNDIR)/share/locale/sv $(RELDIR)/share/locale/
