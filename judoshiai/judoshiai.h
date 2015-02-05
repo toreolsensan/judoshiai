@@ -135,6 +135,9 @@ enum cat_systems {
 };
 #define CAT_IJF_DOUBLE_REPECHAGE CAT_ESP_REPESCA_DOBLE
 
+#define POOL_SYS -1
+#define CUST_SYS -2
+
 enum french_systems {
     FRENCH_8 = 0,
     FRENCH_16,
