@@ -1,4 +1,4 @@
-SHIAI_VER_NUM=2.4
+SHIAI_VER_NUM=2.4-beta10
 SHIAI_VERSION="\"$(SHIAI_VER_NUM)\""
 
 ifndef JS_BUILD_DIR
@@ -119,14 +119,11 @@ CFLAGS=-Wall $(shell $(PKGCONFIGPATH) $(PKGCONFIG) --cflags gtk+-$(GTKVER).0) \
        $(shell $(PKGCONFIGPATH) $(PKGCONFIG) --cflags cairo) \
        $(shell $(PKGCONFIGPATH) $(PKGCONFIG) --cflags librsvg-2.0) \
        $(shell $(PKGCONFIGPATH) $(PKGCONFIG) --cflags glib-2.0) \
-       -I/usr/include/webkitgtk-3.0 -I/usr/include/libsoup-2.4 \
        -DENABLE_BINRELOC -DENABLE_NLS -DGTKVER=$(GTKVER) \
        -I$(DEVELDIR)/include -I../common -DSHIAI_VERSION=$(SHIAI_VERSION)
 
 LIBS=$(shell $(PKGCONFIGPATH) $(PKGCONFIG) --libs gtk+-$(GTKVER).0 gthread-2.0 cairo librsvg-2.0 glib-2.0) \
- $(shell curl-config --libs) -ldl \
- -lwebkitgtk-3.0
-
+ $(shell curl-config --libs) -ldl
 
 OBJS += $(OBJDIR)/binreloc.o
 
