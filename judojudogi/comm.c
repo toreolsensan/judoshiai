@@ -107,6 +107,7 @@ gboolean msg_accepted(struct message *m)
 {
     switch (m->type) {
     case MSG_MATCH_INFO:
+    case MSG_11_MATCH_INFO:
     case MSG_NAME_INFO:
     case MSG_CANCEL_REST_TIME:
     case MSG_EDIT_COMPETITOR:
