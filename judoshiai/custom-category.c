@@ -3,7 +3,7 @@
 /*
  * Copyright (C) 2006-2015 by Hannu Jokinen
  * Full copyright text is included in the software package.
- */ 
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -69,7 +69,7 @@ enum data_types {
     CD_COMP
 };
 
-#define ENC_BUF_SIZE 2048
+#define ENC_BUF_SIZE (1<<14)
 
 static gchar enc_buffer[ENC_BUF_SIZE];
 static gint enc_buf_cnt = 0;
@@ -500,10 +500,11 @@ struct custom_data *get_custom_table(guint table)
 guint get_custom_table_number_by_competitors(gint num_comp)
 {
     gint i;
-    for (i = 0; i < num_custom_brackets; i++)
+    for (i = 0; i < num_custom_brackets; i++) {
         if (custom_brackets[i]->competitors_min <= num_comp &&
             custom_brackets[i]->competitors_max >= num_comp)
             return hash_values[i];
+    }
     return 0;
 }
 
@@ -556,11 +557,12 @@ void read_custom_files(void)
                     //show_message(msg);
                     continue;
                 }
-
                 guint hash = g_str_hash(d->name_short) << 5;
                 db_delete_blob_line(hash);
                 gint length;
                 gchar *encoded = encode_custom_data(d, &length);
+		if (length == 0)
+		    show_msg(msgbuf, "red", "  Problem with encoding!\n");
                 db_write_blob(hash, (void *)encoded, length);
 
                 gchar buf[64];
@@ -651,6 +653,7 @@ void read_custom_from_db(void)
     }
     if (rows >= 0) db_close_table();
 
+    LOG("%d custom brackets", num_custom_brackets);
     for (n = 0; n < num_custom_brackets; n++) {
         unsigned char *blob = NULL;
         db_read_blob(hash_values[n], &blob, &len);
