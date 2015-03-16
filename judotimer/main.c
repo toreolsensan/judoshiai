@@ -69,6 +69,7 @@ gboolean sides_switched = FALSE;
 gboolean white_first = FALSE;
 gboolean fullscreen = FALSE;
 gboolean menu_hidden = FALSE;
+gboolean supports_alpha = FALSE;
 //gboolean rule_no_free_shido = FALSE;
 gboolean rule_eq_score_less_shido_wins = FALSE;
 gboolean rule_short_pin_times = FALSE;
@@ -1343,9 +1344,13 @@ static gboolean key_press(GtkWidget *widget, GdkEventKey *event, gpointer userda
     if (event->keyval == GDK_m && ctl) {
         if (menu_hidden) {
             gtk_widget_show(menubar);
+	    gtk_window_set_decorated((GtkWindow*)main_window, TRUE);
+	    gtk_window_set_keep_above(GTK_WINDOW(main_window), FALSE);
             menu_hidden = FALSE;
         } else {
             gtk_widget_hide(menubar);
+	    gtk_window_set_decorated((GtkWindow*)main_window, FALSE);
+	    gtk_window_set_keep_above(GTK_WINDOW(main_window), TRUE);
             menu_hidden = TRUE;
         }
         return FALSE;
@@ -1387,7 +1392,9 @@ static gboolean key_press(GtkWidget *widget, GdkEventKey *event, gpointer userda
         demo = 0;
 
     //g_print("key=%x stat=%x\n", event->keyval, event->state);
-    if ((event->keyval < GDK_0 || event->keyval > GDK_9 || event->keyval == GDK_6 || ctl) &&
+    if (menu_hidden && ACTIVE)
+	clock_key(event->keyval, event->state);
+    else if ((event->keyval < GDK_0 || event->keyval > GDK_9 || event->keyval == GDK_6 || ctl) &&
         ACTIVE)
         clock_key(event->keyval, event->state);
 
@@ -1649,7 +1656,8 @@ int main( int   argc,
 
     main_window = window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(main_window), "JudoTimer");
-    gtk_widget_set_size_request(window, FRAME_WIDTH, FRAME_HEIGHT);
+    //gtk_widget_set_size_request(window, FRAME_WIDTH, FRAME_HEIGHT);
+    gtk_window_resize(GTK_WINDOW(main_window), FRAME_WIDTH, FRAME_HEIGHT);  //w7 bug.
 
     gchar *iconfile = g_build_filename(installation_dir, "etc", "judotimer.png", NULL);
     gtk_window_set_default_icon_from_file(iconfile, NULL);

@@ -2023,6 +2023,7 @@ void display_ad_window(void)
     gtk_window_get_size(GTK_WINDOW(main_window), &width, &height);
 
     GtkWindow *window = ad_window = GTK_WINDOW(gtk_window_new(GTK_WINDOW_TOPLEVEL));
+    gtk_window_set_keep_above(GTK_WINDOW(ad_window), TRUE);
     gtk_window_set_title(GTK_WINDOW(window), _("Advertisement"));
     if (fullscreen)
         gtk_window_fullscreen(GTK_WINDOW(window));
