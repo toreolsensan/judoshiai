@@ -82,6 +82,10 @@ extern GKeyFile *keyfile;
 extern gboolean show_tatami[NUM_TATAMIS];
 extern struct match match_list[NUM_TATAMIS][NUM_LINES];
 extern gint language;
+extern GtkWidget *camera_image;
+extern gint pic_button_x1, pic_button_y1, pic_button_x2, pic_button_y2;
+extern gboolean pic_button_drag;
+extern GtkWidget *html_page;
 
 extern gboolean this_is_shiai(void);
 extern void msg_to_queue(struct message *msg);
@@ -105,6 +109,12 @@ extern gint timeout_ask_for_data(gpointer data);
 extern void write_matches(void);
 extern void set_display(struct msg_edit_competitor *msg);
 extern void create_video_window(struct sockaddr_in src);
-
+extern gboolean show_camera_video(gpointer arg);
+extern gpointer camera_video(gpointer args);
+extern void set_camera_addr(uint32_t addr);
+extern void pic_button_released(gint x, gint y);
+extern GtkWidget *create_html_page(void);
+extern void set_html_url(struct in_addr addr);
+extern void send_mask(gint x1, gint y1, gint x2, gint y2);
 
 #endif

@@ -40,7 +40,9 @@
 
 #include <gtk/gtk.h>
 #include <glib.h>
+#ifdef WEBKIT
 #include <webkit/webkit.h>
+#endif
 
 #if (GTKVER == 3)
 #include <gdk/gdkkeysyms-compat.h>
@@ -80,11 +82,14 @@ void send_cmd_parameters(gint i);
 void scan_interfaces(void);
 static gint check_table(gpointer data);
 static gpointer connection_thread(gpointer args);
+#ifdef WEBKIT
 static WebKitWebView *web_view;
+#endif
 static gchar *video_dir = NULL;
 static GtkWidget *progress_bar = NULL;
+#ifdef WEBKIT
 static WebKitDownload *cur_download = NULL;
-
+#endif
 gchar         *program_path;
 GtkWidget     *main_vbox = NULL;
 GtkWidget     *main_window = NULL;
@@ -202,6 +207,7 @@ static void enter_callback( GtkWidget *widget,
     connections[i].changed = TRUE;
 }
 
+#ifdef WEBKIT
 static void reload_web( GtkWidget *widget,
 			GtkWidget *entry )
 {
@@ -212,6 +218,15 @@ static void reload_web( GtkWidget *widget,
     webkit_web_view_load_uri(web_view, url);
     gtk_widget_grab_focus(GTK_WIDGET(web_view));
 }
+#else
+static void select_camera_video( GtkWidget *widget,
+				 GtkWidget *entry )
+{
+    gint i = ptr_to_gint(entry);
+    set_camera_addr(connections[i].caller.sin_addr.s_addr);
+    set_html_url(connections[i].caller.sin_addr);
+}
+#endif
 
 static void camera_ip_enter_callback( GtkWidget *widget,
                                       GtkWidget *entry )
@@ -225,6 +240,7 @@ static void camera_ip_enter_callback( GtkWidget *widget,
     connections[i].changed = TRUE;
 }
 
+#ifdef WEBKIT
 gboolean download_req(WebKitWebView* webView, WebKitDownload *download, gboolean *handled)
 {
     const gchar *uri = webkit_download_get_uri(download);
@@ -285,6 +301,112 @@ static void load_changed (WebKitWebView  *web_view,
     }
 #endif
 }
+#endif
+
+static void set_active_area(GtkWidget *menuitem, gpointer userdata)
+{
+    gint reset = ptr_to_gint(userdata);
+    if (reset)
+	send_mask(0, 0, 0, 0);
+    else
+	send_mask(pic_button_x1, pic_button_y1, pic_button_x2, pic_button_y2);
+}
+
+static gboolean button_press_callback (GtkWidget      *event_box,
+				       GdkEventButton *event,
+				       gpointer        data)
+{
+    gint ev_width, ev_height, im_width, im_height;
+
+    GdkWindow *ev_w =
+	gtk_widget_get_parent_window(event_box);
+
+    ev_width = gdk_window_get_width(ev_w);
+    ev_height = gdk_window_get_height(ev_w);
+
+    GdkPixbuf *pix = gtk_image_get_pixbuf(data);
+    im_width = gdk_pixbuf_get_width(pix);
+    im_height = gdk_pixbuf_get_height(pix);
+
+    pic_button_x1 = event->x - (ev_width - im_width)/2;
+    pic_button_y1 = event->y - (ev_height - im_height)/2;
+    pic_button_x2 = pic_button_x1;
+    pic_button_y2 = pic_button_y1;
+    pic_button_drag = TRUE;
+
+    return TRUE;
+}
+
+static gboolean button_release_callback (GtkWidget      *event_box,
+					 GdkEventButton *event,
+					 gpointer        data)
+{
+    gint ev_width, ev_height, im_width, im_height;
+
+    GdkWindow *ev_w =
+	gtk_widget_get_parent_window(event_box);
+
+    ev_width = gdk_window_get_width(ev_w);
+    ev_height = gdk_window_get_height(ev_w);
+
+    GdkPixbuf *pix = gtk_image_get_pixbuf(data);
+    im_width = gdk_pixbuf_get_width(pix);
+    im_height = gdk_pixbuf_get_height(pix);
+
+    pic_button_x2 = event->x - (ev_width - im_width)/2;
+    pic_button_y2 = event->y - (ev_height - im_height)/2;
+
+    if (pic_button_x2 < pic_button_x1 + 50 ||
+	pic_button_y2 < pic_button_y1 + 50) {
+	pic_button_drag = FALSE;
+    } else {
+        GtkWidget *menu, *menuitem;
+
+        menu = gtk_menu_new();
+
+        menuitem = gtk_menu_item_new_with_label("Set mask");
+        g_signal_connect(menuitem, "activate",
+                         (GCallback)set_active_area, NULL);
+        gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
+
+        menuitem = gtk_menu_item_new_with_label("Reset");
+        g_signal_connect(menuitem, "activate",
+                         (GCallback)set_active_area, gint_to_ptr(1));
+        gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
+
+        gtk_widget_show_all(menu);
+        gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL,
+                       (event != NULL) ? event->button : 0,
+                       gdk_event_get_time((GdkEvent*)event));
+
+	pic_button_released(pic_button_x2, pic_button_y2);
+    }
+
+    return TRUE;
+}
+
+static gboolean button_notify_callback (GtkWidget      *event_box,
+					GdkEventButton *event,
+					gpointer        data)
+{
+    gint ev_width, ev_height, im_width, im_height;
+
+    GdkWindow *ev_w =
+	gtk_widget_get_parent_window(event_box);
+
+    ev_width = gdk_window_get_width(ev_w);
+    ev_height = gdk_window_get_height(ev_w);
+
+    GdkPixbuf *pix = gtk_image_get_pixbuf(data);
+    im_width = gdk_pixbuf_get_width(pix);
+    im_height = gdk_pixbuf_get_height(pix);
+
+    pic_button_x2 = event->x - (ev_width - im_width)/2;
+    pic_button_y2 = event->y - (ev_height - im_height)/2;
+
+    return TRUE;
+}
+
 
 int main( int   argc,
           char *argv[] )
@@ -425,9 +547,15 @@ int main( int   argc,
         g_signal_connect (connections[i].in_addr, "activate",
                           G_CALLBACK(camera_ip_enter_callback),
                           gint_to_ptr(i));
+#ifdef WEBKIT
         g_signal_connect (reload, "clicked",
                           G_CALLBACK(reload_web),
                           gint_to_ptr(i));
+#else
+        g_signal_connect (reload, "clicked",
+                          G_CALLBACK(select_camera_video),
+                          gint_to_ptr(i));
+#endif
     }
 
     gtk_notebook_set_current_page(GTK_NOTEBOOK(notebook), 0);
@@ -437,6 +565,7 @@ int main( int   argc,
     gtk_grid_attach_next_to(GTK_GRID(main_vbox), progress_bar, NULL, GTK_POS_BOTTOM, 1, 1);
 
     GtkWidget *w = GTK_WIDGET(gtk_scrolled_window_new(NULL, NULL));
+#ifdef WEBKIT
     web_view = WEBKIT_WEB_VIEW(webkit_web_view_new());
     webkit_web_view_set_transparent(web_view, TRUE);
 
@@ -451,10 +580,53 @@ int main( int   argc,
     gtk_grid_attach_next_to(GTK_GRID(main_vbox), GTK_WIDGET(w), NULL, GTK_POS_BOTTOM, 1, 1);
     gtk_widget_grab_focus(GTK_WIDGET(web_view));
 
-    webkit_web_view_load_uri(web_view, "http://www.midiworld.com/files/959/");
+    //webkit_web_view_load_uri(web_view, "http://www.hs.fi");
+    webkit_web_view_load_uri(web_view, "http://www.quirksmode.org/html5/tests/video.html");
 
     g_signal_connect(web_view, "download-requested", G_CALLBACK(download_req), NULL);
-    g_signal_connect(web_view, "load-changed", G_CALLBACK(load_changed), NULL);
+    //g_signal_connect(web_view, "load-changed", G_CALLBACK(load_changed), NULL);
+#else
+    /* HTML page */
+    html_page = create_html_page();
+    gtk_grid_attach_next_to(GTK_GRID(main_vbox), GTK_WIDGET(html_page), NULL, GTK_POS_BOTTOM, 1, 1);
+
+    /* Video display */
+    //camera_image = gtk_image_new();
+    camera_image = gtk_image_new_from_file("/home/hjokinen/koe.png");
+    gtk_widget_set_size_request(GTK_WIDGET(camera_image), 640, 360);
+
+    GtkWidget *event_box = gtk_event_box_new();
+    gtk_container_add(GTK_CONTAINER(event_box), camera_image);
+
+    gtk_widget_set_events(event_box, gtk_widget_get_events(event_box) |
+                          GDK_BUTTON_PRESS_MASK |
+                          GDK_BUTTON_RELEASE_MASK |
+                          /*GDK_POINTER_MOTION_MASK |*/
+                          GDK_POINTER_MOTION_HINT_MASK |
+                          GDK_BUTTON_MOTION_MASK);
+
+    g_signal_connect(G_OBJECT(event_box),
+		     "button_press_event",
+		     G_CALLBACK(button_press_callback),
+		     camera_image);
+    g_signal_connect(G_OBJECT(event_box),
+		     "button_release_event",
+		     G_CALLBACK(button_release_callback),
+		     camera_image);
+    g_signal_connect(G_OBJECT(event_box),
+		     "motion-notify-event",
+		     G_CALLBACK(button_notify_callback),
+		     camera_image);
+
+    gtk_widget_show(camera_image);
+    gtk_container_add(GTK_CONTAINER(w), GTK_WIDGET(event_box));
+    gtk_widget_set_vexpand(GTK_WIDGET(event_box), TRUE);
+    gtk_widget_set_hexpand(GTK_WIDGET(event_box), TRUE);
+    gtk_widget_set_vexpand(GTK_WIDGET(camera_image), TRUE);
+    gtk_widget_set_hexpand(GTK_WIDGET(camera_image), TRUE);
+    gtk_grid_attach_next_to(GTK_GRID(main_vbox), GTK_WIDGET(w), NULL, GTK_POS_BOTTOM, 1, 1);
+
+#endif
 
     /* timers */
 
@@ -479,6 +651,10 @@ int main( int   argc,
     gth = g_thread_new("SSDP",
                        (GThreadFunc)proxy_ssdp_thread,
                        (gpointer)&run_flag);
+
+    gth = g_thread_new("CameraVideo",
+		       camera_video,
+		       (gpointer)&run_flag);
     gth = gth; // make compiler happy
 
     gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER_ALWAYS);
@@ -488,6 +664,8 @@ int main( int   argc,
 
     //g_timeout_add(100, timeout_ask_for_data, NULL);
     g_timeout_add(1000, check_table, NULL);
+
+    g_idle_add(show_camera_video, NULL);
 
     /* All GTK applications must have a gtk_main(). Control ends here
      * and waits for an event to occur (like a key press or
@@ -767,7 +945,7 @@ gpointer proxy_ssdp_thread(gpointer args)
             perror("setsockopt (SO_REUSEADDR)");
         }
 
-#if 0 // SO_BINDTODEVICE requires root privileges
+#if 1 // SO_BINDTODEVICE requires root privileges
         struct ifreq ifr;
         memset(&ifr, 0, sizeof(ifr));
         snprintf(ifr.ifr_name, sizeof(ifr.ifr_name), "%s", iface[i].name);
@@ -797,7 +975,7 @@ gpointer proxy_ssdp_thread(gpointer args)
             continue;
         }
 
-#if 0 // SO_BINDTODEVICE requires root privileges
+#if 1 // SO_BINDTODEVICE requires root privileges
         memset(&ifr, 0, sizeof(ifr));
         snprintf(ifr.ifr_name, sizeof(ifr.ifr_name), "%s", iface[i].name);
         if (setsockopt(iface[i].fdout, SOL_SOCKET, SO_BINDTODEVICE, (void *)&ifr, sizeof(ifr)) < 0) {
@@ -829,9 +1007,9 @@ gpointer proxy_ssdp_thread(gpointer args)
             perror("SSDP select");
             continue;
         }
-
+#ifdef WEBKIT
 	update_progress();
-
+#endif
         for (i = 0; i < addrcnt; i++) {
             if (iface[i].fdin > 0 && FD_ISSET(iface[i].fdin, &read_fd)) {
                 socklen = sizeof(clientsock);
