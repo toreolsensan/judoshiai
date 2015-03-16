@@ -1278,7 +1278,7 @@ static void make_manual_matches_callback(GtkWidget *widget,
             set_match(&m);
             db_set_match(&m);
         }
-    } else if (mdata->mfrench_sys < POOL_SYS) {
+    } else if (mdata->mfrench_sys == POOL_SYS) {
         for (i = 0; i < num_matches(mdata->sys.system, mdata->mjudokas); i++) {
             struct match m;
 

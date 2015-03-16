@@ -190,7 +190,7 @@ gint get_num_svg_pages(struct compsys systm)
     key = make_key(systm, 0);
 
     for (i = 0; i < num_svg; i++) {
-        if ((svg_data[i].key & 0xffffff00) == key)
+        if ((svg_data[i].key & 0xffffff00) == (key & 0xffffff00))
             pages++;
     }
 
@@ -1311,7 +1311,7 @@ void add_custom_svg(gchar *data, gsize len, gint table, gint page)
         //rsvg_handle_free(h);
 
         g_print("custom read key=0x%x pos=%d w=%d h=%d, update=%d\n", 
-                key, num_svg, svg_data[num_svg].width, svg_data[num_svg].height, update);
+                key, n, svg_data[n].width, svg_data[n].height, update);
         if (!update)
             num_svg++;
 
