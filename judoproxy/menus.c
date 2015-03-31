@@ -27,7 +27,7 @@ static GtkWidget *menubar, *preferences, *help, *preferencesmenu, *helpmenu;
 static GtkWidget *quit, *manual;
 static GtkWidget *node_ip, *my_ip, *about;
 static GtkWidget *light, *menu_light;
-static GtkWidget *writefile, *lang_menu_item;
+static GtkWidget *writefile, *lang_menu_item, *advertise;
 
 gboolean show_tatami[NUM_TATAMIS];
 
@@ -154,6 +154,11 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     my_ip   = create_menu_item(preferencesmenu, show_my_ip_addresses, 0);
     create_separator(preferencesmenu);
 
+    advertise = gtk_check_menu_item_new_with_label("Advertise addresses");
+    gtk_menu_shell_append(GTK_MENU_SHELL(preferencesmenu), advertise);
+    g_signal_connect(G_OBJECT(advertise), "activate",
+		     G_CALLBACK(toggle_advertise), NULL);
+
     //create_separator(preferencesmenu);
     writefile = gtk_menu_item_new_with_label("");
     //gtk_menu_shell_append(GTK_MENU_SHELL(preferencesmenu), writefile);
@@ -199,6 +204,11 @@ void set_preferences(void)
         language = i;
     else
         language = LANG_FI;
+
+    error = NULL;
+    if (g_key_file_get_boolean(keyfile, "preferences", "advertise", &error) || error) {
+        gtk_menu_item_activate(GTK_MENU_ITEM(advertise));
+    }
 }
 
 gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param)
@@ -213,6 +223,8 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
 
     change_menu_label(node_ip,      _("Communication node"));
     change_menu_label(my_ip,        _("Own IP addresses"));
+
+    change_menu_label(advertise,    "Advertise addresses");
 
     change_menu_label(manual,       _("Manual"));
     change_menu_label(about,        _("About"));

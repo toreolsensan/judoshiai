@@ -8,6 +8,8 @@
 #ifndef _JUDOJUDOGI_H_
 #define _JUDOJUDOGI_H_
 
+#include <netinet/in.h>
+
 #include "comm.h"
 
 #ifdef ENABLE_NLS
@@ -116,5 +118,7 @@ extern void pic_button_released(gint x, gint y);
 extern GtkWidget *create_html_page(void);
 extern void set_html_url(struct in_addr addr);
 extern void send_mask(gint x1, gint y1, gint x2, gint y2);
+
+extern void toggle_advertise(GtkWidget *menu_item, gpointer data);
 
 #endif

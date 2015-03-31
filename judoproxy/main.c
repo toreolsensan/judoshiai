@@ -115,6 +115,7 @@ static GdkColor color_yellow, color_white, color_grey, color_green, color_darkgr
     color_blue, color_red, color_darkred, color_black;
 gboolean       connections_updated = FALSE;
 GtkWidget     *notebook;
+gboolean       advertise_addr = FALSE;
 
 #define MY_FONT "Arial"
 
@@ -591,8 +592,7 @@ int main( int   argc,
     gtk_grid_attach_next_to(GTK_GRID(main_vbox), GTK_WIDGET(html_page), NULL, GTK_POS_BOTTOM, 1, 1);
 
     /* Video display */
-    //camera_image = gtk_image_new();
-    camera_image = gtk_image_new_from_file("/home/hjokinen/koe.png");
+    camera_image = gtk_image_new();
     gtk_widget_set_size_request(GTK_WIDGET(camera_image), 640, 360);
 
     GtkWidget *event_box = gtk_event_box_new();
@@ -1094,15 +1094,17 @@ gpointer proxy_ssdp_thread(gpointer args)
 		    iface[i].ssdp_msg_len = strlen(iface[i].ssdp_msg);
 		}
 
-                ret = sendto(iface[i].fdout, iface[i].ssdp_msg,
-			     iface[i].ssdp_msg_len, 0,
-                             (struct sockaddr*) &name_out,
-                             sizeof(struct sockaddr_in));
+		if (advertise_addr) {
+		    ret = sendto(iface[i].fdout, iface[i].ssdp_msg,
+				 iface[i].ssdp_msg_len, 0,
+				 (struct sockaddr*) &name_out,
+				 sizeof(struct sockaddr_in));
 
-                //g_print("SSDP %s REQ SEND by timeout\n\n", APPLICATION);
-                if (ret != iface[i].ssdp_msg_len) {
-                    perror("SSDP send req");
-                }
+		    //g_print("SSDP %s REQ SEND by timeout\n\n", APPLICATION);
+		    if (ret != iface[i].ssdp_msg_len) {
+			perror("SSDP send req");
+		    }
+		}
             } // for
         }
     } // eternal for
@@ -1321,4 +1323,10 @@ static gpointer connection_thread(gpointer args)
     g_print("CONNECT OUT!\n");
     g_thread_exit(NULL);    /* not required just good pratice */
     return NULL;
+}
+
+void toggle_advertise(GtkWidget *menu_item, gpointer data)
+{
+    advertise_addr = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item));
+    g_key_file_set_boolean(keyfile, "preferences", "advertise", advertise_addr);
 }
