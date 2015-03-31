@@ -992,28 +992,28 @@ void voting_result(GtkWidget *w,
             set_text(MY_LABEL(comment), _("White won the voting"));
         else
             set_text(MY_LABEL(comment), _("Blue won the voting"));
-        blue_wins_voting = TRUE;
+	blue_wins_voting = TRUE;
         break;
     case HANTEI_WHITE:
         if (white_first)
             set_text(MY_LABEL(comment), _("Blue won the voting"));
         else
             set_text(MY_LABEL(comment), _("White won the voting"));
-        white_wins_voting = TRUE;
+	white_wins_voting = TRUE;
         break;
     case HANSOKUMAKE_BLUE:
         if (white_first)
             set_text(MY_LABEL(comment), _("Hansokumake to white"));
         else
             set_text(MY_LABEL(comment), _("Hansokumake to blue"));
-        hansokumake_to_blue = TRUE;
+	hansokumake_to_blue = TRUE;
         break;
     case HANSOKUMAKE_WHITE:
         if (white_first)
             set_text(MY_LABEL(comment), _("Hansokumake to blue"));
         else
             set_text(MY_LABEL(comment), _("Hansokumake to white"));
-        hansokumake_to_white = TRUE;
+	hansokumake_to_white = TRUE;
         break;
     case HIKIWAKE:
         set_text(MY_LABEL(comment), _("Hikiwake"));
@@ -2169,6 +2169,8 @@ void toggle_whitefirst(GtkWidget *menu_item, gpointer data)
     white_first = GTK_CHECK_MENU_ITEM(menu_item)->active;
 #endif
     g_key_file_set_boolean(keyfile, "preferences", "whitefirst", white_first);
+
+    set_menu_white_first( white_first );
     set_colors();
     init_display();
 }

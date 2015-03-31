@@ -1498,6 +1498,8 @@ void clock_key(guint key, guint event_state)
         }
         break;
     case GDK_F5:
+	if ((st[0].whitepts[0] & 2) && !shift)
+	    break;
         incdecpts(&st[0].whitepts[0], shift);
         if (rules_no_koka_dsp) {
             incdecpts(&st[0].whitepts[0], shift);
@@ -1560,6 +1562,8 @@ void clock_key(guint key, guint event_state)
         }
         break;
     case GDK_F1:
+	if ((st[0].bluepts[0] & 2) && !shift)
+	    break;
         incdecpts(&st[0].bluepts[0], shift);
         if (rules_no_koka_dsp) {
             incdecpts(&st[0].bluepts[0], shift);

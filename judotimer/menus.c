@@ -888,6 +888,24 @@ void set_preferences(void)
     set_ssdp_id();
 }
 
+extern void set_menu_white_first(gboolean flag)
+{
+    if (flag) {
+        change_menu_label(blue_wins,         _("Hantei: white wins"));
+        change_menu_label(white_wins,        _("Hantei: blue wins"));
+    } else {
+        change_menu_label(blue_wins,         _("Hantei: blue wins"));
+        change_menu_label(white_wins,        _("Hantei: white wins"));
+    }
+    if (flag) {
+        change_menu_label(hansokumake_blue,  _("Hansoku-make to white"));
+        change_menu_label(hansokumake_white, _("Hansoku-make to blue"));
+    } else {
+        change_menu_label(hansokumake_blue,  _("Hansoku-make to blue"));
+        change_menu_label(hansokumake_white, _("Hansoku-make to white"));
+    }
+}
+
 extern gchar *menu_text_with_dots(gchar *text);
 gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param)
 {
@@ -907,20 +925,8 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(match5, _("Contest duration: 5 min"));
     change_menu_label(gs,     menu_text_with_dots(_("Golden Score")));
 
-    if (white_first) {
-        change_menu_label(blue_wins,         _("Hantei: white wins"));
-        change_menu_label(white_wins,        _("Hantei: blue wins"));
-    } else {
-        change_menu_label(blue_wins,         _("Hantei: blue wins"));
-        change_menu_label(white_wins,        _("Hantei: white wins"));
-    }
-    if (white_first) {
-        change_menu_label(hansokumake_blue,  _("Hansoku-make to white"));
-        change_menu_label(hansokumake_white, _("Hansoku-make to blue"));
-    } else {
-        change_menu_label(hansokumake_blue,  _("Hansoku-make to blue"));
-        change_menu_label(hansokumake_white, _("Hansoku-make to white"));
-    }
+    set_menu_white_first( white_first );
+
     change_menu_label(hikiwake,          _("Hikiwake"));
     change_menu_label(clear_selection,   _("Clear selection"));
     change_menu_label(switch_sides,      _("Switch sides"));

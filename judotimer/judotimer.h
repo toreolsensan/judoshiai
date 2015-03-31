@@ -236,4 +236,6 @@ extern void tvlogo_send_new_frame(gchar *frame, gint length);
 #define ACTIVE (mode != MODE_SLAVE)
 extern void set_menu_active(void);
 
+extern void set_menu_white_first(gboolean flag);
+
 #endif
