@@ -60,13 +60,13 @@ static gboolean big_dialog = FALSE;
 static gchar big_text[40];
 static time_t big_end;
 
-gboolean rules_no_koka_dsp = FALSE;
+gboolean rules_no_koka_dsp = TRUE;
 gboolean rules_leave_score = FALSE;
 gboolean rules_stop_ippon_2 = FALSE;
 gboolean rules_confirm_match = FALSE;
 GdkCursor *cursor = NULL;
 gboolean sides_switched = FALSE;
-gboolean white_first = FALSE;
+gboolean white_first = TRUE;
 gboolean fullscreen = FALSE;
 gboolean menu_hidden = FALSE;
 gboolean supports_alpha = FALSE;
@@ -2074,9 +2074,9 @@ void toggle_full_screen(GtkWidget *menu_item, gpointer data)
 void toggle_rules_no_koka(GtkWidget *menu_item, gpointer data)
 {
 #if (GTKVER == 3)
-    if (gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item))) {
+    if (TRUE || gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item))) {
 #else
-    if (GTK_CHECK_MENU_ITEM(menu_item)->active) {
+    if (TRUE || GTK_CHECK_MENU_ITEM(menu_item)->active) {
 #endif
         rules_no_koka_dsp = TRUE;
         set_text(MY_LABEL(wazaari), "I");
@@ -2163,11 +2163,14 @@ void toggle_confirm_match(GtkWidget *menu_item, gpointer data)
 
 void toggle_whitefirst(GtkWidget *menu_item, gpointer data)
 {
+#if 0
 #if (GTKVER == 3)
     white_first = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item));
 #else
     white_first = GTK_CHECK_MENU_ITEM(menu_item)->active;
 #endif
+#endif
+    white_first = TRUE;
     g_key_file_set_boolean(keyfile, "preferences", "whitefirst", white_first);
 
     set_menu_white_first( white_first );

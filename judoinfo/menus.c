@@ -244,7 +244,7 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
                      G_CALLBACK(toggle_mirror), 0);
 
     whitefirst = gtk_check_menu_item_new_with_label("");
-    gtk_menu_shell_append(GTK_MENU_SHELL(preferencesmenu), whitefirst);
+    //gtk_menu_shell_append(GTK_MENU_SHELL(preferencesmenu), whitefirst);
     g_signal_connect(G_OBJECT(whitefirst), "activate",
                      G_CALLBACK(toggle_whitefirst), 0);
 

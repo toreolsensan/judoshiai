@@ -484,14 +484,14 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
 
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), red_background);
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), full_screen);
-    gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), rules_no_koka);
+    //gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), rules_no_koka);
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), rules_leave_points);
     //gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), rules_no_free_shido);
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), rules_eq_score_less_shido_wins);
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), rules_short_pin_times);
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), rules_stop_ippon);
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), confirm_match);
-    gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), whitefirst);
+    //gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), whitefirst);
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), showcomp);
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), judogi_control);
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), gtk_separator_menu_item_new());

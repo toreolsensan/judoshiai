@@ -53,7 +53,7 @@ gint           language = LANG_EN;
 gint           num_lines = NUM_LINES;
 gint           display_type = NORMAL_DISPLAY;
 gboolean       mirror_display = FALSE;
-gboolean       white_first = FALSE;
+gboolean       white_first = TRUE;
 gboolean       red_background = FALSE;
 gboolean       menu_hidden = FALSE;
 gchar         *filename = NULL;
@@ -629,9 +629,9 @@ void toggle_mirror(GtkWidget *menu_item, gpointer data)
 void toggle_whitefirst(GtkWidget *menu_item, gpointer data)
 {
 #if (GTKVER == 3)
-    if (gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item))) {
+    if (TRUE || gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item))) {
 #else
-    if (GTK_CHECK_MENU_ITEM(menu_item)->active) {
+    if (TRUE || GTK_CHECK_MENU_ITEM(menu_item)->active) {
 #endif
         white_first = TRUE;
         g_key_file_set_boolean(keyfile, "preferences", "whitefirst", TRUE);
