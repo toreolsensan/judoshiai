@@ -1085,7 +1085,7 @@ static void paint_weight_notes(struct paint_data *pd, gint what, gint page)
                         d += sprintf(buf + d, "%s", yob);
                     else if (IS_STR("%GRADE%")) {
                         gint belt = atoi(grade);
-                        if (belt < 0 || belt > 20)
+                        if (belt < 0 || belt >= NUM_BELTS)
                             belt = 0;
                         d += sprintf(buf + d, "%s", belts[belt]);
                     } else if (IS_STR("%ID%")) {
