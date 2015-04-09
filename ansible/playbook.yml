@@ -49,7 +49,7 @@
     git: repo=https://github.com/toreolsensan/judoshiai.git version=master dest=~/judoshiai-code accept_hostkey=yes
  
   - name: Skip doc build on raspberry pi
-    lineinfile: dest=judoshiai-code/Makefile regexp="{{ item }}" state=absent
+    lineinfile: dest=~/judoshiai-code/Makefile regexp="{{ item }}" state=absent
     with_items:
     - '^\tmake -C doc$'
     - '^\tcp doc/\*.pdf.*$'
@@ -58,8 +58,8 @@
   - name: Build judoshiai binaries
     command: make {{ judoshiai_make_args }}
     args:
-      chdir: judoshiai-code
-      creates: js-build/release-linux/judoshiai/bin/judoshiai
+      chdir: ~/judoshiai-code
+      creates: ~/js-build/release-linux/judoshiai/bin/judoshiai
 
   handlers:
     - name: reboot
