@@ -1,0 +1,67 @@
+---
+- hosts: all
+
+  tasks:
+  - name: apt update
+    apt: update_cache=yes
+    sudo: yes
+
+  - name: Install packages
+    apt: name={{ item }} state=present
+    sudo: yes
+    with_items:
+    - gnome-devel
+    - bison
+    - flex
+    - checkinstall
+    - librsvg2-dev
+    - libmpg123-dev
+    - libcurl4-openssl-dev
+    - git
+
+  - name: Install packages for camera support
+    apt: name={{ item }} state=present
+    sudo: yes
+    with_items:
+    - libao-dev
+    - libavformat-dev
+    - libswscale-dev
+    - libmp3lame-dev
+    - libx264-dev
+    - liblzma-dev
+    - libfdk-aac-dev
+    - libavresample-dev
+    when: "'raspberrypi' not in group_names"
+  
+  - name: Install Gnome desktop
+    apt: name=ubuntu-gnome-desktop state=present
+    sudo: yes
+    notify: reboot
+    when: "'raspberrypi' not in group_names"
+
+  - name: Install Virtualbox guest utils
+    apt: name=virtualbox-guest-utils state=present
+    sudo: yes
+    notify: reboot
+    when: "'raspberrypi' not in group_names"
+
+  - name: Clone git repo
+    git: repo=https://github.com/toreolsensan/judoshiai.git version=master dest=~/judoshiai-code accept_hostkey=yes
+ 
+  - name: Skip doc build on raspberry pi
+    lineinfile: dest=judoshiai-code/Makefile regexp="{{ item }}" state=absent
+    with_items:
+    - '^\tmake -C doc$'
+    - '^\tcp doc/\*.pdf.*$'
+    when: "'raspberrypi' in group_names"
+  
+  - name: Build judoshiai binaries
+    command: make {{ judoshiai_make_args }}
+    args:
+      chdir: judoshiai-code
+      creates: js-build/release-linux/judoshiai/bin/judoshiai
+
+  handlers:
+    - name: reboot
+      command: /sbin/reboot
+      sudo: yes
