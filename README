@@ -27,6 +27,11 @@ Next some libraries:
 
 $ sudo apt-get install librsvg2-dev libao-dev libmpg123-dev libcurl4-openssl-dev
 
+For judoproxy:
+
+$ sudo apt-get install libavcodec-dev libavformat-dev libavresample-dev libavutil-dev libswscale-dev
+$ sudo apt-get install liblzma-dev
+
 JudoShiai is under GIT in Sourceforge:
 
 $ sudo apt-get install git
@@ -64,11 +69,11 @@ any package. Many DLL's have incompatible versions around and finding the correc
 may take time. To make life easier you can fetch a ready made set of Windows software.
 Get it using command line or your favorite browser:
 
-$ wget http://judoshiai.sourceforge.net/win32.tar.gz
+$ wget http://judoshiai.sourceforge.net/win32-gtk3.tgz
 
 Extract it under the /opt directory:
 
-$ sudo tar xvzf win32.tar.gz -C /opt
+$ sudo tar xvzf win32-gtk3.tgz -C /opt
 
 Start cross compilation:
 
