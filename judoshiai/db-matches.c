@@ -885,6 +885,14 @@ void db_set_score(gint category, gint number, gint score, gboolean is_blue)
                 category, number);
 }
 
+void db_set_time(gint category, gint number, gint tim)
+{
+    db_exec_str(NULL, db_callback_matches,
+                "UPDATE matches SET \"time\"=%d "
+                "WHERE \"category\"=%d AND \"number\"=%d",
+                tim, category, number);
+}
+
 void db_reset_last_match_times(gint category, gint number, gboolean blue, gboolean white)
 {
     gint x = 0;
