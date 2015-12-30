@@ -90,6 +90,11 @@ static struct {
 //static volatile gint msg_put = 0, msg_get = 0;
 //static GStaticMutex msg_mutex = G_STATIC_MUTEX_INIT;
 
+struct message *get_next_match_msg(int tatami)
+{
+    return &next_match_messages[tatami-1];
+}
+
 void send_info_packet(struct message *msg)
 {
     gint i;
@@ -794,7 +799,8 @@ gpointer node_thread(gpointer args)
                     }
                 }
             } else {
-                g_print("Node: connection %d fd=%d closed\n", i, connections[i].fd);
+                g_print("Node: connection %d fd=%d closed (r=%d, err=%s)\n",
+			i, connections[i].fd, r, strerror(errno));
                 closesocket(connections[i].fd);
                 FD_CLR(connections[i].fd, &read_fd);
                 connections[i].fd = 0;
