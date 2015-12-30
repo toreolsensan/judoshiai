@@ -2988,6 +2988,20 @@ void select_display_layout(GtkWidget *menu_item, gpointer data)
 			p = fname;
 		    }
 		    background_image = cairo_image_surface_create_from_png(p);
+
+		    switch (cairo_surface_status(background_image)) {
+		    case CAIRO_STATUS_NO_MEMORY:
+		    case CAIRO_STATUS_FILE_NOT_FOUND:
+		    case CAIRO_STATUS_READ_ERROR:
+			g_print("background_image %s read error %d\n", p,
+				cairo_surface_status(background_image));
+			cairo_surface_destroy(background_image);
+			background_image = NULL;
+			break;
+		    default:
+			;
+		    }
+
 		    if (fname)
 			g_free(fname);
 		} else
