@@ -8,6 +8,10 @@
 #ifndef _JUDOINFO_H_
 #define _JUDOINFO_H_
 
+#ifdef EMSCRIPTEN
+#include "cairowrapper.h"
+#endif
+
 #include "comm.h"
 
 #ifdef ENABLE_NLS
