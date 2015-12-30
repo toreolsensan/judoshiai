@@ -627,7 +627,7 @@ static void paint_pool(struct paint_data *pd, gint category, struct judoka *ctg,
         num_judokas = 4;
 
     if (pm.finished)
-        get_pool_winner(num_judokas, pm.c, pm.yes, pm.wins, pm.pts, pm.mw, pm.j, pm.all_matched, pm.tie);
+        get_pool_winner(num_judokas, pm.c, pm.yes, pm.wins, pm.pts, pm.tim, pm.mw, pm.j, pm.all_matched, pm.tie);
 
     /* competitor table */
     judoka_table.position_y = judoka_2_table.position_y = POOL_JUDOKAS_Y;
@@ -812,7 +812,7 @@ static void paint_pool_2(struct paint_data *pd, gint category, struct judoka *ct
     fill_pool_struct(category, num_judokas, &pm, FALSE);
 
     if (pm.finished)
-        get_pool_winner(num_judokas, pm.c, pm.yes, pm.wins, pm.pts, pm.mw, pm.j, pm.all_matched, pm.tie);
+        get_pool_winner(num_judokas, pm.c, pm.yes, pm.wins, pm.pts, pm.tim, pm.mw, pm.j, pm.all_matched, pm.tie);
 
     pool_table_2.position_x = POOL_JUDOKAS_X;
     pool_table_2.position_y = POOL_JUDOKAS_Y;
@@ -1233,8 +1233,8 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
             yes_b[i] = TRUE;
     }
     
-    get_pool_winner(num_pool_a, c_a, yes_a, pm.wins, pm.pts, pm.mw, pm.j, pm.all_matched, pm.tie);
-    get_pool_winner(num_pool_b, c_b, yes_b, pm.wins, pm.pts, pm.mw, pm.j, pm.all_matched, pm.tie);
+    get_pool_winner(num_pool_a, c_a, yes_a, pm.wins, pm.pts, pm.tim, pm.mw, pm.j, pm.all_matched, pm.tie);
+    get_pool_winner(num_pool_b, c_b, yes_b, pm.wins, pm.pts, pm.tim, pm.mw, pm.j, pm.all_matched, pm.tie);
 
     if (page1) {
         win_table.position_y = pos_judoka_a;
@@ -1426,7 +1426,8 @@ static void paint_qpool(struct paint_data *pd, gint category, struct judoka *ctg
                 }
             }
     
-            get_pool_winner(pool_size[pool], c[pool], yes[pool], pm.wins, pm.pts, pm.mw, pm.j, pm.all_matched, pm.tie);
+            get_pool_winner(pool_size[pool], c[pool], yes[pool], pm.wins, pm.pts, pm.tim,
+			    pm.mw, pm.j, pm.all_matched, pm.tie);
             gboolean pool_done = pool_finished(num_judokas, num_matches(pd->systm.system, num_judokas), 
                                                SYSTEM_QPOOL, yes[pool], &pm);
 

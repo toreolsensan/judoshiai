@@ -474,6 +474,7 @@ enum {
     PROP_DEFAULT_CAT_6,
     PROP_DPOOL2_WITH_CARRIED_FORWARD_POINTS,
     PROP_TWO_POOL_BRONZES,
+    PROP_RESOLVE_3_WAY_TIES_BY_TIME,
     PROP_RESOLVE_3_WAY_TIES_BY_WEIGHTS,
     PROP_GRADE_NAMES,
     NUM_PROPERTIES
@@ -526,7 +527,7 @@ struct match {
 };
 
 struct pool_matches {
-    gint c[21], wins[21], pts[21], mw[21][21];
+    gint c[21], wins[21], pts[21], tim[21], mw[21][21];
     struct match m[64];
     struct judoka *j[21];
     gboolean yes[21];
@@ -930,6 +931,7 @@ extern void db_remove_matches(guint category);
 extern void db_set_points(gint category, gint number, gint minutes,
                           gint blue, gint white, gint blue_score, gint white_score, gint legend);
 extern void db_set_score(gint category, gint number, gint score, gboolean is_blue);
+extern void db_set_time(gint category, gint number, gint tim);
 extern void db_read_match(gint category, gint number);
 extern void db_read_matches_of_category(gint category);
 extern struct match *db_next_match(gint category, gint tatami);
@@ -1037,7 +1039,7 @@ extern void empty_pool_struct(struct pool_matches *pm);
 extern void set_competitor_position(gint ix, gint status);
 extern void write_competitor_positions(void);
 extern void get_pool_winner(gint num, gint c[21], gboolean yes[21],
-                            gint wins[21], gint pts[21],
+                            gint wins[21], gint pts[21], gint match_time[21],
                             gboolean mw[21][21], struct judoka *ju[21], gboolean all_matched[21], gboolean tie[21]);
 extern void update_competitors_categories(gint competitor);
 extern void set_points_and_score(struct message *msg);
@@ -1102,6 +1104,7 @@ extern gulong get_my_address();
 extern gint nodescan(guint network);
 extern void show_node_connections(GtkWidget *w, gpointer data);
 extern void copy_packet(struct message *msg);
+extern struct message *get_next_match_msg(int tatami);
 
 /* ip */
 extern void ask_node_ip_address( GtkWidget *w, gpointer data);
