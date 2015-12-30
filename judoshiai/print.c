@@ -1882,6 +1882,7 @@ void do_print(GtkWidget *menuitem, gpointer userdata)
 
     gtk_print_operation_set_use_full_page(print, FALSE);
     gtk_print_operation_set_unit(print, GTK_UNIT_POINTS);
+    gtk_print_operation_set_allow_async(print, TRUE);
 
     /*res = */gtk_print_operation_run(print,
                                       ptr_to_gint(userdata) & PRINT_TO_DEFAULT ? 
