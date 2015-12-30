@@ -2655,6 +2655,9 @@ void select_display_layout(GtkWidget *menu_item, gpointer data)
 		    p1 = strchr(p, '\n');
 		    if (p1) *p1 = 0;
 
+		    if (strncmp(p, "../etc/", 7) == 0)
+			p += 7;
+
 		    emscripten_async_wget(p, "custombg.png", custombgonload, menupiconerror);
 		} else
 		    g_print("Read error in file %s, num = %d\n", custom_layout_file, num);
