@@ -1918,6 +1918,7 @@ int main( int   argc,
 #endif
     main_window = window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(main_window), "JudoTimer");
+    gtk_widget_set_name(main_window, "JudoTimerMain");
     //gtk_widget_set_size_request(window, FRAME_WIDTH, FRAME_HEIGHT);
     gtk_window_resize(GTK_WINDOW(main_window), FRAME_WIDTH, FRAME_HEIGHT);  //w7 bug.
 
