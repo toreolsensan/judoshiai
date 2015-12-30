@@ -21,6 +21,8 @@ all:
 ifeq ($(JUDOPROXY),YES)
 	make -C judoproxy
 endif
+	make -C emscripten/judotimer
+	make -C emscripten/judoinfo
 	make -C doc
 	rm -rf $(RELDIR)
 	mkdir -p $(RELDIR)/bin
@@ -108,6 +110,8 @@ endif
 	cp etc/*.svg $(RELDIR)/etc/
 	cp etc/*.html $(RELDIR)/etc/
 	cp etc/*.js $(RELDIR)/etc/
+	cp etc/*.js.mem $(RELDIR)/etc/
+	cp etc/*.ttf $(RELDIR)/etc/
 	cp etc/result-texts-*.txt $(RELDIR)/etc/
 	cp -r etc/flags-ioc $(RELDIR)/etc/
 	cp licenses/* $(RELDIR)/licenses
