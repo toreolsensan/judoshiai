@@ -545,6 +545,8 @@ void send_html_top(http_parser_t *parser, gchar *bodyattr)
     sendf(s, "HTTP/1.0 200 OK\r\n");
     sendf(s, "Content-Type: text/html; charset=utf-8\r\n\r\n");
     sendf(s, "<html><head>"
+	  "<meta name=\"viewport\" content=\"width=device-width, "
+	  "target-densitydpi=device-dpi\">\r\n"
 	  "<link rel=\"stylesheet\" type=\"text/css\" href=\"bootstrap.css\">"
 	  "<link rel=\"stylesheet\" type=\"text/css\" href=\"jquery.treetable.theme.default.css\" />\r\n"
 	  "<link rel=\"stylesheet\" type=\"text/css\" href=\"jquery.treetable.css\" />\r\n"
