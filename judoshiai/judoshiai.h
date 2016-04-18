@@ -727,6 +727,7 @@ extern gint language;
 extern gchar *use_logo;
 extern gboolean print_headers;
 
+extern GtkWidget     *notebook;
 extern gchar          current_directory[1024];
 extern gchar          database_name[200];
 extern gchar          logfile_name[200];
