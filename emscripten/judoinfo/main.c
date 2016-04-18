@@ -684,7 +684,7 @@ void EMSCRIPTEN_KEEPALIVE main_loop(void)
 
     timeout_ask_for_data(NULL);
 
-    if (now > graph_update) {
+    if (now > graph_update+2) {
 	graph_update = now;
 	emscripten_async_wget_data("matchinfo?t=0", NULL, onloadabstract, onerror);
     }

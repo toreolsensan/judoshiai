@@ -117,6 +117,7 @@ extern gboolean clocks_only;
 extern gboolean short_pin_times;
 extern gint language;
 extern gboolean rest_time;
+extern gint rest_flags;
 extern gint current_category, current_match, current_gs_time;
 extern gboolean sides_switched;
 extern gboolean white_first;

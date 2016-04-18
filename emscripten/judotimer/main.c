@@ -36,7 +36,7 @@ static void show_menu(void);
 void textbox(int x1, int y1, int w1, int h1, const char *txt);
 void checkbox(int x1, int y1, int w1, int h1, int yes);
 static void set_colors(void);
-gboolean show_competitor_names = FALSE;
+gboolean show_competitor_names = TRUE;
 gboolean showletter = FALSE;
 
 struct stack_item stack[8];
@@ -96,7 +96,7 @@ static time_t big_end;
 
 gboolean rules_leave_score = TRUE;
 gboolean rules_stop_ippon_2 = FALSE;
-gboolean rules_confirm_match = FALSE;
+gboolean rules_confirm_match = TRUE;
 GdkCursor *cursor = NULL;
 gboolean sides_switched = FALSE;
 gboolean white_first = TRUE;
@@ -391,6 +391,14 @@ CBFUNC(lower_box)
     return FALSE;
 }
 
+CBFUNC(rest_time_box)
+{
+    return FALSE;
+}
+CBFUNC(rest_ind_box)
+{
+    return FALSE;
+}
 
 
 /* globals */
@@ -415,6 +423,7 @@ static gint o_tsec, o_sec, padding, sonomama;
 static gint points, comment, cat1, cat2, gs;
 static gint pts_to_blue, pts_to_white, flag_blue, flag_white;
 static gint ask_box, yes_box, no_box, ok_box, upper_box, middle_box, lower_box;
+static gint rest_time_box, rest_ind_box;
 
 static GdkColor color_yellow, color_white, color_grey, color_green, color_blue, color_red, color_black;
 static GdkColor *bgcolor = &color_blue, bgcolor_pts, bgcolor_points;
@@ -684,6 +693,24 @@ void set_timer_value(guint min, guint tsec, guint sec)
     expose_label(NULL, t_sec);
 
     update_tvlogo = TRUE;
+
+    if (labels[rest_time_box].hide == 0) {
+	char buf[8];
+	snprintf(buf, sizeof(buf), "%d:%d%d",
+		 min, tsec, sec);
+	set_text(rest_time_box, buf);
+	expose_label(NULL, rest_time_box);
+
+	if (sec & 1) {
+	    if (rest_flags & MATCH_FLAG_BLUE_REST)
+		set_bg_color(rest_ind_box, 0, &color_white);
+	    else
+		set_bg_color(rest_ind_box, 0, &color_blue);
+	} else
+	    set_bg_color(rest_ind_box, 0, &color_black);
+
+	expose_label(NULL, rest_ind_box);
+    }
 }
 
 void set_osaekomi_value(guint tsec, guint sec)
@@ -1035,7 +1062,7 @@ static void show_big(void)
     SDL_Rect rect;
 
     /* Show dialog */
-    if (labels[ask_box].hide == 0)
+    if (labels[ask_box].hide == 0 || labels[upper_box].hide == 0)
 	return;
 
     rect.x = rect.y = 0;
@@ -1945,6 +1972,8 @@ int EMSCRIPTEN_KEEPALIVE main()
     GET_LABEL(yes_box, "YES", 305, 0, 100, 50);
     GET_LABEL(no_box, "NO", 410, 0, 100, 50);
     GET_LABEL(ok_box, "OK", 0, 0, 1000, 50);
+    GET_LABEL(rest_time_box, "", 700, 33, 300, 267);
+    GET_LABEL(rest_ind_box, "", 600, 33, 90, 267);
     labels[ask_box].hide = 1;
     labels[yes_box].hide = 1;
     labels[no_box].hide = 1;
@@ -1952,6 +1981,13 @@ int EMSCRIPTEN_KEEPALIVE main()
     labels[upper_box].hide = 1;
     labels[middle_box].hide = 1;
     labels[lower_box].hide = 1;
+    labels[rest_time_box].hide = 1;
+    labels[rest_ind_box].hide = 1;
+
+    fg = color_red;
+    bg = color_black;
+    SET_COLOR(rest_time_box);
+    SET_COLOR(rest_ind_box);
 
     fg = color_white;
     gdk_color_parse(127, 127, 127, &bg);
@@ -2930,10 +2966,19 @@ void display_comp_window(gchar *cat, gchar *comp1, gchar *comp2,
     set_bg_color(lower_box, 0, bgcolor);
     labels[lower_box].xalign = -1;
 
+    labels[t_min].hide = 1;
+    labels[t_tsec].hide = 1;
+    labels[t_sec].hide = 1;
+
     labels[upper_box].hide = 0;
     labels[middle_box].hide = 0;
     labels[lower_box].hide = 0;
     labels[ok_box].hide = 0;
+
+    if (rest_time) {
+	labels[rest_time_box].hide = 0;
+	labels[rest_ind_box].hide = 0;
+    }
 
     expose();
 #if 0
@@ -2954,6 +2999,13 @@ void delete_comp_window(void)
     labels[middle_box].hide = 1;
     labels[lower_box].hide = 1;
     labels[ok_box].hide = 1;
+    labels[rest_time_box].hide = 1;
+    labels[rest_ind_box].hide = 1;
+
+    labels[t_min].hide = 0;
+    labels[t_tsec].hide = 0;
+    labels[t_sec].hide = 0;
+
     expose();
 }
 

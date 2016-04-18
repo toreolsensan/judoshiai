@@ -91,7 +91,7 @@ gboolean         automatic;
 gboolean         short_pin_times = FALSE;
 gboolean         golden_score = FALSE;
 gboolean         rest_time = FALSE;
-static gint      rest_flags = 0;
+gint             rest_flags = 0;
 gchar           *matchlist = NULL;
 static gint      gs_cat = 0, gs_num = 0;
 gboolean         require_judogi_ok = FALSE;
