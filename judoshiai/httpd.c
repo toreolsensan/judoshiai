@@ -1366,6 +1366,90 @@ void cancel_rest(http_parser_t *parser, gchar *txt)
     put_to_rec_queue(&msg);
 }
 
+void get_judoshiai(http_parser_t *parser, gchar *txt)
+{
+    SOCKET s = parser->sock;
+    int t = 0, x = 0, y = 0;
+    static gint tab = 0;
+    const char *tmp;
+    struct message msg;
+
+    tmp = httpp_get_query_param(parser, "x");
+    if (tmp) x = atoi(tmp);
+    tmp = httpp_get_query_param(parser, "y");
+    if (tmp) y = atoi(tmp);
+    g_print("tab=%d x=%d y=%d\n", tab, x, y);
+
+    if (y > 44 && y < 76) {
+	t = (x-14)/125;
+	if (t != tab) {
+	    x = y = 0;
+	    memset(&msg, 0, sizeof(msg));
+	    msg.type = MSG_EVENT;
+	    msg.u.event.event = MSG_EVENT_SELECT_TAB;
+	    msg.u.event.tab = t;
+	    struct message *msg2 = put_to_rec_queue(&msg);
+	    time_t start = time(NULL);
+	    while ((time(NULL) < start + 5) && (msg2->type != 0))
+		g_usleep(10000);
+
+	    tab = t;
+	}
+    } else if (tab == 0 && y > 77) {
+	    memset(&msg, 0, sizeof(msg));
+	    msg.type = MSG_EVENT;
+	    msg.u.event.event = MSG_EVENT_CLICK_COMP;
+	    msg.u.event.x = x - 25;
+	    msg.u.event.y = y - 110;
+	    struct message *msg2 = put_to_rec_queue(&msg);
+	    time_t start = time(NULL);
+	    while ((time(NULL) < start + 5) && (msg2->type != 0))
+		g_usleep(10000);
+    } else if (tab == 1) {
+	    memset(&msg, 0, sizeof(msg));
+	    msg.type = MSG_EVENT;
+	    msg.u.event.event = MSG_EVENT_CLICK_SHEET;
+	    msg.u.event.x = x - 14;
+	    msg.u.event.y = y - 77;
+	    struct message *msg2 = put_to_rec_queue(&msg);
+	    time_t start = time(NULL);
+	    while ((time(NULL) < start + 5) && (msg2->type != 0))
+		g_usleep(10000);
+    }
+
+    g_usleep(200000);
+
+    /* Take a snapshot. */
+    gchar buf[128];
+    snprintf(buf, sizeof(buf),
+	     "import -window '%s' /tmp/js.png",
+	     gtk_window_get_title(GTK_WINDOW(main_window)));
+    system(buf);
+
+    send_html_top(parser, "");
+    sendf(s,
+	  "<form action=\"judoshiai\">\r\n"
+	  "<input type=\"image\" id=\"jsImg\" src=\"js.png\" alt=\"Submit\" />\r\n"
+	  "</form>\r\n", t);
+    send_html_bottom(parser);
+}
+
+void get_js_png(http_parser_t *parser, gchar *txt)
+{
+    gchar *img;
+    gsize len;
+    SOCKET s = parser->sock;
+
+    if (g_file_get_contents("/tmp/js.png", &img, &len, NULL)) {
+	sendf(s, "HTTP/1.0 200 OK\r\n");
+	sendf(s, "Content-Type: image/png\r\n\r\n");
+	mysend(s, img, len);
+	g_free(img);
+    } else {
+	sendf(s, "HTTP/1.0 404 NOK\r\n\r\n");
+    }
+}
+
 void get_next_match(http_parser_t *parser, gchar *txt)
 {
     SOCKET s = parser->sock;
@@ -1542,6 +1626,10 @@ gpointer analyze_http(gpointer param)
             cancel_rest(parser, "");
         else if (!strcmp(parser->uri, "/sqlcmd"))
             sql_cmd(parser, "");
+        else if (!strcmp(parser->uri, "/judoshiai"))
+            get_judoshiai(parser, "");
+        else if (!strcmp(parser->uri, "/js.png"))
+            get_js_png(parser, "");
         else if (!strcmp(parser->uri, "/index.html"))
             index_html(parser, "");
         else if (!strcmp(parser->uri, "/"))

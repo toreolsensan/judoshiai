@@ -90,6 +90,7 @@ enum message_types {
     MSG_EDIT_COMPETITOR,
     MSG_SCALE,
     MSG_11_MATCH_INFO,
+    MSG_EVENT,
     NUM_MESSAGES
 };
 
@@ -293,6 +294,16 @@ struct msg_scale {
     gint weight;
 };
 
+struct msg_event {
+#define MSG_EVENT_SELECT_TAB  1
+#define MSG_EVENT_CLICK_COMP  2
+#define MSG_EVENT_CLICK_SHEET 3
+    gint event;
+    gint tab;
+    gint x;
+    gint y;
+};
+
 struct message {
     long  src_ip_addr; // Source address of the packet. Added by the comm node (network byte order).
     char  type;
@@ -313,6 +324,7 @@ struct message {
         struct msg_edit_competitor edit_competitor;
         struct msg_scale       scale;
         struct msg_dummy       dummy;
+        struct msg_event       event;
     } u;
 };
 
