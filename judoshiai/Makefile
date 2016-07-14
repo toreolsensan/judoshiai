@@ -24,7 +24,8 @@ OBJS += $(OBJDIR)/main.o $(OBJDIR)/competitors.o $(OBJDIR)/sheets.o $(OBJDIR)/se
 	$(OBJDIR)/match-data.o $(OBJDIR)/serial.o \
 	$(OBJDIR)/basic.tab.o $(OBJDIR)/lex.yy.o $(OBJDIR)/medal-matches.o $(OBJDIR)/db-validate.o \
 	$(OBJDIR)/svg.o $(OBJDIR)/properties.o $(OBJDIR)/ftp.o $(OBJDIR)/language.o \
-	$(OBJDIR)/custom-category-parser.o $(OBJDIR)/custom-category.o $(OBJDIR)/custom-category-svg-template.o
+	$(OBJDIR)/custom-category-parser.o $(OBJDIR)/custom-category.o \
+	$(OBJDIR)/custom-category-svg-template.o $(OBJDIR)/common.o
 
 CFLAGS += -DAPPLICATION="\"judoshiai\""
 CFLAGS += -DAPP_NUM=1
@@ -65,7 +66,10 @@ $(OBJDIR)/serial.o: ../common/serial.c
 $(OBJDIR)/language.o: ../common/language.c
 	${CC} $(PROF) -g $(CFLAGS) -c $< -o $@
 
-$(OBJDIR)/%.o: %.c
+$(OBJDIR)/%.o: %.c judoshiai.h ../common/comm.h
+	${CC} $(PROF) -g $(CFLAGS) -c $< -o $@
+
+$(OBJDIR)/common.o: ../common/common.c
 	${CC} $(PROF) -g $(CFLAGS) -c $< -o $@
 
 lex.yy.c: basic.l basic.tab.h
@@ -76,4 +80,3 @@ basic.tab.c basic.tab.h: basic.y
 
 clean:
 	rm -f $(OBJDIR)/* *.res *.rc *~ lex.yy.c basic.tab.c basic.tab.h
-
