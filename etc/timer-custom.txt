@@ -110,6 +110,9 @@
 # Flag of the white palyer's country
 36 0.0 0.4   0.15 0.2   0.0   1   0.0   0.0   0.0  -1.0   1.0   1.0   0
 
+# Match type (round 1, repechage, semifinal, final)
+37 0.0 0.0   0.0 0.0   0.0   0   0.0   0.0   0.0  0.0   0.0   0.0   0
+
 # Screen background color: red, green, blue (0 - 1.0). Negative red = transparent.
 # This is usefull if texts do not cover all the areas.
 #100  0.0  1.0  0.0
