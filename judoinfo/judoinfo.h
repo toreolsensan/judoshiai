@@ -73,6 +73,7 @@ struct match {
     gint   blue;
     gint   white;
     gint   flags;
+    gint   round;
     time_t rest_end;
 };
 
@@ -99,7 +100,11 @@ extern void destroy( GtkWidget *widget, gpointer   data );
 extern void set_preferences(void);
 extern gulong host2net(gulong a);
 
+#ifdef EMSCRIPTEN
+extern gui_widget *get_menubar_menu(SDL_Surface *s);
+#else
 extern GtkWidget *get_menubar_menu(GtkWidget  *window);
+#endif
 extern gpointer client_thread(gpointer args);
 extern gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param);
 extern void ask_node_ip_address( GtkWidget *w, gpointer data);

@@ -230,12 +230,12 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
                 cairo_move_to(c, left+5+colwidth/2, y_pos+extents.height);
                 cairo_show_text(c, _("Category starts"));
                 cairo_restore(c);
-            }
-
-            if (m->flags) {
+	    } else if (m->round) {
                 cairo_save(c);
                 cairo_set_source_rgb(c, 0.0, 0.0, 1.0);
                 cairo_move_to(c, left+5+colwidth/2, y_pos+extents.height);
+		cairo_show_text(c, round_to_str(m->round));
+#if 0
                 if (m->flags & MATCH_FLAG_GOLD)
                     cairo_show_text(c, _("Gold medal match"));
                 else if (m->flags & MATCH_FLAG_BRONZE_A)
@@ -248,6 +248,7 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
                     cairo_show_text(c, _("Semifinal B"));
                 else if (m->flags & MATCH_FLAG_SILVER)
                     cairo_show_text(c, _("Silver medal match"));
+#endif
                 cairo_restore(c);
             }
             cairo_select_font_face(c, MY_FONT, 0, CAIRO_FONT_WEIGHT_BOLD);

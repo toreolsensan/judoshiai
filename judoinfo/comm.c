@@ -135,6 +135,7 @@ static void handle_info_msg(struct msg_match_info *input_msg)
     match_list[tatami][position].blue     = input_msg->blue;
     match_list[tatami][position].white    = input_msg->white;
     match_list[tatami][position].flags    = input_msg->flags;
+    match_list[tatami][position].round    = input_msg->round;
     match_list[tatami][position].rest_end = input_msg->rest_time + time(NULL);
 
     /***
