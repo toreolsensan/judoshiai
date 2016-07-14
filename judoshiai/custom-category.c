@@ -19,8 +19,6 @@
 #include "sqlite3.h"
 #include "judoshiai.h"
 
-static GtkTextBuffer *message_window(void);
-
 //#define LOG(_f...) custlog(_f)
 #define LOG(_f...) do { } while (0)
 
@@ -817,7 +815,7 @@ static void destroy_message( GtkWidget *widget,
 {
 }
 
-static GtkTextBuffer *message_window(void)
+GtkTextBuffer *message_window(void)
 {
     GtkTextBuffer *buffer;
     GtkWidget *vbox, *result, *ok;
