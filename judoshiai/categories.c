@@ -302,7 +302,7 @@ void locate_to_tatamis(GtkWidget *w, gpointer data)
 
 void update_category_status_info(gint category)
 {
-    db_category_match_status(category);
+    db_category_set_match_status(category);
 #if 0
     GtkTreeIter iter;
     gint weight;
@@ -342,20 +342,19 @@ void update_category_status_info_all(void)
                            -1);
 
         if (visible == 0) {
-            weight = db_category_match_status(index);
-#if 0			
+            db_category_set_match_status(index);
+#if 0
             gtk_tree_store_set(GTK_TREE_STORE(current_model), 
                                &iter,
                                COL_WEIGHT, weight,
                                -1);
-#endif
             struct category_data data, *data1;
             data.index = index;
             if (avl_get_by_key(categories_tree, &data, (void *)&data1) == 0) {
                 data1->match_status = weight;
             } else
                 g_print("Error %s %d (%d)\n", __FUNCTION__, __LINE__, index);
-
+#endif
             ok = gtk_tree_model_iter_next(current_model, &iter);
         } else
             g_print("ERROR: %s:%d\n", __FUNCTION__, __LINE__);
