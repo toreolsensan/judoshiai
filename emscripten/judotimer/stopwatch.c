@@ -386,10 +386,8 @@ void set_clocks(gint clock, gint osaekomi)
     else if (clock >= 0)
         st.elap = (gdouble)clock;
 
-    if (osaekomi) {
-        st.oElap = (gdouble)osaekomi;
-        st.oRunning = TRUE;
-    }
+    st.oElap = (gdouble)osaekomi;
+    st.oRunning = osaekomi != 0;
 
     update_display();
 }

@@ -176,7 +176,11 @@ extern void set_timer_value(guint min, guint tsec, guint sec);
 extern void set_osaekomi_value(guint tsec, guint sec);
 extern void set_points(gint blue[], gint white[]);
 extern void set_score(guint score);
+#ifdef EMSCRIPTEN
+extern gui_widget *get_menubar_menu(SDL_Surface *s);
+#else
 extern GtkWidget *get_menubar_menu(GtkWidget  *window);
+#endif
 extern GtkWidget *get_menubar_menu_en( GtkWidget  *window );
 extern GtkWidget *get_menubar_menu_fi( GtkWidget  *window );
 extern void clock_key(guint key, guint event_state);
@@ -290,6 +294,9 @@ void set_gs(double gs);
 void init_flags(void);
 SDL_Surface *get_flag(const char *name);
 void insert_flag(const char *name, SDL_Surface *img);
+void expose(void);
+void show_menu(int yes);
+void set_menu_values(void);
 
 
 #endif

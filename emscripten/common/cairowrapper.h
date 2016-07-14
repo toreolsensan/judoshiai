@@ -4,10 +4,16 @@
 #include <stdio.h>
 #include <time.h>
 #include <sys/time.h>
-#include <SDL/SDL.h>
-#include <SDL/SDL_ttf.h>
-#include <SDL/SDL_image.h>
+#include <SDL.h>
+#include <SDL_ttf.h>
+#include <SDL_image.h>
 #include <emscripten.h>
+
+#include "widget.h"
+#include "button.h"
+#include "entry.h"
+
+extern void expose(void);
 
 TTF_Font *get_font(int size, int bold);
 void init_fonts(void);
@@ -21,7 +27,7 @@ void init_fonts(void);
 
 #define cairo_t		SDL_Surface
 #define cairo_surface_t	SDL_Surface
-#define GtkWidget	void
+#define GtkWidget	gui_button
 #define GtkWindow	void
 #define GTimer		void
 #define GKeyFile	void

@@ -14,16 +14,21 @@
 #include <unistd.h>
 
 #include "judoinfo.h"
+#include "menu-util.h"
+
+extern void save_conf(void);
+extern void svg_file1_read(const char *svg_file);
+
 
 void textbox(int x1, int y1, int w1, int h1, const char *txt);
 void checkbox(int x1, int y1, int size, int align, int yes);
 void menuicononload(const char *str);
 void menupiconload(const char *str);
 void menupiconerror(const char *str);
-static void show_menu(void);
-static SDL_Surface *menubg, *menuicon;
+static SDL_Surface *menubg, *menuicon, *bracket = NULL;
 static int menu_on = FALSE;
 static int icontimer = 0;
+gui_widget    *menubar = NULL;
 
 extern void handle_info_msg(struct msg_match_info *input_msg);
 
@@ -31,13 +36,12 @@ struct stack_item stack[8];
 int sp = 0;
 
 static gboolean button_pressed(int x, int y);
-static gboolean expose(void);
 
 gchar         *program_path;
 gchar          current_directory[1024] = {0};
 gint           my_address;
 gchar         *installation_dir = NULL;
-static TTF_Font *font, *font_bold;
+static TTF_Font *font, *font_bold, *font_head;
 gchar         *conffile;
 guint          current_year;
 static SDL_Surface *darea = NULL;
@@ -51,8 +55,21 @@ gboolean       menu_hidden = FALSE;
 gchar         *filename = NULL;
 time_t         next_update;
 gboolean       show_tatami[NUM_TATAMIS];
-static int     conf_tatamis[NUM_TATAMIS];
+int            conf_tatamis[NUM_TATAMIS];
 int            configured_tatamis = 0;
+gboolean       show_bracket = 0;
+int            gui_max_x = 0, gui_max_y = 0;
+int            button_state = 0;
+int            split_pros = 25;
+int            split_drag = 0;
+int            split_x = 0;
+int            bracket_svg = 1;
+int            bracket_width = 400;
+int            bracket_height = 400;
+char           remote_host[64];
+int            matchlist_width = 400;
+int            matchlist_height = 400;
+
 
 #define MY_FONT "Arial"
 
@@ -63,6 +80,7 @@ int            configured_tatamis = 0;
 #define H(_h) ((_h)*paper_height)
 
 #define BOX_HEIGHT (horiz ? paper_height/(8*num_lines+2) : paper_height/(4*num_lines+1))
+#define BOX_HEIGHT1 (BOX_HEIGHT*2)
 //#define BOX_HEIGHT (1.4*extents.height)
 
 #define NUM_RECTANGLES 1000
@@ -89,6 +107,12 @@ static struct {
 } last_wins[NUM_TATAMIS];
 
 extern void print_stat(void);
+
+int is_png(const guchar *png)
+{
+    return (png[0] == 137 && png[1] == 80 &&
+	    png[2] == 78 && png[3] == 71);
+}
 
 gint number_of_tatamis(void)
 {
@@ -130,6 +154,7 @@ static void paint(SDL_Surface *c, int paper_width, int paper_height, gpointer us
 	//    TTF_CloseFont(font_bold);
 	font = get_font(BOX_HEIGHT*8/10, 0);
 	font_bold = get_font(BOX_HEIGHT*8/10, 1);
+	font_head = get_font(BOX_HEIGHT1*8/10, 1);
 	//font = TTF_OpenFont("free-sans", BOX_HEIGHT*8/10);
 	//font_bold = TTF_OpenFont("free-sans-bold", BOX_HEIGHT*8/10);
     }
@@ -156,7 +181,7 @@ static void paint(SDL_Surface *c, int paper_width, int paper_height, gpointer us
     cairo_set_line_width(c, THIN_LINE);
     cairo_set_source_rgb(c, 0, 0, 0);
 
-    y_pos = BOX_HEIGHT;
+    y_pos = BOX_HEIGHT1;
 
     for (i = 0; i < NUM_TATAMIS; i++) {
         gchar buf[30];
@@ -169,11 +194,11 @@ static void paint(SDL_Surface *c, int paper_width, int paper_height, gpointer us
 
         if (horiz) {
             if (upper)
-                y_pos = BOX_HEIGHT;
+                y_pos = BOX_HEIGHT1;
             else
-                y_pos = paper_height/2 + BOX_HEIGHT;
+                y_pos = paper_height/2 + BOX_HEIGHT1;
         } else
-            y_pos = BOX_HEIGHT;
+            y_pos = BOX_HEIGHT1;
 
         for (k = 0; k < num_lines; k++) {
             struct match *m = &match_list[i][k];
@@ -356,6 +381,7 @@ static void paint(SDL_Surface *c, int paper_width, int paper_height, gpointer us
             cairo_stroke(c);
         } // for (k = 0; k < num_lines; k++)
 
+#if 0
         if (horiz) {
             if (upper)
                 cairo_move_to(c, 10 + left, extents.height);
@@ -366,6 +392,35 @@ static void paint(SDL_Surface *c, int paper_width, int paper_height, gpointer us
 
         sprintf(buf, "%s %d", _("Tatami"), i+1);
         cairo_show_text(c, buf);
+#else
+        sprintf(buf, "%s %d", _("Tatami"), i+1);
+
+	SDL_Color color;
+	color.r = color.g = color.b = 0;
+	SDL_Surface *text = TTF_RenderText_Solid(font_head, buf, color);
+	SDL_Rect dest;
+
+	if (show_bracket) {
+	    int width, height, isFullscreen;
+	    emscripten_get_canvas_size(&width, &height, &isFullscreen);
+	    dest.x = (width - text->w)/2;
+	} else
+	    dest.x = left + (colwidth - text->w)/2;
+
+        if (horiz) {
+            if (upper)
+                dest.y = 0;
+            else
+                dest.y = paper_height/2;
+        } else
+            dest.y = 0;
+
+	dest.w = dest.h = 0;
+	SDL_BlitSurface(text, NULL, c, &dest);
+	SDL_FreeSurface(text);
+#endif
+
+
 #if 0
         point_click_areas[num_rectangles].category = 0;
         point_click_areas[num_rectangles].number = 0;
@@ -406,22 +461,22 @@ static void paint(SDL_Surface *c, int paper_width, int paper_height, gpointer us
     cairo_set_line_width(c, THICK_LINE);
 
     cairo_set_source_rgb(c, 0, 0, 0);
-    cairo_move_to(c, 0, BOX_HEIGHT);
-    cairo_line_to(c, paper_width, BOX_HEIGHT);
+    cairo_move_to(c, 0, BOX_HEIGHT1);
+    cairo_line_to(c, paper_width, BOX_HEIGHT1);
     if (horiz) {
         cairo_move_to(c, 0, paper_height/2);
         cairo_line_to(c, paper_width, paper_height/2);
-        cairo_move_to(c, 0, paper_height/2+BOX_HEIGHT);
-        cairo_line_to(c, paper_width, paper_height/2+BOX_HEIGHT);
+        cairo_move_to(c, 0, (paper_height/2+BOX_HEIGHT1));
+        cairo_line_to(c, paper_width, (paper_height/2+BOX_HEIGHT1));
     }
     cairo_stroke(c);
 
     if (!horiz) {
         cairo_set_source_rgb(c, 0, 0, 255);
-        cairo_move_to(c, 0, 5*BOX_HEIGHT);
-        cairo_line_to(c, paper_width, 5*BOX_HEIGHT);
-        cairo_move_to(c, 0, 13*BOX_HEIGHT);
-        cairo_line_to(c, paper_width, 13*BOX_HEIGHT);
+        cairo_move_to(c, 0, (4*BOX_HEIGHT+BOX_HEIGHT1));
+        cairo_line_to(c, paper_width, (4*BOX_HEIGHT+BOX_HEIGHT1));
+        cairo_move_to(c, 0, (12*BOX_HEIGHT+BOX_HEIGHT1));
+        cairo_line_to(c, paper_width, (12*BOX_HEIGHT+BOX_HEIGHT1));
         cairo_stroke(c);
     }
 
@@ -532,6 +587,7 @@ static int handle_menu(int x1, int y1)
     return FALSE;
 }
 
+#if 0
 static void show_menu(void)
 {
     char buf[16];
@@ -553,31 +609,196 @@ static void show_menu(void)
     checkbox(L1, LINE5, f, 1, mirror_display);
 
 }
+#endif
 
 static void mouse_move(void)
 {
     int x, y;
     SDL_GetMouseState(&x, &y);
 
-    if (menuicon && y < menuicon->h) {
-	icontimer = 50;
-    }
     if (menu_on &&
-	(x > menubg->w || y > menubg->h))
+	(x > gui_max_x + 60 || y > gui_max_y + 40)) {
 	menu_on = FALSE;
+	show_menu(SDL_FALSE);
+	expose();
+    }
+
+    if (!menu_on && y < 40 && x < 100) {
+	menu_on = TRUE;
+	show_menu(SDL_TRUE);
+	expose();
+    }
+
+    if (menu_on)
+	set_mouse_coordinates(x, y);
+
+    if (split_x == 0) {
+	int width, height, isFullscreen;
+	emscripten_get_canvas_size(&width, &height, &isFullscreen);
+	split_x = split_pros*width/100;
+    }
+
+    static int resize = 0;
+    if (resize == 0 && x > split_x - 8 && x < split_x + 8) {
+	emscripten_run_script("document.body.style.cursor='col-resize';");
+	resize = 1;
+    } else if (resize && (x < split_x - 8 || x > split_x + 8)) {
+	emscripten_run_script("document.body.style.cursor='default';");
+	resize = 0;
+    }
+
+    if (split_drag) {
+	int width, height, isFullscreen;
+	emscripten_get_canvas_size(&width, &height, &isFullscreen);
+	split_pros = x*100/width;
+	split_x = split_pros*width/100;
+	expose();
+    }
 }
 
+extern int EMSCRIPTEN_KEEPALIVE change_to_svg_mode(int yes, int exp);
+time_t fsrequest = 0;
+
 /* This is called when we need to draw the windows contents */
-static gboolean expose(void)
+void expose(void)
 {
-    int width, height, isFullscreen;
+    int width, height, isFullscreen, j, current_tatami = 0;
+    SDL_Rect dest;
 
     emscripten_get_canvas_size(&width, &height, &isFullscreen);
 
-    //if (paint_svg(&pd) == FALSE)
-    paint(darea, width, height, NULL);
+    int fullscr = emscripten_run_script_int("document.fullscreen") ||
+	emscripten_run_script_int("document.mozFullScreen") ||
+	emscripten_run_script_int("document.webkitIsFullScreen") ||
+	emscripten_run_script_int("document.msFullscreenElement");
 
-    return FALSE;
+    printf("canvas size = %d x %d, full = %d & %d, svg = %d\n", width, height,
+	   isFullscreen, fullscr, bracket_svg);
+
+    if (!fullscr && bracket_svg) {
+	time_t now = time(NULL);
+	if (now > fsrequest + 2)
+	    change_to_svg_mode(0, 0);
+	else
+	    next_update = now + 1;
+    }
+
+    for (j = 0; j < NUM_TATAMIS; j++)
+	if (show_tatami[j]) {
+	    current_tatami = j;
+	    break;
+	}
+
+    if (1 || split_x == 0)
+	split_x = split_pros*width/100;
+
+    if (show_bracket) {
+	int paper_width = width, paper_height = height;
+	gboolean horiz = (display_type == HORIZONTAL_DISPLAY);
+
+	if (bracket && !bracket_svg) {
+	    emscripten_run_script("set_display('svgtable', 0)");
+	    emscripten_run_script("set_display('canvas', 1)");
+
+	    //printf("paper = %d x %d, split_x = %d\n", width, height, split_x);
+	    dest.x = dest.y = 0;
+	    dest.w = width;
+	    dest.h = height;
+	    SDL_FillRect(darea, &dest, SDL_MapRGB(darea->format, 255, 255, 255));
+
+	    dest.x = split_x;
+	    dest.y = BOX_HEIGHT1;
+
+	    paint(darea, split_x, height, NULL);
+
+	    if (bracket->w*(height - BOX_HEIGHT1) > (width - split_x)*bracket->h) {
+		/* bracket is like landscape */
+		dest.w = width - split_x;
+		dest.h = dest.w*bracket->h/bracket->w;
+	    } else {
+		/* bracket is like portrate */
+		dest.h = height - BOX_HEIGHT1;
+		dest.w = dest.h*bracket->w/bracket->h;
+	    }
+
+	    SDL_BlitScaled(bracket, NULL, darea, &dest);
+
+	    dest.x = split_x;
+	    dest.y = BOX_HEIGHT1;
+	    dest.w = 2;
+	    dest.h = height - BOX_HEIGHT1;
+	    SDL_FillRect(darea, &dest, SDL_MapRGB(darea->format, 100, 100, 100));
+
+	    dest.x = 0;
+	    dest.y = BOX_HEIGHT1 - 1;
+	    dest.w = width;
+	    dest.h = 2;
+	    SDL_FillRect(darea, &dest, SDL_MapRGB(darea->format, 100, 100, 100));
+	} else if (bracket_svg) {
+	    char buf[128];
+
+	    emscripten_run_script("set_display('canvas', 0)");
+	    emscripten_run_script("set_display('svgtable', 1)");
+
+	    bracket_width = width - split_x - 4;
+	    bracket_height = height - BOX_HEIGHT1 - 4;
+
+	    matchlist_width = width - bracket_width - 4;
+	    matchlist_height = bracket_height;
+
+	    snprintf(buf, sizeof(buf),
+		     "document.getElementById('tataminumber').innerHTML='%d'",
+		     current_tatami + 1);
+	    emscripten_run_script(buf);
+
+	    printf("paint split=%d width=%d bracket=%d\n", split_x, width, bracket_width);
+	    paint_svg(NULL);
+
+	    char url[128];
+#if 0
+	    snprintf(url, sizeof(url),
+		     "set_width('svgtable', %d)", width);
+	    emscripten_run_script(url);
+	    snprintf(url, sizeof(url),
+		     "set_height('svgtable', %d)", height);
+	    emscripten_run_script(url);
+#endif
+
+	    snprintf(url, sizeof(url),
+		     "set_width('matchlist', %d)", matchlist_width);
+	    emscripten_run_script(url);
+
+	    snprintf(url, sizeof(url),
+		     "document.getElementById('bracket').innerHTML='"
+		     "<img "
+		     "src=\"bracket?t=%d&s=1\" "
+		     "width=\"%d\" />';",
+		current_tatami, 3*bracket_width/4);
+	    printf("running: %s\n", url);
+	    emscripten_run_script(url);
+	}
+    } else
+	paint(darea, width, height, NULL);
+
+    if (menu_on) {
+	gui_max_x = gui_max_y = 0;
+	gui_widget_render(menubar, darea, mouse_error_handler);
+    }
+}
+
+void bracketonload(const char *str)
+{
+    if (bracket)
+	SDL_FreeSurface(bracket);
+    bracket = NULL;
+    if (str && str[0])
+	bracket = IMG_Load(str);
+    expose();
+}
+
+void onerror(void *a)
+{
+    printf("onerror %p\n", a);
 }
 
 void onload(void *arg, void *buf, int len)
@@ -597,9 +818,32 @@ void onload(void *arg, void *buf, int len)
 		   &msg.flags,
 		   &msg.rest_time);
 
-	if (n == 8)
+	if (n == 8) {
 	    handle_info_msg(&msg);
-	else
+
+	    if (msg.position == 1 && show_tatami[msg.tatami-1]) {
+		char url[128];
+
+		if (bracket_svg) {
+#if 0
+		    snprintf(url, sizeof(url),
+			     "document.getElementById('bracket').innerHTML='"
+			     "<img src=\"bracket?t=%d&s=1\" width=\"%dpx\" height=\"%dpx\" />';",
+			     msg.tatami-1, /*msg.category,*/
+			     bracket_width, bracket_height);
+		    printf("running: %s\n", url);
+		    emscripten_run_script(url);
+#endif
+		    if (next_update == 0)
+			next_update = time(NULL) + 1;
+		} else {
+		    snprintf(url, sizeof(url), "bracket?t=%d&c=%d",
+			     msg.tatami-1, msg.category);
+		    emscripten_async_wget(url, "bracket.png", bracketonload, menupiconerror);
+		}
+	    }
+
+	} else
 	    break;
 
 	b = strchr(b, '\n');
@@ -607,11 +851,6 @@ void onload(void *arg, void *buf, int len)
     }
 
     //refresh_window();
-}
-
-void onerror(void *a)
-{
-    printf("onerror %p\n", a);
 }
 
 void menuicononload(const char *str)
@@ -628,7 +867,15 @@ void menupiconload(const char *str)
 
 void menupiconerror(const char *str)
 {
-    printf("%s failed\n", str);
+    printf("XXX %s failed\n", str);
+}
+
+void get_bracket(int tatami)
+{
+    char url[64];
+    snprintf(url, sizeof(url), "matchinfo?t=%d", tatami);
+    printf("get_bracket url=%s\n", url);
+    emscripten_async_wget_data(url, NULL, onload, onerror);
 }
 
 void onloadabstract(void *arg, void *buf, int len)
@@ -662,24 +909,46 @@ void EMSCRIPTEN_KEEPALIVE main_loop(void)
     char url[64];
     static int tatami = 1;
     static time_t forced_update;
-#if 1
+
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
 	switch(event.type) {
-	case SDL_MOUSEBUTTONDOWN: {
+	case SDL_MOUSEBUTTONDOWN:
+	case SDL_MOUSEBUTTONUP: {
 	    SDL_MouseButtonEvent *m = (SDL_MouseButtonEvent*)&event;
 	    //printf("button down: %d,%d  %d,%d\n", m->button, m->state, m->x, m->y);
-	    button_pressed(m->x, m->y);
+	    if (m->button == 1)
+		button_state = m->state;
+
+	    if (event.type == SDL_MOUSEBUTTONUP && split_drag) {
+		split_drag = 0;
+		save_conf();
+	    }
+
+	    if (!gui_widget_event(menubar, event, mouse_error_handler) &&
+		event.type == SDL_MOUSEBUTTONDOWN) {
+		int width, height, isFullscreen;
+		emscripten_get_canvas_size(&width, &height, &isFullscreen);
+
+		if (event.type == SDL_MOUSEBUTTONDOWN &&
+		    m->x > (split_x - 10) &&
+		    m->x < (split_x + 10)) {
+		    split_drag = 1;
+		} else {
+		    button_pressed(m->x, m->y);
+		}
+	    }
 	    break;
 	}
 	}
     }
 
-    if (now > next_update ||
-	now > forced_update + 3 ||
-	icontimer == 1) {
+    if ((next_update && now > next_update) /* ||
+	now > forced_update + 5 ||
+	icontimer == 1 */) {
 	refresh_window();
 	forced_update = now;
+	next_update = 0;
     }
 
     timeout_ask_for_data(NULL);
@@ -691,6 +960,7 @@ void EMSCRIPTEN_KEEPALIVE main_loop(void)
 
     mouse_move();
 
+#if 0
     if (icontimer > 0) {
 	icontimer--;
     }
@@ -705,9 +975,16 @@ void EMSCRIPTEN_KEEPALIVE main_loop(void)
 
     if (menu_on && menubg) {
 	icontimer = 50;
-	show_menu();
+	show_menu(SDL_TRUE);
     }
 #endif
+}
+
+
+int EMSCRIPTEN_KEEPALIVE comm_sock_rec(char *data)
+{
+    printf("rec=%s\n", data);
+    return 0;
 }
 
 void EMSCRIPTEN_KEEPALIVE main_2(void *arg)
@@ -730,6 +1007,7 @@ void EMSCRIPTEN_KEEPALIVE main_2(void *arg)
 
     font = get_font(12, 0);
     font_bold = get_font(12, 1);
+    font_head = get_font(12, 1);
 
     now = time(NULL);
     tm = localtime(&now);
@@ -737,9 +1015,28 @@ void EMSCRIPTEN_KEEPALIVE main_2(void *arg)
     srand(now); //srandom(now);
     my_address = now + getpid()*10000;
 
+    menubar = get_menubar_menu(darea);
+    show_menu(SDL_FALSE);
+
     emscripten_async_wget("/menuicon.png", "menuicon.png", menuicononload, menupiconerror);
     emscripten_async_wget("/menupicinfo.png", "menupicinfo.png", menupiconload, menupiconerror);
+    emscripten_async_wget("/info-1.html", "info-1.html", svg_file1_read, menupiconerror);
+#if 0
+    char buf[64];
+    char *v = emscripten_run_script_string("window.location.href");
+    for (i = 7; v[i] != ':' && v[i] != '/' && v[i] > ' '; i++)
+	remote_host[i-7] = v[i];
+    remote_host[i-7] = 0;
+    snprintf(buf, sizeof(buf),
+	     "commSocket = new WebSocket(\"ws://%s:5550/\", \"judoshiai\")",
+	     remote_host);
+    emscripten_run_script(buf);
 
+    emscripten_run_script("commSocket.onopen = function(event) {"
+			  "    Module.ccall('on_comm_socket_open', 'number');"
+			  "}");
+    emscripten_run_script("afterMain()");
+#endif
     emscripten_set_main_loop(main_loop, 10, 0);
 }
 

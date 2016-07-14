@@ -20,7 +20,10 @@
 
 #include "judotimer.h"
 #include "language.h"
+#include "menu-util.h"
 
+int mouse_error_handler(gui_error_type err, struct gui_widget *w,
+			const SDL_Event *ev, SDL_Surface *s, int errc);
 void delete_comp_window(void);
 void delete_new_match(void);
 int setclocks_c(int yes);
@@ -32,12 +35,13 @@ void custombgonload(const char *str);
 void flagonload(const char *str);
 void flagonerror(const char *str);
 
-static void show_menu(void);
+//static void show_menu(void);
 void textbox(int x1, int y1, int w1, int h1, const char *txt);
 void checkbox(int x1, int y1, int w1, int h1, int yes);
 static void set_colors(void);
 gboolean show_competitor_names = TRUE;
 gboolean showletter = FALSE;
+int gui_max_x = 0, gui_max_y = 0;
 
 struct stack_item stack[8];
 int sp = 0;
@@ -66,7 +70,6 @@ static inline uint32_t hton32(uint32_t x) {
 int tatami = 1;
 static void show_big(void);
 static void expose_label(cairo_t *c, gint w);
-static void expose(void);
 static void init_display(void);
 gboolean delete_big(gpointer data);
 gint language = LANG_EN;
@@ -75,7 +78,7 @@ static int expose_now = 0;
 //#define TABLE_PARAM (GTK_EXPAND)
 #define TABLE_PARAM (GTK_EXPAND|GTK_FILL)
 
-static gint dsp_layout = 6;
+gint dsp_layout = 6;
 static gint selected_name_layout;
 static const gchar *num2str[11] = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "+"};
 static const gchar *pts2str[6]  = {"-", "K", "Y", "W", "I", "S"};
@@ -406,7 +409,8 @@ gchar *program_path;
 
 GtkWidget     *main_vbox = NULL;
 GtkWidget     *main_window = NULL;
-GtkWidget     *menubar = NULL;
+gui_widget    *menubar = NULL;
+//GtkWidget     *menubar = NULL;
 gchar          current_directory[1024] = {0};
 gint           my_address;
 gboolean       clocks_only = FALSE;
@@ -1332,7 +1336,7 @@ static gboolean configure_event_cb(GtkWidget         *widget,
 #endif
 
 /* This is called when we need to draw the windows contents */
-static void expose(void)
+void expose(void)
 {
     gint i;
     int isFullscreen;
@@ -1354,18 +1358,27 @@ static void expose(void)
         expose_label(surface, i);
     }
 
+#if 0
     SDL_Rect dest;
     dest.x = dest.y = dest.w = dest.h = 0;
     dest.y = icontimer - 50;
     if (dest.y > 0) dest.y = 0;
     if (menuicon && icontimer > 2)
 	SDL_BlitSurface(menuicon, NULL, darea, &dest);
+#endif
 
     if (big_dialog)
         show_big();
 
+#if 0
     if (menu_on && menubg)
 	show_menu();
+#endif
+
+    if (menu_on && labels[ask_box].hide) {
+	gui_max_x = gui_max_y = 0;
+	gui_widget_render(menubar, surface, mouse_error_handler);
+    }
 }
 
 #define CLOSE(_x) (x > _x - 50 && x < _x + 50)
@@ -1407,8 +1420,8 @@ static void expose(void)
 #define TEXTBOX_X 534
 #define TEXTBOX_W (R1 - L1)
 
-static int matchtime = 0, hansokumake = 0;
-static int goldenscore = 0, hantei = 0;
+int matchtime = 0, hansokumake = 0;
+int goldenscore = 0, hantei = 0;
 
 static const char *matchtimetext[] = {
     "Automatic", "2 min (kids)", "2 min", "3 min", "4 min", "5 min"
@@ -1430,7 +1443,7 @@ static const char *audiotext[] = {
     "IndutrialAlarm", "IntruderAlarm", "RedAlert", "TrainHorn", "TwoToneDoorbell",
     NULL
 };
-static int audio = 0;
+int audio = 0;
 
 static int handle_menu(int x1, int y1)
 {
@@ -1606,7 +1619,7 @@ static int handle_menu(int x1, int y1)
     return FALSE;
 }
 
-static void show_menu(void)
+static void show_menuxx(void)
 {
     char buf[16];
     SDL_Rect dest;
@@ -1646,20 +1659,39 @@ static void show_menu(void)
     textbox(L3, LINE2, R3 - L3, f, gstext[goldenscore]);
     textbox(L3, LINE3, R3 - L3, f, hanteitext[hantei]);
     textbox(L3, LINE4, R3 - L3, f, hansokumaketext[hansokumake]);
-
-
 }
 
 static void mouse_move(void)
 {
     int x, y;
     SDL_GetMouseState(&x, &y);
+
+#if 0
     if (y < menuicon->h) {
 	icontimer = 50;
     }
+
     if (menu_on &&
 	(x > menubg->w || y > menubg->h))
 	menu_on = FALSE;
+#endif
+
+    if (menu_on &&
+	(x > gui_max_x + 60 || y > gui_max_y + 40)) {
+	menu_on = FALSE;
+	show_menu(SDL_FALSE);
+	expose();
+    }
+
+    if (!menu_on && y < 40 && x < 100) {
+	menu_on = TRUE;
+	set_menu_values();
+	show_menu(SDL_TRUE);
+	expose();
+    }
+
+    if (menu_on)
+	set_mouse_coordinates(x, y);
 }
 
 static void button_pressed(SDL_Event *event)
@@ -1669,6 +1701,7 @@ static void button_pressed(SDL_Event *event)
     if (m->button == 1 || m->button == 3) {
 	gint x = m->x, y = m->y, i;
 
+#if 0
 	if (menu_on && menubg &&
 	    x < menubg->w &&
 	    y < menubg->h) {
@@ -1684,6 +1717,7 @@ static void button_pressed(SDL_Event *event)
 	    expose();
 	    return;
 	}
+#endif
 
 	for (i = num_labels - 1; i >= 0; i--) {
 	    if (labels[i].w &&
@@ -1762,6 +1796,7 @@ static void key_press(SDL_Event *event)
 static void timeout(void)
 {
     update_clock();
+    update_menu(surface);
 
     if (big_dialog && time(NULL) > big_end)
         delete_big(NULL);
@@ -1803,20 +1838,31 @@ void EMSCRIPTEN_KEEPALIVE main_loop(void)
     SDL_Event event;
     static int t;
 
+    SDL_StartTextInput();
+
     while (SDL_PollEvent(&event)) {
 	switch(event.type) {
-	case SDL_MOUSEBUTTONDOWN: {
-	    button_pressed(&event);
+	case SDL_MOUSEBUTTONDOWN:
+	case SDL_MOUSEBUTTONUP: {
+	    if ((labels[ask_box].hide == 0 ||
+		!gui_widget_event(menubar, event, mouse_error_handler)) &&
+		event.type == SDL_MOUSEBUTTONDOWN)
+		button_pressed(&event);
 	    break;
 	}
+	case SDL_TEXTINPUT:
 	case SDL_KEYDOWN: {
+	    if (gui_entry_accept(&event))
+		break;
 	    key_press(&event);
 	    break;
 	}
+#if 0 // XXXXX
 	case SDL_VIDEORESIZE: {
 	    SDL_ResizeEvent *r = (SDL_ResizeEvent *)&event;
 	    break;
 	}
+#endif
 	} // switch
     }
 
@@ -1828,8 +1874,10 @@ void EMSCRIPTEN_KEEPALIVE main_loop(void)
 	expose();
     }
 
+#if 0
     if (icontimer > 0)
 	icontimer--;
+#endif
 
     if (flag_req && !flag_pending) {
 	char *txt1, buf1[32], buf2[16];
@@ -1858,7 +1906,9 @@ void main_2(void *arg)
     //settatami(0);
     setscreensize(0);
     //setclocks_c(0);
+#if 0
     icontimer = 100;
+#endif
 
     emscripten_async_wget("/menuicon.png", "menuicon.png", menuicononload, menupiconerror);
     emscripten_async_wget("/menupic.png", "menupic.png", menupiconload, menupiconerror);
@@ -1870,15 +1920,20 @@ void main_2(void *arg)
 int EMSCRIPTEN_KEEPALIVE main()
 {
     /* GtkWidget is the storage type for widgets */
-    GtkWidget *window;
+    //GtkWidget *window;
     GdkColor   fg, bg;
     time_t     now;
     struct tm *tm;
     gint i;
 
-    printf("SDL_Init=%d\n", SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_AUDIO));
+    if (SDL_Init(SDL_INIT_VIDEO /*| SDL_INIT_TIMER*/ | SDL_INIT_AUDIO)) {
+	printf("Cannot initialize: %s\n", SDL_GetError());
+	return -1;
+    }
+
     darea = SDL_SetVideoMode(640, 480, 32, SDL_HWSURFACE | SDL_SRCALPHA);
     surface = darea;
+
     printf("TTF_Init=%d\n", TTF_Init());
     init_fonts();
     init_flags();
@@ -2084,6 +2139,9 @@ int EMSCRIPTEN_KEEPALIVE main()
     for (i = 0; i < num_labels; i++)
         defaults_for_labels[i] = labels[i];
 
+    menubar = get_menubar_menu(surface);
+    show_menu(SDL_FALSE);
+
     automatic = TRUE;
 #if 0
     emscripten_async_call(main_2, NULL, 1000); // avoid startup delays and intermittent errors
@@ -2094,7 +2152,9 @@ int EMSCRIPTEN_KEEPALIVE main()
     //settatami(0);
     setscreensize(0);
     //setclocks_c(0);
+#if 0
     icontimer = 100;
+#endif
 
     emscripten_async_wget("/menuicon.png", "menuicon.png", menuicononload, menupiconerror);
     emscripten_async_wget("/menupic.png", "menupic.png", menupiconload, menupiconerror);
@@ -2238,6 +2298,17 @@ static void set_colors(void)
         }
 #endif
     }
+}
+
+void toggle_color(GtkWidget *menu_item, gpointer data)
+{
+    if (menu_item->selected)
+	bgcolor = &color_red;
+    else
+	bgcolor = &color_blue;
+
+    set_colors();
+    init_display();
 }
 
 #if 0

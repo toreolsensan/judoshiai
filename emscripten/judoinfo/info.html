@@ -117,95 +117,6 @@
         background-color: black;
       }
 
-      .svg-container {
-	display: inline-block;
-	position: relative;
-	width: 100%;
-        height: auto;
-	/*padding-top: 100%;*/
-	padding-bottom: 100%;
-	/*vertical-align: top;*/
-	/*overflow: hidden;*/
-      }
-      img {
-        display: table-cell /*inline-block*/;
-	/*position: absolute;
-	top: 0;
-	left: 0;*/
-        visibility: inherit;
-      }
-      svg {
-        display: table-cell /*inline-block*/;
-	/*position: absolute;
-	top: 0;
-	left: 0;*/
-        visibility: inherit;
-      }
-      #svgtable {
-        border: 3px solid black;
-        position: absolute;
-        left: 10px;
-        top: 10px;
-        width: 100%;
-        height: auto;
-        z-index: 1;
-        background: white;
-      }
-      #matchtable {
-        /*position: absolute;
-        left: 0px;
-        top: 0px;*/
-        width: 100%;
-        height: auto;
-        z-index: 1;
-        background: white;
-        visibility: inherit;
-      }
-      td {
-         vertical-align: top;
-      }
-      td#tatamitext {
-         text-align: center;
-      }
-      td#matchcol {
-         width: 25%;
-      }
-      td#bracketcol {
-         width: 75%;
-      }
-      #bracket {
-        /*position: absolute;
-        left: 25%;
-        top: 0px;
-        width: 75%;
-        height: auto;
-        z-index: 1;*/
-        visibility: inherit;
-      }
-      #matchlist {
-        /*display: inline-block;
-        /*position: absolute;
-        left: 0px;
-        top: 0px;
-        width: 25%;*/
-	/*padding-bottom: 100%;*/
-        /*z-index: 2;*/
-        visibility: inherit;
-      }
-      #wholepagex {
-        /*position: absolute;*/
-        left: 0px;
-        top: 0px;
-        width: 100%;
-        height: auto;
-      }
-      #fsbutton2xxx {
-        position: absolute;
-        left: 10px;
-        top: 50px;
-        z-index: 1;
-      }
-
     </style>
   </head>
   <body>
@@ -218,7 +129,7 @@
     </div>
     <div id='controls2'>
       <input type="button" value="Fullscreen" id="fsbuttonnormal"
-	     onclick="myRequestFullScreen()">
+	     onclick="myRequestFullScreen(0)">
       <input type="button" value="Fullscreen SVG" id="fsbuttonsvg"
 	     onclick="fs_svg()">
     </div>
@@ -233,20 +144,26 @@
       <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()"></canvas>
     </div>
 
-    <table id='svgtable'>
+    <!-- EDIT: TABLE  -->
+    <table id='svgtable' style="width:100%; height:100%; position:absolute; top:0; bottom:0; left:0; right:0;">
+      <tr>
         <!-- EDIT: TATAMI TEXT  -->
-	<td colspan=2 id="tatamitext"
-            style="font-weight:bold;font-size:200%;background:yellow;visibility:inherit">
+	<td colspan=3 id="tatamitext"
+          style="text-align:center; font-weight:bold; font-size:200%; background:yellow;">
 	  Tatami
 	  <span id="tataminumber"></span>
 	</td>
 	<!-- END OF TATAMI TEXT -->
       </tr>
       <tr>
-	<td id="matchlist"></td>
-	<td class="svg-container" id="bracket"></td>
+	<td id="matchlistcol" style="vertical-align:top;">
+	  <div id="matchlist"></div>
+	</td>
+	<td id="bracket" style="margin-left:auto; margin-right:auto"></td>
+	<td id="extracol" width="100%"></td>
       </tr>
     </table>
+    <!-- END OF TABLE -->
 
     </div><!-- wholepage -->
 
@@ -258,11 +175,45 @@
       var spinnerElement = document.getElementById('spinner');
       var matchlistcontent;
 
+      function set_width(e, w) {
+        elem = document.getElementById(e);
+        if (elem) {
+          if (typeof elem.style !== 'undefined') {
+              elem.style.width = w;
+              elem.style.minWidth = w;
+              elem.style.maxWidth = w;
+          } else {
+            console.log("no width style for "+e);
+          }
+        } else {
+          console.log("elem "+e+" does not exist");
+        }
+      }
+
+      function set_height(e, h) {
+        elem = document.getElementById(e);
+        if (elem) {
+          if (typeof elem.style !== 'undefined') {
+              elem.style.height = h;
+          } else {
+            console.log("no height style for "+e);
+          }
+        } else {
+          console.log("elem "+e+" does not exist");
+        }
+      }
+
       function set_display(e_id, d) {
         elem = document.getElementById(e_id);
         if (elem) {
           if (typeof elem.style !== 'undefined') {
-            elem.style.visibility = d;
+            if (d) {
+              /*elem.style.visibility = 'visible';*/
+              elem.style.display = 'inline-block';
+            } else {
+              /*elem.style.visibility = 'hidden';*/
+              elem.style.display = 'none';
+            }
           }
         }
       }
@@ -389,9 +340,14 @@
       }
       var svg_content;
 
-      function myRequestFullScreen() {
+      function myRequestFullScreen(svg) {
         // Supports most browsers and their versions.
-        var element = document.getElementById('wholepage');
+        var element;
+        if (svg) {
+          element = document.getElementById('svgtable');
+        } else {
+          element = document.getElementById('wholepage');
+        }
         var requestMethod =
           element.requestFullScreen ||
           element.webkitRequestFullScreen ||
@@ -409,7 +365,7 @@
       }
 
       function fs_svg() {
-        myRequestFullScreen();
+        myRequestFullScreen(1);
         Module.ccall('change_to_svg_mode', 'number', ['number', 'number'], [1, 1]);
       }
 
