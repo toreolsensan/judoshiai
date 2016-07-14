@@ -487,8 +487,9 @@ static gint get_free_pos_by_mask(gint mask, struct mdata *mdata)
         gint currmask = 1<<get_section(x, mdata);
         if (((!mdata->mask && (currmask & mask)) ||
 	     (mdata->mask & (1<<(x-1)))) &&
-	    mdata->mpos[x].judoka == 0
-            /*XXX && get_competitor_number(x, mdata) <= mdata->mjudokas*/) {
+	    mdata->mpos[x].judoka == 0 &&
+            (!prop_get_int_val(PROP_USE_FIRST_PLACES_ONLY) ||
+	     get_competitor_number(x, mdata) <= mdata->mjudokas)) {
             // update the lowest avoid value
             if (place_values[x] < best_value) {
                 best_value = place_values[x];
@@ -1699,7 +1700,7 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
 
     g_free(catname);
 
-    if ((db_category_match_status(mdata->mcategory_ix) & SYSTEM_DEFINED /*REAL_MATCH_EXISTS*/) && mdata->edit == FALSE) {
+    if ((db_category_get_match_status(mdata->mcategory_ix) & SYSTEM_DEFINED /*REAL_MATCH_EXISTS*/) && mdata->edit == FALSE) {
         // Cannot draw again.
 #if 0
         struct judoka *j = get_data(mdata->mcategory_ix);

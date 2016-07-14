@@ -99,6 +99,11 @@ struct property {
         .type = PROP_TYPE_CHECK,
     },
     {
+        .name = "UseFirstPlacesOnly",
+        .label = N_("Use the first places only:"),
+        .type = PROP_TYPE_CHECK,
+    },
+    {
         .name = "EqualScoreLessShidoWins",
         .label = N_("If equal score less shido wins"),
         .type = PROP_TYPE_CHECK,
