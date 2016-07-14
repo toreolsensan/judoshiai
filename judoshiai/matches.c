@@ -1992,6 +1992,7 @@ void fill_match_info(struct message *msg, gint tatami, gint pos, struct match *m
     struct category_data *cat = avl_get_category(m->category);
     if (cat) {
         msg->u.match_info_11.info[pos].flags = get_match_number_flag(m->category, m->number);
+	msg->u.match_info_11.info[pos].round = round_number(cat->system, m->number);
 
         time_t last_time1 = avl_get_competitor_last_match_time(m->blue);
         time_t last_time2 = avl_get_competitor_last_match_time(m->white);
@@ -2032,6 +2033,7 @@ void send_match(gint tatami, gint pos, struct match *m)
     struct category_data *cat = avl_get_category(m->category);
     if (cat) {
         msg.u.match_info.flags = get_match_number_flag(m->category, m->number);
+	msg.u.match_info.round = round_number(cat->system, m->number);
 
         time_t last_time1 = avl_get_competitor_last_match_time(m->blue);
         time_t last_time2 = avl_get_competitor_last_match_time(m->white);
@@ -2080,9 +2082,10 @@ void send_matches(gint tatami)
     msg.u.match_info_11.info[0].white    = 0;
     msg.u.match_info_11.info[0].flags    = get_match_number_flag(next_matches_info[t][0].won_catnum,
                                                       next_matches_info[t][0].won_matchnum);
+
     for (k = 0; k < INFO_MATCH_NUM; k++) {
-        fill_match_info(&msg, tatami, k+1, &(m[k]));
-    }
+        fill_match_info(&msg, tatami, k+1, &(m[k])); 
+   }
 
     send_packet(&msg);
 }
@@ -2125,6 +2128,9 @@ void send_next_matches(gint category, gint tatami, struct match *nm)
 
     if (nm[0].number < 1000) {
         struct category_data *cat = avl_get_category(nm[0].category);
+
+	if (cat)
+	    msg.u.next_match.round = round_number(cat->system, nm[0].number);
 
         if (cat && is_repechage(cat->system, nm[0].number))
             msg.u.next_match.flags |= MATCH_FLAG_REPECHAGE;
@@ -2385,6 +2391,9 @@ void update_matches(guint category, struct compsys sys, gint tatami)
     PROF;
 
     send_matches(tatami);
+
+    clear_cache_by_cat(category);
+
     PROF;
     PROF_END;
 }
