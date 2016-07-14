@@ -612,6 +612,12 @@ ok:
 
     update_match_pages_visibility();
 
+#ifdef CALCULATE_ROUNDS
+    /* Generate round number table. */
+    extern void print_rounds(void);
+    print_rounds();
+#endif
+
     /* All GTK applications must have a gtk_main(). Control ends here
      * and waits for an event to occur (like a key press or
      * mouse event). */
