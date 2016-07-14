@@ -3,7 +3,7 @@
 /*
  * Copyright (C) 2006-2016 by Hannu Jokinen
  * Full copyright text is included in the software package.
- */ 
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,14 +15,14 @@
 
 static void init_display(void);
 static gint find_box(gdouble x, gdouble y);
-static gboolean mouse_click(GtkWidget *sheet_page, 
-			    GdkEventButton *event, 
+static gboolean mouse_click(GtkWidget *sheet_page,
+			    GdkEventButton *event,
 			    gpointer userdata);
-static gboolean motion_notify(GtkWidget *sheet_page, 
-                              GdkEventMotion *event, 
+static gboolean motion_notify(GtkWidget *sheet_page,
+                              GdkEventMotion *event,
 			      gpointer userdata);
-static gboolean release_notify(GtkWidget *sheet_page, 
-			       GdkEventButton *event, 
+static gboolean release_notify(GtkWidget *sheet_page,
+			       GdkEventButton *event,
 			       gpointer userdata);
 
 #define AREA_SHIFT        4
@@ -175,7 +175,7 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
             point_click_areas[num_rectangles].x2 = right;
 
             if (last_wins[i-1].cat == next_matches_info[i-1][0].won_catnum &&
-                last_wins[i-1].num == next_matches_info[i-1][0].won_matchnum) 
+                last_wins[i-1].num == next_matches_info[i-1][0].won_matchnum)
                 cairo_set_source_rgb(c, 0.7, 1.0, 0.7);
             else
                 cairo_set_source_rgb(c, 1.0, 1.0, 0.0);
@@ -189,7 +189,7 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
             cairo_move_to(c, left+5, y_pos+extents.height);
             cairo_show_text(c, next_matches_info[i-1][0].won_cat);
 
-            gchar *txt = get_match_number_text(next_matches_info[i-1][0].won_catnum, 
+            gchar *txt = get_match_number_text(next_matches_info[i-1][0].won_catnum,
                                                next_matches_info[i-1][0].won_matchnum);
             if (txt) {
                 cairo_move_to(c, left+5+colwidth/2, y_pos+extents.height);
@@ -219,7 +219,7 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
         for (k = 0; k < (i ? NEXT_MATCH_NUM : WAITING_MATCH_NUM); k++) {
             struct match *m = &nm[k];
             gchar buf[40];
-			
+
             point_click_areas[num_rectangles].position = k + 1;
 
             if (m->number >= 1000)
@@ -231,8 +231,10 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
                 continue;
 
             cairo_save(c);
-            if (m->forcedtatami)
+            if (m->forcednumber)
                 cairo_set_source_rgb(c, 1.0, 1.0, 0.6);
+            else if (m->forcedtatami)
+                cairo_set_source_rgb(c, 1.0, 1.0, 0.9);
             else
                 cairo_set_source_rgb(c, 1.0, 1.0, 1.0);
 
@@ -243,7 +245,7 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
 
             cairo_fill(c);
             cairo_restore(c);
-			
+
             cairo_save(c);
             cairo_select_font_face(c, MY_FONT, 0, CAIRO_FONT_WEIGHT_BOLD);
             cairo_move_to(c, left+5, y_pos+extents.height);
@@ -251,40 +253,43 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
             if (catdata) {
                 if (catdata->deleted & TEAM_EVENT) {
                     gint ageix = find_age_index(catdata->category);
-                    if (ageix >= 0 && m->number > 0 && 
+                    if (ageix >= 0 && m->number > 0 &&
                         category_definitions[ageix].weights[m->number-1].weighttext[0]) {
-                        snprintf(buf, sizeof(buf), "%s #%d%s", catdata->category, 
+                        snprintf(buf, sizeof(buf), "%s #%d%s", catdata->category,
                                  m->category >> MATCH_CATEGORY_SUB_SHIFT,
                                  category_definitions[ageix].weights[m->number-1].weighttext);
                     } else
                         snprintf(buf, sizeof(buf), "%s", catdata->category);
-                } else 
-                    snprintf(buf, sizeof(buf), "%s #%d", catdata->category, m->number);
+                } else
+                    snprintf(buf, sizeof(buf), "%s #%d",
+			     catdata->category, m->number);
             } else
                 snprintf(buf, sizeof(buf), "?");
 
             cairo_show_text(c, buf);
             //cairo_show_text(c, catdata ? catdata->category : "?");
 
-            gchar *txt = get_match_number_text(m->category, m->number);
-            if (txt || m->forcedtatami || i == 0) {
+	    const gchar *txt = round_name(catdata->system, m->number);
+            //gchar *txt = get_match_number_text(m->category, m->number);
+            if ((txt && txt[0]) || m->forcedtatami || i == 0) {
+		buf[0] = 0;
                 cairo_move_to(c, left+5+colwidth/2, y_pos+extents.height);
                 if (i == 0) {
-                    if (txt && m->forcedtatami)
+                    if (txt && txt[0] && m->forcedtatami)
                         snprintf(buf, sizeof(buf), "T%d:%s", m->forcedtatami, txt);
-                    else if (txt)
-                        snprintf(buf, sizeof(buf), "T%d:%s", 
+                    else if (txt && txt[0])
+                        snprintf(buf, sizeof(buf), "T%d:%s",
                                  catdata ? catdata->tatami : 0, txt);
                     else
-                        snprintf(buf, sizeof(buf), "T%d", 
+                        snprintf(buf, sizeof(buf), "T%d",
                                  catdata ? catdata->tatami : 0);
-                } else if (txt && m->forcedtatami)
-                    snprintf(buf, sizeof(buf), "T%d:%s", 
+                } else if (txt && txt[0] && m->forcedtatami)
+                    snprintf(buf, sizeof(buf), "T%d:%s",
                              catdata ? catdata->tatami : 0,
                              txt);
                 else if (m->forcedtatami)
                     snprintf(buf, sizeof(buf), "T%d", catdata ? catdata->tatami : 0);
-                else if (txt)
+                else if (txt && txt[0])
                     snprintf(buf, sizeof(buf), "%s", txt);
                 cairo_show_text(c, buf);
             }
@@ -312,8 +317,10 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
                             cairo_set_source_rgb(c, 0.5, 0.5, 1.0);
                         else
                             cairo_set_source_rgb(c, 1.0, 0.5, 0.5);
-                    } else if (m->forcedtatami)
+                    } else if (m->forcednumber)
                         cairo_set_source_rgb(c, 1.0, 1.0, 0.6);
+                    else if (m->forcedtatami)
+                        cairo_set_source_rgb(c, 1.0, 1.0, 0.9);
                     else
                         cairo_set_source_rgb(c, 1.0, 1.0, 1.0);
 
@@ -343,8 +350,10 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
                             cairo_set_source_rgb(c, 0.5, 0.5, 1.0);
                         else
                             cairo_set_source_rgb(c, 1.0, 0.5, 0.5);
-                    } else if (m->forcedtatami)
+                    } else if (m->forcednumber)
                         cairo_set_source_rgb(c, 1.0, 1.0, 0.6);
+                    else if (m->forcedtatami)
+                        cairo_set_source_rgb(c, 1.0, 1.0, 0.9);
                     else
                         cairo_set_source_rgb(c, 1.0, 1.0, 1.0);
 
@@ -417,7 +426,7 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
         }
     }
 
-	
+
     cairo_save(c);
     cairo_set_line_width(c, THICK_LINE);
     cairo_set_source_rgb(c, 0.0, 0.0, 0.0);
@@ -445,7 +454,7 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
         gint t = dragged_t; //find_box(dragged_x, dragged_y);
         if (t >= 0) {
             gdouble snap_y;
-            if (point_click_areas[t].y2 - dragged_y < 
+            if (point_click_areas[t].y2 - dragged_y <
                 dragged_y - point_click_areas[t].y1)
                 snap_y = point_click_areas[t].y2;
             else
@@ -503,7 +512,7 @@ static gboolean expose_scrolled(GtkWidget *widget, GdkEventExpose *event, gpoint
 {
     static time_t last = 0;
     time_t now = time(NULL);
-    if (now > last) 
+    if (now > last)
         gtk_widget_queue_draw(w.darea);
     last = now;
     return FALSE;
@@ -512,7 +521,7 @@ static gboolean expose_scrolled(GtkWidget *widget, GdkEventExpose *event, gpoint
 /* This is called when we need to draw the windows contents */
 static gboolean expose(GtkWidget *widget, GdkEventExpose *event, gpointer userdata)
 {
-    //static gint cnt = 0; 
+    //static gint cnt = 0;
     //g_print("MATCH-GRAPH: expose %d\n", cnt++);
 #if (GTKVER == 3)
     cairo_t *c = (cairo_t *)event;
@@ -521,7 +530,7 @@ static gboolean expose(GtkWidget *widget, GdkEventExpose *event, gpointer userda
 
     if (button_drag) {
         cairo_text_extents_t extents;
-    
+
         cairo_set_line_width(c, THIN_LINE);
         cairo_text_extents(c, dragged_text, &extents);
         cairo_set_source_rgb(c, 1.0, 1.0, 1.0);
@@ -538,7 +547,7 @@ static gboolean expose(GtkWidget *widget, GdkEventExpose *event, gpointer userda
         gint t = dragged_t; //find_box(dragged_x, dragged_y);
         if (t >= 0) {
             gdouble snap_y;
-            if (point_click_areas[t].y2 - dragged_y < 
+            if (point_click_areas[t].y2 - dragged_y <
                 dragged_y - point_click_areas[t].y1)
                 snap_y = point_click_areas[t].y2;
             else
@@ -600,12 +609,12 @@ static gint scroll_callback(gpointer userdata)
 
     GtkAdjustment *adj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(w->scrolled_window));
     gdouble adjnow = gtk_adjustment_get_value(adj);
-	
+
     if (scroll_up_down == SCROLL_DOWN)
         gtk_adjustment_set_value(adj, adjnow + 50.0);
     else if (scroll_up_down == SCROLL_UP)
         gtk_adjustment_set_value(adj, adjnow - 50.0);
-	
+
     return TRUE;
 }
 
@@ -654,28 +663,28 @@ void set_match_graph_page(GtkWidget *notebook)
 
 #if (GTKVER == 3)
     gtk_widget_set_events(w.darea, gtk_widget_get_events(w.darea) |
-                          GDK_BUTTON_PRESS_MASK | 
+                          GDK_BUTTON_PRESS_MASK |
                           GDK_BUTTON_RELEASE_MASK |
                           /*GDK_POINTER_MOTION_MASK |*/
                           GDK_POINTER_MOTION_HINT_MASK |
                           GDK_BUTTON_MOTION_MASK);
 #else
     GTK_WIDGET_SET_FLAGS(w.darea, GTK_CAN_FOCUS);
-    gtk_widget_add_events(w.darea, 
-                          GDK_BUTTON_PRESS_MASK | 
+    gtk_widget_add_events(w.darea,
+                          GDK_BUTTON_PRESS_MASK |
                           GDK_BUTTON_RELEASE_MASK |
                           /*GDK_POINTER_MOTION_MASK |*/
                           GDK_POINTER_MOTION_HINT_MASK |
                           GDK_BUTTON_MOTION_MASK);
 #endif
-	
+
 
     /* pack the table into the scrolled window */
 #if (GTKVER == 3) && GTK_CHECK_VERSION(3,8,0)
     //gtk_widget_set_hexpand(w.darea, TRUE);
-    //gtk_widget_set_vexpand(w.darea, TRUE);    
+    //gtk_widget_set_vexpand(w.darea, TRUE);
     //gtk_widget_set_hexpand(w.scrolled_window, TRUE);
-    //gtk_widget_set_vexpand(w.scrolled_window, TRUE);    
+    //gtk_widget_set_vexpand(w.scrolled_window, TRUE);
     //GtkWidget *viewport = gtk_viewport_new(NULL,NULL);
     //gtk_container_add(GTK_CONTAINER(viewport), w.darea);
     gtk_container_add(GTK_CONTAINER(w.scrolled_window), w.darea);
@@ -691,21 +700,21 @@ void set_match_graph_page(GtkWidget *notebook)
     gtk_notebook_append_page(GTK_NOTEBOOK(notebook), w.scrolled_window, match_graph_label);
 
 #if (GTKVER == 3)
-    g_signal_connect(G_OBJECT(w.scrolled_window), 
+    g_signal_connect(G_OBJECT(w.scrolled_window),
                      "draw", G_CALLBACK(expose_scrolled), NULL);
-    g_signal_connect(G_OBJECT(w.darea), 
+    g_signal_connect(G_OBJECT(w.darea),
                      "draw", G_CALLBACK(expose), w.darea);
     g_signal_connect(G_OBJECT(w.darea),"configure-event",
                      G_CALLBACK(configure_event_cb), NULL);
 #else
-    g_signal_connect(G_OBJECT(w.darea), 
+    g_signal_connect(G_OBJECT(w.darea),
                      "expose-event", G_CALLBACK(expose), w.darea);
 #endif
-    g_signal_connect(G_OBJECT(w.darea), 
+    g_signal_connect(G_OBJECT(w.darea),
                      "button-press-event", G_CALLBACK(mouse_click), NULL);
-    g_signal_connect(G_OBJECT(w.darea), 
+    g_signal_connect(G_OBJECT(w.darea),
                      "button-release-event", G_CALLBACK(release_notify), NULL);
-    g_signal_connect(G_OBJECT(w.darea), 
+    g_signal_connect(G_OBJECT(w.darea),
                      "motion-notify-event", G_CALLBACK(motion_notify), &w);
     g_timeout_add(500, scroll_callback, &w);
 
@@ -756,30 +765,30 @@ static void freeze(GtkWidget *menuitem, gpointer userdata)
     gint t = (ptr_to_gint(userdata)) >> AREA_SHIFT;
     gint arg = (ptr_to_gint(userdata)) & ARG_MASK;
 
-    db_freeze_matches(point_click_areas[t].tatami, 
-                      point_click_areas[t].category, 
+    db_freeze_matches(point_click_areas[t].tatami,
+                      point_click_areas[t].category,
                       point_click_areas[t].number,
                       arg);
     init_display();
 }
 
-static gboolean mouse_click(GtkWidget *sheet_page, 
-			    GdkEventButton *event, 
+static gboolean mouse_click(GtkWidget *sheet_page,
+			    GdkEventButton *event,
 			    gpointer userdata)
 {
 #if (GTKVER == 3)
     gdk_window_set_cursor(gtk_widget_get_window(GTK_WIDGET(main_window)), hand_cursor);
 #else
     gdk_window_set_cursor(GTK_WIDGET(main_window)->window, hand_cursor);
-#endif	
+#endif
     button_drag = FALSE;
 
     /* single click with the right mouse button? */
-    if (event->type == GDK_BUTTON_PRESS &&  
+    if (event->type == GDK_BUTTON_PRESS &&
         (event->button == 1)) {
-        gdouble x = event->x, y = event->y; 
+        gdouble x = event->x, y = event->y;
         gint t;
-		    
+
         dragged_x = x;
         dragged_y = y;
 
@@ -806,14 +815,14 @@ static gboolean mouse_click(GtkWidget *sheet_page,
         button_drag = TRUE;
         refresh_window();
         return TRUE;
-		    
-    } else if (event->type == GDK_BUTTON_PRESS &&  
+
+    } else if (event->type == GDK_BUTTON_PRESS &&
                (event->button == 3)) {
         GtkWidget *menu, *menuitem;
-        gdouble x = event->x, y = event->y; 
+        gdouble x = event->x, y = event->y;
         gint t;
         gpointer p;
-		    
+
         t = find_box(x, y);
         if (t < 0)
             return FALSE;
@@ -843,7 +852,7 @@ static gboolean mouse_click(GtkWidget *sheet_page,
         g_signal_connect(menuitem, "activate",
                          (GCallback) change_comment, p);
         gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
-		
+
         gtk_menu_shell_append(GTK_MENU_SHELL(menu), gtk_separator_menu_item_new());
 
         menuitem = gtk_menu_item_new_with_label(_("Freeze match order"));
@@ -851,25 +860,33 @@ static gboolean mouse_click(GtkWidget *sheet_page,
         g_signal_connect(menuitem, "activate",
                          (GCallback) freeze, p);
         gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
-		
+
         menuitem = gtk_menu_item_new_with_label(_("Unfreeze exported"));
         p = gint_to_ptr(UNFREEZE_EXPORTED | (t << AREA_SHIFT));
         g_signal_connect(menuitem, "activate",
                          (GCallback) freeze, p);
         gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
-		
+
         menuitem = gtk_menu_item_new_with_label(_("Unfreeze imported"));
         p = gint_to_ptr(UNFREEZE_IMPORTED | (t << AREA_SHIFT));
         g_signal_connect(menuitem, "activate",
                          (GCallback) freeze, p);
         gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
-		
+
         menuitem = gtk_menu_item_new_with_label(_("Unfreeze this"));
         p = gint_to_ptr(UNFREEZE_THIS | (t << AREA_SHIFT));
         g_signal_connect(menuitem, "activate",
                          (GCallback) freeze, p);
         gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
-		
+
+	if (gint_to_ptr(point_click_areas[t].category) >= 10000) {
+	    menuitem = gtk_menu_item_new_with_label(_("Show Sheet"));
+	    g_signal_connect(menuitem, "activate",
+			     (GCallback) show_category_window,
+			     gint_to_ptr(point_click_areas[t].category));
+	    gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
+	}
+
         gtk_widget_show_all(menu);
 
         gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL,
@@ -881,8 +898,8 @@ static gboolean mouse_click(GtkWidget *sheet_page,
     return FALSE;
 }
 
-static gboolean motion_notify(GtkWidget *sheet_page, 
-                              GdkEventMotion *event, 
+static gboolean motion_notify(GtkWidget *sheet_page,
+                              GdkEventMotion *event,
                               gpointer userdata)
 {
     //static GTimeVal next_time, now;
@@ -900,7 +917,7 @@ static gboolean motion_notify(GtkWidget *sheet_page,
     gdouble x = event->x, y = event->y;
     GtkAdjustment *adj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(w->scrolled_window));
     gdouble adjnow = gtk_adjustment_get_value(adj);
-	
+
     if (y - adjnow > alloch - 50) {
         scroll_up_down = SCROLL_DOWN;
     } else if (y - adjnow < 20.0) {
@@ -910,7 +927,7 @@ static gboolean motion_notify(GtkWidget *sheet_page,
 
     dragged_x = x;
     dragged_y = y;
-	
+
     dragged_t = find_box(x, y);
     if (dragged_t < 0)
         return FALSE;
@@ -918,7 +935,7 @@ static gboolean motion_notify(GtkWidget *sheet_page,
     struct category_data *catdata = avl_get_category(dragged_match.category);
     if (catdata)
         snprintf(dragged_text, sizeof(dragged_text), "%s:%d (%d)",
-                 catdata->category, dragged_match.number, 
+                 catdata->category, dragged_match.number,
                  point_click_areas[dragged_t].position);
 #if 0
     g_get_current_time(&now);
@@ -933,8 +950,8 @@ static gboolean motion_notify(GtkWidget *sheet_page,
     return FALSE;
 }
 
-static gboolean release_notify(GtkWidget *sheet_page, 
-			       GdkEventButton *event, 
+static gboolean release_notify(GtkWidget *sheet_page,
+			       GdkEventButton *event,
 			       gpointer userdata)
 {
     //gdk_window_set_cursor(GTK_WIDGET(main_window)->window, NULL);
@@ -944,9 +961,9 @@ static gboolean release_notify(GtkWidget *sheet_page,
 
     button_drag = FALSE;
 
-    if (event->type == GDK_BUTTON_RELEASE &&  
+    if (event->type == GDK_BUTTON_RELEASE &&
         event->button == 1) {
-        gdouble x = event->x, y = event->y; 
+        gdouble x = event->x, y = event->y;
         gint t;
 
         t = find_box(x, y);
@@ -954,11 +971,11 @@ static gboolean release_notify(GtkWidget *sheet_page,
             return FALSE;
 
         gboolean after = FALSE;
-        if (point_click_areas[t].y2 - y < 
+        if (point_click_areas[t].y2 - y <
             y - point_click_areas[t].y1)
             after = TRUE;
 
-        db_change_freezed(dragged_match.category, 
+        db_change_freezed(dragged_match.category,
                           dragged_match.number,
                           point_click_areas[t].tatami,
                           point_click_areas[t].position, after);
@@ -975,5 +992,3 @@ void set_match_graph_titles(void)
     if (match_graph_label)
         gtk_label_set_text(GTK_LABEL(match_graph_label), _("Matches"));
 }
-
-
