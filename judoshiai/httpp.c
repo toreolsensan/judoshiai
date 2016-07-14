@@ -1,7 +1,7 @@
 /* Httpp.c
 **
 ** http parsing engine
-** 
+**
 ** This program is distributed under the GNU General Public License, version 2.
 ** A copy of this license is included with this source.
 */
@@ -70,8 +70,8 @@ void httpp_initialize(http_parser_t *parser, http_varlist_t *defaults)
 
 static int split_headers(char *data, unsigned long len, char **line)
 {
-    /* first we count how many lines there are 
-    ** and set up the line[] array     
+    /* first we count how many lines there are
+    ** and set up the line[] array
     */
     int lines = 0;
     unsigned long i;
@@ -123,15 +123,15 @@ static void parse_headers(http_parser_t *parser, char **line, int lines)
 
                     if (i < slen)
                         value = &line[l][i];
-                    
+
                     break;
                 }
             }
         }
-        
+
         if (name != NULL && value != NULL) {
             httpp_setvar(parser, _lowercase(name), value);
-            name = NULL; 
+            name = NULL;
             value = NULL;
         }
     }
@@ -143,7 +143,7 @@ int httpp_parse_response(http_parser_t *parser, const char *http_data, unsigned 
     char *line[MAX_HEADERS];
     int lines, slen,i, whitespace=0, where=0,code;
     char *version=NULL, *resp_code=NULL, *message=NULL;
-    
+
     if(http_data == NULL)
         return 0;
 
@@ -560,4 +560,3 @@ static int _free_vars(void *key)
 
     return 1;
 }
-
