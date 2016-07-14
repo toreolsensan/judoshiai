@@ -12,18 +12,6 @@ RELFILE=$(RELDIR)/bin/judoshiai$(SUFF)
 RUNDIR=$(DEVELDIR)
 
 all:
-	make -C common
-	make -C judoshiai
-	make -C judotimer
-	make -C judoinfo
-	make -C judoweight
-	make -C judojudogi
-ifeq ($(JUDOPROXY),YES)
-	make -C judoproxy
-endif
-	make -C emscripten/judotimer
-	make -C emscripten/judoinfo
-	make -C doc
 	rm -rf $(RELDIR)
 	mkdir -p $(RELDIR)/bin
 	mkdir -p $(RELDIR)/share/locale/
@@ -45,6 +33,17 @@ endif
 	mkdir -p $(RELDIR)/doc
 	mkdir -p $(RELDIR)/licenses
 	mkdir -p $(RELDIR)/etc
+	make -C common
+	make -C judoshiai
+	make -C judotimer
+	make -C judoinfo
+	make -C judoweight
+	make -C judojudogi
+ifeq ($(JUDOPROXY),YES)
+	make -C judoproxy
+endif
+	make -C emscripten
+	make -C doc
 	cp $(JUDOSHIAIFILE) $(RELDIR)/bin/
 	cp $(JUDOTIMERFILE) $(RELDIR)/bin/
 	cp $(JUDOINFOFILE) $(RELDIR)/bin/
@@ -185,5 +184,5 @@ clean:
 	make -C judoweight clean
 	make -C judojudogi clean
 	make -C judoproxy clean
-	#make -C doc clean
+	make -C emscripten clean
 	rm -rf $(RELEASEDIR)
