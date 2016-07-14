@@ -86,7 +86,7 @@ void sighandler(int sig)
     sigreceived = 1;
 }
 
-static gint mysend(SOCKET s, gchar *p, gint len)
+static gint mysend(SOCKET s, const gchar *p, gint len)
 {
     gint n;
 #if 0
@@ -408,21 +408,160 @@ void get_categories(http_parser_t *parser)
     send_html_bottom(parser);
 }
 
+static struct bracket_cache {
+    gchar *sheet;
+    gint   len;
+    gint   size;
+    gint   cat;
+    gint   svg;
+} sheet_cache[NUM_TATAMIS];
+
+static GMutex cache_lock;
+
+const gchar *svg_start =
+    "HTTP/1.0 200 OK\r\n"
+    "Cache-Control: no-cache, no-store, must-revalidate\r\n"
+    "Pragma: no-cache\r\n"
+    "Expires: 0\r\n"
+    "Content-Type: image/svg+xml\r\n\r\n";
+const gchar *png_start =
+    "HTTP/1.0 200 OK\r\n"
+    "Cache-Control: no-cache, no-store, must-revalidate\r\n"
+    "Pragma: no-cache\r\n"
+    "Expires: 0\r\n"
+    "Content-Type: image/png\r\n\r\n";
+
+gboolean is_png(const guchar *png)
+{
+    return png[0] != '<';
+    return (png[0] == 137 && png[1] == 80 &&
+	    png[2] == 78 && png[3] == 71);
+}
+
 static cairo_status_t write_to_http(void *closure, const unsigned char *data, unsigned int length)
 {
-    mysend((SOCKET)ptr_to_gint(closure), (gchar *)data, length);
+    struct write_closure *c = closure;
+    gint t = c->tatami;
+    gboolean start = FALSE;
+
+    if (c->len == 0) {
+	g_print("sending bracket png=%d ", is_png(data));
+	start = TRUE;
+	if (!is_png(data))
+	    mysend(c->fd, svg_start, strlen(svg_start));
+	else
+	    mysend(c->fd, png_start, strlen(png_start));
+    }
+    c->len += length;
+
+    mysend(c->fd, (gchar *)data, length);
+
+    if (t < 0 || t >= NUM_TATAMIS)
+	return CAIRO_STATUS_SUCCESS;
+
+    if (!sheet_cache[t].sheet) {
+	sheet_cache[t].sheet = g_malloc(1024*8);
+	sheet_cache[t].size = 1024*8;
+    }
+
+    if (start) {
+	if (!is_png(data))
+	    strcpy(sheet_cache[t].sheet, svg_start);
+	else
+	    strcpy(sheet_cache[t].sheet, png_start);
+	sheet_cache[t].len = strlen(sheet_cache[t].sheet);
+    }
+
+    while (length >= sheet_cache[t].size - sheet_cache[t].len) {
+	sheet_cache[t].size *= 2;
+	sheet_cache[t].sheet = g_realloc(sheet_cache[t].sheet,
+					 sheet_cache[t].size);
+    }
+
+    memcpy(sheet_cache[t].sheet + sheet_cache[t].len, data, length);
+    sheet_cache[t].len += length;
+
     return CAIRO_STATUS_SUCCESS;
 }
 
 void get_sheet(http_parser_t *parser)
 {
-    SOCKET s = parser->sock;
-    gint catid = atoi(parser->uri + 6);
+    struct write_closure closure;
+    memset(&closure, 0, sizeof(closure));
+    SOCKET s = closure.fd = parser->sock;
+    gint catid = closure.cat = atoi(parser->uri + 6);
+    closure.tatami = -1;
+    closure.info = 0;
 
     sendf(s, "HTTP/1.0 200 OK\r\n");
     sendf(s, "Content-Type: image/png\r\n");
     sendf(s, "\r\n");
-    write_sheet_to_stream(catid, write_to_http, gint_to_ptr(s));
+
+    write_sheet_to_stream(catid, write_to_http, &closure);
+}
+
+void get_bracket(http_parser_t *parser)
+{
+    gint tatami = -1;
+    struct write_closure closure;
+    memset(&closure, 0, sizeof(closure));
+    SOCKET s = closure.fd = parser->sock;
+    gint catid = 0;
+    gboolean svg = 0;
+    const gchar *tmp;
+
+    tmp = httpp_get_query_param(parser, "t");
+    if (tmp) tatami = atoi(tmp);
+
+    tmp = httpp_get_query_param(parser, "c");
+    if (tmp) catid = atoi(tmp);
+
+    tmp = httpp_get_query_param(parser, "s");
+    if (tmp) svg = atoi(tmp);
+
+    if (catid == 0 && tatami >= 0 && tatami < NUM_TATAMIS)
+	catid = next_matches_info[tatami][0].catnum;
+
+    closure.cat = catid;
+    closure.tatami = tatami;
+    closure.info = TRUE;
+    closure.svg = svg;
+
+    g_mutex_lock(&cache_lock);
+
+    if (tatami >= 0 && tatami < NUM_TATAMIS) {
+	if (sheet_cache[tatami].cat == catid &&
+	    sheet_cache[tatami].sheet &&
+	    sheet_cache[tatami].svg == svg &&
+	    sheet_cache[tatami].len > 100) {
+	    mysend(s, sheet_cache[tatami].sheet, sheet_cache[tatami].len);
+	    g_mutex_unlock(&cache_lock);
+	    return;
+	}
+	sheet_cache[tatami].len = 0;
+	sheet_cache[tatami].cat = catid;
+	sheet_cache[tatami].svg = svg;
+    }
+
+    write_sheet_to_stream(catid, write_to_http, &closure);
+
+    g_mutex_unlock(&cache_lock);
+}
+
+void clear_cache_by_cat(gint cat)
+{
+    gint i;
+
+    g_mutex_lock(&cache_lock);
+
+    for (i = 0; i < NUM_TATAMIS; i++)
+	if (cat == 0 ||
+	    sheet_cache[i].cat == cat) {
+	    sheet_cache[i].cat = 0;
+	    sheet_cache[i].len = 0;
+	}
+
+    g_mutex_unlock(&cache_lock);
 }
 
 static gint pts2int(const gchar *p)
@@ -447,11 +586,11 @@ void check_password(http_parser_t *parser)
     gboolean accepted = FALSE;
     static time_t last_time = 0;
     time_t now;
-	
+
     now = time(NULL);
     if (now > last_time + 20)
         goto verdict;
-	
+
     if (webpwcrc32 == 0) {
         accepted = TRUE;
         goto verdict;
@@ -1500,7 +1639,7 @@ void sql_cmd(http_parser_t *parser, gchar *txt)
     SOCKET s = parser->sock;
     gchar **tablecopy;
     gint numrows, numcols, row, col;
-    char *sql;
+    const char *sql;
 
     if (!is_accepted(parser->address)) {
 	sendf(s, "HTTP/1.0 404 NOK\r\n");
@@ -1593,7 +1732,7 @@ gpointer analyze_http(gpointer param)
 
     if (parser->req_type == httpp_req_get) {
         //g_print("GET %s (fd=%d)\n", parser->uri, parser->sock);
-					
+
         if (!strcmp(parser->uri, "/competitors"))
             get_competitors(parser, FALSE);
         else if (!strcmp(parser->uri, "/delcompetitors"))
@@ -1608,6 +1747,8 @@ gpointer analyze_http(gpointer param)
             run_judotimer(parser);
         else if (!strncmp(parser->uri, "/sheet", 6))
             get_sheet(parser);
+        else if (!strcmp(parser->uri, "/bracket"))
+            get_bracket(parser);
         else if (!strcmp(parser->uri, "/password"))
             check_password(parser);
         else if (!strcmp(parser->uri, "/login"))
@@ -1639,7 +1780,7 @@ gpointer analyze_http(gpointer param)
     } else if (parser->req_type == httpp_req_post) {
         g_print("POST %s\n", parser->uri);
     }
-    
+
     for (i = 0; i < NUM_CONNECTIONS; i++)
         if (connections[i].fd == parser->sock) {
 #if defined(__WIN32__) || defined(WIN32)
