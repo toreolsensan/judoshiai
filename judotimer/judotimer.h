@@ -105,6 +105,7 @@ extern gboolean no_big_text;
 extern gboolean show_competitor_names;
 extern gchar saved_first1[32], saved_first2[32], saved_last1[32], saved_last2[32], saved_cat[16];
 extern gchar saved_country1[8], saved_country2[8];
+extern gint saved_round;
 extern gboolean fullscreen;
 extern gboolean require_judogi_ok;
 extern gboolean showflags, showletter;
@@ -142,7 +143,7 @@ extern int clock_running(void);
 //extern void set_cursor(int cursor);
 //extern int lz_uncompress(unsigned char *in, unsigned char *out, unsigned int insize);
 extern void show_message(char *cat1, char *blue1, char *white1,
-                         char *cat2, char *blue2, char *white2, gint flags);
+                         char *cat2, char *blue2, char *white2, gint flags, gint round);
 extern void send_result(int bluepts[4], int whitepts[4], char blue_vote, char white_vote,
 			char blue_hansokumake, char white_hansokumake, gint legend, gint hikiwake);
 extern void update_status(void);
@@ -227,7 +228,8 @@ extern void toggle_switch_sides(GtkWidget *menu_item, gpointer data);
 extern void light_switch_sides(gboolean yes);
 extern void parse_name(const gchar *s, gchar *first, gchar *last, gchar *club, gchar *country);
 extern void display_comp_window(gchar *cat, gchar *comp1, gchar *comp2, 
-                                gchar *first1, gchar *first2, gchar *country1, gchar *country2);
+                                gchar *first1, gchar *first2, gchar *country1, gchar *country2,
+				gint round);
 extern gboolean blue_background(void);
 extern void close_ad_window(void);
 extern void display_ask_window(gchar *name, gchar *cat, gchar winner);

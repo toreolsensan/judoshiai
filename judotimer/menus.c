@@ -101,7 +101,7 @@ static void display_competitors(GtkWidget *w,
                                 gpointer   data )
 {
     display_comp_window(saved_cat, saved_last1, saved_last2, 
-                        saved_first1, saved_first2, saved_country1, saved_country2);
+                        saved_first1, saved_first2, saved_country1, saved_country2, saved_round);
 }
 
 static void display_video( GtkWidget *w,

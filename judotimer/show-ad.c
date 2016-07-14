@@ -3,7 +3,7 @@
 /*
  * Copyright (C) 2006-2016 by Hannu Jokinen
  * Full copyright text is included in the software package.
- */ 
+ */
 
 /* GIF-decoding functions are extracted from Gif-Lib
    by Gershon Elber, Eric S. Raymond, Toshio Kuratomi.
@@ -16,7 +16,7 @@
    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
    copies of the Software, and to permit persons to whom the Software is
    furnished to do so, subject to the following conditions:
-   
+
    The above copyright notice and this permission notice shall be included in
    all copies or substantial portions of the Software.
 
@@ -26,7 +26,7 @@
    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-   THE SOFTWARE.  
+   THE SOFTWARE.
 */
 
 /* The creators of the GIF format require the following
@@ -199,12 +199,12 @@ static int DGifGetScreenDesc(GifFileType * GifFile);
 #define D_GIF_ERR_EOF_TOO_SOON   113
 
 /******************************************************************************
- * O.K., here are the routines from GIF_LIB file GIF_ERR.C.              
+ * O.K., here are the routines from GIF_LIB file GIF_ERR.C.
  ******************************************************************************/
 static void PrintGifError1(int line);
 
 /******************************************************************************
- * Color Map handling from ALLOCGIF.C                          
+ * Color Map handling from ALLOCGIF.C
  *****************************************************************************/
 
 static ColorMapObject *MakeMapObject(int ColorCount,
@@ -213,7 +213,7 @@ static void FreeMapObject(ColorMapObject * Object);
 static int BitSize(int n);
 
 /******************************************************************************
- * Support for the in-core structures allocation (slurp mode).              
+ * Support for the in-core structures allocation (slurp mode).
  *****************************************************************************/
 
 /* This is the in-core version of an extension record */
@@ -236,7 +236,7 @@ static void FreeExtension(SavedImage * Image);
 static void FreeSavedImages(GifFileType * GifFile);
 
 /******************************************************************************
- * The library's internal utility font                          
+ * The library's internal utility font
  *****************************************************************************/
 
 #define GIF_FONT_WIDTH  8
@@ -287,7 +287,7 @@ typedef struct GifFilePrivateType {
 static int _GifError = 0;
 
 /*****************************************************************************
- * Print the last GIF error to stderr.                         
+ * Print the last GIF error to stderr.
  ****************************************************************************/
 #define PrintGifError() PrintGifError1(__LINE__)
 
@@ -377,13 +377,13 @@ PrintGifError1(int line) {
 
 
 /******************************************************************************
- * Miscellaneous utility functions                          
+ * Miscellaneous utility functions
  *****************************************************************************/
 
 /* return smallest bitfield size n will fit in */
 static int
 BitSize(int n) {
-    
+
     register int i;
 
     for (i = 1; i <= 8; i++)
@@ -393,7 +393,7 @@ BitSize(int n) {
 }
 
 /******************************************************************************
- * Color map object functions                              
+ * Color map object functions
  *****************************************************************************/
 
 /*
@@ -403,7 +403,7 @@ BitSize(int n) {
 static ColorMapObject *
 MakeMapObject(int ColorCount,
               const GifColorType * ColorMap) {
-    
+
     ColorMapObject *Object;
 
     /*** FIXME: Our ColorCount has to be a power of two.  Is it necessary to
@@ -411,7 +411,7 @@ MakeMapObject(int ColorCount,
     if (ColorCount != (1 << BitSize(ColorCount))) {
         return ((ColorMapObject *) NULL);
     }
-    
+
     Object = (ColorMapObject *)malloc(sizeof(ColorMapObject));
     if (Object == (ColorMapObject *) NULL) {
         return ((ColorMapObject *) NULL);
@@ -491,7 +491,7 @@ FreeExtension(SavedImage * Image)
 }
 
 /******************************************************************************
- * Image block allocation functions                          
+ * Image block allocation functions
  ******************************************************************************/
 
 static
@@ -549,7 +549,7 @@ DGifOpenFileName(const char *FileName) {
     int FileHandle;
     GifFileType *GifFile;
 
-    if ((FileHandle = open(FileName, O_RDONLY 
+    if ((FileHandle = open(FileName, O_RDONLY
 #ifdef WIN32
                            | O_BINARY
 #endif
@@ -775,7 +775,7 @@ DGifGetImageDesc(GifFileType * GifFile) {
     GifFile->Image.Interlace = (Buf[0] & 0x40);
     if (Buf[0] & 0x80) {    /* Does this image have local color map? */
 
-        /*** FIXME: Why do we check both of these in order to do this? 
+        /*** FIXME: Why do we check both of these in order to do this?
          * Why do we have both Image and SavedImages? */
         if (GifFile->Image.ColorMap && GifFile->SavedImages == NULL)
             FreeMapObject(GifFile->Image.ColorMap);
@@ -926,7 +926,7 @@ static
 int
 DGifGetExtensionNext(GifFileType * GifFile,
                      GifByteType ** Extension) {
-    
+
     GifByteType Buf;
     GifFilePrivateType *Private = (GifFilePrivateType *)GifFile->Private;
 
@@ -955,7 +955,7 @@ DGifGetExtensionNext(GifFileType * GifFile,
 static
 int
 DGifCloseFile(GifFileType * GifFile) {
-    
+
     GifFilePrivateType *Private;
     FILE *File;
 
@@ -1253,7 +1253,7 @@ DGifGetPrefixChar(GifPrefixType *Prefix,
 static int
 DGifDecompressInput(GifFileType * GifFile,
                     int *Code) {
-    
+
     GifFilePrivateType *Private = (GifFilePrivateType *)GifFile->Private;
 
     GifByteType NextByte;
@@ -1268,7 +1268,7 @@ DGifDecompressInput(GifFileType * GifFile,
         _GifError = D_GIF_ERR_IMAGE_DEFECT;
         return GIF_ERROR;
     }
-    
+
     while (Private->CrntShiftState < Private->RunningBits) {
         /* Needs to get more bytes from input stream for next code: */
         if (DGifBufferedInput(GifFile, Private->Buf, &NextByte) == GIF_ERROR) {
@@ -1468,7 +1468,7 @@ static gint read_gif(gchar *FileName)
             }
 
             save_advertisement(ScreenBuffer, GifFile->SWidth, GifFile->SHeight,
-                               GifFile->Image.Left, GifFile->Image.Top, 
+                               GifFile->Image.Left, GifFile->Image.Top,
                                GifFile->Image.Width, GifFile->Image.Height);
 
             break;
@@ -1529,6 +1529,7 @@ static gchar b_last[32];
 static gchar w_last[32];
 static gchar b_country[8], w_country[8];
 static GtkWidget *ok_button = NULL;
+static gint cat_round = 0;
 
 static struct frame *get_current_frame(GtkWidget *widget)
 {
@@ -1630,7 +1631,7 @@ static void draw_flag(cairo_t *c, gdouble y, gdouble height, gchar *country, gdo
         cairo_restore(c);
         gdouble flag_w = flag_h*icon_w/icon_h;
         if (flag_w > name_start) name_start = flag_w;
-        
+
         // rectangle
         cairo_set_source_rgb(c, 0.0, 0.0, 0.0);
         cairo_set_line_width(c, 3);
@@ -1688,7 +1689,7 @@ static gboolean expose_ad(GtkWidget *widget, GdkEventExpose *event, gpointer use
         cairo_set_source_rgb(c, 0.0, 0.0, 0.0);
         cairo_rectangle(c, 0.0, 0.0, width, FIRST_BLOCK_HEIGHT);
         cairo_fill(c);
-        
+
         // white area
         cairo_set_source_rgb(c, 1.0, 1.0, 1.0);
         if (white_first)
@@ -1696,7 +1697,7 @@ static gboolean expose_ad(GtkWidget *widget, GdkEventExpose *event, gpointer use
         else
             cairo_rectangle(c, 0.0, THIRD_BLOCK_START, width, OTHER_BLOCK_HEIGHT);
         cairo_fill(c);
-        
+
         if (blue_background())
             cairo_set_source_rgb(c, 0.0, 0.0, 1.0);
         else
@@ -1710,10 +1711,11 @@ static gboolean expose_ad(GtkWidget *widget, GdkEventExpose *event, gpointer use
         cairo_fill(c);
 
         // write category
+	gdouble right = 0.0;
         cairo_set_font_size(c, 0.6*FIRST_BLOCK_HEIGHT);
-
         cairo_set_source_rgb(c, 1.0, 1.0, 1.0);
         cairo_text_extents(c, category, &extents);
+	right = 10.0 + extents.width;
         cairo_move_to(c, 10.0, (FIRST_BLOCK_HEIGHT - extents.height)/2.0 - extents.y_bearing);
         cairo_show_text(c, category);
 
@@ -1723,7 +1725,7 @@ static gboolean expose_ad(GtkWidget *widget, GdkEventExpose *event, gpointer use
             snprintf(buf, sizeof(buf), "%d:%d%d", rmin, rtsec, rsec);
             cairo_set_source_rgb(c, 1.0, 0, 0);
             cairo_text_extents(c, "88:88", &extents);
-            cairo_move_to(c, width - 10.0 - extents.width, 
+            cairo_move_to(c, width - 10.0 - extents.width,
                           (FIRST_BLOCK_HEIGHT - extents.height)/2.0 - extents.y_bearing);
             cairo_show_text(c, buf);
 
@@ -1736,12 +1738,21 @@ static gboolean expose_ad(GtkWidget *widget, GdkEventExpose *event, gpointer use
                 cairo_set_source_rgb(c, 1.0, 0, 0);
 
             if (rsec & 1) {
-                cairo_rectangle(c, width - 20.0 - extents.width - extents.height, 
-                                (FIRST_BLOCK_HEIGHT - extents.height)/2.0, 
+                cairo_rectangle(c, width - 20.0 - extents.width - extents.height,
+                                (FIRST_BLOCK_HEIGHT - extents.height)/2.0,
                                 extents.height, extents.height);
                 cairo_fill(c);
             }
-        }
+        } else {
+	    cairo_set_font_size(c, 0.5*FIRST_BLOCK_HEIGHT);
+	    const gchar *rnd = round_to_str(cat_round);
+	    cairo_text_extents(c, rnd, &extents);
+	    gdouble left = width - 10.0 - extents.width;
+	    if (left < right + 10.0) left = right + 10.0;
+	    cairo_move_to(c, left,
+			  (FIRST_BLOCK_HEIGHT - extents.height)/2.0 - extents.y_bearing);
+	    cairo_show_text(c, rnd);
+	}
 
         name_start = 10.0;
 
@@ -1811,7 +1822,7 @@ static gboolean expose_ad(GtkWidget *widget, GdkEventExpose *event, gpointer use
                 }
             }
             even = !even;
-        } 
+        }
 
 #if (GTKVER != 3)
         cairo_show_page(c);
@@ -1822,7 +1833,7 @@ static gboolean expose_ad(GtkWidget *widget, GdkEventExpose *event, gpointer use
 
     //gtk_window_get_size(ad_window, &width, &height);
 
-    gdouble scalex = 1.0*width/frame->width, 
+    gdouble scalex = 1.0*width/frame->width,
         scaley = 1.0*height/frame->height,
         scale = (scalex < scaley) ? scalex : scaley;
 
@@ -1868,7 +1879,7 @@ static void destroy_ad( GtkWidget *widget,
     msg.u.update_label.label_num = STOP_COMPETITORS;
 
     /*write_tv_logo(&(msg.u.update_label));*/
-    
+
     if (mode != MODE_SLAVE)
         send_label_msg(&msg);
 
@@ -1978,10 +1989,10 @@ static void save_advertisement(GifRowType *ScreenBuffer,
                                                          swidth, sheight, frame->stride);
     advertisements[num_ads].swidth = swidth;
     advertisements[num_ads].sheight = sheight;
-	
+
     //g_print("install num_ads=%d:", num_ads);
     struct frame *f = &advertisements[num_ads].frames;
-		
+
     while (f->next) {
         //g_print(" f=%p->%p", f, f->next);
         f = f->next;
@@ -2072,16 +2083,16 @@ void display_ad_window(void)
     g_signal_connect (G_OBJECT (window), "destroy",
                       G_CALLBACK (destroy_ad), NULL);
 #if (GTKVER == 3)
-    g_signal_connect(G_OBJECT(darea), 
+    g_signal_connect(G_OBJECT(darea),
                      "draw", G_CALLBACK(expose_ad), NULL);
 #else
-    g_signal_connect(G_OBJECT(darea), 
+    g_signal_connect(G_OBJECT(darea),
                      "expose-event", G_CALLBACK(expose_ad), NULL);
 #endif
     g_signal_connect(G_OBJECT(window),
                      "key-press-event", G_CALLBACK(close_display), window);
-    if (ok_button) 
-        g_signal_connect(G_OBJECT(ok_button), 
+    if (ok_button)
+        g_signal_connect(G_OBJECT(ok_button),
                          "clicked", G_CALLBACK(close_display_2), window);
 
     if (comp_names_pending) {
@@ -2123,7 +2134,7 @@ void toggle_show_comp(GtkWidget *menu_item, gpointer data)
     GtkWidget *flag_scale = gtk_scale_new(GTK_ORIENTATION_HORIZONTAL, GTK_ADJUSTMENT (flag_adj));
     gtk_scale_set_digits(GTK_SCALE(flag_scale), 1);
     gtk_scale_set_value_pos(GTK_SCALE(flag_scale), GTK_POS_TOP);
-    gtk_scale_set_draw_value(GTK_SCALE(flag_scale), TRUE);    
+    gtk_scale_set_draw_value(GTK_SCALE(flag_scale), TRUE);
     */
     GtkWidget *flag_scale = gtk_spin_button_new_with_range(3.0, 10.0, 1.0);
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(flag_scale), flagsize);
@@ -2133,7 +2144,7 @@ void toggle_show_comp(GtkWidget *menu_item, gpointer data)
     GtkWidget *name_scale = gtk_scale_new(GTK_ORIENTATION_HORIZONTAL, GTK_ADJUSTMENT (name_adj));
     gtk_scale_set_digits(GTK_SCALE(name_scale), 1);
     gtk_scale_set_value_pos(GTK_SCALE(name_scale), GTK_POS_TOP);
-    gtk_scale_set_draw_value(GTK_SCALE(name_scale), TRUE);    
+    gtk_scale_set_draw_value(GTK_SCALE(name_scale), TRUE);
     */
     GtkWidget *name_scale = gtk_spin_button_new_with_range(3.0, 10.0, 1.0);
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(name_scale), namesize);
@@ -2154,7 +2165,7 @@ void toggle_show_comp(GtkWidget *menu_item, gpointer data)
 
     gtk_grid_attach(GTK_GRID(vbox), name_scale,  1, 4, 1, 1);
 
-    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), 
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),
                        vbox, FALSE, FALSE, 0);
 
     gtk_widget_show_all(dialog);
@@ -2206,9 +2217,9 @@ void toggle_advertise(GtkWidget *menu_item, gpointer data)
         gtk_widget_destroy(dialog);
         return;
     }
-               
+
     ok = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(do_ads));
-        
+
     if (ok) {
         g_free(ad_directory);
         ad_directory = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
@@ -2246,9 +2257,9 @@ void toggle_advertise(GtkWidget *menu_item, gpointer data)
     }
 }
 
-void display_comp_window(gchar *cat, gchar *comp1, gchar *comp2, 
-                         gchar *first1, gchar *first2, 
-                         gchar *country1, gchar *country2)
+void display_comp_window(gchar *cat, gchar *comp1, gchar *comp2,
+                         gchar *first1, gchar *first2,
+                         gchar *country1, gchar *country2, gint round)
 {
     if (!show_competitor_names)
         return;
@@ -2256,20 +2267,21 @@ void display_comp_window(gchar *cat, gchar *comp1, gchar *comp2,
     gchar *p;
 
     strncpy(category, cat, sizeof(category)-1);
+    cat_round = round;
 
     if (showletter) {
         gchar buf[8];
         if (first1[0]) {
             g_utf8_strncpy(buf, first1, 1);
             snprintf(b_last, sizeof(b_last), "%s.%s", buf, comp1);
-        } else 
+        } else
             strncpy(b_last, comp1, sizeof(b_last)-1);
 
         if (first2[0]) {
             g_utf8_strncpy(buf, first2, 1);
             snprintf(w_last, sizeof(w_last), "%s.%s", buf, comp2);
-        } else 
-            strncpy(w_last, comp1, sizeof(w_last)-1);
+        } else
+            strncpy(w_last, comp2, sizeof(w_last)-1);
     } else {
         strncpy(b_last, comp1, sizeof(b_last)-1);
         strncpy(w_last, comp2, sizeof(w_last)-1);
@@ -2277,7 +2289,7 @@ void display_comp_window(gchar *cat, gchar *comp1, gchar *comp2,
 
     strncpy(b_country, country1, sizeof(b_country)-1);
     strncpy(w_country, country2, sizeof(w_country)-1);
-    
+
     p = strchr(b_last, '\t');
     if (p) *p = 0;
 

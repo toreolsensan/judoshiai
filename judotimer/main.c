@@ -412,6 +412,11 @@ CBFUNC(flag_white)
         return FALSE;
 }
 
+CBFUNC(round)
+{
+        return FALSE;
+}
+
 
 /* globals */
 gchar *program_path;
@@ -434,6 +439,7 @@ static gint t_min, t_tsec, t_sec;
 static gint o_tsec, o_sec, padding, sonomama;
 static gint points, comment, cat1, cat2, gs;
 static gint pts_to_blue, pts_to_white, flag_blue, flag_white;
+static gint round;
 
 static GdkColor color_yellow, color_white, color_grey, color_green, color_blue, color_red, color_black;
 static GdkColor *bgcolor = &color_blue, bgcolor_pts, bgcolor_points;
@@ -923,6 +929,7 @@ static gchar *get_name_by_layout(gchar *first, gchar *last, gchar *club, gchar *
 
 gchar saved_first1[32], saved_first2[32], saved_last1[32], saved_last2[32], saved_cat[16];
 gchar saved_country1[8], saved_country2[8];
+gint  saved_round = 0;
 
 void show_message(gchar *cat_1,
                   gchar *blue_1,
@@ -930,7 +937,8 @@ void show_message(gchar *cat_1,
                   gchar *cat_2,
                   gchar *blue_2,
                   gchar *white_2,
-                  gint flags)
+                  gint flags,
+		  gint rnd)
 {
     gchar buf[32], *name;
     gchar *b_tmp = blue_1, *w_tmp = white_1;
@@ -949,6 +957,7 @@ void show_message(gchar *cat_1,
 	strcpy(msg.u.update_label.comp1_b, blue_2);
 	strcpy(msg.u.update_label.comp2_b, white_2);
 	msg.u.update_label.xalign = flags;
+	msg.u.update_label.round = rnd;
 
         send_label_msg(&msg);
     }
@@ -1045,7 +1054,11 @@ void show_message(gchar *cat_1,
     else
         set_text(MY_LABEL(comment), "");
 
+    set_text(MY_LABEL(round), round_to_str(rnd));
+    saved_round = rnd;
+
     expose_label(NULL, cat1);
+    expose_label(NULL, round);
     expose_label(NULL, blue_name_1);
     expose_label(NULL, white_name_1);
     expose_label(NULL, cat2);
@@ -1735,7 +1748,7 @@ void update_label(struct msg_update_label *msg)
     } else if (w == START_ADVERTISEMENT) {
         display_ad_window();
     } else if (w == START_COMPETITORS) {
-        display_comp_window(msg->text3, msg->text, msg->text2, "", "", "", "");
+        display_comp_window(msg->text3, msg->text, msg->text2, "", "", "", "", 0);
         /*write_tv_logo(msg);*/
         return;
     } else if (w == STOP_COMPETITORS) {
@@ -1752,7 +1765,7 @@ void update_label(struct msg_update_label *msg)
         strncpy(saved_cat, msg->text3, sizeof(saved_cat)-1);
     } else if (w == SHOW_MESSAGE) {
 	show_message(msg->cat_a, msg->comp1_a, msg->comp2_a,
-		     msg->cat_b, msg->comp1_b, msg->comp2_b, msg->xalign);
+		     msg->cat_b, msg->comp1_b, msg->comp2_b, msg->xalign, msg->round);
     } else if (w == SET_SCORE) {
         set_score(msg->xalign);
     } else if (w == SET_POINTS) {
@@ -1980,7 +1993,7 @@ int main( int   argc,
     } else {
 	g_print("Screen supports alpha channels\n");
 	judotimer_log("Screen supports alpha channels\n");
-	//gtk_widget_set_app_paintable(window, TRUE);
+	gtk_widget_set_app_paintable(window, TRUE);
 	gtk_widget_set_visual(window, visual);
 #if 0
 	GdkRGBA bg = {0.8, 0.8, 0.8, 1.0};
@@ -2064,6 +2077,8 @@ int main( int   argc,
     GET_LABEL(flag_blue, "", 0.0, 0.0, 0.0, 0.0);
     GET_LABEL(flag_white, "", 0.0, 0.0, 0.0, 0.0);
 
+    GET_LABEL(round, "Round", 0.0, 0.0, 0.0, 0.0);
+
     labels[match1].xalign = -1;
     labels[match2].xalign = -1;
     labels[blue_name_1].xalign = -1;
@@ -2072,6 +2087,7 @@ int main( int   argc,
     labels[white_name_2].xalign = -1;
     labels[cat1].xalign = -1;
     labels[cat2].xalign = -1;
+    labels[round].xalign = -1;
     labels[gs].xalign = -1;
     labels[blue_club].xalign = -1;
     labels[white_club].xalign = -1;
@@ -2857,6 +2873,8 @@ void select_display_layout(GtkWidget *menu_item, gpointer data)
         set_position(white_name_2, 0.5+TXTW, SMALL_H, 0.5-TXTW, SMALL_H);
         set_position(cat1,         0.55, 4*SMALL_H, 0.325, 6*SMALL_H);
         set_position(cat2,         0.5, SMALL_H, TXTW, SMALL_H);
+
+        set_position(round,        0.55, 4*SMALL_H+6*SMALL_H, 0.325, 2*SMALL_H);
 
         set_position(comment,  0.0, 3.0*SMALL_H, 1.0, SMALL_H);
 
