@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-12-30 07:46+0200\n"
+"POT-Creation-Date: 2016-07-14 12:47+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -777,6 +777,9 @@ msgstr "Матч за бронзу А"
 
 msgid "Bronze match B"
 msgstr "Матч за бронзу Б"
+
+msgid "Semifinal"
+msgstr "Полуфинал"
 
 msgid "Semifinal A"
 msgstr "Полуфинал А"
@@ -1806,4 +1809,31 @@ msgid "Custom layout file..."
 msgstr ""
 
 msgid "Resolve 3-way ties by time:"
+msgstr ""
+
+msgid "Move Matches"
+msgstr ""
+
+msgid "Match order from file"
+msgstr ""
+
+msgid "Match Order from File"
+msgstr ""
+
+msgid "Move Matches..."
+msgstr ""
+
+msgid "Use the first places only:"
+msgstr ""
+
+msgid "Round"
+msgstr ""
+
+msgid "Round Robin"
+msgstr ""
+
+msgid "Repechage"
+msgstr ""
+
+msgid "Bronze"
 msgstr ""

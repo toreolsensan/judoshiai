@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-12-30 07:46+0200\n"
+"POT-Creation-Date: 2016-07-14 12:47+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -782,6 +782,9 @@ msgstr "Pronssiottelu A"
 msgid "Bronze match B"
 msgstr "Pronssiottelu B"
 
+msgid "Semifinal"
+msgstr "Semifinaali"
+
 msgid "Semifinal A"
 msgstr "Semifinaali A"
 
@@ -1231,6 +1234,9 @@ msgstr "viivytä"
 
 msgid "Final"
 msgstr "Finaali"
+
+msgid "Bronze"
+msgstr "Pronssi"
 
 msgid "Bronze1"
 msgstr "Pronssi 1"
@@ -1808,3 +1814,21 @@ msgstr "Asettelutiedosto..."
 
 msgid "Resolve 3-way ties by time:"
 msgstr "Otteluaika ratkaisee ristiin voitetut:"
+
+msgid "Move Matches"
+msgstr "Siirrä otteluita"
+
+msgid "Move Matches..."
+msgstr "Siirrä otteluita..."
+
+msgid "Use the first places only:"
+msgstr "Käytä vain ensimmäisiä paikkoja"
+
+msgid "Round"
+msgstr "Kierros"
+
+msgid "Round Robin"
+msgstr "Pooli"
+
+msgid "Repechage"
+msgstr "Keräily"

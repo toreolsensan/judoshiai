@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-12-30 07:46+0200\n"
+"POT-Creation-Date: 2016-07-14 12:47+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -946,6 +946,9 @@ msgstr "Bronsmatch A"
 msgid "Bronze match B"
 msgstr "Bronsmatch B"
 
+msgid "Semifinal"
+msgstr "Semifinal"
+
 msgid "Semifinal A"
 msgstr "Semifinal A"
 
@@ -1020,6 +1023,9 @@ msgstr " fördröjd"
 
 msgid "Final"
 msgstr "Final"
+
+msgid "Bronze"
+msgstr "Brons"
 
 msgid "Bronze1"
 msgstr "Brons1"
@@ -1804,3 +1810,27 @@ msgstr "Fil för anpassad layout..."
 
 msgid "Resolve 3-way ties by time:"
 msgstr "Skilj lika poängtal med snabbast vinst:"
+
+msgid "Move Matches"
+msgstr ""
+
+msgid "Match order from file"
+msgstr ""
+
+msgid "Match Order from File"
+msgstr ""
+
+msgid "Move Matches..."
+msgstr ""
+
+msgid "Use the first places only:"
+msgstr ""
+
+msgid "Round"
+msgstr ""
+
+msgid "Round Robin"
+msgstr ""
+
+msgid "Repechage"
+msgstr ""
