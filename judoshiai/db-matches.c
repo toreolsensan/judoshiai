@@ -16,7 +16,7 @@
 
 static void db_print_one_match(struct match *m);
 
-//#define TATAMI_DEBUG 1
+#define TATAMI_DEBUG 5
 
 gboolean auto_arrange = FALSE;
 //gboolean use_weights = FALSE;
@@ -40,6 +40,10 @@ static gint next_match_num;
 static gint next_match_tatami;
 
 static gint match_count, matched_matches_count;
+static struct {
+    gint match_count, matched_matches_count;
+} matches_by_tatami[NUM_TATAMIS+1];
+
 static gint bluecomp, whitecomp, bluepts, whitepts;
 
 static gint team1_wins, team2_wins, no_team_wins, team1_pts, team2_pts;
@@ -123,10 +127,10 @@ static void change_team_competitors_to_real_persons(gint category, gint number, 
 static int db_callback_matches(void *data, int argc, char **argv, char **azColName)
 {
     guint flags = ptr_to_gint(data);
-    gint i, val;
+    gint i;
 
     for (i = 0; i < argc; i++) {
-        val =  argv[i] ? atoi(argv[i]) : 0;
+        gint val = argv[i] ? atoi(argv[i]) : 0;
 
         if (IS(category))
             m.category = val;
@@ -156,56 +160,61 @@ static int db_callback_matches(void *data, int argc, char **argv, char **azColNa
             m.date = val;
         else if (IS(legend))
             m.legend = val;
-        else if (IS(deleted)) {
+        else if (IS(deleted))
             m.deleted = val;
-            match_row_found = TRUE;
-
-            if ((val & DELETED) == 0)
-                match_found = TRUE;
-
-            if ((val & DELETED) == 0 &&
-                m.blue >= COMPETITOR && m.white >= COMPETITOR)
-                real_match_found = TRUE;
-
-            if ((val & DELETED) == 0 &&
-                (m.blue_points || m.white_points) &&
-                m.blue >= COMPETITOR && m.white >= COMPETITOR) {
-                matched_match_found = TRUE;
-                matched_matches_count++;
-            } else if ((val & DELETED) == 0 &&
-                       m.blue >= COMPETITOR && m.white >= COMPETITOR &&
-                       m.blue_points == 0 && m.white_points == 0 &&
-                       ((avl_get_competitor_status(m.blue) & HANSOKUMAKE) ||
-                        (avl_get_competitor_status(m.white) & HANSOKUMAKE))) {
-                matched_matches_count++;
-            }
-
-            if ((val & DELETED) == 0 &&
-                m.blue >= COMPETITOR && m.white >= COMPETITOR &&
-                m.blue_points == 0 && m.white_points == 0 &&
-                (avl_get_competitor_status(m.blue) & HANSOKUMAKE) == 0 &&
-                (avl_get_competitor_status(m.white) & HANSOKUMAKE) == 0) {
-                unmatched_match_found = TRUE;
-            }
-
-            if ((val & DELETED) == 0 &&
-                m.blue != GHOST && m.white != GHOST) {
-                match_count++;
-            }
-
-            if (bluecomp == 0)
-                bluecomp = m.blue;
-            else if (bluecomp != m.blue)
-                bluecomp = -1;
-            if (whitecomp == 0)
-                whitecomp = m.white;
-            else if (whitecomp != m.white)
-                whitecomp = -1;
-            bluepts += m.blue_points;
-            whitepts += m.white_points;
-        }
     }
 
+    /* Statistics */
+    match_row_found = TRUE;
+
+    if ((m.deleted & DELETED) == 0)
+	match_found = TRUE;
+
+    if ((m.deleted & DELETED) == 0 &&
+	m.blue >= COMPETITOR && m.white >= COMPETITOR)
+	real_match_found = TRUE;
+
+    if ((m.deleted & DELETED) == 0 &&
+	(m.blue_points || m.white_points) &&
+	m.blue >= COMPETITOR && m.white >= COMPETITOR) {
+	matched_match_found = TRUE;
+	matched_matches_count++;
+	matches_by_tatami[m.forcedtatami].matched_matches_count++;
+    } else if ((m.deleted & DELETED) == 0 &&
+	       m.blue >= COMPETITOR && m.white >= COMPETITOR &&
+	       m.blue_points == 0 && m.white_points == 0 &&
+	       ((avl_get_competitor_status(m.blue) & HANSOKUMAKE) ||
+		(avl_get_competitor_status(m.white) & HANSOKUMAKE))) {
+	matched_matches_count++;
+	matches_by_tatami[m.forcedtatami].matched_matches_count++;
+    }
+
+    if ((m.deleted & DELETED) == 0 &&
+	m.blue >= COMPETITOR && m.white >= COMPETITOR &&
+	m.blue_points == 0 && m.white_points == 0 &&
+	(avl_get_competitor_status(m.blue) & HANSOKUMAKE) == 0 &&
+	(avl_get_competitor_status(m.white) & HANSOKUMAKE) == 0) {
+	unmatched_match_found = TRUE;
+    }
+
+    if ((m.deleted & DELETED) == 0 &&
+	m.blue != GHOST && m.white != GHOST) {
+	match_count++;
+	matches_by_tatami[m.forcedtatami].match_count++;
+    }
+
+    if (bluecomp == 0)
+	bluecomp = m.blue;
+    else if (bluecomp != m.blue)
+	bluecomp = -1;
+    if (whitecomp == 0)
+	whitecomp = m.white;
+    else if (whitecomp != m.white)
+	whitecomp = -1;
+    bluepts += m.blue_points;
+    whitepts += m.white_points;
+
+    /* Operation */
     if (flags & DB_NEXT_MATCH) {
         struct category_data *catdata = avl_get_category(m.category);
 
@@ -217,7 +226,11 @@ static int db_callback_matches(void *data, int argc, char **argv, char **azColNa
         if (team && (m.category & MATCH_CATEGORY_SUB_MASK) == 0)
             return 0;
 
-        m.tatami = m.forcedtatami ? m.forcedtatami : catdata->tatami;
+	if (m.forcedtatami)
+	    m.tatami = m.forcedtatami;
+	else
+	    m.tatami = catdata->tatami;
+
         m.group = catdata->group;
 
         if (m.blue == GHOST || m.white == GHOST)
@@ -306,23 +319,80 @@ static int db_callback_matches(void *data, int argc, char **argv, char **azColNa
             } else if (next_match[i].forcednumber == 0) {
                 if (next_match[i].group > m.group) insert = TRUE;
                 else if (next_match[i].group == m.group) {
-                    if (team) {
-                        if (next_match[i].category == m.category) {
-                            if (next_match[i].number > m.number)
-                                insert = TRUE;
-                        }
+		    if (next_match[i].category == m.category &&
+			next_match[i].number > m.number) {
+			insert = TRUE;
+#ifdef TATAMI_DEBUG
+			if (m.tatami == TATAMI_DEBUG) {
+			    g_print("Insert decision line %d\n", __LINE__);
+			}
+#endif
                     } else {
+#if 1
+			/* Matches in round order. */
+			struct category_data *catdata1 =
+			    avl_get_category(next_match[i].category);
+			if (!catdata1) continue;
+			gint a = round_number(catdata->system, m.number) & ~ROUND_UP_DOWN_MASK;
+			gint b = round_number(catdata1->system, next_match[i].number) & ~ROUND_UP_DOWN_MASK;
+#else
                         gint a = (100000*m.number)/num_matches_estimate(m.category);
                         gint b = (100000*next_match[i].number)/num_matches_estimate(next_match[i].category);
-                        if (b > a) insert = TRUE;
-                        else if (b == a) {
-                            if (next_match[i].category > m.category)
+#endif
+                        if (b > a &&
+			    (next_match[i].category != m.category ||
+			     (next_match[i].number > m.number))) {
+			    insert = TRUE;
+#ifdef TATAMI_DEBUG
+			    if (m.tatami == TATAMI_DEBUG) {
+				g_print("Insert decision line %d\n", __LINE__);
+				g_print("  a=0x%x b=0x%x m=%d/%d next=%d/%d\n",
+					a, b, m.category, m.number,
+					next_match[i].category, next_match[i].number);
+			    }
+#endif
+                        } else if (b == a) {
+#if 1
+			    /* Lowest weight class first. */
+			    gchar *p = strrchr(catdata->category, '-');
+			    if (p) a = atoi(p+1);
+			    else a = 1000;
+			    p = strrchr(catdata1->category, '-');
+			    if (p) b = atoi(p+1);
+			    else b = 1000;
+
+			    if (a < b) {
+				insert = TRUE;
+#ifdef TATAMI_DEBUG
+				if (m.tatami == TATAMI_DEBUG) {
+				    g_print("Insert decision line %d\n", __LINE__);
+				}
+#endif
+			    } else if (a == b &&
+				       next_match[i].category > m.category) {
                                 insert = TRUE;
+#ifdef TATAMI_DEBUG
+				if (m.tatami == TATAMI_DEBUG) {
+				    g_print("Insert decision line %d\n", __LINE__);
+				}
+#endif
+			    }
+#else
+                            if (next_match[i].category > m.category) {
+                                insert = TRUE;
+			    }
+#endif
                         }
                     }
                 }
             }
             if (insert) {
+#ifdef TATAMI_DEBUG
+		if (m.tatami == TATAMI_DEBUG) {
+		    g_print("Inserting %d/%d (%s) before %d/%d\n", m.category, m.number,
+			    catdata->category, next_match[i].category, next_match[i].number);
+		}
+#endif
                 INSERT_SPACE(i);
                 next_match[i] = m;
                 return 0;
@@ -375,6 +445,15 @@ static int db_callback_matches(void *data, int argc, char **argv, char **azColNa
     return 0;
 }
 
+void db_set_forced_tatami(gint tatami, gint category, gint number)
+{
+    /* Don't change tatami if forcednumber is set. */
+    db_exec_str(NULL, NULL,
+		"UPDATE matches SET \"forcedtatami\"=%d, \"comment\"=%d "
+		"WHERE \"category\"=%d AND \"number\"=%d AND \"forcednumber\"=0",
+		tatami, COMMENT_EMPTY, category, number);
+}
+
 void db_freeze_matches(gint tatami, gint category, gint number, gint arg)
 {
     gint i, num = 1;
@@ -406,6 +485,7 @@ void db_freeze_matches(gint tatami, gint category, gint number, gint arg)
         db_read_matches();
         for (i = 1; i <= number_of_tatamis; i++)
             update_matches(0, (struct compsys){0,0,0,0}, i);
+	update_category_status_info_all();
         break;
     case UNFREEZE_IMPORTED:
         db_exec_str(NULL, NULL,
@@ -415,6 +495,7 @@ void db_freeze_matches(gint tatami, gint category, gint number, gint arg)
         db_read_matches();
         for (i = 1; i <= number_of_tatamis; i++)
             update_matches(0, (struct compsys){0,0,0,0}, i);
+	update_category_status_info_all();
         break;
     case UNFREEZE_THIS:
         db_exec_str(NULL, NULL,
@@ -424,6 +505,17 @@ void db_freeze_matches(gint tatami, gint category, gint number, gint arg)
         db_read_match(category, number);
         update_matches(category, (struct compsys){0,0,0,0}, 0);
         update_matches(0, (struct compsys){0,0,0,0}, tatami);
+	update_category_status_info_all();
+        break;
+    case UNFREEZE_THESE:
+        db_exec_str(NULL, NULL,
+                    "UPDATE matches SET \"forcedtatami\"=0, \"forcednumber\"=0, "
+                    "\"comment\"=%d WHERE \"category\"=%d AND \"forcedtatami\"=%d",
+                    COMMENT_EMPTY, category, tatami);
+        db_read_matches();
+        for (i = 1; i <= number_of_tatamis; i++)
+            update_matches(0, (struct compsys){0,0,0,0}, i);
+	update_category_status_info_all();
         break;
     }
 }
@@ -646,17 +738,25 @@ gboolean db_matched_matches_exist(gint category)
 }
 
 
-gint db_category_match_status(gint category)
+gint db_category_get_match_status(gint category)
+{
+    struct category_data *catdata = avl_get_category(category);
+    if (catdata)
+	return catdata->match_status;
+    return db_category_set_match_status(category);
+}
+
+gint db_category_set_match_status(gint category)
 {
     gchar buffer[100];
     gint res = 0;
 
     match_count = matched_matches_count = bluecomp = whitecomp = bluepts = whitepts = 0;
+    match_found = match_row_found = matched_match_found = unmatched_match_found = real_match_found = FALSE;
+    memset(matches_by_tatami, 0, sizeof(matches_by_tatami));
 
     sprintf(buffer, "SELECT * FROM matches WHERE "
             VARVAL(category, %d), category);
-
-    match_found = match_row_found = matched_match_found = unmatched_match_found = real_match_found = FALSE;
     db_exec(db_name, buffer, NULL, db_callback_matches);
 
     if (matched_matches_count > match_count) {
@@ -681,11 +781,20 @@ gint db_category_match_status(gint category)
 
     struct category_data *catdata = avl_get_category(category);
     if (catdata) {
+	gint i;
         if (catdata->system.system)
             res |= SYSTEM_DEFINED;
         catdata->match_status = res;
-        catdata->match_count = match_count;
-        catdata->matched_matches_count = matched_matches_count;
+        catdata->by_tatami[0].match_count = catdata->match_count = match_count;
+        catdata->by_tatami[0].matched_matches_count =
+	    catdata->matched_matches_count = matched_matches_count;
+	for (i = 1; i <= NUM_TATAMIS; i++) {
+	    catdata->by_tatami[i].match_count = matches_by_tatami[i].match_count;
+	    catdata->by_tatami[i].matched_matches_count = matches_by_tatami[i].matched_matches_count;
+	    /* pos 0 contains count for default tatami */
+	    catdata->by_tatami[0].match_count -= catdata->by_tatami[i].match_count;
+	    catdata->by_tatami[0].matched_matches_count -= catdata->by_tatami[i].matched_matches_count;
+	}
 
         if (find_age_index(catdata->category) < 0)
             catdata->defined = FALSE;
@@ -1371,7 +1480,7 @@ struct match *db_next_match(gint category, gint tatami)
 
         next_match[1].flags = result;
 
-        if (result && next_match[1].forcedtatami == 0) { // don't change fixed order
+        if (result && next_match[1].forcednumber == 0) { // don't change fixed order
             for (i = 2; i < NEXT_MATCH_NUM; i++) {
                 gint r = 0;
                 rtb = rtw = 0;
