@@ -16,3 +16,13 @@ test
 *.rc
 *.res
 *~
+emscripten/judotimer/*.js*
+emscripten/judotimer/*.bc
+emscripten/judoinfo/*.js*
+emscripten/judoinfo/*.bc
+emscripten/common/*.js*
+emscripten/common/*.bc
+etc/info.js*
+etc/timer.js*
+etc/info.html
+etc/timer.html
