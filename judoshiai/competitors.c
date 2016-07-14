@@ -334,7 +334,7 @@ static void judoka_edited_callback(GtkWidget *widget,
 
         if (!ok) {
             SHOW_MESSAGE("Error!");
-        } else if (db_category_match_status(index1) & REAL_MATCH_EXISTS) {
+        } else if (db_category_get_match_status(index1) & REAL_MATCH_EXISTS) {
             SHOW_MESSAGE("%s: %s", realcategory, _("Remove drawing first"));
         } else if (db_competitor_match_status(edited.index) & MATCH_EXISTS) {
             SHOW_MESSAGE("%s %s: %s.",
@@ -822,7 +822,7 @@ void view_on_row_activated(GtkTreeView        *treeview,
             gtk_grid_attach(GTK_GRID(table), tmp, 0, 2, 1, 1);
             judoka_tmp->belt = tmp = gtk_combo_box_text_new();
             gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(tmp), NULL, "?");
-            for (i = 0; i < NUM_TATAMIS; i++) {
+            for (i = 0; i < number_of_tatamis; i++) {
                 char buf[10];
                 sprintf(buf, "T %d", i+1);
                 gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(tmp), NULL, buf);
@@ -832,7 +832,7 @@ void view_on_row_activated(GtkTreeView        *treeview,
             gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, 2, 3);
             judoka_tmp->belt = tmp = gtk_combo_box_new_text();
             gtk_combo_box_append_text(GTK_COMBO_BOX(tmp), "?");
-            for (i = 0; i < NUM_TATAMIS; i++) {
+            for (i = 0; i < number_of_tatamis; i++) {
                 char buf[10];
                 sprintf(buf, "T %d", i+1);
                 gtk_combo_box_append_text(GTK_COMBO_BOX(tmp), buf);
