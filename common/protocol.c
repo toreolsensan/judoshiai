@@ -59,6 +59,7 @@ gint encode_msg(struct message *m, guchar *buf, gint buflen)
 	putstr(m->u.next_match.blue_2);
 	putstr(m->u.next_match.white_2);
 	put32(m->u.next_match.flags);
+	put32(m->u.next_match.round);
 	break;
     case MSG_RESULT:
 	put32(m->u.result.tatami);
@@ -108,6 +109,7 @@ gint encode_msg(struct message *m, guchar *buf, gint buflen)
 	put32(m->u.match_info.white);
 	put32(m->u.match_info.flags);
 	put32(m->u.match_info.rest_time);
+	put32(m->u.match_info.round);
 	break;
     case MSG_11_MATCH_INFO:
 	for (i = 0; i < 11; i++) {
@@ -119,6 +121,7 @@ gint encode_msg(struct message *m, guchar *buf, gint buflen)
 	    put32(m->u.match_info_11.info[i].white);
 	    put32(m->u.match_info_11.info[i].flags);
 	    put32(m->u.match_info_11.info[i].rest_time);
+	    put32(m->u.match_info_11.info[i].round);
 	}
 	break;
     case MSG_NAME_INFO:
@@ -238,6 +241,7 @@ gint decode_msg(struct message *m, guchar *buf, gint buflen)
 	getstr(m->u.next_match.blue_2);
 	getstr(m->u.next_match.white_2);
 	get32(m->u.next_match.flags);
+	get32(m->u.next_match.round);
 	break;
     case MSG_RESULT:
 	get32(m->u.result.tatami);
@@ -287,6 +291,7 @@ gint decode_msg(struct message *m, guchar *buf, gint buflen)
 	get32(m->u.match_info.white);
 	get32(m->u.match_info.flags);
 	get32(m->u.match_info.rest_time);
+	get32(m->u.match_info.round);
 	break;
     case MSG_11_MATCH_INFO:
 	for (i = 0; i < 11; i++) {
@@ -298,6 +303,7 @@ gint decode_msg(struct message *m, guchar *buf, gint buflen)
 	    get32(m->u.match_info_11.info[i].white);
 	    get32(m->u.match_info_11.info[i].flags);
 	    get32(m->u.match_info_11.info[i].rest_time);
+	    get32(m->u.match_info_11.info[i].round);
 	}
 	break;
     case MSG_NAME_INFO:

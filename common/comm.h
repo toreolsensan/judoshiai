@@ -57,7 +57,7 @@
 #define SHIAI_PORT     2310
 #define JUDOTIMER_PORT 2311
 
-#define COMM_VERSION 2
+#define COMM_VERSION 3
 
 #define APPLICATION_TYPE_UNKNOWN 0
 #define APPLICATION_TYPE_SHIAI   1
@@ -99,7 +99,7 @@ enum message_types {
 #define MATCH_FLAG_REST_TIME     0x0004
 #define MATCH_FLAG_BLUE_REST     0x0008
 #define MATCH_FLAG_WHITE_REST    0x0010
-#define MATCH_FLAG_SEMIFINAL_A   0x0020  
+#define MATCH_FLAG_SEMIFINAL_A   0x0020
 #define MATCH_FLAG_SEMIFINAL_B   0x0040
 #define MATCH_FLAG_BRONZE_A      0x0080
 #define MATCH_FLAG_BRONZE_B      0x0100
@@ -113,6 +113,24 @@ enum message_types {
                                   MATCH_FLAG_JUDOGI2_OK | MATCH_FLAG_JUDOGI2_NOK)
 #define MATCH_FLAG_REPECHAGE     0x8000
 #define MATCH_FLAG_TEAM_EVENT    0x10000
+
+#define ROUND_MASK            0x00ff
+#define ROUND_TYPE_MASK       0x0f00
+#define ROUND_UP_DOWN_MASK    0xf000
+#define ROUND_UPPER           0x1000
+#define ROUND_LOWER           0x2000
+#define ROUND_ROBIN           (1<<8)
+#define ROUND_REPECHAGE       (2<<8)
+#define ROUND_REPECHAGE_1     (ROUND_REPECHAGE | ROUND_UPPER)
+#define ROUND_REPECHAGE_2     (ROUND_REPECHAGE | ROUND_LOWER)
+#define ROUND_SEMIFINAL       (3<<8)
+#define ROUND_SEMIFINAL_1     (ROUND_SEMIFINAL | ROUND_UPPER)
+#define ROUND_SEMIFINAL_2     (ROUND_SEMIFINAL | ROUND_LOWER)
+#define ROUND_BRONZE          (4<<8)
+#define ROUND_BRONZE_1        (ROUND_BRONZE | ROUND_UPPER)
+#define ROUND_BRONZE_2        (ROUND_BRONZE | ROUND_LOWER)
+#define ROUND_SILVER          (5<<8)
+#define ROUND_FINAL           (6<<8)
 
 struct msg_next_match {
     int tatami;
@@ -134,6 +152,7 @@ struct msg_next_match {
     char blue_2[64];
     char white_2[64];
     int  flags;
+    int  round;
 };
 
 struct msg_result {
@@ -200,6 +219,7 @@ struct msg_match_info {
     int white;
     int flags;
     int rest_time;
+    int round;
 };
 
 struct msg_11_match_info {
@@ -256,6 +276,7 @@ struct msg_update_label {
     /* special label nums */
     gint label_num;
     gint xalign;
+    gint round;
 };
 
 #define EDIT_OP_GET        0
@@ -335,7 +356,7 @@ extern GStaticMutex send_mutex;
 extern gboolean ssdp_notify;
 extern gchar ssdp_id[64];
 
-/* comm */
+/* comm.c */
 extern void open_comm_socket(void);
 extern void send_packet(struct message *msg);
 extern gint send_msg(gint fd, struct message *msg);
@@ -348,5 +369,8 @@ extern gint encode_msg(struct message *m, guchar *buf, gint buflen);
 extern gint decode_msg(struct message *m, guchar *buf, gint buflen);
 extern void set_ssdp_id(void);
 extern void handle_ssdp_packet(gchar *p);
+
+/* common.c */
+extern const gchar *round_to_str(gint round);
 
 #endif
