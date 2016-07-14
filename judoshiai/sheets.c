@@ -172,7 +172,7 @@ static double paint_comp(struct paint_data *pd, struct pool_matches *unused1, in
     gint sys = pd->systm.system - SYSTEM_FRENCH_8;
     gint table = pd->systm.table;
     double x1, y1, w1, r1, r2;
-    gchar numbuf[4];
+    gchar numbuf[8];
     cairo_text_extents_t extents1;
     gint intval;
     gdouble doubleval, doubleval2;
@@ -324,6 +324,14 @@ static double paint_comp(struct paint_data *pd, struct pool_matches *unused1, in
     }
 
     cairo_save(pd->c);
+
+    if (pd->highlight_match == comp_num) {
+	//cairo_save(pd->c);
+        cairo_set_source_rgb(pd->c, 1.0, 0, 0);
+	//cairo_rectangle(pd->c, x1, y1, x2-x1, y1-y2);
+	//cairo_stroke(pd->c);
+	//cairo_restore(pd->c);
+    }
 
     if (blue >= COMPETITOR) {
         j = get_data(blue);
@@ -712,8 +720,15 @@ static void paint_pool(struct paint_data *pd, gint category, struct judoka *ctg,
             continue;
 
         WRITE_TABLE(match_table, i, 0, "%d", i);
+
+	if (pd->highlight_match == i)
+	    cairo_set_source_rgb(pd->c, 1.0, 0, 0);
+
         WRITE_TABLE(match_table, i, 1, "%s", get_name_and_club_text(pm.j[blue], CLUB_TEXT_NO_CLUB));
         WRITE_TABLE(match_table, i, 4, "%s", get_name_and_club_text(pm.j[white], CLUB_TEXT_NO_CLUB));
+
+	cairo_set_source_rgb(pd->c, 0, 0, 0);
+
         if (pm.m[i].blue_points || pm.m[i].white_points) {
             if (team_event)
                 WRITE_TABLE(match_table, i, 5, "%d/%d-%d/%d",
@@ -1098,8 +1113,15 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
 
             if (pm.j[blue] && pm.j[white]) {
                 WRITE_TABLE(match_table, ix, 0, "%d", i);
+
+		if (pd->highlight_match == i)
+		    cairo_set_source_rgb(pd->c, 1.0, 0, 0);
+
                 WRITE_TABLE(match_table, ix, 1, "%s", get_name_and_club_text(pm.j[blue], CLUB_TEXT_NO_CLUB));
                 WRITE_TABLE(match_table, ix, 4, "%s", get_name_and_club_text(pm.j[white], CLUB_TEXT_NO_CLUB));
+
+		cairo_set_source_rgb(pd->c, 0, 0, 0);
+
                 if (pm.m[i].blue_points || pm.m[i].white_points) {
                     if (team_event)
                         WRITE_TABLE(match_table, ix, 5, "%d/%d-%d/%d",
@@ -1482,8 +1504,15 @@ static void paint_qpool(struct paint_data *pd, gint category, struct judoka *ctg
 
                 if (pm.j[blue] && pm.j[white]) {
                     WRITE_TABLE(match_table, ix, 0, "%d", i);
+
+		    if (pd->highlight_match == i)
+			cairo_set_source_rgb(pd->c, 1.0, 0, 0);
+
                     WRITE_TABLE(match_table, ix, 1, "%s", get_name_and_club_text(pm.j[blue], CLUB_TEXT_NO_CLUB));
                     WRITE_TABLE(match_table, ix, 4, "%s", get_name_and_club_text(pm.j[white], CLUB_TEXT_NO_CLUB));
+
+		    cairo_set_source_rgb(pd->c, 0, 0, 0);
+
                     if (pm.m[i].blue_points || pm.m[i].white_points) {
                         if (team_event)
                             WRITE_TABLE(match_table, ix, 5, "%d/%d-%d/%d",
@@ -2817,6 +2846,7 @@ void write_sheet_to_stream(gint cat, cairo_write_func_t write_func, void *closur
 {
     struct paint_data pd;
     cairo_surface_t *cs;
+    struct write_closure *wc = closure;
 
     memset(&pd, 0, sizeof(pd));
     //XXXpd.row_height = 1;
@@ -2832,6 +2862,27 @@ void write_sheet_to_stream(gint cat, cairo_write_func_t write_func, void *closur
     pd.total_width = 0;
     pd.category = cat;
 
+    /* Find ongoing match to highlight. */
+    if (wc && wc->tatami >= 0 && wc->tatami < NUM_TATAMIS &&
+	next_matches_info[wc->tatami][0].catnum == pd.category) {
+	    pd.highlight_match = next_matches_info[wc->tatami][0].matchnum;
+    }
+
+    pd.show_highlighted_page = 1;
+    pd.info = wc->info;
+    pd.systm = db_get_system(pd.category);
+
+    if (wc->svg) {
+	g_print("SVG wanted\n");
+	pd.write_cb = write_func;
+	pd.closure = closure;
+	paint_category(&pd);
+	if (pd.svg_printed)
+	    return;
+    }
+
+    g_print("no svg\n");
+    pd.write_cb = NULL;
     cs = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, pd.paper_width, pd.paper_height);
     pd.c = cairo_create(cs);
 
