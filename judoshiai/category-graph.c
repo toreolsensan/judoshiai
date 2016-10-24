@@ -65,11 +65,11 @@ static GtkWidget *cat_graph_label = NULL;
 static struct win_collection {
     GtkWidget *scrolled_window;
     GtkWidget *darea;
-} w;
+} wincoll;
 
 static void refresh_darea(void)
 {
-    gtk_widget_queue_draw(w.darea);
+    gtk_widget_queue_draw(wincoll.darea);
     //gtk_widget_queue_draw_area(w.darea, 0, 0, 600, 2000);
 }
 #define refresh_window refresh_darea
@@ -98,7 +98,7 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
     struct tm    *tm;
     time_t        secs;
     cairo_surface_t *cs = userdata;
-    struct category_data *catdatas[NUM_TATAMIS];
+    struct category_data *catdatas[NUM_TATAMIS+1];
     gint old_group = 1000000;
     gdouble left, right;
     gchar buf[32];
@@ -137,17 +137,17 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
 	old_group = 1000000;
 
 	/* find min group */
-	for (i = 0; i <= number_of_tatamis; i++)
+	for (i = 0; i <= number_of_tatamis; i++) {
 	    if (catdatas[i] && catdatas[i]->group < old_group)
 		old_group = catdatas[i]->group;
-
+	}
 	for (tatami = 0; tatami <= number_of_tatamis; tatami++) {
 	    struct category_data *catdata = catdatas[tatami];
 	    gboolean group_on_tatami = FALSE;
-
 	    while (catdata && catdata->group == old_group) {
 		gint n = 1;
 		gdouble x;
+		gint mul = 1;
 		gint mt = get_category_match_time(catdata->category);
 		if (mt < 180) mt = 180;
 		grp_found++;
@@ -204,11 +204,11 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
 		cairo_restore(c);
 
 		/* category name and time */
-		gint mul = 1;
 		if (catdata->deleted & TEAM_EVENT) {
 		    mul = find_num_weight_classes(catdata->category);
 		    if (mul == 0) mul = 1;
-		}
+		} else
+		    mul = 1;
 
 		matches_left[tatami] += n*mul;//catdata->match_count - catdata->matched_matches_count;
 		matches_time[tatami] += n*mt*mul;
@@ -396,7 +396,7 @@ static gboolean expose_scrolled(GtkWidget *widget, GdkEventExpose *event, gpoint
     static time_t last = 0;
     time_t now = time(NULL);
     if (now > last)
-        gtk_widget_queue_draw(w.darea);
+        gtk_widget_queue_draw(wincoll.darea);
     last = now;
     return FALSE;
 }
@@ -466,12 +466,12 @@ static gboolean expose(GtkWidget *widget, GdkEventExpose *event, gpointer userda
 
 static gint scroll_callback(gpointer userdata)
 {
-    struct win_collection *w = userdata;
+    struct win_collection *wc = userdata;
 
     if (button_drag == FALSE || scroll_up_down == NO_SCROLL)
         return TRUE;
 
-    GtkAdjustment *adj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(w->scrolled_window));
+    GtkAdjustment *adj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(wc->scrolled_window));
     gdouble adjnow = gtk_adjustment_get_value(adj);
 
     if (scroll_up_down == SCROLL_DOWN)
@@ -483,20 +483,20 @@ static gint scroll_callback(gpointer userdata)
 }
 
 
-void set_category_graph_page(GtkWidget *notebook)
+void set_category_graph_page(GtkWidget *nb)
 {
     wait_cursor = gdk_cursor_new(GDK_HAND1);
 
-    w.scrolled_window = gtk_scrolled_window_new(NULL, NULL);
-    gtk_container_set_border_width(GTK_CONTAINER(w.scrolled_window), 10);
+    wincoll.scrolled_window = gtk_scrolled_window_new(NULL, NULL);
+    gtk_container_set_border_width(GTK_CONTAINER(wincoll.scrolled_window), 10);
 
-    w.darea = gtk_drawing_area_new();
-    gtk_widget_set_size_request(w.darea, 600, 6000);
+    wincoll.darea = gtk_drawing_area_new();
+    gtk_widget_set_size_request(wincoll.darea, 600, 6000);
 
 #if (GTKVER != 3)
-    GTK_WIDGET_SET_FLAGS(w.darea, GTK_CAN_FOCUS);
+    GTK_WIDGET_SET_FLAGS(wincoll.darea, GTK_CAN_FOCUS);
 #endif
-    gtk_widget_add_events(w.darea,
+    gtk_widget_add_events(wincoll.darea,
                           GDK_BUTTON_PRESS_MASK |
                           GDK_BUTTON_RELEASE_MASK |
                           /*GDK_POINTER_MOTION_MASK |*/
@@ -506,39 +506,39 @@ void set_category_graph_page(GtkWidget *notebook)
 
     /* pack the table into the scrolled window */
 #if (GTKVER == 3) && GTK_CHECK_VERSION(3,8,0)
-    gtk_container_add(GTK_CONTAINER(w.scrolled_window), w.darea);
+    gtk_container_add(GTK_CONTAINER(wincoll.scrolled_window), wincoll.darea);
 #else
     gtk_scrolled_window_add_with_viewport (
-        GTK_SCROLLED_WINDOW(w.scrolled_window), w.darea);
+        GTK_SCROLLED_WINDOW(wincoll.scrolled_window), wincoll.darea);
 #endif
 
     cat_graph_label = gtk_label_new (_("Categories"));
-    gtk_notebook_append_page(GTK_NOTEBOOK(notebook), w.scrolled_window, cat_graph_label);
+    gtk_notebook_append_page(GTK_NOTEBOOK(nb), wincoll.scrolled_window, cat_graph_label);
 
-    gtk_widget_show(w.darea);
+    gtk_widget_show(wincoll.darea);
 
 #if (GTKVER == 3)
-    g_signal_connect(G_OBJECT(w.scrolled_window),
+    g_signal_connect(G_OBJECT(wincoll.scrolled_window),
                      "draw", G_CALLBACK(expose_scrolled), NULL);
-    g_signal_connect(G_OBJECT(w.darea),
-                     "draw", G_CALLBACK(expose), w.darea);
+    g_signal_connect(G_OBJECT(wincoll.darea),
+                     "draw", G_CALLBACK(expose), wincoll.darea);
 #else
-    g_signal_connect(G_OBJECT(w.darea),
-                     "expose-event", G_CALLBACK(expose), w.darea);
+    g_signal_connect(G_OBJECT(wincoll.darea),
+                     "expose-event", G_CALLBACK(expose), wincoll.darea);
 #endif
-    g_signal_connect(G_OBJECT(w.darea),
+    g_signal_connect(G_OBJECT(wincoll.darea),
                      "button-press-event", G_CALLBACK(mouse_click), NULL);
 #if 0
-    g_signal_connect(G_OBJECT(w.darea),
+    g_signal_connect(G_OBJECT(wincoll.darea),
                      "screen-changed", G_CALLBACK(screen_changed), NULL)
 #endif
 
-        g_signal_connect(G_OBJECT(w.darea),
+        g_signal_connect(G_OBJECT(wincoll.darea),
 			 "button-release-event", G_CALLBACK(release_notify), NULL);
-    g_signal_connect(G_OBJECT(w.darea),
-                     "motion-notify-event", G_CALLBACK(motion_notify), &w);
+    g_signal_connect(G_OBJECT(wincoll.darea),
+                     "motion-notify-event", G_CALLBACK(motion_notify), &wincoll);
 
-    g_timeout_add(500, scroll_callback, &w);
+    g_timeout_add(500, scroll_callback, &wincoll);
 }
 
 static gint find_box(gdouble x, gdouble y)
@@ -644,7 +644,7 @@ static gboolean mouse_click(GtkWidget *sheet_page,
 			     (GCallback) handle_menu, p);
 	    gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
 
-	    if (gint_to_ptr(point_click_areas[t].index) >= 10000) {
+	    if (point_click_areas[t].index >= 10000) {
 		menuitem = gtk_menu_item_new_with_label(_("Show Sheet"));
 		g_signal_connect(menuitem, "activate",
 				 (GCallback) show_category_window,
@@ -669,20 +669,20 @@ static gboolean motion_notify(GtkWidget *sheet_page,
                               GdkEventMotion *event,
                               gpointer userdata)
 {
-    struct win_collection *w = userdata;
+    struct win_collection *wc = userdata;
 
     if (button_drag == FALSE)
         return FALSE;
 
     gdouble x = event->x, y = event->y;
     gint t;
-    GtkAdjustment *adj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(w->scrolled_window));
+    GtkAdjustment *adj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(wc->scrolled_window));
     gdouble adjnow = gtk_adjustment_get_value(adj);
 
 #if (GTKVER == 3)
-    if (y - adjnow > gtk_widget_get_allocated_height(w->scrolled_window) - 50) {
+    if (y - adjnow > gtk_widget_get_allocated_height(wc->scrolled_window) - 50) {
 #else
-    if (y - adjnow > w->scrolled_window->allocation.height - 50) {
+    if (y - adjnow > wc->scrolled_window->allocation.height - 50) {
 #endif
         scroll_up_down = SCROLL_DOWN;
     } else if (y - adjnow < 20.0) {
@@ -750,6 +750,11 @@ static gboolean release_notify(GtkWidget *sheet_page,
         refresh_window();
 
         draw_match_graph();
+
+	if(point_click_areas[t].tatami != point_click_areas[start_box].tatami) {
+	    update_matches(0, (struct compsys){0,0,0,0}, point_click_areas[t].tatami);
+	    update_matches(0, (struct compsys){0,0,0,0}, point_click_areas[start_box].tatami);
+	}
 
         return TRUE;
     }
