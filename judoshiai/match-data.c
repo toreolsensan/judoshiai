@@ -3,7 +3,7 @@
 /*
  * Copyright (C) 2006-2016 by Hannu Jokinen
  * Full copyright text is included in the software package.
- */ 
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -41,17 +41,17 @@ const guint poolsd[13][32][2] = {
     {{1, 2}, {4, 5}, {1, 3}, {4, 6}, {2, 3}, {5, 6}, {0,0}}, /* 6 */
     {{1, 2}, {3, 4}, {5, 6}, {1, 3}, {2, 4}, {5, 7}, {1, 4}, {2, 3}, {6, 7}, {0,0}}, /* 7 */
 
-    {{1, 2}, {5, 6}, {3, 4}, {7, 8}, {1, 3}, {5, 7}, {2, 4}, {6, 8}, {1, 4}, {5, 8}, 
+    {{1, 2}, {5, 6}, {3, 4}, {7, 8}, {1, 3}, {5, 7}, {2, 4}, {6, 8}, {1, 4}, {5, 8},
      {2, 3}, {6, 7}, {0,0}}, /* 8 */
 
-    {{4, 5}, {1, 2}, {6, 7}, {3, 4}, {1, 5}, {8, 9}, {2, 3}, {6, 8}, {1, 4}, {3, 5}, 
+    {{4, 5}, {1, 2}, {6, 7}, {3, 4}, {1, 5}, {8, 9}, {2, 3}, {6, 8}, {1, 4}, {3, 5},
      {7, 9}, {2, 4}, {1, 3}, {6, 9}, {2, 5}, {7, 8}, {0,0}}, /* 9 */
 
-    {{4, 5}, {9,10}, {1, 2}, {6, 7}, {3, 4}, {8, 9}, {1, 5}, {6,10}, {2, 3}, {7, 8}, 
+    {{4, 5}, {9,10}, {1, 2}, {6, 7}, {3, 4}, {8, 9}, {1, 5}, {6,10}, {2, 3}, {7, 8},
      {1, 4}, {6, 9}, {3, 5}, {8,10}, {2, 4}, {7, 9}, {1, 3}, {6, 8}, {2, 5}, {7,10}, {0,0}}, /* 10 */
 
     {{1,2}, {10, 11}, {3,5}, {7, 8}, {2,4}, {9, 10}, {1,6}, {7, 11}, {4,5}, {8, 9}, {2,3},
-     {7, 10}, {4,6}, {2,5}, {9, 11}, {3,4}, {1,5}, {8, 10}, {3,6}, {1,4}, {7, 9}, 
+     {7, 10}, {4,6}, {2,5}, {9, 11}, {3,4}, {1,5}, {8, 10}, {3,6}, {1,4}, {7, 9},
      {5,6}, {1,3}, {8, 11}, {2,6}, {0,0}}, /* 11 */
 
     {{1,2},{7,8},{3,5},{9,11},{2,4},{8,10},{1,6},{7,12},{4,5},{10,11},{2,3},{8,9},
@@ -61,7 +61,7 @@ const guint poolsd[13][32][2] = {
 
 
 // quadruple pool matches
-const guint poolsq[21][48][2] = { 
+const guint poolsq[21][48][2] = {
     {{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}}, /* 0 */
     {{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}}, /* 1 */
     {{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}}, /* 2 */
@@ -78,18 +78,18 @@ const guint poolsq[21][48][2] = {
     {{1,2},{5,6},{8,9},{3,4},{11,12},{5,7},{1,3},{8,10},{11,13},{2,4},{6,7},{9,10},{1,4},{12,13},{2,3},{0,0}}, /* 13 */
     {{1,2},{5,6},{9,10},{3,4},{7,8},{12,13},{1,3},{5,7},{9,11},{2,4},{6,8},
      {12,14},{1,4},{5,8},{10,11},{2,3},{6,7},{13,14},{0,0}}, /* 14 */
-    {{1,2},{5,6},{9,10}, {3,4},{7,8},{11,12},{13,14}, {1,3},{5,7},{9,11}, {2,4},{6,8},{10,12},{13,15}, 
+    {{1,2},{5,6},{9,10}, {3,4},{7,8},{11,12},{13,14}, {1,3},{5,7},{9,11}, {2,4},{6,8},{10,12},{13,15},
      {1,4},{5,8},{9,12}, {2,3},{6,7},{10,11},{14,15},{0,0}}, /* 15 */
     {{1,2},{5,6},{9,10},{13,14},{3,4},{7,8},{11,12},{15,16},{1,3},{5,7},{9,11},{13,15},
      {2,4},{6,8},{10,12},{14,16},{1,4},{5,8},{9,12},{13,16},{2,3},{6,7},{10,11},{14,15},{0,0}}, /* 16 */
-    {{4,5},{6,7},{10,11},{14,15}, {1,2},{8,9},{12,13}, {3,4},{6,8},{16,17}, {1,5},{10,12},{14,16}, {2,3},{7,9}, 
+    {{4,5},{6,7},{10,11},{14,15}, {1,2},{8,9},{12,13}, {3,4},{6,8},{16,17}, {1,5},{10,12},{14,16}, {2,3},{7,9},
      {1,4},{11,13}, {3,5},{15,17}, {2,4},{6,9},{10,13}, {1,3},{11,12},{14,17}, {2,5},{7,8},{15,16},{0,0}}, /* 17 */
     {{4,5},{9,10},{11,12},{15,16}, {1,2},{6,7},{13,14}, {3,4},{8,9},{17,18}, {1,5},{6,10},{11,13}, {2,3},{7,8},{15,17},
      {1,4},{6,9},{12,14}, {3,5},{8,10},{16,18}, {2,4},{7,9},{11,14}, {1,3},{6,8},{15,18}, {2,5},{7,10},{12,13},{16,17},{0,0}}, /* 18 */
     {{4,5},{9,10},{14,15},{16,17}, {1,2},{6,7},{11,12},{18,19}, {3,4},{8,9},{13,14}, {1,5},{6,10},{11,15},{16,18}, {2,3},{7,8},{12,13},
      {1,4},{6,9},{11,14},{17,19}, {3,5},{8,10},{13,15}, {2,4},{7,9},{12,14},{16,19}, {1,3},{6,8},{11,13}, {2,5},{7,10},{12,15},{17,18},{0,0}}, /* 19 */
-    {{4,5},{9,10},{14,15},{19,20}, {1,2},{6,7},{11,12},{16,17}, {3,4},{8,9},{13,14},{18,19}, 
-     {1,5},{6,10},{11,15},{16,20}, {2,3},{7,8},{12,13},{17,18}, {1,4},{6,9},{11,14},{16,19}, 
+    {{4,5},{9,10},{14,15},{19,20}, {1,2},{6,7},{11,12},{16,17}, {3,4},{8,9},{13,14},{18,19},
+     {1,5},{6,10},{11,15},{16,20}, {2,3},{7,8},{12,13},{17,18}, {1,4},{6,9},{11,14},{16,19},
      {3,5},{8,10},{13,15},{18,20}, {2,4},{7,9},{12,14},{17,19}, {1,3},{6,8},{11,13},{16,18}, {2,5},{7,10},{12,15},{17,20},{0,0}} /* 20 */
 };
 
@@ -129,7 +129,7 @@ const gint medal_matches[NUM_TABLES][NUM_FRENCH][3] = {
     {{9,10,11}, {25,26,27}, {57,58,59}, {121,122,123}}, // gbr knock out
     {{9,10,11}, {25,26,27}, {57,58,59}, {121,122,123}}, // den double elimination
     {{11,0,12}, {27,0,28}, {59,0,60}, {123,0,124}}      // estonian D klass one bronze
-};	
+};
 
 gboolean one_bronze(gint table, gint sys)
 {
@@ -168,7 +168,7 @@ gint get_matchnum_by_pos(struct compsys systm, gint pos, gint num)
         return 0;
 
     case SYSTEM_DPOOL2:
-        return num_matches(systm.system, systm.numcomp) + 
+        return num_matches(systm.system, systm.numcomp) +
             num_matches(SYSTEM_POOL, 4) + 1 - pos;
 
     case SYSTEM_DPOOL3:
@@ -193,7 +193,7 @@ gint get_matchnum_by_pos(struct compsys systm, gint pos, gint num)
         if (table == TABLE_MODIFIED_DOUBLE_ELIMINATION) {
             if (pos == 2)
                 return medal_matches[table][sys][1];
-        
+
             if (pos == 3 && num == 1)
                 return -medal_matches[table][sys][1];
 
@@ -244,16 +244,16 @@ gint get_matchnum_by_pos(struct compsys systm, gint pos, gint num)
 
         if (pos == 4)
             return -medal_matches[table][sys][0];
-        
+
         if (pos == 5 && num == 1) {
-            if (medal_matches[table][sys][1]) 
+            if (medal_matches[table][sys][1])
                 return -medal_matches[table][sys][0];
-        
+
             return -french_matches[table][sys][medal_matches[table][sys][0]][0];
         }
 
         if (pos == 5 && num == 2) {
-            if (medal_matches[table][sys][1]) 
+            if (medal_matches[table][sys][1])
                 return -medal_matches[table][sys][1];
 
             return -french_matches[table][sys][medal_matches[table][sys][0]][1];
@@ -1676,17 +1676,17 @@ const gint french_matches[NUM_TABLES][NUM_FRENCH][NUM_MATCHES][2] = {
 	    /*  51,        52,        53,        54,        55,        56,        57,       58,       59,       60 */
 	    {37,38},   {39,40},   {41,42},   {43,44},   {45,46},   {47,48},   {49,50},  {51,52},  {53,54},  {55,56},
 	    /*  61,        62,        63,        64,        65,        66,        67,       68,       69,       70 */
-	    {57,58},   {59,60},    {0, 0},    {0, 0},    {0, 0},    {0, 0},    {0, 0},    {0, 0},  {0, 0},   {0, 0},   
+	    {57,58},   {59,60},    {0, 0},    {0, 0},    {0, 0},    {0, 0},    {0, 0},    {0, 0},  {0, 0},   {0, 0},
 	    /*  71,        72,        73,        74,        75,        76,        77,       78,       79        80  */
-	    {0, 0},     {0, 0},    {0, 0},    {0, 0},    {0, 0},    {0, 0},    {0, 0},    {0, 0},  {63, 0},  {64, 0},  
+	    {0, 0},     {0, 0},    {0, 0},    {0, 0},    {0, 0},    {0, 0},    {0, 0},    {0, 0},  {63, 0},  {64, 0},
 	    /*  81,        82,        83,        84,        85,        86,        87,       88,       89,       90  */
-	    {65, 0},   {66, 0},   {67, 0},   {68, 0},   {69, 0},   {70, 0},   {71, 0},   {72, 0},   {73, 0},  {74, 0},  
+	    {65, 0},   {66, 0},   {67, 0},   {68, 0},   {69, 0},   {70, 0},   {71, 0},   {72, 0},   {73, 0},  {74, 0},
 	    /*  91,        92,        93,        94,        95,        96,        97,       98,       99,      100  */
 	    {75, 0},   {76, 0},   {77, 0},   {78, 0},   {79,80},   {81,82},   {83,84},   {85,86},   {87,88},  {89,90},
 	    /* 101,       102,       103,       104,       105,       106,       107,      108,      109,      110 */
-	    {91,92},   {93,94},   {95, 0},   {96, 0},   {97, 0},   {98, 0},   {99, 0},  {100, 0},  {101, 0},  {102, 0},  
+	    {91,92},   {93,94},   {95, 0},   {96, 0},   {97, 0},   {98, 0},   {99, 0},  {100, 0},  {101, 0},  {102, 0},
 	    /* 111,       112,       113,       114,       115,       116,       117,      118,      119,      120 */
-	    {103,104},{105,106},{107,108}, {109,110}, {111,-57}, {112,-58}, {113,-59}, {114,-60}, {115,116}, {117,118},  
+	    {103,104},{105,106},{107,108}, {109,110}, {111,-57}, {112,-58}, {113,-59}, {114,-60}, {115,116}, {117,118},
 	    /* 121,       122,       123      */
             {119,-62}, {120,-61}, {61,62}
 	}
@@ -1793,7 +1793,7 @@ const gint cat_system_to_table[NUM_SYSTEMS] = {
     TABLE_SWE_DIREKT_AATERKVAL,
     TABLE_EST_D_KLASS,
     TABLE_NO_REPECHAGE,
-    TABLE_SWE_ENKELT_AATERKVAL, 
+    TABLE_SWE_ENKELT_AATERKVAL,
     0,
     TABLE_ESP_DOBLE_PERDIDA,
     /*TABLE_ESP_REPESCA_DOBLE_INICIO,*/
@@ -1824,7 +1824,7 @@ struct compsys wish_to_system(gint sys, gint numcomp)
         else if (numcomp <= 64) ret.system = SYSTEM_FRENCH_64;
         else if (numcomp <= 128) ret.system = SYSTEM_FRENCH_128;
         else ret.system = SYSTEM_FRENCH_256;
-        
+
         ret.table = cat_system_to_table[sys];
     } else {
         ret.table = 0;
@@ -1848,7 +1848,7 @@ gchar *get_system_description(gint index, gint competitors)
     struct compsys sys = get_system_for_category(index, competitors);
 
     switch (sys.system) {
-    case SYSTEM_POOL: 
+    case SYSTEM_POOL:
         if (competitors == 1)
             return "";
         if (competitors == 2) {
@@ -1862,7 +1862,7 @@ gchar *get_system_description(gint index, gint competitors)
     case SYSTEM_DPOOL2: return _("Double Pool 2");
     case SYSTEM_DPOOL3: return _("Double Pool 3");
     case SYSTEM_BEST_OF_3: return _("Best of 3");
-    case SYSTEM_CUSTOM: 
+    case SYSTEM_CUSTOM:
         {
             struct custom_data *ct = get_custom_table(sys.table);
             if (ct) return ct->name_long;
@@ -1893,7 +1893,7 @@ gchar *get_system_description(gint index, gint competitors)
         case TABLE_EST_D_KLASS_ONE_BRONZE: return _("EST D klass 1 brz");
         }
     }
-    
+
     return "";
 }
 
@@ -2262,7 +2262,7 @@ gboolean paint_pool_style_2(gint cat)
 {
     struct compsys sys = get_cat_system(cat);
 
-    if (sys.system == SYSTEM_POOL && 
+    if (sys.system == SYSTEM_POOL &&
         (sys.numcomp > 6 || pool_style))
         return TRUE;
     return FALSE;
@@ -2306,7 +2306,7 @@ gint num_pages(struct compsys sys)
 
 gint db_position_to_real(struct compsys sys, gint pos)
 {
-    if (sys.system == SYSTEM_POOL || sys.system == SYSTEM_DPOOL2 || 
+    if (sys.system == SYSTEM_POOL || sys.system == SYSTEM_DPOOL2 ||
         sys.system == SYSTEM_DPOOL3 ||sys.system == SYSTEM_BEST_OF_3)
         return pos;
 
@@ -2609,10 +2609,17 @@ const gint french_rounds[NUM_TABLES][NUM_FRENCH][NUM_MATCHES] = {
             0x2002,0x225f,0x225f,0x225f,0x225f,0x2260,0x2260,0x1300,0x2300,0x2261,0x2261,0x2262,0x0600,0x0500,
         },
         { /* sys 2 */
-            0x0000,0x1001,0x1001,0x1001,0x1001,0x1001,0x1001,0x1001,0x1001,0x2001,0x2001,0x2001,0x2001,0x2001,0x2001,0x2001,
-            0x2001,0x225c,0x225c,0x225c,0x225c,0x225c,0x225c,0x225c,0x225c,0x1002,0x1002,0x1002,0x1002,0x2002,0x2002,0x2002,
-            0x2002,0x225d,0x225d,0x225d,0x225d,0x225d,0x225d,0x225d,0x225d,0x225e,0x225e,0x225e,0x225e,0x1003,0x1003,0x2003,
-            0x2003,0x225f,0x225f,0x225f,0x225f,0x1300,0x2300,0x2260,0x2260,0x2261,0x2261,0x2262,0x0600,0x0500,
+            0x0000,
+	    0x1001,0x1001,0x1001,0x1001,0x1001,0x1001,0x1001,0x1001, // round 1
+	    0x2001,0x2001,0x2001,0x2001,0x2001,0x2001,0x2001,0x2001,
+	    0x125c,0x125c,0x125c,0x125c,0x225c,0x225c,0x225c,0x225c, // rep 1
+	    0x1002,0x1002,0x1002,0x1002,0x2002,0x2002,0x2002,0x2002, // round 2
+            0x125d,0x125d,0x125d,0x125d,0x225d,0x225d,0x225d,0x225d, // rep 2
+	    0x125e,0x125e,0x225e,0x225e, // rep 3
+	    0x1003,0x1003,0x2003,0x2003, // round 3
+            0x125f,0x125f,0x225f,0x225f, // rep 4
+	    0x1300,0x2300, // sem
+	    0x1260,0x2260,0x1261,0x2261,0x1262,0x0600,0x0500,
         },
         { /* sys 3 */
             0x0000,0x1001,0x1001,0x1001,0x1001,0x1001,0x1001,0x1001,0x1001,0x1001,0x1001,0x1001,0x1001,0x1001,0x1001,0x1001,
@@ -2774,9 +2781,10 @@ static gint is_on_path(gint t, gint s, gint f, gint m, gint level)
     return 0;
 }
 
-gint round_number(struct compsys systm, gint m)
+gint round_number(struct category_data *cd, gint m)
 {
     gint matchnum;
+    struct compsys systm = cd->system;
 
     if (m == 0 ||
 	systm.system == 0 ||
@@ -2791,7 +2799,7 @@ gint round_number(struct compsys systm, gint m)
 	case SYSTEM_DPOOL2:
 	case SYSTEM_QPOOL:
 	case SYSTEM_BEST_OF_3:
-	    return ROUND_ROBIN;
+	    return ROUND_ROBIN + m;
 
 	case SYSTEM_DPOOL:
 	    matchnum = num_matches(systm.system, systm.numcomp) + 3;
@@ -2803,15 +2811,15 @@ gint round_number(struct compsys systm, gint m)
 		return ROUND_SEMIFINAL_2;
 	    else if (m == matchnum)
 		return ROUND_FINAL;
-	    return ROUND_ROBIN;
+	    return ROUND_ROBIN + m;
 
 	case SYSTEM_DPOOL3:
 	    matchnum = num_matches(systm.system, systm.numcomp) + 2;
 	    if (m == matchnum - 1)
-		return ROUND_BRONZE_1;
+		return ROUND_BRONZE;
 	    else if (m == matchnum)
 		return ROUND_FINAL;
-	    return ROUND_ROBIN;
+	    return ROUND_ROBIN + m;
 	}
 
         return ROUND_ROBIN;
@@ -2869,9 +2877,9 @@ gint round_number(struct compsys systm, gint m)
 #endif
 }
 
-const gchar *round_name(struct compsys systm, gint m)
+const gchar *round_name(struct category_data *cd, gint m)
 {
-    gint n = round_number(systm, m);
+    gint n = round_number(cd, m);
     return round_to_str(n);
 }
 
@@ -2975,7 +2983,7 @@ gint num_matches_estimate(gint index)
     if (systm.system == SYSTEM_CUSTOM) {
         struct custom_data *cd = get_custom_table(systm.table);
         if (cd && cd->num_matches) return mul*cd->num_matches;
-        g_print("ERROR: Custom category %s returned num_matches=0 cd=%p matches=%d\n", 
+        g_print("ERROR: Custom category %s returned num_matches=0 cd=%p matches=%d\n",
                 catdata->category, cd, cd ? cd->num_matches : 0);
         assert(cd);
         assert(cd->num_matches > 0);
@@ -2997,4 +3005,125 @@ gint num_matches_estimate(gint index)
     }
 
     return mul;
+}
+const gchar *get_points_str(gint points)
+{
+    if (prop_get_int_val(PROP_USE_IJF_POINTS)) {
+	switch (points) {
+	case 10: return "100";
+	case 7: return "10";
+	case 5: return "1";
+	case 1: return "½";
+	}
+    } else {
+	switch (points) {
+	case 10: return "10";
+	case 7: return "7";
+	case 5: return "5";
+	case 1: return "1";
+	}
+    }
+    return "0";
+}
+
+/* Convert points to an integer. Return double value to handle half point. */
+gint get_points_gint(gint points)
+{
+    if (prop_get_int_val(PROP_USE_IJF_POINTS)) {
+	switch (points) {
+	case 10: return 200;
+	case 7: return 20;
+	case 5: return 2;
+	case 1: return 1;
+	}
+    } else {
+	switch (points) {
+	case 10: return 20;
+	case 7: return 14;
+	case 5: return 10;
+	case 1: return 2;
+	}
+    }
+    return 0;
+}
+
+gchar *get_score_str(gint score)
+{
+    static gchar buf[2][16];
+    static gint i = 0;
+    i ^= 1;
+    gchar *p = buf[i];
+    gint a = (score >> 16) & 0x1;
+    *p++ = '0' + a;
+    a = (score >> 12) & 0x3;
+    *p++ = '0' + a;
+    a = (score >> 8) & 0xf;
+    if (a > 9) a = 9;
+    *p++ = '0' + a;
+    if (score & 0x7) {
+	*p++ = 's';
+	*p++ = '0' + (score & 0x7);
+    }
+    if (score & 0x8)
+	*p++ = 'H';
+    *p = 0;
+
+    return buf[i];
+}
+
+gint match_on_page(gint category, gint match)
+{
+    struct category_data *catdata = avl_get_category(category);
+    if (!catdata)
+        return 0;
+
+    struct compsys systm = catdata->system;
+    gint table = systm.table;
+    g_print("asking cat=%d num=%d table=%d\n", category, match, table);
+
+    if (systm.system == SYSTEM_CUSTOM)
+	return 0;
+
+    if (system_is_french(systm.system)) {
+	switch (systm.system) {
+	case SYSTEM_FRENCH_8:
+	case SYSTEM_FRENCH_16:
+	case SYSTEM_FRENCH_32:
+	    return 0;
+	case SYSTEM_FRENCH_64:
+	    if (match <= 16) return 0;
+	    if (match <= 32) return 1;
+	    return french_64_matches_to_page[table][match];
+	case SYSTEM_FRENCH_128:
+	    if (match <= 16) return 0;
+	    if (match <= 32) return 1;
+	    if (match <= 48) return 2;
+	    if (match <= 64) return 3;
+	    return french_128_matches_to_page[table][match];
+	}
+	return 0;
+    }
+
+    gint n = num_matches(systm.system, systm.numcomp);
+    gint s;
+    switch (systm.system) {
+    case SYSTEM_POOL:  return 0;
+    case SYSTEM_DPOOL:
+	if (systm.numcomp <= 10) return 0;
+	if (match <= n - 3) return 0;
+	return 1;
+    case SYSTEM_QPOOL:
+	if (match > n - 7) return 2;
+	s = (match-1) % 4;
+	if (s <= 1) return 0;
+	return 1;
+    case SYSTEM_DPOOL2:
+	if (match <= n - 6) return 0;
+	return 1;
+    case SYSTEM_DPOOL3:
+	if (match <= n - 2) return 0;
+	return 1;
+    case SYSTEM_BEST_OF_3: return 0;
+    }
+    return 0;
 }
