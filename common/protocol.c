@@ -32,6 +32,7 @@ gint encode_msg(struct message *m, guchar *buf, gint buflen)
 {
     guchar *p = buf, *end = buf + buflen;
     gint i;
+    gint len = 0;
 
     put8(COMM_VERSION);
     put8(m->type);
@@ -185,7 +186,7 @@ gint encode_msg(struct message *m, guchar *buf, gint buflen)
 	break;
     }
 
-    gint len = (gint)(p - buf);
+    len = (gint)(p - buf);
     p = buf + 2;
     put16(len);
 
