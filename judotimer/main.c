@@ -1308,10 +1308,10 @@ static void expose_label(cairo_t *c, gint w)
 
 	if (dsp_layout == 7 && background_image) {
 	    cairo_save(c);
-	    gint w = cairo_image_surface_get_width(background_image);
-	    gint h = cairo_image_surface_get_height(background_image);
+	    gint w1 = cairo_image_surface_get_width(background_image);
+	    gint h1 = cairo_image_surface_get_height(background_image);
 	    cairo_set_operator(c, CAIRO_OPERATOR_DEST_OVER);
-	    cairo_scale(c, paper_width/(gdouble)w, paper_height/(gdouble)h);
+	    cairo_scale(c, paper_width/(gdouble)w1, paper_height/(gdouble)h1);
 	    cairo_set_source_surface(c, background_image, 0, 0);
 	    cairo_paint(c);
 	    cairo_restore(c);
@@ -2241,15 +2241,17 @@ int main( int   argc,
     gdk_window_set_cursor(GTK_WIDGET(main_window)->window, cursor);
 #endif
 
-    for (i = 1; i < argc; i++) {
+    for (i = 1; i < argc - 1; i++) {
         if (argv[i][0] == '-' && argv[i][1] == 'd') {
-            demo = atoi(&argv[i][2]);
+            demo = atoi(argv[i+1]);
         } else if (argv[i][0] == '-' && argv[i][1] == 't') {
-            tatami = atoi(&argv[i][2]);
+            tatami = atoi(argv[i+1]);
         } else if (argv[i][0] == '-' && argv[i][1] == 'm') {
-            matchlist = &argv[i][2];
+            matchlist = argv[i+1];
         } else if (argv[i][0] == '-' && argv[i][1] == 's') {
             activate_slave_mode();
+        } else if (argv[i][0] == '-' && argv[i][1] == 'a') {
+            node_ip_addr = inet_addr(argv[i+1]);
         }
     }
 
