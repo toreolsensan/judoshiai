@@ -1350,7 +1350,8 @@ static gpointer connection_thread(gpointer args)
 		connections_updated = TRUE;
 	    } else {
 		if (connections[cn].fd_conn > 0) {
-		    send(connections[cn].fd_conn, inbuf, r, 0);
+		    if (send(connections[cn].fd_conn, inbuf, r, 0) < 0)
+			perror("send err");
 		}
 	    }
 	}
