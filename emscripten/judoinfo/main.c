@@ -15,6 +15,7 @@
 
 #include "judoinfo.h"
 #include "menu-util.h"
+#include "cJSON.h"
 
 extern void save_conf(void);
 extern void svg_file1_read(const char *svg_file);
@@ -237,32 +238,23 @@ static void paint(SDL_Surface *c, int paper_width, int paper_height, gpointer us
                 cairo_show_text(c, buf);
                 cairo_restore(c);
                 //update_later = TRUE;
-            } else if (m->number == 1) {
+            } else if (m->number == 1 && m->round == 0) {
                 cairo_save(c);
                 cairo_set_source_rgb(c, 255, 0, 0);
                 cairo_move_to(c, left+5+colwidth/2, y_pos+extents.height);
                 cairo_show_text(c, _("Category starts"));
                 cairo_restore(c);
-            }
-
-            if (m->flags) {
+	    } else if (m->round) {
                 cairo_save(c);
-                cairo_set_source_rgb(c, 0, 0, 255);
+		if (m->number == 1)
+		    cairo_set_source_rgb(c, 1.0, 0.0, 0.0);
+		else
+		    cairo_set_source_rgb(c, 0.0, 0.0, 1.0);
                 cairo_move_to(c, left+5+colwidth/2, y_pos+extents.height);
-                if (m->flags & MATCH_FLAG_GOLD)
-                    cairo_show_text(c, _("Gold medal match"));
-                else if (m->flags & MATCH_FLAG_BRONZE_A)
-                    cairo_show_text(c, _("Bronze match A"));
-                else if (m->flags & MATCH_FLAG_BRONZE_B)
-                    cairo_show_text(c, _("Bronze match B"));
-                else if (m->flags & MATCH_FLAG_SEMIFINAL_A)
-                    cairo_show_text(c, _("Semifinal A"));
-                else if (m->flags & MATCH_FLAG_SEMIFINAL_B)
-                    cairo_show_text(c, _("Semifinal B"));
-                else if (m->flags & MATCH_FLAG_SILVER)
-                    cairo_show_text(c, _("Silver medal match"));
+		cairo_show_text(c, round_to_str(m->round));
                 cairo_restore(c);
             }
+
             cairo_select_font_face(c, MY_FONT, 0, CAIRO_FONT_WEIGHT_BOLD);
             if (k == 0)
                 cairo_move_to(c, left+5, y_pos+extents.height+BOX_HEIGHT);
@@ -672,8 +664,8 @@ void expose(void)
 	emscripten_run_script_int("document.webkitIsFullScreen") ||
 	emscripten_run_script_int("document.msFullscreenElement");
 
-    printf("canvas size = %d x %d, full = %d & %d, svg = %d\n", width, height,
-	   isFullscreen, fullscr, bracket_svg);
+    /*printf("canvas size = %d x %d, full = %d & %d, svg = %d\n", width, height,
+      isFullscreen, fullscr, bracket_svg);*/
 
     if (!fullscr && bracket_svg) {
 	time_t now = time(NULL);
@@ -751,7 +743,7 @@ void expose(void)
 		     current_tatami + 1);
 	    emscripten_run_script(buf);
 
-	    printf("paint split=%d width=%d bracket=%d\n", split_x, width, bracket_width);
+	    //printf("paint split=%d width=%d bracket=%d\n", split_x, width, bracket_width);
 	    paint_svg(NULL);
 
 	    char url[128];
@@ -771,10 +763,10 @@ void expose(void)
 	    snprintf(url, sizeof(url),
 		     "document.getElementById('bracket').innerHTML='"
 		     "<img "
-		     "src=\"bracket?t=%d&s=1\" "
+		     "src=\"web?op=5&t=%d&s=1\" "
 		     "width=\"%d\" />';",
-		current_tatami, 3*bracket_width/4);
-	    printf("running: %s\n", url);
+		current_tatami+1, 3*bracket_width/4);
+	    //printf("running: %s\n", url);
 	    emscripten_run_script(url);
 	}
     } else
@@ -801,14 +793,75 @@ void onerror(void *a)
     printf("onerror %p\n", a);
 }
 
+void print_json(cJSON *json, int level) {
+    //printf("%d: %s\n", level, json->string ? json->string : "N/A");
+    if (json->child) print_json(json->child, level+1);
+    if (json->next) print_json(json->next, level);
+}
+
 void onload(void *arg, void *buf, int len)
 {
     char *b = buf;
     struct msg_match_info msg;
     int n;
+    cJSON *json;
+    char url[64];
 
+    //printf("ABS: %s\n", buf);
+    json = cJSON_Parse(buf);
+    if (!json) return;
+    cJSON *matchlist = cJSON_GetObjectItem(json,"match_info");
+    //print_json(matchlist, 0);
+
+    cJSON *match = matchlist->child;
+    while (match) {
+	cJSON *item = match->child;
+	memset(&msg, 0, sizeof(msg));
+	while (item) {
+	    if (!item->string)
+		continue;
+	    if (!strcmp(item->string, "t"))
+		msg.tatami = item->valueint;
+	    else if (!strcmp(item->string, "row"))
+		msg.position = item->valueint;
+	    else if (!strcmp(item->string, "cat"))
+		msg.category = item->valueint;
+	    else if (!strcmp(item->string, "num"))
+		msg.number = item->valueint;
+	    else if (!strcmp(item->string, "comp1"))
+		msg.blue = item->valueint;
+	    else if (!strcmp(item->string, "comp2"))
+		msg.white = item->valueint;
+	    else if (!strcmp(item->string, "flags"))
+		msg.flags = item->valueint;
+	    else if (!strcmp(item->string, "rtime"))
+		msg.rest_time = item->valueint;
+	    else if (!strcmp(item->string, "round"))
+		msg.round = item->valueint;
+	    item = item->next;
+	}
+
+	handle_info_msg(&msg);
+
+	if (msg.position == 1 && show_tatami[msg.tatami-1]) {
+	    if (bracket_svg) {
+		if (next_update == 0)
+		    next_update = time(NULL) + 1;
+	    } else {
+		char url[64];
+		snprintf(url, sizeof(url), "web?op=5&t=%d",
+			 msg.tatami);
+		emscripten_async_wget(url, "bracket.png", bracketonload, menupiconerror);
+	    }
+	}
+	match = match->next;
+    }
+
+    cJSON_Delete(json);
+
+#if 0
     while (b) {
-	n = sscanf(b, "%d,%d,%d,%d,%d,%d,%d,%d",
+	n = sscanf(b, "%d,%d,%d,%d,%d,%d,%d,%d,%d",
 		   &msg.tatami,
 		   &msg.position,
 		   &msg.category,
@@ -816,9 +869,11 @@ void onload(void *arg, void *buf, int len)
 		   &msg.blue,
 		   &msg.white,
 		   &msg.flags,
-		   &msg.rest_time);
-
-	if (n == 8) {
+		   &msg.rest_time,
+		   &msg.round);
+	//printf("HTTP:%s\n", buf);
+	//printf("onload tatami %d\n", msg.tatami);
+	if (n == 9) {
 	    handle_info_msg(&msg);
 
 	    if (msg.position == 1 && show_tatami[msg.tatami-1]) {
@@ -837,8 +892,8 @@ void onload(void *arg, void *buf, int len)
 		    if (next_update == 0)
 			next_update = time(NULL) + 1;
 		} else {
-		    snprintf(url, sizeof(url), "bracket?t=%d&c=%d",
-			     msg.tatami-1, msg.category);
+		    snprintf(url, sizeof(url), "web?op=5&t=%d",
+			     msg.tatami);
 		    emscripten_async_wget(url, "bracket.png", bracketonload, menupiconerror);
 		}
 	    }
@@ -851,18 +906,19 @@ void onload(void *arg, void *buf, int len)
     }
 
     //refresh_window();
+#endif
 }
 
 void menuicononload(const char *str)
 {
     menuicon = IMG_Load(str);
-    printf("file=%s menuicon=%p\n", str, menuicon);
+    //printf("file=%s menuicon=%p\n", str, menuicon);
 }
 
 void menupiconload(const char *str)
 {
     menubg = IMG_Load(str);
-    printf("file=%s menubg=%p\n", str, menubg);
+    //printf("file=%s menubg=%p\n", str, menubg);
 }
 
 void menupiconerror(const char *str)
@@ -873,16 +929,42 @@ void menupiconerror(const char *str)
 void get_bracket(int tatami)
 {
     char url[64];
-    snprintf(url, sizeof(url), "matchinfo?t=%d", tatami);
-    printf("get_bracket url=%s\n", url);
-    emscripten_async_wget_data(url, NULL, onload, onerror);
+    snprintf(url, sizeof(url), "web?op=5&t=%d", tatami);
+    //snprintf(url, sizeof(url), "matchinfo?t=%d", tatami);
+    //printf("get_bracket url=%s\n", url);
+    emscripten_async_wget(url, "bracket.png", bracketonload, menupiconerror);
 }
 
 void onloadabstract(void *arg, void *buf, int len)
 {
     char *b = buf;
-    int n, t, crc;
+    int n, t = 0, crc;
     static int last_crc[NUM_TATAMIS];
+    cJSON *json;
+    char url[64];
+
+    //printf("ABS: %s\n", buf);
+    json = cJSON_Parse(buf);
+    if (!json) return;
+    cJSON *crclist = cJSON_GetObjectItem(json,"crc");
+    cJSON *child = crclist->child;
+    while (child && t < NUM_TATAMIS) {
+	if (child->type == cJSON_Number) {
+	    if (last_crc[t] != child->valueint) {
+		last_crc[t] = child->valueint;
+		snprintf(url, sizeof(url), "web?op=4&t=%d", t+1);
+		//printf("GET %s\n", url);
+		emscripten_async_wget_data(url, NULL, onload, onerror);
+	    }
+	}
+
+	t++;
+	child = child->next;
+    }
+
+    cJSON_Delete(json);
+#if 0
+    return;
 
     while (b) {
 	n = sscanf(b, "%d,%d", &t, &crc);
@@ -900,6 +982,7 @@ void onloadabstract(void *arg, void *buf, int len)
 	b = strchr(b, '\n');
 	if (b) b++;
     }
+#endif
 }
 
 void EMSCRIPTEN_KEEPALIVE main_loop(void)
@@ -955,7 +1038,8 @@ void EMSCRIPTEN_KEEPALIVE main_loop(void)
 
     if (now > graph_update+2) {
 	graph_update = now;
-	emscripten_async_wget_data("matchinfo?t=0", NULL, onloadabstract, onerror);
+	emscripten_async_wget_data("web?op=3", NULL, onloadabstract, onerror);
+	//emscripten_async_wget_data("matchinfo?t=0", NULL, onloadabstract, onerror);
     }
 
     mouse_move();
@@ -983,7 +1067,7 @@ void EMSCRIPTEN_KEEPALIVE main_loop(void)
 
 int EMSCRIPTEN_KEEPALIVE comm_sock_rec(char *data)
 {
-    printf("rec=%s\n", data);
+    //printf("rec=%s\n", data);
     return 0;
 }
 

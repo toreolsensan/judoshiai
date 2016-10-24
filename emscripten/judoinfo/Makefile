@@ -2,11 +2,11 @@ all: ../../etc/info.js ../../etc/info.html
 
 SRCS    = main.c comm.c ../../judoinfo/trees.c ../../common/avl.c ../common/font.c \
           menu.c ../gui/widget.c ../gui/button.c ../gui/entry.c ../gui/menu-util.c \
-          svg.c
+          svg.c ../../common/common.c ../../3rdparty/cJSON/cJSON.c
 
 OBJS = $(SRCS:.c=.bc)
 
-CFLAGS  = -I. -I../common -I../../judoinfo -I../../common  -I../gui -O3
+CFLAGS  = -I. -I../common -I../../judoinfo -I../../common -I../../3rdparty/cJSON -I../gui -O3
 CFLAGS += -s ASSERTIONS=1 -O2 -g4 -s NO_EXIT_RUNTIME=1
 #CFLAGS += -s EXPORTED_FUNCTIONS="['_comm_sock_rec']"
 

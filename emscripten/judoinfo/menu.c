@@ -48,7 +48,7 @@ extern int bracket_svg;
 
 static gui_button *tatami_btn[NUM_TATAMIS];
 static gui_button *bracket_btn;
-static gui_button *svg_btn;
+//static gui_button *svg_btn;
 static char *cookie_copy;
 
 char *cookie_get(char *name)
@@ -212,7 +212,7 @@ void handle_click(gui_button *btn)
 		show_tatami[j] = conf_tatamis[j] = 0;
 	    } else if (tatami_btn[j]->selected) {
 		show_tatami[j] = conf_tatamis[j] = 1;
-		found = 1;
+		found = j + 1;
 		get_bracket(j + 1);
 	    }
 	}
@@ -237,7 +237,7 @@ extern time_t fsrequest;
 int EMSCRIPTEN_KEEPALIVE change_to_svg_mode(int yes, int exp)
 {
     fsrequest = time(NULL);
-    svg_btn->selected = bracket_svg = yes;
+    /*svg_btn->selected =*/ bracket_svg = yes;
     if (exp)
 	expose();
     save_conf();
@@ -349,9 +349,9 @@ gui_widget *get_menubar_menu(SDL_Surface *s)
     b->selected = show_bracket;
     bracket_btn = b;
 
-    ADD_MENU(menu_pref, MENU_BRACKET_SVG, "SVG bracket", GUI_BUTTONFLAG_CHECKBOX);
-    b->selected = bracket_svg;
-    svg_btn = b;
+    //ADD_MENU(menu_pref, MENU_BRACKET_SVG, "SVG bracket", GUI_BUTTONFLAG_CHECKBOX);
+    //b->selected = bracket_svg;
+    //svg_btn = b;
 
     gui_buttons_to_menu(menu_pref->first_child, 0);
 

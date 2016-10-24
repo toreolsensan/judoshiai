@@ -142,32 +142,33 @@
 
     <div class="emscripten_border">
       <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()"></canvas>
-    </div>
 
     <!-- EDIT: TABLE  -->
-    <table id='svgtable' style="width:100%; height:100%; position:absolute; top:0; bottom:0; left:0; right:0;">
-      <tr>
-        <!-- EDIT: TATAMI TEXT  -->
-	<td colspan=3 id="tatamitext"
-          style="text-align:center; font-weight:bold; font-size:200%; background:yellow;">
-	  Tatami
-	  <span id="tataminumber"></span>
-	</td>
-	<!-- END OF TATAMI TEXT -->
-      </tr>
-      <tr>
+    <!--table id='svgtable' style="width:100%; height:100%; position:absolute; top:0; bottom:0; left:0; right:0;"-->
+    <table id='svgtable'>
+      <tr height="100%">
 	<td id="matchlistcol" style="vertical-align:top;">
 	  <div id="matchlist"></div>
 	</td>
 	<td id="bracket" style="margin-left:auto; margin-right:auto"></td>
 	<td id="extracol" width="100%"></td>
       </tr>
+      <!--tr>
+	<td colspan=3 id="tatamitext"
+          style="text-align:center; font-weight:bold; font-size:100%; background:yellow;">
+	  Tatami
+	  <span id="tataminumber"></span>
+	</td>
+      </tr-->
     </table>
     <!-- END OF TABLE -->
 
+    <span id="tataminumber"></span>
+
+    </div><!-- canvas -->
     </div><!-- wholepage -->
 
-    <textarea id="output" rows="8"></textarea>
+    <textarea id="output" rows="4"></textarea>
 
     <script type='text/javascript'>
       var statusElement = document.getElementById('status');

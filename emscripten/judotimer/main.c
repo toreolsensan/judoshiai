@@ -1793,10 +1793,13 @@ static void key_press(SDL_Event *event)
     return;
 }
 
+extern void update_next_match(void);
+
 static void timeout(void)
 {
     update_clock();
     update_menu(surface);
+    update_next_match();
 
     if (big_dialog && time(NULL) > big_end)
         delete_big(NULL);

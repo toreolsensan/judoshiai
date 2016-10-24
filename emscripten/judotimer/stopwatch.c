@@ -1099,7 +1099,7 @@ void reset(guint key, struct msg_next_match *msg)
 	char buf[16];
 	snprintf(buf, sizeof(buf), "/nextmatch?t=%d", tatami);
 	emscripten_async_wget_data(buf, NULL, nextmatchonload, nextmatchonerror);
-	g_print("send %s\n", buf);
+	//g_print("send %s\n", buf);
     }
 }
 

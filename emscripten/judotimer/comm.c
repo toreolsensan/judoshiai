@@ -28,6 +28,8 @@ int current_gs_time;
 time_t traffic_last_rec_time;
 static struct message msgout;
 static time_t result_send_time;
+static time_t last_get = 0;
+static gboolean new_match = FALSE;
 
 void copy_packet(struct message *msg)
 {
@@ -102,7 +104,6 @@ void send_result(int bluepts[4], int whitepts[4], char blue_vote, char white_vot
 
 void msg_received(struct message *input_msg)
 {
-    static time_t last_get = 0;
 #if 0
     g_print("msg type = %d from %d\n",
             input_msg->type, input_msg->sender);
@@ -147,12 +148,13 @@ void msg_received(struct message *input_msg)
 	    current_category = input_msg->u.next_match.category;
 	    current_match = input_msg->u.next_match.match;
 	    current_gs_time = input_msg->u.next_match.gs_time;
-        } else if (time(NULL) > last_get + 3) {
+	    new_match = TRUE;
+        } else if (time(NULL) > last_get + 2) {
 	    char buf[16];
 	    snprintf(buf, sizeof(buf), "/nextmatch?t=%d", tatami);
 	    emscripten_async_wget_data(buf, NULL, nextmatchonload, nextmatchonerror);
 	    last_get = time(NULL);
-	    g_print("send2 %s\n", buf);
+	    //g_print("send2 %s\n", buf);
 	}
 
 #if 0
@@ -189,7 +191,26 @@ void msg_received(struct message *input_msg)
 
 void resonload(void *arg, void *buf, int len)
 {
+    char buffer[32];
     result_send_time = 0;
+
+    snprintf(buffer, sizeof(buffer), "/nextmatch?t=%d", tatami);
+    emscripten_async_wget_data(buffer, NULL, nextmatchonload, nextmatchonerror);
+}
+
+void update_next_match(void)
+{
+    if (clock_running() || new_match)
+	return;
+
+    if (time(NULL) < last_get + 2)
+	return;
+
+    char buf[16];
+    snprintf(buf, sizeof(buf), "/nextmatch?t=%d", tatami);
+    emscripten_async_wget_data(buf, NULL, nextmatchonload, nextmatchonerror);
+    last_get = time(NULL);
+    //g_print("send3 %s\n", buf);
 }
 
 void resonerror(void *a)
@@ -233,6 +254,7 @@ void send_packet(struct message *msg)
 		 msg->u.result.legend);
 
 	emscripten_async_wget_data(buf, NULL, resonload, resonerror);
+	new_match = FALSE;
     } else if (msg->type == MSG_CANCEL_REST_TIME) {
 	snprintf(buf, sizeof(buf),
 		 "restcancel?c=%d&m=%d&b=%d&w=%d\r\n",
@@ -253,7 +275,7 @@ void nextmatchonload(void *arg, void *buf, int len)
     int n;
     int ippon, wazaari, yuko, koka;
 
-    g_print("recv: %s\n", b);
+    //g_print("recv: %s\n", b);
     memset(nm, 0, sizeof(*nm));
     msg.type = MSG_NEXT_MATCH;
     msg.sender = 1000;

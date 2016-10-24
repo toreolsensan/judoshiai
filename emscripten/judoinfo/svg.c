@@ -117,7 +117,7 @@ void svg_file1_read(const char *svg_file)
     while ((n = fread(svg_data + svg_datalen, 1, 1024, f)) > 0) {
 	svg_datalen += n;
     }
-    printf("READ SVG/HTML FILE %d bytes\n", svg_datalen);
+    //printf("READ SVG/HTML FILE %d bytes\n", svg_datalen);
 
     fclose(f);
     datamax = svg_data + svg_datalen;
