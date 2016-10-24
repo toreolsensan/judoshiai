@@ -79,7 +79,7 @@ gboolean mirror_display = FALSE;
 static struct win_collection {
     GtkWidget *scrolled_window;
     GtkWidget *darea;
-} w;
+} wincoll;
 
 void draw_match_graph(void)
 {
@@ -94,8 +94,8 @@ void set_graph_rest_time(gint tatami, time_t rest_end, gint flags)
 
 static void refresh_darea(void)
 {
-    gtk_widget_queue_draw(w.darea);
-    //gtk_widget_queue_draw_area(w.darea, 0, 0, 600, 2000);
+    gtk_widget_queue_draw(wincoll.darea);
+    //gtk_widget_queue_draw_area(wincoll.darea, 0, 0, 600, 2000);
 }
 #define refresh_window refresh_darea
 
@@ -113,7 +113,9 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
     gdouble y_pos = 0.0, colwidth = W(1.0/(number_of_tatamis + 1));
     gboolean update_later = FALSE;
     cairo_surface_t *cs = userdata;
-
+    gchar buf[64];
+    struct match *mw = NULL;
+    
     cairo_set_font_size(c, 12);
     cairo_text_extents(c, "Hj", &extents);
 
@@ -137,12 +139,11 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
     cairo_set_line_width(c, THIN_LINE);
     cairo_set_source_rgb(c, 0.0, 0.0, 0.0);
 
-    struct match *mw = db_matches_waiting();
+    mw = db_matches_waiting();
 
     for (i = 0; i <= number_of_tatamis; i++) {
         gdouble left = (i)*colwidth;
         gdouble right = (i+1)*colwidth;
-        gchar buf[30];
         struct match *nm;
         gint k;
 
@@ -218,7 +219,6 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
 
         for (k = 0; k < (i ? NEXT_MATCH_NUM : WAITING_MATCH_NUM); k++) {
             struct match *m = &nm[k];
-            gchar buf[40];
 
             point_click_areas[num_rectangles].position = k + 1;
 
@@ -269,7 +269,8 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
             cairo_show_text(c, buf);
             //cairo_show_text(c, catdata ? catdata->category : "?");
 
-	    const gchar *txt = round_name(catdata->system, m->number);
+	    //const gchar *txt = round_name(catdata, m->number);
+	    const gchar *txt = round_to_str(m->round);
             //gchar *txt = get_match_number_text(m->category, m->number);
             if ((txt && txt[0]) || m->forcedtatami || i == 0) {
 		buf[0] = 0;
@@ -513,7 +514,7 @@ static gboolean expose_scrolled(GtkWidget *widget, GdkEventExpose *event, gpoint
     static time_t last = 0;
     time_t now = time(NULL);
     if (now > last)
-        gtk_widget_queue_draw(w.darea);
+        gtk_widget_queue_draw(wincoll.darea);
     last = now;
     return FALSE;
 }
@@ -653,24 +654,24 @@ static gboolean query_tooltip (GtkWidget  *widget, gint x, gint y, gboolean keyb
     return TRUE;
 }
 
-void set_match_graph_page(GtkWidget *notebook)
+void set_match_graph_page(GtkWidget *nb)
 {
-    w.scrolled_window = gtk_scrolled_window_new(NULL, NULL);
-    gtk_container_set_border_width(GTK_CONTAINER(w.scrolled_window), 10);
+    wincoll.scrolled_window = gtk_scrolled_window_new(NULL, NULL);
+    gtk_container_set_border_width(GTK_CONTAINER(wincoll.scrolled_window), 10);
 
-    w.darea = gtk_drawing_area_new();
-    gtk_widget_set_size_request(w.darea, 600, 2000);
+    wincoll.darea = gtk_drawing_area_new();
+    gtk_widget_set_size_request(wincoll.darea, 600, 2000);
 
 #if (GTKVER == 3)
-    gtk_widget_set_events(w.darea, gtk_widget_get_events(w.darea) |
+    gtk_widget_set_events(wincoll.darea, gtk_widget_get_events(wincoll.darea) |
                           GDK_BUTTON_PRESS_MASK |
                           GDK_BUTTON_RELEASE_MASK |
                           /*GDK_POINTER_MOTION_MASK |*/
                           GDK_POINTER_MOTION_HINT_MASK |
                           GDK_BUTTON_MOTION_MASK);
 #else
-    GTK_WIDGET_SET_FLAGS(w.darea, GTK_CAN_FOCUS);
-    gtk_widget_add_events(w.darea,
+    GTK_WIDGET_SET_FLAGS(wincoll.darea, GTK_CAN_FOCUS);
+    gtk_widget_add_events(wincoll.darea,
                           GDK_BUTTON_PRESS_MASK |
                           GDK_BUTTON_RELEASE_MASK |
                           /*GDK_POINTER_MOTION_MASK |*/
@@ -681,45 +682,45 @@ void set_match_graph_page(GtkWidget *notebook)
 
     /* pack the table into the scrolled window */
 #if (GTKVER == 3) && GTK_CHECK_VERSION(3,8,0)
-    //gtk_widget_set_hexpand(w.darea, TRUE);
-    //gtk_widget_set_vexpand(w.darea, TRUE);
-    //gtk_widget_set_hexpand(w.scrolled_window, TRUE);
-    //gtk_widget_set_vexpand(w.scrolled_window, TRUE);
+    //gtk_widget_set_hexpand(wincoll.darea, TRUE);
+    //gtk_widget_set_vexpand(wincoll.darea, TRUE);
+    //gtk_widget_set_hexpand(wincoll.scrolled_window, TRUE);
+    //gtk_widget_set_vexpand(wincoll.scrolled_window, TRUE);
     //GtkWidget *viewport = gtk_viewport_new(NULL,NULL);
-    //gtk_container_add(GTK_CONTAINER(viewport), w.darea);
-    gtk_container_add(GTK_CONTAINER(w.scrolled_window), w.darea);
+    //gtk_container_add(GTK_CONTAINER(viewport), wincoll.darea);
+    gtk_container_add(GTK_CONTAINER(wincoll.scrolled_window), wincoll.darea);
 #else
     gtk_scrolled_window_add_with_viewport (
-        GTK_SCROLLED_WINDOW(w.scrolled_window), w.darea);
+        GTK_SCROLLED_WINDOW(wincoll.scrolled_window), wincoll.darea);
 #endif
 
-    //gtk_widget_show(w.darea);
-    gtk_widget_show_all(w.scrolled_window);
+    //gtk_widget_show(wincoll.darea);
+    gtk_widget_show_all(wincoll.scrolled_window);
 
     match_graph_label = gtk_label_new (_("Matches"));
-    gtk_notebook_append_page(GTK_NOTEBOOK(notebook), w.scrolled_window, match_graph_label);
+    gtk_notebook_append_page(GTK_NOTEBOOK(nb), wincoll.scrolled_window, match_graph_label);
 
 #if (GTKVER == 3)
-    g_signal_connect(G_OBJECT(w.scrolled_window),
+    g_signal_connect(G_OBJECT(wincoll.scrolled_window),
                      "draw", G_CALLBACK(expose_scrolled), NULL);
-    g_signal_connect(G_OBJECT(w.darea),
-                     "draw", G_CALLBACK(expose), w.darea);
-    g_signal_connect(G_OBJECT(w.darea),"configure-event",
+    g_signal_connect(G_OBJECT(wincoll.darea),
+                     "draw", G_CALLBACK(expose), wincoll.darea);
+    g_signal_connect(G_OBJECT(wincoll.darea),"configure-event",
                      G_CALLBACK(configure_event_cb), NULL);
 #else
-    g_signal_connect(G_OBJECT(w.darea),
-                     "expose-event", G_CALLBACK(expose), w.darea);
+    g_signal_connect(G_OBJECT(wincoll.darea),
+                     "expose-event", G_CALLBACK(expose), wincoll.darea);
 #endif
-    g_signal_connect(G_OBJECT(w.darea),
+    g_signal_connect(G_OBJECT(wincoll.darea),
                      "button-press-event", G_CALLBACK(mouse_click), NULL);
-    g_signal_connect(G_OBJECT(w.darea),
+    g_signal_connect(G_OBJECT(wincoll.darea),
                      "button-release-event", G_CALLBACK(release_notify), NULL);
-    g_signal_connect(G_OBJECT(w.darea),
-                     "motion-notify-event", G_CALLBACK(motion_notify), &w);
-    g_timeout_add(500, scroll_callback, &w);
+    g_signal_connect(G_OBJECT(wincoll.darea),
+                     "motion-notify-event", G_CALLBACK(motion_notify), &wincoll);
+    g_timeout_add(500, scroll_callback, &wincoll);
 
-    gtk_widget_set_has_tooltip(w.darea, TRUE);
-    g_signal_connect (w.darea, "query-tooltip", G_CALLBACK(query_tooltip), NULL);
+    gtk_widget_set_has_tooltip(wincoll.darea, TRUE);
+    g_signal_connect (wincoll.darea, "query-tooltip", G_CALLBACK(query_tooltip), NULL);
 }
 
 static gint find_box(gdouble x, gdouble y)
@@ -879,7 +880,7 @@ static gboolean mouse_click(GtkWidget *sheet_page,
                          (GCallback) freeze, p);
         gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
 
-	if (gint_to_ptr(point_click_areas[t].category) >= 10000) {
+	if (point_click_areas[t].category >= 10000) {
 	    menuitem = gtk_menu_item_new_with_label(_("Show Sheet"));
 	    g_signal_connect(menuitem, "activate",
 			     (GCallback) show_category_window,
