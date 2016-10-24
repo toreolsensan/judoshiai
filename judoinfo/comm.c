@@ -55,6 +55,7 @@
 #define BTHPROTO_RFCOMM BTPROTO_RFCOMM
 #endif
 
+static void get_bracket(gint tatami, gint last_category, gint last_number);
 void send_packet(struct message *msg);
 
 time_t traffic_last_rec_time;
@@ -170,6 +171,16 @@ static void handle_info_msg(struct msg_match_info *input_msg)
 	match_list[tatami][position].blue &&
 	match_list[tatami][position].white)
 	show_tatami[tatami] = TRUE;
+
+    if (show_tatami[tatami] && position == 1 && show_bracket()) {
+        static gint last_category = 0, last_number = 0;
+        if (input_msg->category != last_category ||
+            input_msg->number != last_number) {
+            last_category = input_msg->category;
+            last_number = input_msg->number;
+	    get_bracket(tatami+1, last_category, last_number);
+	}
+    }
 }
 
 void msg_received(struct message *input_msg)
@@ -255,4 +266,96 @@ gboolean keep_connection(void)
 gint get_port(void)
 {
     return SHIAI_PORT;
+}
+
+#define BRACKET_LEN 1000000
+guchar bracket[BRACKET_LEN];
+gint bracket_len = 0;
+gboolean bracket_ok = FALSE;
+guchar *bracket_start = NULL;
+guchar png_start[] = {137, 80, 78, 71, 13, 10, 26, 10};
+gint bracket_pos = 0;
+
+gint bracket_type(void)
+{
+    if (!bracket_start || !bracket_ok)
+        return BRACKET_TYPE_ERR;
+
+    if (memcmp(bracket_start, png_start, 8) == 0)
+        return BRACKET_TYPE_PNG;
+
+    return BRACKET_TYPE_SVG;
+}
+
+static void get_bracket(gint tatami, gint category, gint number)
+{
+    SOCKET fd;
+    gint n, k;
+    struct sockaddr_in node;
+    char out[64];
+
+    bracket_ok = FALSE;
+    bracket_start = NULL;
+    bracket_len = 0;
+
+    if ((fd = socket(AF_INET, SOCK_STREAM, 0)) == INVALID_SOCKET) {
+        perror("bracket socket");
+        g_print("CANNOT CREATE SOCKET (%s:%d)!\n", __FUNCTION__, __LINE__);
+        return;
+    }
+
+    memset(&node, 0, sizeof(node));
+    node.sin_family      = AF_INET;
+    node.sin_port        = htons(8088);
+    node.sin_addr.s_addr = node_ip_addr;
+
+    if (connect(fd, (struct sockaddr *)&node, sizeof(node))) {
+        closesocket(fd);
+        return;
+    }
+
+#if 0
+    snprintf(out, sizeof(out), "GET /bracket?t=%d&s=1 HTTP/1.0\r\n\r\n", tatami-1);
+#else
+    snprintf(out, sizeof(out), "GET /web?op=%d&t=%d&s=1 HTTP/1.0\r\n\r\n",
+             MSG_WEB_GET_BRACKET, tatami);
+#endif
+    k = strlen(out);
+    if ((n = send(fd, (char *)out, k, 0)) != k) {
+        g_print("%s: send error: sent %d/%d octets\n", __FUNCTION__, n, k);
+        closesocket(fd);
+        return;
+    }
+
+    while ((n = recv(fd, &bracket[bracket_len], sizeof(bracket) - bracket_len - 1, 0)) > 0) {
+        bracket_len += n;
+    }
+
+    closesocket(fd);
+
+    bracket[bracket_len] = 0;
+    bracket_start = (guchar *)strstr((gchar *)bracket, "\r\n\r\n");
+    if (bracket_start)
+        bracket_start += 4;
+    else
+        return;
+    bracket_len -= (gint)(bracket_start - bracket);
+    bracket_ok = TRUE;
+}
+
+cairo_status_t
+bracket_read(void *closure,
+             unsigned char *data,
+             unsigned int length)
+{
+    if (!bracket_ok || !bracket_start)
+        return CAIRO_STATUS_READ_ERROR;
+
+    if (length > bracket_len)
+        length = bracket_len;
+
+    memcpy(data, bracket_start + bracket_pos, length);
+    bracket_pos += length;
+
+    return CAIRO_STATUS_SUCCESS;
 }
