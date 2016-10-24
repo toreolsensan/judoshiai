@@ -26,7 +26,7 @@ void start_help(GtkWidget *w, gpointer data);
 static GtkWidget *menubar, *preferences, *help, *preferencesmenu, *helpmenu;
 static GtkWidget *quit, *manual;
 static GtkWidget *full_screen, *normal_display, *small_display, *horizontal_display;
-static GtkWidget *mirror, *whitefirst, *redbackground;
+static GtkWidget *mirror, *whitefirst, *redbackground, *showbracket;
 static GtkWidget *tatami_show[NUM_TATAMIS];
 static GtkWidget *node_ip, *my_ip, *about;
 static GtkWidget *light, *menu_light;
@@ -40,6 +40,7 @@ extern void toggle_small_display(GtkWidget *menu_item, gpointer data);
 extern void toggle_mirror(GtkWidget *menu_item, gpointer data);
 extern void toggle_whitefirst(GtkWidget *menu_item, gpointer data);
 extern void toggle_redbackground(GtkWidget *menu_item, gpointer data);
+extern void toggle_bracket(GtkWidget *menu_item, gpointer data);
 extern void set_write_file(GtkWidget *menu_item, gpointer data);
 extern void set_svg_file(GtkWidget *menu_item, gpointer data);
 
@@ -257,6 +258,11 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     my_ip   = create_menu_item(preferencesmenu, show_my_ip_addresses, 0);
     create_separator(preferencesmenu);
 
+    showbracket = gtk_check_menu_item_new_with_label("");
+    gtk_menu_shell_append(GTK_MENU_SHELL(preferencesmenu), showbracket);
+    g_signal_connect(G_OBJECT(showbracket), "activate",
+                     G_CALLBACK(toggle_bracket), 0);
+
     for (i = 0; i < NUM_TATAMIS; i++) {
         tatami_show[i] = gtk_check_menu_item_new_with_label("");
         gtk_menu_shell_append(GTK_MENU_SHELL(preferencesmenu), tatami_show[i]);
@@ -337,6 +343,11 @@ void set_preferences(void)
         gtk_menu_item_activate(GTK_MENU_ITEM(redbackground));
     }
 
+    error = NULL;
+    if (g_key_file_get_boolean(keyfile, "preferences", "bracket", &error)) {
+        gtk_menu_item_activate(GTK_MENU_ITEM(showbracket));
+    }
+
     for (i = 1; i <= NUM_TATAMIS; i++) {
         gchar t[10];
         SPRINTF(t, "tatami%d", i);
@@ -394,6 +405,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(redbackground, _("Red background"));
     change_menu_label(writefile, _("Write to file"));
     change_menu_label(svgfile, _("SVG Templates"));
+    change_menu_label(showbracket, _("Show bracket"));
 
     for (i = 0; i < NUM_TATAMIS; i++) {
         gchar buf[64];

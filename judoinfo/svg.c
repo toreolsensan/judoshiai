@@ -232,9 +232,14 @@ gint paint_svg(struct paint_data *pd)
             if (attr[0].code[0] == 'm') {
                 struct name_data *j = NULL;
                 gint ix;
-                gint tatami = attr[0].value-1;
+                gint tatami = attr[0].value;
                 gint fight = attr[1].value;
                 gint who = attr[2].value;
+
+		if (tatami == 0)
+		    tatami = first_shown_tatami();
+		tatami--;
+		if (tatami < 0) continue;
 
                 if (attr[2].code[0] == '#') {
                     if (match_list[tatami][fight].number < 1000) {
@@ -252,14 +257,26 @@ gint paint_svg(struct paint_data *pd)
                 }
             } else if (attr[0].code[0] == 'c') {
                 struct name_data *j = NULL;
-                gint tatami = attr[0].value-1;
+                gint tatami = attr[0].value;
                 gint fight = attr[1].value;
+
+		if (tatami == 0)
+		    tatami = first_shown_tatami();
+		tatami--;
+		if (tatami < 0) continue;
 
                 j = avl_get_data(match_list[tatami][fight].category);
 
                 if (j) {
                     WRITE(j->last);
                 }
+            } else if (attr[0].code[0] == 't') {
+		gint tatami = first_shown_tatami();
+		if (tatami > 0) {
+		    gchar buf[8];
+		    snprintf(buf, sizeof(buf), "%d", tatami);
+		    WRITE(buf);
+		}
             }
         } // *p = %
         else {
@@ -275,6 +292,21 @@ gint paint_svg(struct paint_data *pd)
         cairo_scale(pd->c, pd->paper_width/svg_width, pd->paper_height/svg_height);
         rsvg_handle_render_cairo(handle, pd->c);
         cairo_restore(pd->c);
+    }
+
+    if (show_bracket() && rsvg_handle_has_sub(handle, "#bracket")) {
+        RsvgPositionData position_data;
+        if (rsvg_handle_get_position_sub(handle, &position_data, "#bracket")) {
+            bracket_x = position_data.x;
+            bracket_y = position_data.y;
+        }
+        RsvgDimensionData dimension_data;
+        if (rsvg_handle_get_dimensions_sub(handle, &dimension_data, "#bracket")) {
+            bracket_w = dimension_data.width;
+            bracket_h = dimension_data.height;
+        }
+	bracket_space_w = svg_width;
+	bracket_space_h = svg_height;
     }
 
     g_object_unref(handle);
