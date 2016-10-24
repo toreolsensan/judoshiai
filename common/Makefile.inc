@@ -1,5 +1,8 @@
-SHIAI_VER_NUM=2.4.1
+SHIAI_VER_NUM=2.5
 SHIAI_VERSION="\"$(SHIAI_VER_NUM)\""
+
+#WINCOMP=new
+WINCOMP=old
 
 ifndef JS_BUILD_DIR
   JS_BUILD_DIR=/home/$(USER)/js-build
@@ -10,6 +13,8 @@ LASTPART := $(shell basename $(CURDIR))
 GTKVER=3
 
 OBJS=
+
+WARNINGS = -Wall -Wshadow
 
 ### Target executable type ###
 ifeq ($(TARGETOS),WIN32)
@@ -30,8 +35,14 @@ endif
 ### Cross compilation (host=Linux, target=Windows) ###
 ifeq ($(TARGETOS),WIN32)
 
+ifeq ($(WINCOMP),new)
+CC=i686-w64-mingw32-gcc
+LD=i686-w64-mingw32-gcc
+else
 CC=i586-mingw32msvc-gcc
 LD=i586-mingw32msvc-gcc
+endif
+
 SUFF=.exe
 DEVELDIR=/opt/win32/gtk
 SOUNDDIR=/opt/win32/mpg123
@@ -67,7 +78,7 @@ endif
 ### Cross compilation ###
 ifeq ($(TARGETOS),WIN32)
 
-CFLAGS=-Wall -g \
+CFLAGS = $(WARNINGS) -g \
 -I$(DEVELDIR)/include/gtk-$(GTKVER).0 \
 -I$(DEVELDIR)/lib/gtk-$(GTKVER).0/include \
 -I$(DEVELDIR)/include/atk-1.0 \
@@ -89,7 +100,8 @@ CFLAGS=-Wall -g \
 -I../common -mms-bitfields \
 -DSHIAI_VERSION=$(SHIAI_VERSION) \
 -DENABLE_NLS \
--DGTKVER=$(GTKVER)
+-DGTKVER=$(GTKVER) \
+-Wno-deprecated-declarations
 
 ifeq ($(JUDOPROXY),YES)
 CFLAGS += -I/opt/win32/webkitgtk/include/webkitgtk-3.0 \
@@ -110,21 +122,27 @@ LIBS += -L/opt/win32/webkitgtk/lib -lwebkitgtk-3.0.dll \
      -L/opt/win32/soup/lib -lsoup-2.4.dll
 endif
 
+ifeq ($(WINCOMP),new)
+WARNINGS += -Wjump-misses-init
+endif
+
 ### Linux ###
 else
 
 PKGCONFIG=pkg-config
 
-CFLAGS=-Wall $(shell $(PKGCONFIGPATH) $(PKGCONFIG) --cflags gtk+-$(GTKVER).0) \
+CFLAGS= $(WARNINGS) $(shell $(PKGCONFIGPATH) $(PKGCONFIG) --cflags gtk+-$(GTKVER).0) \
        $(shell $(PKGCONFIGPATH) $(PKGCONFIG) --cflags cairo) \
        $(shell $(PKGCONFIGPATH) $(PKGCONFIG) --cflags librsvg-2.0) \
        $(shell $(PKGCONFIGPATH) $(PKGCONFIG) --cflags glib-2.0) \
-       -DENABLE_BINRELOC -DENABLE_NLS -DGTKVER=$(GTKVER) \
+       -DENABLE_BINRELOC -DENABLE_NLS -DGTKVER=$(GTKVER) -Wno-deprecated-declarations \
        -I$(DEVELDIR)/include -I../common -DSHIAI_VERSION=$(SHIAI_VERSION)
 
 LIBS=$(shell $(PKGCONFIGPATH) $(PKGCONFIG) --libs gtk+-$(GTKVER).0 gthread-2.0 cairo librsvg-2.0 glib-2.0) \
  $(shell curl-config --libs) -ldl
 
 OBJS += $(OBJDIR)/binreloc.o
+
+WARNINGS += -Wjump-misses-init
 
 endif
