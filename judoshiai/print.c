@@ -3,7 +3,7 @@
 /*
  * Copyright (C) 2006-2016 by Hannu Jokinen
  * Full copyright text is included in the software package.
- */ 
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -59,8 +59,8 @@ static gint print_flags = 0, print_resolution = 30;
 static gboolean print_fixed = TRUE, dialog_run = FALSE;
 
 typedef enum {
-    BARCODE_PS, 
-    BARCODE_PDF, 
+    BARCODE_PS,
+    BARCODE_PDF,
     BARCODE_PNG
 } target_t;
 
@@ -105,12 +105,12 @@ void print_trace(void)
     size_t size;
     char **strings;
     size_t i;
-     
+
     size = backtrace (array, 16);
     strings = backtrace_symbols(array, size);
 
     g_print("--- Obtained %zd stack frames.", size);
-     
+
     char name_buf[512];
     name_buf[readlink("/proc/self/exe", name_buf, 511)] = 0;
 
@@ -134,14 +134,14 @@ static void write_map_file(const gchar *catname, gint page)
         snprintf(buf, sizeof(buf), "%s.map", txt2hex(catname));
     else
         snprintf(buf, sizeof(buf), "%s-%d.map", txt2hex(catname), page);
-        
+
     gchar *mapname = g_build_filename(current_directory, buf, NULL);
     FILE *map = fopen(mapname, "wb");
     g_free(mapname);
     if (map) {
         int i;
         for (i = 0; i < judoka_rectangle_cnt; i++) {
-            fprintf(map, "%d,%d,%d,%d,%d\n", 
+            fprintf(map, "%d,%d,%d,%d,%d\n",
                 judoka_rectangles[i].x1, judoka_rectangles[i].y1,
                 judoka_rectangles[i].x2, judoka_rectangles[i].y2,
                 judoka_rectangles[i].judoka);
@@ -236,7 +236,7 @@ void write_png(GtkWidget *menuitem, gpointer userdata)
         cairo_surface_destroy(cs_pdf);
     } else if (automatic_web_page_update) {
         // print png
-        cs_png = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 
+        cs_png = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
                                             pd.paper_width, pd.paper_height);
         c_png = cairo_create(cs_png);
 
@@ -274,7 +274,7 @@ void write_png(GtkWidget *menuitem, gpointer userdata)
         g_free(pdfname);
         c_pdf = cairo_create(cs_pdf);
 
-        cs_png = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 
+        cs_png = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
                                             pd.paper_width, pd.paper_height);
         c_png = cairo_create(cs_png);
 
@@ -435,7 +435,7 @@ static void get_code_39_extended(gchar key, gchar *c1, gchar *c2)
     if (key == 0) {*c1 = '%'; *c2 = 'U'; }
     else if (key >= 1 && key <= 26) { *c1 = '$'; *c2 = key - 1 + 'A'; }
     else if (key >= 27 && key <= 31) { *c1 = '%'; *c2 = key - 27 + 'A'; }
-    else if (key == 32 || (key >= '0' && key <= '9') || key == '-' || key == '.' || 
+    else if (key == 32 || (key >= '0' && key <= '9') || key == '-' || key == '.' ||
              (key >= 'A' && key <= 'Z')) { *c1 = 0; *c2 = key; }
     else if ((key >= 33 && key <= 44) || key == 47 || key == 58) { *c1 = '/'; *c2 = key - 33 + 'A'; }
     else if (key >= 59 && key <= 63) { *c1 = '%'; *c2 = key - 59 + 'F'; }
@@ -471,10 +471,10 @@ static void draw_code_39_pattern(char key, struct paint_data *pd, double bar_hei
     /* write to the surface */
     iterator = 0;
     while (iterator < 5) {
-		
+
         /* get current point */
         cairo_get_current_point (pd->c, &x, &y);
-		
+
         /* write a bar or an space */
         if (bars) {
             /* write a bar */
@@ -482,7 +482,7 @@ static void draw_code_39_pattern(char key, struct paint_data *pd, double bar_hei
                 //if (unit->bars[iterator] == '1') {
 
                 /* write a flat bar */
-                cairo_set_source_rgb (pd->c, 0, 0, 0); 
+                cairo_set_source_rgb (pd->c, 0, 0, 0);
                 cairo_set_line_width (pd->c, THIN_LINE);
                 cairo_line_to (pd->c, x, y + bar_height);
 
@@ -491,7 +491,7 @@ static void draw_code_39_pattern(char key, struct paint_data *pd, double bar_hei
 
                 cairo_move_to (pd->c, x + 2, y);
                 cairo_line_to (pd->c, x + 2, y + bar_height);
-				
+
             }else {
                 /* write an slim bar */
                 cairo_set_source_rgb (pd->c, 0, 0, 0);
@@ -537,9 +537,9 @@ static void draw_code_39_pattern(char key, struct paint_data *pd, double bar_hei
         if (bars) {
             iterator++;
         } /* end if */
-		
+
     } /* end while */
-	
+
     return;
 }
 
@@ -549,7 +549,7 @@ static void draw_code_39_string(gchar *s, struct paint_data *pd, double bar_heig
         return;
 
     cairo_save(pd->c);
-    draw_code_39_pattern('*', pd, bar_height); 
+    draw_code_39_pattern('*', pd, bar_height);
 
     for (; *s; s++) {
         if (extended) {
@@ -562,7 +562,7 @@ static void draw_code_39_string(gchar *s, struct paint_data *pd, double bar_heig
             draw_code_39_pattern(*s, pd, bar_height);
     }
 
-    draw_code_39_pattern ('*', pd, bar_height); 
+    draw_code_39_pattern ('*', pd, bar_height);
     cairo_restore(pd->c);
 }
 
@@ -732,7 +732,7 @@ static void read_print_template(gchar *templatefile, GtkPrintContext *context)
                 wn_texts[num_wn_texts].font = strdup(font);
                 g_free(wn_texts[num_wn_texts].text);
                 wn_texts[num_wn_texts].text = strdup(p);
-                if (num_wn_texts < NUM_WN_TEXTS - 1) 
+                if (num_wn_texts < NUM_WN_TEXTS - 1)
                     num_wn_texts++;
             } else if (strncmp(p1, "font ", 5) == 0) {
                 p = p1;
@@ -824,25 +824,25 @@ static gint find_print_judokas(gchar *where_string)
     num_selected_judokas = 0;
 
     if (club_text == CLUB_TEXT_CLUB)
-        snprintf(request, sizeof(request), 
+        snprintf(request, sizeof(request),
                  "select \"index\" from competitors "
                  "where \"deleted\"&1=0 %s "
                  "order by \"club\",\"last\",\"first\" asc",
                  where_string ? where_string : "");
     else if (club_text == CLUB_TEXT_COUNTRY)
-        snprintf(request, sizeof(request), 
+        snprintf(request, sizeof(request),
                  "select \"index\" from competitors "
                  "where \"deleted\"&1=0 %s "
                  "order by \"country\",\"last\",\"first\" asc",
                  where_string ? where_string : "");
     else if (print_winners)
-        snprintf(request, sizeof(request), 
+        snprintf(request, sizeof(request),
                  "select \"index\" from competitors "
                  "where \"deleted\"&1=0 %s "
                  "order by \"category\",\"last\",\"first\" asc",
                  where_string ? where_string : "");
     else
-        snprintf(request, sizeof(request), 
+        snprintf(request, sizeof(request),
                  "select \"index\" from competitors "
                  "where \"deleted\"&1=0 %s "
                  "order by \"country\",\"club\",\"last\",\"first\" asc",
@@ -874,7 +874,7 @@ static void filter_winners(void)
         struct category_data *catdata = NULL;
         gint wincat = 0;
         gint winpos = db_get_competitors_position(index, &wincat);
-        
+
         if (wincat) {
             catdata = avl_get_category(wincat);
             if (catdata)
@@ -974,7 +974,7 @@ static void paint_weight_notes(struct paint_data *pd, gint what, gint page)
     }
 
     //numpages = num_selected_judokas/10 + 1;
-        
+
     gdouble x = 0.0, y = 0.0;
     double bar_height = H(0.02);
     gchar id_str[10];
@@ -986,7 +986,7 @@ static void paint_weight_notes(struct paint_data *pd, gint what, gint page)
         struct category_data *catdata = NULL;
         gint wincat = 0;
         gint winpos = db_get_competitors_position(selected_judokas[row], &wincat);
-        
+
         if (wincat) {
             catdata = avl_get_category(wincat);
             if (catdata)
@@ -996,7 +996,7 @@ static void paint_weight_notes(struct paint_data *pd, gint what, gint page)
         if ((print_winners & 0xfffe) && (print_winners & (1 << winpos)) == 0)
             continue;
 
-        snprintf(request, sizeof(request), 
+        snprintf(request, sizeof(request),
                  "select * from competitors "
                  "where \"deleted\"&1=0 and \"index\"=%d ",
                  selected_judokas[row]);
@@ -1125,8 +1125,8 @@ static void paint_weight_notes(struct paint_data *pd, gint what, gint page)
                     cairo_scale(pd->c, scx, scy);
                     cairo_set_source_surface(pd->c, img, 0, 0);
                     cairo_paint(pd->c);
-                    cairo_surface_destroy(img); 
-                }                
+                    cairo_surface_destroy(img);
+                }
             } else {
                 if (wn_texts[t].align != -1.0) {
                     cairo_text_extents(pd->c, buf, &extents);
@@ -1164,13 +1164,13 @@ static void paint_weight_notes(struct paint_data *pd, gint what, gint page)
     //cairo_show_page(pd->c);
 
     if (image)
-        cairo_surface_destroy(image);        
+        cairo_surface_destroy(image);
 }
 
 static gint get_start_time(const gchar *p)
 {
     gint h = 0, m = 0, nh = 0, nm = 0, htxt = 1;
-    
+
 
     for (; *p; p++) {
         if (*p >= '0' && *p <= '9') {
@@ -1228,7 +1228,11 @@ static void calc_schedule(void)
         gint start;
         gint cumulative_time;
         struct grp_time *gt = NULL;
-        struct grp_time *p1; 
+        struct grp_time *p1;
+        gint mt = 180;
+        struct cat_time *ct = NULL;
+        struct cat_time *p2 = NULL;
+        GtkTreeIter tmp_iter;
 
         if (schedule_start)
             start = get_start_time(schedule_start);
@@ -1242,15 +1246,15 @@ static void calc_schedule(void)
                 (catdata->match_status & MATCH_UNMATCHED) == 0)
                 goto loop;
 
-            gint mt = get_category_match_time(catdata->category);
+            mt = get_category_match_time(catdata->category);
             if (mt < 180)
                 mt = 180;
 
             if (catdata->group != old_group) {
-                p1 = schedule[i]; 
+                p1 = schedule[i];
 
                 gt = g_malloc0(sizeof(*gt));
-                
+
                 if (p1 == NULL)
                     schedule[i] = gt;
                 else {
@@ -1261,12 +1265,12 @@ static void calc_schedule(void)
 
                 cumulative_time = matches_time + start;
                 gt->tim = cumulative_time;
-            }	
+            }
             old_group = catdata->group;
 
-            struct cat_time *ct = g_malloc0(sizeof(*ct));
+            ct = g_malloc0(sizeof(*ct));
             ct->cat = catdata;
-            struct cat_time *p2 = gt->cats;
+            p2 = gt->cats;
 
             if (p2 == NULL)
                 gt->cats = ct;
@@ -1276,7 +1280,6 @@ static void calc_schedule(void)
                 p2->next = ct;
             }
 
-            GtkTreeIter tmp_iter;
             n = 0;
             if (find_iter(&tmp_iter, catdata->index)) {
                 gint k = gtk_tree_model_iter_n_children(current_model, &tmp_iter);
@@ -1289,7 +1292,7 @@ static void calc_schedule(void)
         }
 
         // phony group to the end
-        p1 = schedule[i]; 
+        p1 = schedule[i];
         gt = g_malloc0(sizeof(*gt));
 
         if (p1 == NULL)
@@ -1310,7 +1313,7 @@ static void free_schedule(void)
     gint i;
 
     for (i = 1; i <= number_of_tatamis; i++) {
-        struct grp_time *tmp1, *p1 = schedule[i]; 
+        struct grp_time *tmp1, *p1 = schedule[i];
         while (p1) {
             struct cat_time *p2 = p1->cats;
             while (p2) {
@@ -1322,7 +1325,7 @@ static void free_schedule(void)
             p1 = p1->next;
             g_free(tmp1);
         }
-    }    
+    }
     BZERO(schedule);
 }
 
@@ -1381,7 +1384,7 @@ static void paint_schedule(struct paint_data *pd)
 
     rownum1 = 2;
     cairo_move_to(c, pd->rotate ? left : W(0.04), YPOS);
-    snprintf(buf, sizeof(buf), "%s  %s  %s", 
+    snprintf(buf, sizeof(buf), "%s  %s  %s",
              prop_get_str_val(PROP_NAME),
              prop_get_str_val(PROP_DATE),
              prop_get_str_val(PROP_PLACE));
@@ -1392,7 +1395,7 @@ static void paint_schedule(struct paint_data *pd)
 
     for (i = 1; i <= number_of_tatamis; i++) {
         gint grps = 0;
-        struct grp_time *p1 = schedule[i]; 
+        struct grp_time *p1 = schedule[i];
 
         while (p1) {
             grps++;
@@ -1412,7 +1415,7 @@ static void paint_schedule(struct paint_data *pd)
 
         if (grps > max_grps)
             max_grps = grps;
-    }    
+    }
 
     start_time = (start_time/(60*print_resolution))*(60*print_resolution);
     end_time = ((end_time+(60*print_resolution))/(60*print_resolution))*(60*print_resolution);
@@ -1423,7 +1426,7 @@ static void paint_schedule(struct paint_data *pd)
     // find time slots
 
     for (i = 1; i <= number_of_tatamis; i++) {
-        struct grp_time *p1 = schedule[i], *p2; 
+        struct grp_time *p1 = schedule[i], *p2;
         while (p1) {
             gint slot = (p1->tim - start_time + 30*print_resolution)/(60*print_resolution);
             if (slot >= NUM_TIME_SLOTS)
@@ -1439,7 +1442,7 @@ static void paint_schedule(struct paint_data *pd)
             }
             p1 = p1->next;
         }
-    }    
+    }
 
     if (pd->rotate) {
         rownum1 = 1;
@@ -1459,7 +1462,7 @@ static void paint_schedule(struct paint_data *pd)
                 if (print_fixed && (((tm/3600) ^ (start_time/3600)) & 1)) {
                     cairo_save(c);
                     cairo_set_source_rgb(c, 0.9, 0.9, 0.9);
-                    cairo_rectangle(c, clock, YPOS_L(rownum1-1) + 3, right - clock, 
+                    cairo_rectangle(c, clock, YPOS_L(rownum1-1) + 3, right - clock,
                                     (num_rows ? num_rows : 1.0)*ROWHEIGHT);
                     cairo_fill(c);
                     cairo_restore(c);
@@ -1481,7 +1484,7 @@ static void paint_schedule(struct paint_data *pd)
                     }
 
                     while (p1) {
-                        cairo_move_to(c, left + (t-1)*colwidth + 4, YPOS_L(rownum2)); 
+                        cairo_move_to(c, left + (t-1)*colwidth + 4, YPOS_L(rownum2));
                         struct cat_time *p2 = p1->cats;
                         while (p2) {
                             cairo_show_text(c, p2->cat->category);
@@ -1520,7 +1523,7 @@ static void paint_schedule(struct paint_data *pd)
             sprintf(buf, "TATAMI %d", i);
             cairo_show_text(c, buf);
 
-            struct grp_time *p1 = schedule[i]; 
+            struct grp_time *p1 = schedule[i];
             while (p1) {
                 rownum1++;
                 cairo_move_to(c, W(0.044), YPOS);
@@ -1531,13 +1534,13 @@ static void paint_schedule(struct paint_data *pd)
                 while (p2) {
                     cairo_show_text(c, p2->cat->category);
                     cairo_show_text(c, "  ");
-                
+
                     p2 = p2->next;
                 }
                 p1 = p1->next;
             }
         }
-    }    
+    }
 
     if (pd->rotate) {
         pd->paper_width = paper_width_saved;
@@ -1550,10 +1553,10 @@ static void paint_schedule(struct paint_data *pd)
     free_schedule();
 }
 
-static void select_schedule_pdf(GtkWidget *w, GdkEventButton *event, gpointer arg) 
+static void select_schedule_pdf(GtkWidget *w, GdkEventButton *event, gpointer arg)
 {
     struct print_struct *s = arg;
-    gchar *file = get_save_as_name("", FALSE, NULL);    
+    gchar *file = get_save_as_name("", FALSE, NULL);
     if (file) {
         g_free(schedule_pdf_out);
         schedule_pdf_out = file;
@@ -1656,12 +1659,12 @@ void print_schedule(void)
 
     gtk_widget_show_all(table);
 #if (GTKVER == 3)
-    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), 
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),
                        table, FALSE, FALSE, 0);
 #else
     gtk_container_add(GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), table);
 #endif
-    g_signal_connect(G_OBJECT(s->pdf_file), "button-press-event", G_CALLBACK(select_schedule_pdf), 
+    g_signal_connect(G_OBJECT(s->pdf_file), "button-press-event", G_CALLBACK(select_schedule_pdf),
 		     (gpointer)s);
 
     if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT) {
@@ -1704,7 +1707,7 @@ static gint fill_in_pages(gint category, gint all)
 {
     GtkTreeIter iter;
     gboolean ok;
-    GtkTreeSelection *selection = 
+    GtkTreeSelection *selection =
         gtk_tree_view_get_selection(GTK_TREE_VIEW(current_view));
     gint cat = 0, i;
 
@@ -1712,17 +1715,17 @@ static gint fill_in_pages(gint category, gint all)
 
     ok = gtk_tree_model_get_iter_first(current_model, &iter);
     while (ok) {
-        gint index; 
+        gint index;
         struct compsys sys;
 
         gtk_tree_model_get(current_model, &iter,
                            COL_INDEX, &index,
                            -1);
-			
+
         if (all ||
             gtk_tree_selection_iter_is_selected(selection, &iter)) {
             sys = db_get_system(index);
-                 
+
             for (i = 0; i < num_pages(sys) && numpages < NUM_PAGES; i++) {
                 pages_to_print[numpages].cat = index;
                 pages_to_print[numpages++].pagenum = i;
@@ -1753,7 +1756,7 @@ static gint fill_in_pages(gint category, gint all)
         if (d)
             d->match_status |= CAT_PRINTED;
     }
-        
+
     refresh_window();
 
     return cat;
@@ -1767,7 +1770,7 @@ static void begin_print(GtkPrintOperation *operation,
     numpages = 1;
 
     if (what == PRINT_ALL_CATEGORIES || what == PRINT_SHEET) {
-        fill_in_pages(ptr_to_gint(user_data) & PRINT_DATA_MASK, 
+        fill_in_pages(ptr_to_gint(user_data) & PRINT_DATA_MASK,
                       what == PRINT_ALL_CATEGORIES);
         gtk_print_operation_set_n_pages(operation, numpages);
     } else if (what == PRINT_WEIGHING_NOTES) {
@@ -1789,12 +1792,12 @@ static void begin_print(GtkPrintOperation *operation,
             read_print_template(template_in, context);
         else
             read_print_template(NULL, context);
-        
+
         if (ptr_to_gint(user_data) & PRINT_ALL)
             find_print_judokas(NULL);
 
         filter_winners();
-        
+
         if (ptr_to_gint(user_data) & PRINT_ONE_PER_PAGE)
             numpages = num_selected_judokas;
         else
@@ -1850,7 +1853,7 @@ static void draw_page(GtkPrintOperation *operation,
 #endif
     case PRINT_WEIGHING_NOTES:
 	paint_weight_notes(&pd, ctg, page_nr+1);
-	break;	
+	break;
     case PRINT_SCHEDULE:
         if (ctg & PRINT_LANDSCAPE)
             pd.rotate = TRUE;
@@ -1885,8 +1888,8 @@ void do_print(GtkWidget *menuitem, gpointer userdata)
     gtk_print_operation_set_allow_async(print, TRUE);
 
     /*res = */gtk_print_operation_run(print,
-                                      ptr_to_gint(userdata) & PRINT_TO_DEFAULT ? 
-                                      GTK_PRINT_OPERATION_ACTION_PRINT : 
+                                      ptr_to_gint(userdata) & PRINT_TO_DEFAULT ?
+                                      GTK_PRINT_OPERATION_ACTION_PRINT :
                                       GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG,
                                       GTK_WINDOW (main_window), NULL);
 
@@ -1900,7 +1903,7 @@ void print_doc(GtkWidget *menuitem, gpointer userdata)
     cairo_t *c;
     struct judoka *cat = NULL;
     gint i;
-        
+
     gint what  = ptr_to_gint(userdata) & PRINT_ITEM_MASK;
     gint where = ptr_to_gint(userdata) & PRINT_DEST_MASK;
     gint data  = ptr_to_gint(userdata) & PRINT_DATA_MASK;
@@ -2110,7 +2113,7 @@ void print_matches(GtkWidget *menuitem, gpointer userdata)
             name1 = g_strdup_printf("%s.csv", name);
 
         valid_ascii_string(name1);
-                
+
         FILE *f = fopen(name1, "w");
 
         g_free (name);
@@ -2118,11 +2121,11 @@ void print_matches(GtkWidget *menuitem, gpointer userdata)
 
         if (!f)
             goto out;
-                
+
         gchar *cmd = g_strdup_printf("select * from matches order by \"category\", \"number\"");
         gint numrows = db_get_table(cmd);
         g_free(cmd);
-        
+
         if (numrows < 0) {
             fclose(f);
             db_close_table();
@@ -2137,7 +2140,7 @@ void print_matches(GtkWidget *menuitem, gpointer userdata)
                 continue;
 
             gint cat = atoi(db_get_data(k, "category"));
- 
+
             struct category_data *catdata = avl_get_category(cat);
             if (catdata) {
                 gboolean ok = FALSE;
@@ -2177,7 +2180,7 @@ void print_matches(GtkWidget *menuitem, gpointer userdata)
                     j1?j1->first:"", j1?j1->last:"", j1?get_club_text(j1, 0):"",
                     j2?j2->first:"", j2?j2->last:"", j2?get_club_text(j2, 0):"");
             if (pr)
-                fprintf(f, ",\"%d-%d\"", points_b, points_w);
+                fprintf(f, ",\"%s-%s\"", get_points_str(points_b), get_points_str(points_w));
             if (pi)
                 fprintf(f, ",\"%05x-%05x\"", score_b, score_w);
             if (pc) {
@@ -2211,19 +2214,19 @@ static void update_print_struct(GtkWidget *w, gpointer data)
         gtk_widget_set_sensitive(GTK_WIDGET(s->template_file), FALSE);
     else
         gtk_widget_set_sensitive(GTK_WIDGET(s->template_file), TRUE);
-        
+
     if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(s->print_printer)))
         gtk_widget_set_sensitive(GTK_WIDGET(s->pdf_file), FALSE);
     else
         gtk_widget_set_sensitive(GTK_WIDGET(s->pdf_file), TRUE);
-        
+
     gtk_button_set_label(GTK_BUTTON(s->template_file), template_in ? template_in : "");
     gtk_button_set_label(GTK_BUTTON(s->pdf_file), pdf_out ? pdf_out : "");
 }
 
-static void select_pdf(GtkWidget *w, GdkEventButton *event, gpointer *arg) 
+static void select_pdf(GtkWidget *w, GdkEventButton *event, gpointer *arg)
 {
-    gchar *file = get_save_as_name("", FALSE, NULL);    
+    gchar *file = get_save_as_name("", FALSE, NULL);
     if (file) {
         g_free(pdf_out);
         pdf_out = file;
@@ -2231,9 +2234,9 @@ static void select_pdf(GtkWidget *w, GdkEventButton *event, gpointer *arg)
     }
 }
 
-static void select_template(GtkWidget *w, GdkEventButton *event, gpointer *arg) 
+static void select_template(GtkWidget *w, GdkEventButton *event, gpointer *arg)
 {
-    gchar *file = get_save_as_name("", TRUE, NULL);    
+    gchar *file = get_save_as_name("", TRUE, NULL);
     if (file) {
         g_free(template_in);
         template_in = file;
@@ -2337,22 +2340,22 @@ void print_accreditation_cards(gboolean all)
 
     gtk_widget_show_all(table);
 #if (GTKVER == 3)
-    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), 
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),
                        table, FALSE, FALSE, 0);
 #else
     gtk_container_add(GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), table);
 #endif
-    g_signal_connect(G_OBJECT(s->layout_default), "toggled", G_CALLBACK(update_print_struct), 
+    g_signal_connect(G_OBJECT(s->layout_default), "toggled", G_CALLBACK(update_print_struct),
 		     (gpointer)s);
-    g_signal_connect(G_OBJECT(s->layout_template), "toggled", G_CALLBACK(update_print_struct), 
+    g_signal_connect(G_OBJECT(s->layout_template), "toggled", G_CALLBACK(update_print_struct),
 		     (gpointer)s);
-    g_signal_connect(G_OBJECT(s->print_printer), "toggled", G_CALLBACK(update_print_struct), 
+    g_signal_connect(G_OBJECT(s->print_printer), "toggled", G_CALLBACK(update_print_struct),
 		     (gpointer)s);
-    g_signal_connect(G_OBJECT(s->print_pdf), "toggled", G_CALLBACK(update_print_struct), 
+    g_signal_connect(G_OBJECT(s->print_pdf), "toggled", G_CALLBACK(update_print_struct),
 		     (gpointer)s);
-    g_signal_connect(G_OBJECT(s->pdf_file), "button-press-event", G_CALLBACK(select_pdf), 
+    g_signal_connect(G_OBJECT(s->pdf_file), "button-press-event", G_CALLBACK(select_pdf),
 		     (gpointer)s);
-    g_signal_connect(G_OBJECT(s->template_file), "button-press-event", G_CALLBACK(select_template), 
+    g_signal_connect(G_OBJECT(s->template_file), "button-press-event", G_CALLBACK(select_template),
 		     (gpointer)s);
 
     if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT) {
@@ -2382,7 +2385,7 @@ void print_accreditation_cards(gboolean all)
 
 void print_weight_notes(GtkWidget *menuitem, gpointer userdata)
 {
-    print_accreditation_cards(TRUE);    
+    print_accreditation_cards(TRUE);
 }
 
 void print_weight_notes_to_default_printer(GtkWidget *menuitem, gpointer userdata)
