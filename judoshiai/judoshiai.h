@@ -194,7 +194,7 @@ enum special_match_types {
         _obj = gtk_widget_get_accessible(_widget);      \
         atk_object_set_name(_obj, _name); } while (0)
 
-#define SHOW_MESSAGE(_a...) do {gchar b[256]; snprintf(b, sizeof(b), _a); show_message(b); } while (0)
+#define SHOW_MESSAGE(_a...) do {gchar _b[256]; snprintf(_b, sizeof(_b), _a); show_message(_b); } while (0)
 
 #define MATCHED_POOL(_a) (pm.m[_a].blue_points || pm.m[_a].white_points || \
                           pm.m[_a].blue == GHOST || pm.m[_a].white == GHOST)
@@ -482,6 +482,8 @@ enum {
     PROP_TWO_POOL_BRONZES,
     PROP_RESOLVE_3_WAY_TIES_BY_TIME,
     PROP_RESOLVE_3_WAY_TIES_BY_WEIGHTS,
+    PROP_MIX_POOL_MATCHES_INTO_ROUNDS,
+    PROP_USE_IJF_POINTS,
     PROP_GRADE_NAMES,
     NUM_PROPERTIES
 };
@@ -530,6 +532,7 @@ struct match {
     gint  forcednumber;
     gint  date;
     gint  legend;
+    gint  round;
 };
 
 struct pool_matches {
@@ -732,6 +735,7 @@ struct write_closure {
     gint     cat;
     gint     tatami;
     gint     len;
+    gint     page;
     gboolean info;
     gboolean svg;
 };
@@ -825,6 +829,8 @@ const char *db_name;
 
 extern guint selected_judokas[TOTAL_NUM_COMPETITORS];
 extern guint num_selected_judokas;
+
+extern gint match_crc[NUM_TATAMIS+1];
 
 /** Functions */
 
@@ -1098,6 +1104,9 @@ extern void set_font(gchar *font);
 extern gchar *get_font_face(void);
 extern void category_window(gint cat);
 extern void write_sheet_to_stream(gint cat, cairo_write_func_t write_func, void *closure);
+extern gboolean change_current_page(GtkWidget *sheet_page,
+                                    GdkEventButton *event,
+                                    gpointer userdata);
 
 /* names */
 #define IS_MALE   1
@@ -1266,11 +1275,15 @@ extern gint num_pages(struct compsys sys);
 extern gint get_matchnum_by_pos(struct compsys systm, gint pos, gint num);
 extern gint db_position_to_real(struct compsys sys, gint pos);
 extern gint is_repechage(struct compsys sys, gint m);
-extern gint round_number(struct compsys systm, gint m);
+extern gint round_number(struct category_data *cd, gint m);
 extern const gchar *round_name_by_id(gint n);
-extern const gchar *round_name(struct compsys systm, gint m);
+extern const gchar *round_name(struct category_data *cd, gint m);
 extern gint num_matches_left(gint index, gint competitors);
 extern gint num_matches_estimate(gint index);
+extern const gchar *get_points_str(gint points);
+extern gint get_points_gint(gint points);
+extern gchar *get_score_str(gint score);
+extern gint match_on_page(gint category, gint match);
 
 /* medal-matches */
 extern void move_medal_matches(GtkWidget *menuitem, gpointer userdata);
@@ -1311,7 +1324,8 @@ extern GtkTextBuffer *message_window(void);
 extern void show_msg(GtkTextBuffer *buf, gchar *tagname, gchar *format, ...);
 
 /* http */
-void clear_cache_by_cat(gint cat);
+extern void clear_cache_by_cat(gint cat);
+extern void get_bracket_2(gint tatami, gint catid, gint svg, gint page, gint connum);
 
 /* match order */
 extern void read_match_order_dialog(GtkWidget *w, gpointer arg);
