@@ -242,13 +242,11 @@ void view_popup_menu_move_matches(GtkWidget *menuitem, gpointer userdata)
     if (!catdata)
 	return;
 
-    struct compsys cs = catdata->system;
-
     r = g_malloc0_n(MMLEN, sizeof(struct match_move));
     if (!r) return;
 
     for (i = 1; i < NUM_MATCHES; i++) {
-	gint n = round_to_pos(round_number(cs, i));
+	gint n = round_to_pos(round_number(catdata, i));
 	if (n < MMLEN) r[n].round++;
 	else g_print("ERROR %s:%d\n", __FUNCTION__, __LINE__);
     }
@@ -311,7 +309,7 @@ void view_popup_menu_move_matches(GtkWidget *menuitem, gpointer userdata)
 
     if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT) {
 	for (i = 1; i < NUM_MATCHES; i++) {
-	    gint n = round_number(cs, i);
+	    gint n = round_number(catdata, i);
 	    n = round_to_pos(n);
 	    if (n >= MMLEN) continue;
 
