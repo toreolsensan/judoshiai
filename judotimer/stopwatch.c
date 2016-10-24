@@ -308,6 +308,11 @@ void update_clock(void)
         if (demo == 1)
             gen_random_key();
         else {
+	    static time_t nexttime = 0;
+	    if (time(NULL) < nexttime)
+		return;
+	    nexttime = time(NULL) + demo;
+	    
             static gint last_cat = 0, last_num = 0;
             static gint res[9][2][4] = {
                 {{2,1,0,0},{0,2,0,2}},
@@ -342,7 +347,8 @@ void update_clock(void)
                 last_cat = current_category;
                 last_num = current_match;
             }
-        }
+	    
+        } // else
     }
 }
 
@@ -866,6 +872,8 @@ void close_ask_window(void)
 void display_ask_window(gchar *name, gchar *cat, gchar winner)
 {
     gchar first[32], last[32], club[32], country[32];
+
+    if (demo) return;
 
     parse_name(name, first, last, club, country);
 
