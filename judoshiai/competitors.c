@@ -385,7 +385,7 @@ static void judoka_edited_callback(GtkWidget *widget,
     if (edited.visible) {
         if (edited.first)
             strncpy(output_msg.u.name_info.first, edited.first, sizeof(output_msg.u.name_info.first)-1);
-        gchar *ct = get_club_text(&edited, CLUB_TEXT_ABBREVIATION);
+        gchar *ct = (gchar *)(uintptr_t)get_club_text(&edited, CLUB_TEXT_ABBREVIATION);
         if (ct)
             strncpy(output_msg.u.name_info.club, ct,
                     sizeof(output_msg.u.name_info.club)-1);
@@ -427,7 +427,7 @@ static GtkWidget *set_entry(GtkWidget *table, int row,
     gtk_table_attach_defaults(GTK_TABLE(table), tmp, 0, 1, row, row+1);
 #endif
     tmp = gtk_entry_new();
-    gtk_entry_set_max_length(GTK_ENTRY(tmp), 20);
+    gtk_entry_set_max_length(GTK_ENTRY(tmp), 30);
     gtk_entry_set_text(GTK_ENTRY(tmp), deftxt ? deftxt : "");
 #if (GTKVER == 3)
     gtk_grid_attach(GTK_GRID(table), tmp, 1, row, 1, 1);
@@ -1790,7 +1790,7 @@ gboolean query_tooltip (GtkWidget  *widget, gint x, gint y, gboolean keyboard_mo
  * Page init
  */
 
-void set_judokas_page(GtkWidget *notebook)
+void set_judokas_page(GtkWidget *nb)
 {
     GtkWidget *judokas_scrolled_window;
     GtkWidget *view;
@@ -1825,7 +1825,7 @@ void set_judokas_page(GtkWidget *notebook)
 #endif
 
     competitor_label = gtk_label_new (_("Competitors"));
-    gtk_notebook_append_page(GTK_NOTEBOOK(notebook), judokas_scrolled_window, competitor_label);
+    gtk_notebook_append_page(GTK_NOTEBOOK(nb), judokas_scrolled_window, competitor_label);
     update_category_status_info_all();
 
     col = gtk_tree_view_get_column(GTK_TREE_VIEW(current_view), 0);
@@ -1835,7 +1835,7 @@ void set_judokas_page(GtkWidget *notebook)
     old_search_compare_func = gtk_tree_view_get_search_equal_func(current_view);
     gtk_tree_view_set_search_equal_func (current_view, compare_search_key, NULL, NULL);
 #endif
-    //gtk_widget_show_all(notebook);
+    //gtk_widget_show_all(nb);
 }
 
 gint sort_by_regcategory(gchar *name1, gchar *name2)
