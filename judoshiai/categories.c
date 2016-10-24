@@ -332,7 +332,7 @@ void update_category_status_info_all(void)
 {
     GtkTreeIter iter;
     gboolean ok;
-    gint weight, index, visible;
+    gint index, visible;
 
     ok = gtk_tree_model_get_iter_first(current_model, &iter);
     while (ok) {
@@ -397,4 +397,28 @@ struct compsys uncompress_system(gint system)
     d.table = (system & SYSTEM_TABLE_MASK) >> SYSTEM_TABLE_SHIFT;
     d.wishsys = (system & SYSTEM_WISH_MASK) >> SYSTEM_WISH_SHIFT;
     return d;
+}
+
+/* Sqlite3 internal function implementation. */
+int get_category_property(int cat, int prop)
+{
+    struct category_data *catdata = avl_get_category(cat);
+    if (!catdata)
+	return -1;
+
+    switch (prop) {
+    case 0: /* category is french */
+	if (catdata->system.system >= SYSTEM_FRENCH_8 &&
+	    catdata->system.system <= SYSTEM_FRENCH_256)
+	    return 1;
+	else
+	    return 0;
+    case 1: /* category is not french */
+	if (catdata->system.system < SYSTEM_FRENCH_8 ||
+	    catdata->system.system > SYSTEM_FRENCH_256)
+	    return 1;
+	else
+	    return 0;
+    }
+    return 0;
 }
