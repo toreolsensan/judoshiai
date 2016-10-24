@@ -225,9 +225,10 @@ void msg_received(struct message *input_msg)
                     current_category, current_match,
                     input_msg->u.next_match.category, input_msg->u.next_match.match);
             ***/
-            display_comp_window(saved_cat, saved_last1, saved_last2,
-                                saved_first1, saved_first2,
-                                saved_country1, saved_country2, saved_round);
+	    if (!demo)
+		display_comp_window(saved_cat, saved_last1, saved_last2,
+				    saved_first1, saved_first2,
+				    saved_country1, saved_country2, saved_round);
 
             struct message msg;
             memset(&msg, 0, sizeof(msg));
