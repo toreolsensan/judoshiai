@@ -11,7 +11,7 @@ $(OBJDIR):
 	mkdir -p $(OBJDIR)
 
 OBJS += $(OBJDIR)/main.o $(OBJDIR)/competitors.o $(OBJDIR)/sheets.o $(OBJDIR)/set-one-judoka.o \
-	$(OBJDIR)/sqlite3.o $(OBJDIR)/popup-menu.o $(OBJDIR)/util.o $(OBJDIR)/db.o \
+	$(OBJDIR)/sqlite3-patched.o $(OBJDIR)/popup-menu.o $(OBJDIR)/util.o $(OBJDIR)/db.o \
 	$(OBJDIR)/categories.o $(OBJDIR)/log.o $(OBJDIR)/matches.o \
 	$(OBJDIR)/names.o $(OBJDIR)/comm.o $(OBJDIR)/ip.o $(OBJDIR)/protocol.o \
 	$(OBJDIR)/set-categories.o $(OBJDIR)/category-graph.o \
@@ -71,6 +71,10 @@ $(OBJDIR)/%.o: %.c judoshiai.h ../common/comm.h
 
 $(OBJDIR)/common.o: ../common/common.c
 	${CC} $(PROF) -g $(CFLAGS) -c $< -o $@
+
+sqlite3-patched.c: sqlite3.c sqlite3.patch
+	cp sqlite3.c sqlite3-patched.c
+	patch -p2 sqlite3-patched.c <sqlite3.patch
 
 lex.yy.c: basic.l basic.tab.h
 	flex basic.l
