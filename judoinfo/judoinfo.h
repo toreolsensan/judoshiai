@@ -60,6 +60,12 @@
 #define SMALL_DISPLAY      1
 #define HORIZONTAL_DISPLAY 2
 
+enum {
+    BRACKET_TYPE_ERR,
+    BRACKET_TYPE_PNG,
+    BRACKET_TYPE_SVG,
+};
+
 struct name_data {
     gint   index;
     gchar *last;
@@ -92,6 +98,12 @@ extern gboolean show_tatami[NUM_TATAMIS];
 extern struct match match_list[NUM_TATAMIS][NUM_LINES];
 extern gint language;
 extern gchar *svg_file;
+extern gboolean bracket_ok;
+extern gint bracket_pos;
+extern gint bracket_len;
+extern guchar *bracket_start;
+extern gint bracket_x, bracket_y, bracket_w, bracket_h;
+extern gint bracket_space_w, bracket_space_h;
 
 extern gboolean this_is_shiai(void);
 extern void msg_to_queue(struct message *msg);
@@ -120,6 +132,14 @@ extern gint timeout_ask_for_data(gpointer data);
 extern void write_matches(void);
 extern void read_svg_file(void);
 extern gint paint_svg(struct paint_data *pd);
+#ifndef EMSCRIPTEN
+extern gboolean show_bracket(void);
+extern cairo_status_t bracket_read(void *closure,
+                                   unsigned char *data,
+                                   unsigned int length);
+extern gint bracket_type(void);
+extern gint first_shown_tatami(void);
+#endif
 
 /* profiling stuff */
 //#define PROFILE
