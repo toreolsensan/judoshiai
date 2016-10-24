@@ -190,6 +190,7 @@ gboolean msg_accepted(struct message *m)
     case MSG_EDIT_COMPETITOR:
     case MSG_SCALE:
     case MSG_EVENT:
+    case MSG_WEB:
         return TRUE;
     }
     return FALSE;
@@ -471,6 +472,126 @@ void msg_received(struct message *input_msg)
 	    change_current_page(NULL, &event, NULL);
 	}
 	break;
+
+    case MSG_WEB: {
+	struct msg_web_resp *resp;
+	gint indx = 0;
+	gboolean coach;
+
+	resp = input_msg->u.web.resp;
+	resp->request = input_msg->u.web.request;
+
+	if (input_msg->u.web.request == MSG_WEB_GET_COMP_DATA ||
+	    input_msg->u.web.request == MSG_WEB_SET_COMP_WEIGHT) {
+	    if (input_msg->u.web.request == MSG_WEB_GET_COMP_DATA)
+		indx = db_get_index_by_id(input_msg->u.web.u.get_comp_data.id, &coach);
+	    else
+		indx = db_get_index_by_id(input_msg->u.web.u.set_comp_weight.id, &coach);
+
+	    if (indx)
+		j = get_data(indx);
+	    else
+		j = get_data(atoi(input_msg->u.web.u.get_comp_data.id));
+	    if (!j) {
+		g_atomic_int_set(&resp->ready, MSG_WEB_RESP_ERR);
+		return;
+	    }
+
+	    if (input_msg->u.web.request == MSG_WEB_SET_COMP_WEIGHT) {
+		j->weight = input_msg->u.web.u.set_comp_weight.weight;
+		db_update_judoka(j->index, j);
+		display_one_judoka(j);
+	    }
+
+#define CP2WEB_INT(_dst) resp->u.get_comp_data_resp._dst = j->_dst
+#define CP2WEB_STR(_dst) strncpy(resp->u.get_comp_data_resp._dst, j->_dst, sizeof(resp->u.get_comp_data_resp._dst)-1)
+	    resp->u.get_comp_data_resp.index = indx;
+	    CP2WEB_STR(last);
+	    CP2WEB_STR(first);
+	    CP2WEB_STR(club);
+	    CP2WEB_STR(country);
+	    CP2WEB_STR(regcategory);
+	    CP2WEB_STR(category);
+	    CP2WEB_INT(weight);
+
+	    // find estimated category
+	    gchar *estim = NULL;
+
+	    if (j->regcategory == NULL || j->regcategory[0] == 0) {
+		gint gender = 0;
+
+		if (j->deleted & GENDER_FEMALE)
+		    gender = IS_FEMALE;
+		else
+		    gender = IS_MALE;
+
+		estim = find_correct_category(current_year - j->birthyear,
+					      j->weight,
+					      gender,
+					      NULL, TRUE);
+	    } else {
+		estim = find_correct_category(0, j->weight, 0, j->regcategory, FALSE);
+	    }
+
+	    strncpy(resp->u.get_comp_data_resp.estim_category,
+		    estim ? estim : "", sizeof(resp->u.get_comp_data_resp.estim_category)-1);
+	    g_free(estim);
+
+	    free_judoka(j);
+	} else 	if (input_msg->u.web.request == MSG_WEB_GET_MATCH_CRC) {
+	    for (i = 0; i < NUM_TATAMIS; i++)
+		resp->u.get_match_crc_resp.crc[i] = match_crc[i+1];
+	} else 	if (input_msg->u.web.request == MSG_WEB_GET_MATCH_INFO) {
+	    gint t = input_msg->u.web.u.get_match_info.tatami;
+	    if (t < 1 || t > NUM_TATAMIS) {
+		g_atomic_int_set(&resp->ready, MSG_WEB_RESP_ERR);
+		return;
+	    }
+
+	    struct match *m = get_cached_next_matches(t);
+	    memset(&resp->u.get_match_info_resp[0], 0,
+		   sizeof(resp->u.get_match_info_resp[0]));
+	    resp->u.get_match_info_resp[0].tatami = t;
+	    resp->u.get_match_info_resp[0].match_category_ix =
+		next_matches_info[t-1][0].won_catnum;
+	    resp->u.get_match_info_resp[0].match_number =
+		next_matches_info[t-1][0].won_matchnum;
+	    resp->u.get_match_info_resp[0].comp1 =
+		next_matches_info[t-1][0].won_ix;
+
+	    for (i = 0; i < INFO_MATCH_NUM; i++) {
+		resp->u.get_match_info_resp[i+1].tatami = t;
+		resp->u.get_match_info_resp[i+1].num = i+1;
+		resp->u.get_match_info_resp[i+1].match_category_ix = m[i].category;
+		resp->u.get_match_info_resp[i+1].match_number = m[i].number;
+		resp->u.get_match_info_resp[i+1].comp1 = m[i].blue;
+		resp->u.get_match_info_resp[i+1].comp2 = m[i].white;
+		resp->u.get_match_info_resp[i+1].round = m[i].round;
+	    }
+	} else	if (input_msg->u.web.request == MSG_WEB_GET_BRACKET) {
+	    gint t = input_msg->u.web.u.get_bracket.tatami;
+	    resp->u.get_bracket_resp.tatami = t;
+            get_bracket_2(input_msg->u.web.u.get_bracket.tatami,
+                input_msg->u.web.u.get_bracket.cat,
+                input_msg->u.web.u.get_bracket.svg,
+                input_msg->u.web.u.get_bracket.page,
+                input_msg->u.web.u.get_bracket.connum);
+            g_atomic_int_set(&resp->ready, MSG_WEB_RESP_OK_SENT);
+            return;
+	} else 	if (input_msg->u.web.request == MSG_WEB_GET_CAT_INFO) {
+	    gint catix = input_msg->u.web.u.get_category_info.catix;
+	    struct compsys sys = get_cat_system(catix);
+	    resp->u.get_category_info_resp.catix = catix;
+	    resp->u.get_category_info_resp.system = sys.system;
+	    resp->u.get_category_info_resp.numcomp = sys.numcomp;
+	    resp->u.get_category_info_resp.table = sys.table;
+	    resp->u.get_category_info_resp.wishsys = sys.wishsys;
+	    resp->u.get_category_info_resp.num_pages = num_pages(sys);
+	}
+
+	g_atomic_int_set(&resp->ready, MSG_WEB_RESP_OK);
+	break;
+    }
     }
 }
 
@@ -603,6 +724,7 @@ static gboolean send_message_to_application[NUM_MESSAGES][NUM_APPLICATION_TYPES]
     {FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE}, // MSG_SCALE,
     {TRUE,  FALSE, FALSE, TRUE , FALSE, TRUE , FALSE}, // MSG_11_NAME_INFO,
     {FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE}, // MSG_EVENT,
+    {FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE}, // MSG_WEB,
 };
 
 /*
@@ -720,6 +842,14 @@ gpointer node_thread(gpointer args)
                 if (send_msg(connections[i].fd, &msg_out) < 0) {
                     perror("sendto");
                     g_print("Node cannot send: conn=%d fd=%d\n", i, connections[i].fd);
+
+#if defined(__WIN32__) || defined(WIN32)
+		    shutdown(connections[i].fd, SD_SEND);
+#endif
+		    closesocket(connections[i].fd);
+		    FD_CLR(connections[i].fd, &read_fd);
+		    connections[i].fd = 0;
+		    connections[i].ssdp_info[0] = 0;
                 }
                 msg_out_start_time = 0;
             }
@@ -830,6 +960,9 @@ gpointer node_thread(gpointer args)
             } else {
                 g_print("Node: connection %d fd=%d closed (r=%d, err=%s)\n",
 			i, connections[i].fd, r, strerror(errno));
+#if defined(__WIN32__) || defined(WIN32)
+		shutdown(connections[i].fd, SD_SEND);
+#endif
                 closesocket(connections[i].fd);
                 FD_CLR(connections[i].fd, &read_fd);
                 connections[i].fd = 0;
