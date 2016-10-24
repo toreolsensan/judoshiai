@@ -231,25 +231,21 @@ gint get_svg_match_page(struct compsys systm, gint matchnum, gboolean info)
 
     key = make_key(systm, 0);
 
-    g_print("page lookup info=%d match=%d\n", info, matchnum);
     if (info) {
 	for (i = 0; i < num_svg; i++) {
 	    if ((svg_data[i].key & 0xffffff00) == (key & 0xffffff00) &&
 		svg_data[i].info) {
 		if (FD_ISSET(matchnum, &svg_data[i].matches)) {
-		    g_print("found %d info page %d\n", i, svg_data[i].key & 0xff);
 		    return i;
 		}
 	    }
 	}
     }
 
-    g_print("not found, looking from print pages\n");
     for (i = 0; i < num_svg; i++) {
         if ((svg_data[i].key & 0xffffff00) == (key & 0xffffff00) &&
 	    !svg_data[i].info) {
 	    if (FD_ISSET(matchnum, &svg_data[i].matches)) {
-		g_print("found %d: print page %d\n", i, svg_data[i].key & 0xff);
 		return i;
 	    }
 	}
@@ -398,7 +394,6 @@ gint paint_svg(struct paint_data *pd)
 	    }
 	}
     }
-
     /* Look for printing layout. */
     if (found < 0) {
 	for (i = 0; i < num_svg; i++) {
@@ -426,6 +421,11 @@ gint paint_svg(struct paint_data *pd)
 	}
 #endif
         return FALSE;
+    }
+
+    if (write_cb) {
+	extern const gchar *svg_start;
+	write_cb(closure, svg_start, strlen(svg_start));
     }
 
     svgdata = svg_data[found].data;
@@ -635,21 +635,22 @@ gint paint_svg(struct paint_data *pd)
                     if (who == 1) ix = m[fight].blue;
                     else ix = m[fight].white;
 
-                    j = get_data(ix);
+                    if (ix >= 10) {
+                        j = get_data(ix);
+                        if (j) {
+                            int flags = 0;
+                            if (fight == pd->highlight_match) {
+                                if (nextmatchfg == FALSE && nextmatchbg == FALSE)
+                                    flags |= WRITE_FLAG_RED;
+                                if (nextmatchfg)
+                                    flags |= WRITE_FLAG_FG;
+                                if (nextmatchbg)
+                                    flags |= WRITE_FLAG_BG;
+                            }
 
-                    if (j) {
-			int flags = 0;
-			if (fight == pd->highlight_match) {
-			    if (nextmatchfg == FALSE && nextmatchbg == FALSE)
-				flags |= WRITE_FLAG_RED;
-			    if (nextmatchfg)
-				flags |= WRITE_FLAG_FG;
-			    if (nextmatchbg)
-				flags |= WRITE_FLAG_BG;
-			}
-
-                        write_judoka(handle, 2, j, dfile, flags, write_cb, closure);
+                            write_judoka(handle, 2, j, dfile, flags, write_cb, closure);
                             free_judoka(j);
+                        }
                     }
                 } else if (attr[1].code[0] == 'p') {
                     gint who = attr[1].value;
@@ -665,11 +666,11 @@ gint paint_svg(struct paint_data *pd)
                         if (attr[next].value == points)
                             snprintf(buf, sizeof(buf), "%s", attr[next+1].code + 1);
                         else if (attr[next+2].value == 0)
-                            snprintf(buf, sizeof(buf), "%d", points);
+                            snprintf(buf, sizeof(buf), "%s", get_points_str(points));
                         else
                             buf[0] = 0;
                     } else
-                        snprintf(buf, sizeof(buf), "%d", points);
+                        snprintf(buf, sizeof(buf), "%s", get_points_str(points));
 
                     if ((ifmatched == FALSE || MATCHED(fight)) && buf[0])
                         WRITE(buf);
@@ -687,15 +688,11 @@ gint paint_svg(struct paint_data *pd)
                         if (attr[next].value == points)
                             snprintf(buf, sizeof(buf), "%s", attr[next+1].code + 1);
                         else if (attr[next+2].value == 0)
-                            snprintf(buf, sizeof(buf), "%d%d%d/%d%s",
-                                     (points>>16)&0xf, (points>>12)&0xf, (points>>8)&0xf,
-                                     points&0x7, points&8?"H":"");
+                            snprintf(buf, sizeof(buf), "%s", get_score_str(points));
                         else
                             buf[0] = 0;
                     } else
-                        snprintf(buf, sizeof(buf), "%d%d%d/%d%s",
-                                 (points>>16)&0xf, (points>>12)&0xf, (points>>8)&0xf,
-                                 points&0x7, points&8?"H":"");
+                        snprintf(buf, sizeof(buf), "%s", get_score_str(points));
 
                     if ((ifmatched == FALSE || MATCHED(fight)) && buf[0])
                         WRITE(buf);
@@ -709,10 +706,12 @@ gint paint_svg(struct paint_data *pd)
                     WRITE(buf);
                 } else if (IS_SAME(attr[1].code, "winner")) {
                     reset_last_country();
-                    struct judoka *j = get_data(WINNER(fight));
-                    if (j) {
-                        write_judoka(handle, 2, j, dfile, 0, write_cb, closure);
-                        free_judoka(j);
+                    if (WINNER(fight) >= 10) {
+                        struct judoka *j = get_data(WINNER(fight));
+                        if (j) {
+                            write_judoka(handle, 2, j, dfile, 0, write_cb, closure);
+                            free_judoka(j);
+                        }
                     }
                 }
             } else if (attr[0].code[0] == 'c' ||
@@ -822,14 +821,17 @@ gint paint_svg(struct paint_data *pd)
                     } else if (attr2_code[0] == 'p') { // number of points
                         if (systm.system == SYSTEM_CUSTOM) {
                             if (pool && (pool->competitors[pcomp].pts || pool->finished)) {
-                                snprintf(buf, sizeof(buf), "%d", pool->competitors[pcomp].pts);
+                                gint pts = pool->competitors[pcomp].pts;
+                                snprintf(buf, sizeof(buf), "%d%s", pts/2, (pts & 1) ? "½" : "");
                                 WRITE(buf);
                             } else if (pair && (pair->competitors[pcomp].pts || pair->finished)) {
-                                snprintf(buf, sizeof(buf), "%d", pair->competitors[pcomp].pts);
+                                gint pts = pair->competitors[pcomp].pts;
+                                snprintf(buf, sizeof(buf), "%d%s", pts/2, (pts & 1) ? "½" : "");
                                 WRITE(buf);
                             }
                         } else if (pmp->pts[comp] || pmp->finished) {
-                            snprintf(buf, sizeof(buf), "%d", pmp->pts[comp]);
+                            gint pts = pmp->pts[comp];
+                            snprintf(buf, sizeof(buf), "%d%s", pts/2, (pts & 1) ? "½" : "");
                             WRITE(buf);
                         }
                     } else if (attr2_code[0] == 'r') { // pool result
@@ -930,11 +932,13 @@ gint paint_svg(struct paint_data *pd)
                     case 2: ix = LOSER(mnum + 1); break;
                     case 3: ix = WINNER(mnum); break;
                     }
-                    struct judoka *j = get_data(ix);
-                    if (j) {
-                        write_judoka(handle, 1, j, dfile, 0, write_cb, closure);
-                        set_competitor_position(j->index, COMP_POS_DRAWN | res);
-                        free_judoka(j);
+                    if (ix >= 10) {
+                        struct judoka *j = get_data(ix);
+                        if (j) {
+                            write_judoka(handle, 1, j, dfile, 0, write_cb, closure);
+                            set_competitor_position(j->index, COMP_POS_DRAWN | res);
+                            free_judoka(j);
+                        }
                     }
                 } else if (systm.system == SYSTEM_DPOOL ||
                            systm.system == SYSTEM_QPOOL) {
@@ -947,16 +951,18 @@ gint paint_svg(struct paint_data *pd)
                     case 3: ix = LOSER(mnum); break;
                     case 4: ix = LOSER(mnum + 1); break;
                     }
-                    struct judoka *j = get_data(ix);
-                    if (j) {
-                        write_judoka(handle, 1, j, dfile, 0, write_cb, closure);
-                        set_competitor_position(j->index, COMP_POS_DRAWN | res);
-                        free_judoka(j);
+                    if (ix >= 10) {
+                        struct judoka *j = get_data(ix);
+                        if (j) {
+                            write_judoka(handle, 1, j, dfile, 0, write_cb, closure);
+                            set_competitor_position(j->index, COMP_POS_DRAWN | res);
+                            free_judoka(j);
+                        }
                     }
                 } else if (systm.system == SYSTEM_CUSTOM) {
                     gint real_res = res;
                     gint ix = get_custom_pos(cm, systm.table, res, &real_res);
-                    if (ix) {
+                    if (ix >= 10) {
                         struct judoka *j = get_data(ix);
                         if (j) {
                             write_judoka(handle, 1, j, dfile, 0, write_cb, closure);
@@ -1027,12 +1033,14 @@ gint paint_svg(struct paint_data *pd)
                         break;
                     }
 
-                    struct judoka *j = get_data(ix);
-                    if (j) {
-                        write_judoka(handle, 1, j, dfile, 0, write_cb, closure);
-                        set_competitor_position(j->index, COMP_POS_DRAWN |
-                                                (res == 4 ? 3 : (res == 6 ? 5 : (res == 8 ? 7 : res))));
-                        free_judoka(j);
+                    if (ix >= 10) {
+                        struct judoka *j = get_data(ix);
+                        if (j) {
+                            write_judoka(handle, 1, j, dfile, 0, write_cb, closure);
+                            set_competitor_position(j->index, COMP_POS_DRAWN |
+                                                    (res == 4 ? 3 : (res == 6 ? 5 : (res == 8 ? 7 : res))));
+                            free_judoka(j);
+                        }
                     }
                 }
             } else if (attr[0].code[0] == 'i') {
@@ -1148,7 +1156,6 @@ gint paint_svg(struct paint_data *pd)
             if (look_legend_state == 11) {
                 if ((COMP_1_PTS_WIN(m[look_match_num]) && (look_match_comp & 1)) ||
                     (COMP_2_PTS_WIN(m[look_match_num]) && (look_match_comp & 2))) {
-                    gchar buf[16];
                     snprintf(buf, sizeof(buf), "%d", m[look_match_num].legend & 0xff);
                     WRITE(buf);
                 }
@@ -1374,7 +1381,6 @@ void read_svg_files(gboolean ok)
 			    /* Scan for matches. */
 			    FD_ZERO(&svg_data[num_svg].matches);
 			    gchar *p = svg_data[num_svg].data;
-			    gint i;
 			    const gchar *nmbg = "nextmatch";
 			    gint nmbgi = 0;
 			    for (i = 0; i < svg_data[num_svg].datalen; i++) {
