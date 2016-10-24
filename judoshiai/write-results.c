@@ -901,6 +901,10 @@ void write_comp_stat(gint index)
 {
     gchar buf[32];
     gint i;
+    gchar *cmd = NULL;
+    gint numrows = 0;
+    struct category_data *catdata = NULL;
+
     struct judoka *j = get_data(index);
     if (!j)
         return;
@@ -914,7 +918,6 @@ void write_comp_stat(gint index)
     make_top_frame(f);
     make_left_frame(f);
 
-    struct category_data *catdata = NULL;
     if (index >= 10000) catdata = avl_get_category(index);
     if (catdata) {
         fprintf(f, "<td valign=\"top\"><table class=\"compstat\">"
@@ -941,11 +944,11 @@ void write_comp_stat(gint index)
             _T(category), _T(name), _T(points), _T(name), _T(time));
 
 
-    gchar *cmd = g_strdup_printf("select * from matches where \"blue\"=%d or \"white\"=%d "
-                                 "order by \"category\"",
-                                 index, index);
-    gint numrows = db_get_table(cmd);
-    g_free(cmd);
+        cmd = g_strdup_printf("select * from matches where \"blue\"=%d or \"white\"=%d "
+                              "order by \"category\"",
+                              index, index);
+        numrows = db_get_table(cmd);
+        g_free(cmd);
 
     if (numrows < 0)
         goto out;
@@ -954,7 +957,7 @@ void write_comp_stat(gint index)
         gint blue = atoi(db_get_data(i, "blue"));
         gint white = atoi(db_get_data(i, "white"));
         gint cat = atoi(db_get_data(i, "category"));
-        struct category_data *catdata = avl_get_category(cat);
+        catdata = avl_get_category(cat);
         struct judoka *j1 = get_data(blue);
         struct judoka *j2 = get_data(white);
         struct judoka *c = get_data(cat);
@@ -964,45 +967,46 @@ void write_comp_stat(gint index)
         if (catdata && (catdata->deleted & TEAM_EVENT) && (cat & MATCH_CATEGORY_SUB_MASK) == 0)
             goto done;
 
-        gint blue_score = atoi(db_get_data(i, "blue_score"));
-        gint white_score = atoi(db_get_data(i, "white_score"));
-        gint blue_points = atoi(db_get_data(i, "blue_points"));
-        gint white_points = atoi(db_get_data(i, "white_points"));
-        gint mtime = atoi(db_get_data(i, "time"));
-        if (blue_points || white_points)
-            fprintf(f,
-                    "<tr><td "
-                    "onclick=\"top.location.href='%s.html'\" "
-                    "style=\"cursor: pointer\""
-                    ">%s</td><td "
-                    "onclick=\"top.location.href='%d.html'\" "
-                    "style=\"cursor: pointer\""
-                    ">%s %s</td><td class=\"%s\">"
-                    "%d%d%d/%d%s</td>"
-                    "<td align=\"center\">%d - %d</td>"
-                    "<td class=\"%s\">"
-                    "%d%d%d/%d%s"
-                    "</td><td "
-                    "onclick=\"top.location.href='%d.html'\" "
-                    "style=\"cursor: pointer\""
-                    ">%s %s</td><td>%d:%02d</td></tr>\r\n",
-                    txt2hex(c->last),
-                    utf8_to_html(c->last),
-                    j1->index,
-                    utf8_to_html(firstname_lastname() ? j1->first : j1->last),
-                    utf8_to_html(firstname_lastname() ? j1->last : j1->first),
-                    prop_get_int_val(PROP_WHITE_FIRST) ? "wscore" : "bscore",
-                    (blue_score>>16)&15, (blue_score>>12)&15, (blue_score>>8)&15,
-                    blue_score&7, blue_score&8?"H":"",
-                    blue_points,
-                    white_points,
-                    prop_get_int_val(PROP_WHITE_FIRST) ? "bscore" : "wscore",
-                    (white_score>>16)&15, (white_score>>12)&15, (white_score>>8)&15,
-                    white_score&7, white_score&8?"H":"",
-                    j2->index,
-                    utf8_to_html(firstname_lastname() ? j2->first : j2->last),
-                    utf8_to_html(firstname_lastname() ? j2->last : j2->first), mtime/60, mtime%60);
-
+        {
+            gint blue_score = atoi(db_get_data(i, "blue_score"));
+            gint white_score = atoi(db_get_data(i, "white_score"));
+            gint blue_points = atoi(db_get_data(i, "blue_points"));
+            gint white_points = atoi(db_get_data(i, "white_points"));
+            gint mtime = atoi(db_get_data(i, "time"));
+            if (blue_points || white_points)
+                fprintf(f,
+                        "<tr><td "
+                        "onclick=\"top.location.href='%s.html'\" "
+                        "style=\"cursor: pointer\""
+                        ">%s</td><td "
+                        "onclick=\"top.location.href='%d.html'\" "
+                        "style=\"cursor: pointer\""
+                        ">%s %s</td><td class=\"%s\">"
+                        "%d%d%d/%d%s</td>"
+                        "<td align=\"center\">%s - %s</td>"
+                        "<td class=\"%s\">"
+                        "%d%d%d/%d%s"
+                        "</td><td "
+                        "onclick=\"top.location.href='%d.html'\" "
+                        "style=\"cursor: pointer\""
+                        ">%s %s</td><td>%d:%02d</td></tr>\r\n",
+                        txt2hex(c->last),
+                        utf8_to_html(c->last),
+                        j1->index,
+                        utf8_to_html(firstname_lastname() ? j1->first : j1->last),
+                        utf8_to_html(firstname_lastname() ? j1->last : j1->first),
+                        prop_get_int_val(PROP_WHITE_FIRST) ? "wscore" : "bscore",
+                        (blue_score>>16)&15, (blue_score>>12)&15, (blue_score>>8)&15,
+                        blue_score&7, blue_score&8?"H":"",
+                        get_points_str(blue_points),
+                        get_points_str(white_points),
+                        prop_get_int_val(PROP_WHITE_FIRST) ? "bscore" : "wscore",
+                        (white_score>>16)&15, (white_score>>12)&15, (white_score>>8)&15,
+                        white_score&7, white_score&8?"H":"",
+                        j2->index,
+                        utf8_to_html(firstname_lastname() ? j2->first : j2->last),
+                        utf8_to_html(firstname_lastname() ? j2->last : j2->first), mtime/60, mtime%60);
+        }
     done:
         free_judoka(j1);
         free_judoka(j2);
