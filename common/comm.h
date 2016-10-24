@@ -6,6 +6,9 @@
  */ 
 
 #include <stdint.h>
+
+#include "round.h"
+
 #define ptr_to_gint( p ) ((gint)(uintptr_t) (p) )
 #define gint_to_ptr( p ) ((void*)(uintptr_t) (p) )
 
@@ -54,6 +57,14 @@
 #ifndef _COMM_H_
 #define _COMM_H_
 
+#ifndef NUM_TATAMIS
+#define NUM_TATAMIS 10
+#endif
+
+#ifndef INFO_MATCH_NUM
+#define INFO_MATCH_NUM 10
+#endif
+
 #define SHIAI_PORT     2310
 #define JUDOTIMER_PORT 2311
 
@@ -91,6 +102,7 @@ enum message_types {
     MSG_SCALE,
     MSG_11_MATCH_INFO,
     MSG_EVENT,
+    MSG_WEB,
     NUM_MESSAGES
 };
 
@@ -113,24 +125,6 @@ enum message_types {
                                   MATCH_FLAG_JUDOGI2_OK | MATCH_FLAG_JUDOGI2_NOK)
 #define MATCH_FLAG_REPECHAGE     0x8000
 #define MATCH_FLAG_TEAM_EVENT    0x10000
-
-#define ROUND_MASK            0x00ff
-#define ROUND_TYPE_MASK       0x0f00
-#define ROUND_UP_DOWN_MASK    0xf000
-#define ROUND_UPPER           0x1000
-#define ROUND_LOWER           0x2000
-#define ROUND_ROBIN           (1<<8)
-#define ROUND_REPECHAGE       (2<<8)
-#define ROUND_REPECHAGE_1     (ROUND_REPECHAGE | ROUND_UPPER)
-#define ROUND_REPECHAGE_2     (ROUND_REPECHAGE | ROUND_LOWER)
-#define ROUND_SEMIFINAL       (3<<8)
-#define ROUND_SEMIFINAL_1     (ROUND_SEMIFINAL | ROUND_UPPER)
-#define ROUND_SEMIFINAL_2     (ROUND_SEMIFINAL | ROUND_LOWER)
-#define ROUND_BRONZE          (4<<8)
-#define ROUND_BRONZE_1        (ROUND_BRONZE | ROUND_UPPER)
-#define ROUND_BRONZE_2        (ROUND_BRONZE | ROUND_LOWER)
-#define ROUND_SILVER          (5<<8)
-#define ROUND_FINAL           (6<<8)
 
 struct msg_next_match {
     int tatami;
@@ -325,6 +319,98 @@ struct msg_event {
     gint y;
 };
 
+/* Replies from main thread to httpd.*/
+struct msg_web_resp {
+#define MSG_WEB_RESP_OK       1
+#define MSG_WEB_RESP_ERR      2
+#define MSG_WEB_RESP_OK_SENT  3
+    volatile gint ready;
+    gint request;
+    union {
+	struct msg_web_get_comp_data_resp {
+	    gint index;
+	    gchar last[32];
+	    gchar first[32];
+	    gint birthyear;
+	    gchar club[32];
+	    gchar country[20];
+	    gint belt;
+	    gint weight;
+	    gchar regcategory[20];
+	    gchar category[20];
+	    gchar estim_category[20];
+	} get_comp_data_resp;
+
+	struct msg_web_get_match_crc_resp {
+	    gint crc[NUM_TATAMIS];
+	} get_match_crc_resp;
+
+	struct msg_web_get_match_info_resp {
+	    gint tatami;
+	    gint num;
+	    gint match_category_ix;
+	    gint match_number;
+	    gint comp1;
+	    gint comp2;
+	    gint round;
+	} get_match_info_resp[INFO_MATCH_NUM+1];
+
+	struct msg_web_get_bracket_resp {
+            gint tatami;
+        } get_bracket_resp;
+
+	struct msg_web_get_category_info_resp {
+	    gint catix;
+	    gint system;
+	    gint numcomp;
+	    gint table;
+	    gint wishsys;
+	    gint num_pages;
+	} get_category_info_resp;
+    } u;
+};
+
+/* Messages from httpd to main thread. */
+struct msg_web_req {
+#define MSG_WEB_GET_ERR        -1
+#define MSG_WEB_GET_COMP_DATA   1
+#define MSG_WEB_SET_COMP_WEIGHT 2
+#define MSG_WEB_GET_MATCH_CRC   3
+#define MSG_WEB_GET_MATCH_INFO  4
+#define MSG_WEB_GET_BRACKET     5
+#define MSG_WEB_GET_CAT_INFO    6
+    gint request;
+    /* httpd allocates space for resp. */
+    struct msg_web_resp *resp;
+    union {
+	struct msg_web_get_comp_data {
+	    gchar id[20];
+	} get_comp_data;
+
+	struct msg_web_set_weight {
+	    gchar id[20];
+	    gint  weight;
+	} set_comp_weight;
+
+	struct msg_web_get_match_info {
+	    gint tatami;
+	} get_match_info;
+
+	struct msg_web_get_bracket {
+            gint tatami;
+            gint svg;
+            gint cat;
+	    gint page;
+            gint connum;
+	} get_bracket;
+
+	struct msg_web_get_category_info {
+	    gint catix;
+	} get_category_info;
+
+    } u;
+};
+
 struct message {
     long  src_ip_addr; // Source address of the packet. Added by the comm node (network byte order).
     char  type;
@@ -346,6 +432,7 @@ struct message {
         struct msg_scale       scale;
         struct msg_dummy       dummy;
         struct msg_event       event;
+	struct msg_web_req     web;
     } u;
 };
 
