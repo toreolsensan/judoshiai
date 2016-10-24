@@ -5,15 +5,11 @@
  * Full copyright text is included in the software package.
  */
 
+#include <stdio.h>
 #include <string.h>
 #include <time.h>
 #include <stdlib.h>
 #include <locale.h>
-
-#include <gtk/gtk.h>
-#include <glib.h>
-
-#include <gdk/gdkkeysyms-compat.h>
 
 #ifdef WIN32
 #include <process.h>
@@ -41,11 +37,11 @@
 #define bind_textdomain_codeset(Domain,Codeset) (Codeset)
 #endif /* ENABLE_NLS */
 
-#include "comm.h"
+#include "round.h"
 
-const gchar *round_to_str(gint round)
+const char *round_to_str(int round)
 {
-    static gchar buf[64];
+    static char buf[64];
 
     if (round == 0)
 	return "";
