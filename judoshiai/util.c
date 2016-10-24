@@ -318,6 +318,9 @@ void put_data_by_iter(struct judoka *j, GtkTreeIter *iter)
 
 void put_data_by_iter_model(struct judoka *j, GtkTreeIter *iter, GtkTreeModel *model)
 {
+    if (j->index < 10)
+        g_print("****** ERROR %s ******\n", __FUNCTION__);
+
     if (!model)
         return;
 
