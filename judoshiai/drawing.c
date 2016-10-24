@@ -796,8 +796,8 @@ static gboolean draw_one_comp(struct mdata *mdata)
 	    // Calculate number of starter pools.
 	    // Find first match and last match masks.
 	    for (r = 0; r < ct->num_round_robin_pools; r++) {
-		round_robin_bare_t *rr = &ct->round_robin_pools[r];
-		gint mnum = rr->rr_matches[0] - 1;
+		round_robin_bare_t *rr1 = &ct->round_robin_pools[r];
+		gint mnum = rr1->rr_matches[0] - 1;
 		match_bare_t *m = &ct->matches[mnum];
 		competitor_bare_t *c1 = &m->c1;
 		competitor_bare_t *c2 = &m->c2;
@@ -809,7 +809,7 @@ static gboolean draw_one_comp(struct mdata *mdata)
 		if (c2->type == COMP_TYPE_COMPETITOR)
 		    first_match_mask |= 1<<(c2->num-1);
 
-		mnum = rr->rr_matches[rr->num_rr_matches-1] - 1;
+		mnum = rr1->rr_matches[rr1->num_rr_matches-1] - 1;
 		m = &ct->matches[mnum];
 		c1 = &m->c1;
 		c2 = &m->c2;
