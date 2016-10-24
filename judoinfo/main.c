@@ -76,7 +76,7 @@ gint           language = LANG_EN;
 gint           num_lines = NUM_LINES;
 gint           display_type = NORMAL_DISPLAY;
 gboolean       mirror_display = FALSE;
-gboolean       white_first = TRUE;
+static gboolean white_first = TRUE;
 gboolean       red_background = FALSE;
 gboolean       display_bracket = FALSE;
 gboolean       menu_hidden = FALSE;
@@ -748,6 +748,7 @@ void toggle_mirror(GtkWidget *menu_item, gpointer data)
 
 void toggle_whitefirst(GtkWidget *menu_item, gpointer data)
 {
+    return; /* always white first*/
 #if (GTKVER == 3)
     if (TRUE || gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item))) {
 #else

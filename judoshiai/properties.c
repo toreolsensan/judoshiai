@@ -48,6 +48,7 @@ struct property {
     GtkWidget *w;
     gint min, max;
     gint table;
+    gint noshow;
 } props[NUM_PROPERTIES] = {
     {
         .name = "Competition",
@@ -80,6 +81,7 @@ struct property {
         .name = "WhiteFirst",
         .label = N_("White first:"),
         .type = PROP_TYPE_CHECK,
+	.noshow = 1,
     },
     {
         .name = "three_matches_for_two",
@@ -195,6 +197,9 @@ struct property {
 
 gint prop_get_int_val(gint name)
 {
+    if (name == PROP_WHITE_FIRST)
+	return 1;
+
     return props[name].intval;
 }
 
@@ -618,6 +623,9 @@ void properties(GtkWidget *w, gpointer data)
 
     for (i = 0; i < NUM_PROPERTIES; i++) {
         GtkWidget *tmp;
+
+	if (props[i].noshow)
+	    continue;
 
         tbl = props[i].table;
 
