@@ -1,9 +1,7 @@
-/*
 * {
     background-color: #ddd;
     color: #000;
 }
-*/
 
 #JudoTimerMain {
     background-color: transparent;
@@ -21,12 +19,12 @@ GtkGrid {
 GtkDialog {
     background-color: #ddd;
 }
-*/
 
 GtkMenuBar {
     background-color: #000;
     color: #fff;
 }
+*/
 
 GtkMenuItem {
     padding-top: 4px;
