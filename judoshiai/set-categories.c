@@ -938,7 +938,7 @@ void read_cat_definitions(void)
     for (row = 0; row < numrows; row++) {
         gchar *agetext = db_get_data(row, "agetext");
         gchar *agestr = db_get_data(row, "age");
-        gchar *weighttext = db_get_data(row, "weighttext");
+        gchar *weighttxt = db_get_data(row, "weighttext");
         gchar *weightstr = db_get_data(row, "weight");
         gchar *flagsstr = db_get_data(row, "flags");
         gchar *matchtimestr = db_get_data(row, "matchtime");
@@ -962,7 +962,7 @@ void read_cat_definitions(void)
         gint pintimeippon = atoi(pintimeipponstr);
 
         //g_print("CAT DEF LINE: %s %d %s %d %d matchtime=%d\n",
-        //	agetext, age, weighttext, weight, flags, matchtime);
+        //	agetext, age, weighttxt, weight, flags, matchtime);
 
         /* find existing category line */
         gint i;
@@ -992,7 +992,7 @@ void read_cat_definitions(void)
             ;
         if (j < NUM_CAT_DEF_WEIGHTS) {
             category_definitions[i].weights[j].weight = weight;
-            strcpy(category_definitions[i].weights[j].weighttext, weighttext);
+            strcpy(category_definitions[i].weights[j].weighttext, weighttxt);
         }
     }
 
