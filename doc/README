@@ -9,6 +9,45 @@ Raspberry Pi: judoshiai_n.n-1_armhf.deb
 
 ==============================================
 RELEASE NOTE
+VERSION 2.5
+
+Common
+------
+
++ Communication changed.
+
+JudoShiai
+----------
+
++ Moved (freezed) matches are shown on Category tab.
++ Menu added to Category tab (show sheet, move matches, unfreeze matches).
++ Menu item added to Competitors tab (move matches to other tatamis).
++ Properties option added to restrict available places in knock out systems.
+  For n competitors only places 1...n are used.
++ Matches tab shows round number of the match.
++ Match order by round number.
++ IJF round robin points supported.
++ Brackets show score points instead of round robin points.
+
+JudoTimer
+----------
+
++ Match round number information added.
+
+JudoInfo
+----------
+
++ Bracket display added. In addition of displaying the next matches it is
+possible to display the bracket with the ongoing fight highlighted.
+
+Browser based JudoInfo
+-----------------------
+
++ Info can show one tatami with a bracket where the ongoing match is highlighted.
+  It is possible to have your own layout design.
+
+==============================================
+RELEASE NOTE
 VERSION 2.4.1
 
 Common

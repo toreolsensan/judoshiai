@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-07-14 12:47+0300\n"
+"POT-Creation-Date: 2016-10-25 13:22+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1832,3 +1832,12 @@ msgstr "Pooli"
 
 msgid "Repechage"
 msgstr "Keräily"
+
+msgid "Mix pool matches into rounds:"
+msgstr "Sekoita pooliottelut kierroksen sekaan"
+
+msgid "Use IJF points:"
+msgstr "Käytä IJF-pisteitä"
+
+msgid "Show bracket"
+msgstr "Näytä kaavio"

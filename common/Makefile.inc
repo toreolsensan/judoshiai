@@ -1,9 +1,6 @@
 SHIAI_VER_NUM=2.5
 SHIAI_VERSION="\"$(SHIAI_VER_NUM)\""
 
-#WINCOMP=new
-WINCOMP=old
-
 ifndef JS_BUILD_DIR
   JS_BUILD_DIR=/home/$(USER)/js-build
 endif
@@ -35,12 +32,13 @@ endif
 ### Cross compilation (host=Linux, target=Windows) ###
 ifeq ($(TARGETOS),WIN32)
 
-ifeq ($(WINCOMP),new)
-CC=i686-w64-mingw32-gcc
-LD=i686-w64-mingw32-gcc
+NEWCC := $(shell command -v i686-w64-mingw32-gcc 2> /dev/null)
+ifdef NEWCC
+  CC=i686-w64-mingw32-gcc
+  LD=i686-w64-mingw32-gcc
 else
-CC=i586-mingw32msvc-gcc
-LD=i586-mingw32msvc-gcc
+  CC=i586-mingw32msvc-gcc
+  LD=i586-mingw32msvc-gcc
 endif
 
 SUFF=.exe
