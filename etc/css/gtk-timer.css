@@ -1,0 +1,36 @@
+* {
+    background-color: #ddd;
+    color: #000;
+}
+
+#JudoTimerMain {
+    background-color: transparent;
+}
+
+/*
+GtkDrawingArea {
+    background-color: transparent;
+}
+
+GtkGrid {
+    background-color: transparent;
+}
+
+GtkDialog {
+    background-color: #ddd;
+}
+
+GtkMenuBar {
+    background-color: #000;
+    color: #fff;
+}
+*/
+
+GtkMenuItem {
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+GtkMenuItem selected {
+   background-color: #000;
+}
