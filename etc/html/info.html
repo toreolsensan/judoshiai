@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>JudoInfo</title>
+    <style>
+      .tooltip {
+        position: relative;
+        display: inline-block;
+        border-bottom: 1px dotted black;
+      }
+
+      .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 120px;
+        background-color: yellow;
+        color: black;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+
+        /* Position the tooltip */
+        position: absolute;
+        z-index: 1;
+      }
+
+      .tooltip:hover .tooltiptext {
+        visibility: visible;
+      }
+
+      .ui-menu {
+        width: 200px;
+      }
+    </style>
+    <link rel="stylesheet" href="jquery/jquery-ui.css">
+    <script type="text/javascript" src="jquery/external/jquery/jquery.js"></script>
+    <script type="text/javascript" src="js/jqueryjson.min.js"></script>
+    <script type="text/javascript" src="jquery/jquery-ui.js"></script>
+    <script type="text/javascript" src="js/reconnecting-websocket.min.js"></script>
+  </head>
+  <body>
+    <table id="menu">
+      <tr>
+	<td><button id="fullscreen">Fullscreen</button></td>
+	<td class="lb"><input id="bracket" type="checkbox"></td><td>Show bracket</td>
+	<td class="lb"><input id="redbg" type="checkbox"></td><td>Red background</td>
+	<td class="lb"><input id="mirror" type="checkbox"></td><td>Mirror tatami order</td>
+	<td class="lb">Tatami:</td>
+	<td><input id="sel1" type="checkbox"></td><td>1</td>
+	<td><input id="sel2" type="checkbox"></td><td>2</td>
+	<td><input id="sel3" type="checkbox"></td><td>3</td>
+	<td><input id="sel4" type="checkbox"></td><td>4</td>
+	<td><input id="sel5" type="checkbox"></td><td>5</td>
+	<td><input id="sel6" type="checkbox"></td><td>6</td>
+	<td><input id="sel7" type="checkbox"></td><td>7</td>
+	<td><input id="sel8" type="checkbox"></td><td>8</td>
+	<td><input id="sel9" type="checkbox"></td><td>9</td>
+	<td><input id="sel10" type="checkbox"></td><td>10</td>
+      </tr>
+    </table>
+
+    <div id="info"></div>
+
+    <script type="text/javascript" src="js/info2.js"></script>
+  </body>
+</html>
