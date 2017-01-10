@@ -68,17 +68,7 @@ static struct {
 } others[NUM_OTHERS];
 
 #define NUM_CONNECTIONS 32
-#define SSDP_INFO_LEN 48
-static struct {
-    guint fd;
-    gulong addr;
-    gint id;
-    guchar buf[512];
-    gint ri;
-    gboolean escape;
-    gint conn_type;
-    gchar ssdp_info[SSDP_INFO_LEN];
-} connections[NUM_CONNECTIONS];
+static struct jsconn connections[NUM_CONNECTIONS];
 
 static struct {
     gulong addr;
@@ -101,8 +91,13 @@ void send_info_packet(struct message *msg)
 
     for (i = 0; i < NUM_CONNECTIONS; i++) {
 	if (connections[i].fd > 0 &&
-	    connections[i].conn_type == APPLICATION_TYPE_INFO)
-	    send_msg(connections[i].fd, msg);
+	    connections[i].conn_type == APPLICATION_TYPE_INFO) {
+	    if (connections[i].websock) {
+		if (connections[i].websock_ok)
+		    websock_send_msg(connections[i].fd, msg);
+	    } else
+		send_msg(connections[i].fd, msg);
+	}
     }
 }
 
@@ -191,6 +186,8 @@ gboolean msg_accepted(struct message *m)
     case MSG_SCALE:
     case MSG_EVENT:
     case MSG_WEB:
+    case MSG_LANG:
+    case MSG_LOOKUP_COMP:
         return TRUE;
     }
     return FALSE;
@@ -290,7 +287,10 @@ void msg_received(struct message *input_msg)
     case MSG_EDIT_COMPETITOR:
 	if (input_msg->u.edit_competitor.operation == EDIT_OP_GET_BY_ID) {
             gboolean coach;
-	    gint indx = db_get_index_by_id(input_msg->u.edit_competitor.id, &coach);
+	    gint indx = 0;
+
+	    if (input_msg->u.edit_competitor.id[0])
+		indx = db_get_index_by_id(input_msg->u.edit_competitor.id, &coach);
 	    if (indx)
 		j = get_data(indx);
 	    else
@@ -592,7 +592,30 @@ void msg_received(struct message *input_msg)
 	g_atomic_int_set(&resp->ready, MSG_WEB_RESP_OK);
 	break;
     }
+    case MSG_LANG: {
+	char *trans = _(input_msg->u.lang.english);
+	memset(&output_msg, 0, sizeof(output_msg));
+	output_msg.type = MSG_LANG;
+	strcpy(output_msg.u.lang.english, input_msg->u.lang.english);
+
+	if (trans)
+	    strncpy(output_msg.u.lang.translation, trans,
+		    sizeof(output_msg.u.lang.translation)-1);
+	else
+	    strncpy(output_msg.u.lang.translation, input_msg->u.lang.english,
+		    sizeof(output_msg.u.lang.translation)-1);
+	send_packet(&output_msg);
+	break;
     }
+    case MSG_LOOKUP_COMP: {
+	memset(&output_msg, 0, sizeof(output_msg));
+	output_msg.type = MSG_LOOKUP_COMP;
+	strcpy(output_msg.u.lookup_comp.name, input_msg->u.lookup_comp.name);
+	lookup_competitor(&output_msg.u.lookup_comp);
+	send_packet(&output_msg);
+	break;
+    }
+    } // switch
 }
 
 gint timeout_callback(gpointer data)
@@ -725,6 +748,8 @@ static gboolean send_message_to_application[NUM_MESSAGES][NUM_APPLICATION_TYPES]
     {TRUE,  FALSE, FALSE, TRUE , FALSE, TRUE , FALSE}, // MSG_11_NAME_INFO,
     {FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE}, // MSG_EVENT,
     {FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE}, // MSG_WEB,
+    {TRUE,  FALSE, TRUE,  TRUE,  TRUE,  TRUE,  TRUE},  // MSG_LANG,
+    {FALSE, FALSE, FALSE, FALSE, TRUE,  FALSE, FALSE}, // MSG_LOOKUP_COMP,
 };
 
 /*
@@ -741,7 +766,7 @@ gchar *xml = "<?xml version=\"1.0\"?>\n"
 
 gpointer node_thread(gpointer args)
 {
-    SOCKET node_fd, tmp_fd;
+    SOCKET node_fd, tmp_fd, websock_fd;
     socklen_t alen;
     struct sockaddr_in my_addr, caller;
     gint reuse = 1;
@@ -754,6 +779,7 @@ gpointer node_thread(gpointer args)
     signal(SIGPIPE, SIG_IGN);
 #endif
 
+    /* Node socket */
     if ((node_fd = socket(AF_INET, SOCK_STREAM, 0)) == INVALID_SOCKET) {
         perror("serv socket");
         g_thread_exit(NULL);    /* not required just good pratice */
@@ -776,10 +802,37 @@ gpointer node_thread(gpointer args)
         return NULL;
     }
 
+    /* WebSock socket */
+    if ((websock_fd = socket(AF_INET, SOCK_STREAM, 0)) == INVALID_SOCKET) {
+        perror("serv socket");
+        g_thread_exit(NULL);    /* not required just good pratice */
+        return NULL;
+    }
+
+    if (setsockopt(websock_fd, SOL_SOCKET, SO_REUSEADDR, (void *)&reuse, sizeof(reuse)) < 0) {
+        perror("setsockopt (SO_REUSEADDR)");
+    }
+
+    memset(&my_addr, 0, sizeof(my_addr));
+    my_addr.sin_family = AF_INET;
+    my_addr.sin_port = htons(WEBSOCK_PORT);
+    my_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+
+    if (bind(websock_fd, (struct sockaddr *)&my_addr, sizeof(struct sockaddr)) < 0) {
+        perror("websock bind");
+        g_print("CANNOT BIND websock!\n");
+        g_thread_exit(NULL);    /* not required just good pratice */
+        return NULL;
+    }
+
+    /***/
+
     listen(node_fd, 5);
+    listen(websock_fd, 5);
 
     FD_ZERO(&read_fd);
     FD_SET(node_fd, &read_fd);
+    FD_SET(websock_fd, &read_fd);
 
     for ( ; *((gboolean *)args) ; )   /* exit loop when flag is cleared */
     {
@@ -790,7 +843,7 @@ gpointer node_thread(gpointer args)
         timeout.tv_sec = 0;
         timeout.tv_usec = 1000;
 
-        r = select(32, &fds, NULL, NULL, &timeout);
+        r = select(64, &fds, NULL, NULL, &timeout);
 
         /* messages to send */
 
@@ -798,11 +851,7 @@ gpointer node_thread(gpointer args)
         // during send. Thus we send a copy to unlock the mutex immediatelly.
         msg_out_ready = FALSE;
 
-#if (GTKVER == 3)
         G_LOCK(send_mutex);
-#else
-        g_static_mutex_lock(&send_mutex);
-#endif
 
         if (msg_queue_get != msg_queue_put) {
             msg_out = msg_to_send[msg_queue_get];
@@ -812,15 +861,11 @@ gpointer node_thread(gpointer args)
 	    msg_out_ready = TRUE;
         }
 
-#if (GTKVER == 3)
         G_UNLOCK(send_mutex);
-#else
-        g_static_mutex_unlock(&send_mutex);
-#endif
 
         if (msg_out_ready) {
 	    struct timeval cpu_start, cpu_end;
-	    int cpu_diff;
+	    int cpu_diff, ret;
 	    gettimeofday(&cpu_start, NULL);
 
             for (i = 0; i < NUM_CONNECTIONS; i++) {
@@ -839,7 +884,15 @@ gpointer node_thread(gpointer args)
                 extern gulong msg_out_addr;
                 msg_out_addr = connections[i].addr;
                 msg_out_start_time = time(NULL);
-                if (send_msg(connections[i].fd, &msg_out) < 0) {
+
+		if (connections[i].websock) {
+		    ret = 0;
+		    if (connections[i].websock_ok)
+			ret = websock_send_msg(connections[i].fd, &msg_out);
+		} else
+		    ret = send_msg(connections[i].fd, &msg_out);
+
+                if (ret < 0) {
                     perror("sendto");
                     g_print("Node cannot send: conn=%d fd=%d\n", i, connections[i].fd);
 
@@ -875,6 +928,7 @@ gpointer node_thread(gpointer args)
             alen = sizeof(caller);
             if ((tmp_fd = accept(node_fd, (struct sockaddr *)&caller, &alen)) < 0) {
                 perror("serv accept");
+		usleep(1000000);
                 continue;
             }
 #if 0
@@ -898,7 +952,38 @@ gpointer node_thread(gpointer args)
             connections[i].addr = caller.sin_addr.s_addr;
             connections[i].id = 0;
             connections[i].conn_type = 0;
+            connections[i].websock = FALSE;
+            connections[i].websock_ok = FALSE;
             g_print("Node: new connection[%d]: fd=%d addr=%s\n",
+                    i, tmp_fd, inet_ntoa(caller.sin_addr));
+            FD_SET(tmp_fd, &read_fd);
+        }
+
+        if (FD_ISSET(websock_fd, &fds)) {
+            alen = sizeof(caller);
+            if ((tmp_fd = accept(websock_fd, (struct sockaddr *)&caller, &alen)) < 0) {
+                perror("websock accept");
+		g_print("websock=%d tmpfd=%d\n", websock_fd, tmp_fd);
+		usleep(1000000);
+                continue;
+            }
+
+            for (i = 0; i < NUM_CONNECTIONS; i++)
+                if (connections[i].fd == 0)
+                    break;
+
+            if (i >= NUM_CONNECTIONS) {
+                g_print("Node cannot accept new connections!\n");
+                closesocket(tmp_fd);
+                continue;
+            }
+
+            connections[i].fd = tmp_fd;
+            connections[i].addr = caller.sin_addr.s_addr;
+            connections[i].id = 0;
+            connections[i].conn_type = 0;
+            connections[i].websock = TRUE;
+            g_print("Node: new websock connection[%d]: fd=%d addr=%s\n",
                     i, tmp_fd, inet_ntoa(caller.sin_addr));
             FD_SET(tmp_fd, &read_fd);
         }
@@ -914,49 +999,53 @@ gpointer node_thread(gpointer args)
 
             r = recv(connections[i].fd, (char *)inbuf, sizeof(inbuf), 0);
             if (r > 0) {
-                guchar *p = connections[i].buf;
-                gint j, blen = sizeof(connections[i].buf);
-		struct message msg;
+		if (connections[i].websock) {
+		    handle_websock(&connections[i], (gchar *)inbuf, r);
+		} else {
+		    guchar *p = connections[i].buf;
+		    gint j, blen = sizeof(connections[i].buf);
+		    struct message msg;
 
-                if (strncmp((gchar *)inbuf, "<policy-file-request/>", 10) == 0) {
-                    send(connections[i].fd, xml, xmllen+1, 0);
-                    g_print("policy file sent to %d\n", i);
-                }
+		    if (strncmp((gchar *)inbuf, "<policy-file-request/>", 10) == 0) {
+			send(connections[i].fd, xml, xmllen+1, 0);
+			g_print("policy file sent to %d\n", i);
+		    }
 
-                for (j = 0; j < r; j++) {
-                    guchar c = inbuf[j];
-                    if (c == COMM_ESCAPE) {
-                        connections[i].escape = TRUE;
-                    } else if (connections[i].escape) {
-                        if (c == COMM_FF) {
-                            if (connections[i].ri < blen)
-                                p[connections[i].ri++] = COMM_ESCAPE;
-                        } else if (c == COMM_BEGIN) {
-                            connections[i].ri = 0;
-                        } else if (c == COMM_END) {
-			    decode_msg(&msg, p, connections[i].ri);
-                            msg.src_ip_addr = connections[i].addr;
+		    for (j = 0; j < r; j++) {
+			guchar c = inbuf[j];
+			if (c == COMM_ESCAPE) {
+			    connections[i].escape = TRUE;
+			} else if (connections[i].escape) {
+			    if (c == COMM_FF) {
+				if (connections[i].ri < blen)
+				    p[connections[i].ri++] = COMM_ESCAPE;
+			    } else if (c == COMM_BEGIN) {
+				connections[i].ri = 0;
+			    } else if (c == COMM_END) {
+				decode_msg(&msg, p, connections[i].ri);
+				msg.src_ip_addr = connections[i].addr;
 
-                            if (msg.type == MSG_DUMMY) {
-                                if (msg.u.dummy.application_type !=
-                                    connections[i].conn_type) {
-                                    connections[i].conn_type =
-                                        msg.u.dummy.application_type;
-                                    connections[i].id = msg.sender;
-                                    g_print("Node: conn=%d type=%d id=%08x\n",
-                                            i, connections[i].conn_type, connections[i].id);
-                                }
-                            } else {
-                                put_to_rec_queue(&msg); // XXX
-                            }
-                        } else {
-                            g_print("Node: conn %d has wrong char 0x%02x after esc!\n", i, c);
-                        }
-                        connections[i].escape = FALSE;
-                    } else if (connections[i].ri < blen) {
-                        p[connections[i].ri++] = c;
-                    }
-                }
+				if (msg.type == MSG_DUMMY) {
+				    if (msg.u.dummy.application_type !=
+					connections[i].conn_type) {
+					connections[i].conn_type =
+					    msg.u.dummy.application_type;
+					connections[i].id = msg.sender;
+					g_print("Node: conn=%d type=%d id=%08x\n",
+						i, connections[i].conn_type, connections[i].id);
+				    }
+				} else {
+				    put_to_rec_queue(&msg); // XXX
+				}
+			    } else {
+				g_print("Node: conn %d has wrong char 0x%02x after esc!\n", i, c);
+			    }
+			    connections[i].escape = FALSE;
+			} else if (connections[i].ri < blen) {
+			    p[connections[i].ri++] = c;
+			}
+		    }
+		}
             } else {
                 g_print("Node: connection %d fd=%d closed (r=%d, err=%s)\n",
 			i, connections[i].fd, r, strerror(errno));
@@ -1015,7 +1104,8 @@ gpointer server_thread(gpointer args)
 
         alen = sizeof(caller);
         if ((tmp_fd = accept(serv_fd, (struct sockaddr *)&caller, &alen)) < 0) {
-            perror("serv accept");
+            perror("serv accept 2");
+	    usleep(1000000);
             continue;
         }
 
