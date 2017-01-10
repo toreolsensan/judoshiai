@@ -40,28 +40,34 @@
     <script type="text/javascript" src="js/reconnecting-websocket.min.js"></script>
   </head>
   <body>
-    <table id="menu">
-      <tr>
-	<td><button id="fullscreen">Fullscreen</button></td>
-	<td class="lb"><input id="bracket" type="checkbox"></td><td>Show bracket</td>
-	<td class="lb"><input id="redbg" type="checkbox"></td><td>Red background</td>
-	<td class="lb"><input id="mirror" type="checkbox"></td><td>Mirror tatami order</td>
-	<td class="lb">Tatami:</td>
-	<td><input id="sel1" type="checkbox"></td><td>1</td>
-	<td><input id="sel2" type="checkbox"></td><td>2</td>
-	<td><input id="sel3" type="checkbox"></td><td>3</td>
-	<td><input id="sel4" type="checkbox"></td><td>4</td>
-	<td><input id="sel5" type="checkbox"></td><td>5</td>
-	<td><input id="sel6" type="checkbox"></td><td>6</td>
-	<td><input id="sel7" type="checkbox"></td><td>7</td>
-	<td><input id="sel8" type="checkbox"></td><td>8</td>
-	<td><input id="sel9" type="checkbox"></td><td>9</td>
-	<td><input id="sel10" type="checkbox"></td><td>10</td>
-      </tr>
-    </table>
+    <ul id="menu">
+      <li>
+	<div>Preferences</div>
+	<ul>
+	  <li><div><button id="fullscreen">Fullscreen</button></div></li>
+	  <li><div><input id="bracket" type="checkbox">Show bracket</div></li>
+	  <li><div><input id="redbg" type="checkbox">Red background</div></li>
+	  <li><div><input id="mirror" type="checkbox">Mirror tatami order</div></li>
+	  <li><div>Tatami:</div>
+	    <ul>
+	      <li><div><input id="sel1" class="tsel" type="checkbox">1</div></li>
+	      <li><div><input id="sel2" class="tsel" type="checkbox">2</div></li>
+	      <li><div><input id="sel3" class="tsel" type="checkbox">3</div></li>
+	      <li><div><input id="sel4" class="tsel" type="checkbox">4</div></li>
+	      <li><div><input id="sel5" class="tsel" type="checkbox">5</div></li>
+	      <li><div><input id="sel6" class="tsel" type="checkbox">6</div></li>
+	      <li><div><input id="sel7" class="tsel" type="checkbox">7</div></li>
+	      <li><div><input id="sel8" class="tsel" type="checkbox">8</div></li>
+	      <li><div><input id="sel9" class="tsel" type="checkbox">9</div></li>
+	      <li><div><input id="sel10" class="tsel" type="checkbox">10</div></li>
+	    </ul>
+	  </li>
+	</ul>
+      </li>
+    </ul>
 
     <div id="info"></div>
 
-    <script type="text/javascript" src="js/info2.js"></script>
+    <script type="text/javascript" src="js/info.js"></script>
   </body>
 </html>

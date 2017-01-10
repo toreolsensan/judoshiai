@@ -595,7 +595,7 @@ function configure() {
     var found = false;
     var tatamis = 0;
 
-    setCookie("bracket", bracket ? 1 : 0, 30);
+    setCookie("infobracket", show_bracket ? 1 : 0, 30);
 
     for (var i = 0; i < NUM_TATAMIS; i++) {
 	var sel = $("#sel"+(i+1)).prop('checked');
@@ -608,17 +608,17 @@ function configure() {
 	    $("#sel"+(i+1)).prop('checked', false);
 	}
     }
-    setCookie("tatamis", tatamis, 30);
+    setCookie("infotatamis", tatamis, 30);
 
     tatami_order = [];
     if ($("#mirror").prop('checked')) {
 	for (var i = NUM_TATAMIS-1; i >= 0; i--)
 	    tatami_order.push(i);
-	setCookie("mirror", 1, 30);
+	setCookie("infomirror", 1, 30);
     } else {
 	for (var i = 0; i < NUM_TATAMIS; i++)
 	    tatami_order.push(i);
-	setCookie("mirror", 0, 30);
+	setCookie("infomirror", 0, 30);
     }
 
     make_table();
@@ -631,12 +631,24 @@ function configure() {
     }
 
     if ($("#redbg").prop('checked'))
-	setCookie("redbg", 1, 30);
+	setCookie("inforedbg", 1, 30);
     else
-	setCookie("redbg", 0, 30);
+	setCookie("inforedbg", 0, 30);
 }
 
-$("input").change(configure);
+$("#bracket").change(configure);
+$("#redbg").change(configure);
+$("#mirror").change(configure);
+$(".tsel").change(function() {
+    if (show_bracket &&
+	$("#" + this.id).prop('checked')) {
+	for (var i = 0; i < NUM_TATAMIS; i++) {
+	    var id = "sel" + (i+1);
+	    if (id != this.id) $("#" + id).prop('checked', false);
+	}
+    }
+    configure();
+});
 
 function setCookie(cname, cvalue, exdays) {
     var d = new Date();
@@ -661,7 +673,7 @@ function getCookie(cname) {
 }
 
 function read_configuration() {
-    var tatamis = getCookie("tatamis");
+    var tatamis = getCookie("infotatamis");
     console.log("tatamis="+tatamis);
     if (tatamis != "") {
 	for (var i = 0; i < NUM_TATAMIS; i++) {
@@ -669,13 +681,13 @@ function read_configuration() {
 	}
     }
 
-    if (getCookie("redbg") == "1")
+    if (getCookie("inforedbg") == "1")
 	$("#redbg").prop('checked', true);
 
-    if (getCookie("mirror") == "1")
+    if (getCookie("infomirror") == "1")
 	$("#mirror").prop('checked', true);
 
-    if (getCookie("bracket") == "1")
+    if (getCookie("infobracket") == "1")
 	$("#bracket").prop('checked', true);
 }
 
@@ -708,6 +720,14 @@ $(window).bind("resize", function(){
     var h = $(window).height();
     $("#maintable").css("width", w + "px");
     $("#maintable").css("height", h + "px");
+});
+
+$( "#menu" ).menu({
+  position: { my: "left top", at: "right-5 top+5" }
+});
+var menu1 = $("#menu").menu();
+$(menu1).mouseleave(function () {
+    menu1.menu('collapseAll');
 });
 
 read_configuration();
