@@ -49,7 +49,7 @@
 #endif
 
 
-#define SPRINTF(_buf, _fmt...) do {gint _n = snprintf(_buf, sizeof(_buf), _fmt); \
+#define SPRINTF(_buf, _fmt...) do {int _n = snprintf(_buf, sizeof(_buf), _fmt); \
         if (_n >= sizeof(_buf)) g_print("Buffer overflow! %s:%d\n", __FILE__, __LINE__); } while (0)
 
 /* Messages */
@@ -67,6 +67,8 @@
 
 #define SHIAI_PORT     2310
 #define JUDOTIMER_PORT 2311
+#define WEBSOCK_PORT   2315
+#define SERIAL_PORT    2316
 
 #define COMM_VERSION 3
 
@@ -103,6 +105,8 @@ enum message_types {
     MSG_11_MATCH_INFO,
     MSG_EVENT,
     MSG_WEB,
+    MSG_LANG,
+    MSG_LOOKUP_COMP,
     NUM_MESSAGES
 };
 
@@ -241,36 +245,36 @@ struct msg_cancel_rest_time {
 struct msg_update_label {
     union {
 	struct {
-	    gchar expose[64]; // total 208 bytes
-	    gchar text[64];
-	    gchar text2[64];
-	    gchar text3[16];
+	    char expose[64]; // total 208 bytes
+	    char text[64];
+	    char text2[64];
+	    char text3[16];
 	};
 	struct {
-	    gchar cat_a[8];
-	    gchar comp1_a[48];
-	    gchar comp2_a[48];
-	    gchar cat_b[8];
-	    gchar comp1_b[48];
-	    gchar comp2_b[48];
+	    char cat_a[8];
+	    char comp1_a[48];
+	    char comp2_a[48];
+	    char cat_b[8];
+	    char comp1_b[48];
+	    char comp2_b[48];
 	};
 	struct {
-	    gint pts1[4];
-	    gint pts2[4];
+	    int pts1[5];
+	    int pts2[5];
 	};
 	struct {
-	    gint i1, i2, i3;
+	    int i1, i2, i3;
 	};
     };
-    gdouble x, y;
-    gdouble w, h;
-    gdouble fg_r, fg_g, fg_b;
-    gdouble bg_r, bg_g, bg_b;
-    gdouble size;
+    double x, y;
+    double w, h;
+    double fg_r, fg_g, fg_b;
+    double bg_r, bg_g, bg_b;
+    double size;
     /* special label nums */
-    gint label_num;
-    gint xalign;
-    gint round;
+    int label_num;
+    int xalign;
+    int round;
 };
 
 #define EDIT_OP_GET        0
@@ -282,41 +286,42 @@ struct msg_update_label {
 #define EDIT_OP_CONFIRM    32
 
 struct msg_edit_competitor {
-    gint operation;
-    gint index; // == 0 -> new competitor
-    gchar last[32];
-    gchar first[32];
-    gint birthyear;
-    gchar club[32];
-    gchar regcategory[20];
-    gint belt;
-    gint weight;
-    gint visible;
-    gchar category[20];
-    gint deleted;
-    gchar country[20];
-    gchar id[20];
-    gint seeding;
-    gint clubseeding;
-    gint matchflags;
-    gchar comment[20];
-    gchar coachid[20];
-    gchar beltstr[16];
-    gchar estim_category[20];
+    int operation;
+    int index; // == 0 -> new competitor
+    char last[32];
+    char first[32];
+    int birthyear;
+    char club[32];
+    char regcategory[20];
+    int belt;
+    int weight;
+    int visible;
+    char category[20];
+    int deleted;
+    char country[20];
+    char id[20];
+    int seeding;
+    int clubseeding;
+    int matchflags;
+    char comment[20];
+    char coachid[20];
+    char beltstr[16];
+    char estim_category[20];
 };
 
 struct msg_scale {
-    gint weight;
+    int weight;
+    char config[64];
 };
 
 struct msg_event {
 #define MSG_EVENT_SELECT_TAB  1
 #define MSG_EVENT_CLICK_COMP  2
 #define MSG_EVENT_CLICK_SHEET 3
-    gint event;
-    gint tab;
-    gint x;
-    gint y;
+    int event;
+    int tab;
+    int x;
+    int y;
 };
 
 /* Replies from main thread to httpd.*/
@@ -324,48 +329,48 @@ struct msg_web_resp {
 #define MSG_WEB_RESP_OK       1
 #define MSG_WEB_RESP_ERR      2
 #define MSG_WEB_RESP_OK_SENT  3
-    volatile gint ready;
-    gint request;
+    volatile int ready;
+    int request;
     union {
 	struct msg_web_get_comp_data_resp {
-	    gint index;
-	    gchar last[32];
-	    gchar first[32];
-	    gint birthyear;
-	    gchar club[32];
-	    gchar country[20];
-	    gint belt;
-	    gint weight;
-	    gchar regcategory[20];
-	    gchar category[20];
-	    gchar estim_category[20];
+	    int index;
+	    char last[32];
+	    char first[32];
+	    int birthyear;
+	    char club[32];
+	    char country[20];
+	    int belt;
+	    int weight;
+	    char regcategory[20];
+	    char category[20];
+	    char estim_category[20];
 	} get_comp_data_resp;
 
 	struct msg_web_get_match_crc_resp {
-	    gint crc[NUM_TATAMIS];
+	    int crc[NUM_TATAMIS];
 	} get_match_crc_resp;
 
 	struct msg_web_get_match_info_resp {
-	    gint tatami;
-	    gint num;
-	    gint match_category_ix;
-	    gint match_number;
-	    gint comp1;
-	    gint comp2;
-	    gint round;
+	    int tatami;
+	    int num;
+	    int match_category_ix;
+	    int match_number;
+	    int comp1;
+	    int comp2;
+	    int round;
 	} get_match_info_resp[INFO_MATCH_NUM+1];
 
 	struct msg_web_get_bracket_resp {
-            gint tatami;
+            int tatami;
         } get_bracket_resp;
 
 	struct msg_web_get_category_info_resp {
-	    gint catix;
-	    gint system;
-	    gint numcomp;
-	    gint table;
-	    gint wishsys;
-	    gint num_pages;
+	    int catix;
+	    int system;
+	    int numcomp;
+	    int table;
+	    int wishsys;
+	    int num_pages;
 	} get_category_info_resp;
     } u;
 };
@@ -379,36 +384,50 @@ struct msg_web_req {
 #define MSG_WEB_GET_MATCH_INFO  4
 #define MSG_WEB_GET_BRACKET     5
 #define MSG_WEB_GET_CAT_INFO    6
-    gint request;
+    int request;
     /* httpd allocates space for resp. */
     struct msg_web_resp *resp;
     union {
 	struct msg_web_get_comp_data {
-	    gchar id[20];
+	    char id[20];
 	} get_comp_data;
 
 	struct msg_web_set_weight {
-	    gchar id[20];
-	    gint  weight;
+	    char id[20];
+	    int  weight;
 	} set_comp_weight;
 
 	struct msg_web_get_match_info {
-	    gint tatami;
+	    int tatami;
 	} get_match_info;
 
 	struct msg_web_get_bracket {
-            gint tatami;
-            gint svg;
-            gint cat;
-	    gint page;
-            gint connum;
+            int tatami;
+            int svg;
+            int cat;
+	    int page;
+            int connum;
 	} get_bracket;
 
 	struct msg_web_get_category_info {
-	    gint catix;
+	    int catix;
 	} get_category_info;
 
     } u;
+};
+
+struct msg_lang {
+    char english[64];
+    char translation[64];
+};
+
+#define NUM_LOOKUP 8
+struct msg_lookup_comp {
+    char name[16];
+    struct {
+	int index;
+	char fullname[80];
+    } result[NUM_LOOKUP];
 };
 
 struct message {
@@ -433,31 +452,61 @@ struct message {
         struct msg_dummy       dummy;
         struct msg_event       event;
 	struct msg_web_req     web;
+	struct msg_lang        lang;
+	struct msg_lookup_comp lookup_comp;
     } u;
 };
 
+#define SSDP_INFO_LEN 48
+struct jsconn {
+    int fd;
+    uint32_t addr;
+    int id;
+    uint8_t buf[512];
+    int ri;
+    int escape;
+    int conn_type;
+    char ssdp_info[SSDP_INFO_LEN];
+    int websock;
+    int websock_ok;
+};
+
 #define MSG_QUEUE_LEN 2048
-extern volatile gint msg_queue_put, msg_queue_get;
+extern volatile int msg_queue_put, msg_queue_get;
 extern struct message msg_to_send[MSG_QUEUE_LEN];
+#ifndef EMSCRIPTEN
 extern GStaticMutex send_mutex;
-extern gboolean ssdp_notify;
-extern gchar ssdp_id[64];
+#endif
+extern int ssdp_notify;
+extern char ssdp_id[64];
 
 /* comm.c */
 extern void open_comm_socket(void);
 extern void send_packet(struct message *msg);
-extern gint send_msg(gint fd, struct message *msg);
-extern gboolean msg_accepted(struct message *m);
-extern gboolean keep_connection(void);
-extern gint get_port(void);
-extern gint application_type(void);
-extern gint pwcrc32(const guchar *str, gint len);
-extern gint encode_msg(struct message *m, guchar *buf, gint buflen);
-extern gint decode_msg(struct message *m, guchar *buf, gint buflen);
+extern int send_msg(int fd, struct message *msg);
+extern int msg_accepted(struct message *m);
+extern int keep_connection(void);
+extern int get_port(void);
+extern int application_type(void);
+extern int pwcrc32(const unsigned char *str, int len);
+extern int encode_msg(struct message *m, unsigned char *buf, int buflen);
+extern int decode_msg(struct message *m, unsigned char *buf, int buflen);
 extern void set_ssdp_id(void);
-extern void handle_ssdp_packet(gchar *p);
+extern void handle_ssdp_packet(char *p);
 
 /* common.c */
-extern const gchar *round_to_str(gint round);
+extern const char *round_to_str(int round);
+
+/* websocket-protocol.c */
+struct cJSON;
+extern int websock_encode_msg(struct message *m, unsigned char *buf, int buflen);
+extern int websock_decode_msg(struct message *m, struct cJSON *json);
+
+/* ip.c */
+extern struct message *put_to_rec_queue(volatile struct message *m);
+extern void msg_to_queue(struct message *msg);
+extern struct message *get_rec_msg(void);
+extern void set_preferences(void);
+extern uint32_t host2net(uint32_t a);
 
 #endif

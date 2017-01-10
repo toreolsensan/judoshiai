@@ -96,7 +96,7 @@ static struct {
     gint txtype[NUM_MESSAGES];
 } msg_stat;
 
-gulong host2net(gulong a)
+uint32_t host2net(uint32_t a)
 {
     return htonl(a);
 }

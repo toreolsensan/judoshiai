@@ -1,4 +1,4 @@
-SHIAI_VER_NUM=2.5
+SHIAI_VER_NUM=2.6-beta1
 SHIAI_VERSION="\"$(SHIAI_VER_NUM)\""
 
 ifndef JS_BUILD_DIR
@@ -28,6 +28,8 @@ endif
 ####################################
 # Default directories and programs #
 ####################################
+
+#EMCC := $(shell command -v emcc 2> /dev/null)
 
 ### Cross compilation (host=Linux, target=Windows) ###
 ifeq ($(TARGETOS),WIN32)
@@ -106,12 +108,12 @@ CFLAGS += -I/opt/win32/webkitgtk/include/webkitgtk-3.0 \
        -I/opt/win32/soup/include/libsoup-2.4
 endif
 
-LIBS=-L$(DEVELDIR)/lib $(DEVELDIR)/lib/glib-2.0.lib  \
--L/opt/win32/gtk/bin \
+LIBS=-L$(DEVELDIR)/lib $(DEVELDIR)/lib/glib-2.0.lib -L$(RSVGDIR)/bin \
+-L$(DEVELDIR)/bin \
 -lgtk-win32-$(GTKVER).0 -lgdk-win32-$(GTKVER).0 -latk-1.0 -lgio-2.0 -lgdk_pixbuf-2.0 \
 -lpangowin32-1.0 -lgdi32 -lpangocairo-1.0 -lpango-1.0 -lgobject-2.0 \
 -lgmodule-2.0 -lgthread-2.0 -lglib-2.0 -lintl -lcairo \
--L/opt/win32/rsvg/bin -lcroco-0.6-3 -lrsvg-2-2 -lxml2-2 \
+-lcroco-0.6-3 -lrsvg-2-2 -lxml2-2 \
 -L/opt/win32/curl/bin -lcurl \
 -L/opt/win32/w32api/lib -lws2_32 -mwindows
 

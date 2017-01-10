@@ -184,6 +184,17 @@ gint encode_msg(struct message *m, guchar *buf, gint buflen)
 	putstr(m->u.edit_competitor.beltstr);
 	putstr(m->u.edit_competitor.estim_category);
 	break;
+    case MSG_LANG:
+	putstr(m->u.lang.english);
+	putstr(m->u.lang.translation);
+	break;
+    case MSG_LOOKUP_COMP:
+	putstr(m->u.lookup_comp.name);
+	for (i = 0; i < NUM_LOOKUP; i++) {
+	    put32(m->u.lookup_comp.result[i].index);
+	    putstr(m->u.lookup_comp.result[i].fullname);
+	}
+	break;
     }
 
     len = (gint)(p - buf);
@@ -365,6 +376,17 @@ gint decode_msg(struct message *m, guchar *buf, gint buflen)
 	getstr(m->u.edit_competitor.coachid);
 	getstr(m->u.edit_competitor.beltstr);
 	getstr(m->u.edit_competitor.estim_category);
+	break;
+    case MSG_LANG:
+	getstr(m->u.lang.english);
+	getstr(m->u.lang.translation);
+	break;
+    case MSG_LOOKUP_COMP:
+	getstr(m->u.lookup_comp.name);
+	for (i = 0; i < NUM_LOOKUP; i++) {
+	    get32(m->u.lookup_comp.result[i].index);
+	    getstr(m->u.lookup_comp.result[i].fullname);
+	}
 	break;
     }
 

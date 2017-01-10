@@ -34,7 +34,8 @@ int main(int argc, char *argv[])
 	SHA1_Init(&context);
 
 	memset(buf, 0, sizeof(buf));
-	strcpy(buf, "dGhlIHNhbXBsZSBub25jZQ==" WEBSOCK_STR);
+	sprintf(buf, "%s%s", argv[1], WEBSOCK_STR);
+	//strcpy(buf, "2BA+jZj+o/ZzBjy/xr7CRw==" WEBSOCK_STR);
 	SHA1_Update(&context, buf, strlen(buf));
 	SHA1_Final(digest, &context);
 
