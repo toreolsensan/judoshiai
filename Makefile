@@ -32,17 +32,18 @@ all:
 	mkdir -p $(RELDIR)/lib
 	mkdir -p $(RELDIR)/doc
 	mkdir -p $(RELDIR)/licenses
-	mkdir -p $(RELDIR)/etc
+	mkdir -p $(RELDIR)/etc/www/js
+	mkdir -p $(RELDIR)/etc/www/css
 	make -C common
 	make -C judoshiai
 	make -C judotimer
 	make -C judoinfo
 	make -C judoweight
 	make -C judojudogi
+	make -C serial
 ifeq ($(JUDOPROXY),YES)
 	make -C judoproxy
 endif
-	make -C emscripten
 	make -C doc
 	cp $(JUDOSHIAIFILE) $(RELDIR)/bin/
 	cp $(JUDOTIMERFILE) $(RELDIR)/bin/
@@ -101,27 +102,16 @@ endif
 	cp common/judoshiai-cs_CZ.mo $(RELDIR)/share/locale/cs/LC_MESSAGES/judoshiai.mo
 	cp common/judoshiai-de_DE.mo $(RELDIR)/share/locale/de/LC_MESSAGES/judoshiai.mo
 	cp common/judoshiai-ru_RU.mo $(RELDIR)/share/locale/ru/LC_MESSAGES/judoshiai.mo
-	cp etc/*.png $(RELDIR)/etc/
-	cp etc/*.txt $(RELDIR)/etc/
-	cp etc/*.css $(RELDIR)/etc/
-	cp etc/*.mp3 $(RELDIR)/etc/
-	cp etc/*.shi $(RELDIR)/etc/
-	cp etc/*.svg $(RELDIR)/etc/
-	cp etc/*.html $(RELDIR)/etc/
-	cp etc/*.js $(RELDIR)/etc/
-	cp etc/*.js.mem $(RELDIR)/etc/
-	cp etc/*.ttf $(RELDIR)/etc/
-	cp etc/result-texts-*.txt $(RELDIR)/etc/
-	cp -r etc/flags-ioc $(RELDIR)/etc/
+	cp -r etc $(RELDIR)/
 	cp licenses/* $(RELDIR)/licenses
 	cp -r svg $(RELDIR)/
 	cp -r custom-examples $(RELDIR)/
 	@echo
-	@echo "To make a setup executable run" 
+	@echo "To make a setup executable run"
 	@echo "  make setup"
 	@echo
 	@echo "To make a Debian package run (Linux only)"
-	@echo "  sudo make debian" 
+	@echo "  sudo make debian"
 
 #echo 'gtk-theme-name = "MS-Windows"' >$(RELDIR)/etc/gtk-2.0/gtkrc
 
@@ -155,12 +145,12 @@ install:
 	cp gnome/judoweight.desktop /usr/share/applications/
 	cp gnome/judojudogi.desktop /usr/share/applications/
 	cp gnome/judoproxy.desktop /usr/share/applications/
-	cp etc/judoshiai.png /usr/share/pixmaps/
-	cp etc/judotimer.png /usr/share/pixmaps/
-	cp etc/judoinfo.png /usr/share/pixmaps/
-	cp etc/judoweight.png /usr/share/pixmaps/
-	cp etc/judojudogi.png /usr/share/pixmaps/
-	cp etc/judoproxy.png /usr/share/pixmaps/
+	cp etc/png/judoshiai.png /usr/share/pixmaps/
+	cp etc/png/judotimer.png /usr/share/pixmaps/
+	cp etc/png/judoinfo.png /usr/share/pixmaps/
+	cp etc/png/judoweight.png /usr/share/pixmaps/
+	cp etc/png/judojudogi.png /usr/share/pixmaps/
+	cp etc/png/judoproxy.png /usr/share/pixmaps/
 	cp gnome/judoshiai.mime /usr/share/mime-info/
 	cp gnome/judoshiai.keys /usr/share/mime-info/
 	cp gnome/judoshiai.applications /usr/share/application-registry/
@@ -184,5 +174,4 @@ clean:
 	make -C judoweight clean
 	make -C judojudogi clean
 	make -C judoproxy clean
-	make -C emscripten clean
 	rm -rf $(RELEASEDIR)
