@@ -3008,7 +3008,14 @@ gint num_matches_estimate(gint index)
 }
 const gchar *get_points_str(gint points)
 {
-    if (prop_get_int_val(PROP_USE_IJF_POINTS)) {
+    if (prop_get_int_val(PROP_RULES_2017)) {
+	switch (points) {
+	case 10: return "10";
+	case 7: return "1";
+	case 5: return "1"; // same as waza-ari
+	case 1: return "0";
+	}
+    } else if (prop_get_int_val(PROP_USE_IJF_POINTS)) {
 	switch (points) {
 	case 10: return "100";
 	case 7: return "10";
@@ -3029,7 +3036,14 @@ const gchar *get_points_str(gint points)
 /* Convert points to an integer. Return double value to handle half point. */
 gint get_points_gint(gint points)
 {
-    if (prop_get_int_val(PROP_USE_IJF_POINTS)) {
+    if (prop_get_int_val(PROP_RULES_2017)) {
+	switch (points) {
+	case 10: return 20;
+	case 7: return 2;
+	case 5: return 2;
+	case 1: return 0;
+	}
+    } else if (prop_get_int_val(PROP_USE_IJF_POINTS)) {
 	switch (points) {
 	case 10: return 200;
 	case 7: return 20;
@@ -3057,9 +3071,11 @@ gchar *get_score_str(gint score)
     *p++ = '0' + a;
     a = (score >> 12) & 0x3;
     *p++ = '0' + a;
-    a = (score >> 8) & 0xf;
-    if (a > 9) a = 9;
-    *p++ = '0' + a;
+    if (!prop_get_int_val(PROP_RULES_2017)) {
+	a = (score >> 8) & 0xf;
+	if (a > 9) a = 9;
+	*p++ = '0' + a;
+    }
     if (score & 0x7) {
 	*p++ = 's';
 	*p++ = '0' + (score & 0x7);
@@ -3079,7 +3095,6 @@ gint match_on_page(gint category, gint match)
 
     struct compsys systm = catdata->system;
     gint table = systm.table;
-    g_print("asking cat=%d num=%d table=%d\n", category, match, table);
 
     if (systm.system == SYSTEM_CUSTOM)
 	return 0;
