@@ -470,8 +470,9 @@ enum {
     PROP_WIN_NEEDED_FOR_MEDAL,
     PROP_SEEDED_TO_FIXED_PLACES,
     PROP_USE_FIRST_PLACES_ONLY,
-    PROP_EQ_SCORE_LESS_SHIDO_WINS,
+    /*PROP_EQ_SCORE_LESS_SHIDO_WINS,*/
     PROP_GS_WIN_GIVES_1_POINT,
+    PROP_RULES_2017,
     PROP_DEFAULT_CAT_1,
     PROP_DEFAULT_CAT_2,
     PROP_DEFAULT_CAT_3,
@@ -966,7 +967,7 @@ extern gint db_competitor_match_status(gint competitor);
 extern void db_remove_matches(guint category);
 extern void db_set_points(gint category, gint number, gint minutes,
                           gint blue, gint white, gint blue_score, gint white_score, gint legend);
-extern void db_set_score(gint category, gint number, gint score, gboolean is_blue);
+extern gint db_set_score(gint category, gint number, gint score, gboolean is_blue, gboolean hikiwake);
 extern void db_set_time(gint category, gint number, gint tim);
 extern void db_read_match(gint category, gint number);
 extern void db_read_matches_of_category(gint category);
@@ -1146,14 +1147,10 @@ extern void show_node_connections(GtkWidget *w, gpointer data);
 extern void copy_packet(struct message *msg);
 extern struct message *get_next_match_msg(int tatami);
 
-/* ip */
+/* ip.c */
+
 extern void ask_node_ip_address( GtkWidget *w, gpointer data);
 extern void show_my_ip_addresses( GtkWidget *w, gpointer data);
-extern void msg_to_queue(struct message *msg);
-extern struct message *get_rec_msg(void);
-extern void set_preferences(void);
-extern gulong host2net(gulong a);
-extern struct message *put_to_rec_queue(volatile struct message *m);
 
 #if (GTKVER == 3)
 extern GtkEntryCompletion *club_completer_new(void);
@@ -1227,6 +1224,7 @@ extern void set_graph_rest_time(gint tatami, time_t rest_end, gint flags);
 /* search */
 extern void search_competitor(GtkWidget *w, gpointer cb);
 extern void search_competitor_args(GtkWidget *w, gpointer cb, gpointer args);
+extern void lookup_competitor(struct msg_lookup_comp *msg);
 
 /* sql_dialog */
 extern void sql_window(GtkWidget *w, gpointer data);
@@ -1329,6 +1327,10 @@ extern void get_bracket_2(gint tatami, gint catid, gint svg, gint page, gint con
 
 /* match order */
 extern void read_match_order_dialog(GtkWidget *w, gpointer arg);
+
+/* websock */
+extern void handle_websock(struct jsconn *conn, char *in, gint length);
+extern gint websock_send_msg(gint fd, struct message *msg);
 
 /* profiling stuff */
 extern guint64 cumul_db_time;
