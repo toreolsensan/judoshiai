@@ -266,11 +266,12 @@ static void on_ok(GtkEntry *entry, gpointer user_data)
     send_packet(&saved);
 
     struct msg_edit_competitor *msg = &saved.u.edit_competitor;
-    judoweight_log("%s %s, %s/%s: %s: %d.%02d %s", 
+    judoweight_log("%s %s, %s/%s: %s: %d.%02d %s [%d]", 
                    msg->last, msg->first, msg->country, msg->club, msg->regcategory,
                    msg->weight/1000, (msg->weight%1000)/10,
                    (msg->deleted & JUDOGI_OK) ? "OK" :
-                   ((msg->deleted & JUDOGI_NOK) ? "NOK" : ""));
+                   ((msg->deleted & JUDOGI_NOK) ? "NOK" : ""),
+		   msg->index);
 
     saved.u.edit_competitor.index = 0;
     gtk_label_set_label(GTK_LABEL(name_box), "?");
@@ -389,7 +390,7 @@ int main( int   argc,
     gtk_window_set_title(GTK_WINDOW(main_window), "JudoWeight");
     //gtk_widget_set_size_request(window, FRAME_WIDTH, FRAME_HEIGHT);
 
-    gchar *iconfile = g_build_filename(installation_dir, "etc", "judoweight.png", NULL);
+    gchar *iconfile = g_build_filename(installation_dir, "etc", "png", "judoweight.png", NULL);
     gtk_window_set_default_icon_from_file(iconfile, NULL);
     g_free(iconfile);
 
