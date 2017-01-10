@@ -105,14 +105,21 @@ struct property {
         .label = N_("Use the first places only:"),
         .type = PROP_TYPE_CHECK,
     },
+/*
     {
         .name = "EqualScoreLessShidoWins",
         .label = N_("If equal score less shido wins"),
         .type = PROP_TYPE_CHECK,
     },
+*/
     {
         .name = "GoldenScoreWinGives1Point",
         .label = N_("Win in Golden Score gives 1 point"),
+        .type = PROP_TYPE_CHECK,
+    },
+    {
+        .name = "Rules2017",
+        .label = N_("2017 Rules:"),
         .type = PROP_TYPE_CHECK,
     },
     {
@@ -416,7 +423,7 @@ void reset_props_1(GtkWidget *button, void *data, gboolean if_unset)
 
     SET_VAL(PROP_WHITE_FIRST, "1", 1);
     SET_VAL(PROP_THREE_MATCHES_FOR_TWO, "0", 0);
-    SET_VAL(PROP_EQ_SCORE_LESS_SHIDO_WINS, "1", 1);
+    /*SET_VAL(PROP_EQ_SCORE_LESS_SHIDO_WINS, "1", 1);*/
     SET_VAL(PROP_GS_WIN_GIVES_1_POINT, "0", 0);
 
     if (number_of_tatamis == 0)
