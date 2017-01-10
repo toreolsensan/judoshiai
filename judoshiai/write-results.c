@@ -791,7 +791,7 @@ void match_statistics(FILE *f)
             category_definitions[i].stat.yukos++;
         else if (blue_points == 3 || white_points == 3)
             category_definitions[i].stat.kokas++;
-        else if (prop_get_int_val(PROP_EQ_SCORE_LESS_SHIDO_WINS) &&
+        else if (/*prop_get_int_val(PROP_EQ_SCORE_LESS_SHIDO_WINS) &&*/
                  (blue_score & 0xffff0) == (white_score & 0xffff0))
             category_definitions[i].stat.shidowins++;
         else
@@ -868,7 +868,7 @@ out:
         if (category_definitions[i].stat.total)
             fprintf(f, "<td>%d", category_definitions[i].stat.yukos);
 
-    if (prop_get_int_val(PROP_EQ_SCORE_LESS_SHIDO_WINS)) {
+    if (TRUE /*prop_get_int_val(PROP_EQ_SCORE_LESS_SHIDO_WINS)*/) {
         fprintf(f, "\n<tr><td class=\"stat1\">Shido:<td>%d", totsw);
         for (i = 0; i < num_categories; i++)
             if (category_definitions[i].stat.total)
@@ -922,11 +922,14 @@ void write_comp_stat(gint index)
     if (catdata) {
         fprintf(f, "<td valign=\"top\"><table class=\"compstat\">"
                 "<tr><th colspan=\"7\">%s</th></tr>\r\n"
-                "<tr><td class=\"cshdr\">#<td class=\"cshdr\">%s<td class=\"cshdr\">IWY/S"
-                "<td align=\"center\" class=\"cshdr\">%s<td class=\"cshdr\">IWY/S"
+                "<tr><td class=\"cshdr\">#<td class=\"cshdr\">%s<td class=\"cshdr\">%s"
+                "<td align=\"center\" class=\"cshdr\">%s<td class=\"cshdr\">%s"
                 "<td class=\"cshdr\">%s<td class=\"cshdr\">%s</tr>\r\n",
-                j->last,
-                _T(name), _T(points), _T(name), _T(time));
+                j->last, _T(name),
+		prop_get_int_val(PROP_RULES_2017) ? "IW/S" : "IWY/S",
+		_T(points),
+		prop_get_int_val(PROP_RULES_2017) ? "IW/S" : "IWY/S",
+		_T(name), _T(time));
 
         db_print_category_matches(catdata, f);
 
@@ -935,13 +938,17 @@ void write_comp_stat(gint index)
 
     fprintf(f, "<td valign=\"top\"><table class=\"compstat\">"
             "<tr><th colspan=\"7\">%s %s, %s</th></tr>\r\n"
-            "<tr><td class=\"cshdr\">%s<td class=\"cshdr\">%s<td class=\"cshdr\">IWY/S"
-            "<td align=\"center\" class=\"cshdr\">%s<td class=\"cshdr\">IWY/S"
+            "<tr><td class=\"cshdr\">%s<td class=\"cshdr\">%s<td class=\"cshdr\">%s"
+            "<td align=\"center\" class=\"cshdr\">%s<td class=\"cshdr\">%s"
             "<td class=\"cshdr\">%s<td class=\"cshdr\">%s</tr>\r\n",
             utf8_to_html(firstname_lastname() ? j->first : j->last),
             utf8_to_html(firstname_lastname() ? j->last : j->first),
             utf8_to_html(j->club),
-            _T(category), _T(name), _T(points), _T(name), _T(time));
+            _T(category), _T(name),
+	    prop_get_int_val(PROP_RULES_2017) ? "IW/S" : "IWY/S",
+	    _T(points),
+	    prop_get_int_val(PROP_RULES_2017) ? "IW/S" : "IWY/S",
+	    _T(name), _T(time));
 
 
         cmd = g_strdup_printf("select * from matches where \"blue\"=%d or \"white\"=%d "
@@ -973,7 +980,7 @@ void write_comp_stat(gint index)
             gint blue_points = atoi(db_get_data(i, "blue_points"));
             gint white_points = atoi(db_get_data(i, "white_points"));
             gint mtime = atoi(db_get_data(i, "time"));
-            if (blue_points || white_points)
+            if (blue_points || white_points) {
                 fprintf(f,
                         "<tr><td "
                         "onclick=\"top.location.href='%s.html'\" "
@@ -981,31 +988,52 @@ void write_comp_stat(gint index)
                         ">%s</td><td "
                         "onclick=\"top.location.href='%d.html'\" "
                         "style=\"cursor: pointer\""
-                        ">%s %s</td><td class=\"%s\">"
-                        "%d%d%d/%d%s</td>"
-                        "<td align=\"center\">%s - %s</td>"
-                        "<td class=\"%s\">"
-                        "%d%d%d/%d%s"
-                        "</td><td "
-                        "onclick=\"top.location.href='%d.html'\" "
-                        "style=\"cursor: pointer\""
-                        ">%s %s</td><td>%d:%02d</td></tr>\r\n",
+                        ">%s %s</td><td class=\"%s\">",
                         txt2hex(c->last),
                         utf8_to_html(c->last),
                         j1->index,
                         utf8_to_html(firstname_lastname() ? j1->first : j1->last),
                         utf8_to_html(firstname_lastname() ? j1->last : j1->first),
-                        prop_get_int_val(PROP_WHITE_FIRST) ? "wscore" : "bscore",
-                        (blue_score>>16)&15, (blue_score>>12)&15, (blue_score>>8)&15,
-                        blue_score&7, blue_score&8?"H":"",
+                        prop_get_int_val(PROP_WHITE_FIRST) ? "wscore" : "bscore");
+
+		if (prop_get_int_val(PROP_RULES_2017))
+		    fprintf(f,
+			    "%d%d/%d%s",
+			    (blue_score>>16)&15, (blue_score>>12)&15,
+			    blue_score&7, blue_score&8?"H":"");
+		else
+		    fprintf(f,
+			    "%d%d%d/%d%s",
+			    (blue_score>>16)&15, (blue_score>>12)&15, (blue_score>>8)&15,
+			    blue_score&7, blue_score&8?"H":"");
+
+		fprintf(f,
+                        "</td><td align=\"center\">%s - %s</td>"
+                        "<td class=\"%s\">",
                         get_points_str(blue_points),
                         get_points_str(white_points),
-                        prop_get_int_val(PROP_WHITE_FIRST) ? "bscore" : "wscore",
-                        (white_score>>16)&15, (white_score>>12)&15, (white_score>>8)&15,
-                        white_score&7, white_score&8?"H":"",
+                        prop_get_int_val(PROP_WHITE_FIRST) ? "bscore" : "wscore");
+
+		if (prop_get_int_val(PROP_RULES_2017))
+		    fprintf(f,
+			    "%d%d/%d%s",
+			    (white_score>>16)&15, (white_score>>12)&15,
+			    white_score&7, white_score&8?"H":"");
+		else
+		    fprintf(f,
+			    "%d%d%d/%d%s",
+			    (white_score>>16)&15, (white_score>>12)&15, (white_score>>8)&15,
+			    white_score&7, white_score&8?"H":"");
+
+		fprintf(f,
+                        "</td><td "
+                        "onclick=\"top.location.href='%d.html'\" "
+                        "style=\"cursor: pointer\""
+                        ">%s %s</td><td>%d:%02d</td></tr>\r\n",
                         j2->index,
                         utf8_to_html(firstname_lastname() ? j2->first : j2->last),
                         utf8_to_html(firstname_lastname() ? j2->last : j2->first), mtime/60, mtime%60);
+	    }
         }
     done:
         free_judoka(j1);
@@ -1423,15 +1451,23 @@ void make_png_all(GtkWidget *w, gpointer data)
     avl_init_competitor_position();
 
     /* copy files */
-    gchar *files_to_copy[] = {"style.css", "coach.html", "coach.js",
-                              "asc.png", "desc.png", "bg.png", "refresh.png", "clear.png",
-                              "jquery-1.10.2.min.js", "jquery-1.10.2.min.map", "jquery.tablesorter.js",
-                              "sie.js", NULL};
-    for (i = 0; files_to_copy[i]; i++) {
-        f = open_write(files_to_copy[i]);
+    struct {
+	gchar *dir;
+	gchar *file;
+    } files_to_copy[] =
+	  {{"css", "style.css"}, {"html", "coach.html"},
+	   {"js", "coach.js"},  {"png", "asc.png"}, {"png", "desc.png"},
+	   {"png", "bg.png"}, {"png", "refresh.png"}, {"png", "clear.png"},
+	   {"js", "jquery-1.10.2.min.js"}, {"js", "jquery-1.10.2.min.map"},
+	   {"js", "jquery.tablesorter.js"}, {"js", "sie.js"}, {NULL, NULL}};
+    for (i = 0; files_to_copy[i].dir; i++) {
+        f = open_write(files_to_copy[i].file);
         if (f) {
             gint n;
-            gchar *src = g_build_filename(installation_dir, "etc", files_to_copy[i], NULL);
+            gchar *src = g_build_filename(installation_dir, "etc",
+					  files_to_copy[i].dir,
+					  files_to_copy[i].file,
+					  NULL);
             FILE *sf = fopen(src, "rb");
             g_free(src);
 
@@ -1440,7 +1476,8 @@ void make_png_all(GtkWidget *w, gpointer data)
                     fwrite(fname, 1, n, f);
                 }
                 fclose(sf);
-            }
+            } else
+		g_print("Cannot read %s/%s\n", files_to_copy[i].dir, files_to_copy[i].file);
             fclose(f);
         }
     }
