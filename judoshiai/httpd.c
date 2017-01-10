@@ -45,6 +45,8 @@
 
 #define USE_THREADS
 
+extern void get_websock(http_parser_t *parser, gint connum);
+
 void index_html(http_parser_t *parser, gchar *txt);
 void send_html_top(http_parser_t *parser, gchar *bodyattr);
 void send_html_bottom(http_parser_t *parser);
@@ -92,7 +94,7 @@ void sighandler(int sig)
     sigreceived = 1;
 }
 
-static gint mysend(SOCKET s, const gchar *p, gint len)
+gint mysend(SOCKET s, const gchar *p, gint len)
 {
     gint n;
 #if 0
@@ -671,73 +673,17 @@ void send_html_top(http_parser_t *parser, gchar *bodyattr)
 	  "<script language=\"JavaScript\" type=\"text/javascript\" src=\"bootstrap.min.js\"></script>"
 	  "<script language=\"JavaScript\" type=\"text/javascript\" src=\"jquery.treetable.js\"></script>\r\n"
           "<title>JudoShiai</title></head><body %s>\r\n", bodyattr);
-    /*
-    sendf(s, "<table class=\"topbuttons\">"
-          "<tr><td><a href=\"categories\">%s</a></td>\r\n", _("Match controlling and browsing"));
-    sendf(s, "<td><a href=\"competitors\">%s</a></td>\r\n", _("Competitors"));
-    sendf(s, "</tr></table>\r\n");*/
-#if 0
-    sendf(s, "<p id=\"navb\"><ul id=\"nav\">");
-
-    sendf(s, "<li>%s<ul>\r\n", _("Competitors"));
-    sendf(s, "<li><a href=\"competitors\">%s</a></li>\r\n", _("Show"));
-    sendf(s, "<li><a href=\"delcompetitors\">%s</a></li>\r\n", _("Show Deleted"));
-    sendf(s, "<li><a href=\"getcompetitor?index=0\">%s</a></li>\r\n", _("New Competitor"));
-    sendf(s, "\r\n");
-    sendf(s, "</ul></li>\r\n");
-
-    sendf(s, "<li><a href=\"categories\">%s</a></li>\r\n", _("Matches"));
 
     if (webpwcrc32) {
-        if (is_accepted(parser->address))
-            sendf(s, "<li><a href=\"logout\">%s</a></li>\r\n", _("Logout"));
-        else
-            sendf(s, "<li><a href=\"login\">%s</a></li>\r\n", _("Login"));
+	if (is_accepted(parser->address))
+	    sendf(s, "<a href=\"logout\">%s</a>\r\n", _("Logout"));
+	else
+	    sendf(s, "<a href=\"login\">%s</a>\r\n", _("Login"));
     }
 
-    sendf(s, "</ul></p><hr>");
-#endif
-
-       sendf(s, "<nav class=\"navbar navbar-default\" role=\"navigation\">"
-	     "<div class=\"navbar-header\">"
-	     "<button type=\"button\" class=\"navbar-toggle\" data-toggle=\"collapse\" data-target=\"#bs-example-navbar-collapse-1\">"
-	     "<span class=\"sr-only\">Toggle navigation</span>"
-	     "<span class=\"icon-bar\"></span>"
-	     "<span class=\"icon-bar\"></span>"
-	     "<span class=\"icon-bar\"></span>"
-	     "<span class=\"icon-bar\"></span>"
-	     "<span class=\"icon-bar\"></span>"
-	     "</button>"
-	     "<a class=\"navbar-brand\" href=\"#\">JudoShiai</a>"
-	     "</div>");
-
-       sendf(s, "<div class=\"collapse navbar-collapse\" id=\"bs-example-navbar-collapse-1\">"
-	     "<ul class=\"nav navbar-nav\">");
-
-       sendf(s, "<li class=\"dropdown\">"
-	     "<a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">%s<b class=\"caret\"></b></a>"
-	     "<ul class=\"dropdown-menu\">", _("Competitors"));
-       sendf(s, "<li><a href=\"competitors\">%s</a></li>\r\n", _("Show"));
-       sendf(s, "<li><a href=\"delcompetitors\">%s</a></li>\r\n", _("Show Deleted"));
-       sendf(s, "<li><a href=\"getcompetitor?index=0\">%s</a></li>\r\n", _("New Competitor"));
-       sendf(s, "</ul>"
-	     "</li>");
-
-       sendf(s, "<li><a href=\"categories\">%s</a></li>\r\n", _("Matches"));
-
-       if (webpwcrc32) {
-	   if (is_accepted(parser->address))
-	       sendf(s, "<li><a href=\"logout\">%s</a></li>\r\n", _("Logout"));
-	   else
-	       sendf(s, "<li><a href=\"login\">%s</a></li>\r\n", _("Login"));
-       }
-
-       sendf(s, "<li><a href=\"timer.html\"><img src=\"judotimer.png\"></a></li>\r\n");
-       sendf(s, "<li><a href=\"info.html\"><img src=\"judoinfo.png\"></a></li>\r\n");
-
-       sendf(s,  "</ul>"
-	     "</div><!-- /.navbar-collapse -->"
-	     "</nav>\r\n");
+    sendf(s, "<a href=\"timer.html\"><img src=\"judotimer.png\"></a>\r\n");
+    sendf(s, "<a href=\"info.html\"><img src=\"judoinfo.png\"></a>\r\n");
+    sendf(s, "<a href=\"weight.html\"><img src=\"judoweight.png\"></a>\r\n");
 }
 
 void send_html_bottom(http_parser_t *parser)
@@ -1846,35 +1792,77 @@ void get_file(http_parser_t *parser)
 {
     SOCKET s = parser->sock;
     gchar bufo[512];
-    gint n, w;
+    gint n, w, i;
 
     char *mime = "application/octet-stream";
     char *p = parser->uri + 1;
     if (*p == 0)
         p = "index.html";
 
+    gint off = 2;
+    char *slash = strchr(p, '/');
+    char *dir = NULL;
     char *p2 = strrchr(p, '.');
     if (p2) {
         p2++;
-        if (!strcmp(p2, "html")) mime = "text/html";
-        else if (!strcmp(p2, "htm")) mime = "text/html";
-        else if (!strcmp(p2, "css")) mime = "text/css";
-        else if (!strcmp(p2, "txt")) mime = "text/plain";
-        else if (!strcmp(p2, "png")) mime = "image/png";
-        else if (!strcmp(p2, "jpg")) mime = "image/jpg";
-        else if (!strcmp(p2, "class")) mime = "application/x-java-applet";
-        else if (!strcmp(p2, "jar")) mime = "application/java-archive";
-        else if (!strcmp(p2, "pdf")) mime = "application/pdf";
-        else if (!strcmp(p2, "swf")) mime = "application/x-shockwave-flash";
-        else if (!strcmp(p2, "ico")) mime = "image/vnd.microsoft.icon";
-        else if (!strcmp(p2, "js")) mime = "text/javascript";
-        else if (!strcmp(p2, "ttf")) mime = "application/octet-stream";
-        else if (!strcmp(p2, "mp3")) mime = "audio/mpeg3";
+        if (!strcmp(p2, "html")) {
+	    mime = "text/html";
+	    dir = "html";
+        } else if (!strcmp(p2, "htm")) {
+	    mime = "text/html";
+	    dir = "html";
+        } else if (!strcmp(p2, "css")) {
+	    mime = "text/css";
+	    dir = "css";
+        } else if (!strcmp(p2, "txt")) {
+	    mime = "text/plain";
+        } else if (!strcmp(p2, "png")) {
+	    mime = "image/png";
+	    dir = "png";
+        } else if (!strcmp(p2, "jpg")) {
+	    mime = "image/jpg";
+        } else if (!strcmp(p2, "class")) {
+	    mime = "application/x-java-applet";
+        } else if (!strcmp(p2, "jar")) {
+	    mime = "application/java-archive";
+        } else if (!strcmp(p2, "pdf")) {
+	    mime = "application/pdf";
+        } else if (!strcmp(p2, "swf")) {
+	    mime = "application/x-shockwave-flash";
+        } else if (!strcmp(p2, "ico")) {
+	    mime = "image/vnd.microsoft.icon";
+        } else if (!strcmp(p2, "js")) {
+	    mime = "text/javascript";
+	    dir = "js";
+        } else if (!strcmp(p2, "map")) {
+	    dir = "js";
+        } else if (!strcmp(p2, "ttf")) {
+	    mime = "application/octet-stream";
+        } else if (!strcmp(p2, "mp3")) {
+	    mime = "audio/mpeg3";
+	    dir = "mp3";
+	}
     }
-    gchar *docfile = g_build_filename(installation_dir, "etc", p, NULL);
-    //g_print("GET %s\n", docfile);
+
+    gchar *path[8], **path1;
+    path[0] = installation_dir;
+    path[1] = "etc";
+    if (!slash && dir) {
+	path[2] = dir;
+	off = 3;
+    }
+    path1 = g_strsplit(p, "/", 5);
+
+    for (i = 0; i < 4 && path1[i]; i++)
+	path[i+off] = path1[i];
+    path[i+off] = NULL;
+
+    gchar *docfile = g_build_filenamev(path);
+    g_print("GET %s\n", docfile);
 
     FILE *f = fopen(docfile, "rb");
+
+    g_strfreev(path1);
     g_free(docfile);
 
     if (!f) {
@@ -1933,7 +1921,8 @@ gpointer analyze_http(gpointer param, gint connum)
             sql_cmd(parser, "");
         else if (!strcmp(parser->uri, "/judoshiai"))
             get_judoshiai(parser, "");
-        else if (!strcmp(parser->uri, "/web"))
+        else if (!strcmp(parser->uri, "/web") ||
+		 !strcmp(parser->uri, "/www/web"))
             get_web(parser, connum);
         else if (!strcmp(parser->uri, "/js.png"))
             get_js_png(parser, "");
