@@ -777,7 +777,7 @@ static gboolean cannot_move_category(gint cat) {
 static cairo_surface_t *get_image(const gchar *name)
 {
     cairo_surface_t *pic;
-    gchar *file = g_build_filename(installation_dir, "etc", name, NULL);
+    gchar *file = g_build_filename(installation_dir, "etc", "png", name, NULL);
     pic = cairo_image_surface_create_from_png(file);
     g_free(file);
     return pic;
