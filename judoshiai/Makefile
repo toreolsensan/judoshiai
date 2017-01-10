@@ -25,10 +25,12 @@ OBJS += $(OBJDIR)/main.o $(OBJDIR)/competitors.o $(OBJDIR)/sheets.o $(OBJDIR)/se
 	$(OBJDIR)/basic.tab.o $(OBJDIR)/lex.yy.o $(OBJDIR)/medal-matches.o $(OBJDIR)/db-validate.o \
 	$(OBJDIR)/svg.o $(OBJDIR)/properties.o $(OBJDIR)/ftp.o $(OBJDIR)/language.o \
 	$(OBJDIR)/custom-category-parser.o $(OBJDIR)/custom-category.o \
-	$(OBJDIR)/custom-category-svg-template.o $(OBJDIR)/common.o
+	$(OBJDIR)/custom-category-svg-template.o $(OBJDIR)/common.o $(OBJDIR)/sha1.o \
+	$(OBJDIR)/websock.o $(OBJDIR)/websock-protocol.o  $(OBJDIR)/cJSON.o 
 
 CFLAGS += -DAPPLICATION="\"judoshiai\""
 CFLAGS += -DAPP_NUM=1
+CFLAGS += -I../3rdparty/httpp -I../3rdparty/sqlite3 -I../3rdparty/cJSON
 
 ### Windows executable ###
 ifeq ($(TGT),WIN32)
@@ -66,14 +68,26 @@ $(OBJDIR)/serial.o: ../common/serial.c
 $(OBJDIR)/language.o: ../common/language.c
 	${CC} $(PROF) -g $(CFLAGS) -c $< -o $@
 
+$(OBJDIR)/sha1.o: ../common/sha1.c
+	${CC} $(PROF) -g $(CFLAGS) -c $< -o $@
+
 $(OBJDIR)/%.o: %.c judoshiai.h ../common/comm.h
 	${CC} $(PROF) -g $(CFLAGS) -c $< -o $@
 
 $(OBJDIR)/common.o: ../common/common.c
 	${CC} $(PROF) -g $(CFLAGS) -c $< -o $@
 
-sqlite3-patched.c: sqlite3.c sqlite3.patch
-	cp sqlite3.c sqlite3-patched.c
+$(OBJDIR)/websock-protocol.o: ../common/websock-protocol.c
+	${CC} $(PROF) -g $(CFLAGS) -c $< -o $@
+
+$(OBJDIR)/cJSON.o: ../3rdparty/cJSON/cJSON.c
+	${CC} $(PROF) -g $(CFLAGS) -c $< -o $@
+
+$(OBJDIR)/httpp.o: ../3rdparty/httpp/httpp.c
+	${CC} $(PROF) -g $(CFLAGS) -c $< -o $@
+
+sqlite3-patched.c: ../3rdparty/sqlite3/sqlite3.c sqlite3.patch
+	cp ../3rdparty/sqlite3/sqlite3.c sqlite3-patched.c
 	patch -p2 sqlite3-patched.c <sqlite3.patch
 
 lex.yy.c: basic.l basic.tab.h
