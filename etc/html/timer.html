@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>JudoTimer</title>
+    <style>
+      .ui-menu {
+        width: 200px;
+      }
+      #timercanvas {
+        position:fixed; top:40px; left:0px;
+      }
+    </style>
+    <link rel="stylesheet" href="jquery/jquery-ui.css">
+    <script type="text/javascript" src="jquery/external/jquery/jquery.js"></script>
+    <script type="text/javascript" src="js/jqueryjson.min.js"></script>
+    <script type="text/javascript" src="jquery/jquery-ui.js"></script>
+    <script type="text/javascript" src="js/reconnecting-websocket.min.js"></script>
+    <script type="text/javascript" src="jcanvas.min.js"></script>
+  </head>
+  <body id="maintable">
+    <table><tr><td>
+	  <ul id="menucontest">
+	    <li>
+	      <div>Contest</div>
+	      <ul>
+		<li><div id="key0">Contest duration: automatic</div></li>
+		<li><div id="key1">Contest duration: 2 min (short pin times)</div></li>
+		<li><div id="key2">Contest duration: 2 min</div></li>
+		<li><div id="key3">Contest duration: 3 min</div></li>
+		<li><div id="key4">Contest duration: 4 min</div></li>
+		<li><div id="key5">Contest duration: 5 min</div></li>
+		<li><div id="key9">Golden score...</div></li>
+		<li><div id="hikiwake">Hikiwake</div></li>
+		<li><div id="viewcomp">Show competitors</div></li>
+	      </ul>
+	    </li>
+	  </ul>
+	</td><td>
+
+	  <ul id="menupreferences">
+	    <li>
+	      <div>Preferences</div>
+	      <ul>
+		<li><div id="fullscreen">Full screen mode</div></li>
+		<li><div><input id="stopippon" type="checkbox">Stop clock on Ippon</div></li>
+		<li><div><input id="judogicontrol" type="checkbox">Require judogi control</div></li>
+		<li><div id="selca">Contest area</div>
+		  <ul>
+		    <li><div><input id="sel1" class="tsel" type="checkbox">1</div></li>
+		    <li><div><input id="sel2" class="tsel" type="checkbox">2</div></li>
+		    <li><div><input id="sel3" class="tsel" type="checkbox">3</div></li>
+		    <li><div><input id="sel4" class="tsel" type="checkbox">4</div></li>
+		    <li><div><input id="sel5" class="tsel" type="checkbox">5</div></li>
+		    <li><div><input id="sel6" class="tsel" type="checkbox">6</div></li>
+		    <li><div><input id="sel7" class="tsel" type="checkbox">7</div></li>
+		    <li><div><input id="sel8" class="tsel" type="checkbox">8</div></li>
+		    <li><div><input id="sel9" class="tsel" type="checkbox">9</div></li>
+		    <li><div><input id="sel10" class="tsel" type="checkbox">10</div></li>
+		  </ul>
+		</li>
+		<li><div id="sound">Sound</div>
+		  <ul>
+		    <li><div><input id="snd0" class="sndsel" type="checkbox">Tatami #</div></li>
+		    <li><div><input id="snd1" class="sndsel" type="checkbox">1</div></li>
+		    <li><div><input id="snd2" class="sndsel" type="checkbox">2</div></li>
+		    <li><div><input id="snd3" class="sndsel" type="checkbox">3</div></li>
+		    <li><div><input id="snd4" class="sndsel" type="checkbox">4</div></li>
+		    <li><div><input id="snd5" class="sndsel" type="checkbox">5</div></li>
+		    <li><div><input id="snd6" class="sndsel" type="checkbox">6</div></li>
+		    <li><div><input id="snd7" class="sndsel" type="checkbox">7</div></li>
+		    <li><div><input id="snd8" class="sndsel" type="checkbox">8</div></li>
+		    <li><div><input id="snd9" class="sndsel" type="checkbox">9</div></li>
+		    <li><div><input id="snd10" class="sndsel" type="checkbox">10</div></li>
+		  </ul>
+		</li>
+	      </ul>
+	    </li>
+	  </ul>
+
+    </td></tr></table>
+
+    <div id="timer">
+      <canvas id="timercanvas"></canvas>
+    </div>
+
+    <script type="text/javascript" src="js/timer.js"></script>
+  </body>
+</html>

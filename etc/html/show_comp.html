@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title></title>
+    <style>
+      table {
+      position: absolute;
+      bottom: 0;
+      top: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      border-collapse: collapse;
+      }
+      #row1 {
+      height: 20px;
+      background-color: black;
+      color: white;
+      }
+      #row2 {
+      background-color: black;
+      color: white;
+      }
+      #row3 {
+      background-color: white;
+      color: black;
+      }
+      #row4 {
+      background-color: blue;
+      color: white;
+      }
+      #askwin {
+      text-align: right;
+      }
+    </style>
+    <link rel="stylesheet" href="jquery/jquery-ui.css">
+    <script type="text/javascript" src="jquery/external/jquery/jquery.js"></script>
+    <script type="text/javascript" src="js/jqueryjson.min.js"></script>
+    <script type="text/javascript" src="jquery/jquery-ui.js"></script>
+    <script type="text/javascript" src="js/reconnecting-websocket.min.js"></script>
+    <script type="text/javascript" src="jcanvas.min.js"></script>
+  </head>
+  <body id="ask_body">
+    <table>
+      <tr id="row1">
+	<td><button style="width: 100%" id="askok" onclick="window.close();">OK</button></td>
+      </tr>
+      <tr id="row2">
+	<td id="compcat"></td><td id="compround"></td>
+      </tr>
+      <tr id="row3">
+	<td id="comp1"></td><td id="comp1rest"></td>
+      </tr>
+      <tr id="row4">
+	<td id="comp2"></td><td id="comp2rest"></td>
+      </tr>
+    </table>
+  </body>
+</html>

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Start New Match?</title>
+    <style>
+      table {
+      position: absolute;
+      bottom: 0;
+      top: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      border-collapse: collapse;
+      }
+      #ask1 {
+      height: 20px;
+      background-color: black;
+      color: white;
+      }
+      #ask2 {
+      background-color: black;
+      color: white;
+      }
+      #ask3 {
+      background-color: blue;
+      color: white;
+      }
+      #ask4 {
+      background-color: blue;
+      color: white;
+      }
+      #askwin {
+      text-align: right;
+      }
+    </style>
+    <link rel="stylesheet" href="jquery/jquery-ui.css">
+    <script type="text/javascript" src="jquery/external/jquery/jquery.js"></script>
+    <script type="text/javascript" src="js/jqueryjson.min.js"></script>
+    <script type="text/javascript" src="jquery/jquery-ui.js"></script>
+    <script type="text/javascript" src="js/reconnecting-websocket.min.js"></script>
+    <script type="text/javascript" src="jcanvas.min.js"></script>
+  </head>
+  <body id="ask_body">
+    <table>
+      <tr id="ask1"><td>Start New Match?</td>
+	<td><button id="askok" onclick="window.opener.ask_ok(); window.close();">OK</button></td>
+	<td><button id="asknok" onclick="window.opener.ask_nok(); window.close();">Cancel</button></td>
+      </tr>
+      <tr id="ask2">
+	<td id="askcat"></td><td></td><td id="askwin"></td>
+      </tr>
+      <tr id="ask3">
+	<td id="asklast"></td><td></td><td></td>
+      </tr>
+      <tr id="ask4">
+	<td id="askfirst"></td><td></td><td></td>
+      </tr>
+    </table>
+  </body>
+</html>
