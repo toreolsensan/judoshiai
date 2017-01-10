@@ -1100,13 +1100,92 @@ void db_set_points(gint category, gint number, gint minutes,
     }
 }
 
-void db_set_score(gint category, gint number, gint score, gboolean is_blue)
+gint db_set_score(gint category, gint number, gint score, gboolean is_blue, gboolean hikiwake)
 {
+    gint maxshido = 4;
+    gint winscore = 0, losescore = 0;
+    gint points = 0;
+    gint blue_score, white_score, blue_points, white_points;
+
+    if (prop_get_int_val(PROP_RULES_2017))
+	maxshido = 3;
+
+    // find current match data
     db_exec_str(NULL, db_callback_matches,
-                "UPDATE matches SET \"%s\"=%d "
+                "SELECT * FROM matches "
                 "WHERE \"category\"=%d AND \"number\"=%d",
-                is_blue ? "blue_score" : "white_score", score,
                 category, number);
+
+    blue_score = m_static.blue_score;
+    white_score = m_static.white_score;
+    blue_points = m_static.blue_points;
+    white_points = m_static.white_points;
+
+    if (is_blue) blue_score = score;
+    else white_score = score;
+
+    if (hikiwake) {
+	blue_points = white_points = 1;
+    } else {
+	if ((blue_score & 7) >= maxshido) {
+	    blue_score &= 0xffff;
+	    white_score |= 0x10000;
+	} else if ((white_score & 7) >= maxshido) {
+	    white_score &= 0xffff;
+	    blue_score |= 0x10000;
+	}
+
+	if ((blue_score & 0xffff0) > (white_score & 0xffff0)) {
+	    winscore = blue_score & 0xffff0;
+	    losescore = white_score & 0xffff0;
+	} else if ((blue_score & 0xffff0) < (white_score & 0xffff0)) {
+	    winscore = white_score & 0xffff0;
+	    losescore = blue_score & 0xffff0;
+	} else if ((blue_score & 0x7) != (white_score & 0x7)) {
+	    if ((blue_score & 0xf) > (white_score & 0xf)) {
+		winscore = white_score;
+		losescore = blue_score;
+	    } else {
+		winscore = blue_score;
+		losescore = white_score;
+	    }
+	}
+
+	if ((winscore & 0xffff0) != (losescore & 0xffff0)) {
+	    if ((winscore & 0xf0000) && (losescore & 0xf0000) == 0) points = 10;
+	    else if ((winscore & 0xf000) > (losescore & 0xf000)) points = 7;
+	    else if ((winscore & 0xf00) > (losescore & 0xf00)) points = 5;
+	    else if ((winscore & 0xf0) > (losescore & 0xf0)) points = 3;
+
+	    if ((blue_score) > (white_score)) {
+		blue_points = points;
+		white_points = 0;
+	    } else {
+		blue_points = 0;
+		white_points = points;
+	    }
+	} else if (winscore != losescore) {
+	    if ((blue_score & 0xf) > (white_score & 0xf)) {
+		blue_points = 0;
+		white_points = 1;
+	    } else {
+		blue_points = 1;
+		white_points = 0;
+	    }
+	} else {
+	    blue_points = white_points = 0;
+	}
+    }
+
+    db_exec_str(NULL, db_callback_matches,
+                "UPDATE matches SET \"blue_score\"=%d, \"white_score\"=%d, "
+		"\"blue_points\"=%d, \"white_points\"=%d "
+                "WHERE \"category\"=%d AND \"number\"=%d",
+		blue_score, white_score,
+		blue_points, white_points,
+                category, number);
+
+    return (blue_points << 8) | white_points;
 }
 
 void db_set_time(gint category, gint number, gint tim)
@@ -1843,34 +1922,49 @@ static void db_print_one_match(struct match *m)
 
     fprintf(matches_file,
             "<td onclick=\"top.location.href='%d.html'\" "
-            "style=\"cursor: pointer\">%s %s</td>"
-
-            "<td class=\"%s\">%d%d%d/%d%s</td>"
-            "<td align=\"center\">%s - %s</td>"
-            "<td class=\"%s\">%d%d%d/%d%s</td>"
-
-            "<td onclick=\"top.location.href='%d.html'\" "
-            "style=\"cursor: pointer\">%s %s</td>"
-
-            "<td>%d:%02d</td></tr>\r\n",
+            "style=\"cursor: pointer\">%s %s</td><td class=\"%s\">",
             j1->index,
             utf8_to_html(firstname_lastname() ? j1->first : j1->last),
             utf8_to_html(firstname_lastname() ? j1->last : j1->first),
+            prop_get_int_val(PROP_WHITE_FIRST) ? "wscore" : "bscore");
 
-            prop_get_int_val(PROP_WHITE_FIRST) ? "wscore" : "bscore",
-            (m->blue_score>>16)&15, (m->blue_score>>12)&15, (m->blue_score>>8)&15,
-            m->blue_score&7, m->blue_score&8?"H":"",
+    if (prop_get_int_val(PROP_RULES_2017))
+	fprintf(matches_file,
+		"%d%d/%d%s</td>",
+		(m->blue_score>>16)&15, (m->blue_score>>12)&15,
+		m->blue_score&7, m->blue_score&8?"H":"");
+    else
+	fprintf(matches_file,
+		"%d%d%d/%d%s</td>",
+		(m->blue_score>>16)&15, (m->blue_score>>12)&15, (m->blue_score>>8)&15,
+		m->blue_score&7, m->blue_score&8?"H":"");
 
+    fprintf(matches_file,
+	    "<td align=\"center\">%s - %s</td>"
+            "<td class=\"%s\">",
             get_points_str(m->blue_points),
             get_points_str(m->white_points),
+            prop_get_int_val(PROP_WHITE_FIRST) ? "bscore" : "wscore");
 
-            prop_get_int_val(PROP_WHITE_FIRST) ? "bscore" : "wscore",
-            (m->white_score>>16)&15, (m->white_score>>12)&15, (m->white_score>>8)&15,
-            m->white_score&7, m->white_score&8?"H":"",
+    if (prop_get_int_val(PROP_RULES_2017))
+	fprintf(matches_file,
+		"%d%d/%d%s</td>",
+		(m->white_score>>16)&15, (m->white_score>>12)&15,
+		m->white_score&7, m->white_score&8?"H":"");
+    else
+	fprintf(matches_file,
+		"%d%d%d/%d%s</td>",
+		(m->white_score>>16)&15, (m->white_score>>12)&15, (m->white_score>>8)&15,
+		m->white_score&7, m->white_score&8?"H":"");
 
+    fprintf(matches_file,
+            "<td onclick=\"top.location.href='%d.html'\" "
+            "style=\"cursor: pointer\">%s %s</td>"
+            "<td>%d:%02d</td></tr>\r\n",
             j2->index,
             utf8_to_html(firstname_lastname() ? j2->first : j2->last),
-            utf8_to_html(firstname_lastname() ? j2->last : j2->first), m->match_time/60, m->match_time%60);
+            utf8_to_html(firstname_lastname() ? j2->last : j2->first),
+	    m->match_time/60, m->match_time%60);
 
  out:
     free_judoka(j1);
