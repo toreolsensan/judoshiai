@@ -110,7 +110,7 @@ static void change_menu_label(GtkWidget *item, const gchar *new_text)
 
 static GtkWidget *get_picture(const gchar *name)
 {
-    gchar *file = g_build_filename(installation_dir, "etc", name, NULL);
+    gchar *file = g_build_filename(installation_dir, "etc", "png", name, NULL);
     GtkWidget *pic = gtk_image_new_from_file(file);
     g_free(file);
     return pic;
@@ -119,7 +119,7 @@ static GtkWidget *get_picture(const gchar *name)
 static void set_menu_item_picture(GtkImageMenuItem *menu_item, gchar *name)
 {
     GtkImage *image = GTK_IMAGE(gtk_image_menu_item_get_image(GTK_IMAGE_MENU_ITEM(menu_item)));
-    gchar *file = g_build_filename(installation_dir, "etc", name, NULL);
+    gchar *file = g_build_filename(installation_dir, "etc", "png", name, NULL);
     gtk_image_set_from_file(image, file);
     g_free(file);
 }
