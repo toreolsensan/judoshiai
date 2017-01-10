@@ -75,13 +75,7 @@ void copy_packet(struct message *msg)
 int array2int(int pts[4])
 {
     int x = 0;
-
-    if (pts[0] >= 2)
-        x = 0x10000;
-    if (pts[0] & 1)
-        x |= 0x01000;
-    x |= (pts[1] << 8) | (pts[2] << 4) | pts[3];
-
+    x = (pts[0] << 16) | (pts[1] << 12) | (pts[2] << 8) | pts[3];
     return x;
 }
 

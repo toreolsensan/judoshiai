@@ -47,7 +47,6 @@ static void match_auto(GtkWidget *w,
 static void match_e_2(GtkWidget *w,
                       gpointer   data)
 {
-    //short_pin_times = GTK_CHECK_MENU_ITEM(w)->active;
     clock_key(GDK_1, FALSE);
 }
 
@@ -131,10 +130,10 @@ void manipulate_time(GtkWidget *w,
     gint what = ptr_to_gint(data);
     switch (what) {
     case 0:
-        hajime_inc_func();
+        hajime_inc_func(1.0);
         break;
     case 1:
-        hajime_dec_func();
+        hajime_dec_func(1.0);
         break;
     case 2:
         osaekomi_inc_func();
@@ -222,8 +221,8 @@ static void change_menu_label(GtkWidget *item, const gchar *new_text)
 static GtkWidget *menubar, *match, *preferences, *help, *matchmenu, *preferencesmenu, *helpmenu;
 static GtkWidget *separator1, *separator2, *quit, *viewlog, *showcomp_act, *show_video;
 static GtkWidget *match0, *match1, *match2, *match3, *match4, *match5, *gs;
-static GtkWidget *blue_wins, *white_wins, *red_background, *full_screen, *rules_no_koka, *hikiwake;
-static GtkWidget *rules_leave_points, *rules_stop_ippon, *whitefirst, *showcomp, *confirm_match, *judogi_control;
+static GtkWidget *blue_wins, *white_wins, *red_background, *full_screen, *hikiwake;
+static GtkWidget *rules_stop_ippon, *whitefirst, *showcomp, *confirm_match, *judogi_control;
 static GtkWidget *tatami_sel, *tatami_sel_none, *tatami_sel_1,  *tatami_sel_2,  *tatami_sel_3,  *tatami_sel_4;
 static GtkWidget *tatami_sel_5, *tatami_sel_6, *tatami_sel_7, *tatami_sel_8, *tatami_sel_9, *tatami_sel_10;
 static GtkWidget *node_ip, *my_ip, *video_ip, /* *vlc_cport,*/ *manual, *about, *quick_guide;
@@ -235,7 +234,7 @@ static GtkWidget *mode_normal, /**mode_master,*/ *mode_slave, *no_texts;
 static GtkWidget *undo, *hansokumake_blue, *hansokumake_white, *clear_selection, *switch_sides;
 static GtkWidget *advertise, *sound, *lang_menu_item;
 static GtkWidget *name_layout, *name_layouts[NUM_NAME_LAYOUTS];
-static GtkWidget *display_font, /**rules_no_free_shido,*/ *rules_eq_score_less_shido_wins, *rules_short_pin_times;
+static GtkWidget *display_font, *rules_2017;
 
 void activate_slave_mode(void)
 {
@@ -244,7 +243,7 @@ void activate_slave_mode(void)
 
 static GtkWidget *get_picture(const gchar *name)
 {
-    gchar *file = g_build_filename(installation_dir, "etc", name, NULL);
+    gchar *file = g_build_filename(installation_dir, "etc", "png", name, NULL);
     GtkWidget *pic = gtk_image_new_from_file(file);
     g_free(file);
     return pic;
@@ -253,7 +252,7 @@ static GtkWidget *get_picture(const gchar *name)
 static void set_menu_item_picture(GtkImageMenuItem *menu_item, gchar *name)
 {
     GtkImage *image = (GtkImage *)gtk_image_menu_item_get_image(GTK_IMAGE_MENU_ITEM(menu_item));
-    gchar *file = g_build_filename(installation_dir, "etc", name, NULL);
+    gchar *file = g_build_filename(installation_dir, "etc", "png", name, NULL);
     gtk_image_set_from_file(image, file);
     g_free(file);
 }
@@ -360,7 +359,6 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
 #endif
     /* Create the Contest menu content. */
     match0 = gtk_menu_item_new_with_label(_("Match duration: automatic"));
-    //match1 = gtk_check_menu_item_new_with_label(_("Short pin times"));
     match1 = gtk_menu_item_new_with_label(_("Match duration: 2 min E-juniors"));
     match2 = gtk_menu_item_new_with_label(_("Match duration: 2 min"));
     match3 = gtk_menu_item_new_with_label(_("Match duration: 3 min"));
@@ -453,12 +451,9 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
         name_layouts[i] = gtk_radio_menu_item_new_with_label_from_widget(GTK_RADIO_MENU_ITEM(name_layouts[0]), "");
 
     full_screen     = gtk_check_menu_item_new_with_label("Full screen mode");
-    rules_no_koka   = gtk_check_menu_item_new_with_label("");
-    rules_leave_points = gtk_check_menu_item_new_with_label("");
     rules_stop_ippon = gtk_check_menu_item_new_with_label("");
     //rules_no_free_shido = gtk_check_menu_item_new_with_label("");
-    rules_eq_score_less_shido_wins = gtk_check_menu_item_new_with_label("");
-    rules_short_pin_times = gtk_check_menu_item_new_with_label("");
+    rules_2017      = gtk_check_menu_item_new_with_label("");
     confirm_match   = gtk_check_menu_item_new_with_label("");
     judogi_control  = gtk_check_menu_item_new_with_label("");
     tatami_sel_none = gtk_radio_menu_item_new_with_label(NULL, "");
@@ -475,14 +470,12 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     node_ip         = gtk_menu_item_new_with_label("Communication node");
     my_ip           = gtk_menu_item_new_with_label("Own IP addresses");
     video_ip        = gtk_menu_item_new_with_label("");
-    //vlc_cport       = gtk_menu_item_new_with_label("");
     inc_time        = gtk_menu_item_new_with_label("");
     dec_time        = gtk_menu_item_new_with_label("");
     inc_osaekomi    = gtk_menu_item_new_with_label("");
     dec_osaekomi    = gtk_menu_item_new_with_label("");
     set_time        = gtk_menu_item_new_with_label("");
     mode_normal     = gtk_radio_menu_item_new_with_label(NULL, "");
-    //mode_master     = gtk_radio_menu_item_new_with_label_from_widget((GtkRadioMenuItem *)mode_normal, "");
     mode_slave      = gtk_radio_menu_item_new_with_label_from_widget((GtkRadioMenuItem *)mode_normal, "");
     advertise       = gtk_menu_item_new_with_label("");
     sound           = gtk_menu_item_new_with_label("");
@@ -491,14 +484,9 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
 
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), red_background);
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), full_screen);
-    //gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), rules_no_koka);
-    gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), rules_leave_points);
-    //gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), rules_no_free_shido);
-    gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), rules_eq_score_less_shido_wins);
-    gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), rules_short_pin_times);
+    gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), rules_2017);
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), rules_stop_ippon);
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), confirm_match);
-    //gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), whitefirst);
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), showcomp);
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), judogi_control);
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), no_texts);
@@ -548,7 +536,6 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), node_ip);
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), my_ip);
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), video_ip);
-    //gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), vlc_cport);
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), gtk_separator_menu_item_new());
 
     timeset = gtk_menu_item_new_with_label("");
@@ -563,7 +550,6 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
 
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), gtk_separator_menu_item_new());
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), mode_normal);
-    //gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), mode_master);
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), mode_slave);
 
     gtk_menu_shell_append (GTK_MENU_SHELL (preferencesmenu), gtk_separator_menu_item_new());
@@ -573,12 +559,8 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
 
     g_signal_connect(G_OBJECT(red_background),  "activate", G_CALLBACK(toggle_color),         (gpointer)1);
     g_signal_connect(G_OBJECT(full_screen),     "activate", G_CALLBACK(toggle_full_screen),   (gpointer)0);
-    g_signal_connect(G_OBJECT(rules_no_koka),      "activate", G_CALLBACK(toggle_rules_no_koka),    (gpointer)0);
-    g_signal_connect(G_OBJECT(rules_leave_points), "activate", G_CALLBACK(toggle_rules_leave_points), (gpointer)0);
     g_signal_connect(G_OBJECT(rules_stop_ippon), "activate", G_CALLBACK(toggle_rules_stop_ippon), (gpointer)0);
-    //g_signal_connect(G_OBJECT(rules_no_free_shido), "activate", G_CALLBACK(toggle_rules_no_free_shido), (gpointer)0);
-    g_signal_connect(G_OBJECT(rules_eq_score_less_shido_wins), "activate", G_CALLBACK(toggle_rules_eq_score_less_shido_wins), (gpointer)0);
-    g_signal_connect(G_OBJECT(rules_short_pin_times), "activate", G_CALLBACK(toggle_rules_short_pin_times), (gpointer)0);
+    g_signal_connect(G_OBJECT(rules_2017),      "activate", G_CALLBACK(toggle_rules_2017),     (gpointer)0);
     g_signal_connect(G_OBJECT(confirm_match),   "activate", G_CALLBACK(toggle_confirm_match),  (gpointer)0);
     g_signal_connect(G_OBJECT(whitefirst),      "activate", G_CALLBACK(toggle_whitefirst),     (gpointer)0);
     g_signal_connect(G_OBJECT(no_texts),        "activate", G_CALLBACK(toggle_no_texts),       (gpointer)0);
@@ -610,14 +592,12 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     g_signal_connect(G_OBJECT(node_ip),         "activate", G_CALLBACK(ask_node_ip_address),  (gpointer)0);
     g_signal_connect(G_OBJECT(my_ip),           "activate", G_CALLBACK(show_my_ip_addresses), (gpointer)0);
     g_signal_connect(G_OBJECT(video_ip),        "activate", G_CALLBACK(ask_video_ip_address), (gpointer)0);
-    //g_signal_connect(G_OBJECT(vlc_cport),       "activate", G_CALLBACK(ask_tvlogo_settings),  (gpointer)0);
     g_signal_connect(G_OBJECT(inc_time),        "activate", G_CALLBACK(manipulate_time),      (gpointer)0);
     g_signal_connect(G_OBJECT(dec_time),        "activate", G_CALLBACK(manipulate_time),      (gpointer)1);
     g_signal_connect(G_OBJECT(inc_osaekomi),    "activate", G_CALLBACK(manipulate_time),      (gpointer)2);
     g_signal_connect(G_OBJECT(dec_osaekomi),    "activate", G_CALLBACK(manipulate_time),      (gpointer)3);
     g_signal_connect(G_OBJECT(set_time),        "activate", G_CALLBACK(manipulate_time),      (gpointer)4);
     g_signal_connect(G_OBJECT(mode_normal),     "activate", G_CALLBACK(mode_selection),       (gpointer)0);
-    //g_signal_connect(G_OBJECT(mode_master),     "activate", G_CALLBACK(mode_selection),       (gpointer)1);
     g_signal_connect(G_OBJECT(mode_slave),      "activate", G_CALLBACK(mode_selection),       (gpointer)2);
     g_signal_connect(G_OBJECT(advertise),       "activate", G_CALLBACK(toggle_advertise),     (gpointer)0);
     g_signal_connect(G_OBJECT(sound),           "activate", G_CALLBACK(select_sound),         (gpointer)0);
@@ -657,8 +637,6 @@ void set_preferences(void)
     if ((str = g_key_file_get_string(keyfile, "preferences", "color", &error))) {
         if (strcmp(str, "red") == 0) {
             gtk_menu_item_activate(GTK_MENU_ITEM(red_background));
-            //gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(red_background), TRUE);
-            //toggle_color(red_background, NULL);
         }
         g_free(str);
     }
@@ -669,35 +647,13 @@ void set_preferences(void)
     }
 
     error = NULL;
-    if (g_key_file_get_boolean(keyfile, "preferences", "rulesnokoka", &error) || error) {
-        gtk_menu_item_activate(GTK_MENU_ITEM(rules_no_koka));
-    }
-
-    error = NULL;
-    if (g_key_file_get_boolean(keyfile, "preferences", "rulesleavepoints", &error) || error) {
-        gtk_menu_item_activate(GTK_MENU_ITEM(rules_leave_points));
-    }
-
-    error = NULL;
     if (g_key_file_get_boolean(keyfile, "preferences", "stopippon", &error)) {
         gtk_menu_item_activate(GTK_MENU_ITEM(rules_stop_ippon));
     }
 
-    /*
     error = NULL;
-    if (g_key_file_get_boolean(keyfile, "preferences", "rulesnofreeshido", &error) || error) {
-        gtk_menu_item_activate(GTK_MENU_ITEM(rules_no_free_shido));
-    }
-    */
-
-    error = NULL;
-    if (g_key_file_get_boolean(keyfile, "preferences", "ruleseqscorelessshidowins", &error) || error) {
-        gtk_menu_item_activate(GTK_MENU_ITEM(rules_eq_score_less_shido_wins));
-    }
-
-    error = NULL;
-    if (g_key_file_get_boolean(keyfile, "preferences", "rulesshortpintimes", &error) || error) {
-        gtk_menu_item_activate(GTK_MENU_ITEM(rules_short_pin_times));
+    if (g_key_file_get_boolean(keyfile, "preferences", "rules2017", &error) || error) {
+        gtk_menu_item_activate(GTK_MENU_ITEM(rules_2017));
     }
 
     error = NULL;
@@ -757,22 +713,22 @@ void set_preferences(void)
         case 7: gtk_menu_item_activate(GTK_MENU_ITEM(layout_sel_7)); break;
         }
     } else {
-        select_display_layout(NULL, (gpointer)1);
+        select_display_layout(NULL, (gpointer)6);
     }
 
     error = NULL;
     i = g_key_file_get_integer(keyfile, "preferences", "namelayout", &error);
     if (!error)
         gtk_menu_item_activate(GTK_MENU_ITEM(name_layouts[i]));
-    else 
+    else
         gtk_menu_item_activate(GTK_MENU_ITEM(name_layouts[0]));
 
     error = NULL;
     str = g_key_file_get_string(keyfile, "preferences", "nodeipaddress", &error);
     if (!error) {
-        gulong a,b,c,d;
-        sscanf(str, "%ld.%ld.%ld.%ld", &a, &b, &c, &d);
-        node_ip_addr = host2net((a << 24) | (b << 16) | (c << 8) | d);
+        gulong a,b,c,d1;
+        sscanf(str, "%ld.%ld.%ld.%ld", &a, &b, &c, &d1);
+        node_ip_addr = host2net((a << 24) | (b << 16) | (c << 8) | d1);
         g_free(str);
     }
 
@@ -785,7 +741,6 @@ void set_preferences(void)
 
     error = NULL;
     if (g_key_file_get_boolean(keyfile, "preferences", "showcompetitornames", &error)) {
-        //gtk_menu_item_activate(GTK_MENU_ITEM(showcomp));
         show_competitor_names = TRUE;
     }
 
@@ -962,13 +917,10 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
 
     change_menu_label(red_background,     _("Red background"));
     change_menu_label(full_screen,        _("Full screen mode"));
-    change_menu_label(rules_no_koka,      _("No koka"));
-    change_menu_label(rules_leave_points, _("Leave points for GS"));
     change_menu_label(rules_stop_ippon,   _("Stop clock on Ippon"));
 
     //change_menu_label(rules_no_free_shido, _("No free shido"));
-    change_menu_label(rules_eq_score_less_shido_wins, _("If equal score less shido wins"));
-    change_menu_label(rules_short_pin_times, _("Short pin times"));
+    change_menu_label(rules_2017, _("2017 Rules"));
 
     change_menu_label(confirm_match, _("Confirm New Match"));
     change_menu_label(clock_only,    _("View clocks only"));
@@ -1262,12 +1214,9 @@ void set_menu_active(void)
     SET_SENSITIVE(switch_sides,      ACTIVE);
 
     SET_SENSITIVE(red_background,     ACTIVE);
-    SET_SENSITIVE(rules_no_koka,      ACTIVE);
-    SET_SENSITIVE(rules_leave_points, ACTIVE);
     SET_SENSITIVE(rules_stop_ippon,   ACTIVE);
 
-    SET_SENSITIVE(rules_eq_score_less_shido_wins, ACTIVE);
-    SET_SENSITIVE(rules_short_pin_times, ACTIVE);
+    SET_SENSITIVE(rules_2017, ACTIVE);
 
     SET_SENSITIVE(confirm_match, ACTIVE);
     SET_SENSITIVE(clock_only,    ACTIVE);

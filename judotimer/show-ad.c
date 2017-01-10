@@ -1786,12 +1786,12 @@ static gboolean expose_ad(GtkWidget *widget, GdkEventExpose *event, gpointer use
         // judogi control warning
         if (judogi_control) {
             if (!white_ctl) {
-                gchar *file = g_build_filename(installation_dir, "etc", "white-ctl.png", NULL);
+                gchar *file = g_build_filename(installation_dir, "etc", "png", "white-ctl.png", NULL);
                 white_ctl = cairo_image_surface_create_from_png(file);
                 g_free(file);
             }
             if (!blue_ctl) {
-                gchar *file = g_build_filename(installation_dir, "etc", "blue-ctl.png", NULL);
+                gchar *file = g_build_filename(installation_dir, "etc", "png", "blue-ctl.png", NULL);
                 blue_ctl = cairo_image_surface_create_from_png(file);
                 g_free(file);
             }
