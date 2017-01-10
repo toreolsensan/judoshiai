@@ -2675,7 +2675,7 @@ static gboolean expose_cat(GtkWidget *widget, GdkEventExpose *event, gpointer us
     static cairo_surface_t *print_icon = NULL;
 
     if (print_icon == NULL) {
-        gchar *file = g_build_filename(installation_dir, "etc", "print.png", NULL);
+        gchar *file = g_build_filename(installation_dir, "etc", "png", "print.png", NULL);
         print_icon = cairo_image_surface_create_from_png(file);
         g_free(file);
     }
