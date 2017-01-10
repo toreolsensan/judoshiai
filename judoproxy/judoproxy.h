@@ -94,7 +94,6 @@ extern void msg_to_queue(struct message *msg);
 extern struct message *get_rec_msg(void);
 extern void destroy( GtkWidget *widget, gpointer   data );
 extern void set_preferences(void);
-extern gulong host2net(gulong a);
 extern uint32_t camera_addr;
 extern gboolean show_video;
 
