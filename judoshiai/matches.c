@@ -283,9 +283,15 @@ static void score_cell_data_func (GtkTreeViewColumn *col,
                        -1);
 
     if (visible) {
-        g_snprintf(buf, sizeof(buf), "%d%d%d/%d%s",
-                   (score>>16)&15, (score>>12)&15, (score>>8)&15,
-                   score&7, score&8?"H":"");
+	if (prop_get_int_val(PROP_RULES_2017))
+	    g_snprintf(buf, sizeof(buf), "%d%d/%d%s",
+		       (score>>16)&15, (score>>12)&15,
+		       score&7, score&8?"H":"");
+	else
+	    g_snprintf(buf, sizeof(buf), "%d%d%d/%d%s",
+		       (score>>16)&15, (score>>12)&15, (score>>8)&15,
+		       score&7, score&8?"H":"");
+
         g_object_set(renderer, "foreground-set", FALSE, NULL); /* print this normal */
         g_object_set(renderer, "text", buf, NULL);
     } else {
@@ -2594,16 +2600,21 @@ void set_points_and_score(struct message *msg)
     gint  winscore = 0, losescore = 0;
     gint  points = 2, blue_pts = 0, white_pts = 0;
     //gint  numcompetitors = sys & COMPETITORS_MASK;
+    gint maxshido = 4;
 
     if (number >= 1000 || category < 10000)
         return;
 
-    if (msg->u.result.blue_hansokumake || (msg->u.result.blue_score & 0xf) >= 4) {
+    if (prop_get_int_val(PROP_RULES_2017)) {
+	maxshido = 3;
+    }
+
+    if (msg->u.result.blue_hansokumake || (msg->u.result.blue_score & 0xf) >= maxshido) {
         msg->u.result.blue_score &= 0xffff;
         msg->u.result.white_score |= 0x10000;
         if (msg->u.result.blue_hansokumake)
             msg->u.result.blue_score |= 8;
-    } else if (msg->u.result.white_hansokumake || (msg->u.result.white_score & 0xf) >= 4) {
+    } else if (msg->u.result.white_hansokumake || (msg->u.result.white_score & 0xf) >= maxshido) {
         msg->u.result.blue_score |= 0x10000;
         msg->u.result.white_score &= 0xffff;
         if (msg->u.result.white_hansokumake)
@@ -2616,7 +2627,7 @@ void set_points_and_score(struct message *msg)
     } else if ((msg->u.result.blue_score & 0xffff0) < (msg->u.result.white_score & 0xffff0)) {
         winscore = msg->u.result.white_score & 0xffff0;
         losescore = msg->u.result.blue_score & 0xffff0;
-    } else if (prop_get_int_val(PROP_EQ_SCORE_LESS_SHIDO_WINS) &&
+    } else if (/*prop_get_int_val(PROP_EQ_SCORE_LESS_SHIDO_WINS) &&*/
                (msg->u.result.blue_score & 0xf) != (msg->u.result.white_score & 0xf)) {
         if ((msg->u.result.blue_score & 0xf) > (msg->u.result.white_score & 0xf)) {
             winscore = msg->u.result.white_score;
@@ -2630,7 +2641,7 @@ void set_points_and_score(struct message *msg)
 
     if ((winscore & 0xffff0) != (losescore & 0xffff0)) {
         if ((winscore & 0xf0000) && (losescore & 0xf0000) == 0) points = 10;
-        else if ((winscore & 0xf000) && (losescore & 0xf000) == 0) points = 7;
+        else if ((winscore & 0xf000) > (losescore & 0xf000)) points = 7;
         else if ((winscore & 0xf00) > (losescore & 0xf00)) points = 5;
         else if ((winscore & 0xf0) > (losescore & 0xf0)) points = 3;
         else points = 2; //XXXXXXXXXXXXXXX This should never happen
@@ -2643,7 +2654,7 @@ void set_points_and_score(struct message *msg)
             blue_pts = points;
         else
             white_pts = points;
-    } else if (prop_get_int_val(PROP_EQ_SCORE_LESS_SHIDO_WINS) &&
+    } else if (/*prop_get_int_val(PROP_EQ_SCORE_LESS_SHIDO_WINS) &&*/
                winscore != losescore) {
         if ((msg->u.result.blue_score & 0xf) > (msg->u.result.white_score & 0xf))
             white_pts = 1;
@@ -2865,6 +2876,7 @@ static void view_match_competitor_popup_menu(GtkWidget *treeview,
     search_competitor_args(NULL, change_competitor, &popupdata);
 }
 
+#if 0
 static void view_match_points_popup_menu(GtkWidget *treeview,
                                          GdkEventButton *event,
                                          guint category,
@@ -2921,7 +2933,9 @@ static void view_match_points_popup_menu(GtkWidget *treeview,
                    (event != NULL) ? event->button : 0,
                    gdk_event_get_time((GdkEvent*)event));
 }
+#endif
 
+#define HIKIWAKE_OK 1010
 struct score {
     guint category, number;
     gboolean is_blue;
@@ -2939,18 +2953,21 @@ static void set_score(GtkWidget *widget,
 {
     struct score *s = data;
 
-    if (ptr_to_gint(event) == GTK_RESPONSE_OK) {
-        db_set_score(s->category, s->number,
-                     (gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(s->ippon))<<16) |
-                     (gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(s->wazaari))<<12) |
-                     (gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(s->yuko))<<8) |
-                     gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(s->shido)),
-                     s->is_blue);
+    if (ptr_to_gint(event) == GTK_RESPONSE_OK || ptr_to_gint(event) == HIKIWAKE_OK) {
+        gint pts =
+	    db_set_score(s->category, s->number,
+			 (gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(s->ippon))<<16) |
+			 (gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(s->wazaari))<<12) |
+			 (gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(s->yuko))<<8) |
+			 gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(s->shido)),
+			 s->is_blue, ptr_to_gint(event) == HIKIWAKE_OK);
 
-        db_read_match(s->category, s->number);
-        //update_matches(category, sys, db_find_match_tatami(category, number));
-        //db_force_match_number(category);
-        //make_backup();
+	log_match(s->category, s->number, pts >> 8, pts & 0xff);
+	db_read_match(s->category, s->number);
+	update_matches(s->category, db_get_system(s->category),
+		       db_find_match_tatami(s->category, s->number));
+	db_force_match_number(s->category);
+	make_backup();
     }
 
     g_free(s);
@@ -2993,19 +3010,34 @@ static void view_match_score_popup_menu(GtkWidget *treeview,
     s->number = number;
     s->is_blue = is_blue;
 
-    dialog = gtk_dialog_new_with_buttons (_("Set score"),
-                                          NULL,
-                                          GTK_DIALOG_DESTROY_WITH_PARENT,
-                                          GTK_STOCK_OK, GTK_RESPONSE_OK,
-                                          GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-                                          NULL);
+    if (category & MATCH_CATEGORY_SUB_MASK)
+	dialog = gtk_dialog_new_with_buttons (_("Set score"),
+					      NULL,
+					      GTK_DIALOG_DESTROY_WITH_PARENT,
+					      "Hikiwake", HIKIWAKE_OK,
+					      GTK_STOCK_OK, GTK_RESPONSE_OK,
+					      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+					      NULL);
+    else
+	dialog = gtk_dialog_new_with_buttons (_("Set score"),
+					      NULL,
+					      GTK_DIALOG_DESTROY_WITH_PARENT,
+					      GTK_STOCK_OK, GTK_RESPONSE_OK,
+					      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+					      NULL);
 
     s->ippon = gtk_spin_button_new_with_range(0.0, 1.0, 1.0);
-    s->wazaari = gtk_spin_button_new_with_range(0.0, 2.0, 1.0);
-    s->yuko = gtk_spin_button_new_with_range(0.0, 10.0, 1.0);
-    s->shido = gtk_spin_button_new_with_range(0.0, 4.0, 1.0);
+    if (prop_get_int_val(PROP_RULES_2017)) {
+	s->yuko = gtk_spin_button_new_with_range(0.0, 0.0, 1.0);
+	s->wazaari = gtk_spin_button_new_with_range(0.0, 9.0, 1.0);
+	s->shido = gtk_spin_button_new_with_range(0.0, 3.0, 1.0);
+	gtk_widget_set_sensitive(s->yuko, FALSE);
+    } else {
+	s->yuko = gtk_spin_button_new_with_range(0.0, 9.0, 1.0);
+	s->wazaari = gtk_spin_button_new_with_range(0.0, 2.0, 1.0);
+	s->shido = gtk_spin_button_new_with_range(0.0, 4.0, 1.0);
+    }
 
-#if (GTKVER == 3)
     table = gtk_grid_new();
     gtk_grid_attach(GTK_GRID(table), gtk_label_new("I"), 0, 0, 1, 1);
     gtk_grid_attach(GTK_GRID(table), gtk_label_new("W"), 1, 0, 1, 1);
@@ -3017,30 +3049,13 @@ static void view_match_score_popup_menu(GtkWidget *treeview,
     gtk_grid_attach(GTK_GRID(table), s->yuko,            2, 1, 1, 1);
     gtk_grid_attach(GTK_GRID(table), gtk_label_new("/"), 3, 1, 1, 1);
     gtk_grid_attach(GTK_GRID(table), s->shido,           4, 1, 1, 1);
-#else
-    table = gtk_table_new(2, 6, TRUE);
-    gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new("I"), 0, 1, 0, 1);
-    gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new("W"), 1, 2, 0, 1);
-    gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new("Y"), 2, 3, 0, 1);
-    gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new("/"), 3, 4, 0, 1);
-    gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new("S"), 4, 5, 0, 1);
-    gtk_table_attach_defaults(GTK_TABLE(table), s->ippon, 0, 1, 1, 2);
-    gtk_table_attach_defaults(GTK_TABLE(table), s->wazaari, 1, 2, 1, 2);
-    gtk_table_attach_defaults(GTK_TABLE(table), s->yuko, 2, 3, 1, 2);
-    gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new("/"), 3, 4, 1, 2);
-    gtk_table_attach_defaults(GTK_TABLE(table), s->shido, 4, 5, 1, 2);
-#endif
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(s->ippon), (score>>16)&15);
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(s->wazaari), (score>>12)&15);
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(s->yuko), (score>>8)&15);
-    gtk_spin_button_set_value(GTK_SPIN_BUTTON(s->shido), score&15);
+    gtk_spin_button_set_value(GTK_SPIN_BUTTON(s->shido), score&7);
 
-#if (GTKVER == 3)
     gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),
                        table, FALSE, FALSE, 0);
-#else
-    gtk_box_pack_start_defaults(GTK_BOX(GTK_DIALOG(dialog)->vbox), table);
-#endif
     gtk_widget_show_all(dialog);
 
     g_signal_connect(G_OBJECT(dialog), "response", G_CALLBACK(set_score), s);
@@ -3164,18 +3179,32 @@ static gboolean view_onButtonPressed(GtkWidget *treeview,
             } else if (visible && event->button == 3 && col == blue_pts_col
                        /*&&
                          b != GHOST && w != GHOST*/) {
+                view_match_score_popup_menu(treeview, event,
+                                            category1,
+                                            number1,
+                                            blue_score,
+                                            TRUE);
+/*
                 view_match_points_popup_menu(treeview, event,
                                              category1,
                                              number1,
                                              TRUE);
+*/
                 handled = TRUE;
             } else if (visible && event->button == 3 && col == white_pts_col
                        /*&&
                          b != GHOST && w != GHOST*/) {
+                view_match_score_popup_menu(treeview, event,
+                                            category1,
+                                            number1,
+                                            white_score,
+                                            FALSE);
+/*
                 view_match_points_popup_menu(treeview, event,
                                              category1,
                                              number1,
                                              FALSE);
+*/
                 handled = TRUE;
             } else if (visible && event->button == 3 && col == blue_score_col) {
                 view_match_score_popup_menu(treeview, event,
@@ -3339,7 +3368,9 @@ static GtkWidget *create_view_and_model(void)
     g_object_set(renderer, "xalign", 0.5, NULL);
     g_object_set(renderer, "editable", TRUE, NULL);
     col_offset = gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(view),
-                                                             -1, "IWY/S",
+                                                             -1,
+							     prop_get_int_val(PROP_RULES_2017) ?
+							     "IW/S" : "IWY/S",
                                                              renderer, "text",
                                                              COL_MATCH_BLUE_SCORE,
                                                              "visible",
@@ -3388,7 +3419,9 @@ static GtkWidget *create_view_and_model(void)
     g_object_set(renderer, "xalign", 0.5, NULL);
     g_object_set(renderer, "editable", TRUE, NULL);
     col_offset = gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(view),
-                                                             -1, "IWY/S",
+                                                             -1,
+							     prop_get_int_val(PROP_RULES_2017) ?
+							     "IW/S" : "IWY/S",
                                                              renderer, "text",
                                                              COL_MATCH_WHITE_SCORE,
                                                              "visible",
