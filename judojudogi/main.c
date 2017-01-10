@@ -679,7 +679,7 @@ int main( int   argc,
     gtk_window_set_title(GTK_WINDOW(main_window), "JudoJudogi");
     gtk_widget_set_size_request(window, FRAME_WIDTH, FRAME_HEIGHT);
 
-    gchar *iconfile = g_build_filename(installation_dir, "etc", "judojudogi.png", NULL);
+    gchar *iconfile = g_build_filename(installation_dir, "etc", "png", "judojudogi.png", NULL);
     gtk_window_set_default_icon_from_file(iconfile, NULL);
     g_free(iconfile);
 
