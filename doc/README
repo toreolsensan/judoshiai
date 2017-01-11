@@ -9,17 +9,46 @@ Raspberry Pi: judoshiai_n.n-1_armhf.deb
 
 ==============================================
 RELEASE NOTE
-VERSION 2.5a
+VERSION 2.6
 
-This is the same version as 2.5 except the DLLs needed by Windows
-are different. Ver 2.5 has newer DLLs with new features,
-but unfortunately they cause problems with SVG rendering.
-Ver 2.5a has older DLLs (same as 2.4) that work correctly.
+Common
+------
 
-It seems that the newest DLLs do not support XP any more.
-Thus, for the time being, JudoShiai is stuck with the old versions.
-Perhaps at some point Linux version will take its own development
-path and have a better set of features.
++ There are new rules starting from the beginning of the 2017.
+  Both JudoShiai and JudoTimer has been changed accordingly.
+  There has been lots of old setting to support past rules. Some of them
+  have been removed for clarity. It is quite unlikely that for example koka
+  will ever come back (well, IJF is unpredictable...).
+
+JudoShiai
+----------
++ Support for year 2017 rules.
++ Some legacy settings removed.
++ No possibility to manually give points any more. Give scores and they will be
+  translated to correct points.
+
+JudoTimer
+----------
++ Support for year 2017 rules.
++ Some legacy settings removed.
++ Sonomama removed. Logic of the clocks has changed a little bit:
+  stop the clock and also osaekomi clock stops. Start the shiai
+  clock again and osaekomi clock starts, too.
++ Score points flash on the board while osaekomi clock is running.
+  A separate score letter is not needed anymore.
++ timer-custom.txt has been modified to resemble IJF scoreboard.
++ Country text and leg grab added to timer-custom.txt.
++ Customized scoreboards can use pictures (yellow and red cards)
+  for shidos instead of numbers (like IJF scoreboard).
++ Clocks can be set using mouse wheel.
+
+Web based JudoInfo, JudoWeight, and JudoTimer
+---------------------------------------------
++ Web based applications have been rewritten using Javascript. Applications
+  utilize Websockets, that is supported in the most recent browsers only.
+  IE is not supported at all, but it may or may not work. Basic testing has been
+  done using Chrome and Firefox.
+
 
 ==============================================
 RELEASE NOTE
@@ -134,3 +163,84 @@ JudoWeight
 + SVG based label printing.
 + Password protected manual weight setting.
 + Better feedback display.
+
+
+==============================================
+RELEASE NOTE
+VERSION 2.3.1
+
+Common
+-------
+
++ German language added.
++ Support for 64 bit compilation.
++ Result texts language bug fixed.
+
+JudoShiai
+----------
+
++ Coach display enhancements.
++ Program is a little bit faster.
+
+JudoInfo
+----------
+
++ Support for SVG templates.
+
+=================================================
+RELEASE NOTE
+VERSION 2.3
+
+Common
+-------
+
+JudoShiai
+----------
+
++ Settings divided to Properties (saved in the database) and Preferences.
++ Comment and Coach ID fields added to database.
++ Setting for 3-way tie.
++ Double/Triple/Quad pool doesn't continue if 3-way tie. Category name turns red.
++ Support for customised SVG sheets.
++ Sheets in web results can be printed in SVG format.
++ Web page for coach info.
++ Weights can be imported from another shiai.
++ Best of three is now a separate competition system.
++ IJF double repechage has been renamed to IJF quarter final repechage.
++ Categories starting with underscore (_) are ignored from drawing and results.
++ Categories starting with '?' are ignored from results.
++ Competitors from the same club will have the first match in pool systems.
++ Score points printing added for SVG brackets.
++ Flags printing added for SVG brackets.
++ Brackets utilizes javascript to be more interactive.
++ Built-in FTP client to copy results to a server.
++ Support for Estonian one bronze system.
++ New rule: If equal score less shido wins.
++ Results in Polish.
++ Competitor can be moved to a drawn category.
++ Blue category name background if extra competitors in category.
++ Extra competitor's name in blue.
++ Category draw editing added.
++ Competitors position visible in Competitors tab.
++ Score points editing added (tatami tab).
++ Score points format changed from IWYKS to IWY/S.
++ Category default values partly updated (ages for cadets and juniors, no timelimit for golden score).
++ New property: Win in golden score always gives one point.
++ Danish defaults updated.
+
+JudoTimer
+----------
+
++ Support for video replay.
++ Possibility to give hansokumake. It means losing only the match, not disqualification from the tournament.
++ New rule: Shorter osaekomi times.
++ New rule: 'Equal score less shido wins' added.
++ New rule: 'Shido gives no score to the opponent' added.
++ New rule: Golden Score option 'No time limit' added.
++ VideoLAN control to embed score points and clocks on video screen.
++ New keyboard shortcuts.
+
+JudoWeight
+-----------
+
++ Grade added to competitor data.
