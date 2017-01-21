@@ -1,0 +1,34 @@
+diff --git a/judoshiai/sqlite3.c b/judoshiai/sqlite3.c
+index e5aa96f..e51289e 100644
+--- a/judoshiai/sqlite3.c
++++ b/judoshiai/sqlite3.c
+@@ -90492,6 +90492,21 @@ static void absFunc(sqlite3_context *context, int argc, sqlite3_value **argv){
+   }
+ }
+ 
++extern int get_category_property(int cat, int prop);
++static void categoryprop(sqlite3_context *context, int argc, sqlite3_value **argv)
++{
++	if (argc == 2 &&
++	    sqlite3_value_type(argv[0]) == SQLITE_INTEGER &&
++	    sqlite3_value_type(argv[1]) == SQLITE_INTEGER) {
++		int res = get_category_property(sqlite3_value_int(argv[0]),
++						sqlite3_value_int(argv[1]));
++
++		sqlite3_result_int(context, res);
++	} else {
++		sqlite3_result_null(context);
++	}
++}
++
+ /*
+ ** Implementation of the instr() function.
+ **
+@@ -92002,6 +92017,7 @@ SQLITE_PRIVATE void sqlite3RegisterGlobalFunctions(void){
+     FUNCTION(unicode,            1, 0, 0, unicodeFunc      ),
+     FUNCTION(char,              -1, 0, 0, charFunc         ),
+     FUNCTION(abs,                1, 0, 0, absFunc          ),
++    FUNCTION(categoryprop,       2, 0, 0, categoryprop     ),
+ #ifndef SQLITE_OMIT_FLOATING_POINT
+     FUNCTION(round,              1, 0, 0, roundFunc        ),
+     FUNCTION(round,              2, 0, 0, roundFunc        ),

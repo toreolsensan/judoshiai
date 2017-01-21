@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2015 by Hannu Jokinen
+ * Copyright (C) 2006-2016 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */
 
@@ -487,8 +487,9 @@ static gint get_free_pos_by_mask(gint mask, struct mdata *mdata)
         gint currmask = 1<<get_section(x, mdata);
         if (((!mdata->mask && (currmask & mask)) ||
 	     (mdata->mask & (1<<(x-1)))) &&
-	    mdata->mpos[x].judoka == 0
-            /*XXX && get_competitor_number(x, mdata) <= mdata->mjudokas*/) {
+	    mdata->mpos[x].judoka == 0 &&
+            (!prop_get_int_val(PROP_USE_FIRST_PLACES_ONLY) ||
+	     get_competitor_number(x, mdata) <= mdata->mjudokas)) {
             // update the lowest avoid value
             if (place_values[x] < best_value) {
                 best_value = place_values[x];
@@ -795,8 +796,8 @@ static gboolean draw_one_comp(struct mdata *mdata)
 	    // Calculate number of starter pools.
 	    // Find first match and last match masks.
 	    for (r = 0; r < ct->num_round_robin_pools; r++) {
-		round_robin_bare_t *rr = &ct->round_robin_pools[r];
-		gint mnum = rr->rr_matches[0] - 1;
+		round_robin_bare_t *rr1 = &ct->round_robin_pools[r];
+		gint mnum = rr1->rr_matches[0] - 1;
 		match_bare_t *m = &ct->matches[mnum];
 		competitor_bare_t *c1 = &m->c1;
 		competitor_bare_t *c2 = &m->c2;
@@ -808,7 +809,7 @@ static gboolean draw_one_comp(struct mdata *mdata)
 		if (c2->type == COMP_TYPE_COMPETITOR)
 		    first_match_mask |= 1<<(c2->num-1);
 
-		mnum = rr->rr_matches[rr->num_rr_matches-1] - 1;
+		mnum = rr1->rr_matches[rr1->num_rr_matches-1] - 1;
 		m = &ct->matches[mnum];
 		c1 = &m->c1;
 		c2 = &m->c2;
@@ -1699,7 +1700,7 @@ GtkWidget *draw_one_category_manually_1(GtkTreeIter *parent, gint competitors,
 
     g_free(catname);
 
-    if ((db_category_match_status(mdata->mcategory_ix) & SYSTEM_DEFINED /*REAL_MATCH_EXISTS*/) && mdata->edit == FALSE) {
+    if ((db_category_get_match_status(mdata->mcategory_ix) & SYSTEM_DEFINED /*REAL_MATCH_EXISTS*/) && mdata->edit == FALSE) {
         // Cannot draw again.
 #if 0
         struct judoka *j = get_data(mdata->mcategory_ix);

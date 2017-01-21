@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2015 by Hannu Jokinen
+ * Copyright (C) 2006-2016 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */
 
@@ -17,9 +17,35 @@
 static void db_print_one_match(struct match *m);
 
 //#define TATAMI_DEBUG 1
+#ifdef TATAMI_DEBUG
+#define DEBUG_INSERT(_t) do { \
+	if (m.tatami == TATAMI_DEBUG) {					\
+	    g_print("DEBUG LINE %d: %s\n", __LINE__, _t);		\
+	    struct category_data *cd = avl_get_category(next_match[i-1].category); \
+	    if (cd) \
+		g_print("  %d:   %s/%d [%04x]\n", i-1, cd->category,	\
+			next_match[i-1].number, next_match[i-1].round); \
+	    g_print("  this: %s/%d [%04x]\n", catdata->category, m.number, m.round);	\
+	    cd = avl_get_category(next_match[i].category);		\
+	    if (cd)							\
+		g_print("  %d:   %s/%d [%04x]\n", i, cd->category,	\
+			next_match[i].number, next_match[i].round);	\
+	}								\
+    } while (0)
+
+#define DEBUG_LOG(_f, ...) do {						\
+	if (m.tatami == TATAMI_DEBUG) {					\
+	    g_print("DEBUG LINE %d: " _f "\n", __LINE__, ##__VA_ARGS__);		\
+	}								\
+    } while (0)
+#else
+#define DEBUG_INSERT(_t) do { } while (0)
+#define DEBUG_LOG(_f, ...) do { } while (0)
+#endif
 
 gboolean auto_arrange = FALSE;
 //gboolean use_weights = FALSE;
+gint match_crc[NUM_TATAMIS+1];
 
 static gboolean match_row_found;
 static gboolean match_found;
@@ -27,7 +53,7 @@ static gboolean matched_match_found;
 static gboolean unmatched_match_found;
 static gboolean real_match_found;
 static struct match *category_matches_p;
-static struct match m;
+static struct match m_static;
 
 #define NUM_SAVED_MATCHES 16
 static gint num_saved_matches;
@@ -40,6 +66,10 @@ static gint next_match_num;
 static gint next_match_tatami;
 
 static gint match_count, matched_matches_count;
+static struct {
+    gint match_count, matched_matches_count;
+} matches_by_tatami[NUM_TATAMIS+1];
+
 static gint bluecomp, whitecomp, bluepts, whitepts;
 
 static gint team1_wins, team2_wins, no_team_wins, team1_pts, team2_pts;
@@ -123,172 +153,189 @@ static void change_team_competitors_to_real_persons(gint category, gint number, 
 static int db_callback_matches(void *data, int argc, char **argv, char **azColName)
 {
     guint flags = ptr_to_gint(data);
-    gint i, val;
-
+    gint i, a, b;
+    gchar *p = NULL;
+    
     for (i = 0; i < argc; i++) {
-        val =  argv[i] ? atoi(argv[i]) : 0;
+        gint val = argv[i] ? atoi(argv[i]) : 0;
 
         if (IS(category))
-            m.category = val;
+            m_static.category = val;
         else if (IS(number))
-            m.number = val;
+            m_static.number = val;
         else if (IS(blue))
-            m.blue = val;
+            m_static.blue = val;
         else if (IS(white))
-            m.white = val;
+            m_static.white = val;
         else if (IS(blue_score))
-            m.blue_score = val;
+            m_static.blue_score = val;
         else if (IS(white_score))
-            m.white_score = val;
+            m_static.white_score = val;
         else if (IS(blue_points))
-            m.blue_points = val;
+            m_static.blue_points = val;
         else if (IS(white_points))
-            m.white_points = val;
+            m_static.white_points = val;
         else if (IS(time))
-            m.match_time = val;
+            m_static.match_time = val;
         else if (IS(comment))
-            m.comment = val;
+            m_static.comment = val;
         else if (IS(forcedtatami))
-            m.forcedtatami = val;
+            m_static.forcedtatami = val;
         else if (IS(forcednumber))
-            m.forcednumber = val;
+            m_static.forcednumber = val;
         else if (IS(date))
-            m.date = val;
+            m_static.date = val;
         else if (IS(legend))
-            m.legend = val;
-        else if (IS(deleted)) {
-            m.deleted = val;
-            match_row_found = TRUE;
-
-            if ((val & DELETED) == 0)
-                match_found = TRUE;
-
-            if ((val & DELETED) == 0 &&
-                m.blue >= COMPETITOR && m.white >= COMPETITOR)
-                real_match_found = TRUE;
-
-            if ((val & DELETED) == 0 &&
-                (m.blue_points || m.white_points) &&
-                m.blue >= COMPETITOR && m.white >= COMPETITOR) {
-                matched_match_found = TRUE;
-                matched_matches_count++;
-            } else if ((val & DELETED) == 0 &&
-                       m.blue >= COMPETITOR && m.white >= COMPETITOR &&
-                       m.blue_points == 0 && m.white_points == 0 &&
-                       ((avl_get_competitor_status(m.blue) & HANSOKUMAKE) ||
-                        (avl_get_competitor_status(m.white) & HANSOKUMAKE))) {
-                matched_matches_count++;
-            }
-
-            if ((val & DELETED) == 0 &&
-                m.blue >= COMPETITOR && m.white >= COMPETITOR &&
-                m.blue_points == 0 && m.white_points == 0 &&
-                (avl_get_competitor_status(m.blue) & HANSOKUMAKE) == 0 &&
-                (avl_get_competitor_status(m.white) & HANSOKUMAKE) == 0) {
-                unmatched_match_found = TRUE;
-            }
-
-            if ((val & DELETED) == 0 &&
-                m.blue != GHOST && m.white != GHOST) {
-                match_count++;
-            }
-
-            if (bluecomp == 0)
-                bluecomp = m.blue;
-            else if (bluecomp != m.blue)
-                bluecomp = -1;
-            if (whitecomp == 0)
-                whitecomp = m.white;
-            else if (whitecomp != m.white)
-                whitecomp = -1;
-            bluepts += m.blue_points;
-            whitepts += m.white_points;
-        }
+            m_static.legend = val;
+        else if (IS(deleted))
+            m_static.deleted = val;
     }
 
+    m_static.round = 0;
+
+    /* Statistics */
+    match_row_found = TRUE;
+
+    if ((m_static.deleted & DELETED) == 0)
+	match_found = TRUE;
+
+    if ((m_static.deleted & DELETED) == 0 &&
+	m_static.blue >= COMPETITOR && m_static.white >= COMPETITOR)
+	real_match_found = TRUE;
+
+    if ((m_static.deleted & DELETED) == 0 &&
+	(m_static.blue_points || m_static.white_points) &&
+	m_static.blue >= COMPETITOR && m_static.white >= COMPETITOR) {
+	matched_match_found = TRUE;
+	matched_matches_count++;
+	matches_by_tatami[m_static.forcedtatami].matched_matches_count++;
+    } else if ((m_static.deleted & DELETED) == 0 &&
+	       m_static.blue >= COMPETITOR && m_static.white >= COMPETITOR &&
+	       m_static.blue_points == 0 && m_static.white_points == 0 &&
+	       ((avl_get_competitor_status(m_static.blue) & HANSOKUMAKE) ||
+		(avl_get_competitor_status(m_static.white) & HANSOKUMAKE))) {
+	matched_matches_count++;
+	matches_by_tatami[m_static.forcedtatami].matched_matches_count++;
+    }
+
+    if ((m_static.deleted & DELETED) == 0 &&
+	m_static.blue >= COMPETITOR && m_static.white >= COMPETITOR &&
+	m_static.blue_points == 0 && m_static.white_points == 0 &&
+	(avl_get_competitor_status(m_static.blue) & HANSOKUMAKE) == 0 &&
+	(avl_get_competitor_status(m_static.white) & HANSOKUMAKE) == 0) {
+	unmatched_match_found = TRUE;
+    }
+
+    if ((m_static.deleted & DELETED) == 0 &&
+	m_static.blue != GHOST && m_static.white != GHOST) {
+	match_count++;
+	matches_by_tatami[m_static.forcedtatami].match_count++;
+    }
+
+    if (bluecomp == 0)
+	bluecomp = m_static.blue;
+    else if (bluecomp != m_static.blue)
+	bluecomp = -1;
+    if (whitecomp == 0)
+	whitecomp = m_static.white;
+    else if (whitecomp != m_static.white)
+	whitecomp = -1;
+    bluepts += m_static.blue_points;
+    whitepts += m_static.white_points;
+
+    /* Operation */
     if (flags & DB_NEXT_MATCH) {
-        struct category_data *catdata = avl_get_category(m.category);
+        if (m_static.blue == GHOST || m_static.white == GHOST)
+            return 0;
+
+        if (m_static.blue_points || m_static.white_points)
+            return 0;
+
+        struct category_data *catdata = avl_get_category(m_static.category);
+        struct category_data *catdata1 = NULL;
 
         if (catdata == NULL)
             return 0;
 
         gboolean team = (catdata->deleted & TEAM_EVENT) != 0;
+	if (team)
+	    DEBUG_LOG("TEAM cat=%d, bracket match=%d, weight class match=%d, round=0x%04x",
+		      m_static.category&MATCH_CATEGORY_MASK,
+		      m_static.category >> MATCH_CATEGORY_SUB_SHIFT,
+		      m_static.number,
+		      round_number(catdata, m_static.category >> MATCH_CATEGORY_SUB_SHIFT));
 
-        if (team && (m.category & MATCH_CATEGORY_SUB_MASK) == 0)
+        if (team && (m_static.category & MATCH_CATEGORY_SUB_MASK) == 0)
             return 0;
 
-        m.tatami = m.forcedtatami ? m.forcedtatami : catdata->tatami;
-        m.group = catdata->group;
+	if (m_static.forcedtatami)
+	    m_static.tatami = m_static.forcedtatami;
+	else
+	    m_static.tatami = catdata->tatami;
 
-        if (m.blue == GHOST || m.white == GHOST)
+        if (m_static.tatami != next_match_tatami)
             return 0;
 
-        if (m.blue_points || m.white_points)
-            return 0;
+        m_static.group = catdata->group;
+	if (team)
+	    m_static.round = round_number(catdata, m_static.category >> MATCH_CATEGORY_SUB_SHIFT);
+	else
+	    m_static.round = round_number(catdata, m_static.number);
 
-        if (m.tatami != next_match_tatami)
-            return 0;
 #ifdef TATAMI_DEBUG
-        if (m.tatami == TATAMI_DEBUG) {
-            struct judoka *cat = get_data(m.category);
-            g_print("%s: %s:%d comment %d\n", __FUNCTION__,
-                    cat ? cat->last : "?", m.number, m.comment);
+        if (m_static.tatami == TATAMI_DEBUG) {
+            struct judoka *cat = get_data(m_static.category);
+            g_print("\nHANDLE MATCH: %s:%d ix=%d=0x%x comment %d\n",
+                    cat ? cat->last : "?", m_static.number, m_static.category, m_static.category, m_static.comment);
             free_judoka(cat);
         }
 #endif
         // team event may have named competitors
         if (team) {
-            change_team_competitors_to_real_persons(m.category, m.number, &m.blue, &m.white);
+            change_team_competitors_to_real_persons(m_static.category, m_static.number, &m_static.blue, &m_static.white);
         } // team
 
         // coach info
-        if (m.blue > 0 && m.blue < 10000) {
-            if (current_round != coach_info[m.blue].round) {
-                coach_info[m.blue].matchnum = 0;
-                coach_info[m.blue].round = current_round;
-                coach_info[m.blue].waittime = -1;
+        if (m_static.blue > 0 && m_static.blue < 10000) {
+            if (current_round != coach_info[m_static.blue].round) {
+                coach_info[m_static.blue].matchnum = 0;
+                coach_info[m_static.blue].round = current_round;
+                coach_info[m_static.blue].waittime = -1;
             }
-            if ((m.number < coach_info[m.blue].matchnum) || (coach_info[m.blue].matchnum == 0)) {
-                coach_info[m.blue].matchnum = m.number;
-                coach_info[m.blue].tatami = m.tatami;
+            if ((m_static.number < coach_info[m_static.blue].matchnum) || (coach_info[m_static.blue].matchnum == 0)) {
+                coach_info[m_static.blue].matchnum = m_static.number;
+                coach_info[m_static.blue].tatami = m_static.tatami;
             }
         }
-        if (m.white > 0 && m.white < 10000) {
-            if (current_round != coach_info[m.white].round) {
-                coach_info[m.white].matchnum = 0;
-                coach_info[m.white].round = current_round;
-                coach_info[m.white].waittime = -1;
+        if (m_static.white > 0 && m_static.white < 10000) {
+            if (current_round != coach_info[m_static.white].round) {
+                coach_info[m_static.white].matchnum = 0;
+                coach_info[m_static.white].round = current_round;
+                coach_info[m_static.white].waittime = -1;
             }
-            if ((m.number < coach_info[m.white].matchnum) || (coach_info[m.white].matchnum == 0)) {
-                coach_info[m.white].matchnum = m.number;
-                coach_info[m.white].tatami = m.tatami;
+            if ((m_static.number < coach_info[m_static.white].matchnum) || (coach_info[m_static.white].matchnum == 0)) {
+                coach_info[m_static.white].matchnum = m_static.number;
+                coach_info[m_static.white].tatami = m_static.tatami;
             }
         }
 
-        if (m.comment == COMMENT_MATCH_1) {
-#ifdef TATAMI_DEBUG
-            if (m.tatami == TATAMI_DEBUG) {
-                g_print("COMMENT 1\n");
-            }
-#endif
+        if (m_static.comment == COMMENT_MATCH_1) {
+	    DEBUG_LOG("COMMENT 1");
             INSERT_SPACE(0);
-            next_match[0] = m;
+            next_match[0] = m_static;
             return 0;
-        } else if (m.comment == COMMENT_MATCH_2) {
-#ifdef TATAMI_DEBUG
-            if (m.tatami == TATAMI_DEBUG) {
-                g_print("COMMENT 2\n");
-            }
-#endif
+        } else if (m_static.comment == COMMENT_MATCH_2) {
+	    DEBUG_LOG("COMMENT 2");
             if (next_match_num > 0 && next_match[0].comment == COMMENT_MATCH_1) {
                 INSERT_SPACE(1);
-                next_match[1] = m;
+                next_match[1] = m_static;
             } else {
                 INSERT_SPACE(0);
-                next_match[0] = m;
+                next_match[0] = m_static;
             }
             return 0;
-        } else if (m.comment == COMMENT_WAIT) {
+        } else if (m_static.comment == COMMENT_WAIT) {
+	    DEBUG_LOG("COMMENT WAIT");
             return 0;
         }
 
@@ -296,83 +343,230 @@ static int db_callback_matches(void *data, int argc, char **argv, char **azColNa
             gboolean insert = FALSE;
 
             if (next_match[i].comment == COMMENT_MATCH_1 ||
-                next_match[i].comment == COMMENT_MATCH_2)
+		next_match[i].comment == COMMENT_MATCH_2)
                 continue;
 
-            if (m.forcednumber) {
+            if (m_static.forcednumber) {
                 if ((next_match[i].forcednumber == 0) ||
-                    (next_match[i].forcednumber > m.forcednumber))
+                    (next_match[i].forcednumber > m_static.forcednumber)) {
                     insert = TRUE;
-            } else if (next_match[i].forcednumber == 0) {
-                if (next_match[i].group > m.group) insert = TRUE;
-                else if (next_match[i].group == m.group) {
-                    if (team) {
-                        if (next_match[i].category == m.category) {
-                            if (next_match[i].number > m.number)
-                                insert = TRUE;
-                        }
-                    } else {
-                        gint a = (100000*m.number)/num_matches_estimate(m.category);
-                        gint b = (100000*next_match[i].number)/num_matches_estimate(next_match[i].category);
-                        if (b > a) insert = TRUE;
-                        else if (b == a) {
-                            if (next_match[i].category > m.category)
-                                insert = TRUE;
-                        }
-                    }
-                }
+		    goto do_insert;
+		}
+		continue;
             }
+
+	    if (next_match[i].forcednumber)
+		continue;
+
+	    if (next_match[i].group > m_static.group) {
+		insert = TRUE;
+		goto do_insert;
+	    }
+
+	    if (next_match[i].group < m_static.group)
+		continue;
+
+	    if (team &&
+		(next_match[i].category & MATCH_CATEGORY_MASK) ==
+		(m_static.category & MATCH_CATEGORY_MASK)) {
+		/* Team category match number */
+		if ((next_match[i].category & MATCH_CATEGORY_SUB_MASK) ==
+		    (m_static.category & MATCH_CATEGORY_SUB_MASK)) {
+		    /* Weight class match */
+		    if (next_match[i].number > m_static.number) {
+			insert = TRUE;
+			DEBUG_INSERT("Insert decision");
+			goto do_insert;
+		    }
+		    continue;
+		}
+		if ((next_match[i].category & MATCH_CATEGORY_SUB_MASK) >
+		    (m_static.category & MATCH_CATEGORY_SUB_MASK)) {
+		    insert = TRUE;
+		    DEBUG_INSERT("Insert decision");
+		    goto do_insert;
+		}
+		continue;
+	    }
+
+	    if ((next_match[i].category & MATCH_CATEGORY_MASK) ==
+		(m_static.category & MATCH_CATEGORY_MASK) &&
+		next_match[i].number > m_static.number) {
+		insert = TRUE;
+		DEBUG_INSERT("Insert decision");
+		goto do_insert;
+	    }
+
+	    /* Matches in round number order. */
+	    catdata1 =
+		avl_get_category(next_match[i].category);
+	    if (!catdata1) continue;
+
+	    a = ROUND_TYPE_NUMBER(m_static.round);
+	    b = ROUND_TYPE_NUMBER(next_match[i].round);
+
+	    if (i >= 1 && ROUND_TYPE(m_static.round) == ROUND_ROBIN) {
+		if (prop_get_int_val(PROP_MIX_POOL_MATCHES_INTO_ROUNDS)) {
+		    if (ROUND_TYPE(next_match[i-1].round) != ROUND_ROBIN &&
+			ROUND_TYPE(next_match[i].round) != ROUND_ROBIN) {
+			/* put round robins everywhere */
+			insert = TRUE;
+			DEBUG_INSERT("Insert decision");
+			goto do_insert;
+		    }
+		    continue;
+		}
+		if (ROUND_TYPE(next_match[i].round) != ROUND_ROBIN) {
+		    gint j;
+		    gint prev_french_round = 0;
+		    /* Find previous french round */
+		    for (j = i-1; j >= 0; j--) {
+			if (ROUND_TYPE(next_match[j].round) != ROUND_ROBIN) {
+			    prev_french_round = ROUND_TYPE_NUMBER(next_match[j].round);
+			    break;
+			}
+		    }
+		    DEBUG_LOG("i=%d prev=%x next=%x", i, prev_french_round, ROUND_TYPE_NUMBER(next_match[i].round));
+		    DEBUG_LOG("     cat-1=%d cat=%d   rnd-1=%04x rnd=%04x",
+			      next_match[i-1].category, next_match[i].category,
+			      next_match[i-1].round, m_static.round);
+
+		    if ((prev_french_round != ROUND_TYPE_NUMBER(next_match[i].round) ||
+			 next_match[i-1].category != next_match[i].category) &&
+			(ROUND_TYPE(next_match[i-1].round) != ROUND_ROBIN ||
+			 (ROUND_NUMBER(next_match[i-1].round) ==
+			  ROUND_NUMBER(m_static.round)))) {
+			/* put round robins after round */
+			insert = TRUE;
+			DEBUG_INSERT("Insert decision");
+			goto do_insert;
+		    }
+		}
+		continue;
+	    }
+
+	    if (b > a) {
+		if ((next_match[i].category != m_static.category ||
+		     (next_match[i].number > m_static.number))) {
+		    insert = TRUE;
+		    DEBUG_INSERT("Insert decision");
+		    goto do_insert;
+		}
+		continue;
+	    }
+
+	    if (b < a)
+		continue;
+
+	    /* Lowest weight class first. */
+	    p = strrchr(catdata->category, '-');
+	    if (p) a = atoi(p+1);
+	    else a = 1000;
+	    p = strrchr(catdata1->category, '-');
+	    if (p) b = atoi(p+1);
+	    else b = 1000;
+
+	    if (a < b) {
+		insert = TRUE;
+		DEBUG_INSERT("Insert decision");
+		goto do_insert;
+	    }
+	    if (a == b &&
+		next_match[i].category > m_static.category) {
+		insert = TRUE;
+		DEBUG_INSERT("Insert decision");
+		goto do_insert;
+	    }
+
+	do_insert:
             if (insert) {
-                INSERT_SPACE(i);
-                next_match[i] = m;
-                return 0;
+#ifdef TATAMI_DEBUG
+		if (m_static.tatami == TATAMI_DEBUG && i > 0) {
+		    g_print("Inserting %d/%d (%s) between %d/%d and %d/%d\n",
+			    m_static.category, m_static.number, catdata->category,
+			    next_match[i-1].category, next_match[i-1].number,
+			    next_match[i].category, next_match[i].number);
+		}
+#endif
+		/* Check that there are no matches with lower number. */
+		gint j;
+		for (j = i+1; j < next_match_num; j++) {
+		    if (next_match[j].category == m_static.category &&
+			next_match[j].number < m_static.number) {
+			/* Cannot insert here. */
+			i = j;
+			DEBUG_LOG("Cannot insert");
+			break;
+		    }
+		}
+
+		/* OK to insert */
+		if (j == next_match_num) {
+		    INSERT_SPACE(i);
+		    next_match[i] = m_static;
+		    return 0;
+		}
             }
-        }
+        } /* for i */
 
         if (next_match_num < NEXT_MATCH_NUM) {
-            next_match[next_match_num++] = m;
+	    DEBUG_INSERT("Add last");
+            next_match[next_match_num++] = m_static;
         }
 
         return 0;
-    } else if ((flags & ADD_MATCH) && ((m.deleted & DELETED) == 0)) {
-        set_match(&m);
-    } else if ((flags & SAVE_MATCH) && ((m.deleted & DELETED) == 0)) {
+    } else if ((flags & ADD_MATCH) && ((m_static.deleted & DELETED) == 0)) {
+        set_match(&m_static);
+    } else if ((flags & SAVE_MATCH) && ((m_static.deleted & DELETED) == 0)) {
         if (num_saved_matches < NUM_SAVED_MATCHES) {
-            saved_matches[num_saved_matches++] = m;
+            saved_matches[num_saved_matches++] = m_static;
         }
-    } else if ((flags & DB_REMOVE_COMMENT) && ((m.deleted & DELETED) == 0)) {
-        m.comment = COMMENT_EMPTY;
-        set_match(&m);
-    } else if ((flags & DB_READ_CATEGORY_MATCHES) && ((m.deleted & DELETED) == 0)) {
-        category_matches_p[m.number] = m;
+    } else if ((flags & DB_REMOVE_COMMENT) && ((m_static.deleted & DELETED) == 0)) {
+        m_static.comment = COMMENT_EMPTY;
+        set_match(&m_static);
+    } else if ((flags & DB_READ_CATEGORY_MATCHES) && ((m_static.deleted & DELETED) == 0)) {
+        category_matches_p[m_static.number] = m_static;
     } else if (flags & DB_MATCH_WAITING) {
         if (num_matches_waiting < WAITING_MATCH_NUM)
-            matches_waiting[num_matches_waiting++] = m;
+            matches_waiting[num_matches_waiting++] = m_static;
     } else if (flags & DB_UPDATE_LAST_MATCH_TIME) {
-        if (m.blue > COMPETITOR)
-            avl_set_competitor_last_match_time(m.blue);
-        if (m.white > COMPETITOR)
-            avl_set_competitor_last_match_time(m.white);
+        if (m_static.blue > COMPETITOR)
+            avl_set_competitor_last_match_time(m_static.blue);
+        if (m_static.white > COMPETITOR)
+            avl_set_competitor_last_match_time(m_static.white);
     } else if ((flags & DB_RESET_LAST_MATCH_TIME_B) || (flags & DB_RESET_LAST_MATCH_TIME_W)) {
-        if (m.blue > COMPETITOR && (flags & DB_RESET_LAST_MATCH_TIME_B))
-            avl_reset_competitor_last_match_time(m.blue);
-        if (m.white > COMPETITOR && (flags & DB_RESET_LAST_MATCH_TIME_W))
-            avl_reset_competitor_last_match_time(m.white);
+        if (m_static.blue > COMPETITOR && (flags & DB_RESET_LAST_MATCH_TIME_B))
+            avl_reset_competitor_last_match_time(m_static.blue);
+        if (m_static.white > COMPETITOR && (flags & DB_RESET_LAST_MATCH_TIME_W))
+            avl_reset_competitor_last_match_time(m_static.white);
     } else if (flags & DB_FIND_TEAM_WINNER) {
-        if (m.blue_points && m.white_points == 0) {
+        if (m_static.blue_points && m_static.white_points == 0) {
             team1_wins++;
-            team1_pts += m.blue_points;
+            team1_pts += get_points_gint(m_static.blue_points);
         }
-        if (m.white_points && m.blue_points == 0) {
+        if (m_static.white_points && m_static.blue_points == 0) {
             team2_wins++;
-            team2_pts += m.white_points;
+            team2_pts += get_points_gint(m_static.white_points);
         }
-        if (m.blue_points == 0 && m.white_points == 0) no_team_wins++;
+        if (m_static.blue_points == 0 && m_static.white_points == 0) no_team_wins++;
     } else if (flags & DB_PRINT_CAT_MATCHES) {
-        db_print_one_match(&m);
+        db_print_one_match(&m_static);
     }
 
     return 0;
+}
+
+void db_set_forced_tatami(gint tatami, gint category, gint number)
+{
+    /* Don't change tatami if forcednumber is set. */
+    db_exec_str(NULL, NULL,
+		"UPDATE matches SET \"forcedtatami\"=%d, \"comment\"=%d "
+		"WHERE \"forcednumber\"=0 AND ("
+		"(\"category\"=%d AND \"number\"=%d) OR "
+		"\"category\"=%d)",
+		tatami, COMMENT_EMPTY,
+		category, number,
+		category | (number << MATCH_CATEGORY_SUB_SHIFT));
 }
 
 void db_freeze_matches(gint tatami, gint category, gint number, gint arg)
@@ -398,14 +592,15 @@ void db_freeze_matches(gint tatami, gint category, gint number, gint arg)
         break;
     case UNFREEZE_EXPORTED:
         db_exec_str(NULL, NULL,
-                    "UPDATE matches SET \"forcedtatami\"=0, \"forcednumber\"=0 "
-                    "WHERE EXISTS(SELECT * FROM categories "
+                    "UPDATE matches SET \"forcedtatami\"=0, \"forcednumber\"=0, "
+                    "\"comment\"=%d WHERE EXISTS(SELECT * FROM categories "
                     "WHERE categories.\"tatami\"=%d "
-                    "AND categories.\"index\"=matches.\"category\")",
-                    tatami);
+                    "AND categories.\"index\"=matches.\"category\"&%d)",
+                    COMMENT_EMPTY, tatami, MATCH_CATEGORY_MASK);
         db_read_matches();
         for (i = 1; i <= number_of_tatamis; i++)
             update_matches(0, (struct compsys){0,0,0,0}, i);
+	update_category_status_info_all();
         break;
     case UNFREEZE_IMPORTED:
         db_exec_str(NULL, NULL,
@@ -415,6 +610,7 @@ void db_freeze_matches(gint tatami, gint category, gint number, gint arg)
         db_read_matches();
         for (i = 1; i <= number_of_tatamis; i++)
             update_matches(0, (struct compsys){0,0,0,0}, i);
+	update_category_status_info_all();
         break;
     case UNFREEZE_THIS:
         db_exec_str(NULL, NULL,
@@ -424,6 +620,17 @@ void db_freeze_matches(gint tatami, gint category, gint number, gint arg)
         db_read_match(category, number);
         update_matches(category, (struct compsys){0,0,0,0}, 0);
         update_matches(0, (struct compsys){0,0,0,0}, tatami);
+	update_category_status_info_all();
+        break;
+    case UNFREEZE_THESE:
+        db_exec_str(NULL, NULL,
+                    "UPDATE matches SET \"forcedtatami\"=0, \"forcednumber\"=0, "
+                    "\"comment\"=%d WHERE \"category\"=%d AND \"forcedtatami\"=%d",
+                    COMMENT_EMPTY, category, tatami);
+        db_read_matches();
+        for (i = 1; i <= number_of_tatamis; i++)
+            update_matches(0, (struct compsys){0,0,0,0}, i);
+	update_category_status_info_all();
         break;
     }
 }
@@ -628,7 +835,7 @@ gboolean db_match_exists(gint category, gint number, gint flags)
 struct match *db_get_match_data(gint category, gint number)
 {
     if (db_match_exists(category, number, 0))
-        return &m;
+        return &m_static;
     return NULL;
 }
 
@@ -646,17 +853,25 @@ gboolean db_matched_matches_exist(gint category)
 }
 
 
-gint db_category_match_status(gint category)
+gint db_category_get_match_status(gint category)
+{
+    struct category_data *catdata = avl_get_category(category);
+    if (catdata)
+	return catdata->match_status;
+    return db_category_set_match_status(category);
+}
+
+gint db_category_set_match_status(gint category)
 {
     gchar buffer[100];
     gint res = 0;
 
     match_count = matched_matches_count = bluecomp = whitecomp = bluepts = whitepts = 0;
+    match_found = match_row_found = matched_match_found = unmatched_match_found = real_match_found = FALSE;
+    memset(matches_by_tatami, 0, sizeof(matches_by_tatami));
 
     sprintf(buffer, "SELECT * FROM matches WHERE "
             VARVAL(category, %d), category);
-
-    match_found = match_row_found = matched_match_found = unmatched_match_found = real_match_found = FALSE;
     db_exec(db_name, buffer, NULL, db_callback_matches);
 
     if (matched_matches_count > match_count) {
@@ -681,11 +896,20 @@ gint db_category_match_status(gint category)
 
     struct category_data *catdata = avl_get_category(category);
     if (catdata) {
+	gint i;
         if (catdata->system.system)
             res |= SYSTEM_DEFINED;
         catdata->match_status = res;
-        catdata->match_count = match_count;
-        catdata->matched_matches_count = matched_matches_count;
+        catdata->by_tatami[0].match_count = catdata->match_count = match_count;
+        catdata->by_tatami[0].matched_matches_count =
+	    catdata->matched_matches_count = matched_matches_count;
+	for (i = 1; i <= NUM_TATAMIS; i++) {
+	    catdata->by_tatami[i].match_count = matches_by_tatami[i].match_count;
+	    catdata->by_tatami[i].matched_matches_count = matches_by_tatami[i].matched_matches_count;
+	    /* pos 0 contains count for default tatami */
+	    catdata->by_tatami[0].match_count -= catdata->by_tatami[i].match_count;
+	    catdata->by_tatami[0].matched_matches_count -= catdata->by_tatami[i].matched_matches_count;
+	}
 
         if (find_age_index(catdata->category) < 0)
             catdata->defined = FALSE;
@@ -694,7 +918,7 @@ gint db_category_match_status(gint category)
 
         // data for coach
         if (automatic_web_page_update) {
-            gint i, n = 0;
+            gint n = 0;
             gchar buf[80];
 
             n = sprintf(buf, "c-");
@@ -742,24 +966,24 @@ gint db_competitor_match_status(gint competitor)
 
 void db_set_match(struct match *m1)
 {
-    memset(&m, 0, sizeof(m));
+    memset(&m_static, 0, sizeof(m_static));
 
     if (db_match_exists(m1->category, m1->number, DB_MATCH_ROW)) {
-        if (m.blue != m1->blue ||
-            m.white != m1->white ||
-            m.blue_score != m1->blue_score ||
-            m.white_score != m1->white_score ||
-            m.blue_points != m1->blue_points ||
-            m.white_points != m1->white_points ||
-            m.deleted != m1->deleted ||
-            m.category != m1->category ||
-            m.number != m1->number ||
-            m.match_time != m1->match_time ||
-            m.comment != m1->comment ||
-            m.forcedtatami != m1->forcedtatami ||
-            m.forcednumber != m1->forcednumber ||
-            m.date != m1->date ||
-            m.legend != m1->legend) {
+        if (m_static.blue != m1->blue ||
+            m_static.white != m1->white ||
+            m_static.blue_score != m1->blue_score ||
+            m_static.white_score != m1->white_score ||
+            m_static.blue_points != m1->blue_points ||
+            m_static.white_points != m1->white_points ||
+            m_static.deleted != m1->deleted ||
+            m_static.category != m1->category ||
+            m_static.number != m1->number ||
+            m_static.match_time != m1->match_time ||
+            m_static.comment != m1->comment ||
+            m_static.forcedtatami != m1->forcedtatami ||
+            m_static.forcednumber != m1->forcednumber ||
+            m_static.date != m1->date ||
+            m_static.legend != m1->legend) {
             db_update_match(m1);
 
             // is this a team event?
@@ -876,13 +1100,100 @@ void db_set_points(gint category, gint number, gint minutes,
     }
 }
 
-void db_set_score(gint category, gint number, gint score, gboolean is_blue)
+gint db_set_score(gint category, gint number, gint score, gboolean is_blue, gboolean hikiwake)
+{
+    gint maxshido = 4;
+    gint winscore = 0, losescore = 0;
+    gint points = 0;
+    gint blue_score, white_score, blue_points, white_points;
+
+    if (prop_get_int_val(PROP_RULES_2017))
+	maxshido = 3;
+
+    // find current match data
+    db_exec_str(NULL, db_callback_matches,
+                "SELECT * FROM matches "
+                "WHERE \"category\"=%d AND \"number\"=%d",
+                category, number);
+
+    blue_score = m_static.blue_score;
+    white_score = m_static.white_score;
+    blue_points = m_static.blue_points;
+    white_points = m_static.white_points;
+
+    if (is_blue) blue_score = score;
+    else white_score = score;
+
+    if (hikiwake) {
+	blue_points = white_points = 1;
+    } else {
+	if ((blue_score & 7) >= maxshido) {
+	    blue_score &= 0xffff;
+	    white_score |= 0x10000;
+	} else if ((white_score & 7) >= maxshido) {
+	    white_score &= 0xffff;
+	    blue_score |= 0x10000;
+	}
+
+	if ((blue_score & 0xffff0) > (white_score & 0xffff0)) {
+	    winscore = blue_score & 0xffff0;
+	    losescore = white_score & 0xffff0;
+	} else if ((blue_score & 0xffff0) < (white_score & 0xffff0)) {
+	    winscore = white_score & 0xffff0;
+	    losescore = blue_score & 0xffff0;
+	} else if ((blue_score & 0x7) != (white_score & 0x7)) {
+	    if ((blue_score & 0xf) > (white_score & 0xf)) {
+		winscore = white_score;
+		losescore = blue_score;
+	    } else {
+		winscore = blue_score;
+		losescore = white_score;
+	    }
+	}
+
+	if ((winscore & 0xffff0) != (losescore & 0xffff0)) {
+	    if ((winscore & 0xf0000) && (losescore & 0xf0000) == 0) points = 10;
+	    else if ((winscore & 0xf000) > (losescore & 0xf000)) points = 7;
+	    else if ((winscore & 0xf00) > (losescore & 0xf00)) points = 5;
+	    else if ((winscore & 0xf0) > (losescore & 0xf0)) points = 3;
+
+	    if ((blue_score) > (white_score)) {
+		blue_points = points;
+		white_points = 0;
+	    } else {
+		blue_points = 0;
+		white_points = points;
+	    }
+	} else if (winscore != losescore) {
+	    if ((blue_score & 0xf) > (white_score & 0xf)) {
+		blue_points = 0;
+		white_points = 1;
+	    } else {
+		blue_points = 1;
+		white_points = 0;
+	    }
+	} else {
+	    blue_points = white_points = 0;
+	}
+    }
+
+    db_exec_str(NULL, db_callback_matches,
+                "UPDATE matches SET \"blue_score\"=%d, \"white_score\"=%d, "
+		"\"blue_points\"=%d, \"white_points\"=%d "
+                "WHERE \"category\"=%d AND \"number\"=%d",
+		blue_score, white_score,
+		blue_points, white_points,
+                category, number);
+
+    return (blue_points << 8) | white_points;
+}
+
+void db_set_time(gint category, gint number, gint tim)
 {
     db_exec_str(NULL, db_callback_matches,
-                "UPDATE matches SET \"%s\"=%d "
+                "UPDATE matches SET \"time\"=%d "
                 "WHERE \"category\"=%d AND \"number\"=%d",
-                is_blue ? "blue_score" : "white_score", score,
-                category, number);
+                tim, category, number);
 }
 
 void db_reset_last_match_times(gint category, gint number, gboolean blue, gboolean white)
@@ -964,256 +1275,6 @@ static gint competitor_cannot_match(gint index, gint tatami, gint num)
     return 0;
 }
 
-/* Use next_match_mutex while calling and handling data (next_match[] is static). */
-struct match *db_next_matchXXX(gint category, gint tatami)
-{
-    gchar buffer[1000];
-    gint i;
-
-    if (category) {
-        tatami = db_get_tatami(category);
-        /*** BUG
-             sprintf(buffer, "SELECT * FROM categories WHERE \"category\"=%d", category);
-             db_exec(db_name, buffer, (gpointer)DB_GET_SYSTEM, db_callback_categories);
-             tatami = j.belt;
-        ***/
-    }
-
-    if (tatami == 0)
-        return NULL;
-
-    next_match = next_matches[tatami];
-
-    for (i = 0; i < NEXT_MATCH_NUM; i++) {
-        memset(&next_match[i], 0, sizeof(struct match));
-        next_match[i].number = INVALID_MATCH;
-    }
-
-    next_match_num = 0;
-    next_match_tatami = tatami;
-
-    /* save current match data */
-    num_saved_matches = 0;
-    sprintf(buffer,
-            "SELECT matches.* "
-            "FROM matches, categories "
-            "WHERE categories.\"tatami\"=%d AND categories.\"index\"=matches.\"category\" "
-            "AND categories.\"deleted\"&1=0 "
-            "AND (matches.\"comment\"=%d OR matches.\"comment\"=%d)"
-            "AND matches.\"forcedtatami\"=0",
-            tatami, COMMENT_MATCH_1, COMMENT_MATCH_2);
-    db_exec(db_name, buffer, (gpointer)SAVE_MATCH, db_callback_matches);
-    sprintf(buffer,
-            "SELECT * FROM matches WHERE \"forcedtatami\"=%d "
-            "AND (\"comment\"=%d OR \"comment\"=%d)",
-            tatami, COMMENT_MATCH_1, COMMENT_MATCH_2);
-    db_exec(db_name, buffer, (gpointer)SAVE_MATCH, db_callback_matches);
-
-    /* remove comments from the display */
-    sprintf(buffer,
-            "SELECT matches.* "
-            "FROM matches, categories "
-            "WHERE categories.\"tatami\"=%d AND categories.\"index\"=matches.\"category\" "
-            "AND categories.\"deleted\"&1=0 AND matches.\"comment\">%d "
-            "AND matches.\"forcedtatami\"=0",
-            tatami, COMMENT_EMPTY);
-    db_exec(db_name, buffer, (gpointer)DB_REMOVE_COMMENT, db_callback_matches);
-    sprintf(buffer,
-            "SELECT * FROM matches WHERE \"forcedtatami\"=%d "
-            "AND \"comment\">%d",
-            tatami, COMMENT_EMPTY);
-    db_exec(db_name, buffer, (gpointer)DB_REMOVE_COMMENT, db_callback_matches);
-
-    /* remove comments from old matches */
-    sprintf(buffer,
-            "UPDATE matches SET \"comment\"=%d "
-            "WHERE EXISTS (SELECT * FROM categories WHERE "
-            "categories.\"tatami\"=%d AND (matches.\"blue_points\">0 OR "
-            "matches.\"white_points\">0) AND categories.\"index\"=matches.\"category\" "
-            "AND matches.\"comment\">%d AND categories.\"deleted\"&1=0 "
-            "AND matches.\"forcedtatami\"=0)",
-            COMMENT_EMPTY, tatami, COMMENT_EMPTY);
-    db_exec(db_name, buffer, 0, 0);
-    sprintf(buffer,
-            "UPDATE matches SET \"comment\"=%d "
-            "WHERE \"forcedtatami\"=%d AND \"comment\">%d "
-            "AND (\"blue_points\">0 OR \"white_points\">0)",
-            COMMENT_EMPTY, tatami, COMMENT_EMPTY);
-    db_exec(db_name, buffer, 0, 0);
-
-    /* find all matches */
-    sprintf(buffer,
-            "SELECT * FROM matches "
-            "WHERE matches.\"blue_points\"=0 "
-            "AND matches.\"deleted\"&1=0 "
-            "AND matches.\"white_points\"=0 "
-            "AND matches.\"blue\"<>%d AND matches.\"white\"<>%d "
-            "AND (matches.\"blue\"=0 OR EXISTS (SELECT * FROM competitors WHERE "
-            "competitors.\"index\"=matches.\"blue\" AND competitors.\"deleted\"&3=0))"
-            "AND (matches.\"white\"=0 OR EXISTS (SELECT * FROM competitors WHERE "
-            "competitors.\"index\"=matches.\"white\" AND competitors.\"deleted\"&3=0))",
-            GHOST, GHOST /*COMPETITOR, COMPETITOR*/);
-    db_exec(db_name, buffer, (gpointer)DB_NEXT_MATCH, db_callback_matches);
-
-    /* check for rest times */
-    if (auto_arrange &&
-        next_match[1].number != INVALID_MATCH &&
-        next_match[1].comment != COMMENT_MATCH_1 &&
-        next_match[1].comment != COMMENT_MATCH_2) {
-        gint result = 0, rtb = 0, rtw = 0;
-
-        if ((rtb = competitor_cannot_match(next_match[1].blue, tatami, 1)))
-            result |= MATCH_FLAG_BLUE_DELAYED | ((rtb & MATCH_FLAG_REST_TIME) ? MATCH_FLAG_BLUE_REST : 0);
-        if ((rtw = competitor_cannot_match(next_match[1].white, tatami, 1)))
-            result |= MATCH_FLAG_WHITE_DELAYED | ((rtw & MATCH_FLAG_REST_TIME) ? MATCH_FLAG_WHITE_REST : 0);
-
-        next_match[1].flags = result;
-
-        if (result && next_match[1].forcedtatami == 0) { // don't change fixed order
-            for (i = 2; i < NEXT_MATCH_NUM; i++) {
-                gint r = 0;
-                rtb = rtw = 0;
-
-                if (next_match[i].number == INVALID_MATCH)
-                    break;
-
-                if ((rtb = competitor_cannot_match(next_match[i].blue, tatami, i)))
-                    r |= MATCH_FLAG_BLUE_DELAYED | ((rtb & MATCH_FLAG_REST_TIME) ? MATCH_FLAG_BLUE_REST : 0);
-                if ((rtw = competitor_cannot_match(next_match[i].white, tatami, i)))
-                    r |= MATCH_FLAG_WHITE_DELAYED | ((rtw & MATCH_FLAG_REST_TIME) ? MATCH_FLAG_WHITE_REST : 0);
-                if (r == 0 &&
-                    next_match[i].blue >= COMPETITOR &&
-                    next_match[i].white >= COMPETITOR &&
-                    (next_match[1].category != next_match[i].category ||
-                     get_match_number_flag(next_match[i].category,
-                                           next_match[i].number) == 0)) {
-                    struct match tmp = next_match[1];
-                    next_match[1] = next_match[i];
-                    next_match[i] = tmp;
-                    break;
-                } else {
-                    next_match[i].flags = r;
-                }
-            }
-        }
-    }
-
-    /* remove all match comments */
-    sprintf(buffer,
-            "UPDATE matches SET \"comment\"=%d "
-            "WHERE EXISTS (SELECT * FROM categories WHERE categories.\"tatami\"=%d AND "
-            "categories.\"index\"=matches.\"category\" "
-            "AND categories.\"deleted\"&1=0 "
-            "AND (matches.\"comment\"=%d OR matches.\"comment\"=%d) "
-            "AND matches.\"forcedtatami\"=0)",
-            COMMENT_EMPTY, tatami, COMMENT_MATCH_1, COMMENT_MATCH_2);
-    db_exec(db_name, buffer, 0, 0);
-    sprintf(buffer,
-            "UPDATE matches SET \"comment\"=%d "
-            "WHERE (\"comment\"=%d OR \"comment\"=%d) "
-            "AND \"forcedtatami\"=%d",
-            COMMENT_EMPTY, COMMENT_MATCH_1, COMMENT_MATCH_2, tatami);
-    db_exec(db_name, buffer, 0, 0);
-
-    /* set new next match */
-    if (next_match[0].number != INVALID_MATCH) {
-        sprintf(buffer,
-                "UPDATE matches SET \"comment\"=%d WHERE "
-                "\"category\"=%d AND \"number\"=%d "
-                "AND \"deleted\"&1=0",
-                COMMENT_MATCH_1, next_match[0].category, next_match[0].number);
-        db_exec(db_name, buffer, 0, 0);
-    }
-
-    /* set new second match */
-    if (next_match[1].number != INVALID_MATCH) {
-        sprintf(buffer,
-                "UPDATE matches SET \"comment\"=%d WHERE "
-                "\"category\"=%d AND \"number\"=%d "
-                "AND \"deleted\"&1=0",
-                COMMENT_MATCH_2, next_match[1].category, next_match[1].number);
-        db_exec(db_name, buffer, 0, 0);
-    }
-
-    /* update the display */
-    sprintf(buffer,
-            "SELECT matches.* "
-            "FROM matches, categories "
-            "WHERE categories.\"tatami\"=%d AND categories.\"index\"=matches.\"category\" "
-            "AND categories.\"deleted\"&1=0 AND matches.\"comment\">%d "
-            "AND matches.\"forcedtatami\"=0",
-            tatami, COMMENT_EMPTY);
-    db_exec(db_name, buffer, (gpointer)ADD_MATCH, db_callback_matches);
-    sprintf(buffer,
-            "SELECT * FROM matches "
-            "WHERE \"forcedtatami\"=%d "
-            "AND \"comment\">%d",
-            tatami, COMMENT_EMPTY);
-    db_exec(db_name, buffer, (gpointer)ADD_MATCH, db_callback_matches);
-
-    for (i = 0; i < num_saved_matches; i++)
-        db_read_match(saved_matches[i].category, saved_matches[i].number);
-
-    num_saved_matches = 0;
-#ifdef TATAMI_DEBUG
-    if (tatami == TATAMI_DEBUG) {
-        g_print("\nNEXT MATCHES ON TATAMI %d\n", tatami);
-        for (i = 0; i < next_match_num; i++)
-            g_print("%d: %d:%d = %d - %d\n", i,
-                    next_match[i].category, next_match[i].number, next_match[i].blue, next_match[i].white);
-        g_print("\n");
-    }
-#endif
-    return next_match;
-}
-
-#if 0
-static gint readtest(void)
-{
-    gint i, n;
-    sqlite3 *db;
-    gchar *zSql =
-        "SELECT * FROM matches "
-        "WHERE matches.\"blue_points\"=0 "
-        "AND matches.\"deleted\"&1=0 "
-        "AND matches.\"white_points\"=0 "
-        "AND matches.\"blue\"<>1 AND matches.\"white\"<>1 "
-        "AND (matches.\"blue\"=0 OR EXISTS (SELECT * FROM competitors WHERE "
-        "competitors.\"index\"=matches.\"blue\" AND competitors.\"deleted\"&3=0))"
-        "AND (matches.\"white\"=0 OR EXISTS (SELECT * FROM competitors WHERE "
-        "competitors.\"index\"=matches.\"white\" AND competitors.\"deleted\"&3=0))";
-    PROF;
-    int rc = sqlite3_open(db_name, &db);
-    if (rc) {
-	fprintf(stderr, "%s: Can't open database: %s\n", __FUNCTION__,
-		sqlite3_errmsg(db));
-        sqlite3_close(db);
-        return -1;
-    }
-    PROF;
-
-    static sqlite3_stmt *pStmt = NULL;
-    rc = sqlite3_prepare(db, zSql, -1, &pStmt, 0);
-    PROF;
-    rc = sqlite3_step(pStmt);
-    n = sqlite3_column_count(pStmt);
-    PROF;
-    while(rc == SQLITE_ROW) {
-        /*
-        g_print("ROW:\n");
-        for (i = 0; i < n; i++)
-            g_print("  COL %s\n", sqlite3_column_text(pStmt, i));
-        */
-        rc = sqlite3_step(pStmt);
-    } while( rc==SQLITE_SCHEMA );
-    PROF;
-    rc = sqlite3_finalize(pStmt);
-    sqlite3_close(db);
-    PROF;
-    return rc;
-}
-#endif
-
 struct match *db_next_match(gint category, gint tatami)
 {
     gint i;
@@ -1294,16 +1355,33 @@ struct match *db_next_match(gint category, gint tatami)
 	   COMMENT_EMPTY, tatami, COMMENT_EMPTY);
 
     /* find all matches */
+    /* first french matches */
     db_cmd((gpointer)DB_NEXT_MATCH, db_callback_matches,
 	   "SELECT * FROM matches "
 	   "WHERE matches.\"blue_points\"=0 "
 	   "AND matches.\"deleted\"&1=0 "
 	   "AND matches.\"white_points\"=0 "
 	   "AND matches.\"blue\"<>%d AND matches.\"white\"<>%d "
+	   "AND categoryprop(matches.\"category\", 0)=1 "
 	   "AND (matches.\"blue\"=0 OR EXISTS (SELECT * FROM competitors WHERE "
 	   "competitors.\"index\"=matches.\"blue\" AND competitors.\"deleted\"&3=0))"
 	   "AND (matches.\"white\"=0 OR EXISTS (SELECT * FROM competitors WHERE "
-	   "competitors.\"index\"=matches.\"white\" AND competitors.\"deleted\"&3=0))",
+	   "competitors.\"index\"=matches.\"white\" AND competitors.\"deleted\"&3=0))"
+	   "ORDER BY matches.\"number\" ASC",
+	   GHOST, GHOST /*COMPETITOR, COMPETITOR*/);
+    /* then others */
+    db_cmd((gpointer)DB_NEXT_MATCH, db_callback_matches,
+	   "SELECT * FROM matches "
+	   "WHERE matches.\"blue_points\"=0 "
+	   "AND matches.\"deleted\"&1=0 "
+	   "AND matches.\"white_points\"=0 "
+	   "AND matches.\"blue\"<>%d AND matches.\"white\"<>%d "
+	   "AND categoryprop(matches.\"category\", 1)=1 "
+	   "AND (matches.\"blue\"=0 OR EXISTS (SELECT * FROM competitors WHERE "
+	   "competitors.\"index\"=matches.\"blue\" AND competitors.\"deleted\"&3=0))"
+	   "AND (matches.\"white\"=0 OR EXISTS (SELECT * FROM competitors WHERE "
+	   "competitors.\"index\"=matches.\"white\" AND competitors.\"deleted\"&3=0)) "
+	   "ORDER BY matches.\"number\" ASC",
 	   GHOST, GHOST /*COMPETITOR, COMPETITOR*/);
 
     //db_cmd(NULL, NULL, "commit");
@@ -1363,7 +1441,7 @@ struct match *db_next_match(gint category, gint tatami)
 
         next_match[1].flags = result;
 
-        if (result && next_match[1].forcedtatami == 0) { // don't change fixed order
+        if (result && next_match[1].forcednumber == 0) { // don't change fixed order
             for (i = 2; i < NEXT_MATCH_NUM; i++) {
                 gint r = 0;
                 rtb = rtw = 0;
@@ -1461,15 +1539,30 @@ struct match *db_next_match(gint category, gint tatami)
 #ifdef TATAMI_DEBUG
     if (tatami == TATAMI_DEBUG) {
         g_print("\nNEXT MATCHES ON TATAMI %d\n", tatami);
-        for (i = 0; i < next_match_num; i++)
-            g_print("%d: %d:%d = %d - %d\n", i,
-                    next_match[i].category, next_match[i].number, next_match[i].blue, next_match[i].white);
+        for (i = 0; i < next_match_num; i++) {
+	    struct category_data *cd = avl_get_category(next_match[i].category);
+            g_print("%d: %s:%d %s (%d vs. %d)\n", i,
+                    cd->category, next_match[i].number,
+		    round_name(cd, next_match[i].number),
+		    next_match[i].blue, next_match[i].white);
+	}
         g_print("\n");
     }
 #endif
-    // coach info
+    // coach info and crc
+    match_crc[tatami] = 0xffffffff;
+
     for (i = 0; i < NEXT_MATCH_NUM; i++) {
-        if (next_match[i].number == INVALID_MATCH)
+	/* calc crc */
+	match_crc[tatami] ^=
+	    (match_crc[tatami] >> 8) ^
+	    (next_match[i].category << 16) ^
+	    (next_match[i].number << 8) ^
+	    (next_match[i].blue << 6) ^
+	    next_match[i].white;
+
+	/* coach info */
+	if (next_match[i].number == INVALID_MATCH)
             continue;
 
         gint blue = next_match[i].blue;
@@ -1518,13 +1611,13 @@ gint db_find_match_tatami(gint category, gint number)
 {
     gchar buffer[1000];
 
-    m.forcedtatami = 0;
+    m_static.forcedtatami = 0;
     sprintf(buffer, "SELECT * FROM matches WHERE \"category\"=%d "
             "AND \"number\"=%d", category, number);
     db_exec(db_name, buffer, NULL, db_callback_matches);
 
-    if (m.forcedtatami)
-        return m.forcedtatami;
+    if (m_static.forcedtatami)
+        return m_static.forcedtatami;
 
     return db_get_tatami(category);
 }
@@ -1791,7 +1884,7 @@ void db_event_matches_update(guint category)
         db_exec_str(NULL, NULL,
                     "UPDATE matches SET \"blue_points\"=%d, \"white_points\"=%d "
                     "WHERE \"category\"=%d AND \"number\"=%d",
-                    team1_wins*1000+team1_pts, team2_wins*1000+team2_pts, category1, number);
+                    team1_wins*10000+team1_pts, team2_wins*10000+team2_pts, category1, number);
     }
     /*
     } else  if (team1_wins > team2_wins) {
@@ -1829,34 +1922,49 @@ static void db_print_one_match(struct match *m)
 
     fprintf(matches_file,
             "<td onclick=\"top.location.href='%d.html'\" "
-            "style=\"cursor: pointer\">%s %s</td>"
-
-            "<td class=\"%s\">%d%d%d/%d%s</td>"
-            "<td align=\"center\">%d - %d</td>"
-            "<td class=\"%s\">%d%d%d/%d%s</td>"
-
-            "<td onclick=\"top.location.href='%d.html'\" "
-            "style=\"cursor: pointer\">%s %s</td>"
-
-            "<td>%d:%02d</td></tr>\r\n",
+            "style=\"cursor: pointer\">%s %s</td><td class=\"%s\">",
             j1->index,
             utf8_to_html(firstname_lastname() ? j1->first : j1->last),
             utf8_to_html(firstname_lastname() ? j1->last : j1->first),
+            prop_get_int_val(PROP_WHITE_FIRST) ? "wscore" : "bscore");
 
-            prop_get_int_val(PROP_WHITE_FIRST) ? "wscore" : "bscore",
-            (m->blue_score>>16)&15, (m->blue_score>>12)&15, (m->blue_score>>8)&15,
-            m->blue_score&7, m->blue_score&8?"H":"",
+    if (prop_get_int_val(PROP_RULES_2017))
+	fprintf(matches_file,
+		"%d%d/%d%s</td>",
+		(m->blue_score>>16)&15, (m->blue_score>>12)&15,
+		m->blue_score&7, m->blue_score&8?"H":"");
+    else
+	fprintf(matches_file,
+		"%d%d%d/%d%s</td>",
+		(m->blue_score>>16)&15, (m->blue_score>>12)&15, (m->blue_score>>8)&15,
+		m->blue_score&7, m->blue_score&8?"H":"");
 
-            m->blue_points,
-            m->white_points,
+    fprintf(matches_file,
+	    "<td align=\"center\">%s - %s</td>"
+            "<td class=\"%s\">",
+            get_points_str(m->blue_points),
+            get_points_str(m->white_points),
+            prop_get_int_val(PROP_WHITE_FIRST) ? "bscore" : "wscore");
 
-            prop_get_int_val(PROP_WHITE_FIRST) ? "bscore" : "wscore",
-            (m->white_score>>16)&15, (m->white_score>>12)&15, (m->white_score>>8)&15,
-            m->white_score&7, m->white_score&8?"H":"",
+    if (prop_get_int_val(PROP_RULES_2017))
+	fprintf(matches_file,
+		"%d%d/%d%s</td>",
+		(m->white_score>>16)&15, (m->white_score>>12)&15,
+		m->white_score&7, m->white_score&8?"H":"");
+    else
+	fprintf(matches_file,
+		"%d%d%d/%d%s</td>",
+		(m->white_score>>16)&15, (m->white_score>>12)&15, (m->white_score>>8)&15,
+		m->white_score&7, m->white_score&8?"H":"");
 
+    fprintf(matches_file,
+            "<td onclick=\"top.location.href='%d.html'\" "
+            "style=\"cursor: pointer\">%s %s</td>"
+            "<td>%d:%02d</td></tr>\r\n",
             j2->index,
             utf8_to_html(firstname_lastname() ? j2->first : j2->last),
-            utf8_to_html(firstname_lastname() ? j2->last : j2->first), m->match_time/60, m->match_time%60);
+            utf8_to_html(firstname_lastname() ? j2->last : j2->first),
+	    m->match_time/60, m->match_time%60);
 
  out:
     free_judoka(j1);

@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>JudoInfo</title>
+    <style>
+      .tooltip {
+        position: relative;
+        display: inline-block;
+        border-bottom: 1px dotted black;
+      }
+
+      .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 120px;
+        background-color: yellow;
+        color: black;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+
+        /* Position the tooltip */
+        position: absolute;
+        z-index: 1;
+      }
+
+      .tooltip:hover .tooltiptext {
+        visibility: visible;
+      }
+
+      .ui-menu {
+        width: 200px;
+      }
+    </style>
+    <link rel="stylesheet" href="jquery/jquery-ui.css">
+    <script type="text/javascript" src="jquery/external/jquery/jquery.js"></script>
+    <script type="text/javascript" src="js/jqueryjson.min.js"></script>
+    <script type="text/javascript" src="jquery/jquery-ui.js"></script>
+    <script type="text/javascript" src="js/reconnecting-websocket.min.js"></script>
+  </head>
+  <body>
+    <ul id="menu">
+      <li>
+	<div>Preferences</div>
+	<ul>
+	  <li><div><button id="fullscreen">Fullscreen</button></div></li>
+	  <li><div><input id="bracket" type="checkbox">Show bracket</div></li>
+	  <li><div><input id="redbg" type="checkbox">Red background</div></li>
+	  <li><div><input id="mirror" type="checkbox">Mirror tatami order</div></li>
+	  <li><div>Tatami:</div>
+	    <ul>
+	      <li><div><input id="sel1" class="tsel" type="checkbox">1</div></li>
+	      <li><div><input id="sel2" class="tsel" type="checkbox">2</div></li>
+	      <li><div><input id="sel3" class="tsel" type="checkbox">3</div></li>
+	      <li><div><input id="sel4" class="tsel" type="checkbox">4</div></li>
+	      <li><div><input id="sel5" class="tsel" type="checkbox">5</div></li>
+	      <li><div><input id="sel6" class="tsel" type="checkbox">6</div></li>
+	      <li><div><input id="sel7" class="tsel" type="checkbox">7</div></li>
+	      <li><div><input id="sel8" class="tsel" type="checkbox">8</div></li>
+	      <li><div><input id="sel9" class="tsel" type="checkbox">9</div></li>
+	      <li><div><input id="sel10" class="tsel" type="checkbox">10</div></li>
+	    </ul>
+	  </li>
+	</ul>
+      </li>
+    </ul>
+
+    <div id="info"></div>
+
+    <script type="text/javascript" src="js/info.js"></script>
+  </body>
+</html>

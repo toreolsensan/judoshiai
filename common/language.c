@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2015 by Hannu Jokinen
+ * Copyright (C) 2006-2016 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */ 
 
@@ -61,7 +61,7 @@ static const gchar *lang_names_in_own_language[NUM_LANGS] = {
 
 static GtkWidget *get_picture(const gchar *name)
 {
-    gchar *file = g_build_filename(installation_dir, "etc", name, NULL);
+    gchar *file = g_build_filename(installation_dir, "etc", "png", name, NULL);
     GtkWidget *pic = gtk_image_new_from_file(file);
     g_free(file);
     return pic;

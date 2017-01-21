@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2015 by Hannu Jokinen
+ * Copyright (C) 2006-2016 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */
 
@@ -96,7 +96,7 @@ static struct {
     gint txtype[NUM_MESSAGES];
 } msg_stat;
 
-gulong host2net(gulong a)
+uint32_t host2net(uint32_t a)
 {
     return htonl(a);
 }
@@ -384,10 +384,10 @@ void ask_node_ip_address( GtkWidget *w,
 #endif
 
     if (connection_ok && node_ip_addr == 0) {
-        gulong myaddr = ntohl(tmp_node_addr);
+        gulong myaddr1 = ntohl(tmp_node_addr);
         g_snprintf(addrstr, sizeof(addrstr), "%s: %ld.%ld.%ld.%ld", _("(Connection OK)"),
-                   (myaddr>>24)&0xff, (myaddr>>16)&0xff,
-                   (myaddr>>8)&0xff, (myaddr)&0xff);
+                   (myaddr1>>24)&0xff, (myaddr1>>16)&0xff,
+                   (myaddr1>>8)&0xff, (myaddr1)&0xff);
         label = gtk_label_new(addrstr);
     } else if (connection_ok)
         label = gtk_label_new(_("(Connection OK)"));
@@ -1004,6 +1004,8 @@ gpointer ssdp_thread(gpointer args)
     fd_set read_fd, fds;
     socklen_t socklen;
     struct ip_mreq mreq;
+    gint reuse = 1;
+    gint ttl = 3;
 
 #ifdef WIN32
     const gchar *os = "Windows";
@@ -1026,7 +1028,6 @@ gpointer ssdp_thread(gpointer args)
         goto out;
     }
 
-    gint reuse = 1;
     if (setsockopt(sock_in, SOL_SOCKET, SO_REUSEADDR, (void *)&reuse, sizeof(reuse)) < 0) {
         perror("setsockopt (SO_REUSEADDR)");
     }
@@ -1054,7 +1055,6 @@ gpointer ssdp_thread(gpointer args)
         goto out;
     }
 
-    gint ttl = 3;
     if (setsockopt(sock_out, IPPROTO_IP, IP_MULTICAST_TTL, (void *)&ttl, sizeof(ttl)) < 0)
         perror("ERROR: sockopt IP_MULTICAST_TTL\n");
 

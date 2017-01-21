@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2015 by Hannu Jokinen
+ * Copyright (C) 2006-2016 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */
 
@@ -48,7 +48,7 @@ static void about_judojudogi( GtkWidget *w,
     gtk_show_about_dialog (NULL,
                            "name", "JudoJudogi",
                            "title", _("About JudoJudogi"),
-                           "copyright", "Copyright 2006-2015 Hannu Jokinen",
+                           "copyright", "Copyright 2006-2016 Hannu Jokinen",
                            "version", SHIAI_VERSION,
                            "website", "http://sourceforge.net/projects/judoshiai/",
                            NULL);
@@ -91,7 +91,7 @@ static void change_menu_label(GtkWidget *item, const gchar *new_text)
 
 static GtkWidget *get_picture(const gchar *name)
 {
-    gchar *file = g_build_filename(installation_dir, "etc", name, NULL);
+    gchar *file = g_build_filename(installation_dir, "etc", "png", name, NULL);
     GtkWidget *pic = gtk_image_new_from_file(file);
     g_free(file);
     return pic;
@@ -100,7 +100,7 @@ static GtkWidget *get_picture(const gchar *name)
 static void set_menu_item_picture(GtkImageMenuItem *menu_item, gchar *name)
 {
     GtkImage *image = GTK_IMAGE(gtk_image_menu_item_get_image(GTK_IMAGE_MENU_ITEM(menu_item)));
-    gchar *file = g_build_filename(installation_dir, "etc", name, NULL);
+    gchar *file = g_build_filename(installation_dir, "etc", "png", name, NULL);
     gtk_image_set_from_file(image, file);
     g_free(file);
 }
@@ -332,9 +332,9 @@ void set_preferences(void)
     error = NULL;
     str = g_key_file_get_string(keyfile, "preferences", "nodeipaddress", &error);
     if (!error) {
-        gulong a,b,c,d;
-        sscanf(str, "%ld.%ld.%ld.%ld", &a, &b, &c, &d);
-        node_ip_addr = host2net((a << 24) | (b << 16) | (c << 8) | d);
+        gulong a,b1,c,d;
+        sscanf(str, "%ld.%ld.%ld.%ld", &a, &b1, &c, &d);
+        node_ip_addr = host2net((a << 24) | (b1 << 16) | (c << 8) | d);
         g_free(str);
     }
 

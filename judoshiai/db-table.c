@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2015 by Hannu Jokinen
+ * Copyright (C) 2006-2016 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */ 
 
@@ -210,8 +210,8 @@ char **db_get_table_copy(char *command, int *tablerows1, int *tablecols1)
     return tablep1;
 }
 
-void db_close_table_copy(char **tablep)
+void db_close_table_copy(char **tp)
 {
-    sqlite3_free_table(tablep);
+    sqlite3_free_table(tp);
 }
 

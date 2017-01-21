@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2015 by Hannu Jokinen
+ * Copyright (C) 2006-2016 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */ 
 
@@ -17,7 +17,7 @@
 #define NUM_POSITIONS 8
 
 static struct compsys category_system;
-static struct judoka j;
+static struct judoka jud;
 static gint positions[NUM_POSITIONS];
 
 static gint my_atoi(gchar *p)
@@ -34,15 +34,15 @@ static int db_callback_categories(void *data, int argc, char **argv, char **azCo
     for (i = 0; i < argc; i++) {
         //g_print(" %s=%s", azColName[i], argv[i]);
         if (IS(index))
-            j.index = my_atoi(argv[i]);
+            jud.index = my_atoi(argv[i]);
         else if (IS(category))
-            j.last = argv[i];
+            jud.last = argv[i];
         else if (IS(tatami))
-            j.belt = my_atoi(argv[i]);
+            jud.belt = my_atoi(argv[i]);
         else if (IS(deleted))
-            j.deleted = my_atoi(argv[i]);
+            jud.deleted = my_atoi(argv[i]);
         else if (IS(group))
-            j.birthyear = my_atoi(argv[i]);
+            jud.birthyear = my_atoi(argv[i]);
         else if (IS(system))
             category_system.system = my_atoi(argv[i]);
         else if (IS(numcomp))
@@ -70,20 +70,20 @@ static int db_callback_categories(void *data, int argc, char **argv, char **azCo
     }
     //g_print("\n");
 
-    j.visible = FALSE;
+    jud.visible = FALSE;
 
-    if (j.index >= current_category_index)
-        current_category_index = j.index + 1;
+    if (jud.index >= current_category_index)
+        current_category_index = jud.index + 1;
 
-    if (j.deleted & DELETED)
+    if (jud.deleted & DELETED)
         return 0;
 
     if (flags & DB_GET_SYSTEM)
         return 0;
 
-    display_one_judoka(&j);
+    display_one_judoka(&jud);
 
-    avl_set_category(j.index, j.last, j.belt, j.birthyear, category_system, j.deleted);
+    avl_set_category(jud.index, jud.last, jud.belt, jud.birthyear, category_system, jud.deleted);
 
     return 0;
 }
@@ -194,7 +194,7 @@ gint db_get_tatami(gint num)
 
     db_exec(db_name, buffer, (gpointer)DB_GET_SYSTEM, db_callback_categories);
 
-    return j.belt;
+    return jud.belt;
 }
 
 void db_read_categories(void)
@@ -231,7 +231,7 @@ gint db_get_competitors_position(gint competitor, gint *catindex)
     for (i = 0; i < NUM_POSITIONS; i++)
         if (positions[i] == competitor) {
             if (catindex)
-                *catindex = j.index;
+                *catindex = jud.index;
             return i+1;
         }
 

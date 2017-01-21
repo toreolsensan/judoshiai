@@ -1,9 +1,9 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2015 by Hannu Jokinen
+ * Copyright (C) 2006-2016 by Hannu Jokinen
  * Full copyright text is included in the software package.
- */ 
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -48,6 +48,7 @@ struct property {
     GtkWidget *w;
     gint min, max;
     gint table;
+    gint noshow;
 } props[NUM_PROPERTIES] = {
     {
         .name = "Competition",
@@ -80,6 +81,7 @@ struct property {
         .name = "WhiteFirst",
         .label = N_("White first:"),
         .type = PROP_TYPE_CHECK,
+	.noshow = 1,
     },
     {
         .name = "three_matches_for_two",
@@ -99,13 +101,25 @@ struct property {
         .type = PROP_TYPE_CHECK,
     },
     {
+        .name = "UseFirstPlacesOnly",
+        .label = N_("Use the first places only:"),
+        .type = PROP_TYPE_CHECK,
+    },
+/*
+    {
         .name = "EqualScoreLessShidoWins",
         .label = N_("If equal score less shido wins"),
         .type = PROP_TYPE_CHECK,
     },
+*/
     {
         .name = "GoldenScoreWinGives1Point",
         .label = N_("Win in Golden Score gives 1 point"),
+        .type = PROP_TYPE_CHECK,
+    },
+    {
+        .name = "Rules2017",
+        .label = N_("2017 Rules:"),
         .type = PROP_TYPE_CHECK,
     },
     {
@@ -157,8 +171,26 @@ struct property {
         .table = 1,
     },
     {
+        .name = "Resolve3WayTiesByTime",
+        .label = N_("Resolve 3-way ties by time:"),
+        .type = PROP_TYPE_CHECK,
+        .table = 1,
+    },
+    {
         .name = "Resolve3WayTiesByWeights",
         .label = N_("Resolve 3-way ties by weights:"),
+        .type = PROP_TYPE_CHECK,
+        .table = 1,
+    },
+    {
+        .name = "MixPoolMatchesIntoRounds",
+        .label = N_("Mix pool matches into rounds:"),
+        .type = PROP_TYPE_CHECK,
+        .table = 1,
+    },
+    {
+        .name = "UseIjfPoints",
+        .label = N_("Use IJF points:"),
         .type = PROP_TYPE_CHECK,
         .table = 1,
     },
@@ -172,6 +204,9 @@ struct property {
 
 gint prop_get_int_val(gint name)
 {
+    if (name == PROP_WHITE_FIRST)
+	return 1;
+
     return props[name].intval;
 }
 
@@ -183,7 +218,7 @@ const gchar *prop_get_str_val(gint name)
 
 static void set_val(gint n, const gchar *dbval, gint intval)
 {
-    g_free(props[n].value); 
+    g_free(props[n].value);
     if (dbval == NULL) {
         gchar buf[16];
         snprintf(buf, sizeof(buf), "%d", intval);
@@ -312,7 +347,7 @@ static void values_to_widgets(void)
         snprintf(buf, sizeof(buf), "%d", default_cats[i].comp_max);
         gtk_entry_set_text(GTK_ENTRY(catwidgets[i].max), buf);
 
-        gtk_combo_box_set_active(GTK_COMBO_BOX(catwidgets[i].sys), 
+        gtk_combo_box_set_active(GTK_COMBO_BOX(catwidgets[i].sys),
                                  get_system_menu_selection(default_cats[i].catsys));
     }
 
@@ -388,7 +423,7 @@ void reset_props_1(GtkWidget *button, void *data, gboolean if_unset)
 
     SET_VAL(PROP_WHITE_FIRST, "1", 1);
     SET_VAL(PROP_THREE_MATCHES_FOR_TWO, "0", 0);
-    SET_VAL(PROP_EQ_SCORE_LESS_SHIDO_WINS, "1", 1);
+    /*SET_VAL(PROP_EQ_SCORE_LESS_SHIDO_WINS, "1", 1);*/
     SET_VAL(PROP_GS_WIN_GIVES_1_POINT, "0", 0);
 
     if (number_of_tatamis == 0)
@@ -413,6 +448,11 @@ void reset_props_1(GtkWidget *button, void *data, gboolean if_unset)
         SET_VAL(PROP_DPOOL2_WITH_CARRIED_FORWARD_POINTS, "1", 1);
     else
         SET_VAL(PROP_DPOOL2_WITH_CARRIED_FORWARD_POINTS, "0", 0);
+
+    if (draw_system == DRAW_SWEDISH || draw_system == DRAW_ESTONIAN)
+        SET_VAL(PROP_RESOLVE_3_WAY_TIES_BY_TIME, "1", 1);
+    else
+        SET_VAL(PROP_RESOLVE_3_WAY_TIES_BY_TIME, "0", 0);
 
     if (draw_system == DRAW_FINNISH || draw_system == DRAW_SWEDISH || draw_system == DRAW_ESTONIAN || draw_system == DRAW_NORWEGIAN)
         SET_VAL(PROP_RESOLVE_3_WAY_TIES_BY_WEIGHTS, "1", 1);
@@ -473,7 +513,7 @@ void reset_props_1(GtkWidget *button, void *data, gboolean if_unset)
         }
 
         for (i = 0; i < NUM_DEFAULT_CATS; i++) {
-            snprintf(buf, sizeof(buf), "%d %d %d %d", 
+            snprintf(buf, sizeof(buf), "%d %d %d %d",
                      default_cats[i].max_age,
                      default_cats[i].comp_min,
                      default_cats[i].comp_max,
@@ -505,13 +545,22 @@ void reset_props_1(GtkWidget *button, void *data, gboolean if_unset)
 static void reset_props1(GtkWidget *button, void *data)
 {
     reset_props(button, data);
-    values_to_widgets();    
+    values_to_widgets();
 }
 
-static const gchar *draw_system_names[NUM_DRAWS] = 
-    {N_("International System"), N_("Finnish System"), N_("Swedish System"), N_("Estonian System"), N_("Spanish System"), 
-     N_("Norwegian System"), N_("British System"), N_("Australian System"), N_("Danish System"), 
+static const gchar *draw_system_names[NUM_DRAWS] =
+    {N_("International System"), N_("Finnish System"), N_("Swedish System"), N_("Estonian System"), N_("Spanish System"),
+     N_("Norwegian System"), N_("British System"), N_("Australian System"), N_("Danish System"),
      N_("Polish System"), N_("Slovakian System"), N_("Ukrainian System")};
+
+static void update_match_order(void)
+{
+    gint i;
+    db_read_matches();
+    for (i = 1; i <= number_of_tatamis; i++)
+	update_matches(0, (struct compsys){0,0,0,0}, i);
+    update_category_status_info_all();
+}
 
 #define NUM_TBLS 2
 
@@ -548,7 +597,7 @@ void properties(GtkWidget *w, gpointer data)
     GtkWidget *table5 = gtk_table_new(8, 4, FALSE);
     GtkWidget *table6 = gtk_table_new(2, 2, FALSE);
 #endif
-    GtkWidget *tables[NUM_TBLS]; 
+    GtkWidget *tables[NUM_TBLS];
     gint       num_comp, num_weighted;
     gint       row[NUM_TBLS] = {0}, col[NUM_TBLS] = {0}, i;
     gint       tbl = 0;
@@ -582,6 +631,9 @@ void properties(GtkWidget *w, gpointer data)
     for (i = 0; i < NUM_PROPERTIES; i++) {
         GtkWidget *tmp;
 
+	if (props[i].noshow)
+	    continue;
+
         tbl = props[i].table;
 
         if (props[i].row >= 0) {
@@ -604,7 +656,7 @@ void properties(GtkWidget *w, gpointer data)
 #if (GTKVER == 3)
                 gtk_grid_attach(GTK_GRID(tables[tbl]), tmp, col[tbl]+1, row[tbl], 1, 1);
 #else
-                gtk_table_attach_defaults(GTK_TABLE(tables[tbl]), tmp, 
+                gtk_table_attach_defaults(GTK_TABLE(tables[tbl]), tmp,
                                           col[tbl]+1, col[tbl]+2, row[tbl], row[tbl]+1);
 #endif
                 break;
@@ -615,7 +667,7 @@ void properties(GtkWidget *w, gpointer data)
 #if (GTKVER == 3)
                 gtk_grid_attach(GTK_GRID(tables[tbl]), tmp, col[tbl]+1, row[tbl], 1, 1);
 #else
-                gtk_table_attach_defaults(GTK_TABLE(tables[tbl]), tmp, 
+                gtk_table_attach_defaults(GTK_TABLE(tables[tbl]), tmp,
                                           col[tbl]+1, col[tbl]+2, row[tbl], row[tbl]+1);
 #endif
                 break;
@@ -772,7 +824,7 @@ void properties(GtkWidget *w, gpointer data)
     gtk_table_attach(GTK_TABLE(table2), tmp, 0, 1, 1, 2, GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
 #endif
     gtk_combo_box_set_active(GTK_COMBO_BOX(tmp), draw_system);
-    //g_signal_connect(G_OBJECT(tmp), "changed", G_CALLBACK(reset_props), NULL); 
+    //g_signal_connect(G_OBJECT(tmp), "changed", G_CALLBACK(reset_props), NULL);
 
     reset = gtk_button_new_from_stock(GTK_STOCK_APPLY);
     g_signal_connect(G_OBJECT(reset), "clicked", G_CALLBACK(reset_props1), tmp);
@@ -830,7 +882,7 @@ void properties(GtkWidget *w, gpointer data)
 
     gtk_widget_show_all(hbox);
 #if (GTKVER == 3)
-    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), 
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),
                        hbox, FALSE, FALSE, 0);
 #else
     gtk_container_add(GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), hbox);
@@ -838,9 +890,11 @@ void properties(GtkWidget *w, gpointer data)
     if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT) {
         widgets_to_values();
         props_save_to_db();
+	update_match_order();
+
     }
-        
-    gtk_widget_destroy (dialog);        
+
+    gtk_widget_destroy (dialog);
 
     update_match_pages_visibility();
     set_match_col_titles();
@@ -852,7 +906,7 @@ gint props_get_default_wishsys(gint age, gint competitors)
 
     for (i = 0; i < NUM_DEFAULT_CATS; i++) {
         if ((age == 0 || default_cats[i].max_age == 0 || age <= default_cats[i].max_age) &&
-            (competitors >= default_cats[i].comp_min || default_cats[i].comp_min == 0)   && 
+            (competitors >= default_cats[i].comp_min || default_cats[i].comp_min == 0)   &&
             (competitors <= default_cats[i].comp_max || default_cats[i].comp_max == 0))
             return default_cats[i].catsys;
     }

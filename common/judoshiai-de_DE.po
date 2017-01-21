@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-28 10:35+0300\n"
+"POT-Creation-Date: 2016-10-25 13:22+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -756,7 +756,7 @@ msgid "Sex:"
 msgstr "Geschlecht:"
 
 msgid "Girl Text:"
-msgstr "Text für weiblich" 
+msgstr "Text für weiblich"
 
 msgid "Column Separator:"
 msgstr "Trennzeichen:"
@@ -946,6 +946,9 @@ msgstr "Kampf um Bronze A"
 msgid "Bronze match B"
 msgstr "Kampf um Bronze B"
 
+msgid "Semifinal"
+msgstr "Halbfinale"
+
 msgid "Semifinal A"
 msgstr "Halbfinale A"
 
@@ -1020,6 +1023,9 @@ msgstr " Verzögerung"
 
 msgid "Final"
 msgstr "Finale"
+
+msgid "Bronze"
+msgstr "Bronze"
 
 msgid "Bronze1"
 msgstr "Bronze1"
@@ -1337,7 +1343,7 @@ msgid "Start time:"
 msgstr "Startzeit:"
 
 msgid "Resolution (min):"
-msgstr "Auflösung (Min):" 
+msgstr "Auflösung (Min):"
 
 msgid "Compressed timeline"
 msgstr "Komprimierte Zeitlinie"
@@ -1807,3 +1813,42 @@ msgstr "Seite anpassen"
 
 msgid "No SOREMADE/IPPON texts"
 msgstr "SOREMADE/IPPON-Text nicht anzeigen"
+
+msgid "Custom layout file..."
+msgstr ""
+
+msgid "Resolve 3-way ties by time:"
+msgstr ""
+
+msgid "Move Matches"
+msgstr ""
+
+msgid "Match order from file"
+msgstr ""
+
+msgid "Match Order from File"
+msgstr ""
+
+msgid "Move Matches..."
+msgstr ""
+
+msgid "Use the first places only:"
+msgstr ""
+
+msgid "Round"
+msgstr ""
+
+msgid "Round Robin"
+msgstr ""
+
+msgid "Repechage"
+msgstr ""
+
+msgid "Mix pool matches into rounds:"
+msgstr ""
+
+msgid "Use IJF points:"
+msgstr ""
+
+msgid "Show bracket"
+msgstr ""

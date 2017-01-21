@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2015 by Hannu Jokinen
+ * Copyright (C) 2006-2016 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */
 
@@ -26,7 +26,7 @@ void start_help(GtkWidget *w, gpointer data);
 static GtkWidget *menubar, *preferences, *help, *preferencesmenu, *helpmenu;
 static GtkWidget *quit, *manual;
 static GtkWidget *full_screen, *normal_display, *small_display, *horizontal_display;
-static GtkWidget *mirror, *whitefirst, *redbackground;
+static GtkWidget *mirror, *whitefirst, *redbackground, *showbracket;
 static GtkWidget *tatami_show[NUM_TATAMIS];
 static GtkWidget *node_ip, *my_ip, *about;
 static GtkWidget *light, *menu_light;
@@ -40,6 +40,7 @@ extern void toggle_small_display(GtkWidget *menu_item, gpointer data);
 extern void toggle_mirror(GtkWidget *menu_item, gpointer data);
 extern void toggle_whitefirst(GtkWidget *menu_item, gpointer data);
 extern void toggle_redbackground(GtkWidget *menu_item, gpointer data);
+extern void toggle_bracket(GtkWidget *menu_item, gpointer data);
 extern void set_write_file(GtkWidget *menu_item, gpointer data);
 extern void set_svg_file(GtkWidget *menu_item, gpointer data);
 
@@ -49,7 +50,7 @@ static void about_judoinfo( GtkWidget *w,
     gtk_show_about_dialog (NULL,
                            "name", "JudoInfo",
                            "title", _("About JudoInfo"),
-                           "copyright", "Copyright 2006-2015 Hannu Jokinen",
+                           "copyright", "Copyright 2006-2016 Hannu Jokinen",
                            "version", SHIAI_VERSION,
                            "website", "http://sourceforge.net/projects/judoshiai/",
                            NULL);
@@ -109,7 +110,7 @@ static void change_menu_label(GtkWidget *item, const gchar *new_text)
 
 static GtkWidget *get_picture(const gchar *name)
 {
-    gchar *file = g_build_filename(installation_dir, "etc", name, NULL);
+    gchar *file = g_build_filename(installation_dir, "etc", "png", name, NULL);
     GtkWidget *pic = gtk_image_new_from_file(file);
     g_free(file);
     return pic;
@@ -118,7 +119,7 @@ static GtkWidget *get_picture(const gchar *name)
 static void set_menu_item_picture(GtkImageMenuItem *menu_item, gchar *name)
 {
     GtkImage *image = GTK_IMAGE(gtk_image_menu_item_get_image(GTK_IMAGE_MENU_ITEM(menu_item)));
-    gchar *file = g_build_filename(installation_dir, "etc", name, NULL);
+    gchar *file = g_build_filename(installation_dir, "etc", "png", name, NULL);
     gtk_image_set_from_file(image, file);
     g_free(file);
 }
@@ -244,9 +245,11 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
                      G_CALLBACK(toggle_mirror), 0);
 
     whitefirst = gtk_check_menu_item_new_with_label("");
-    //gtk_menu_shell_append(GTK_MENU_SHELL(preferencesmenu), whitefirst);
+    /*
+    gtk_menu_shell_append(GTK_MENU_SHELL(preferencesmenu), whitefirst);
     g_signal_connect(G_OBJECT(whitefirst), "activate",
                      G_CALLBACK(toggle_whitefirst), 0);
+    */
 
     redbackground = gtk_check_menu_item_new_with_label("");
     gtk_menu_shell_append(GTK_MENU_SHELL(preferencesmenu), redbackground);
@@ -256,6 +259,11 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     node_ip = create_menu_item(preferencesmenu, ask_node_ip_address, 0);
     my_ip   = create_menu_item(preferencesmenu, show_my_ip_addresses, 0);
     create_separator(preferencesmenu);
+
+    showbracket = gtk_check_menu_item_new_with_label("");
+    gtk_menu_shell_append(GTK_MENU_SHELL(preferencesmenu), showbracket);
+    g_signal_connect(G_OBJECT(showbracket), "activate",
+                     G_CALLBACK(toggle_bracket), 0);
 
     for (i = 0; i < NUM_TATAMIS; i++) {
         tatami_show[i] = gtk_check_menu_item_new_with_label("");
@@ -326,15 +334,20 @@ void set_preferences(void)
     if (g_key_file_get_boolean(keyfile, "preferences", "mirror", &error)) {
         gtk_menu_item_activate(GTK_MENU_ITEM(mirror));
     }
-
+#if 0
     error = NULL;
     if (g_key_file_get_boolean(keyfile, "preferences", "whitefirst", &error)) {
         gtk_menu_item_activate(GTK_MENU_ITEM(whitefirst));
     }
-
+#endif
     error = NULL;
     if (g_key_file_get_boolean(keyfile, "preferences", "redbackground", &error)) {
         gtk_menu_item_activate(GTK_MENU_ITEM(redbackground));
+    }
+
+    error = NULL;
+    if (g_key_file_get_boolean(keyfile, "preferences", "bracket", &error)) {
+        gtk_menu_item_activate(GTK_MENU_ITEM(showbracket));
     }
 
     for (i = 1; i <= NUM_TATAMIS; i++) {
@@ -394,6 +407,7 @@ gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param
     change_menu_label(redbackground, _("Red background"));
     change_menu_label(writefile, _("Write to file"));
     change_menu_label(svgfile, _("SVG Templates"));
+    change_menu_label(showbracket, _("Show bracket"));
 
     for (i = 0; i < NUM_TATAMIS; i++) {
         gchar buf[64];

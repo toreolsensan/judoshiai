@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>JudoWeight</title>
+    <style>
+      .tooltip {
+        position: relative;
+        display: inline-block;
+        border-bottom: 1px dotted black;
+      }
+
+      .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 120px;
+        background-color: yellow;
+        color: black;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+
+        /* Position the tooltip */
+        position: absolute;
+        z-index: 1;
+      }
+
+      .tooltip:hover .tooltiptext {
+        visibility: visible;
+      }
+    </style>
+    <link rel="stylesheet" href="jquery/jquery-ui.css">
+    <script type="text/javascript" src="jquery/external/jquery/jquery.js"></script>
+    <script type="text/javascript" src="jqueryjson.min.js"></script>
+    <script type="text/javascript" src="jquery/jquery-ui.js"></script>
+    <script type="text/javascript" src="reconnecting-websocket.min.js"></script>
+  </head>
+  <body>
+<!--
+
+    <div id="message"></div>
+
+    <table class="center"><tr>
+      <td><button id="setweight"><div id="bweight" class="lang">Weight</div></button></td>
+      <td><button id="newcomp"><div id="bnewcomp" class="lang">New competitor</div></button></td>
+      <td><button id="editcomp"><div id="beditcomp" class="lang">Edit competitor</div></button></td>
+      <td><div class="lang">Print Weight Notes</div><input id="autoprint" type="checkbox"></td>
+    </tr></table>
+
+    <hr/>
+-->
+    <div id="tabs">
+      <ul>
+	<li><a href="#dispweight"><div class="lang">Weight</div></a></li>
+	<li><a href="#dispcomp"><div class="lang">Competitor</div></a></li>
+	<li><a href="#serial"><div class="lang">Serial Communication</div></a></li>
+	<li><a href="#preferences"><div class="lang">Preferences</div></a></li>
+      </ul>
+
+      <div id="dispweight">
+	<table class="center" id="xxxx">
+	  <tr>
+	    <td><div class="lang">ID:</div></td>
+	    <td><input id="id" type="text"></td>
+	    <td></td>
+	  </tr>
+	  <tr>
+	    <td rowspan="2"><div class="lang">Name:</div></td>
+	    <td id="name1" colspan="2"></td>
+	  </tr>
+	  <tr>
+	    <td id="name2" colspan="2"></td>
+	  </tr>
+	  <tr>
+	    <td><div class="lang">Weight:</div></td>
+	    <td><input type="text" id="weight"></td>
+	    <td><button id="scale">---</button></td>
+	  </tr>
+	  <tr>
+	    <td><div class="lang">Control:</div></td>
+	    <td><select id="control" placeholder="Control...">
+		<option>?</option>
+		<option>OK</option>
+		<option>NOK</option>
+	    </select></td>
+	    <td></td>
+	  </tr>
+	  <tr>
+	    <td></td>
+	    <td><button id="submit">OK</button></td>
+	    <td><button id="print"><div class="lang">Print</div></button></td>
+	  </tr>
+	</table>
+
+	<table class="center">
+	  <tr><td></td><td class="fs2" id="confname"></td></tr>
+	  <tr><td></td><td class="fs2" id="confclub"></td></tr>
+	  <tr><td class="fs2"><div  class="lang">Weight:</div></td><td class="fs4" id="confweight"></td></tr>
+	  <tr><td class="fs2"><div class="lang">Category:</div></td><td class="fs4" id="confcat"></td></tr>
+	</table>
+
+      </div>
+      <div id="dispcomp">
+
+
+	<table class="center">
+	  <tr><td><h3><div class="lang">Competitor</div></h3></td>
+	    <td><button id="newcomp"><div class="lang">New Competitor</div></button></td>
+	    <td colspan="2"><h3><div class="lang">Search</div></h3></td></tr>
+	  <tr>
+	    <td><div class="lang">Last Name:</div></td>
+	    <td><input id="n_last" type="text"></td>
+	    <td class="tooltip">ID:<span class="tooltiptext">Competitor's ID</span></td>
+	    <td><input id="e_id" type="text"></td>
+	  </tr>
+	  <tr>
+	    <td><div class="lang">First Name:</div></td>
+	    <td><input id="n_first" type="text"></td>
+	    <td  class="tooltip">
+	      <div class="lang">Name:</div>
+	      <span class="tooltiptext">Type in a few letters and press enter</span>
+	    </td>
+	    <td><input id="e_name" type="text"></td>
+	  </tr>
+	  <tr><td><div class="lang">Year of Birth:</div></td><td><input id="n_yob" type="text"></td><td></td>
+	    <td rowspan="16"><table id="lookup"></table></td>
+	  </tr>
+	  <tr><td><div class="lang">Grade:</div><td>
+	      <select id="n_belt" placeholder="Grade..."  style="width:100%">
+		<option>?</option>
+		<option>6. kyu</option>
+		<option>5. kyu</option>
+		<option>4. kyu</option>
+		<option>3. kyu</option>
+		<option>2. kyu</option>
+		<option>1. kyu</option>
+		<option>1. dan</option>
+		<option>2. dan</option>
+		<option>3. dan</option>
+		<option>4. dan</option>
+		<option>5. dan</option>
+		<option>6. dan</option>
+		<option>7. dan</option>
+		<option>8. dan</option>
+		<option>9. dan</option>
+	  </select><td></td><td></td></tr>
+	  <tr><td><div class="lang">Club:</div><td><input id="n_club" type="text"><td></td><td></td></tr>
+	  <tr><td><div class="lang">Country:</div><td><input id="n_country" type="text"><td></td><td></td></tr>
+	  <tr><td><div class="lang">Reg. Category:</div><td><input id="n_regcat" type="text"><td></td><td></td></tr>
+	  <tr><td><div class="lang">Category:</div><td id="n_realcat"><td></td><td></td></tr>
+	  <tr><td><div class="lang">Weight:</div><td><input id="n_weight" type="text"><td></td><td></td></tr>
+	  <tr><td><div class="lang">Seeding:</div>
+	    <td>
+	      <select id="n_seeding" placeholder="Seeding..."  style="width:100%">
+		<option><div class="lang">No seeding</div></option>
+		<option>1</option>
+		<option>2</option>
+		<option>3</option>
+		<option>4</option>
+		<option>5</option>
+		<option>6</option>
+		<option>7</option>
+		<option>8</option>
+	  </select><td></td><td></td></tr>
+	  <tr><td><div class="lang">Club Seeding:</div><td><input id="n_clubseeding" type="text"><td></td><td></td></tr>
+	  <tr><td><div class="lang">Id:</div><td><input id="n_id" type="text"><td></td><td></td></tr>
+	  <tr><td><div class="lang">Coach Id:</div><td><input id="n_coachid" type="text"><td></td><td></td></tr>
+	  <tr><td><div class="lang">Gender:</div><td>
+	      <select id="n_gender" placeholder="Gender..."  style="width:100%">
+		<option>?</option>
+		<option><div class="lang">Male</div></option>
+		<option><div class="lang">Female</div></option>
+	  </select><td></td><td></td></tr>
+	  <tr><td><div class="lang">Control:</div><td>
+	      <select id="n_control" placeholder="Control..." style="width:100%">
+		<option>?</option>
+		<option>OK</option>
+		<option>NOK</option>
+	  </select><td></td><td></td></tr>
+	  <tr><td>Hansoku-make:<td><input id="n_hansokumake" type="checkbox"><td></td><td></td></tr>
+	  <tr><td><div class="lang">Comment:</div><td><input id="n_comment" type="text"><td></td><td></td></tr>
+	  <tr><td><td><button id="n_submit">OK</button><td></td><td></td></tr>
+	</table>
+
+      </div>
+      <div id="serial">
+
+	<table class="center" id="addrtable">
+	  <tr><td colspan="2"><h3><div class="lang">Serial Communication</div></h3></td></tr>
+	  <tr><td><div class="lang">IP address:</div></td><td><input type="text" id="ipaddr" value="127.0.0.1"></td></tr>
+	  <tr><td><div class="lang">Port:</div></td><td><input type="text" id="ipport" value="2316"></td></tr>
+	  <tr><td><label for="scaletype"><div class="lang">Type</div></label></td>
+	    <td><select name="scaletype" id="stype" style="width:100%">
+		<option value="0" selected="selected"><div class="lang">Normal</div></option>
+		<option value="1">Stathmos/Allvåg</option>
+		<option value="2">AP-1</option>
+		<option value="3">My Weight</option>
+	  </select></td></tr>
+
+	  <tr><td><label for="scalebaud"><div class="lang">Baudrate</div></label></td>
+	    <td><select name="scalebaud" id="sbaud" style="width:100%">
+		<option value="0" selected="selected">1200,N81</option>
+		<option value="1">9600,N81</option>
+		<option value="2">19200,N81</option>
+		<option value="3">38400,N81</option>
+		<option value="4">115200,N81</option>
+	  </select></td></tr>
+
+	  <tr><td>Device</td><td><input type="text" id="sdevice"></td></tr>
+	</table>
+
+	<div id="downloadhelp">
+	  <p>
+	    Download scale interface software for
+	    <a href="websock-serial.zip">Windows</a> or
+	    <a href="websock-serial">Linux</a>.
+	  </p>
+	</div>
+
+      </div>
+      <div id="preferences">
+
+      </div>
+
+    </div>
+
+    <a id="helpon" href="#" class="lang">Help</a>
+    <a id="helpoff" href="#">Hide help</a>
+
+    <div id="helptxt0">
+      <h3>Silent printing</h3>
+      <p>
+	Enable browser immediately print without showing the print preferences dialog box:
+      </p><p>
+	<b>Firefox</b>
+      </p><p>
+	Type <tt>about:config</tt> at Firefox’s location bar and hit Enter.
+	Right click at anywhere on the page and select New &gt; Boolean.
+	Enter the preference name as <tt>print.always_print_silent</tt> and click OK.
+      </p><p>
+	<b>Chrome</b>
+      </p><p>
+	Use the <tt>--kiosk-printing</tt> option to skip the Print Preview dialog.
+	Edit the shortcut you use to start Chrome and add
+	<tt>"--kiosk-printing"</tt> then restart Chrome.
+      </p>
+    </div>
+
+    <div id="helptxt2">
+      <h3>Competitor editing</h3>
+      <p>
+	There are two options to edit competitor's data.
+      </p>
+      <ul>
+	<li>Type in (or scan) competitor's ID and press enter.</li>
+	<li>Type a few letters from the competitor's last name and press enter.
+	  Select competitor from the list. If all the possible competitors
+	  cannot be listed (max is 8) type in a few more letters.</li>
+      </ul>
+    </div>
+
+    <script type="text/javascript" src="js/weight.js"></script>
+  </body>
+</html>

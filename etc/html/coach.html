@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=device-dpi">
+  <link rel="stylesheet" href="style.css" type="text/css" media="print, projection, screen" />
+  <script type="text/javascript" src="jquery-1.10.2.min.js" charset="utf-8"></script>
+  <script type="text/javascript" src="jquery.tablesorter.js" charset="utf-8"></script>
+  <script type="text/javascript" src="words.js" charset="utf-8"></script>
+  <script type="text/javascript" src="coach.js" charset="utf-8"></script>
+</head>
+<body onload="initialize()">
+<h1 id="coachhdr"></h1>
+
+<table><tr>
+<td><input type="text" id="competitor" onkeypress="{if (event.keyCode==13) checkCompetitor()}">
+<td><img src="refresh.png" class="button" onclick="refresh()" />
+<td><img src="clear.png" class="button" onclick="clearx()" />
+</tr></table>
+
+<p id="result"></p>
+
+<div class="catdiv" id="sheets" onclick="window.scrollTo(0,0);"></div>
+
+<div id="compbox"></div>
+
+</body>
+</html>

@@ -1,15 +1,15 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2015 by Hannu Jokinen
+ * Copyright (C) 2006-2016 by Hannu Jokinen
  * Full copyright text is included in the software package.
- */ 
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <gtk/gtk.h>
-#include <gdk/gdkkeysyms.h> 
+#include <gdk/gdkkeysyms.h>
 
 #include "sqlite3.h"
 #include "judoshiai.h"
@@ -52,7 +52,7 @@ struct i_text {
 #define MAX_NUM_COLUMNS 16
 static gchar *combotxts[MAX_NUM_COLUMNS] = {0};
 
-static gboolean valid_data(gint item, gchar **tokens, gint num_cols, struct i_text *d) 
+static gboolean valid_data(gint item, gchar **tokens, gint num_cols, struct i_text *d)
 {
     if (d->columns[item] == 0)
         return FALSE;
@@ -63,7 +63,7 @@ static gboolean valid_data(gint item, gchar **tokens, gint num_cols, struct i_te
     return TRUE;
 }
 
-static gboolean print_item(gint item, gchar **tokens, gint num_cols, struct i_text *d) 
+static gboolean print_item(gint item, gchar **tokens, gint num_cols, struct i_text *d)
 {
     if (!valid_data(item, tokens, num_cols, d))
         return FALSE;
@@ -73,7 +73,7 @@ static gboolean print_item(gint item, gchar **tokens, gint num_cols, struct i_te
     return TRUE;
 }
 
-static gboolean add_competitor(gchar **tokens, gint num_cols, struct i_text *d) 
+static gboolean add_competitor(gchar **tokens, gint num_cols, struct i_text *d)
 {
     gchar *newcat = NULL;
     gchar *lastname = NULL;
@@ -190,7 +190,7 @@ static gboolean add_competitor(gchar **tokens, gint num_cols, struct i_text *d)
     return TRUE;
 }
 
-static void import_txt(gchar *fname, gboolean test, struct i_text *d) 
+static void import_txt(gchar *fname, gboolean test, struct i_text *d)
 {
     gsize x;
     gint num_cols = 0, i;
@@ -201,7 +201,7 @@ static void import_txt(gchar *fname, gboolean test, struct i_text *d)
     if (!f)
         return;
 
-    if (d->separator[0] == 0) 
+    if (d->separator[0] == 0)
         return;
 
     d->errors = 0;
@@ -268,7 +268,7 @@ static void import_txt(gchar *fname, gboolean test, struct i_text *d)
     fclose(f);
 }
 
-static void read_values(struct i_text *d) 
+static void read_values(struct i_text *d)
 {
     gint i;
 
@@ -289,7 +289,7 @@ static void read_values(struct i_text *d)
     }
 }
 
-static void selecter(GtkComboBox *combo, gpointer arg) 
+static void selecter(GtkComboBox *combo, gpointer arg)
 {
     struct i_text *d = arg;
     read_values(d);
@@ -297,7 +297,7 @@ static void selecter(GtkComboBox *combo, gpointer arg)
 }
 
 static GtkWidget *set_text_entry(GtkWidget *table, int row,
-				 char *text, const char *deftxt, struct i_text *data) 
+				 char *text, const char *deftxt, struct i_text *data)
 {
     GtkWidget *tmp;
 
@@ -328,7 +328,7 @@ static GtkWidget *set_text_entry(GtkWidget *table, int row,
 }
 
 static GtkWidget *set_col_entry(GtkWidget *table, int row,
-				char *text, const gint defpos, struct i_text *data) 
+				char *text, const gint defpos, struct i_text *data)
 {
     GtkWidget *tmp;
     gint i;
@@ -404,7 +404,7 @@ static gboolean get_preferences_str(gchar *name, gchar *out)
     return FALSE;
 }
 
-void import_txt_dialog(GtkWidget *w, gpointer arg) 
+void import_txt_dialog(GtkWidget *w, gpointer arg)
 {
     GtkWidget *dialog, *table, *utf8;
     gchar *name = NULL;
@@ -489,10 +489,10 @@ void import_txt_dialog(GtkWidget *w, gpointer arg)
 
     data->lineread = gtk_label_new("");
 #if (GTKVER == 3)
-    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), 
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),
                        data->lineread, FALSE, FALSE, 0);
     table = gtk_grid_new();
-    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), 
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),
                        table, FALSE, FALSE, 0);
 #else
     gtk_container_add(GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), data->lineread);
@@ -547,8 +547,8 @@ void import_txt_dialog(GtkWidget *w, gpointer arg)
 
     gtk_widget_destroy(dialog);
 
-    SHOW_MESSAGE("%d %s, %d %s (%d %s, %d %s).", 
-                 data->comp_added, _("competitors added"), 
+    SHOW_MESSAGE("%d %s, %d %s (%d %s, %d %s).",
+                 data->comp_added, _("competitors added"),
                  data->errors, _("errors"),
                  data->comp_exists, _("competitors existed already"),
                  data->comp_syntax, _("syntax errors"));

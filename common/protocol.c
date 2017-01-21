@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2015 by Hannu Jokinen
+ * Copyright (C) 2006-2016 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */
 
@@ -32,6 +32,7 @@ gint encode_msg(struct message *m, guchar *buf, gint buflen)
 {
     guchar *p = buf, *end = buf + buflen;
     gint i;
+    gint len = 0;
 
     put8(COMM_VERSION);
     put8(m->type);
@@ -59,6 +60,7 @@ gint encode_msg(struct message *m, guchar *buf, gint buflen)
 	putstr(m->u.next_match.blue_2);
 	putstr(m->u.next_match.white_2);
 	put32(m->u.next_match.flags);
+	put32(m->u.next_match.round);
 	break;
     case MSG_RESULT:
 	put32(m->u.result.tatami);
@@ -108,6 +110,7 @@ gint encode_msg(struct message *m, guchar *buf, gint buflen)
 	put32(m->u.match_info.white);
 	put32(m->u.match_info.flags);
 	put32(m->u.match_info.rest_time);
+	put32(m->u.match_info.round);
 	break;
     case MSG_11_MATCH_INFO:
 	for (i = 0; i < 11; i++) {
@@ -119,6 +122,7 @@ gint encode_msg(struct message *m, guchar *buf, gint buflen)
 	    put32(m->u.match_info_11.info[i].white);
 	    put32(m->u.match_info_11.info[i].flags);
 	    put32(m->u.match_info_11.info[i].rest_time);
+	    put32(m->u.match_info_11.info[i].round);
 	}
 	break;
     case MSG_NAME_INFO:
@@ -180,9 +184,20 @@ gint encode_msg(struct message *m, guchar *buf, gint buflen)
 	putstr(m->u.edit_competitor.beltstr);
 	putstr(m->u.edit_competitor.estim_category);
 	break;
+    case MSG_LANG:
+	putstr(m->u.lang.english);
+	putstr(m->u.lang.translation);
+	break;
+    case MSG_LOOKUP_COMP:
+	putstr(m->u.lookup_comp.name);
+	for (i = 0; i < NUM_LOOKUP; i++) {
+	    put32(m->u.lookup_comp.result[i].index);
+	    putstr(m->u.lookup_comp.result[i].fullname);
+	}
+	break;
     }
 
-    gint len = (gint)(p - buf);
+    len = (gint)(p - buf);
     p = buf + 2;
     put16(len);
 
@@ -238,6 +253,7 @@ gint decode_msg(struct message *m, guchar *buf, gint buflen)
 	getstr(m->u.next_match.blue_2);
 	getstr(m->u.next_match.white_2);
 	get32(m->u.next_match.flags);
+	get32(m->u.next_match.round);
 	break;
     case MSG_RESULT:
 	get32(m->u.result.tatami);
@@ -287,6 +303,7 @@ gint decode_msg(struct message *m, guchar *buf, gint buflen)
 	get32(m->u.match_info.white);
 	get32(m->u.match_info.flags);
 	get32(m->u.match_info.rest_time);
+	get32(m->u.match_info.round);
 	break;
     case MSG_11_MATCH_INFO:
 	for (i = 0; i < 11; i++) {
@@ -298,6 +315,7 @@ gint decode_msg(struct message *m, guchar *buf, gint buflen)
 	    get32(m->u.match_info_11.info[i].white);
 	    get32(m->u.match_info_11.info[i].flags);
 	    get32(m->u.match_info_11.info[i].rest_time);
+	    get32(m->u.match_info_11.info[i].round);
 	}
 	break;
     case MSG_NAME_INFO:
@@ -358,6 +376,17 @@ gint decode_msg(struct message *m, guchar *buf, gint buflen)
 	getstr(m->u.edit_competitor.coachid);
 	getstr(m->u.edit_competitor.beltstr);
 	getstr(m->u.edit_competitor.estim_category);
+	break;
+    case MSG_LANG:
+	getstr(m->u.lang.english);
+	getstr(m->u.lang.translation);
+	break;
+    case MSG_LOOKUP_COMP:
+	getstr(m->u.lookup_comp.name);
+	for (i = 0; i < NUM_LOOKUP; i++) {
+	    get32(m->u.lookup_comp.result[i].index);
+	    getstr(m->u.lookup_comp.result[i].fullname);
+	}
 	break;
     }
 

@@ -1,4 +1,4 @@
-SHIAI_VER_NUM=2.4
+SHIAI_VER_NUM=2.6-beta1
 SHIAI_VERSION="\"$(SHIAI_VER_NUM)\""
 
 ifndef JS_BUILD_DIR
@@ -10,6 +10,8 @@ LASTPART := $(shell basename $(CURDIR))
 GTKVER=3
 
 OBJS=
+
+WARNINGS = -Wall -Wshadow
 
 ### Target executable type ###
 ifeq ($(TARGETOS),WIN32)
@@ -27,11 +29,20 @@ endif
 # Default directories and programs #
 ####################################
 
+#EMCC := $(shell command -v emcc 2> /dev/null)
+
 ### Cross compilation (host=Linux, target=Windows) ###
 ifeq ($(TARGETOS),WIN32)
 
-CC=i586-mingw32msvc-gcc
-LD=i586-mingw32msvc-gcc
+NEWCC := $(shell command -v i686-w64-mingw32-gcc 2> /dev/null)
+ifdef NEWCC
+  CC=i686-w64-mingw32-gcc
+  LD=i686-w64-mingw32-gcc
+else
+  CC=i586-mingw32msvc-gcc
+  LD=i586-mingw32msvc-gcc
+endif
+
 SUFF=.exe
 DEVELDIR=/opt/win32/gtk
 SOUNDDIR=/opt/win32/mpg123
@@ -67,7 +78,7 @@ endif
 ### Cross compilation ###
 ifeq ($(TARGETOS),WIN32)
 
-CFLAGS=-Wall -g \
+CFLAGS = $(WARNINGS) -g \
 -I$(DEVELDIR)/include/gtk-$(GTKVER).0 \
 -I$(DEVELDIR)/lib/gtk-$(GTKVER).0/include \
 -I$(DEVELDIR)/include/atk-1.0 \
@@ -89,19 +100,20 @@ CFLAGS=-Wall -g \
 -I../common -mms-bitfields \
 -DSHIAI_VERSION=$(SHIAI_VERSION) \
 -DENABLE_NLS \
--DGTKVER=$(GTKVER)
+-DGTKVER=$(GTKVER) \
+-Wno-deprecated-declarations
 
 ifeq ($(JUDOPROXY),YES)
 CFLAGS += -I/opt/win32/webkitgtk/include/webkitgtk-3.0 \
        -I/opt/win32/soup/include/libsoup-2.4
 endif
 
-LIBS=-L$(DEVELDIR)/lib $(DEVELDIR)/lib/glib-2.0.lib  \
--L/opt/win32/gtk/bin \
+LIBS=-L$(DEVELDIR)/lib $(DEVELDIR)/lib/glib-2.0.lib -L$(RSVGDIR)/bin \
+-L$(DEVELDIR)/bin \
 -lgtk-win32-$(GTKVER).0 -lgdk-win32-$(GTKVER).0 -latk-1.0 -lgio-2.0 -lgdk_pixbuf-2.0 \
 -lpangowin32-1.0 -lgdi32 -lpangocairo-1.0 -lpango-1.0 -lgobject-2.0 \
 -lgmodule-2.0 -lgthread-2.0 -lglib-2.0 -lintl -lcairo \
--L/opt/win32/rsvg/bin -lcroco-0.6-3 -lrsvg-2-2 -lxml2-2 \
+-lcroco-0.6-3 -lrsvg-2-2 -lxml2-2 \
 -L/opt/win32/curl/bin -lcurl \
 -L/opt/win32/w32api/lib -lws2_32 -mwindows
 
@@ -110,21 +122,27 @@ LIBS += -L/opt/win32/webkitgtk/lib -lwebkitgtk-3.0.dll \
      -L/opt/win32/soup/lib -lsoup-2.4.dll
 endif
 
+ifeq ($(WINCOMP),new)
+WARNINGS += -Wjump-misses-init
+endif
+
 ### Linux ###
 else
 
 PKGCONFIG=pkg-config
 
-CFLAGS=-Wall $(shell $(PKGCONFIGPATH) $(PKGCONFIG) --cflags gtk+-$(GTKVER).0) \
+CFLAGS= $(WARNINGS) $(shell $(PKGCONFIGPATH) $(PKGCONFIG) --cflags gtk+-$(GTKVER).0) \
        $(shell $(PKGCONFIGPATH) $(PKGCONFIG) --cflags cairo) \
        $(shell $(PKGCONFIGPATH) $(PKGCONFIG) --cflags librsvg-2.0) \
        $(shell $(PKGCONFIGPATH) $(PKGCONFIG) --cflags glib-2.0) \
-       -DENABLE_BINRELOC -DENABLE_NLS -DGTKVER=$(GTKVER) \
+       -DENABLE_BINRELOC -DENABLE_NLS -DGTKVER=$(GTKVER) -Wno-deprecated-declarations \
        -I$(DEVELDIR)/include -I../common -DSHIAI_VERSION=$(SHIAI_VERSION)
 
 LIBS=$(shell $(PKGCONFIGPATH) $(PKGCONFIG) --libs gtk+-$(GTKVER).0 gthread-2.0 cairo librsvg-2.0 glib-2.0) \
  $(shell curl-config --libs) -ldl
 
 OBJS += $(OBJDIR)/binreloc.o
+
+WARNINGS += -Wjump-misses-init
 
 endif

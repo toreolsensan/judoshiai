@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2015 by Hannu Jokinen
+ * Copyright (C) 2006-2016 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */
 
@@ -29,7 +29,7 @@ struct offial_category official_categories[NUM_DRAWS][2][10] = {
     { // international
         { // men
             {
-                "Men", 1000, 300, 0, 600, // name, max age, match gs rest times
+                "Men", 1000, 240, 0, 600, // name, max age, match gs rest times
                 {{60000, "60"}, {66000, "66"}, {73000, "73"},
                  {81000, "81"}, {90000, "90"}, {100000, "100"}, {0, NULL}}
             }, {
@@ -60,7 +60,7 @@ struct offial_category official_categories[NUM_DRAWS][2][10] = {
     }, { // finnish
         { // men
             {
-                "M", 1000, 300, 0, 600, // name, max age, match gs rest times
+                "M", 1000, 240, 0, 600, // name, max age, match gs rest times
                 {{60000, "60"}, {66000, "66"}, {73000, "73"},
                  {81000, "81"}, {90000, "90"}, {100000, "100"}, {0, NULL}}
             }, {
@@ -114,7 +114,7 @@ struct offial_category official_categories[NUM_DRAWS][2][10] = {
     }, { // swedish
         { // men
             {
-                "Herrar", 1000, 300, 0, 600, // name, max age, match gs rest times
+                "Herrar", 1000, 240, 0, 600, // name, max age, match gs rest times
                 {{60000, "60"}, {66000, "66"}, {73000, "73"},
                  {81000, "81"}, {90000, "90"}, {100000, "100"}, {0, NULL}}
             }, {
@@ -168,7 +168,7 @@ struct offial_category official_categories[NUM_DRAWS][2][10] = {
     }, { // estonian
         { // men
             {
-                "M", 1000, 300, 0, 600, // name, max age, match gs rest times
+                "M", 1000, 240, 0, 600, // name, max age, match gs rest times
                 {{60000, "60"}, {66000, "66"}, {73000, "73"},
                  {81000, "81"}, {90000, "90"}, {100000, "100"}, {0, NULL}}
             }, {
@@ -223,7 +223,7 @@ struct offial_category official_categories[NUM_DRAWS][2][10] = {
     }, { // spanish
         { // men
             {
-                "Sen M ", 1000, 300, 180, 600, // name, max age, match gs rest times
+                "Sen M ", 1000, 240, 180, 600, // name, max age, match gs rest times
                 {{60000, "60"}, {66000, "66"}, {73000, "73"},
                  {81000, "81"}, {90000, "90"}, {100000, "100"}, {0, NULL}}
             }, {
@@ -290,7 +290,7 @@ struct offial_category official_categories[NUM_DRAWS][2][10] = {
     }, { // norwegian
         { // men
             {
-                "SenH", 1000, 300, 0, 300, // name, max age, match gs rest times
+                "SenH", 1000, 240, 0, 300, // name, max age, match gs rest times
                 {{60000, "60"}, {66000, "66"}, {73000, "73"},
                  {81000, "81"}, {90000, "90"}, {100000, "100"}, {0, NULL}}
             }, {
@@ -356,7 +356,7 @@ struct offial_category official_categories[NUM_DRAWS][2][10] = {
     }, { // british
         { // men
             {
-                "Men", 1000, 300, 180, 600, // name, max age, match gs rest times
+                "Men", 1000, 240, 180, 600, // name, max age, match gs rest times
                 {{60000, "60"}, {66000, "66"}, {73000, "73"},
                  {81000, "81"}, {90000, "90"}, {100000, "100"}, {0, NULL}}
             }, {
@@ -402,7 +402,7 @@ struct offial_category official_categories[NUM_DRAWS][2][10] = {
     }, { // australian
         { // men
             {
-                "Men", 1000, 300, 180, 300, // name, max age, match gs rest times
+                "Men", 1000, 240, 180, 300, // name, max age, match gs rest times
                 {{60000, "60"}, {66000, "66"}, {73000, "73"},
                  {81000, "81"}, {90000, "90"}, {100000, "100"}, {0, NULL}}
             }, {
@@ -456,11 +456,11 @@ struct offial_category official_categories[NUM_DRAWS][2][10] = {
     }, { // danish
         { // men
             {
-                "Herrer", 1000, 300, 180, 600, // name, max age, match gs rest times
+                "Herrer", 1000, 240, 180, 600, // name, max age, match gs rest times
                 {{60000, "60"}, {66000, "66"}, {73000, "73"},
                  {81000, "81"}, {90000, "90"}, {100000, "100"}, {0, NULL}}
             }, {
-                "Herrer U21", 20, 300, 180, 600, // name, max age, match gs rest times
+                "Herrer U21", 20, 240, 180, 600, // name, max age, match gs rest times
                 {{50000, "50"}, {55000, "55"}, {60000, "60"}, {66000, "66"}, {73000, "73"},
                  {81000, "81"}, {90000, "90"}, {100000, "100"}, {0, NULL}}
             }, {
@@ -478,7 +478,7 @@ struct offial_category official_categories[NUM_DRAWS][2][10] = {
                 {{48000, "48"}, {52000, "52"}, {57000, "57"},
                  {63000, "63"}, {70000, "70"}, {78000, "78"}, {0, NULL}}
             }, {
-                "Damer U21", 20, 300, 180, 600, // name, max age, match gs rest times
+                "Damer U21", 20, 240, 180, 600, // name, max age, match gs rest times
                 {{44000, "44"}, {48000, "48"}, {52000, "52"}, {57000, "57"},
                  {63000, "63"}, {70000, "70"}, {78000, "78"}, {0, NULL}}
             }, {
@@ -494,7 +494,7 @@ struct offial_category official_categories[NUM_DRAWS][2][10] = {
     }, { // polish
         { // men
             {
-                "Men", 1000, 300, 0, 600, // name, max age, match gs rest times
+                "Men", 1000, 240, 0, 600, // name, max age, match gs rest times
                 {{60000, "60"}, {66000, "66"}, {73000, "73"},
                  {81000, "81"}, {90000, "90"}, {100000, "100"}, {0, NULL}}
             }, {
@@ -525,7 +525,7 @@ struct offial_category official_categories[NUM_DRAWS][2][10] = {
     }, { // slovakian
         { // men
             {
-                "Men", 1000, 300, 0, 600, // name, max age, match gs rest times
+                "Men", 1000, 240, 0, 600, // name, max age, match gs rest times
                 {{60000, "60"}, {66000, "66"}, {73000, "73"},
                  {81000, "81"}, {90000, "90"}, {100000, "100"}, {0, NULL}}
             }, {
@@ -556,7 +556,7 @@ struct offial_category official_categories[NUM_DRAWS][2][10] = {
     }, { // ukrainian
         { // men
             {
-                "Men", 1000, 300, 0, 600, // name, max age, match gs rest times
+                "Men", 1000, 240, 0, 600, // name, max age, match gs rest times
                 {{60000, "60"}, {66000, "66"}, {73000, "73"},
                  {81000, "81"}, {90000, "90"}, {100000, "100"}, {0, NULL}}
             }, {
@@ -886,19 +886,19 @@ static void init_cat_data(void)
             def.rep_time = 0;
             if (i == DRAW_FINNISH && def.age <= 10) { // E-juniors
                 def.pin_time_koka = 0;
-                def.pin_time_yuko = 5;
+                def.pin_time_yuko = 0;
                 def.pin_time_wazaari = 10;
                 def.pin_time_ippon = 15;
-            } else if (TRUE || (i == DRAW_AUSTRALIAN && def.age <= 8)) { // new rules
-                def.pin_time_koka = 5;
+	    } else if (prop_get_int_val(PROP_RULES_2017)) {
+                def.pin_time_koka = 0;
+                def.pin_time_yuko = 0;
+                def.pin_time_wazaari = 10;
+                def.pin_time_ippon = 20;
+            } else {
+                def.pin_time_koka = 0;
                 def.pin_time_yuko = 10;
                 def.pin_time_wazaari = 15;
                 def.pin_time_ippon = 20;
-            } else {
-                def.pin_time_koka = 10;
-                def.pin_time_yuko = 15;
-                def.pin_time_wazaari = 20;
-                def.pin_time_ippon = 25;
             }
 
             def.gender = (j == 0) ? IS_MALE : IS_FEMALE;
@@ -938,7 +938,7 @@ void read_cat_definitions(void)
     for (row = 0; row < numrows; row++) {
         gchar *agetext = db_get_data(row, "agetext");
         gchar *agestr = db_get_data(row, "age");
-        gchar *weighttext = db_get_data(row, "weighttext");
+        gchar *weighttxt = db_get_data(row, "weighttext");
         gchar *weightstr = db_get_data(row, "weight");
         gchar *flagsstr = db_get_data(row, "flags");
         gchar *matchtimestr = db_get_data(row, "matchtime");
@@ -962,7 +962,7 @@ void read_cat_definitions(void)
         gint pintimeippon = atoi(pintimeipponstr);
 
         //g_print("CAT DEF LINE: %s %d %s %d %d matchtime=%d\n",
-        //	agetext, age, weighttext, weight, flags, matchtime);
+        //	agetext, age, weighttxt, weight, flags, matchtime);
 
         /* find existing category line */
         gint i;
@@ -992,7 +992,7 @@ void read_cat_definitions(void)
             ;
         if (j < NUM_CAT_DEF_WEIGHTS) {
             category_definitions[i].weights[j].weight = weight;
-            strcpy(category_definitions[i].weights[j].weighttext, weighttext);
+            strcpy(category_definitions[i].weights[j].weighttext, weighttxt);
         }
     }
 

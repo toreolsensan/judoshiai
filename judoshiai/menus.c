@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2015 by Hannu Jokinen
+ * Copyright (C) 2006-2016 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */ 
 
@@ -477,9 +477,9 @@ void set_preferences(void)
     error = NULL;
     str = g_key_file_get_string(keyfile, "preferences", "nodeipaddress", &error);
     if (!error) {
-        gulong a,b,c,d;
-        sscanf(str, "%ld.%ld.%ld.%ld", &a, &b, &c, &d);
-        node_ip_addr = host2net((a << 24) | (b << 16) | (c << 8) | d);
+        gulong a,b1,c,d;
+        sscanf(str, "%ld.%ld.%ld.%ld", &a, &b1, &c, &d);
+        node_ip_addr = host2net((a << 24) | (b1 << 16) | (c << 8) | d);
         g_free(str);
     }
 

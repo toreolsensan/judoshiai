@@ -1,17 +1,40 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2015 by Hannu Jokinen
+ * Copyright (C) 2006-2016 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */
 
-#include <string.h>
-#include <time.h>
+#if defined(__WIN32__) || defined(WIN32)
+
+#define  __USE_W32_SOCKETS
+//#define Win32_Winsock
+
+#include <windows.h>
+#include <stdio.h>
+#include <initguid.h>
+#include <winsock2.h>
+#include <ws2tcpip.h>
+
+#else /* UNIX */
+
+#include <stdio.h>
 #include <stdlib.h>
-#include <locale.h>
+#include <string.h>
+#include <unistd.h>
+#include <errno.h>
+#include <netdb.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <fcntl.h>
+
+#endif /* WIN32 */
 
 #include <gtk/gtk.h>
 #include <glib.h>
+#include <librsvg/rsvg.h>
 
 #if (GTKVER == 3)
 #include <gdk/gdkkeysyms-compat.h>
@@ -53,10 +76,13 @@ gint           language = LANG_EN;
 gint           num_lines = NUM_LINES;
 gint           display_type = NORMAL_DISPLAY;
 gboolean       mirror_display = FALSE;
-gboolean       white_first = TRUE;
+static gboolean white_first = TRUE;
 gboolean       red_background = FALSE;
+gboolean       display_bracket = FALSE;
 gboolean       menu_hidden = FALSE;
 gchar         *filename = NULL;
+gint           bracket_x = 0, bracket_y = 0, bracket_w = 0, bracket_h = 0;
+gint           bracket_space_w = 0, bracket_space_h = 0;
 
 #define MY_FONT "Arial"
 
@@ -133,6 +159,24 @@ static gboolean refresh_graph(gpointer data)
     return TRUE;
 }
 
+#define SHOW_BRACKET (display_bracket && !horiz && num_tatamis == 1)
+
+gboolean show_bracket(void)
+{
+    gboolean horiz = (display_type == HORIZONTAL_DISPLAY);
+    gint num_tatamis = number_of_tatamis();
+    return SHOW_BRACKET;
+}
+
+gint first_shown_tatami(void)
+{
+    gint i;
+    for (i = 0; i < NUM_TATAMIS; i++)
+        if (show_tatami[i])
+	    return i + 1;
+    return 0;
+}
+
 static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointer userdata)
 {
     gint i;
@@ -145,6 +189,9 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
     time_t now = time(NULL);
     //gboolean update_later = FALSE;
     gboolean upper = TRUE, horiz = (display_type == HORIZONTAL_DISPLAY);
+
+    if (SHOW_BRACKET)
+        colwidth = W(1.0/4);
 
     if (horiz) {
         num_columns = num_tatamis/2;
@@ -171,7 +218,7 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
     y_pos = BOX_HEIGHT;
 
     for (i = 0; i < NUM_TATAMIS; i++) {
-        gchar buf[30];
+        gchar buf[32];
         gint k;
 
         if (!show_tatami[i])
@@ -189,7 +236,6 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
 
         for (k = 0; k < num_lines; k++) {
             struct match *m = &match_list[i][k];
-            gchar buf[20];
             gdouble e = (k == 0) ? colwidth/2 : 0.0;
 
             if (m->number >= 1000)
@@ -224,18 +270,21 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
                 cairo_show_text(c, buf);
                 cairo_restore(c);
                 //update_later = TRUE;
-            } else if (m->number == 1) {
+            } else if (m->number == 1 && m->round == 0) {
                 cairo_save(c);
                 cairo_set_source_rgb(c, 1.0, 0.0, 0.0);
                 cairo_move_to(c, left+5+colwidth/2, y_pos+extents.height);
                 cairo_show_text(c, _("Category starts"));
                 cairo_restore(c);
-            }
-
-            if (m->flags) {
+	    } else if (m->round) {
                 cairo_save(c);
-                cairo_set_source_rgb(c, 0.0, 0.0, 1.0);
+		if (m->number == 1)
+		    cairo_set_source_rgb(c, 1.0, 0.0, 0.0);
+		else
+		    cairo_set_source_rgb(c, 0.0, 0.0, 1.0);
                 cairo_move_to(c, left+5+colwidth/2, y_pos+extents.height);
+		cairo_show_text(c, round_to_str(m->round));
+#if 0
                 if (m->flags & MATCH_FLAG_GOLD)
                     cairo_show_text(c, _("Gold medal match"));
                 else if (m->flags & MATCH_FLAG_BRONZE_A)
@@ -248,6 +297,7 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
                     cairo_show_text(c, _("Semifinal B"));
                 else if (m->flags & MATCH_FLAG_SILVER)
                     cairo_show_text(c, _("Silver medal match"));
+#endif
                 cairo_restore(c);
             }
             cairo_select_font_face(c, MY_FONT, 0, CAIRO_FONT_WEIGHT_BOLD);
@@ -437,7 +487,7 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
     }
     cairo_stroke(c);
 
-    if (!horiz) {
+    if (!horiz && !SHOW_BRACKET) {
         cairo_set_source_rgb(c, 0.0, 0.0, 1.0);
         cairo_move_to(c, 0, 5*BOX_HEIGHT);
         cairo_line_to(c, W(1.0), 5*BOX_HEIGHT);
@@ -462,10 +512,79 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
         cairo_move_to(c, dragged_x - extents.width/2.0, dragged_y);
         cairo_show_text(c, dragged_text);
     }
+
 #if 0
     if (update_later)
         g_timeout_add(5000, refresh_graph, NULL);
 #endif
+}
+
+void paint_bracket(cairo_t *c, gdouble paper_width, gdouble paper_height)
+{
+    gboolean horiz = (display_type == HORIZONTAL_DISPLAY);
+
+    if (!show_bracket() || !bracket_ok)
+        return;
+
+        cairo_surface_t *image;
+
+	if (bracket_x == 0 || bracket_w == 0) {
+	    bracket_x = paper_width/4;
+	    bracket_y = BOX_HEIGHT + 2;
+	    bracket_w = paper_width - bracket_x;
+	    bracket_h = paper_height - bracket_y;
+	    bracket_space_w = paper_width;
+	    bracket_space_h = paper_height;
+	}
+
+        if (bracket_type() == BRACKET_TYPE_PNG) {
+            bracket_pos = 0;
+            image = cairo_image_surface_create_from_png_stream(bracket_read, NULL);
+            if (cairo_surface_status(image) == CAIRO_STATUS_SUCCESS) {
+                gint w, h;
+                w = cairo_image_surface_get_width(image);
+                h = cairo_image_surface_get_height(image);
+		gdouble scale_w = (gdouble)(bracket_w*paper_width)/(gdouble)(w*bracket_space_w);
+		gdouble scale_h = (gdouble)(bracket_h*paper_height)/(gdouble)(h*bracket_space_h);
+                gdouble scale = scale_w < scale_h ? scale_w : scale_h;
+		cairo_translate(c,
+				(gdouble)(bracket_x*paper_width)/(double)bracket_space_w,
+				(gdouble)(bracket_y*paper_height)/(double)bracket_space_h);
+                cairo_save(c);
+                cairo_scale(c, scale, scale);
+                //cairo_set_source_surface(c, image, paper_width*0.25/scale, (BOX_HEIGHT + 2)/scale);
+                cairo_set_source_surface(c, image, 0, 0);
+                cairo_paint(c);
+                cairo_surface_destroy(image);
+                cairo_restore(c);
+            } else
+                g_print("image fails\n");
+        } else if (bracket_type() == BRACKET_TYPE_SVG) {
+            GError *err = NULL;
+            RsvgHandle *handle = rsvg_handle_new();
+            if (!rsvg_handle_write(handle, bracket_start, bracket_len, &err)) {
+                g_print("\nJudoInfo: SVG error %s: %s %d\n",
+                        err->message, __FUNCTION__, __LINE__);
+            }
+            rsvg_handle_close(handle, NULL);
+
+            RsvgDimensionData dim;
+            rsvg_handle_get_dimensions(handle, &dim);
+	    gdouble scale_w = (gdouble)(bracket_w*paper_width)/(gdouble)(dim.width*bracket_space_w);
+            gdouble scale_h = (gdouble)(bracket_h*paper_height)/(gdouble)(dim.height*bracket_space_h);
+            gdouble scale = scale_w < scale_h ? scale_w : scale_h;
+
+            cairo_save(c);
+            cairo_translate(c,
+			    (gdouble)(bracket_x*paper_width)/(double)bracket_space_w,
+			    (gdouble)(bracket_y*paper_height)/(double)bracket_space_h);
+            cairo_scale(c, scale, scale);
+            if (!rsvg_handle_render_cairo(handle, c))
+                g_print("SVG rendering failed\n");
+            cairo_restore(c);
+            g_object_unref(handle);
+        } else
+            g_print("BRACKET TYPE error\n");
 }
 
 /* This is called when we need to draw the windows contents */
@@ -491,6 +610,7 @@ static gboolean expose(GtkWidget *widget, GdkEventExpose *event, gpointer userda
 #if (GTKVER == 3)
         paint(c, gtk_widget_get_allocated_width(widget),
               gtk_widget_get_allocated_height(widget), userdata);
+    paint_bracket(c, pd.paper_width, pd.paper_height);
 #else
         paint(c, widget->allocation.width, widget->allocation.height, userdata);
 
@@ -628,6 +748,7 @@ void toggle_mirror(GtkWidget *menu_item, gpointer data)
 
 void toggle_whitefirst(GtkWidget *menu_item, gpointer data)
 {
+    return; /* always white first*/
 #if (GTKVER == 3)
     if (TRUE || gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item))) {
 #else
@@ -650,6 +771,17 @@ void toggle_redbackground(GtkWidget *menu_item, gpointer data)
     red_background = GTK_CHECK_MENU_ITEM(menu_item)->active;
 #endif
     g_key_file_set_boolean(keyfile, "preferences", "redbackground", red_background);
+    refresh_darea();
+}
+
+void toggle_bracket(GtkWidget *menu_item, gpointer data)
+{
+#if (GTKVER == 3)
+    display_bracket = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item));
+#else
+    display_bracket = GTK_CHECK_MENU_ITEM(menu_item)->active;
+#endif
+    g_key_file_set_boolean(keyfile, "preferences", "bracket", display_bracket);
     refresh_darea();
 }
 
@@ -734,14 +866,16 @@ int main( int   argc,
                 mjpeg_width = atoi(argv[i+1]);
                 mjpeg_height = atoi(p+1);
             }
-        }
+        } else if (!strcmp(argv[i], "-a")) {
+	    node_ip_addr = inet_addr(argv[i+1]);
+	}
     }
 
     main_window = window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(main_window), "JudoInfo");
     gtk_widget_set_size_request(window, FRAME_WIDTH, FRAME_HEIGHT);
 
-    gchar *iconfile = g_build_filename(installation_dir, "etc", "judoinfo.png", NULL);
+    gchar *iconfile = g_build_filename(installation_dir, "etc", "png", "judoinfo.png", NULL);
     gtk_window_set_default_icon_from_file(iconfile, NULL);
     g_free(iconfile);
 
@@ -847,6 +981,23 @@ int main( int   argc,
     //gdk_window_set_cursor(GTK_WIDGET(main_window)->window, cursor);
 
     g_timeout_add(100, timeout_ask_for_data, NULL);
+
+    for (i = 1; i < argc - 1; i++) {
+        if (argv[i][0] == '-' && argv[i][1] == 't') {
+	    extern gboolean conf_show_tatami[NUM_TATAMIS];
+
+	    gint j, t;
+	    t = atoi(argv[i+1]) - 1;
+
+	    for (j = 0; j < NUM_TATAMIS; j++)
+		if (j == t) {
+		    show_tatami[j] = conf_show_tatami[i] = TRUE;
+		} else
+		    show_tatami[j] = conf_show_tatami[i] = FALSE;
+
+	    refresh_window();
+	}
+    }
 
     /* All GTK applications must have a gtk_main(). Control ends here
      * and waits for an event to occur (like a key press or

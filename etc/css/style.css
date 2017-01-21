@@ -1,0 +1,392 @@
+H1 { 
+    font-family: Verdana, Arial; 
+    text-align: center; 
+    color: #003060; 
+}
+H2 { 
+    font-family: Verdana, Arial; 
+    color: #003060; 
+}
+H3 { font-family: Verdana, Arial; 
+     color: #003060; 
+}
+
+a.dflt {
+    background-color: #E0E8EF;
+    font-family: Verdana, Arial;
+    font-size: 14px;
+    font-weight: normal;
+    text-decoration: none;
+    color: black;
+}
+
+table.categorylinks {
+    font-family: Verdana, Arial; 
+    background-color: #c8d7e6;
+    width: 200px;
+    border-collapse: collapse; 
+    border-width: 0;
+}
+td.categorylinksonly, td.categorylinksleft, td.categorylinksright {
+    background-color: #E0E8EF;
+    font-family: Verdana;
+    font-size: 14px;
+    font-weight: normal;
+    text-decoration: none;
+    width: 200px;
+    color: black;
+}
+
+table.resultslink, table.competitorslink, table.categorieshdr, table.nextmatcheslink,
+table.statisticslink, table.medalslink {
+    font-family: Verdana, Arial; 
+    background-color: #c8d7e6;
+    width: 200px;
+    margin-top: 4px;
+}
+td.resultslink, td.competitorslink, td.categorieshdr, td.nextmatcheslink,
+td.statisticslink, td.medalslink {
+    font-family: Verdana;
+    font-size: 14px;
+    font-weight: normal;
+    text-decoration: none;
+    width: 200px;
+    color: black;
+}
+
+table.competitors { 
+    font-family: Verdana, Arial; 
+    background: #ffffff; 
+    border-collapse: collapse; 
+}
+table.competitors td {
+    font-family: Verdana;
+    font-size: 14px;
+    font-weight: normal;
+    text-decoration: none;
+    color: black;
+}
+
+table.resultlist td {
+    font-family: Verdana;
+    font-size: 14px;
+    font-weight: normal;
+    text-decoration: none;
+    color: black;
+}
+table.resultlist td a {
+    font-family: Verdana;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: underline;
+    color: black;
+}
+
+table.medals {
+    border-width: 4;
+}
+
+table.medals td {
+    font-family: Verdana;
+    font-size: 14px;
+    font-weight: normal;
+    text-decoration: none;
+    color: black;
+    border-spacing: 8px 0px;
+}
+
+table.medals td.medalhdr {
+    text-align: center; 
+}
+
+table.medals td.medalcnt {
+    font-family: Verdana;
+    font-size: 14px;
+    font-weight: normal;
+    text-decoration: none;
+    color: black;
+    border-spacing: 8px 0px;
+    text-align: center; 
+    width: 20px;
+}
+
+table.medals th {
+    font-family: Verdana;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
+    color: black;
+    text-align: left; 
+}
+
+table.medals th.medalcnt {
+    font-family: Verdana;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
+    color: black;
+    text-align: center; 
+    width: 20px;
+}
+
+table.compstat {
+    /*border: solid black;*/
+    background-color: #E0E8EF;
+    border-collapse: separate;
+    border-spacing: 8px 0px;
+}
+
+td.cshdr {
+    border-bottom: 1px solid black;
+}
+
+td.bscore {
+    font-family: Courier;
+    background: blue;
+    color: white;
+    text-align: center;
+}
+
+td.wscore {
+    font-family: Courier;
+    background: white;
+    text-align: center;
+}
+
+table.statistics {
+    border-spacing: 8px 0px;
+}
+
+table.statistics td {
+    font-family: Verdana;
+    font-size: 14px;
+    font-weight: normal;
+    text-decoration: none;
+    color: black;
+    text-align: right;
+}
+
+table.statistics td.stat1 {
+    font-family: Verdana;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
+    color: black;
+    text-align: left;
+}
+
+table.statistics td.stat2 {
+    text-align: center;
+}
+
+table.statistics th {
+    font-family: Verdana;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
+    color: black;
+    text-align: right;
+}
+
+table.statistics th.stat1 {
+    font-family: Verdana;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
+    color: black;
+    text-align: left;
+}
+
+table.competitor {
+    border-collapse: collapse;
+}
+
+table.competitor td {
+    font-family: Verdana;
+    font-size: 14px;
+    font-weight: normal;
+    text-decoration: none;
+    color: black;
+    border-spacing: 0px 0px;
+    border-top: 1px solid grey;
+    border-bottom: 1px solid grey;
+}
+
+table.nextmatches {
+    font-family: Verdana;
+    font-size: 14px;
+    font-weight: normal;
+    text-decoration: none;
+    color: black;
+    border-spacing: 0px 0px;
+    border: 1px solid #000;
+    border-collapse: collapse;
+}
+table.nextmatches td {
+    font-family: Verdana;
+    font-size: 14px;
+    font-weight: normal;
+    text-decoration: none;
+    color: black;
+/*
+    border-spacing: 0px 0px;
+    border: 1px solid #000;
+    border-collapse: collapse;
+*/
+}
+
+table.nextmatches td.cpl {
+    border-top: 1px solid #000;
+    border-left: 1px solid #000;
+    background: #DFC;
+}
+table.nextmatches td.cpr {
+    border-top: 1px solid #000;
+    border-right: 1px solid #000;
+    background: #DFC;
+}
+table.nextmatches td.cul1 {
+    border-top: 1px solid #000;
+    border-left: 1px solid #000;
+    background: #DDD;
+}
+table.nextmatches td.cur1 {
+    border-top: 1px solid #000;
+    border-right: 1px solid #000;
+    background: #DDD;
+}
+table.nextmatches td.cdl1 {
+    border-bottom: 1px solid #000;
+    border-left: 1px solid #000;
+    background: #DDD;
+}
+table.nextmatches td.cdr1 {
+    border-bottom: 1px solid #000;
+    border-right: 1px solid #000;
+    background: #DDD;
+}
+table.nextmatches td.cul2 {
+    border-top: 1px solid #000;
+    border-left: 1px solid #000;
+    background: #EEE;
+}
+table.nextmatches td.cur2 {
+    border-top: 1px solid #000;
+    border-right: 1px solid #000;
+    background: #EEE;
+}
+table.nextmatches td.cdl2 {
+    border-bottom: 1px solid #000;
+    border-left: 1px solid #000;
+    background: #EEE;
+}
+table.nextmatches td.cdr2 {
+    border-bottom: 1px solid #000;
+    border-right: 1px solid #000;
+    background: #EEE;
+}
+table.nextmatches td.ccl2 {
+    border-left: 1px solid #000;
+    background: #EEE;
+}
+table.nextmatches td.ccr2 {
+    border-right: 1px solid #000;
+    background: #EEE;
+}
+
+tr.judogiok {
+    color: #070;
+}
+tr.judoginok {
+    color: #900;
+}
+
+table.tablesorter {
+	font-size: 12px;
+	background-color: #FFF;
+	border: 1px solid #000;
+	border-collapse:collapse;
+}
+table.tablesorter th {
+	text-align: left;
+	padding: 5px;
+	background-color: #6E6E6E;
+	border: 1px solid #000;
+	cursor: pointer;
+}
+table.tablesorter td {
+	color: #000;
+	padding: 5px;
+	border: 1px solid #000;
+	cursor: pointer;
+}
+table.tablesorter .header {
+	background-image: url(bg.png);
+	background-repeat: no-repeat;
+	padding-left: 30px;
+	padding-top: 8px;
+	height: auto;
+}
+table.tablesorter .headerSortUp {
+	background-image: url(asc.png);
+	background-repeat: no-repeat;
+}
+table.tablesorter .headerSortDown {
+	background-image: url(desc.png);
+	background-repeat: no-repeat;
+}
+img.catimg {
+    /*cursor: n-resize;*/
+    cursor: pointer;
+}
+img.button {
+    cursor: pointer;
+}
+div.catdiv {
+    /*cursor: n-resize;*/
+    cursor: pointer;
+}
+
+/* tooltip */
+.hotspot {color:#900; padding-bottom:1px; border-bottom:1px dotted #900; cursor:pointer}
+#tt {position:absolute; display:block; background:url(tt_left.png) top left no-repeat}
+#tttop {display:block; height:5px; margin-left:5px; background:url(tt_top.png) top right no-repeat; overflow:hidden}
+#ttcont {display:block; padding:2px 12px 3px 7px; margin-left:5px; background:#666; color:#FFF}
+#ttbot {display:block; height:5px; margin-left:5px; background:url(tt_bottom.png) top right no-repeat; overflow:hidden}
+
+@media print {
+.nextmatcheslink, .medalslink, .statisticslink, .tournamentheader, .categorylinks, .categorieshdr, 
+.competitorslink, .resultslink {
+    display:none;
+}
+.catimg {
+    width: 100%;
+    height: 100%;
+}
+.catdiv {
+    width: 6in;
+    height: 8.5in;
+}
+.cattr2 {
+    page-break-before: always;
+}
+}
+
+/* Override css from other files */
+a {
+    color: #003060;
+}
+
+table.treetable a {
+    color: #003060;
+}
+
+a:hover,
+a:focus {
+    color: #0060c0;
+    text-decoration: underline;
+}
+
+table.treetable tbody td:first-child {
+  font-weight: bold;
+}

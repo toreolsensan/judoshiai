@@ -1,9 +1,9 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2015 by Hannu Jokinen
+ * Copyright (C) 2006-2016 by Hannu Jokinen
  * Full copyright text is included in the software package.
- */ 
+ */
 
 #if defined(__WIN32__) || defined(WIN32)
 
@@ -57,8 +57,8 @@
 #define gettext(String) (String)
 #define dgettext(Domain,String) (String)
 #define dcgettext(Domain,String,Type) (String)
-#define bindtextdomain(Domain,Directory) (Domain) 
-#define bind_textdomain_codeset(Domain,Codeset) (Codeset) 
+#define bindtextdomain(Domain,Directory) (Domain)
+#define bind_textdomain_codeset(Domain,Codeset) (Codeset)
 #endif /* ENABLE_NLS */
 
 #define DEV_TYPE_NORMAL   0
@@ -81,7 +81,7 @@ struct baudrates {
 static gchar serial_device[32] = {0};
 static gint  serial_baudrate = 0; // index to a table
 static gint device_type = 0;
-static gboolean serial_changed = FALSE;       
+static gboolean serial_changed = FALSE;
 gboolean serial_used = FALSE;
 
 static gchar handle_character(gchar c)
@@ -149,7 +149,7 @@ static gchar send_chars(void)
 
     return 0;
 }
- 
+
 #if defined(__WIN32__) || defined(WIN32)
 
 struct baudrates serial_baudrates[NUM_BAUDRATES] = {
@@ -274,26 +274,26 @@ gpointer serial_thread(gpointer args)
         if (serial_device[0] == 0)
             continue;
 
-        fd = open(serial_device, O_RDWR | O_NOCTTY ); 
+        fd = open(serial_device, O_RDWR | O_NOCTTY );
         if (fd < 0)
             continue;
-        
+
         tcgetattr(fd,&oldtio); /* save current port settings */
-        
+
         bzero(&newtio, sizeof(newtio));
         newtio.c_cflag = serial_baudrates[serial_baudrate].value | CRTSCTS | CS8 | CLOCAL | CREAD;
         newtio.c_iflag = IGNPAR;
         newtio.c_oflag = 0;
-        
+
         /* set input mode (non-canonical, no echo,...) */
         newtio.c_lflag = 0;
-         
+
         newtio.c_cc[VTIME]    = 2;   /* inter-character timer in 0.1 sec */
         newtio.c_cc[VMIN]     = 0;   /* blocking read until 1 char received */
-        
+
         tcflush(fd, TCIFLUSH);
         tcsetattr(fd,TCSANOW,&newtio);
-        
+
         while (*((gboolean *)args) && serial_device[0] && serial_changed == FALSE) {       /* loop for input */
             gchar ch = 0, ch2 = 0;
 
@@ -383,7 +383,7 @@ void set_serial_dialog(GtkWidget *w, gpointer data)
     gtk_grid_attach(GTK_GRID(table), gtk_label_new(_("Type")), 0, 3, 1, 1);
     gtk_grid_attach(GTK_GRID(table), devtype, 1, 3, 1, 1);
 
-    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), 
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),
                        table, FALSE, FALSE, 0);
 #else
     gtk_table_attach_defaults(GTK_TABLE(table), gtk_label_new(_("In Use")), 0, 1, 0, 1);

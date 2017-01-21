@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-28 10:35+0300\n"
+"POT-Creation-Date: 2016-10-25 13:22+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -782,6 +782,9 @@ msgstr "Pronssiottelu A"
 msgid "Bronze match B"
 msgstr "Pronssiottelu B"
 
+msgid "Semifinal"
+msgstr "Semifinaali"
+
 msgid "Semifinal A"
 msgstr "Semifinaali A"
 
@@ -1231,6 +1234,9 @@ msgstr "viivytä"
 
 msgid "Final"
 msgstr "Finaali"
+
+msgid "Bronze"
+msgstr "Pronssi"
 
 msgid "Bronze1"
 msgstr "Pronssi 1"
@@ -1802,3 +1808,36 @@ msgstr "Sovita sivulle"
 
 msgid "No SOREMADE/IPPON texts"
 msgstr "Ei SOREMADE/IPPON-tekstejä"
+
+msgid "Custom layout file..."
+msgstr "Asettelutiedosto..."
+
+msgid "Resolve 3-way ties by time:"
+msgstr "Otteluaika ratkaisee ristiin voitetut:"
+
+msgid "Move Matches"
+msgstr "Siirrä otteluita"
+
+msgid "Move Matches..."
+msgstr "Siirrä otteluita..."
+
+msgid "Use the first places only:"
+msgstr "Käytä vain ensimmäisiä paikkoja"
+
+msgid "Round"
+msgstr "Kierros"
+
+msgid "Round Robin"
+msgstr "Pooli"
+
+msgid "Repechage"
+msgstr "Keräily"
+
+msgid "Mix pool matches into rounds:"
+msgstr "Sekoita pooliottelut kierroksen sekaan"
+
+msgid "Use IJF points:"
+msgstr "Käytä IJF-pisteitä"
+
+msgid "Show bracket"
+msgstr "Näytä kaavio"

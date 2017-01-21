@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2015 by Hannu Jokinen
+ * Copyright (C) 2006-2016 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */ 
 
@@ -302,7 +302,7 @@ void locate_to_tatamis(GtkWidget *w, gpointer data)
 
 void update_category_status_info(gint category)
 {
-    db_category_match_status(category);
+    db_category_set_match_status(category);
 #if 0
     GtkTreeIter iter;
     gint weight;
@@ -332,7 +332,7 @@ void update_category_status_info_all(void)
 {
     GtkTreeIter iter;
     gboolean ok;
-    gint weight, index, visible;
+    gint index, visible;
 
     ok = gtk_tree_model_get_iter_first(current_model, &iter);
     while (ok) {
@@ -342,20 +342,19 @@ void update_category_status_info_all(void)
                            -1);
 
         if (visible == 0) {
-            weight = db_category_match_status(index);
-#if 0			
+            db_category_set_match_status(index);
+#if 0
             gtk_tree_store_set(GTK_TREE_STORE(current_model), 
                                &iter,
                                COL_WEIGHT, weight,
                                -1);
-#endif
             struct category_data data, *data1;
             data.index = index;
             if (avl_get_by_key(categories_tree, &data, (void *)&data1) == 0) {
                 data1->match_status = weight;
             } else
                 g_print("Error %s %d (%d)\n", __FUNCTION__, __LINE__, index);
-
+#endif
             ok = gtk_tree_model_iter_next(current_model, &iter);
         } else
             g_print("ERROR: %s:%d\n", __FUNCTION__, __LINE__);
@@ -398,4 +397,28 @@ struct compsys uncompress_system(gint system)
     d.table = (system & SYSTEM_TABLE_MASK) >> SYSTEM_TABLE_SHIFT;
     d.wishsys = (system & SYSTEM_WISH_MASK) >> SYSTEM_WISH_SHIFT;
     return d;
+}
+
+/* Sqlite3 internal function implementation. */
+int get_category_property(int cat, int prop)
+{
+    struct category_data *catdata = avl_get_category(cat);
+    if (!catdata)
+	return -1;
+
+    switch (prop) {
+    case 0: /* category is french */
+	if (catdata->system.system >= SYSTEM_FRENCH_8 &&
+	    catdata->system.system <= SYSTEM_FRENCH_256)
+	    return 1;
+	else
+	    return 0;
+    case 1: /* category is not french */
+	if (catdata->system.system < SYSTEM_FRENCH_8 ||
+	    catdata->system.system > SYSTEM_FRENCH_256)
+	    return 1;
+	else
+	    return 0;
+    }
+    return 0;
 }

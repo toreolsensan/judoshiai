@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2015 by Hannu Jokinen
+ * Copyright (C) 2006-2016 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */ 
 
@@ -429,7 +429,7 @@ ok:
     gtk_init (&argc, &argv);
 
     /*-------- CSS -------------------------------------------*/
-    gchar *file = g_build_filename(installation_dir, "etc", "gtk.css", NULL);
+    gchar *file = g_build_filename(installation_dir, "etc", "css", "gtk.css", NULL);
 
     if (g_file_test(file, G_FILE_TEST_EXISTS)) {
         GtkCssProvider *provider = gtk_css_provider_new();
@@ -454,7 +454,7 @@ ok:
     gtk_window_set_title(GTK_WINDOW(main_window), "JudoShiai");
     gtk_widget_set_size_request(window, FRAME_WIDTH, FRAME_HEIGHT);
 
-    gchar *iconfile = g_build_filename(installation_dir, "etc", "judoshiai.png", NULL);
+    gchar *iconfile = g_build_filename(installation_dir, "etc", "png", "judoshiai.png", NULL);
     gtk_window_set_default_icon_from_file(iconfile, NULL);
     g_free(iconfile);
 
@@ -611,6 +611,12 @@ ok:
     }
 
     update_match_pages_visibility();
+
+#ifdef CALCULATE_ROUNDS
+    /* Generate round number table. */
+    extern void print_rounds(void);
+    print_rounds();
+#endif
 
     /* All GTK applications must have a gtk_main(). Control ends here
      * and waits for an event to occur (like a key press or

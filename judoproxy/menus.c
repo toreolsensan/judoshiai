@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2015 by Hannu Jokinen
+ * Copyright (C) 2006-2016 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */
 
@@ -44,7 +44,7 @@ static void about_judoproxy( GtkWidget *w,
     gtk_show_about_dialog (NULL,
                            "name", "JudoProxy",
                            "title", _("About JudoProxy"),
-                           "copyright", "Copyright 2006-2015 Hannu Jokinen",
+                           "copyright", "Copyright 2006-2016 Hannu Jokinen",
                            "version", SHIAI_VERSION,
                            "website", "http://sourceforge.net/projects/judoshiai/",
                            NULL);
@@ -58,7 +58,7 @@ static void change_menu_label(GtkWidget *item, const gchar *new_text)
 
 static GtkWidget *get_picture(const gchar *name)
 {
-    gchar *file = g_build_filename(installation_dir, "etc", name, NULL);
+    gchar *file = g_build_filename(installation_dir, "etc", "png", name, NULL);
     GtkWidget *pic = gtk_image_new_from_file(file);
     g_free(file);
     return pic;
@@ -67,7 +67,7 @@ static GtkWidget *get_picture(const gchar *name)
 static void set_menu_item_picture(GtkImageMenuItem *menu_item, gchar *name)
 {
     GtkImage *image = GTK_IMAGE(gtk_image_menu_item_get_image(GTK_IMAGE_MENU_ITEM(menu_item)));
-    gchar *file = g_build_filename(installation_dir, "etc", name, NULL);
+    gchar *file = g_build_filename(installation_dir, "etc", "png", name, NULL);
     gtk_image_set_from_file(image, file);
     g_free(file);
 }

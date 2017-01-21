@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2015 by Hannu Jokinen
+ * Copyright (C) 2006-2016 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */
 
@@ -39,9 +39,10 @@
 
 #define OSAEKOMI_DSP_NO      0
 #define OSAEKOMI_DSP_YES     1
-#define OSAEKOMI_DSP_BLUE    2
-#define OSAEKOMI_DSP_WHITE   3
-#define OSAEKOMI_DSP_UNKNOWN 4
+#define OSAEKOMI_DSP_YES2    2
+#define OSAEKOMI_DSP_BLUE    3
+#define OSAEKOMI_DSP_WHITE   4
+#define OSAEKOMI_DSP_UNKNOWN 5
 
 #define CLEAR_SELECTION   0
 #define HANTEI_BLUE       1
@@ -79,18 +80,14 @@ extern gboolean white_wins_voting;
 extern gboolean hansokumake_to_blue;
 extern gboolean hansokumake_to_white;
 extern gboolean result_hikiwake;
-extern gint osaekomi_winner;
 extern gchar *installation_dir;
 extern gulong my_ip_address, node_ip_addr;
 extern gboolean automatic;
 extern gint demo;
 extern gchar *matchlist;
 extern GKeyFile *keyfile;
-extern gboolean rules_no_koka_dsp;
-extern gboolean rules_leave_score;
 //extern gboolean rule_no_free_shido;
-extern gboolean rule_eq_score_less_shido_wins;
-extern gboolean rule_short_pin_times;
+extern gboolean use_2017_rules;
 extern gboolean rules_stop_ippon_2;
 extern gboolean rules_confirm_match;
 extern gboolean golden_score;
@@ -105,6 +102,7 @@ extern gboolean no_big_text;
 extern gboolean show_competitor_names;
 extern gchar saved_first1[32], saved_first2[32], saved_last1[32], saved_last2[32], saved_cat[16];
 extern gchar saved_country1[8], saved_country2[8];
+extern gint saved_round;
 extern gboolean fullscreen;
 extern gboolean require_judogi_ok;
 extern gboolean showflags, showletter;
@@ -142,7 +140,7 @@ extern int clock_running(void);
 //extern void set_cursor(int cursor);
 //extern int lz_uncompress(unsigned char *in, unsigned char *out, unsigned int insize);
 extern void show_message(char *cat1, char *blue1, char *white1,
-                         char *cat2, char *blue2, char *white2, gint flags);
+                         char *cat2, char *blue2, char *white2, gint flags, gint round);
 extern void send_result(int bluepts[4], int whitepts[4], char blue_vote, char white_vote,
 			char blue_hansokumake, char white_hansokumake, gint legend, gint hikiwake);
 extern void update_status(void);
@@ -151,10 +149,10 @@ extern int get_match_time(void);
 
 extern void set_hantei_winner(gint cmd);
 extern void set_timer_run_color(gboolean running, gboolean resttime);
-extern void set_timer_osaekomi_color(gint osaekomi_state, gint points);
+extern void set_timer_osaekomi_color(gint osaekomi_state, gint points, gboolean orun);
 extern void set_timer_value(guint min, guint tsec, guint sec);
 extern void set_osaekomi_value(guint tsec, guint sec);
-extern void set_points(gint blue[], gint white[]);
+extern void set_points(gint blue[5], gint white[5]);
 extern void set_score(guint score);
 extern GtkWidget *get_menubar_menu(GtkWidget  *window);
 extern GtkWidget *get_menubar_menu_en( GtkWidget  *window );
@@ -162,12 +160,10 @@ extern GtkWidget *get_menubar_menu_fi( GtkWidget  *window );
 extern void clock_key(guint key, guint event_state);
 extern void toggle_color(GtkWidget *menu_item, gpointer data);
 extern void toggle_full_screen(GtkWidget *menu_item, gpointer data);
-extern void toggle_rules_no_koka(GtkWidget *menu_item, gpointer data);
-extern void toggle_rules_leave_points(GtkWidget *menu_item, gpointer data);
 extern void toggle_rules_stop_ippon(GtkWidget *menu_item, gpointer data);
 extern void toggle_rules_no_free_shido(GtkWidget *menu_item, gpointer data);
 extern void toggle_rules_eq_score_less_shido_wins(GtkWidget *menu_item, gpointer data);
-extern void toggle_rules_short_pin_times(GtkWidget *menu_item, gpointer data);
+extern void toggle_rules_2017(GtkWidget *menu_item, gpointer data);
 extern void toggle_confirm_match(GtkWidget *menu_item, gpointer data);
 extern void toggle_whitefirst(GtkWidget *menu_item, gpointer data);
 extern void toggle_no_texts(GtkWidget *menu_item, gpointer data);
@@ -189,15 +185,14 @@ extern void ask_video_ip_address( GtkWidget *w, gpointer data);
 extern void open_comm_socket(void);
 extern void change_language_1(void);
 extern gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param);
-extern void hajime_inc_func(void);
-extern void hajime_dec_func(void);
+extern void hajime_inc_func(gdouble fix);
+extern void hajime_dec_func(gdouble fix);
 extern void osaekomi_inc_func(void);
 extern void osaekomi_dec_func(void);
 extern void msg_to_queue(struct message *msg);
 extern struct message *get_rec_msg(void);
 extern void destroy( GtkWidget *widget, gpointer   data );
 extern void set_preferences(void);
-extern gulong host2net(gulong a);
 //extern void undo_func(GtkWidget *menu_item, gpointer data);
 extern gboolean undo_func(GtkWidget *menu_item, GdkEventButton *event, gpointer data);
 extern void set_clocks(gint clock, gint osaekomi);
@@ -227,7 +222,8 @@ extern void toggle_switch_sides(GtkWidget *menu_item, gpointer data);
 extern void light_switch_sides(gboolean yes);
 extern void parse_name(const gchar *s, gchar *first, gchar *last, gchar *club, gchar *country);
 extern void display_comp_window(gchar *cat, gchar *comp1, gchar *comp2, 
-                                gchar *first1, gchar *first2, gchar *country1, gchar *country2);
+                                gchar *first1, gchar *first2, gchar *country1, gchar *country2,
+				gint round);
 extern gboolean blue_background(void);
 extern void close_ad_window(void);
 extern void display_ask_window(gchar *name, gchar *cat, gchar winner);

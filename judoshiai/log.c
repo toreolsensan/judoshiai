@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2015 by Hannu Jokinen
+ * Copyright (C) 2006-2016 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */ 
 
@@ -153,7 +153,7 @@ static void add_columns(GtkTreeView *view)
                                      NULL);
 }
 
-void set_log_page(GtkWidget *notebook)
+void set_log_page(GtkWidget *nb)
 {
     GtkWidget    *log_scrolled_window;
     GtkWidget    *treeview;
@@ -163,7 +163,7 @@ void set_log_page(GtkWidget *notebook)
     gtk_container_set_border_width(GTK_CONTAINER(log_scrolled_window), 10);
 
     model = create_model();
-        
+
     log_view = treeview = gtk_tree_view_new_with_model(model);
 
     g_object_unref(model);
@@ -178,7 +178,7 @@ void set_log_page(GtkWidget *notebook)
 #endif
 
     log_label = gtk_label_new (_("Log"));
-    gtk_notebook_append_page(GTK_NOTEBOOK(notebook), log_scrolled_window, log_label);
+    gtk_notebook_append_page(GTK_NOTEBOOK(nb), log_scrolled_window, log_label);
 }
 
 void shiai_log(guint severity, guint tatami, gchar *format, ...)

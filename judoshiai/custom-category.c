@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2015 by Hannu Jokinen
+ * Copyright (C) 2006-2016 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */
 
@@ -18,8 +18,6 @@
 
 #include "sqlite3.h"
 #include "judoshiai.h"
-
-static GtkTextBuffer *message_window(void);
 
 //#define LOG(_f...) custlog(_f)
 #define LOG(_f...) do { } while (0)
@@ -817,7 +815,7 @@ static void destroy_message( GtkWidget *widget,
 {
 }
 
-static GtkTextBuffer *message_window(void)
+GtkTextBuffer *message_window(void)
 {
     GtkTextBuffer *buffer;
     GtkWidget *vbox, *result, *ok;

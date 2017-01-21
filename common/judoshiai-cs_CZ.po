@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-28 10:35+0300\n"
+"POT-Creation-Date: 2016-10-25 13:22+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -806,6 +806,9 @@ msgstr "Zápas o bronz A"
 msgid "Bronze match B"
 msgstr "Zápas o bronz B"
 
+msgid "Semifinal"
+msgstr "Semifinále"
+
 msgid "Semifinal A"
 msgstr "Semifinále A"
 
@@ -1303,6 +1306,9 @@ msgstr "přestávka"
 
 msgid "Final"
 msgstr "Finále"
+
+msgid "Bronze"
+msgstr "Bronzový"
 
 msgid "Bronze1"
 msgstr "Bronzový 1"
@@ -1894,4 +1900,43 @@ msgid "Fit page"
 msgstr ""
 
 msgid "No SOREMADE/IPPON texts"
+msgstr ""
+
+msgid "Custom layout file..."
+msgstr ""
+
+msgid "Resolve 3-way ties by time:"
+msgstr ""
+
+msgid "Move Matches"
+msgstr ""
+
+msgid "Match order from file"
+msgstr ""
+
+msgid "Match Order from File"
+msgstr ""
+
+msgid "Move Matches..."
+msgstr ""
+
+msgid "Use the first places only:"
+msgstr ""
+
+msgid "Round"
+msgstr ""
+
+msgid "Round Robin"
+msgstr ""
+
+msgid "Repechage"
+msgstr ""
+
+msgid "Mix pool matches into rounds:"
+msgstr ""
+
+msgid "Use IJF points:"
+msgstr ""
+
+msgid "Show bracket"
 msgstr ""

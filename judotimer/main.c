@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2015 by Hannu Jokinen
+ * Copyright (C) 2006-2016 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */
 
@@ -23,6 +23,9 @@
 #include <process.h>
 //#include <glib/gwin32.h>
 #else
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 #include <sys/types.h>
 #include <unistd.h>
 #endif
@@ -76,8 +79,6 @@ static gboolean big_dialog = FALSE;
 static gchar big_text[40];
 static time_t big_end;
 
-gboolean rules_no_koka_dsp = TRUE;
-gboolean rules_leave_score = FALSE;
 gboolean rules_stop_ippon_2 = FALSE;
 gboolean rules_confirm_match = FALSE;
 GdkCursor *cursor = NULL;
@@ -88,8 +89,7 @@ gboolean fullscreen = FALSE;
 gboolean menu_hidden = FALSE;
 gboolean supports_alpha = FALSE;
 //gboolean rule_no_free_shido = FALSE;
-gboolean rule_eq_score_less_shido_wins = FALSE;
-gboolean rule_short_pin_times = FALSE;
+gboolean use_2017_rules = TRUE;
 
 #define MY_FONT "Arial"
 static gchar font_face[32];
@@ -412,6 +412,45 @@ CBFUNC(flag_white)
         return FALSE;
 }
 
+CBFUNC(roundnum)
+{
+        return FALSE;
+}
+
+CBFUNC(comp1_country)
+{
+        return FALSE;
+}
+CBFUNC(comp2_country)
+{
+        return FALSE;
+}
+
+CBFUNC(comp1_leg_grab)
+{
+	clock_key(GDK_k, 0);
+        return FALSE;
+}
+CBFUNC(comp2_leg_grab)
+{
+	clock_key(GDK_l, 0);
+        return FALSE;
+}
+
+CBFUNC(padding1)
+{
+        return FALSE;
+}
+CBFUNC(padding2)
+{
+        return FALSE;
+}
+CBFUNC(padding3)
+{
+        return FALSE;
+}
+
+
 
 /* globals */
 gchar *program_path;
@@ -431,16 +470,18 @@ static gint wazaari, yuko, koka, shido;
 static gint bw, by, bk, bs;
 static gint ww, wy, wk, ws;
 static gint t_min, t_tsec, t_sec;
-static gint o_tsec, o_sec, padding, sonomama;
+static gint o_tsec, o_sec, padding, sonomama, padding1, padding2, padding3;
 static gint points, comment, cat1, cat2, gs;
 static gint pts_to_blue, pts_to_white, flag_blue, flag_white;
+static gint roundnum, comp1_country, comp2_country, comp1_leg_grab, comp2_leg_grab;
 
 static GdkColor color_yellow, color_white, color_grey, color_green, color_blue, color_red, color_black;
 static GdkColor *bgcolor = &color_blue, bgcolor_pts, bgcolor_points;
 static gdouble background_r, background_g, background_b;
 static GdkColor clock_run, clock_stop, clock_bg;
 static GdkColor oclock_run, oclock_stop, oclock_bg;
-static gint hide_clock_if_osaekomi, hide_zero_osaekomi_points;
+static gint hide_clock_if_osaekomi, hide_zero_osaekomi_points, show_shido_cards,
+    hide_scores_if_zero;
 static gint current_osaekomi_state;
 
 #define MY_LABEL(_x) _x
@@ -451,7 +492,7 @@ static double paper_width, paper_height;
 
 #define LABEL_STATUS_EXPOSE 1
 #define LABEL_STATUS_CHANGED 2
-#define NUM_LABELS 40
+#define NUM_LABELS 50
 struct label {
     gdouble x, y;
     gdouble w, h;
@@ -574,7 +615,7 @@ void set_timer_run_color(gboolean running, gboolean resttime)
     expose_label(NULL, t_sec);
 }
 
-void set_timer_osaekomi_color(gint osaekomi_state, gint pts)
+void set_timer_osaekomi_color(gint osaekomi_state, gint pts, gboolean orun)
 {
     GdkColor *fg = &color_white, *bg = &color_black, *color = &color_green;
 
@@ -585,6 +626,7 @@ void set_timer_osaekomi_color(gint osaekomi_state, gint pts)
         msg.u.update_label.label_num = SET_TIMER_OSAEKOMI_COLOR;
 	msg.u.update_label.i1 = hton32(osaekomi_state);
 	msg.u.update_label.i2 = hton32(pts);
+	msg.u.update_label.i3 = hton32(orun);
         send_label_msg(&msg);
     }
 
@@ -592,23 +634,15 @@ void set_timer_osaekomi_color(gint osaekomi_state, gint pts)
         if (osaekomi_state == OSAEKOMI_DSP_BLUE ||
             osaekomi_state == OSAEKOMI_DSP_WHITE ||
             osaekomi_state == OSAEKOMI_DSP_UNKNOWN ||
-            osaekomi_state == OSAEKOMI_DSP_NO) {
+            osaekomi_state == OSAEKOMI_DSP_YES2) {
             gint b = bk, w = wk;
             gdouble sb, sw;
 
-            if (rules_no_koka_dsp) {
-                switch (pts) {
-                case 2: b = bk; w = wk; break;
-                case 3: b = by; w = wy; break;
-                case 4: b = bw; w = ww; break;
-                }
-            } else {
-                switch (pts) {
-                case 1: b = bk; w = wk; break;
-                case 2: b = by; w = wy; break;
-                case 3: b = bw; w = ww; break;
-                }
-            }
+	    switch (pts) {
+	    case 2: b = bk; w = wk; break;
+	    case 3: b = by; w = wy; break;
+	    case 4: b = bw; w = ww; break;
+	    }
 
             sb = labels[b].size;
             sw = labels[w].size;
@@ -634,63 +668,52 @@ void set_timer_osaekomi_color(gint osaekomi_state, gint pts)
         expose_label(NULL, wk);
     }
 
-    switch (osaekomi_state) {
-    case OSAEKOMI_DSP_NO:
-        fg = &color_grey;
-        bg = &bgcolor_points;
-        break;
-    case OSAEKOMI_DSP_YES:
-        fg = &color_green;
-        bg = &bgcolor_points;
-        break;
-    case OSAEKOMI_DSP_BLUE:
-        if (white_first) {
-            fg = &color_black;
-            bg = &color_white;
-        } else {
-            fg = &color_white;
-            bg = bgcolor;
-        }
-        break;
-    case OSAEKOMI_DSP_WHITE:
-        if (white_first) {
-            fg = &color_white;
-            bg = bgcolor;
-        } else {
-            fg = &color_black;
-            bg = &color_white;
-        }
-        break;
-    case OSAEKOMI_DSP_UNKNOWN:
-        fg = &color_white;
-        bg = &bgcolor_points;
-        break;
+    if (orun) {
+	fg = &color_green;
+	bg = &bgcolor_points;
+    } else {
+	switch (osaekomi_state) {
+	case OSAEKOMI_DSP_NO:
+	case OSAEKOMI_DSP_YES2:
+	    fg = &color_grey;
+	    bg = &bgcolor_points;
+	    break;
+	case OSAEKOMI_DSP_YES:
+	    fg = &color_green;
+	    bg = &bgcolor_points;
+	    break;
+	case OSAEKOMI_DSP_BLUE:
+	    fg = &color_black;
+	    bg = &color_white;
+	    break;
+	case OSAEKOMI_DSP_WHITE:
+	    fg = &color_white;
+	    bg = bgcolor;
+	    break;
+	case OSAEKOMI_DSP_UNKNOWN:
+	    fg = &color_white;
+	    bg = &bgcolor_points;
+	    break;
+	}
     }
 
     set_fg_color(points, GTK_STATE_NORMAL, fg);
     set_bg_color(points, GTK_STATE_NORMAL, bg);
 
     gint pts1, pts2;
-    if (white_first) {
-        pts1 = pts_to_white;
-        pts2 = pts_to_blue;
-    } else {
-        pts1 = pts_to_blue;
-        pts2 = pts_to_white;
-    }
+    pts1 = pts_to_white;
+    pts2 = pts_to_blue;
 
     current_osaekomi_state = osaekomi_state;
 
-    if (osaekomi_state == OSAEKOMI_DSP_YES) {
+    if (orun) {
         color = &oclock_run;
-        //color = &color_green;
         set_fg_color(pts1, GTK_STATE_NORMAL, &color_white);
         set_bg_color(pts1, GTK_STATE_NORMAL, bgcolor);
         set_fg_color(pts2, GTK_STATE_NORMAL, &color_black);
         set_bg_color(pts2, GTK_STATE_NORMAL, &color_white);
     } else {
         color = &oclock_stop;
-        //color = &color_grey;
         set_fg_color(pts1, GTK_STATE_NORMAL, &color_grey);
         set_bg_color(pts1, GTK_STATE_NORMAL, &bgcolor_pts);
         set_fg_color(pts2, GTK_STATE_NORMAL, &color_grey);
@@ -726,7 +749,7 @@ void set_timer_value(guint min, guint tsec, guint sec)
         send_label_msg(&msg);
     }
 
-    if (min < 10000/60) {
+    if (min < 20) {
         set_text(MY_LABEL(t_min), num_to_str(min%10));
         set_text(MY_LABEL(t_tsec), num_to_str(tsec));
         set_text(MY_LABEL(t_sec), num_to_str(sec));
@@ -773,7 +796,7 @@ static void set_number(gint w, gint num)
     }
 }
 
-void set_points(gint blue[], gint white[])
+void set_points(gint blue[5], gint white[5])
 {
     if (mode != MODE_SLAVE) {
 	gint i;
@@ -781,49 +804,57 @@ void set_points(gint blue[], gint white[])
         memset(&msg, 0, sizeof(msg));
         msg.type = MSG_UPDATE_LABEL;
         msg.u.update_label.label_num = SET_POINTS;
-	for (i = 0; i < 4; i++) {
+	for (i = 0; i < 5; i++) {
 	    msg.u.update_label.pts1[i] = hton32(blue[i]);
 	    msg.u.update_label.pts2[i] = hton32(white[i]);
 	}
         send_label_msg(&msg);
     }
 
-    if (rules_no_koka_dsp) {
-        if (blue[0] >= 2)
-            set_number(bw, 1);
-        else
-            set_number(bw, 0);
+    if (blue[0])
+	set_number(bw, 1);
+    else
+	set_number(bw, 0);
 
-        if (blue[0] & 1)
-            set_number(by, 1);
-        else
-            set_number(by, 0);
+    set_number(by, blue[1]);
+    set_number(bk, blue[2]);
+    set_number(bs, blue[3]);
 
-        set_number(bk, blue[1]);
-        set_number(bs, blue[3]);
+    if (white[0])
+	set_number(ww, 1);
+    else
+	set_number(ww, 0);
 
-        if (white[0] >= 2)
-            set_number(ww, 1);
-        else
-            set_number(ww, 0);
+    set_number(wy, white[1]);
+    set_number(wk, white[2]);
+    set_number(ws, white[3]);
 
-        if (white[0] & 1)
-            set_number(wy, 1);
-        else
-            set_number(wy, 0);
-
-        set_number(wk, white[1]);
-        set_number(ws, white[3]);
+    if (blue[4]) {
+	labels[comp1_leg_grab].fg_r = 0;
+	labels[comp1_leg_grab].fg_g = 0;
+	labels[comp1_leg_grab].fg_b = 0;
+	labels[comp1_leg_grab].size = 0.4;
     } else {
-        set_number(bw, blue[0]);
-        set_number(by, blue[1]);
-	set_number(bk, blue[2]);
-        set_number(bs, blue[3]);
-        set_number(ww, white[0]);
-        set_number(wy, white[1]);
-        set_number(wk, white[2]);
-        set_number(ws, white[3]);
+	labels[comp1_leg_grab].fg_r = 0.6;
+	labels[comp1_leg_grab].fg_g = 0.6;
+	labels[comp1_leg_grab].fg_b = 0.6;
+	labels[comp1_leg_grab].size = 0.2;
     }
+
+    if (white[4]) {
+	labels[comp2_leg_grab].fg_r = 1.0;
+	labels[comp2_leg_grab].fg_g = 1.0;
+	labels[comp2_leg_grab].fg_b = 1.0;
+	labels[comp2_leg_grab].size = 0.4;
+    } else {
+	labels[comp2_leg_grab].fg_r = 0.6;
+	labels[comp2_leg_grab].fg_g = 0.6;
+	labels[comp2_leg_grab].fg_b = 1.0;
+	labels[comp2_leg_grab].size = 0.2;
+    }
+
+    expose_label(NULL, comp1_leg_grab);
+    expose_label(NULL, comp2_leg_grab);
 
     update_tvlogo = TRUE;
 }
@@ -923,6 +954,7 @@ static gchar *get_name_by_layout(gchar *first, gchar *last, gchar *club, gchar *
 
 gchar saved_first1[32], saved_first2[32], saved_last1[32], saved_last2[32], saved_cat[16];
 gchar saved_country1[8], saved_country2[8];
+gint  saved_round = 0;
 
 void show_message(gchar *cat_1,
                   gchar *blue_1,
@@ -930,7 +962,8 @@ void show_message(gchar *cat_1,
                   gchar *cat_2,
                   gchar *blue_2,
                   gchar *white_2,
-                  gint flags)
+                  gint flags,
+		  gint rnd)
 {
     gchar buf[32], *name;
     gchar *b_tmp = blue_1, *w_tmp = white_1;
@@ -949,6 +982,7 @@ void show_message(gchar *cat_1,
 	strcpy(msg.u.update_label.comp1_b, blue_2);
 	strcpy(msg.u.update_label.comp2_b, white_2);
 	msg.u.update_label.xalign = flags;
+	msg.u.update_label.round = rnd;
 
         send_label_msg(&msg);
     }
@@ -986,23 +1020,11 @@ void show_message(gchar *cat_1,
     set_text2(MY_LABEL(cat1), "");
 
     if (dsp_layout == 7) {
-#if 0
-        // divide category on two lines
-        snprintf(buf, sizeof(buf), "%s", cat_1);
-        gchar *p = strrchr(buf, '-');
-        if (!p)
-            p = strrchr(buf, '+');
-        if (!p)
-            p = strrchr(buf, ' ');
-        if (p) {
-            set_text2(cat1, p);
-            *p = 0;
-            set_text(cat1, buf);
-        }
-#endif
         // Show flags. Country must be in IOC format.
         set_text(flag_blue, b_country);
         set_text(flag_white, w_country);
+        set_text(comp1_country, b_country);
+        set_text(comp2_country, w_country);
     }
 
     if (labels[blue_club].w > 0.01)
@@ -1045,7 +1067,11 @@ void show_message(gchar *cat_1,
     else
         set_text(MY_LABEL(comment), "");
 
+    set_text(MY_LABEL(roundnum), round_to_str(rnd));
+    saved_round = rnd;
+
     expose_label(NULL, cat1);
+    expose_label(NULL, roundnum);
     expose_label(NULL, blue_name_1);
     expose_label(NULL, white_name_1);
     expose_label(NULL, cat2);
@@ -1056,6 +1082,8 @@ void show_message(gchar *cat_1,
     expose_label(NULL, flag_blue);
     expose_label(NULL, flag_white);
     expose_label(NULL, comment);
+    expose_label(NULL, comp1_country);
+    expose_label(NULL, comp2_country);
 
     if (big_dialog)
         show_big();
@@ -1218,13 +1246,13 @@ void display_big(gchar *txt, gint tmo_sec)
 
 void reset_display(gint key)
 {
-    gint pts[4] = {0,0,0,0};
+    gint pts[5] = {0,0,0,0,0};
 
     set_timer_run_color(FALSE, FALSE);
-    set_timer_osaekomi_color(OSAEKOMI_DSP_NO, 0);
+    set_timer_osaekomi_color(OSAEKOMI_DSP_NO, 0, FALSE);
     set_osaekomi_value(0, 0);
 
-    if (golden_score == FALSE || rules_leave_score == FALSE)
+    if (golden_score == FALSE)
         set_points(pts, pts);
 
     //       set_text(MY_LABEL(comment), "");
@@ -1295,10 +1323,10 @@ static void expose_label(cairo_t *c, gint w)
 
 	if (dsp_layout == 7 && background_image) {
 	    cairo_save(c);
-	    gint w = cairo_image_surface_get_width(background_image);
-	    gint h = cairo_image_surface_get_height(background_image);
+	    gint w1 = cairo_image_surface_get_width(background_image);
+	    gint h1 = cairo_image_surface_get_height(background_image);
 	    cairo_set_operator(c, CAIRO_OPERATOR_DEST_OVER);
-	    cairo_scale(c, paper_width/(gdouble)w, paper_height/(gdouble)h);
+	    cairo_scale(c, paper_width/(gdouble)w1, paper_height/(gdouble)h1);
 	    cairo_set_source_surface(c, background_image, 0, 0);
 	    cairo_paint(c);
 	    cairo_restore(c);
@@ -1365,7 +1393,9 @@ static void expose_label(cairo_t *c, gint w)
     } else {
         y = H(labels[w].y) + (H(labels[w].h)- extents.height)/2.0 - extents.y_bearing;
         cairo_move_to(c, x, y);
-        if (w != flag_blue && w != flag_white)
+        if ((w != flag_blue && w != flag_white &&
+	     w != bs && w != ws) ||
+	    ((w == bs || w == ws) && !show_shido_cards))
             cairo_show_text(c, txt1);
     }
 
@@ -1389,6 +1419,30 @@ static void expose_label(cairo_t *c, gint w)
 
         cairo_surface_destroy(image);
         g_free(file);
+    } else if ((w == bs || w == ws) && show_shido_cards) {
+	static const gchar *shidos[4] = {"shido-none.png", "shido-yellow1.png",
+					 "shido-yellow2.png", "shido-red.png"};
+	gint sh = labels[w].text[0] - '0';
+	if (sh >= 0 && sh <= 3) {
+	    gchar *file = g_build_filename(installation_dir, "etc", "png",
+					   shidos[sh], NULL);
+	    cairo_surface_t *image = cairo_image_surface_create_from_png(file);
+	    if (image && cairo_surface_status(image) == CAIRO_STATUS_SUCCESS) {
+		gdouble icon_w = cairo_image_surface_get_width(image);
+		gdouble icon_h = cairo_image_surface_get_height(image);
+		cairo_scale(c, he/icon_h, he/icon_h);
+
+		if (labels[w].xalign > 0)
+		    cairo_set_source_surface(c, image, (x1+wi)*icon_h/he - icon_w, y1*icon_h/he);
+		else
+		    cairo_set_source_surface(c, image, x1*icon_h/he, y1*icon_h/he);
+
+		cairo_paint(c);
+	    }
+
+	    cairo_surface_destroy(image);
+	    g_free(file);
+	}
     }
 
     cairo_restore(c);
@@ -1436,8 +1490,17 @@ static void init_display(void)
    */
     clear_bg(c);
 
-    for (i = 0; i < num_labels; i++)
+    expose_label(c, padding);
+    expose_label(c, padding1);
+    expose_label(c, padding2);
+    expose_label(c, padding3);
+
+    for (i = 0; i < num_labels; i++) {
+	if (i == padding || i == padding1 ||
+	    i == padding2 || i == padding3)
+	    continue;
         expose_label(c, i);
+    }
 
     if (dsp_layout == 7 && background_image) {
         cairo_save(c);
@@ -1512,8 +1575,14 @@ static gboolean expose(GtkWidget *widget, GdkEventExpose *event, gpointer userda
     */
     clear_bg(c);
 
+    expose_label(c, padding);
+    expose_label(c, padding1);
+    expose_label(c, padding2);
+    expose_label(c, padding3);
     for (i = 0; i < num_labels; i++) {
-        expose_label(c, i);
+	if (i != padding && i != padding1 &&
+	    i != padding2 && i != padding3)
+	    expose_label(c, i);
     }
 
     if (big_dialog)
@@ -1527,6 +1596,10 @@ static gboolean expose(GtkWidget *widget, GdkEventExpose *event, gpointer userda
     return FALSE;
 }
 
+static gboolean mouse_drag = FALSE;
+static gdouble mouse_start_x = 0, mouse_start_y = 0;
+static gdouble start_paper_w, start_paper_h;
+
 static gboolean button_pressed(GtkWidget *widget,
 			       GdkEventButton *event,
 			       gpointer userdata)
@@ -1534,23 +1607,101 @@ static gboolean button_pressed(GtkWidget *widget,
     if (!ACTIVE) // timer in slave mode
         return FALSE;
 
-        /* single click with the right mouse button? */
-        if (event->type == GDK_BUTTON_PRESS  &&
-            (event->button == 1 || event->button == 3)) {
-		gint x = event->x, y = event->y, i;
+    gint allocw = paper_width;
+    gint alloch = paper_height;
 
-		for (i = 0; i < num_labels; i++) {
-			if (x >= W(labels[i].x) &&
-			    x <= W(labels[i].x+labels[i].w) &&
-			    y >= H(labels[i].y) &&
-			    y <= H(labels[i].y+labels[i].h)) {
-				labels[i].cb(widget, event, userdata);
-				return TRUE;
-			}
-		}
+    if (event->x > allocw - 30 && event->x < allocw &&
+	event->y > alloch - 30 && event->y < alloch) {
+	g_print("xy=%f/%f alloc=%d/%d\n", event->x, event->y,
+		allocw, alloch);
+	mouse_start_x = event->x;
+	mouse_start_y = event->y;
+	start_paper_w = paper_width;
+	start_paper_h = paper_height;
+	mouse_drag = TRUE;
+	return TRUE;
+    }
+
+    mouse_drag = FALSE;
+
+    /* single click with the right mouse button? */
+    if (event->type == GDK_BUTTON_PRESS  &&
+	(event->button == 1 || event->button == 3)) {
+	gint x = event->x, y = event->y, i;
+
+	for (i = 0; i < num_labels; i++) {
+	    if (x >= W(labels[i].x) &&
+		x <= W(labels[i].x+labels[i].w) &&
+		y >= H(labels[i].y) &&
+		y <= H(labels[i].y+labels[i].h)) {
+		labels[i].cb(widget, event, userdata);
+		return TRUE;
+	    }
 	}
+    }
 
+    return FALSE;
+}
+
+static gboolean button_released(GtkWidget *widget,
+				GdkEventButton *event,
+				gpointer userdata)
+{
+    if (!ACTIVE) // timer in slave mode
+        return FALSE;
+
+    mouse_drag = FALSE;
+
+    return FALSE;
+}
+
+static gboolean motion_notify(GtkWidget *widget,
+			      GdkEventButton *event,
+			      gpointer userdata)
+{
+    if (!ACTIVE) // timer in slave mode
+        return FALSE;
+
+    if (!mouse_drag)
 	return FALSE;
+
+    //gtk_widget_set_size_request(GTK_WIDGET(main_window),
+    gtk_window_resize(GTK_WINDOW(main_window),
+		      start_paper_w + 2*(event->x - mouse_start_x),
+		      start_paper_h + 2*(event->y - mouse_start_y));
+    return FALSE;
+}
+
+static gboolean scroll_cb(GtkWidget *widget,
+		      GdkEventScroll* event,
+		      gpointer userdata)
+{
+    if (event->type == GDK_SCROLL) {
+	gint x = event->x, y = event->y, i;
+	gint up_down = event->direction;
+
+	for (i = 0; i < num_labels; i++) {
+	    if (x >= W(labels[i].x) &&
+		x <= W(labels[i].x+labels[i].w) &&
+		y >= H(labels[i].y) &&
+		y <= H(labels[i].y+labels[i].h)) {
+
+		if (i == t_min || i == t_tsec || i == t_sec) {
+		    gdouble fix = 1.0;
+		    if (i == t_min) fix = 60.0;
+		    else if (i == t_tsec) fix = 10.0;
+		    if (up_down) hajime_inc_func(fix);
+		    else hajime_dec_func(fix);
+		} else if (i == o_tsec || i == o_sec) {
+		    if (up_down) osaekomi_inc_func();
+		    else osaekomi_dec_func();
+		}
+
+		return TRUE;
+	    }
+	}
+    }
+    return FALSE;
 }
 
 static gboolean key_press(GtkWidget *widget, GdkEventKey *event, gpointer userdata)
@@ -1643,7 +1794,7 @@ gboolean send_label(gint bigdsp)
         msg.u.update_label.label_num = -1;
 
         for (i = 0; i < num_labels; i++) {
-                if (labels[i].status & LABEL_STATUS_EXPOSE) {
+	    if (labels[i].status & LABEL_STATUS_EXPOSE) {
                         msg.u.update_label.expose[i] = 1;
                         labels[i].status &= ~LABEL_STATUS_EXPOSE;
                         dosend = TRUE;
@@ -1735,7 +1886,7 @@ void update_label(struct msg_update_label *msg)
     } else if (w == START_ADVERTISEMENT) {
         display_ad_window();
     } else if (w == START_COMPETITORS) {
-        display_comp_window(msg->text3, msg->text, msg->text2, "", "", "", "");
+        display_comp_window(msg->text3, msg->text, msg->text2, "", "", "", "", 0);
         /*write_tv_logo(msg);*/
         return;
     } else if (w == STOP_COMPETITORS) {
@@ -1752,12 +1903,12 @@ void update_label(struct msg_update_label *msg)
         strncpy(saved_cat, msg->text3, sizeof(saved_cat)-1);
     } else if (w == SHOW_MESSAGE) {
 	show_message(msg->cat_a, msg->comp1_a, msg->comp2_a,
-		     msg->cat_b, msg->comp1_b, msg->comp2_b, msg->xalign);
+		     msg->cat_b, msg->comp1_b, msg->comp2_b, msg->xalign, msg->round);
     } else if (w == SET_SCORE) {
         set_score(msg->xalign);
     } else if (w == SET_POINTS) {
 	gint i;
-	for (i = 0; i < 4; i++) {
+	for (i = 0; i < 5; i++) {
 	    swap32((uint32_t *)&msg->pts1[i]);
 	    swap32((uint32_t *)&msg->pts2[i]);
 	}
@@ -1767,7 +1918,7 @@ void update_label(struct msg_update_label *msg)
     } else if (w == SET_TIMER_VALUE) {
 	set_timer_value(ntoh32(msg->i1), ntoh32(msg->i2), ntoh32(msg->i3));
     } else if (w == SET_TIMER_OSAEKOMI_COLOR) {
-	set_timer_osaekomi_color(ntoh32(msg->i1), ntoh32(msg->i2));
+	set_timer_osaekomi_color(ntoh32(msg->i1), ntoh32(msg->i2), ntoh32(msg->i3));
     } else if (w == SET_TIMER_RUN_COLOR) {
 	set_timer_run_color(ntoh32(msg->i1), ntoh32(msg->i2));
     } else if (w >= 0 && w < num_labels) {
@@ -1898,7 +2049,7 @@ int main( int   argc,
     gtk_init (&argc, &argv);
 #if 1
     /*-------- CSS -------------------------------------------*/
-    gchar *file = g_build_filename(installation_dir, "etc", "gtk-timer.css", NULL);
+    gchar *file = g_build_filename(installation_dir, "etc", "css", "gtk-timer.css", NULL);
 
     if (g_file_test(file, G_FILE_TEST_EXISTS)) {
         GtkCssProvider *provider = gtk_css_provider_new();
@@ -1918,10 +2069,11 @@ int main( int   argc,
 #endif
     main_window = window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(main_window), "JudoTimer");
+    gtk_widget_set_name(main_window, "JudoTimerMain");
     //gtk_widget_set_size_request(window, FRAME_WIDTH, FRAME_HEIGHT);
     gtk_window_resize(GTK_WINDOW(main_window), FRAME_WIDTH, FRAME_HEIGHT);  //w7 bug.
 
-    gchar *iconfile = g_build_filename(installation_dir, "etc", "judotimer.png", NULL);
+    gchar *iconfile = g_build_filename(installation_dir, "etc", "png", "judotimer.png", NULL);
     gtk_window_set_default_icon_from_file(iconfile, NULL);
     g_free(iconfile);
 
@@ -1958,7 +2110,7 @@ int main( int   argc,
     GTK_WIDGET_SET_FLAGS(darea, GTK_CAN_FOCUS);
 #endif
     gtk_widget_add_events(darea, GDK_BUTTON_PRESS_MASK);
-
+    gtk_widget_add_events(darea, GDK_SCROLL_MASK);
     //gtk_widget_show(darea);
 
 #if (GTKVER == 3)
@@ -1979,7 +2131,7 @@ int main( int   argc,
     } else {
 	g_print("Screen supports alpha channels\n");
 	judotimer_log("Screen supports alpha channels\n");
-	//gtk_widget_set_app_paintable(window, TRUE);
+	gtk_widget_set_app_paintable(window, TRUE);
 	gtk_widget_set_visual(window, visual);
 #if 0
 	GdkRGBA bg = {0.8, 0.8, 0.8, 1.0};
@@ -1989,6 +2141,13 @@ int main( int   argc,
 #endif
     }
 #endif
+
+    gtk_widget_set_events(darea, gtk_widget_get_events(darea) |
+                          GDK_BUTTON_PRESS_MASK |
+                          GDK_BUTTON_RELEASE_MASK |
+                          /*GDK_POINTER_MOTION_MASK |*/
+                          GDK_POINTER_MOTION_HINT_MASK |
+                          GDK_BUTTON_MOTION_MASK);
 
 #if (GTKVER == 3)
     g_signal_connect(G_OBJECT(darea),
@@ -2001,6 +2160,12 @@ int main( int   argc,
 #endif
     g_signal_connect(G_OBJECT(darea),
                      "button-press-event", G_CALLBACK(button_pressed), NULL);
+    g_signal_connect(G_OBJECT(darea),
+                     "button-release-event", G_CALLBACK(button_released), NULL);
+    g_signal_connect(G_OBJECT(darea),
+                     "motion-notify-event", G_CALLBACK(motion_notify), NULL);
+    g_signal_connect(G_OBJECT(darea),
+		     "scroll-event", G_CALLBACK(scroll_cb), NULL);
 
     /* labels */
 
@@ -2029,12 +2194,12 @@ int main( int   argc,
     GET_LABEL(match1, _("Match:"), 0.0, 0.0, TXTW, SMALL_H);
     GET_LABEL(match2, _("Next:"),  0.5, 0.0, TXTW, SMALL_H);
 
-    GET_LABEL(wazaari, "W", 0.0,       BIG_START, BIG_W, BIG_H);
-    GET_LABEL(yuko, "Y",    1.0*BIG_W, BIG_START, BIG_W, BIG_H);
-    GET_LABEL(koka, "K",    2.0*BIG_W, BIG_START, BIG_W, BIG_H);
+    GET_LABEL(wazaari, "I", 0.0,       BIG_START, BIG_W, BIG_H);
+    GET_LABEL(yuko, "W",    1.0*BIG_W, BIG_START, BIG_W, BIG_H);
+    GET_LABEL(koka, "Y",    2.0*BIG_W, BIG_START, BIG_W, BIG_H);
     GET_LABEL(shido, "S",   3.0*BIG_W, BIG_START, BIG_W, BIG_H);
     GET_LABEL(padding, "",   4.0*BIG_W, BIG_START, 3.0*BIG_W, BIG_H);
-    GET_LABEL(sonomama, "SONO", 7.0*BIG_W, BIG_START, BIG_W, BIG_H);
+    GET_LABEL(sonomama, "", 7.0*BIG_W, BIG_START, BIG_W, BIG_H);
 
     GET_LABEL(bw, "0", 0.0,       BIG_START+BIG_H, BIG_W, BIG_H);
     GET_LABEL(by, "0", 1.0*BIG_W, BIG_START+BIG_H, BIG_W, BIG_H);
@@ -2063,6 +2228,18 @@ int main( int   argc,
     GET_LABEL(flag_blue, "", 0.0, 0.0, 0.0, 0.0);
     GET_LABEL(flag_white, "", 0.0, 0.0, 0.0, 0.0);
 
+    GET_LABEL(roundnum, "Round", 0.0, 0.0, 0.0, 0.0);
+
+    GET_LABEL(comp1_country, "", 0, 0, 0, 0);
+    GET_LABEL(comp2_country, "", 0, 0, 0, 0);
+
+    GET_LABEL(comp1_leg_grab, "L", 0, 0, 0, 0);
+    GET_LABEL(comp2_leg_grab, "L", 0, 0, 0, 0);
+
+    GET_LABEL(padding1, "", 0, 0, 0, 0);
+    GET_LABEL(padding2, "", 0, 0, 0, 0);
+    GET_LABEL(padding3, "", 0, 0, 0, 0);
+
     labels[match1].xalign = -1;
     labels[match2].xalign = -1;
     labels[blue_name_1].xalign = -1;
@@ -2071,6 +2248,7 @@ int main( int   argc,
     labels[white_name_2].xalign = -1;
     labels[cat1].xalign = -1;
     labels[cat2].xalign = -1;
+    labels[roundnum].xalign = -1;
     labels[gs].xalign = -1;
     labels[blue_club].xalign = -1;
     labels[white_club].xalign = -1;
@@ -2087,7 +2265,12 @@ int main( int   argc,
     labels[pts_to_white].size = 0.5;
 
     labels[sonomama].size = 0.1;
-    labels[sonomama].text2 = g_strdup("MAMA");
+    labels[sonomama].text2 = g_strdup("");
+
+    labels[comp1_leg_grab].size = 0.2;
+    labels[comp1_leg_grab].text2 = g_strdup("G");
+    labels[comp2_leg_grab].size = 0.2;
+    labels[comp2_leg_grab].text2 = g_strdup("G");
 
     /* colors */
 
@@ -2131,6 +2314,8 @@ int main( int   argc,
 
     gdk_color_parse("#DDD89A", &fg);
     SET_COLOR(bs);
+    gdk_color_parse("#C0C0C0", &fg);
+    SET_COLOR(comp1_leg_grab);
 
     gdk_color_parse("#000000", &fg);
     gdk_color_parse("#FFFFFF", &bg);
@@ -2140,11 +2325,12 @@ int main( int   argc,
 
     gdk_color_parse("#DD6C00", &fg);
     SET_COLOR(ws);
+    gdk_color_parse("#C0C0FF", &fg);
+    SET_COLOR(comp2_leg_grab);
 
     gdk_color_parse("#AF0000", &fg);
     gdk_color_parse("#000000", &bg);
     SET_COLOR(sonomama);
-
 
     gdk_color_parse("#000000", &fg);
     gdk_color_parse("#000000", &bg);
@@ -2171,6 +2357,7 @@ int main( int   argc,
 
     set_preferences();
     change_language(NULL, NULL, gint_to_ptr(language));
+    reset_display(0);
 
     open_comm_socket();
 
@@ -2224,15 +2411,17 @@ int main( int   argc,
     gdk_window_set_cursor(GTK_WIDGET(main_window)->window, cursor);
 #endif
 
-    for (i = 1; i < argc; i++) {
+    for (i = 1; i < argc - 1; i++) {
         if (argv[i][0] == '-' && argv[i][1] == 'd') {
-            demo = atoi(&argv[i][2]);
+            demo = atoi(argv[i+1]);
         } else if (argv[i][0] == '-' && argv[i][1] == 't') {
-            tatami = atoi(&argv[i][2]);
+            tatami = atoi(argv[i+1]);
         } else if (argv[i][0] == '-' && argv[i][1] == 'm') {
-            matchlist = &argv[i][2];
+            matchlist = argv[i+1];
         } else if (argv[i][0] == '-' && argv[i][1] == 's') {
             activate_slave_mode();
+        } else if (argv[i][0] == '-' && argv[i][1] == 'a') {
+            node_ip_addr = inet_addr(argv[i+1]);
         }
     }
 
@@ -2261,69 +2450,26 @@ static void set_colors(void)
     gdk_color_parse("#DD6C00", &s_white);
 
     if (dsp_layout != 7) {
-	if (white_first) {
-	    set_fg_color(bw, GTK_STATE_NORMAL, &color_black);
-	    set_fg_color(by, GTK_STATE_NORMAL, &color_black);
-	    set_fg_color(bk, GTK_STATE_NORMAL, &color_black);
-	    set_fg_color(bs, GTK_STATE_NORMAL, &s_white);
-	    set_fg_color(ww, GTK_STATE_NORMAL, &color_white);
-	    set_fg_color(wy, GTK_STATE_NORMAL, &color_white);
-	    set_fg_color(wk, GTK_STATE_NORMAL, &color_white);
-	    set_fg_color(ws, GTK_STATE_NORMAL, &s_blue);
+	set_fg_color(bw, GTK_STATE_NORMAL, &color_black);
+	set_fg_color(by, GTK_STATE_NORMAL, &color_black);
+	set_fg_color(bk, GTK_STATE_NORMAL, &color_black);
+	set_fg_color(bs, GTK_STATE_NORMAL, &s_white);
+	set_fg_color(ww, GTK_STATE_NORMAL, &color_white);
+	set_fg_color(wy, GTK_STATE_NORMAL, &color_white);
+	set_fg_color(wk, GTK_STATE_NORMAL, &color_white);
+	set_fg_color(ws, GTK_STATE_NORMAL, &s_blue);
 
-	    set_bg_color(bw, GTK_STATE_NORMAL, &color_white);
-	    set_bg_color(by, GTK_STATE_NORMAL, &color_white);
-	    set_bg_color(bk, GTK_STATE_NORMAL, &color_white);
-	    set_bg_color(bs, GTK_STATE_NORMAL, &color_white);
-	    set_bg_color(ww, GTK_STATE_NORMAL, bgcolor);
-	    set_bg_color(wy, GTK_STATE_NORMAL, bgcolor);
-	    set_bg_color(wk, GTK_STATE_NORMAL, bgcolor);
-	    set_bg_color(ws, GTK_STATE_NORMAL, bgcolor);
-	} else {
-	    set_fg_color(bw, GTK_STATE_NORMAL, &color_white);
-	    set_fg_color(by, GTK_STATE_NORMAL, &color_white);
-	    set_fg_color(bk, GTK_STATE_NORMAL, &color_white);
-	    set_fg_color(bs, GTK_STATE_NORMAL, &s_blue);
-	    set_fg_color(ww, GTK_STATE_NORMAL, &color_black);
-	    set_fg_color(wy, GTK_STATE_NORMAL, &color_black);
-	    set_fg_color(wk, GTK_STATE_NORMAL, &color_black);
-	    set_fg_color(ws, GTK_STATE_NORMAL, &s_white);
+	set_bg_color(bw, GTK_STATE_NORMAL, &color_white);
+	set_bg_color(by, GTK_STATE_NORMAL, &color_white);
+	set_bg_color(bk, GTK_STATE_NORMAL, &color_white);
+	set_bg_color(bs, GTK_STATE_NORMAL, &color_white);
+	set_bg_color(ww, GTK_STATE_NORMAL, bgcolor);
+	set_bg_color(wy, GTK_STATE_NORMAL, bgcolor);
+	set_bg_color(wk, GTK_STATE_NORMAL, bgcolor);
+	set_bg_color(ws, GTK_STATE_NORMAL, bgcolor);
 
-	    set_bg_color(bw, GTK_STATE_NORMAL, bgcolor);
-	    set_bg_color(by, GTK_STATE_NORMAL, bgcolor);
-	    set_bg_color(bk, GTK_STATE_NORMAL, bgcolor);
-	    set_bg_color(bs, GTK_STATE_NORMAL, bgcolor);
-	    set_bg_color(ww, GTK_STATE_NORMAL, &color_white);
-	    set_bg_color(wy, GTK_STATE_NORMAL, &color_white);
-	    set_bg_color(wk, GTK_STATE_NORMAL, &color_white);
-	    set_bg_color(ws, GTK_STATE_NORMAL, &color_white);
-	}
-    }
-
-    if (dsp_layout == 7) {
-#if 0
-        if (white_first) {
-            set_fg_color(blue_name_1, GTK_STATE_NORMAL, &color_black);
-            set_fg_color(blue_club, GTK_STATE_NORMAL, &color_black);
-            set_fg_color(white_name_1, GTK_STATE_NORMAL, &color_white);
-            set_fg_color(white_club, GTK_STATE_NORMAL, &color_white);
-
-            set_bg_color(blue_name_1, GTK_STATE_NORMAL, &color_white);
-            set_bg_color(blue_club, GTK_STATE_NORMAL, &color_white);
-            set_bg_color(white_name_1, GTK_STATE_NORMAL, bgcolor);
-            set_bg_color(white_club, GTK_STATE_NORMAL, bgcolor);
-        } else {
-            set_fg_color(blue_name_1, GTK_STATE_NORMAL, &color_white);
-            set_fg_color(blue_club, GTK_STATE_NORMAL, &color_white);
-            set_fg_color(white_name_1, GTK_STATE_NORMAL, &color_black);
-            set_fg_color(white_club, GTK_STATE_NORMAL, &color_black);
-
-            set_bg_color(blue_name_1, GTK_STATE_NORMAL, bgcolor);
-            set_bg_color(blue_club, GTK_STATE_NORMAL, bgcolor);
-            set_bg_color(white_name_1, GTK_STATE_NORMAL, &color_white);
-            set_bg_color(white_club, GTK_STATE_NORMAL, &color_white);
-        }
-#endif
+	set_bg_color(comp1_leg_grab, GTK_STATE_NORMAL, &color_white);
+	set_bg_color(comp2_leg_grab, GTK_STATE_NORMAL, bgcolor);
     }
 }
 
@@ -2362,43 +2508,6 @@ void toggle_full_screen(GtkWidget *menu_item, gpointer data)
     init_display();
 }
 
-void toggle_rules_no_koka(GtkWidget *menu_item, gpointer data)
-{
-#if (GTKVER == 3)
-    if (TRUE || gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item))) {
-#else
-    if (TRUE || GTK_CHECK_MENU_ITEM(menu_item)->active) {
-#endif
-        rules_no_koka_dsp = TRUE;
-        set_text(MY_LABEL(wazaari), "I");
-        set_text(MY_LABEL(yuko), "W");
-        set_text(MY_LABEL(koka), "Y");
-        g_key_file_set_boolean(keyfile, "preferences", "rulesnokoka", TRUE);
-    } else {
-        rules_no_koka_dsp = FALSE;
-        set_text(MY_LABEL(wazaari), "W");
-        set_text(MY_LABEL(yuko), "Y");
-        set_text(MY_LABEL(koka), "K");
-        g_key_file_set_boolean(keyfile, "preferences", "rulesnokoka", FALSE);
-    }
-    init_display();
-}
-
-void toggle_rules_leave_points(GtkWidget *menu_item, gpointer data)
-{
-#if (GTKVER == 3)
-    if (gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item))) {
-#else
-    if (GTK_CHECK_MENU_ITEM(menu_item)->active) {
-#endif
-        rules_leave_score = TRUE;
-        g_key_file_set_boolean(keyfile, "preferences", "rulesleavepoints", TRUE);
-    } else {
-        rules_leave_score = FALSE;
-        g_key_file_set_boolean(keyfile, "preferences", "rulesleavepoints", FALSE);
-    }
-}
-
 void toggle_rules_stop_ippon(GtkWidget *menu_item, gpointer data)
 {
 #if (GTKVER == 3)
@@ -2422,24 +2531,20 @@ void toggle_rules_no_free_shido(GtkWidget *menu_item, gpointer data)
 }
 */
 
-void toggle_rules_eq_score_less_shido_wins(GtkWidget *menu_item, gpointer data)
+void toggle_rules_2017(GtkWidget *menu_item, gpointer data)
 {
-#if (GTKVER == 3)
-    rule_eq_score_less_shido_wins = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item));
-#else
-    rule_eq_score_less_shido_wins = GTK_CHECK_MENU_ITEM(menu_item)->active;
-#endif
-    g_key_file_set_boolean(keyfile, "preferences", "ruleseqscorelessshidowins", rule_eq_score_less_shido_wins);
-}
-
-void toggle_rules_short_pin_times(GtkWidget *menu_item, gpointer data)
-{
-#if (GTKVER == 3)
-    rule_short_pin_times = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item));
-#else
-    rule_short_pin_times = GTK_CHECK_MENU_ITEM(menu_item)->active;
-#endif
-    g_key_file_set_boolean(keyfile, "preferences", "rulesshortpintimes", rule_short_pin_times);
+    use_2017_rules = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item));
+    g_key_file_set_boolean(keyfile, "preferences", "rules2017", use_2017_rules);
+    if (use_2017_rules) {
+	set_text(MY_LABEL(wazaari), "I");
+	set_text(MY_LABEL(yuko), "W");
+	set_text(MY_LABEL(koka), "Y");
+    } else {
+	set_text(MY_LABEL(wazaari), "I");
+	set_text(MY_LABEL(yuko), "W");
+	set_text(MY_LABEL(koka), "");
+    }
+    select_display_layout(NULL, NULL);
 }
 
 void toggle_confirm_match(GtkWidget *menu_item, gpointer data)
@@ -2633,9 +2738,12 @@ void select_display_layout(GtkWidget *menu_item, gpointer data)
     oclock_stop = color_grey;
     oclock_bg = color_black;
     hide_clock_if_osaekomi = FALSE;
+    show_shido_cards = 0;
+    hide_scores_if_zero = 0;
 
     clocks_only = FALSE;
-    dsp_layout = ptr_to_gint(data);
+    if (data)
+	dsp_layout = ptr_to_gint(data);
 
     if (background_image)
 	cairo_surface_destroy(background_image);
@@ -2656,21 +2764,22 @@ void select_display_layout(GtkWidget *menu_item, gpointer data)
 
         set_position(comment,  0.0, 2.0*SMALL_H, 1.0, SMALL_H);
 
-        set_position(wazaari,  0.0,       BIG_START, BIG_W, BIG_H);
-        set_position(yuko,     1.0*BIG_W, BIG_START, BIG_W, BIG_H);
-        set_position(koka,     2.0*BIG_W, BIG_START, BIG_W, BIG_H);
-        set_position(shido,    3.0*BIG_W, BIG_START, BIG_W, BIG_H);
-        set_position(padding,  4.0*BIG_W, BIG_START, 3.0*BIG_W, BIG_H);
-        set_position(sonomama, 7.0*BIG_W, BIG_START, BIG_W, BIG_H);
+	set_position(wazaari,  0.0,       BIG_START, BIG_W, BIG_H);
+	set_position(yuko,     1.0*BIG_W, BIG_START, BIG_W, BIG_H);
+	set_position(koka,     2.0*BIG_W, BIG_START, BIG_W, BIG_H);
 
-        set_position(bw, 0.0,       BIG_START+BIG_H, BIG_W, BIG_H);
-        set_position(by, 1.0*BIG_W, BIG_START+BIG_H, BIG_W, BIG_H);
-        set_position(bk, 2.0*BIG_W, BIG_START+BIG_H, BIG_W, BIG_H);
-        set_position(bs, 3.0*BIG_W, BIG_START+BIG_H, BIG_W, BIG_H);
-        set_position(ww, 0.0,       BIG_START+2*BIG_H, BIG_W, BIG_H);
-        set_position(wy, 1.0*BIG_W, BIG_START+2*BIG_H, BIG_W, BIG_H);
-        set_position(wk, 2.0*BIG_W, BIG_START+2*BIG_H, BIG_W, BIG_H);
-        set_position(ws, 3.0*BIG_W, BIG_START+2*BIG_H, BIG_W, BIG_H);
+	set_position(bw, 0.0,       BIG_START+BIG_H, BIG_W, BIG_H);
+	set_position(by, 1.0*BIG_W, BIG_START+BIG_H, BIG_W, BIG_H);
+	set_position(bk, 2.0*BIG_W, BIG_START+BIG_H, BIG_W, BIG_H);
+	set_position(bs, 3.0*BIG_W, BIG_START+BIG_H, BIG_W, BIG_H);
+	set_position(ww, 0.0,       BIG_START+2*BIG_H, BIG_W, BIG_H);
+	set_position(wy, 1.0*BIG_W, BIG_START+2*BIG_H, BIG_W, BIG_H);
+	set_position(wk, 2.0*BIG_W, BIG_START+2*BIG_H, BIG_W, BIG_H);
+	set_position(ws, 3.0*BIG_W, BIG_START+2*BIG_H, BIG_W, BIG_H);
+
+	set_position(shido,    3.0*BIG_W, BIG_START, BIG_W, BIG_H);
+	set_position(padding,  4.0*BIG_W, BIG_START, 3.0*BIG_W, BIG_H);
+	set_position(sonomama, 7.0*BIG_W, BIG_START, BIG_W, BIG_H);
 
         set_position(t_min,  4.0*BIG_W, BIG_START+BIG_H,   BIG_W, BIG_H);
         set_position(colon,  5.0*BIG_W, BIG_START+BIG_H,   BIG_W, BIG_H);
@@ -2698,21 +2807,22 @@ void select_display_layout(GtkWidget *menu_item, gpointer data)
 
         set_position(comment,  0.0, 4.0*SMALL_H, 1.0, SMALL_H);
 
-        set_position(wazaari,  0.0,       BIG_START+1.4*BIG_H, BIG_W, 0.2*BIG_H);
-        set_position(yuko,     1.0*BIG_W, BIG_START+1.4*BIG_H, BIG_W, 0.2*BIG_H);
-        set_position(koka,     2.0*BIG_W, BIG_START+1.4*BIG_H, BIG_W, 0.2*BIG_H);
-        set_position(shido,    3.0*BIG_W, BIG_START+1.4*BIG_H, BIG_W, 0.2*BIG_H);
-        set_position(padding,  4.0*BIG_W, BIG_START, 0, BIG_H);
-        set_position(sonomama, 7.0*BIG_W, BIG_START, BIG_W, BIG_H);
+	set_position(wazaari,  0.0,       BIG_START+1.4*BIG_H, BIG_W, 0.2*BIG_H);
+	set_position(yuko,     1.0*BIG_W, BIG_START+1.4*BIG_H, BIG_W, 0.2*BIG_H);
+	set_position(koka,     2.0*BIG_W, BIG_START+1.4*BIG_H, BIG_W, 0.2*BIG_H);
 
-        set_position(bw, 0.0,       BIG_START+0.5*BIG_H, BIG_W, 0.9*BIG_H);
-        set_position(by, 1.0*BIG_W, BIG_START+0.5*BIG_H, BIG_W, 0.9*BIG_H);
-        set_position(bk, 2.0*BIG_W, BIG_START+0.5*BIG_H, BIG_W, 0.9*BIG_H);
-        set_position(bs, 3.0*BIG_W, BIG_START+0.5*BIG_H, BIG_W, 0.9*BIG_H);
-        set_position(ww, 0.0,       BIG_START+1.6*BIG_H, BIG_W, 0.9*BIG_H);
-        set_position(wy, 1.0*BIG_W, BIG_START+1.6*BIG_H, BIG_W, 0.9*BIG_H);
-        set_position(wk, 2.0*BIG_W, BIG_START+1.6*BIG_H, BIG_W, 0.9*BIG_H);
-        set_position(ws, 3.0*BIG_W, BIG_START+1.6*BIG_H, BIG_W, 0.9*BIG_H);
+	set_position(bw, 0.0,       BIG_START+0.5*BIG_H, BIG_W, 0.9*BIG_H);
+	set_position(by, 1.0*BIG_W, BIG_START+0.5*BIG_H, BIG_W, 0.9*BIG_H);
+	set_position(bk, 2.0*BIG_W, BIG_START+0.5*BIG_H, BIG_W, 0.9*BIG_H);
+	set_position(bs, 3.0*BIG_W, BIG_START+0.5*BIG_H, BIG_W, 0.9*BIG_H);
+	set_position(ww, 0.0,       BIG_START+1.6*BIG_H, BIG_W, 0.9*BIG_H);
+	set_position(wy, 1.0*BIG_W, BIG_START+1.6*BIG_H, BIG_W, 0.9*BIG_H);
+	set_position(wk, 2.0*BIG_W, BIG_START+1.6*BIG_H, BIG_W, 0.9*BIG_H);
+	set_position(ws, 3.0*BIG_W, BIG_START+1.6*BIG_H, BIG_W, 0.9*BIG_H);
+
+	set_position(shido,    3.0*BIG_W, BIG_START+1.4*BIG_H, BIG_W, 0.2*BIG_H);
+	set_position(padding,  4.0*BIG_W, BIG_START, 0, BIG_H);
+	set_position(sonomama, 7.0*BIG_W, BIG_START, BIG_W, BIG_H);
 
         set_position(t_min,  4.0*BIG_W, BIG_START+BIG_H,   BIG_W, BIG_H);
         set_position(colon,  5.0*BIG_W, BIG_START+BIG_H,   BIG_W, BIG_H);
@@ -2857,23 +2967,26 @@ void select_display_layout(GtkWidget *menu_item, gpointer data)
         set_position(cat1,         0.55, 4*SMALL_H, 0.325, 6*SMALL_H);
         set_position(cat2,         0.5, SMALL_H, TXTW, SMALL_H);
 
+        set_position(roundnum,     0.55, 4*SMALL_H+6*SMALL_H, 0.325, 2*SMALL_H);
+
         set_position(comment,  0.0, 3.0*SMALL_H, 1.0, SMALL_H);
 
-        set_position(wazaari,  0.0,       BIG_START+1.3*BIG_H, BIG_W, 0.3*BIG_H);
-        set_position(yuko,     1.0*BIG_W, BIG_START+1.3*BIG_H, BIG_W, 0.3*BIG_H);
-        set_position(koka,     2.0*BIG_W, BIG_START+1.3*BIG_H, BIG_W, 0.3*BIG_H);
+	set_position(wazaari,  0.0,       BIG_START+1.3*BIG_H, BIG_W, 0.3*BIG_H);
+	set_position(yuko,     1.0*BIG_W, BIG_START+1.3*BIG_H, BIG_W, 0.3*BIG_H);
+	set_position(koka,     2.0*BIG_W, BIG_START+1.3*BIG_H, BIG_W, 0.3*BIG_H);
+
+	set_position(bw, 0.0,       BIG_START+0.4*BIG_H, BIG_W, 0.9*BIG_H);
+	set_position(by, 1.0*BIG_W, BIG_START+0.4*BIG_H, BIG_W, 0.9*BIG_H);
+	set_position(bk, 2.0*BIG_W, BIG_START+0.4*BIG_H, BIG_W, 0.9*BIG_H);
+	set_position(bs, 3.0*BIG_W, BIG_START+0.4*BIG_H, BIG_W, 0.9*BIG_H);
+	set_position(ww, 0.0,       BIG_START+1.6*BIG_H, BIG_W, 0.9*BIG_H);
+	set_position(wy, 1.0*BIG_W, BIG_START+1.6*BIG_H, BIG_W, 0.9*BIG_H);
+	set_position(wk, 2.0*BIG_W, BIG_START+1.6*BIG_H, BIG_W, 0.9*BIG_H);
+	set_position(ws, 3.0*BIG_W, BIG_START+1.6*BIG_H, BIG_W, 0.9*BIG_H);
+
         set_position(shido,    3.0*BIG_W, BIG_START+1.3*BIG_H, BIG_W, 0.3*BIG_H);
         set_position(padding,  4.0*BIG_W, BIG_START, 0, BIG_H);
         set_position(sonomama, 7.0*BIG_W, BIG_START, BIG_W, BIG_H);
-
-        set_position(bw, 0.0,       BIG_START+0.4*BIG_H, BIG_W, 0.9*BIG_H);
-        set_position(by, 1.0*BIG_W, BIG_START+0.4*BIG_H, BIG_W, 0.9*BIG_H);
-        set_position(bk, 2.0*BIG_W, BIG_START+0.4*BIG_H, BIG_W, 0.9*BIG_H);
-        set_position(bs, 3.0*BIG_W, BIG_START+0.4*BIG_H, BIG_W, 0.9*BIG_H);
-        set_position(ww, 0.0,       BIG_START+1.6*BIG_H, BIG_W, 0.9*BIG_H);
-        set_position(wy, 1.0*BIG_W, BIG_START+1.6*BIG_H, BIG_W, 0.9*BIG_H);
-        set_position(wk, 2.0*BIG_W, BIG_START+1.6*BIG_H, BIG_W, 0.9*BIG_H);
-        set_position(ws, 3.0*BIG_W, BIG_START+1.6*BIG_H, BIG_W, 0.9*BIG_H);
 
         set_position(t_min,  4.0*BIG_W, BIG_START+BIG_H,   BIG_W, BIG_H);
         set_position(colon,  5.0*BIG_W, BIG_START+BIG_H,   BIG_W, BIG_H);
@@ -2968,6 +3081,9 @@ void select_display_layout(GtkWidget *menu_item, gpointer data)
 		    GI(slave);
 		    if (slave)
 			activate_slave_mode();
+		    GI(hide_scores_if_zero);
+		    GI(show_shido_cards);
+		    g_print("show_shido_cards=%d\n", show_shido_cards);
 		} else if (num == 104) {
 		    /* Window size and position */
 		    gint x, y, w, h;
@@ -2988,6 +3104,20 @@ void select_display_layout(GtkWidget *menu_item, gpointer data)
 			p = fname;
 		    }
 		    background_image = cairo_image_surface_create_from_png(p);
+
+		    switch (cairo_surface_status(background_image)) {
+		    case CAIRO_STATUS_NO_MEMORY:
+		    case CAIRO_STATUS_FILE_NOT_FOUND:
+		    case CAIRO_STATUS_READ_ERROR:
+			g_print("background_image %s read error %d\n", p,
+				cairo_surface_status(background_image));
+			cairo_surface_destroy(background_image);
+			background_image = NULL;
+			break;
+		    default:
+			;
+		    }
+
 		    if (fname)
 			g_free(fname);
 		} else
@@ -3091,10 +3221,26 @@ void select_display_layout(GtkWidget *menu_item, gpointer data)
 	break;
     }
 
+
+    if (dsp_layout != 7 && use_2017_rules) {
+	labels[comp1_leg_grab].x = labels[bk].x;
+	labels[comp1_leg_grab].y = labels[bk].y;
+	labels[comp1_leg_grab].w = labels[bk].w;
+	labels[comp1_leg_grab].h = labels[bk].h;
+	labels[comp2_leg_grab].x = labels[wk].x;
+	labels[comp2_leg_grab].y = labels[wk].y;
+	labels[comp2_leg_grab].w = labels[wk].w;
+	labels[comp2_leg_grab].h = labels[wk].h;
+	NO_SHOW(koka);
+	NO_SHOW(bk);
+	NO_SHOW(wk);
+    }
+ 
     set_colors();
     init_display();
 
-    g_key_file_set_integer(keyfile, "preferences", "displaylayout", ptr_to_gint(data));
+    if (data)
+	g_key_file_set_integer(keyfile, "preferences", "displaylayout", dsp_layout);
 }
 
 void set_custom_layout_file_name(GtkWidget *menu_item, gpointer data)
@@ -3171,14 +3317,14 @@ gboolean blue_background(void)
     return bgcolor == &color_blue;
 }
 
-void parse_font_text(gchar *font, gchar *face, gint *slant, gint *weight, gdouble *size)
+void parse_font_text(gchar *font1, gchar *face, gint *slant, gint *weight, gdouble *size)
 {
-    gchar *italic = strstr(font, "Italic");
-    gchar *bold = strstr(font, "Bold");
-    gchar *num = strrchr(font, ' ');
+    gchar *italic = strstr(font1, "Italic");
+    gchar *bold = strstr(font1, "Bold");
+    gchar *num = strrchr(font1, ' ');
 
     if (!num) {
-        g_print("ERROR: malformed font string '%s'\n", font);
+        g_print("ERROR: malformed font string '%s'\n", font1);
         return;
     }
 
@@ -3194,7 +3340,7 @@ void parse_font_text(gchar *font, gchar *face, gint *slant, gint *weight, gdoubl
 
     end--;
 
-    gchar *p = font;
+    gchar *p = font1;
     gchar *d = face;
     while (p < end)
         *d++ = *p++;
@@ -3214,10 +3360,10 @@ void parse_font_text(gchar *font, gchar *face, gint *slant, gint *weight, gdoubl
         *size = atof(num)/12.0;
 }
 
-void set_font(gchar *font)
+void set_font(gchar *font1)
 {
-    parse_font_text(font, font_face, &font_slant, &font_weight, &font_size);
-    g_key_file_set_string(keyfile, "preferences", "displayfont", font);
+    parse_font_text(font1, font_face, &font_slant, &font_weight, &font_size);
+    g_key_file_set_string(keyfile, "preferences", "displayfont", font1);
 }
 
 static gchar *get_font_face()
@@ -3240,11 +3386,11 @@ void font_dialog(GtkWidget *w, gpointer data)
 
     if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_OK) {
 #if (GTKVER == 3)
-        gchar *font = gtk_font_chooser_get_font(GTK_FONT_CHOOSER(dialog));
+        gchar *font1 = gtk_font_chooser_get_font(GTK_FONT_CHOOSER(dialog));
 #else
-        gchar *font = gtk_font_selection_dialog_get_font_name(GTK_FONT_SELECTION_DIALOG(dialog));
+        gchar *font1 = gtk_font_selection_dialog_get_font_name(GTK_FONT_SELECTION_DIALOG(dialog));
 #endif
-        set_font(font);
+        set_font(font1);
     }
 
     gtk_widget_destroy(dialog);

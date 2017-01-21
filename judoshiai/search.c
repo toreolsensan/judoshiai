@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2015 by Hannu Jokinen
+ * Copyright (C) 2006-2016 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */ 
 
@@ -188,4 +188,74 @@ void search_competitor_args(GtkWidget *w, gpointer cb, gpointer args)
 void search_competitor(GtkWidget *w, gpointer cb)
 {
     search_competitor_args(w, cb, NULL);
+}
+
+void lookup_competitor(struct msg_lookup_comp *msg)
+{
+    GtkTreeIter iter_cat, iter_j;
+    gboolean ok_cat, ok_j;
+    gint n = 0, i;
+
+    gchar *name = g_utf8_casefold(msg->name, -1);
+
+    for (i = 0; i < NUM_LOOKUP; i++) {
+	msg->result[i].index = 0;
+	msg->result[i].fullname[0] = 0;
+    }
+
+    ok_cat = gtk_tree_model_get_iter_first(current_model, &iter_cat);
+    while (ok_cat) {
+        ok_j = gtk_tree_model_iter_children(current_model, &iter_j, &iter_cat);
+        while (ok_j) {
+            gint index;
+            gchar *first, *last, *first_u, *last_u;
+            gchar *club=NULL, *cat=NULL, *country=NULL;
+
+            gtk_tree_model_get(current_model, &iter_j,
+                               COL_INDEX, &index,
+                               COL_LAST_NAME, &last,
+                               COL_FIRST_NAME, &first,
+                               COL_CLUB, &club,
+                               COL_COUNTRY, &country,
+                               COL_CATEGORY, &cat,
+                               -1);
+
+            first_u = g_utf8_casefold(first, -1);
+            last_u = g_utf8_casefold(last, -1);
+
+            if (strncmp(name, last_u, strlen(name)) == 0) {
+		if (country && country[0])
+		    snprintf(msg->result[n].fullname,
+			     sizeof(msg->result[n].fullname),
+			     "%s, %s, %s/%s, %s",
+			     last, first, club, country, cat);
+		else
+		    snprintf(msg->result[n].fullname,
+			     sizeof(msg->result[n].fullname),
+			     "%s, %s, %s, %s",
+			     last, first, club, cat);
+
+		msg->result[n].index = index;
+                n++;
+            }
+
+            g_free(first);
+            g_free(last);
+            g_free(club);
+            g_free(country);
+            g_free(cat);
+            g_free(first_u);
+            g_free(last_u);
+
+	    if (n >= NUM_LOOKUP)
+		goto out;
+
+            ok_j = gtk_tree_model_iter_next(current_model, &iter_j);
+        }
+
+        ok_cat = gtk_tree_model_iter_next(current_model, &iter_cat);
+    }
+
+out:
+    g_free(name);
 }

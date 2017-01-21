@@ -1,12 +1,16 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2015 by Hannu Jokinen
+ * Copyright (C) 2006-2016 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */ 
 
 #ifndef _JUDOINFO_H_
 #define _JUDOINFO_H_
+
+#ifdef EMSCRIPTEN
+#include "cairowrapper.h"
+#endif
 
 #include "comm.h"
 
@@ -56,6 +60,12 @@
 #define SMALL_DISPLAY      1
 #define HORIZONTAL_DISPLAY 2
 
+enum {
+    BRACKET_TYPE_ERR,
+    BRACKET_TYPE_PNG,
+    BRACKET_TYPE_SVG,
+};
+
 struct name_data {
     gint   index;
     gchar *last;
@@ -69,6 +79,7 @@ struct match {
     gint   blue;
     gint   white;
     gint   flags;
+    gint   round;
     time_t rest_end;
 };
 
@@ -87,15 +98,24 @@ extern gboolean show_tatami[NUM_TATAMIS];
 extern struct match match_list[NUM_TATAMIS][NUM_LINES];
 extern gint language;
 extern gchar *svg_file;
+extern gboolean bracket_ok;
+extern gint bracket_pos;
+extern gint bracket_len;
+extern guchar *bracket_start;
+extern gint bracket_x, bracket_y, bracket_w, bracket_h;
+extern gint bracket_space_w, bracket_space_h;
 
 extern gboolean this_is_shiai(void);
 extern void msg_to_queue(struct message *msg);
 extern struct message *get_rec_msg(void);
 extern void destroy( GtkWidget *widget, gpointer   data );
 extern void set_preferences(void);
-extern gulong host2net(gulong a);
 
+#ifdef EMSCRIPTEN
+extern gui_widget *get_menubar_menu(SDL_Surface *s);
+#else
 extern GtkWidget *get_menubar_menu(GtkWidget  *window);
+#endif
 extern gpointer client_thread(gpointer args);
 extern gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param);
 extern void ask_node_ip_address( GtkWidget *w, gpointer data);
@@ -111,6 +131,14 @@ extern gint timeout_ask_for_data(gpointer data);
 extern void write_matches(void);
 extern void read_svg_file(void);
 extern gint paint_svg(struct paint_data *pd);
+#ifndef EMSCRIPTEN
+extern gboolean show_bracket(void);
+extern cairo_status_t bracket_read(void *closure,
+                                   unsigned char *data,
+                                   unsigned int length);
+extern gint bracket_type(void);
+extern gint first_shown_tatami(void);
+#endif
 
 /* profiling stuff */
 //#define PROFILE

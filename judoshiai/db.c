@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2015 by Hannu Jokinen
+ * Copyright (C) 2006-2016 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */ 
 
@@ -25,12 +25,39 @@ G_LOCK_DEFINE(db);
 guint64 cumul_db_time = 0;
 gint    cumul_db_count = 0;
 
+static void category_prop(sqlite3_context *context, int argc, sqlite3_value **argv)
+{
+    g_print("category_property: argc=%d argtypes=%d,%d\n", argc,
+	    sqlite3_value_type(argv[0]), sqlite3_value_type(argv[1]));
+    sqlite3_result_int(context, 1);
+    return;
+#if 0
+    switch (sqlite3_value_type(argv[0]) ) {
+    case SQLITE_TEXT: {
+        const unsigned char *tVal = sqlite3_value_text(argv[0]);
+        sqlite3_result_int(context, weight);
+        break;
+    }
+    default:
+        sqlite3_result_null(context);
+        break;
+    }
+#endif
+}
+
+void db_notify_cb(void *arg, int op, char const *db_nam,
+		  char const *table_name, sqlite3_int64 rowid)
+{
+    g_print("db %s table %s op=%d rowid=%lld\n",
+	    db_nam, table_name, op, rowid);
+}
+
 gint db_exec(const char *dbn, char *cmd, void *data, void *dbcb)
 {
     sqlite3 *db;
     char *zErrMsg = 0;
     int rc;
-    guint64 start, stop;
+    guint64 start = 0, stop = 0;
 
     RDTSC(start);
     if (db_name == dbn)
@@ -58,6 +85,9 @@ gint db_exec(const char *dbn, char *cmd, void *data, void *dbcb)
     }
 #endif
     //g_print("\nSQL: %s:\n  %s\n", db_name, cmd);
+    sqlite3_create_function(db, "category_prop", 2,
+			    SQLITE_UTF8 |  SQLITE_DETERMINISTIC,
+			    NULL, category_prop, NULL, NULL);
     rc = sqlite3_exec(db, cmd, dbcb, data, &zErrMsg);
 
     if (rc != SQLITE_OK && rc != SQLITE_ABORT && zErrMsg) {
@@ -136,6 +166,7 @@ gint db_open(void)
 	maindb = NULL;
 	G_UNLOCK(db);
     }
+
 #ifdef FAST_DB
     rc = sqlite3_exec(maindb, "PRAGMA synchronous=OFF", NULL, NULL, &zErrMsg);
     if (rc != SQLITE_OK && rc != SQLITE_ABORT && zErrMsg) {

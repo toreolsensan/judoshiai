@@ -1,9 +1,9 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2015 by Hannu Jokinen
+ * Copyright (C) 2006-2016 by Hannu Jokinen
  * Full copyright text is included in the software package.
- */ 
+ */
 
 #if defined(__WIN32__) || defined(WIN32)
 
@@ -75,13 +75,7 @@ void copy_packet(struct message *msg)
 int array2int(int pts[4])
 {
     int x = 0;
-
-    if (pts[0] >= 2)
-        x = 0x10000;
-    if (pts[0] & 1)
-        x |= 0x01000;
-    x |= (pts[1] << 8) | (pts[2] << 4) | pts[3];
-
+    x = (pts[0] << 16) | (pts[1] << 12) | (pts[2] << 8) | pts[3];
     return x;
 }
 
@@ -97,12 +91,12 @@ void cancel_rest_time(gboolean blue, gboolean white)
     send_packet(&msg);
     g_print("timer: cancel blue=%d white=%d\n", blue, white);
 
-    judotimer_log("No rest time for %d:%d %s %s", 
+    judotimer_log("No rest time for %d:%d %s %s",
                   current_category, current_match,
                   blue ? "Blue" : "", white ? "White" : "");
 }
 
-void send_result(int bluepts[4], int whitepts[4], char blue_vote, char white_vote, 
+void send_result(int bluepts[4], int whitepts[4], char blue_vote, char white_vote,
 		 char blue_hansokumake, char white_hansokumake, gint legend, gint hikiwake)
 {
     memset(&msgout, 0, sizeof(msgout));
@@ -117,9 +111,9 @@ void send_result(int bluepts[4], int whitepts[4], char blue_vote, char white_vot
     msgout.u.result.minutes = get_match_time();
     msgout.u.result.legend = legend;
 
-    msgout.u.result.blue_score = array2int(bluepts); 
+    msgout.u.result.blue_score = array2int(bluepts);
     msgout.u.result.white_score = array2int(whitepts);
-    msgout.u.result.blue_vote = hikiwake ? 1 : blue_vote; 
+    msgout.u.result.blue_vote = hikiwake ? 1 : blue_vote;
     msgout.u.result.white_vote = hikiwake ? 1 : white_vote;
     msgout.u.result.blue_hansokumake = blue_hansokumake;
     msgout.u.result.white_hansokumake = white_hansokumake;
@@ -135,12 +129,6 @@ void send_result(int bluepts[4], int whitepts[4], char blue_vote, char white_vot
         send_packet(&msgout);
         result_send_time = time(NULL);
     }
-
-#if 0
-    show_message("", "", "", "", "", "");
-    current_category = 0;
-    current_match = 0;
-#endif
 }
 
 gint timeout_callback(gpointer data)
@@ -178,7 +166,7 @@ void msg_received(struct message *input_msg)
    return;
 **/
 #if 0
-    g_print("msg type = %d from %d\n", 
+    g_print("msg type = %d from %d\n",
             input_msg->type, input_msg->sender);
 #endif
     switch (input_msg->type) {
@@ -198,7 +186,7 @@ void msg_received(struct message *input_msg)
                                 input_msg->u.next_match.white_1);
         }
 #endif
-        if (input_msg->sender < 10 || 
+        if (input_msg->sender < 10 ||
             input_msg->u.next_match.tatami != tatami ||
             mode == MODE_SLAVE)
             return;
@@ -208,13 +196,14 @@ void msg_received(struct message *input_msg)
 
         traffic_last_rec_time = time(NULL);
 
-        show_message(input_msg->u.next_match.cat_1, 
-                     input_msg->u.next_match.blue_1, 
-                     input_msg->u.next_match.white_1, 
-                     input_msg->u.next_match.cat_2, 
-                     input_msg->u.next_match.blue_2, 
+        show_message(input_msg->u.next_match.cat_1,
+                     input_msg->u.next_match.blue_1,
+                     input_msg->u.next_match.white_1,
+                     input_msg->u.next_match.cat_2,
+                     input_msg->u.next_match.blue_2,
                      input_msg->u.next_match.white_2,
-                     input_msg->u.next_match.flags);
+                     input_msg->u.next_match.flags,
+		     input_msg->u.next_match.round);
 
         //g_print("minutes=%d auto=%d\n", input_msg->u.next_match.minutes, automatic);
         if (input_msg->u.next_match.minutes && automatic)
@@ -226,13 +215,14 @@ void msg_received(struct message *input_msg)
         if (current_category != input_msg->u.next_match.category ||
             current_match != input_msg->u.next_match.match) {
             /***
-            g_print("current=%d/%d new=%d/%d\n", 
+            g_print("current=%d/%d new=%d/%d\n",
                     current_category, current_match,
                     input_msg->u.next_match.category, input_msg->u.next_match.match);
             ***/
-            display_comp_window(saved_cat, saved_last1, saved_last2, 
-                                saved_first1, saved_first2,
-                                saved_country1, saved_country2);
+	    if (!demo)
+		display_comp_window(saved_cat, saved_last1, saved_last2,
+				    saved_first1, saved_first2,
+				    saved_country1, saved_country2, saved_round);
 
             struct message msg;
             memset(&msg, 0, sizeof(msg));
@@ -262,7 +252,7 @@ void msg_received(struct message *input_msg)
                 send_packet(&msgout);
                 result_send_time = time(NULL);
 
-                /*judotimer_log("Resend result %d:%d", 
+                /*judotimer_log("Resend result %d:%d",
                   current_category, current_match);*/
                 g_print("resend result %d:%d\n", current_category, current_match);
             }
@@ -271,7 +261,7 @@ void msg_received(struct message *input_msg)
         break;
 
     case MSG_UPDATE_LABEL:
-        if (mode != MODE_SLAVE 
+        if (mode != MODE_SLAVE
             /*|| input_msg->sender != tatami*/)
             return;
         update_label(&input_msg->u.update_label);
@@ -375,7 +365,7 @@ gpointer master_thread(gpointer args)
     {
         struct timeval timeout;
         gint r, i;
-                
+
         fds = read_fd;
         timeout.tv_sec = 0;
         timeout.tv_usec = 10000;
@@ -414,7 +404,7 @@ gpointer master_thread(gpointer args)
             }
 #if 0
             const int nodelayflag = 1;
-            if (setsockopt(tmp_fd, IPPROTO_TCP, TCP_NODELAY, 
+            if (setsockopt(tmp_fd, IPPROTO_TCP, TCP_NODELAY,
                            (const void *)&nodelayflag, sizeof(nodelayflag))) {
                 g_print("CANNOT SET TCP_NODELAY (2)\n");
             }
@@ -431,14 +421,14 @@ gpointer master_thread(gpointer args)
 
             connections[i].fd = tmp_fd;
             connections[i].addr = caller.sin_addr.s_addr;
-            g_print("Master: new connection[%d]: fd=%d addr=%s\n", 
+            g_print("Master: new connection[%d]: fd=%d addr=%s\n",
                     i, tmp_fd, inet_ntoa(caller.sin_addr));
             FD_SET(tmp_fd, &read_fd);
         }
 
         for (i = 0; i < NUM_CONNECTIONS; i++) {
             static guchar inbuf[2000];
-			
+
             if (connections[i].fd == 0)
                 continue;
 
@@ -467,7 +457,7 @@ gboolean keep_connection(void)
         old_mode = mode;
         return FALSE;
     }
-		
+
     return TRUE;
 }
 

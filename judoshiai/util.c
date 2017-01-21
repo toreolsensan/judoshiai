@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2015 by Hannu Jokinen
+ * Copyright (C) 2006-2016 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */ 
 
@@ -318,6 +318,9 @@ void put_data_by_iter(struct judoka *j, GtkTreeIter *iter)
 
 void put_data_by_iter_model(struct judoka *j, GtkTreeIter *iter, GtkTreeModel *model)
 {
+    if (j->index < 10)
+        g_print("****** ERROR %s ******\n", __FUNCTION__);
+
     if (!model)
         return;
 

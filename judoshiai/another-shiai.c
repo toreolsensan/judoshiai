@@ -1,9 +1,9 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2015 by Hannu Jokinen
+ * Copyright (C) 2006-2016 by Hannu Jokinen
  * Full copyright text is included in the software package.
- */ 
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -28,7 +28,7 @@ struct model_iter {
 struct ix_map {
     gint foreign;
     gint our;
-}; 
+};
 
 struct shiai_map {
     gint foreign_cat;
@@ -61,7 +61,7 @@ static void destroy_event( GtkWidget *widget,
     //g_print("destroy\n");
 }
 
-static gint set_one_category(GtkTreeModel *model, GtkTreeIter *iter, guint index, 
+static gint set_one_category(GtkTreeModel *model, GtkTreeIter *iter, guint index,
 			     const gchar *category, guint tatami, guint group, struct compsys sys)
 {
     struct judoka j;
@@ -111,7 +111,7 @@ static gint display_one_competitor(GtkTreeModel *model, struct judoka *j)
             return -1;
         }
 
-        return set_one_category(model, &parent, j->index, (gchar *)j->last, 
+        return set_one_category(model, &parent, j->index, (gchar *)j->last,
                                 j->belt, j->birthyear, uncompress_system(j->weight));
     }
 
@@ -121,10 +121,10 @@ static gint display_one_competitor(GtkTreeModel *model, struct judoka *j)
         if (gtk_tree_model_iter_parent((GtkTreeModel *)model, &parent, &iter) == FALSE) {
             /* illegal situation */
             g_print("ILLEGAL %s:%d\n", __FILE__, __LINE__);
-            ret = set_one_category(model, &parent, 0, 
-                                   (gchar *)j->category, 
+            ret = set_one_category(model, &parent, 0,
+                                   (gchar *)j->category,
                                    0, 0, (struct compsys){0,0,0,0});
-        } 
+        }
 
         parent_data = get_data_by_iter_model(&parent, model);
 
@@ -274,7 +274,7 @@ static int db_match_callback(void *data, int argc, char **argv, char **azColName
 
     for (i = 0; i < argc; i++) {
         val =  argv[i] ? atoi(argv[i]) : 0;
-		
+
         if (IS(category))
             m.category = val;
         else if (IS(number))
@@ -358,16 +358,16 @@ static GtkTreeModel *create_and_fill_model(gchar *dbname)
         return model;
     }
 
-    rc = sqlite3_exec(db, 
-                      "SELECT * FROM categories WHERE \"deleted\"&1=0 ORDER BY \"category\" ASC", 
+    rc = sqlite3_exec(db,
+                      "SELECT * FROM categories WHERE \"deleted\"&1=0 ORDER BY \"category\" ASC",
                       db_category_callback, model, &zErrMsg);
     if (rc != SQLITE_OK && zErrMsg) {
         g_print("SQL error: %s\n", zErrMsg);
         sqlite3_free(zErrMsg);
     }
 
-    rc = sqlite3_exec(db, 
-                      "SELECT * FROM competitors WHERE \"deleted\"&1=0 ORDER BY \"last\" ASC", 
+    rc = sqlite3_exec(db,
+                      "SELECT * FROM competitors WHERE \"deleted\"&1=0 ORDER BY \"last\" ASC",
                       db_competitor_callback, model, &zErrMsg);
     if (rc != SQLITE_OK && zErrMsg) {
         g_print("SQL error: %s\n", zErrMsg);
@@ -393,10 +393,10 @@ static void read_foreign_matches(gchar *dbname, struct shiai_map *mp)
         return;
     }
 
-    sprintf(cmd, 
+    sprintf(cmd,
             "SELECT * FROM matches WHERE \"deleted\"&1=0 AND \"category\"=%d",
             mp->foreign_cat);
-	
+
     rc = sqlite3_exec(db, cmd, db_match_callback, mp, &zErrMsg);
     if (rc != SQLITE_OK && zErrMsg) {
         g_print("SQL error: %s\n", zErrMsg);
@@ -461,9 +461,9 @@ void row_activated(GtkTreeView        *treeview,
         show_note("%s %s %s (%s) %s", _("Competitor"), j->first, j->last, j->regcategory, _("copied"));
 
         if (find_iter(&iter, j->index)) {
-            GtkTreePath *path = gtk_tree_model_get_path(current_model, &iter);
-            view_on_row_activated(GTK_TREE_VIEW(current_view), path, NULL, NULL);
-            gtk_tree_path_free(path);
+            GtkTreePath *path1 = gtk_tree_model_get_path(current_model, &iter);
+            view_on_row_activated(GTK_TREE_VIEW(current_view), path1, NULL, NULL);
+            gtk_tree_path_free(path1);
         }
     } else { // category
         gboolean ok;
@@ -512,7 +512,7 @@ void row_activated(GtkTreeView        *treeview,
         matches_refresh();
         update_category_status_info(j->index);
 
-        show_note("%s %s %s", 
+        show_note("%s %s %s",
                   _("Category"), j->last, _("has been copied with competitors and matches"));
     }
 
@@ -675,7 +675,7 @@ static GtkWidget *create_view_and_model(gchar *dbname)
     /*
      * gtk_tree_selection_set_mode(gtk_tree_view_get_selection(GTK_TREE_VIEW(view)),
      *			    GTK_SELECTION_MULTIPLE);
-     */		    
+     */
     g_object_unref(model); /* destroy model automatically with view */
 
     gtk_tree_selection_set_mode(gtk_tree_view_get_selection(GTK_TREE_VIEW(view)),
@@ -740,6 +740,7 @@ void set_old_shiai_display(GtkWidget *w, gpointer data)
     GtkWidget *dialog;
     GtkFileFilter *filter = gtk_file_filter_new();
     gchar *dbname = NULL;
+    GtkWidget *window = NULL;
 
     gtk_file_filter_add_pattern(filter, "*.shi");
     gtk_file_filter_set_name(filter, _("Tournaments"));
@@ -776,13 +777,13 @@ void set_old_shiai_display(GtkWidget *w, gpointer data)
 
     /* Create window */
 
-    GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(window), dbname);
     gtk_widget_set_size_request(window, FRAME_WIDTH, FRAME_HEIGHT);
 
     g_signal_connect (G_OBJECT (window), "delete_event",
                       G_CALLBACK (delete_event), NULL);
-    
+
     g_signal_connect (G_OBJECT (window), "destroy",
                       G_CALLBACK (destroy_event), NULL);
 
@@ -806,7 +807,7 @@ void set_old_shiai_display(GtkWidget *w, gpointer data)
 
 out:
 	/* release resources */
-	
+
 	/* intentional memory leak */
 	//g_free(dbname); /* shiai database name */
 	return;

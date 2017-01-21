@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4;  -*- */
 
 /*
- * Copyright (C) 2006-2015 by Hannu Jokinen
+ * Copyright (C) 2006-2016 by Hannu Jokinen
  * Full copyright text is included in the software package.
  */
 
@@ -34,6 +34,9 @@
 #if GTK_CHECK_VERSION(2,10,0)
 #define PRINT_SUPPORTED
 #endif
+
+/* Uncomment this to print round number table that can be inserted in the code. */
+//#define CALCULATE_ROUNDS
 
 #define FAST_DB
 
@@ -171,7 +174,7 @@ enum french_systems {
 #define TEAM          0x04
 #define TEAM_EVENT    0x08
 
-#define NEXT_MATCH_NUM 20
+#define NEXT_MATCH_NUM 40
 #define INFO_MATCH_NUM 10
 #define WAITING_MATCH_NUM 40
 
@@ -191,7 +194,7 @@ enum special_match_types {
         _obj = gtk_widget_get_accessible(_widget);      \
         atk_object_set_name(_obj, _name); } while (0)
 
-#define SHOW_MESSAGE(_a...) do {gchar b[256]; snprintf(b, sizeof(b), _a); show_message(b); } while (0)
+#define SHOW_MESSAGE(_a...) do {gchar _b[256]; snprintf(_b, sizeof(_b), _a); show_message(_b); } while (0)
 
 #define MATCHED_POOL(_a) (pm.m[_a].blue_points || pm.m[_a].white_points || \
                           pm.m[_a].blue == GHOST || pm.m[_a].white == GHOST)
@@ -389,6 +392,8 @@ enum {
 #define UNFREEZE_IMPORTED 2
 #define UNFREEZE_THIS     3
 #define FREEZE_THIS       4
+#define UNFREEZE_THESE    5
+#define MOVE_MATCHES      6
 
 #define MATCH_EXISTS       1
 #define MATCH_MATCHED      2
@@ -464,8 +469,10 @@ enum {
     PROP_THREE_MATCHES_FOR_TWO,
     PROP_WIN_NEEDED_FOR_MEDAL,
     PROP_SEEDED_TO_FIXED_PLACES,
-    PROP_EQ_SCORE_LESS_SHIDO_WINS,
+    PROP_USE_FIRST_PLACES_ONLY,
+    /*PROP_EQ_SCORE_LESS_SHIDO_WINS,*/
     PROP_GS_WIN_GIVES_1_POINT,
+    PROP_RULES_2017,
     PROP_DEFAULT_CAT_1,
     PROP_DEFAULT_CAT_2,
     PROP_DEFAULT_CAT_3,
@@ -474,7 +481,10 @@ enum {
     PROP_DEFAULT_CAT_6,
     PROP_DPOOL2_WITH_CARRIED_FORWARD_POINTS,
     PROP_TWO_POOL_BRONZES,
+    PROP_RESOLVE_3_WAY_TIES_BY_TIME,
     PROP_RESOLVE_3_WAY_TIES_BY_WEIGHTS,
+    PROP_MIX_POOL_MATCHES_INTO_ROUNDS,
+    PROP_USE_IJF_POINTS,
     PROP_GRADE_NAMES,
     NUM_PROPERTIES
 };
@@ -523,10 +533,11 @@ struct match {
     gint  forcednumber;
     gint  date;
     gint  legend;
+    gint  round;
 };
 
 struct pool_matches {
-    gint c[21], wins[21], pts[21], mw[21][21];
+    gint c[21], wins[21], pts[21], tim[21], mw[21][21];
     struct match m[64];
     struct judoka *j[21];
     gboolean yes[21];
@@ -642,6 +653,10 @@ struct category_data {
     gint match_status;
     gint match_count;
     gint matched_matches_count;
+    struct {
+	gint match_count;
+	gint matched_matches_count;
+    } by_tatami[NUM_TATAMIS+1];
     gint rest_time;
     gboolean defined;
     gboolean deleted;
@@ -693,6 +708,13 @@ struct paint_data {
     gboolean rotate;
     gint     row_height;
     gchar   *filename;
+    gboolean highlight_match;
+    gboolean show_highlighted_page;
+    gboolean info;
+    cairo_status_t (*write_cb)(void *closure, const unsigned char *data,
+			       unsigned int length);
+    void    *closure;
+    gboolean svg_printed;
 };
 
 struct judoka_rectangle {
@@ -708,6 +730,16 @@ struct popup_data {
     gboolean is_blue;
 };
 extern struct popup_data popupdata;
+
+struct write_closure {
+    gint     fd;
+    gint     cat;
+    gint     tatami;
+    gint     len;
+    gint     page;
+    gboolean info;
+    gboolean svg;
+};
 
 extern avl_tree *categories_tree;
 extern struct category_data category_queue[NUM_TATAMIS+1];
@@ -726,6 +758,7 @@ extern gint language;
 extern gchar *use_logo;
 extern gboolean print_headers;
 
+extern GtkWidget     *notebook;
 extern gchar          current_directory[1024];
 extern gchar          database_name[200];
 extern gchar          logfile_name[200];
@@ -798,6 +831,8 @@ const char *db_name;
 extern guint selected_judokas[TOTAL_NUM_COMPETITORS];
 extern guint num_selected_judokas;
 
+extern gint match_crc[NUM_TATAMIS+1];
+
 /** Functions */
 
 extern void progress_show(gdouble progress, const gchar *text);
@@ -818,12 +853,14 @@ extern GtkWidget *get_menubar_menu( GtkWidget  *window );
 extern void open_shiai_display(void);
 extern void new_judoka(GtkWidget *w, gpointer   data );
 extern void new_regcategory(GtkWidget *w, gpointer   data );
+extern void show_category_window(GtkWidget *menuitem, gpointer userdata);
 extern void view_popup_menu(GtkWidget *treeview,
                             GdkEventButton *event,
                             gpointer userdata,
                             gchar *regcategory,
                             gboolean visible);
 extern void view_popup_menu_print_cards(GtkWidget *menuitem, gpointer userdata);
+extern void view_popup_menu_move_matches(GtkWidget *menuitem, gpointer userdata);
 extern void remove_empty_regcategories(GtkWidget *w, gpointer data);
 extern void remove_unweighed_competitors(GtkWidget *w, gpointer data);
 extern gint sort_by_name(const gchar *name1, const gchar *name2);
@@ -924,12 +961,14 @@ extern gboolean db_match_exists(gint category, gint number, gint flags);
 extern gboolean db_matches_exists(void);
 extern struct match *db_get_match_data(gint category, gint number);
 extern gboolean db_matched_matches_exist(gint category);
-extern gint db_category_match_status(gint category);
+extern gint db_category_get_match_status(gint category);
+extern gint db_category_set_match_status(gint category);
 extern gint db_competitor_match_status(gint competitor);
 extern void db_remove_matches(guint category);
 extern void db_set_points(gint category, gint number, gint minutes,
                           gint blue, gint white, gint blue_score, gint white_score, gint legend);
-extern void db_set_score(gint category, gint number, gint score, gboolean is_blue);
+extern gint db_set_score(gint category, gint number, gint score, gboolean is_blue, gboolean hikiwake);
+extern void db_set_time(gint category, gint number, gint tim);
 extern void db_read_match(gint category, gint number);
 extern void db_read_matches_of_category(gint category);
 extern struct match *db_next_match(gint category, gint tatami);
@@ -937,6 +976,7 @@ extern void db_write_c_matches(void);
 extern struct match *db_matches_waiting(void);
 extern struct match *get_cached_next_matches(gint tatami);
 extern void db_freeze_matches(gint tatami, gint category, gint number, gint arg);
+extern void db_set_forced_tatami(gint tatami, gint category, gint number);
 extern void db_change_freezed(gint category, gint number,
 			      gint tatami, gint position, gboolean after);
 extern gboolean db_has_hansokumake(gint competitor);
@@ -1037,7 +1077,7 @@ extern void empty_pool_struct(struct pool_matches *pm);
 extern void set_competitor_position(gint ix, gint status);
 extern void write_competitor_positions(void);
 extern void get_pool_winner(gint num, gint c[21], gboolean yes[21],
-                            gint wins[21], gint pts[21],
+                            gint wins[21], gint pts[21], gint match_time[21],
                             gboolean mw[21][21], struct judoka *ju[21], gboolean all_matched[21], gboolean tie[21]);
 extern void update_competitors_categories(gint competitor);
 extern void set_points_and_score(struct message *msg);
@@ -1065,6 +1105,9 @@ extern void set_font(gchar *font);
 extern gchar *get_font_face(void);
 extern void category_window(gint cat);
 extern void write_sheet_to_stream(gint cat, cairo_write_func_t write_func, void *closure);
+extern gboolean change_current_page(GtkWidget *sheet_page,
+                                    GdkEventButton *event,
+                                    gpointer userdata);
 
 /* names */
 #define IS_MALE   1
@@ -1102,15 +1145,12 @@ extern gulong get_my_address();
 extern gint nodescan(guint network);
 extern void show_node_connections(GtkWidget *w, gpointer data);
 extern void copy_packet(struct message *msg);
+extern struct message *get_next_match_msg(int tatami);
 
-/* ip */
+/* ip.c */
+
 extern void ask_node_ip_address( GtkWidget *w, gpointer data);
 extern void show_my_ip_addresses( GtkWidget *w, gpointer data);
-extern void msg_to_queue(struct message *msg);
-extern struct message *get_rec_msg(void);
-extern void set_preferences(void);
-extern gulong host2net(gulong a);
-extern struct message *put_to_rec_queue(volatile struct message *m);
 
 #if (GTKVER == 3)
 extern GtkEntryCompletion *club_completer_new(void);
@@ -1184,6 +1224,7 @@ extern void set_graph_rest_time(gint tatami, time_t rest_end, gint flags);
 /* search */
 extern void search_competitor(GtkWidget *w, gpointer cb);
 extern void search_competitor_args(GtkWidget *w, gpointer cb, gpointer args);
+extern void lookup_competitor(struct msg_lookup_comp *msg);
 
 /* sql_dialog */
 extern void sql_window(GtkWidget *w, gpointer data);
@@ -1231,9 +1272,16 @@ extern gint next_page(gint cat, gint page);
 extern gint num_pages(struct compsys sys);
 extern gint get_matchnum_by_pos(struct compsys systm, gint pos, gint num);
 extern gint db_position_to_real(struct compsys sys, gint pos);
-extern gboolean is_repechage(struct compsys sys, gint m);
+extern gint is_repechage(struct compsys sys, gint m);
+extern gint round_number(struct category_data *cd, gint m);
+extern const gchar *round_name_by_id(gint n);
+extern const gchar *round_name(struct category_data *cd, gint m);
 extern gint num_matches_left(gint index, gint competitors);
 extern gint num_matches_estimate(gint index);
+extern const gchar *get_points_str(gint points);
+extern gint get_points_gint(gint points);
+extern gchar *get_score_str(gint score);
+extern gint match_on_page(gint category, gint match);
 
 /* medal-matches */
 extern void move_medal_matches(GtkWidget *menuitem, gpointer userdata);
@@ -1249,6 +1297,7 @@ extern gint paint_svg(struct paint_data *pd);
 extern gboolean svg_in_use(void);
 extern gint get_svg_size(struct compsys systm, gint pagenum, gint *width, gint *height);
 extern void add_custom_svg(gchar *data, gsize len, gint table, gint page);
+extern gint get_svg_match_page(struct compsys systm, gint matchnum, gboolean info);
 
 /* properties */
 extern void init_property(gchar *prop, gchar *val);
@@ -1269,6 +1318,19 @@ extern gint get_custom_pos(struct custom_matches *cm, gint table, gint pos, gint
 extern guint get_custom_table_number_by_competitors(gint num_comp);
 extern struct custom_data *get_custom_table(guint table);
 extern void read_custom_from_db(void);
+extern GtkTextBuffer *message_window(void);
+extern void show_msg(GtkTextBuffer *buf, gchar *tagname, gchar *format, ...);
+
+/* http */
+extern void clear_cache_by_cat(gint cat);
+extern void get_bracket_2(gint tatami, gint catid, gint svg, gint page, gint connum);
+
+/* match order */
+extern void read_match_order_dialog(GtkWidget *w, gpointer arg);
+
+/* websock */
+extern void handle_websock(struct jsconn *conn, char *in, gint length);
+extern gint websock_send_msg(gint fd, struct message *msg);
 
 /* profiling stuff */
 extern guint64 cumul_db_time;
