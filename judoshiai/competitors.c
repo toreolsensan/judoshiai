@@ -110,6 +110,12 @@ static void judoka_edited_callback(GtkWidget *widget,
     struct compsys system = {0};
     gchar *realcategory = NULL;
 
+    /* Category definitions edit. */
+    if (event_id == GTK_RESPONSE_YES) {
+	edit_category_dialog(ix, FALSE);
+	return;
+    }
+
     weight_entry = NULL;
     memset(&edited, 0, sizeof(edited));
 
@@ -413,6 +419,10 @@ out:
     if (bcdialog) {
         gtk_window_present(bcdialog);
     }
+
+    if (ix == NEW_WCLASS+2) {
+	edit_category_dialog(edited.index, TRUE);
+    }
 }
 
 static GtkWidget *set_entry(GtkWidget *table, int row,
@@ -537,6 +547,13 @@ void view_on_row_activated(GtkTreeView        *treeview,
         gtk_button_set_label(GTK_BUTTON(coach_button), _("Competitors"));
         gtk_button_set_image(GTK_BUTTON(coach_button),
                              gtk_image_new_from_stock(GTK_STOCK_PRINT, GTK_ICON_SIZE_BUTTON));
+    }
+
+    if (!visible && !(deleted & TEAM)) {
+	GtkWidget *e = gtk_button_new_from_stock(GTK_STOCK_EDIT);
+	//g_object_set(e, "always-show-image", TRUE, NULL);
+	//gtk_button_set_label(GTK_BUTTON(e), );
+	gtk_dialog_add_action_widget(GTK_DIALOG (dialog), e, GTK_RESPONSE_YES);
     }
 
     GtkWidget *ok_button = gtk_dialog_add_button (GTK_DIALOG (dialog),
