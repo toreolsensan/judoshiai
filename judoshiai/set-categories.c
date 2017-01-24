@@ -13,6 +13,9 @@
 
 #include "judoshiai.h"
 
+struct catdefwidgets;
+static void teams_dialog(struct catdefwidgets *fields);
+
 struct offial_category {
     gchar *name;
     gint maxage;
@@ -1234,6 +1237,7 @@ struct catdefwidgets {
 	GtkWidget *weight, *weighttext;
     } weights[NUM_CAT_DEF_WEIGHTS];
     gchar newname[32];
+    gboolean new_team_cat;
 };
 
 static void set_dialog_values(struct catdefwidgets *fields, gint i)
@@ -1244,8 +1248,28 @@ static void set_dialog_values(struct catdefwidgets *fields, gint i)
     if (fields->newname[0])
 	gtk_entry_set_text(GTK_ENTRY(fields->agetext), fields->newname);
 
-    if (i < 0)
+    if (i < 0) {
+	if (fields->new_team_cat) {
+	    gchar *weighs[5] = {"66000", "73000", "81000", "90000", "1000000"};
+	    gchar *weightexts[5] = {"-66", "-73", "-81", "-90", "+90"};
+	    for (j = 0; j < 5; j++) {
+		gtk_entry_set_text(GTK_ENTRY(fields->weights[j].weight), weighs[j]);
+		gtk_entry_set_text(GTK_ENTRY(fields->weights[j].weighttext), weightexts[j]);
+	    }
+	    gtk_combo_box_set_active(GTK_COMBO_BOX(fields->gen), 0);
+	    gtk_entry_set_text(GTK_ENTRY(fields->age), "1");
+	    gtk_editable_set_editable(GTK_EDITABLE(fields->age), FALSE);
+	    gtk_entry_set_text(GTK_ENTRY(fields->matchtime), "240");
+	    gtk_entry_set_text(GTK_ENTRY(fields->resttime), "240");
+	    gtk_entry_set_text(GTK_ENTRY(fields->gstime), "0");
+	    gtk_entry_set_text(GTK_ENTRY(fields->reptime), "0");
+	    gtk_entry_set_text(GTK_ENTRY(fields->pini), "20");
+	    gtk_entry_set_text(GTK_ENTRY(fields->pinw), "10");
+	    gtk_entry_set_text(GTK_ENTRY(fields->piny), "0");
+	    gtk_entry_set_text(GTK_ENTRY(fields->pink), "0");
+	}
 	return;
+    }
 
     for (j = 0; j < NUM_CAT_DEF_WEIGHTS; j++) {
 	if (category_definitions[i].weights[j].weight) {
@@ -1321,6 +1345,11 @@ static void edit_category_dialog_callback(GtkWidget *widget,
         db_cat_def_table_done();
     }
 
+    if (event_id == GTK_RESPONSE_OK &&
+	fields->new_team_cat) {
+	teams_dialog(fields);
+    }
+
     gtk_widget_destroy(widget);
 }
 
@@ -1336,7 +1365,7 @@ static gboolean copy_from_existing(GtkWidget *w,
     return TRUE;
 }
 
-void edit_category_dialog(gint ix)
+void edit_category_dialog(gint ix, gboolean is_new_team)
 {
     GtkWidget *dialog, *scrolled_window, *table, *tmp;
     struct catdefwidgets *fields = NULL;
@@ -1344,6 +1373,8 @@ void edit_category_dialog(gint ix)
     struct category_data *catdata = avl_get_category(ix);
     if (!catdata)
 	return;
+
+    is_new_team = catdata->deleted & TEAM_EVENT;
 
     fields = g_malloc0(sizeof(*fields));
     if (!fields) return;
@@ -1353,6 +1384,7 @@ void edit_category_dialog(gint ix)
     gchar *p = strrchr(fields->newname, '-');
     if (!p) p = strrchr(fields->newname, '+');
     if (p) *p = 0;
+    fields->new_team_cat = is_new_team;
 
     i = find_age_index(catdata->category);
 
@@ -1459,4 +1491,186 @@ void edit_category_dialog(gint ix)
     gtk_widget_show_all(dialog);
     g_signal_connect(G_OBJECT(dialog), "response",
                      G_CALLBACK(edit_category_dialog_callback), fields);
+}
+
+struct competitor_w {
+    GtkWidget *team;
+    gchar eventname[32];
+    struct {
+	GtkWidget *last, *first;
+	gchar cat[32];
+    } names[NUM_CAT_DEF_WEIGHTS];
+    gint numw;
+};
+
+static void judoka_defaults(struct judoka *j)
+{
+    memset(j, 0, sizeof(*j));
+    j->last = "";
+    j->first = "";
+    j->club = "";
+    j->regcategory = "";
+    j->category = "";
+    j->country = "";
+    j->comment = "";
+    j->coachid = "";
+}
+
+static void team_changed_callback(GtkWidget *w, gpointer arg) 
+{
+    struct competitor_w *comps = arg;
+    gint i;
+    for (i = 0; i < comps->numw; i++) {
+	gtk_entry_set_text(GTK_ENTRY(comps->names[i].last),
+			   gtk_entry_get_text(GTK_ENTRY(comps->team)));
+    }
+}
+
+static void teams_dialog_callback(GtkWidget *widget,
+				  GdkEvent *event,
+				  gpointer data)
+{
+    struct competitor_w *comps = data;
+    gint event_id = ptr_to_gint(event);
+
+    if (event_id == GTK_RESPONSE_OK) {
+	struct judoka j;
+	const gchar *name = gtk_entry_get_text(GTK_ENTRY(comps->team));
+	struct compsys system;
+	system.numcomp = comps->numw;
+	system.system = system.table = system.wishsys = 0;
+
+        GtkTreeIter tmp_iter;
+        if (find_iter_category(&tmp_iter, name)) {
+            struct judoka *g = get_data_by_iter(&tmp_iter);
+            gint gix = g ? g->index : 0;
+            free_judoka(g);
+
+            if (gix) {
+                SHOW_MESSAGE("%s %s %s", _("Team"), name, _("already exists!"));
+                return;
+            }
+        }
+
+	judoka_defaults(&j);
+
+	// add team as competitor
+	j.last = name;
+	j.category = comps->eventname;
+        j.visible = TRUE;
+        j.index = current_index++;
+        db_add_judoka(j.index, &j);
+	gint ret = display_one_judoka(&j);
+	if (ret >= 0) {
+            db_update_judoka(j.index, &j);
+	    update_competitors_categories(j.index);
+	}
+
+	// add team
+        j.index = 0;
+	j.last = name;
+	j.deleted = TEAM;
+        j.weight = compress_system(system);
+	j.category = "";
+        j.visible = FALSE;
+	ret = display_one_judoka(&j);
+	if (ret >= 0) {
+	    j.index = ret;
+	    db_add_category(ret, &j);
+            db_set_system(ret, system);
+            db_update_judoka(ret, &j);
+	    //db_update_category(ret, &j);
+	}
+
+	// add team members
+        j.visible = TRUE;
+        j.weight = 0;
+        j.deleted = 0;
+        j.club = name;
+
+        gint k;
+        for (k = 0; k < comps->numw; k++) {
+            j.index = current_index++;
+            j.first = gtk_entry_get_text(GTK_ENTRY(comps->names[k].first));
+            j.last = gtk_entry_get_text(GTK_ENTRY(comps->names[k].last));
+            j.category = name;
+            j.regcategory = comps->names[k].cat;
+
+            db_add_judoka(j.index, &j);
+            ret = display_one_judoka(&j);
+        }
+
+	return;
+    }
+
+    g_free(comps);
+    gtk_widget_destroy(widget);
+}
+
+static void teams_dialog(struct catdefwidgets *fields)
+{
+    GtkWidget *dialog, *scrolled_window, *table, *tmp;
+    gint i, wclasses = 0;
+    struct competitor_w *comps;
+
+    comps = g_malloc0(sizeof(*comps));
+    if (!comps) return;
+
+    dialog = gtk_dialog_new_with_buttons (gtk_entry_get_text(GTK_ENTRY(fields->agetext)),
+                                          GTK_WINDOW(main_window),
+					  GTK_DIALOG_DESTROY_WITH_PARENT,
+                                          GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                                          GTK_STOCK_NEW, GTK_RESPONSE_OK,
+                                          NULL);
+
+    scrolled_window = gtk_scrolled_window_new(NULL, NULL);
+    gtk_widget_set_size_request(scrolled_window, FRAME_WIDTH, FRAME_HEIGHT);
+    gtk_container_set_border_width(GTK_CONTAINER(scrolled_window), 4);
+    table = gtk_grid_new();
+    gtk_container_add(GTK_CONTAINER(scrolled_window), table);
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),
+		       scrolled_window, FALSE, FALSE, 0);
+
+    GtkWidget *w = gtk_label_new(_("Team:"));
+    gtk_grid_attach(GTK_GRID(table), w, 0, 0, 1, 1);
+
+    comps->team = tmp = gtk_entry_new();
+    gtk_entry_set_max_length(GTK_ENTRY(tmp), 20);
+    gtk_entry_set_width_chars(GTK_ENTRY(tmp), 10);
+    gtk_grid_attach(GTK_GRID(table), tmp, 1, 0, 2, 1);
+    g_signal_connect(G_OBJECT(tmp), "changed", G_CALLBACK(team_changed_callback), comps);
+
+    gtk_grid_attach(GTK_GRID(table), gtk_label_new(_("Last Name:")), 0, 2, 2, 1);
+    gtk_grid_attach(GTK_GRID(table), gtk_label_new(_("First Name:")), 0, 3, 2, 1);
+
+    for (i = 0; i < NUM_CAT_DEF_WEIGHTS; i++) {
+	if (!fields->weights[i].weighttext) continue;
+	const gchar *t = gtk_entry_get_text(GTK_ENTRY(fields->weights[i].weighttext));
+	if (!t || !t[0]) continue;
+	w = gtk_label_new(t);
+	gtk_grid_attach(GTK_GRID(table), w, 3+wclasses, 1, 1, 1);
+
+	comps->names[wclasses].last = tmp = gtk_entry_new();
+	gtk_entry_set_max_length(GTK_ENTRY(tmp), 20);
+	gtk_entry_set_width_chars(GTK_ENTRY(tmp), 20);
+	gtk_grid_attach(GTK_GRID(table), tmp, 3+wclasses, 2, 1, 1);
+	gtk_entry_set_text(GTK_ENTRY(tmp), "");
+
+	comps->names[wclasses].first = tmp = gtk_entry_new();
+	gtk_entry_set_max_length(GTK_ENTRY(tmp), 20);
+	gtk_entry_set_width_chars(GTK_ENTRY(tmp), 20);
+	gtk_grid_attach(GTK_GRID(table), tmp, 3+wclasses, 3, 1, 1);
+	gtk_entry_set_text(GTK_ENTRY(tmp), t);
+
+	g_strlcpy(comps->names[wclasses].cat, t, 32);
+
+	wclasses++;
+    }
+
+    g_strlcpy(comps->eventname, gtk_entry_get_text(GTK_ENTRY(fields->agetext)), 32);
+    comps->numw = wclasses;
+
+    gtk_widget_show_all(dialog);
+    g_signal_connect(G_OBJECT(dialog), "response",
+                     G_CALLBACK(teams_dialog_callback), comps);
 }
