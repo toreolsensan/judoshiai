@@ -492,7 +492,8 @@ static int db_callback_matches(void *data, int argc, char **argv, char **azColNa
 		gint j;
 		for (j = i+1; j < next_match_num; j++) {
 		    if (next_match[j].category == m_static.category &&
-			next_match[j].number < m_static.number) {
+			next_match[j].number < m_static.number &&
+			m_static.forcednumber == 0) {
 			/* Cannot insert here. */
 			i = j;
 			DEBUG_LOG("Cannot insert");
