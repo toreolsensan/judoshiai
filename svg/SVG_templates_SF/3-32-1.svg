@@ -1,0 +1,4529 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="297mm"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="3-32-1.svg">
+  <metadata
+     id="metadata1177">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1288"
+     inkscape:window-height="745"
+     id="namedview1175"
+     showgrid="false"
+     inkscape:zoom="1.0946801"
+     inkscape:cx="633.65634"
+     inkscape:cy="930.39565"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g1069" />
+  <defs
+     id="defs4">
+    <clipPath
+       id="a">
+      <path
+         d="M0 0h1030.93v1599.196H0z"
+         id="path7" />
+    </clipPath>
+  </defs>
+  <g
+     transform="matrix(.65604 0 0 .65604 31.505 10.94)"
+     id="g9">
+    <rect
+       width="38.694"
+       height="229.677"
+       x="1.056"
+       y="94.33"
+       ry="0"
+       fill="#faa"
+       fill-rule="evenodd"
+       stroke="#000"
+       stroke-width="1.08"
+       id="rect11" />
+    <text
+       style="text-align:center"
+       y="38.656"
+       x="556.544"
+       font-size="24.162"
+       font-family="Calibri"
+       text-anchor="middle"
+       id="text13">%i-competition</text>
+    <text
+       style="text-align:center"
+       y="54.77"
+       x="556.184"
+       font-size="13.424"
+       font-family="Calibri"
+       text-anchor="middle"
+       id="text15">%i-place</text>
+    <text
+       style="text-align:center"
+       y="70.67"
+       x="556.184"
+       font-size="13.424"
+       font-family="Calibri"
+       text-anchor="middle"
+       id="text17">%i-date</text>
+    <text
+       style="text-align:end"
+       y="71.747"
+       x="1040.98"
+       font-size="13.424"
+       font-family="Calibri"
+       text-anchor="end"
+       id="text19">
+      <tspan
+         style="-inkscape-font-specification:'Calibri Bold'"
+         font-weight="bold"
+         font-size="60.972"
+         id="tspan21">%i-catname</tspan>
+    </text>
+    <text
+       style="text-align:start"
+       y="114.455"
+       x="329.258"
+       dx="0 0 0 0 0 0 0 0 0 0 0 0 0.38107681"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text23">%m17-1-hm1-last</text>
+    <text
+       style="text-align:end"
+       y="97.578"
+       x="1040.191"
+       font-size="13.424"
+       font-family="Calibri"
+       text-anchor="end"
+       id="text25">
+      <tspan
+         font-size="22.865"
+         id="tspan27">Tatami: %i-tatami, %t0: %n</tspan>
+    </text>
+    <text
+       style="text-align:start"
+       y="188.703"
+       x="329.258"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text29">
+      <tspan
+         font-size="11.432"
+         id="tspan31">%m2s1-1 - %m2s2-1 [%m2t-1]</tspan>
+    </text>
+    <text
+       style="text-align:start"
+       y="993.617"
+       x="797.367"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text33">%t18</text>
+    <text
+       style="text-align:start"
+       y="1011.094"
+       x="770.519"
+       font-size="11.634"
+       font-family="Calibri"
+       id="text35">%t22</text>
+    <text
+       style="text-align:start"
+       y="1163.909"
+       x="779.549"
+       font-size="14.318"
+       font-family="Calibri"
+       id="text37">5</text>
+    <text
+       style="text-align:start"
+       y="1188.996"
+       x="779.468"
+       font-size="14.318"
+       font-family="Calibri"
+       id="text39">7</text>
+    <text
+       style="text-align:start"
+       y="1178.556"
+       x="331.134"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text41">%m33-1-hm1-last</text>
+    <text
+       style="text-align:start"
+       y="1268.941"
+       x="331.134"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text43">%m34-1-hm1-last</text>
+    <text
+       style="text-align:start"
+       y="1331.168"
+       x="507.898"
+       font-size="10.739"
+       font-family="Calibri"
+       id="text45">V38</text>
+    <text
+       style="text-align:start"
+       y="1011.944"
+       x="802.479"
+       font-size="14.318"
+       font-family="Calibri"
+       id="text47">%t6</text>
+    <path
+       d="M822.418 1089.1v168.242"
+       clip-path="url(#a)"
+       transform="matrix(1 0 0 1.32126 -27.736 -438.32)"
+       stroke="#000"
+       stroke-width=".895"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       id="path49" />
+    <path
+       d="M770.56 1017.44h273.017M770.56 1043.19h273.017M770.56 1068.94h273.017M770.56 1094.69h273.017M770.56 1120.44h273.017M770.56 1146.19h273.017M770.56 1171.94h273.017M770.56 1197.69h273.017"
+       stroke="#000"
+       stroke-width=".973"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       id="path51" />
+    <path
+       d="M325.43 118.103h129.76v.895H325.43zM325.43 177.5h129.76v.896H325.43z"
+       stroke="#000"
+       stroke-width=".076"
+       stroke-linejoin="round"
+       id="path53" />
+    <text
+       style="text-align:start"
+       y="144.66"
+       x="480.133"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text55">%m25-1-hm1-last</text>
+    <path
+       d="M476.686 149.203h135.13v.895h-135.13z"
+       stroke="#000"
+       stroke-width=".056"
+       stroke-linejoin="round"
+       id="path57" />
+    <text
+       style="text-align:start"
+       y="265.412"
+       x="480.133"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text59">%m25-2-hm1-last</text>
+    <text
+       style="line-height:normal;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       y="283.31"
+       x="480.133"
+       color="#000"
+       font-size="11.432"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text61">%m18s1-1 - %m18s2-1 [%m18t-1]</text>
+    <path
+       d="M476.423 269.06h135.13v.895h-135.13z"
+       stroke="#000"
+       stroke-width=".056"
+       stroke-linejoin="round"
+       id="path63" />
+    <text
+       style="text-align:start"
+       y="458.031"
+       x="626.337"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text65">%m37-2-hm1-last</text>
+    <text
+       style="line-height:normal;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       y="472.881"
+       x="626.337"
+       color="#000"
+       font-size="11.432"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text67">%m26s1-1 - %m26s2-1 [%m26t-1]</text>
+    <path
+       d="M623.652 461.327h139.606v.895H623.652z"
+       stroke="#000"
+       stroke-width=".056"
+       stroke-linejoin="round"
+       id="path69" />
+    <text
+       style="text-align:start"
+       y="1202.564"
+       x="480.993"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text71">%m39-1-hm1-last</text>
+    <path
+       d="M479.203 1206.212H608.78v.864H479.203z"
+       stroke="#000"
+       stroke-width=".055"
+       stroke-linejoin="round"
+       id="path73" />
+    <text
+       style="text-align:start"
+       y="1293.006"
+       x="480.993"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text75">%m39-2-hm1-last</text>
+    <text
+       style="text-align:start"
+       y="1307.158"
+       x="480.993"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text77">
+      <tspan
+         font-size="11.432"
+         id="tspan79">%m34s1-1 - %m34s2-1 [%m34t-1]</tspan>
+    </text>
+    <path
+       d="M479.203 1296.654H609.86v.895H479.203z"
+       stroke="#000"
+       stroke-width=".056"
+       stroke-linejoin="round"
+       id="path81" />
+    <text
+       style="text-align:start"
+       y="1305.326"
+       x="794.788"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text83">
+      <tspan
+         font-size="11.432"
+         id="tspan85">%m41s1-1 - %m41s2-1 [%m41t-1]</tspan>
+    </text>
+    <path
+       d="M792.997 1293.886h142.29v.895h-142.29z"
+       stroke="#000"
+       stroke-width=".056"
+       stroke-linejoin="round"
+       id="path87" />
+    <text
+       style="line-height:normal;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       y="887.373"
+       x="779.04"
+       color="#000"
+       font-size="11.432"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text89">%m38s1-1 - %m38s2-1 [%m38t-1]</text>
+    <path
+       d="M775.226 854.545h144.08v.895h-144.08z"
+       stroke="#000"
+       stroke-width=".056"
+       stroke-linejoin="round"
+       id="path91" />
+    <text
+       style="text-align:start"
+       y="579.955"
+       x="745.838"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text93">
+      <tspan
+         style="-inkscape-font-specification:'Calibri Bold'"
+         font-weight="bold"
+         id="tspan95">%m43-winner-last</tspan>
+    </text>
+    <text
+       style="line-height:normal;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       y="606.999"
+       x="745.838"
+       color="#000"
+       font-size="11.432"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text97">%m43s1-1 - %m43s2-1 [%m43t-1]</text>
+    <path
+       d="M745.076 596.694h164v.893h-164z"
+       stroke="#000"
+       stroke-width=".058"
+       stroke-linejoin="round"
+       id="path99" />
+    <path
+       d="M327.098 1180.81h129.57v.863H327.1z"
+       stroke="#000"
+       stroke-width=".055"
+       stroke-linejoin="round"
+       id="path101" />
+    <path
+       color="#000"
+       overflow="visible"
+       fill="none"
+       stroke="#000"
+       stroke-width="1.91"
+       d="M769.004 997.613h279.236v227.46H769.004z"
+       id="path103" />
+    <g
+       font-size="14.318"
+       font-family="Calibri"
+       id="g105">
+      <text
+         x="774.941"
+         y="1276.55"
+         style="text-align:start"
+         transform="translate(4.527 -61.58)"
+         id="text107">7</text>
+      <text
+         style="text-align:start"
+         y="1271.626"
+         x="795.297"
+         transform="translate(4.527 -61.58)"
+         id="text109">%r8hm2-first-s-last</text>
+      <text
+         style="text-align:start"
+         y="1282.063"
+         x="795.399"
+         transform="translate(4.527 -61.58)"
+         id="text111">
+        <tspan
+           font-size="11.432"
+           id="tspan113">%r8hm2-country'/'club</tspan>
+      </text>
+    </g>
+    <g
+       font-size="14.318"
+       font-family="Calibri"
+       id="g115">
+      <text
+         x="774.735"
+         y="1097.394"
+         style="text-align:start"
+         transform="translate(4.527 -64.247)"
+         id="text117">
+        <tspan
+           style="-inkscape-font-specification:'Calibri Bold'"
+           font-weight="bold"
+           id="tspan119">1</tspan>
+      </text>
+      <text
+         x="795.297"
+         y="1094.346"
+         style="text-align:start"
+         transform="translate(4.527 -64.247)"
+         id="text121">%r1hm2-first-s-last</text>
+      <text
+         x="795.399"
+         y="1104.259"
+         style="text-align:start"
+         transform="translate(4.527 -64.247)"
+         id="text123">
+        <tspan
+           font-size="11.432"
+           id="tspan125">%r1hm2-country'/'club</tspan>
+      </text>
+    </g>
+    <g
+       font-size="14.318"
+       font-family="Calibri"
+       id="g127">
+      <text
+         x="774.955"
+         y="1123.735"
+         style="text-align:start"
+         transform="translate(4.527 -63.143)"
+         id="text129">
+        <tspan
+           style="-inkscape-font-specification:'Calibri Bold'"
+           font-weight="bold"
+           id="tspan131">2</tspan>
+      </text>
+      <text
+         style="text-align:start"
+         y="1119.236"
+         x="795.297"
+         transform="translate(4.527 -63.143)"
+         id="text133">%r2hm2-first-s-last</text>
+      <text
+         style="text-align:start"
+         y="1128.648"
+         x="795.399"
+         transform="translate(4.527 -63.143)"
+         id="text135">
+        <tspan
+           font-size="11.432"
+           id="tspan137">%r2hm2-country'/'club</tspan>
+      </text>
+    </g>
+    <text
+       x="775.029"
+       y="1152.159"
+       style="text-align:start"
+       font-size="14.318"
+       font-family="Calibri"
+       transform="translate(4.527 -66.27)"
+       id="text139">
+      <tspan
+         style="-inkscape-font-specification:'Calibri Bold'"
+         font-weight="bold"
+         id="tspan141">3</tspan>
+    </text>
+    <text
+       x="795.297"
+       y="1147.175"
+       style="text-align:start"
+       font-size="14.318"
+       font-family="Calibri"
+       transform="translate(4.527 -65.467)"
+       id="text143">%r3hm2-first-s-last</text>
+    <text
+       style="text-align:start"
+       y="1156.887"
+       x="795.399"
+       font-size="14.318"
+       font-family="Calibri"
+       transform="translate(4.527 -66.27)"
+       id="text145">
+      <tspan
+         font-size="11.432"
+         id="tspan147">%r3hm2-country'/'club</tspan>
+    </text>
+    <g
+       font-size="14.318"
+       font-family="Calibri"
+       id="g149">
+      <text
+         x="775.029"
+         y="1176.798"
+         style="text-align:start"
+         transform="translate(4.527 -64.784)"
+         id="text151">
+        <tspan
+           style="-inkscape-font-specification:'Calibri Bold'"
+           font-weight="bold"
+           id="tspan153">3</tspan>
+      </text>
+      <text
+         style="text-align:start"
+         y="1172.065"
+         x="795.297"
+         transform="translate(4.527 -64.784)"
+         id="text155">%r4hm2-first-s-last</text>
+      <text
+         style="text-align:start"
+         y="1182.078"
+         x="795.399"
+         transform="translate(4.527 -64.784)"
+         id="text157">
+        <tspan
+           font-size="11.432"
+           id="tspan159">%r4hm2-country'/'club</tspan>
+      </text>
+    </g>
+    <g
+       font-size="14.318"
+       font-family="Calibri"
+       id="g161">
+      <text
+         x="775.022"
+         y="1201.692"
+         style="text-align:start"
+         transform="translate(4.527 -63.62)"
+         id="text163">5</text>
+      <text
+         style="text-align:start"
+         y="1196.955"
+         x="795.297"
+         transform="translate(4.527 -63.62)"
+         id="text165">%r5hm2-first-s-last</text>
+      <text
+         style="text-align:start"
+         y="1207.109"
+         x="795.399"
+         transform="translate(4.527 -63.62)"
+         id="text167">
+        <tspan
+           font-size="11.432"
+           id="tspan169">%r5hm2-country'/'club</tspan>
+      </text>
+    </g>
+    <g
+       font-size="14.318"
+       font-family="Calibri"
+       id="g171">
+      <text
+         x="795.297"
+         y="1221.845"
+         style="text-align:start"
+         transform="translate(4.527 -62.816)"
+         id="text173">%r6hm2-first-s-last</text>
+      <text
+         x="795.399"
+         y="1231.338"
+         style="text-align:start"
+         transform="translate(4.527 -62.816)"
+         id="text175">
+        <tspan
+           font-size="11.432"
+           id="tspan177">%r6hm2-country'/'club</tspan>
+      </text>
+    </g>
+    <g
+       font-size="14.318"
+       font-family="Calibri"
+       id="g179">
+      <text
+         x="795.297"
+         y="1246.735"
+         style="text-align:start"
+         transform="translate(4.527 -62.493)"
+         id="text181">%r7hm2-first-s-last</text>
+      <text
+         x="795.399"
+         y="1256.529"
+         style="text-align:start"
+         transform="translate(4.527 -62.493)"
+         id="text183">
+        <tspan
+           font-size="11.432"
+           id="tspan185">%r7hm2-country'/'club</tspan>
+      </text>
+    </g>
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width="1.003"
+       d="M63.914 1181.604h242.41v23.943H63.914z"
+       id="path187" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       d="M63.913 1157.4h242.05v23.866H63.912z"
+       id="path189" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width=".895"
+       d="M306.68 1157.346h20.71v48.255h-20.71z"
+       id="path191" />
+    <text
+       x="-11.069"
+       y="1245.162"
+       style="text-align:start"
+       font-size="13.424"
+       font-family="Calibri"
+       transform="translate(321.26 -59.448)"
+       id="text193">29</text>
+    <text
+       style="text-align:start"
+       y="1249.431"
+       x="62.313"
+       transform="scale(1.06973 .93482)"
+       font-size="14.358"
+       font-family="Calibri"
+       id="text195">%m29-1-hm1-last-s-first</text>
+    <text
+       style="text-align:start"
+       y="1276.054"
+       x="62.313"
+       transform="scale(1.06973 .93482)"
+       font-size="14.358"
+       font-family="Calibri"
+       id="text197">%m29-2-hm1-last-s-first</text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="62.388"
+       y="1260.933"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text199">
+      <tspan
+         x="62.388"
+         y="1260.933"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan201">%m29-1-hm1-country'/'club</tspan>
+    </text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="62.388"
+       y="1286.06"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text203">
+      <tspan
+         x="62.388"
+         y="1286.06"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan205">%m29-2-hm1-country'/'club</tspan>
+    </text>
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       d="M214.334 1210.696h242.05v23.867h-242.05z"
+       id="path207" />
+    <text
+       style="text-align:start"
+       y="1307.257"
+       x="202.983"
+       transform="scale(1.06973 .93482)"
+       font-size="14.358"
+       font-family="Calibri"
+       id="text209">%m33-2-hm1-last-s-first</text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="203.058"
+       y="1317.263"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text211">
+      <tspan
+         x="203.058"
+         y="1317.263"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan213">%m33-2-hm1-country'/'club</tspan>
+    </text>
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width=".895"
+       d="M185.004 1256.934h20.71v48.255h-20.71z"
+       transform="matrix(.99785 0 0 1.10437 271.563 -206.846)"
+       id="path215" />
+    <text
+       x="188.515"
+       y="1285.303"
+       style="text-align:start"
+       font-size="13.424"
+       font-family="Calibri"
+       transform="matrix(.99785 0 0 1.10437 271.563 -206.846)"
+       id="text217">33</text>
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width="1.214"
+       d="M610.29 1206.862h20.39v90.108h-20.39z"
+       id="path219" />
+    <text
+       style="text-align:start"
+       y="1194.393"
+       x="645.58"
+       transform="scale(.95055 1.05202)"
+       font-size="14.092"
+       font-family="Calibri"
+       id="text221">39</text>
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width="1.214"
+       d="M772.308 1250.542h20.39v90.108h-20.39z"
+       id="path223" />
+    <text
+       transform="matrix(.95055 0 0 1.05202 117.658 -74.638)"
+       x="692.249"
+       y="1306.936"
+       style="text-align:start"
+       font-size="14.092"
+       font-family="Calibri"
+       id="text225">41</text>
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width="1.001"
+       d="M529.602 1316.89H772.19v23.866H529.602z"
+       id="path227" />
+    <text
+       style="text-align:start"
+       y="1420.855"
+       x="496.998"
+       transform="scale(1.06973 .93482)"
+       font-size="14.358"
+       font-family="Calibri"
+       id="text229">%m41-2-hm1-last-s-first</text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="497.073"
+       y="1430.861"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text231">
+      <tspan
+         x="497.073"
+         y="1430.861"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan233">%m41-2-hm1-country'/'club</tspan>
+    </text>
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       d="M214.334 1301.138h242.05v23.867h-242.05z"
+       id="path235" />
+    <text
+       style="text-align:start"
+       y="1404.005"
+       x="201.558"
+       transform="scale(1.06973 .93482)"
+       font-size="14.358"
+       font-family="Calibri"
+       id="text237">%m34-2-hm1-last-s-first</text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="201.633"
+       y="1414.011"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text239">
+      <tspan
+         x="201.633"
+         y="1414.011"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan241">%m34-2-hm1-country'/'club</tspan>
+    </text>
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width=".895"
+       d="M185.004 1256.934h20.71v48.255h-20.71z"
+       transform="matrix(.99785 0 0 1.10437 271.563 -116.404)"
+       id="path243" />
+    <text
+       x="188.515"
+       y="1285.303"
+       style="text-align:start"
+       font-size="13.424"
+       font-family="Calibri"
+       transform="matrix(.99785 0 0 1.10437 271.563 -116.404)"
+       id="text245">34</text>
+    <path
+       d="M327.052 1271.253h129.57v.863h-129.57z"
+       stroke="#000"
+       stroke-width=".055"
+       stroke-linejoin="round"
+       id="path247" />
+    <text
+       style="text-align:start"
+       y="1388.165"
+       x="331.004"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text249">%m35-1-hm1-last</text>
+    <text
+       style="text-align:start"
+       y="1478.551"
+       x="331.004"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text251">%m36-1-hm1-last</text>
+    <text
+       style="text-align:start"
+       y="1412.174"
+       x="480.863"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text253">%m40-1-hm1-last</text>
+    <path
+       d="M479.072 1415.853H608.65v.864H479.07z"
+       stroke="#000"
+       stroke-width=".055"
+       stroke-linejoin="round"
+       id="path255" />
+    <text
+       style="text-align:start"
+       y="1502.616"
+       x="480.863"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text257">%m40-2-hm1-last</text>
+    <text
+       style="text-align:start"
+       y="1517.465"
+       x="480.863"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text259">
+      <tspan
+         font-size="11.432"
+         id="tspan261">%m36s1-1 - %m36s2-1 [%m36t-1]</tspan>
+    </text>
+    <path
+       d="M479.072 1506.296H609.73v.863H479.072z"
+       stroke="#000"
+       stroke-width=".055"
+       stroke-linejoin="round"
+       id="path263" />
+    <text
+       style="text-align:start"
+       y="1446.978"
+       x="634.11"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text265">%m42-1-hm1-last-s-first</text>
+    <path
+       d="M631.495 1459.518h140.5v.864h-140.5z"
+       stroke="#000"
+       stroke-width=".055"
+       stroke-linejoin="round"
+       id="path267" />
+    <text
+       style="text-align:start"
+       y="1514.935"
+       x="794.657"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text269">
+      <tspan
+         font-size="11.432"
+         id="tspan271">%m42s1-1 - %m42s2-1 [%m42t-1]</tspan>
+    </text>
+    <path
+       d="M792.867 1503.495h142.29v.895h-142.29z"
+       stroke="#000"
+       stroke-width=".056"
+       stroke-linejoin="round"
+       id="path273" />
+    <path
+       d="M326.967 1390.392H456.54v.862H326.966z"
+       stroke="#000"
+       stroke-width=".055"
+       stroke-linejoin="round"
+       id="path275" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       d="M214.334 1420.306h242.05v23.867h-242.05z"
+       id="path277" />
+    <text
+       style="text-align:start"
+       y="1531.482"
+       x="202.861"
+       transform="scale(1.06973 .93482)"
+       font-size="14.358"
+       font-family="Calibri"
+       id="text279">%m35-2-hm1-last-s-first</text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="202.936"
+       y="1541.488"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text281">
+      <tspan
+         x="202.936"
+         y="1541.488"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan283">%m35-2-hm1-country'/'club</tspan>
+    </text>
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width=".895"
+       d="M185.004 1256.934h20.71v48.255h-20.71z"
+       transform="matrix(.99785 0 0 1.10437 271.563 2.735)"
+       id="path285" />
+    <text
+       x="188.515"
+       y="1285.303"
+       style="text-align:start"
+       font-size="13.424"
+       font-family="Calibri"
+       transform="matrix(.99785 0 0 1.10437 271.563 2.735)"
+       id="text287">35</text>
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width="1.214"
+       d="M610.158 1416.4h20.39v90.11h-20.39z"
+       id="path289" />
+    <text
+       style="text-align:start"
+       y="1393.636"
+       x="645.443"
+       transform="scale(.95055 1.05202)"
+       font-size="14.092"
+       font-family="Calibri"
+       id="text291">40</text>
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width="1.214"
+       d="M772.308 1460.098h20.39v90.108h-20.39z"
+       id="path293" />
+    <text
+       transform="matrix(.95055 0 0 1.05202 117.658 134.918)"
+       x="692.249"
+       y="1306.936"
+       style="text-align:start"
+       font-size="14.092"
+       font-family="Calibri"
+       id="text295">42</text>
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width=".918"
+       d="M8.364 1287.38H211.63v23.948H8.363z"
+       transform="matrix(1.19345 0 0 .99653 519.667 243.585)"
+       id="path297" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       d="M214.334 1510.748h242.05v23.867h-242.05z"
+       id="path299" />
+    <text
+       style="text-align:start"
+       y="1628.23"
+       x="201.436"
+       transform="scale(1.06973 .93482)"
+       font-size="14.358"
+       font-family="Calibri"
+       id="text301">%m36-2-hm1-last-s-first</text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="201.511"
+       y="1638.236"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text303">
+      <tspan
+         x="201.511"
+         y="1638.236"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan305">%m36-2-hm1-country'/'club</tspan>
+    </text>
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width=".895"
+       d="M185.004 1256.934h20.71v48.255h-20.71z"
+       transform="matrix(.99785 0 0 1.10437 271.563 93.177)"
+       id="path307" />
+    <text
+       x="188.515"
+       y="1285.303"
+       style="text-align:start"
+       font-size="13.424"
+       font-family="Calibri"
+       transform="matrix(.99785 0 0 1.10437 271.563 93.177)"
+       id="text309">36</text>
+    <path
+       d="M326.92 1480.834h129.573v.863H326.92z"
+       stroke="#000"
+       stroke-width=".055"
+       stroke-linejoin="round"
+       id="path311" />
+    <text
+       style="text-align:start"
+       y="1541.624"
+       x="507.025"
+       font-size="10.739"
+       font-family="Calibri"
+       id="text313">V37</text>
+    <text
+       style="text-align:start"
+       y="1237.369"
+       x="634.241"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text315">%m41-1-hm1-last-s-first</text>
+    <path
+       d="M631.626 1249.91h140.5v.894h-140.5z"
+       stroke="#000"
+       stroke-width=".056"
+       stroke-linejoin="round"
+       id="path317" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#d5e5ff"
+       fill-opacity=".996"
+       stroke="#000"
+       stroke-width="1.002"
+       d="M64.068 118.71H306.22v23.94H64.068z"
+       id="path319" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width="1.002"
+       d="M64.068 94.502H306.22v23.94H64.068z"
+       id="path321" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width=".895"
+       d="M305.756 94.45h20.71v48.254h-20.71z"
+       id="path323" />
+    <text
+       x="9.572"
+       y="89.282"
+       style="text-align:start"
+       font-size="13.424"
+       font-family="Calibri"
+       transform="translate(302.93 33.535)"
+       id="text325">1</text>
+    <text
+       style="text-align:start"
+       y="112.421"
+       x="61.706"
+       transform="scale(1.06973 .93482)"
+       font-size="14.358"
+       font-family="Calibri"
+       id="text327">%m1-1-hm1-last-s-first</text>
+    <text
+       style="text-align:start"
+       y="139.044"
+       x="61.706"
+       transform="scale(1.06973 .93482)"
+       font-size="14.358"
+       font-family="Calibri"
+       id="text329">%m1-2-hm1-last-s-first</text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="61.781"
+       y="123.923"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text331">
+      <tspan
+         x="61.781"
+         y="123.923"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan333">%m1-1-hm1-country'/'club</tspan>
+    </text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="61.781"
+       y="149.05"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text335">
+      <tspan
+         x="61.781"
+         y="149.05"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan337">%m1-2-hm1-country'/'club</tspan>
+    </text>
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#d5e5ff"
+       stroke="#000"
+       stroke-width="1.002"
+       d="M64.068 177.68H306.22v23.94H64.068z"
+       id="path339" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width="1.002"
+       d="M64.068 153.56H306.22v23.94H64.068z"
+       id="path341" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width=".895"
+       d="M305.58 153.528h20.71v48.255h-20.71z"
+       id="path343" />
+    <text
+       x="9.572"
+       y="89.282"
+       style="text-align:start"
+       font-size="13.424"
+       font-family="Calibri"
+       transform="translate(302.754 92.614)"
+       id="text345">2</text>
+    <text
+       style="text-align:start"
+       y="175.62"
+       x="61.73"
+       transform="scale(1.06973 .93482)"
+       font-size="14.358"
+       font-family="Calibri"
+       id="text347">%m2-1-hm1-last-s-first</text>
+    <text
+       style="text-align:start"
+       y="202.243"
+       x="61.73"
+       transform="scale(1.06973 .93482)"
+       font-size="14.358"
+       font-family="Calibri"
+       id="text349">%m2-2-hm1-last-s-first</text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="61.805"
+       y="187.122"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text351">
+      <tspan
+         x="61.805"
+         y="187.122"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan353">%m2-1-hm1-country'/'club</tspan>
+    </text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="61.805"
+       y="212.249"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text355">
+      <tspan
+         x="61.805"
+         y="212.249"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan357">%m2-2-hm1-country'/'club</tspan>
+    </text>
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width=".915"
+       d="M455.08 118.58h20.612v59.397H455.08z"
+       id="path359" />
+    <text
+       style="text-align:start"
+       y="152.663"
+       x="458.316"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text361">17</text>
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width="1.003"
+       d="M63.914 1271.4h242.41v23.944H63.914zM63.914 1247.28h242.41v23.942H63.914z"
+       id="path363" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width=".895"
+       d="M306.68 1247.242h20.71v48.255h-20.71z"
+       id="path365" />
+    <text
+       x="-11.069"
+       y="1245.162"
+       style="text-align:start"
+       font-size="13.424"
+       font-family="Calibri"
+       transform="translate(321.26 30.448)"
+       id="text367">30</text>
+    <text
+       style="text-align:start"
+       y="1345.595"
+       x="62.323"
+       transform="scale(1.06973 .93482)"
+       font-size="14.358"
+       font-family="Calibri"
+       id="text369">%m30-1-hm1-last-s-first</text>
+    <text
+       style="text-align:start"
+       y="1372.218"
+       x="62.323"
+       transform="scale(1.06973 .93482)"
+       font-size="14.358"
+       font-family="Calibri"
+       id="text371">%m30-2-hm1-last-s-first</text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="62.398"
+       y="1357.098"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text373">
+      <tspan
+         x="62.398"
+         y="1357.098"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan375">%m30-1-hm1-country'/'club</tspan>
+    </text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="62.398"
+       y="1382.224"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text377">
+      <tspan
+         x="62.398"
+         y="1382.224"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan379">%m30-2-hm1-country'/'club</tspan>
+    </text>
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width="1.003"
+       d="M63.914 1390.834h242.41v23.943H63.914zM63.914 1366.71h242.41v23.944H63.914z"
+       id="path381" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width=".895"
+       d="M306.68 1366.706h20.71v48.255h-20.71z"
+       id="path383" />
+    <text
+       x="-11.069"
+       y="1245.162"
+       style="text-align:start"
+       font-size="13.424"
+       font-family="Calibri"
+       transform="translate(321.26 149.912)"
+       id="text385">31</text>
+    <text
+       style="text-align:start"
+       y="1473.389"
+       x="62.323"
+       transform="scale(1.06973 .93482)"
+       font-size="14.358"
+       font-family="Calibri"
+       id="text387">%m31-1-hm1-last-s-first</text>
+    <text
+       style="text-align:start"
+       y="1500.012"
+       x="62.323"
+       transform="scale(1.06973 .93482)"
+       font-size="14.358"
+       font-family="Calibri"
+       id="text389">%m31-2-hm1-last-s-first</text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="62.398"
+       y="1484.891"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text391">
+      <tspan
+         x="62.398"
+         y="1484.891"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan393">%m31-1-hm1-country'/'club</tspan>
+    </text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="62.398"
+       y="1510.018"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text395">
+      <tspan
+         x="62.398"
+         y="1510.018"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan397">%m31-2-hm1-country'/'club</tspan>
+    </text>
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width="1.003"
+       d="M63.914 1481.815h242.41v23.943H63.914zM63.914 1457.54h242.41v23.942H63.914z"
+       id="path399" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width=".895"
+       d="M306.68 1457.484h20.71v48.255h-20.71z"
+       id="path401" />
+    <text
+       x="-11.069"
+       y="1245.162"
+       style="text-align:start"
+       font-size="13.424"
+       font-family="Calibri"
+       transform="translate(321.26 240.69)"
+       id="text403">32</text>
+    <text
+       style="text-align:start"
+       y="1570.574"
+       x="62.323"
+       transform="scale(1.06973 .93482)"
+       font-size="14.358"
+       font-family="Calibri"
+       id="text405">%m32-1-hm1-last-s-first</text>
+    <text
+       style="text-align:start"
+       y="1597.197"
+       x="62.323"
+       transform="scale(1.06973 .93482)"
+       font-size="14.358"
+       font-family="Calibri"
+       id="text407">%m32-2-hm1-last-s-first</text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="62.398"
+       y="1582.077"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text409">
+      <tspan
+         x="62.398"
+         y="1582.077"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan411">%m32-1-hm1-country'/'club</tspan>
+    </text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="62.398"
+       y="1607.203"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text413">
+      <tspan
+         x="62.398"
+         y="1607.203"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan415">%m32-2-hm1-country'/'club</tspan>
+    </text>
+    <text
+       style="text-align:start"
+       y="1191.252"
+       x="331.134"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text417">
+      <tspan
+         font-size="11.432"
+         id="tspan419">%m29s1-1 - %m29s2-1 [%m29t-1]</tspan>
+    </text>
+    <text
+       style="text-align:start"
+       y="1281.679"
+       x="331.134"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text421">
+      <tspan
+         font-size="11.432"
+         id="tspan423">%m30s1-1 - %m30s2-1 [%m30t-1]</tspan>
+    </text>
+    <text
+       style="text-align:start"
+       y="1216.716"
+       x="480.993"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text425">
+      <tspan
+         font-size="11.432"
+         id="tspan427">%m33s1-1 - %m33s2-1 {%m33t-1]</tspan>
+    </text>
+    <text
+       style="text-align:start"
+       y="1261.603"
+       x="634.311"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text429">
+      <tspan
+         font-size="11.432"
+         id="tspan431">%m39s1-1 - %m39s2-1 [%m39t-1]</tspan>
+    </text>
+    <text
+       style="text-align:start"
+       y="1427.023"
+       x="480.863"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text433">
+      <tspan
+         font-size="11.432"
+         id="tspan435">%m35s1-1 - %m35s2-1 [%m35t-1]</tspan>
+    </text>
+    <text
+       style="text-align:start"
+       y="1492.225"
+       x="331.004"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text437">
+      <tspan
+         font-size="11.432"
+         id="tspan439">%m32s1-1 - %m32s2-1 [%m32t-1]</tspan>
+    </text>
+    <text
+       style="text-align:start"
+       y="1402.036"
+       x="331.004"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text441">
+      <tspan
+         font-size="11.432"
+         id="tspan443">%m31s1-1 - %m31s2-1 [%m315t-1]</tspan>
+    </text>
+    <text
+       style="text-align:start"
+       y="1470.974"
+       x="634.18"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text445">
+      <tspan
+         font-size="11.432"
+         id="tspan447">%m40s1-1 - %m40s2-1 [%m40t-1]</tspan>
+    </text>
+    <text
+       style="line-height:125%"
+       x="847.271"
+       y="1325.226"
+       font-size="15.243"
+       font-family="sans-serif"
+       letter-spacing="0"
+       word-spacing="0"
+       id="text449">
+      <tspan
+         x="847.271"
+         y="1325.226"
+         style="-inkscape-font-specification:'sans-serif Bold'"
+         font-weight="bold"
+         font-size="19.054"
+         id="tspan451">3.</tspan>
+    </text>
+    <text
+       style="line-height:125%"
+       x="847.271"
+       y="1537.811"
+       font-size="15.243"
+       font-family="sans-serif"
+       letter-spacing="0"
+       word-spacing="0"
+       id="text453">
+      <tspan
+         x="847.271"
+         y="1537.811"
+         style="-inkscape-font-specification:'sans-serif Bold'"
+         font-weight="bold"
+         font-size="19.054"
+         id="tspan455">3.</tspan>
+    </text>
+    <text
+       style="line-height:125%"
+       x="811.144"
+       y="629.291"
+       font-size="15.243"
+       font-family="sans-serif"
+       letter-spacing="0"
+       word-spacing="0"
+       id="text457">
+      <tspan
+         x="811.144"
+         y="629.291"
+         style="-inkscape-font-specification:'sans-serif Bold'"
+         font-weight="bold"
+         font-size="19.054"
+         id="tspan459">1.</tspan>
+    </text>
+    <text
+       style="text-align:start"
+       y="107.552"
+       x="51.161"
+       font-size="10.739"
+       font-family="Calibri"
+       id="text461">1</text>
+    <text
+       style="text-align:start"
+       y="133.361"
+       x="51.176"
+       font-size="10.739"
+       font-family="Calibri"
+       id="text463">17</text>
+    <text
+       style="text-align:start"
+       y="168.738"
+       x="51.161"
+       font-size="10.739"
+       font-family="Calibri"
+       id="text465">9</text>
+    <text
+       style="text-align:start"
+       y="194.546"
+       x="51.176"
+       font-size="10.739"
+       font-family="Calibri"
+       id="text467">25</text>
+    <text
+       style="text-align:start"
+       y="129.305"
+       x="329.258"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text469">
+      <tspan
+         font-size="11.432"
+         id="tspan471">%m1s1-1 - %m1s2-1 [%m1t-1]</tspan>
+    </text>
+    <text
+       style="text-align:start"
+       y="173.853"
+       x="329.258"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text473">%m17-2-hm1-last</text>
+    <text
+       style="text-align:start"
+       y="236.786"
+       x="329.067"
+       dx="0 0 0 0 0 0 0 0 0 0 0 0 0.38107681"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text475">%m18-1-hm1-last</text>
+    <text
+       style="text-align:start"
+       y="311.033"
+       x="329.067"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text477">
+      <tspan
+         font-size="11.432"
+         id="tspan479">%m4s1-1 - %m4s2-1 [%m4t-1]</tspan>
+    </text>
+    <path
+       d="M325.24 240.434H455v.895H325.24zM325.24 299.832H455v.895H325.24z"
+       stroke="#000"
+       stroke-width=".076"
+       stroke-linejoin="round"
+       id="path481" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#d5e5ff"
+       stroke="#000"
+       stroke-width="1.002"
+       d="M64.068 240.908H306.22v23.94H64.068z"
+       id="path483" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width="1.002"
+       d="M64.068 216.788H306.22v23.94H64.068z"
+       id="path485" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width=".895"
+       d="M305.565 216.78h20.71v48.254h-20.71z"
+       id="path487" />
+    <text
+       x="9.572"
+       y="89.282"
+       style="text-align:start"
+       font-size="13.424"
+       font-family="Calibri"
+       transform="translate(302.74 155.865)"
+       id="text489">3</text>
+    <text
+       style="text-align:start"
+       y="243.281"
+       x="61.527"
+       transform="scale(1.06973 .93482)"
+       font-size="14.358"
+       font-family="Calibri"
+       id="text491">%m3-1-hm1-last-s-first</text>
+    <text
+       style="text-align:start"
+       y="269.904"
+       x="61.527"
+       transform="scale(1.06973 .93482)"
+       font-size="14.358"
+       font-family="Calibri"
+       id="text493">%m3-2-hm1-last-s-first</text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="61.602"
+       y="254.783"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text495">
+      <tspan
+         x="61.602"
+         y="254.783"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan497">%m3-1-hm1-country'/'club</tspan>
+    </text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="61.602"
+       y="279.91"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text499">
+      <tspan
+         x="61.602"
+         y="279.91"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan501">%m3-2-hm1-country'/'club</tspan>
+    </text>
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#d5e5ff"
+       stroke="#000"
+       stroke-width="1.002"
+       d="M64.068 299.966H306.22v23.94H64.068z"
+       id="path503" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width="1.002"
+       d="M64.068 275.846H306.22v23.94H64.068z"
+       id="path505" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width=".895"
+       d="M305.39 275.86h20.708v48.254h-20.71z"
+       id="path507" />
+    <text
+       x="9.572"
+       y="89.282"
+       style="text-align:start"
+       font-size="13.424"
+       font-family="Calibri"
+       transform="translate(302.563 214.945)"
+       id="text509">4</text>
+    <text
+       style="text-align:start"
+       y="306.48"
+       x="61.552"
+       transform="scale(1.06973 .93482)"
+       font-size="14.358"
+       font-family="Calibri"
+       id="text511">%m4-1-hm1-last-s-first</text>
+    <text
+       style="text-align:start"
+       y="333.103"
+       x="61.552"
+       transform="scale(1.06973 .93482)"
+       font-size="14.358"
+       font-family="Calibri"
+       id="text513">%m4-2-hm1-last-s-first</text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="61.627"
+       y="317.982"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text515">
+      <tspan
+         x="61.627"
+         y="317.982"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan517">%m4-1-hm1-country'/'club</tspan>
+    </text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="61.627"
+       y="343.109"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text519">
+      <tspan
+         x="61.627"
+         y="343.109"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan521">%m4-2-hm1-country'/'club</tspan>
+    </text>
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width=".918"
+       d="M454.888 240.907H475.5v59.398H454.89z"
+       id="path523" />
+    <text
+       style="text-align:start"
+       y="274.994"
+       x="458.125"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text525">18</text>
+    <text
+       style="text-align:start"
+       y="229.883"
+       x="50.969"
+       font-size="10.739"
+       font-family="Calibri"
+       id="text527">5</text>
+    <text
+       style="text-align:start"
+       y="255.691"
+       x="50.985"
+       font-size="10.739"
+       font-family="Calibri"
+       id="text529">21</text>
+    <text
+       style="text-align:start"
+       y="291.068"
+       x="50.969"
+       font-size="10.739"
+       font-family="Calibri"
+       id="text531">13</text>
+    <text
+       style="text-align:start"
+       y="316.876"
+       x="50.985"
+       font-size="10.739"
+       font-family="Calibri"
+       id="text533">29</text>
+    <text
+       style="text-align:start"
+       y="251.635"
+       x="329.067"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text535">
+      <tspan
+         font-size="11.432"
+         id="tspan537">%m3s1-1 - %m3s2-1 [%m3t-1]</tspan>
+    </text>
+    <text
+       style="text-align:start"
+       y="296.184"
+       x="329.067"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text539">%m18-2-hm1-last</text>
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width=".923"
+       d="M604.184 149.606h20.323v119.85h-20.323z"
+       id="path541" />
+    <text
+       style="text-align:start"
+       y="214.096"
+       x="607.22"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text543">25</text>
+    <text
+       style="text-align:start"
+       y="366.667"
+       x="329.479"
+       dx="0 0 0 0 0 0 0 0 0 0 0 0 0.38107681"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text545">%m19-1-hm1-last</text>
+    <text
+       style="text-align:start"
+       y="440.914"
+       x="329.479"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text547">
+      <tspan
+         font-size="11.432"
+         id="tspan549">%m6s1-1 - %m6s2-1 [%m6t-1]</tspan>
+    </text>
+    <path
+       d="M325.65 370.315h129.762v.895h-129.76zM325.65 429.713h129.762v.895h-129.76z"
+       stroke="#000"
+       stroke-width=".076"
+       stroke-linejoin="round"
+       id="path551" />
+    <text
+       style="text-align:start"
+       y="396.872"
+       x="480.354"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text553">%m26-1-hm1-last</text>
+    <path
+       d="M476.907 401.415h135.13v.894h-135.13z"
+       stroke="#000"
+       stroke-width=".056"
+       stroke-linejoin="round"
+       id="path555" />
+    <text
+       style="text-align:start"
+       y="517.624"
+       x="480.354"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text557">%m26-2-hm1-last</text>
+    <text
+       style="line-height:normal;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       y="533.49"
+       x="480.354"
+       color="#000"
+       font-size="11.432"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text559">%m20s1-1 - %m20s2-1 [%m20t-1]</text>
+    <path
+       d="M477.67 521.272H612.8v.895H477.67z"
+       stroke="#000"
+       stroke-width=".056"
+       stroke-linejoin="round"
+       id="path561" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#d5e5ff"
+       stroke="#000"
+       stroke-width="1.002"
+       d="M64.068 370.92H306.22v23.94H64.068z"
+       id="path563" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width="1.002"
+       d="M64.068 346.714H306.22v23.94H64.068z"
+       id="path565" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width=".895"
+       d="M305.976 346.66h20.71v48.255h-20.71z"
+       id="path567" />
+    <text
+       x="9.572"
+       y="89.282"
+       style="text-align:start"
+       font-size="13.424"
+       font-family="Calibri"
+       transform="translate(303.15 285.746)"
+       id="text569">5</text>
+    <text
+       style="text-align:start"
+       y="382.218"
+       x="61.912"
+       transform="scale(1.06973 .93482)"
+       font-size="14.358"
+       font-family="Calibri"
+       id="text571">%m5-1-hm1-last-s-first</text>
+    <text
+       style="text-align:start"
+       y="408.841"
+       x="61.912"
+       transform="scale(1.06973 .93482)"
+       font-size="14.358"
+       font-family="Calibri"
+       id="text573">%m5-2-hm1-last-s-first</text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="61.987"
+       y="393.721"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text575">
+      <tspan
+         x="61.987"
+         y="393.721"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan577">%m5-1-hm1-country'/'club</tspan>
+    </text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="61.987"
+       y="418.847"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text579">
+      <tspan
+         x="61.987"
+         y="418.847"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan581">%m5-2-hm1-country'/'club</tspan>
+    </text>
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#d5e5ff"
+       stroke="#000"
+       stroke-width="1.002"
+       d="M64.068 429.892H306.22v23.94H64.068z"
+       id="path583" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width="1.002"
+       d="M64.068 405.772H306.22v23.94H64.068z"
+       id="path585" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width=".895"
+       d="M305.8 405.74h20.71v48.255H305.8z"
+       id="path587" />
+    <text
+       x="9.572"
+       y="89.282"
+       style="text-align:start"
+       font-size="13.424"
+       font-family="Calibri"
+       transform="translate(302.975 344.826)"
+       id="text589">6</text>
+    <text
+       style="text-align:start"
+       y="445.417"
+       x="61.937"
+       transform="scale(1.06973 .93482)"
+       font-size="14.358"
+       font-family="Calibri"
+       id="text591">%m6-1-hm1-last-s-first</text>
+    <text
+       style="text-align:start"
+       y="472.04"
+       x="61.937"
+       transform="scale(1.06973 .93482)"
+       font-size="14.358"
+       font-family="Calibri"
+       id="text593">%m6-2-hm1-last-s-first</text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="62.012"
+       y="456.92"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text595">
+      <tspan
+         x="62.012"
+         y="456.92"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan597">%m6-1-hm1-country'/'club</tspan>
+    </text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="62.012"
+       y="482.046"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text599">
+      <tspan
+         x="62.012"
+         y="482.046"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan601">%m6-2-hm1-country'/'club</tspan>
+    </text>
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width=".918"
+       d="M455.3 370.79h20.612v59.397H455.3z"
+       id="path603" />
+    <text
+       style="text-align:start"
+       y="404.875"
+       x="458.537"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text605">19</text>
+    <text
+       style="text-align:start"
+       y="359.764"
+       x="51.381"
+       font-size="10.739"
+       font-family="Calibri"
+       id="text607">3</text>
+    <text
+       style="text-align:start"
+       y="385.572"
+       x="51.397"
+       font-size="10.739"
+       font-family="Calibri"
+       id="text609">19</text>
+    <text
+       style="text-align:start"
+       y="420.949"
+       x="51.381"
+       font-size="10.739"
+       font-family="Calibri"
+       id="text611">11</text>
+    <text
+       style="text-align:start"
+       y="446.757"
+       x="51.397"
+       font-size="10.739"
+       font-family="Calibri"
+       id="text613">27</text>
+    <text
+       style="text-align:start"
+       y="381.517"
+       x="329.479"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text615">
+      <tspan
+         font-size="11.432"
+         id="tspan617">%m5s1-1 - %m5s2-1 [%m5t-1]</tspan>
+    </text>
+    <text
+       style="text-align:start"
+       y="426.065"
+       x="329.479"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text619">%m19-2-hm1-last</text>
+    <text
+       style="text-align:start"
+       y="488.997"
+       x="329.288"
+       dx="0 0 0 0 0 0 0 0 0 0 0 0 0.38107681"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text621">%m20-1-hm1-last</text>
+    <text
+       style="text-align:start"
+       y="563.245"
+       x="329.288"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text623">
+      <tspan
+         font-size="11.432"
+         id="tspan625">%m8s1-1 - %m8s2-1 [%m8t-1]</tspan>
+    </text>
+    <path
+       d="M325.46 492.835h129.76v.895H325.46zM325.46 552.18h129.76v.895H325.46z"
+       stroke="#000"
+       stroke-width=".076"
+       stroke-linejoin="round"
+       id="path627" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#d5e5ff"
+       stroke="#000"
+       stroke-width="1.002"
+       d="M64.068 493.12H306.22v23.94H64.068z"
+       id="path629" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width="1.002"
+       d="M64.068 469H306.22v23.94H64.068z"
+       id="path631" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width=".895"
+       d="M305.785 468.99h20.71v48.256h-20.71z"
+       id="path633" />
+    <text
+       x="9.572"
+       y="89.282"
+       style="text-align:start"
+       font-size="13.424"
+       font-family="Calibri"
+       transform="translate(302.96 408.077)"
+       id="text635">7</text>
+    <text
+       style="text-align:start"
+       y="513.079"
+       x="61.734"
+       transform="scale(1.06973 .93482)"
+       font-size="14.358"
+       font-family="Calibri"
+       id="text637">%m7-1-hm1-last-s-first</text>
+    <text
+       style="text-align:start"
+       y="539.701"
+       x="61.734"
+       transform="scale(1.06973 .93482)"
+       font-size="14.358"
+       font-family="Calibri"
+       id="text639">%m7-2-hm1-last-s-first</text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="61.809"
+       y="524.581"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text641">
+      <tspan
+         x="61.809"
+         y="524.581"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan643">%m7-1-hm1-country'/'club</tspan>
+    </text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="61.809"
+       y="549.707"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text645">
+      <tspan
+         x="61.809"
+         y="549.707"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan647">%m7-2-hm1-country'/'club</tspan>
+    </text>
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#d5e5ff"
+       stroke="#000"
+       stroke-width="1.002"
+       d="M64.068 552.177H306.22v23.94H64.068z"
+       id="path649" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width="1.002"
+       d="M64.068 528.058H306.22v23.94H64.068z"
+       id="path651" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width=".895"
+       d="M305.61 528.07h20.71v48.255h-20.71z"
+       id="path653" />
+    <text
+       x="9.572"
+       y="89.282"
+       style="text-align:start"
+       font-size="13.424"
+       font-family="Calibri"
+       transform="translate(302.784 467.156)"
+       id="text655">8</text>
+    <text
+       style="text-align:start"
+       y="576.277"
+       x="61.758"
+       transform="scale(1.06973 .93482)"
+       font-size="14.358"
+       font-family="Calibri"
+       id="text657">%m8-1-hm1-last-s-first</text>
+    <text
+       style="text-align:start"
+       y="602.9"
+       x="61.758"
+       transform="scale(1.06973 .93482)"
+       font-size="14.358"
+       font-family="Calibri"
+       id="text659">%m8-2-hm1-last-s-first</text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="61.833"
+       y="587.78"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text661">
+      <tspan
+         x="61.833"
+         y="587.78"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan663">%m8-1-hm1-country'/'club</tspan>
+    </text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="61.833"
+       y="612.906"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text665">
+      <tspan
+         x="61.833"
+         y="612.906"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan667">%m8-2-hm1-country'/'club</tspan>
+    </text>
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width=".918"
+       d="M455.108 493.256h20.613v59.398H455.11z"
+       id="path669" />
+    <text
+       style="text-align:start"
+       y="527.205"
+       x="458.346"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text671">20</text>
+    <text
+       style="text-align:start"
+       y="482.095"
+       x="51.19"
+       font-size="10.739"
+       font-family="Calibri"
+       id="text673">7</text>
+    <text
+       style="text-align:start"
+       y="507.903"
+       x="51.206"
+       font-size="10.739"
+       font-family="Calibri"
+       id="text675">23</text>
+    <text
+       style="text-align:start"
+       y="543.28"
+       x="51.19"
+       font-size="10.739"
+       font-family="Calibri"
+       id="text677">15</text>
+    <text
+       style="text-align:start"
+       y="569.088"
+       x="51.206"
+       font-size="10.739"
+       font-family="Calibri"
+       id="text679">31</text>
+    <text
+       style="text-align:start"
+       y="503.847"
+       x="329.288"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text681">
+      <tspan
+         font-size="11.432"
+         id="tspan683">%m7s1-1 - %m7s2-1 [%m7t-1]</tspan>
+    </text>
+    <text
+       style="text-align:start"
+       y="548.395"
+       x="329.288"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text685">%m20-2-hm1-last</text>
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width=".918"
+       d="M604.402 402.18h20.214v119.208h-20.214z"
+       id="path687" />
+    <text
+       style="text-align:start"
+       y="466.025"
+       x="607.44"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text689">26</text>
+    <text
+       style="line-height:normal;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       y="411.721"
+       x="480.354"
+       color="#000"
+       font-size="11.432"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text691">
+      <tspan
+         style="line-height:normal;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan693">%m19s1-1 - %m19s2-1 [%m19t-1]</tspan>
+    </text>
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width=".934"
+       d="M675.858 211.13h19.637v250.022h-19.637z"
+       transform="matrix(1.00202 0 0 1.00747 77.898 -2.78)"
+       id="path695" />
+    <text
+       x="678.608"
+       y="340.382"
+       style="text-align:start"
+       font-size="13.424"
+       font-family="Calibri"
+       transform="matrix(1.00202 0 0 1.00747 77.898 -2.78)"
+       id="text697">37</text>
+    <text
+       style="text-align:start"
+       y="206.102"
+       x="626.337"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text699">%m37-1-hm1-last</text>
+    <text
+       style="line-height:normal;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       y="220.952"
+       x="626.337"
+       color="#000"
+       font-size="11.432"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text701">%m25s1-1 - %m25s2-1 [%m25t-1]</text>
+    <path
+       d="M624.356 209.483H763.96v.895H624.357z"
+       stroke="#000"
+       stroke-width=".056"
+       stroke-linejoin="round"
+       id="path703" />
+    <text
+       style="line-height:normal;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       y="159.509"
+       x="480.133"
+       color="#000"
+       font-size="11.432"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text705">
+      <tspan
+         style="line-height:normal;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan707">%m17s1-1 - %m17s2-1 [%m17t-1]</tspan>
+    </text>
+    <text
+       style="text-align:start"
+       y="632.23"
+       x="329.939"
+       dx="0 0 0 0 0 0 0 0 0 0 0 0 0.38107681"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text709">%m21-1-hm1-last</text>
+    <text
+       style="text-align:start"
+       y="706.477"
+       x="329.939"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text711">
+      <tspan
+         font-size="11.432"
+         id="tspan713">%m10s1-1 - %m10s2-1 [%m10t-1]</tspan>
+    </text>
+    <path
+       d="M326.11 635.877h129.762v.895H326.11zM326.11 695.275h129.762v.895H326.11z"
+       stroke="#000"
+       stroke-width=".056"
+       stroke-linejoin="round"
+       id="path715" />
+    <text
+       style="text-align:start"
+       y="662.434"
+       x="480.814"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text717">%m27-1-hm1-last</text>
+    <path
+       d="M477.015 666.977h135.13v.895h-135.13z"
+       stroke="#000"
+       stroke-width=".056"
+       stroke-linejoin="round"
+       id="path719" />
+    <text
+       style="text-align:start"
+       y="783.186"
+       x="480.814"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text721">%m27-2-hm1-last</text>
+    <text
+       style="line-height:normal;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       y="798.036"
+       x="480.814"
+       color="#000"
+       font-size="11.432"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text723">%m22s1-1 - %m22s2-1 [%m22t-1]</text>
+    <path
+       d="M477.074 786.834h135.13v.895h-135.13z"
+       stroke="#000"
+       stroke-width=".056"
+       stroke-linejoin="round"
+       id="path725" />
+    <text
+       style="text-align:start"
+       y="975.806"
+       x="627.018"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text727">%m38-2-hm1-last</text>
+    <text
+       style="line-height:normal;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       y="990.655"
+       x="627.018"
+       color="#000"
+       font-size="11.432"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text729">%m28s1-1 - %m28s2-1 [%m28t-1]</text>
+    <path
+       d="M624.333 979.453h139.605v.895H624.333z"
+       stroke="#000"
+       stroke-width=".056"
+       stroke-linejoin="round"
+       id="path731" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#d5e5ff"
+       stroke="#000"
+       stroke-width="1.002"
+       d="M64.068 636.484H306.22v23.94H64.068z"
+       id="path733" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width="1.002"
+       d="M64.068 612.276H306.22v23.94H64.068z"
+       id="path735" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width=".895"
+       d="M306.436 612.223h20.71v48.255h-20.71z"
+       id="path737" />
+    <text
+       x="9.572"
+       y="89.282"
+       style="text-align:start"
+       font-size="13.424"
+       font-family="Calibri"
+       transform="translate(303.61 551.31)"
+       id="text739">9</text>
+    <text
+       style="text-align:start"
+       y="666.298"
+       x="62.342"
+       transform="scale(1.06973 .93482)"
+       font-size="14.358"
+       font-family="Calibri"
+       id="text741">%m9-1-hm1-last-s-first</text>
+    <text
+       style="text-align:start"
+       y="692.921"
+       x="62.342"
+       transform="scale(1.06973 .93482)"
+       font-size="14.358"
+       font-family="Calibri"
+       id="text743">%m9-2-hm1-last-s-first</text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="62.417"
+       y="677.8"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text745">
+      <tspan
+         x="62.417"
+         y="677.8"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan747">%m9-1-hm1-country'/'club</tspan>
+    </text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="62.417"
+       y="702.926"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text749">
+      <tspan
+         x="62.417"
+         y="702.926"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan751">%m9-2-hm1-country'/'club</tspan>
+    </text>
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#d5e5ff"
+       stroke="#000"
+       stroke-width="1.002"
+       d="M64.068 695.563H306.22v23.94H64.068z"
+       id="path753" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width="1.002"
+       d="M64.068 671.334H306.22v23.94H64.068z"
+       id="path755" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width=".895"
+       d="M306.26 671.28h20.71v48.256h-20.71z"
+       id="path757" />
+    <text
+       x="209.858"
+       y="656.99"
+       style="text-align:start"
+       font-size="13.424"
+       font-family="Calibri"
+       transform="translate(99.61 42.66)"
+       id="text759">10</text>
+    <text
+       style="text-align:start"
+       y="729.496"
+       x="62.367"
+       transform="scale(1.06973 .93482)"
+       font-size="14.358"
+       font-family="Calibri"
+       id="text761">%m10-1-hm1-last-s-first</text>
+    <text
+       style="text-align:start"
+       y="756.119"
+       x="62.367"
+       transform="scale(1.06973 .93482)"
+       font-size="14.358"
+       font-family="Calibri"
+       id="text763">%m10-2-hm1-last-s-first</text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="62.441"
+       y="740.999"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text765">
+      <tspan
+         x="62.441"
+         y="740.999"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan767">%m10-1-hm1-country'/'club</tspan>
+    </text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="62.441"
+       y="766.125"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text769">
+      <tspan
+         x="62.441"
+         y="766.125"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan771">%m10-2-hm1-country'/'club</tspan>
+    </text>
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width=".918"
+       d="M455.76 636.34h20.612v59.4H455.76z"
+       id="path773" />
+    <text
+       style="text-align:start"
+       y="670.437"
+       x="458.997"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text775">21</text>
+    <text
+       style="text-align:start"
+       y="625.327"
+       x="51.841"
+       font-size="10.739"
+       font-family="Calibri"
+       id="text777">2</text>
+    <text
+       style="text-align:start"
+       y="651.135"
+       x="51.857"
+       font-size="10.739"
+       font-family="Calibri"
+       id="text779">18</text>
+    <text
+       style="text-align:start"
+       y="686.512"
+       x="51.841"
+       font-size="10.739"
+       font-family="Calibri"
+       id="text781">10</text>
+    <text
+       style="text-align:start"
+       y="712.32"
+       x="51.857"
+       font-size="10.739"
+       font-family="Calibri"
+       id="text783">26</text>
+    <text
+       style="text-align:start"
+       y="647.079"
+       x="329.939"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text785">
+      <tspan
+         font-size="11.432"
+         id="tspan787">%m9s1-1 - %m9s2-1 [%m9t-1]</tspan>
+    </text>
+    <text
+       style="text-align:start"
+       y="691.628"
+       x="329.939"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text789">%m21-2-hm1-last</text>
+    <text
+       style="text-align:start"
+       y="754.56"
+       x="329.747"
+       dx="0 0 0 0 0 0 0 0 0 0 0 0 0.38107681"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text791">%m22-1-hm1-last</text>
+    <text
+       style="text-align:start"
+       y="828.807"
+       x="329.747"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text793">
+      <tspan
+         font-size="11.432"
+         id="tspan795">%m12s1-1 - %m12s2-1 [%m12t-1]</tspan>
+    </text>
+    <path
+       d="M325.92 758.208h129.76v.895H325.92zM325.92 817.606h129.76v.895H325.92z"
+       stroke="#000"
+       stroke-width=".056"
+       stroke-linejoin="round"
+       id="path797" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#d5e5ff"
+       stroke="#000"
+       stroke-width="1.002"
+       d="M64.068 758.682H306.22v23.94H64.068z"
+       id="path799" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width="1.002"
+       d="M64.068 734.562H306.22v23.94H64.068z"
+       id="path801" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width=".895"
+       d="M306.244 734.554h20.71v48.255h-20.71z"
+       id="path803" />
+    <text
+       x="209.973"
+       y="720.241"
+       style="text-align:start"
+       font-size="13.424"
+       font-family="Calibri"
+       transform="translate(99.61 42.68)"
+       id="text805">11</text>
+    <text
+       style="text-align:start"
+       y="797.158"
+       x="62.163"
+       transform="scale(1.06973 .93482)"
+       font-size="14.358"
+       font-family="Calibri"
+       id="text807">%m11-1-hm1-last-s-first</text>
+    <text
+       style="text-align:start"
+       y="823.781"
+       x="62.163"
+       transform="scale(1.06973 .93482)"
+       font-size="14.358"
+       font-family="Calibri"
+       id="text809">%m11-2-hm1-last-s-first</text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="62.238"
+       y="808.66"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text811">
+      <tspan
+         x="62.238"
+         y="808.66"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan813">%m11-1-hm1-country'/'club</tspan>
+    </text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="62.238"
+       y="833.786"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text815">
+      <tspan
+         x="62.238"
+         y="833.786"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan817">%m11-2-hm1-country'/'club</tspan>
+    </text>
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#d5e5ff"
+       stroke="#000"
+       stroke-width="1.002"
+       d="M64.068 817.74H306.22v23.94H64.068z"
+       id="path819" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width="1.002"
+       d="M64.068 793.62H306.22v23.94H64.068z"
+       id="path821" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width=".895"
+       d="M306.07 793.633h20.708v48.255h-20.71z"
+       id="path823" />
+    <text
+       x="209.808"
+       y="779.32"
+       style="text-align:start"
+       font-size="13.424"
+       font-family="Calibri"
+       transform="translate(99.61 42.68)"
+       id="text825">12</text>
+    <text
+       style="text-align:start"
+       y="860.356"
+       x="62.188"
+       transform="scale(1.06973 .93482)"
+       font-size="14.358"
+       font-family="Calibri"
+       id="text827">%m12-1-hm1-last-s-first</text>
+    <text
+       style="text-align:start"
+       y="886.979"
+       x="62.188"
+       transform="scale(1.06973 .93482)"
+       font-size="14.358"
+       font-family="Calibri"
+       id="text829">%m12-2-hm1-last-s-first</text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="62.263"
+       y="871.859"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text831">
+      <tspan
+         x="62.263"
+         y="871.859"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan833">%m12-1-hm1-country'/'club</tspan>
+    </text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="62.263"
+       y="896.985"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text835">
+      <tspan
+         x="62.263"
+         y="896.985"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan837">%m12-2-hm1-country'/'club</tspan>
+    </text>
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width=".918"
+       d="M455.568 758.67h20.613v59.4H455.57z"
+       id="path839" />
+    <text
+       style="text-align:start"
+       y="792.768"
+       x="458.806"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text841">22</text>
+    <text
+       style="text-align:start"
+       y="747.657"
+       x="51.65"
+       font-size="10.739"
+       font-family="Calibri"
+       id="text843">6</text>
+    <text
+       style="text-align:start"
+       y="773.465"
+       x="51.666"
+       font-size="10.739"
+       font-family="Calibri"
+       id="text845">22</text>
+    <text
+       style="text-align:start"
+       y="808.842"
+       x="51.65"
+       font-size="10.739"
+       font-family="Calibri"
+       id="text847">14</text>
+    <text
+       style="text-align:start"
+       y="834.65"
+       x="51.666"
+       font-size="10.739"
+       font-family="Calibri"
+       id="text849">30</text>
+    <text
+       style="text-align:start"
+       y="769.409"
+       x="329.747"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text851">
+      <tspan
+         font-size="11.432"
+         id="tspan853">%m11s1-1 - %m11s2-1 [%m11t-1]</tspan>
+    </text>
+    <text
+       style="text-align:start"
+       y="813.958"
+       x="329.747"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text855">%m22-2-hm1-last</text>
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width=".923"
+       d="M604.865 667.445h20.323v119.85h-20.323z"
+       id="path857" />
+    <text
+       style="text-align:start"
+       y="731.87"
+       x="607.9"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text859">27</text>
+    <text
+       style="text-align:start"
+       y="884.441"
+       x="330.159"
+       dx="0 0 0 0 0 0 0 0 0 0 0 0 0.38107681"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text861">%m23-1-hm1-last</text>
+    <text
+       style="text-align:start"
+       y="958.689"
+       x="330.159"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text863">
+      <tspan
+         font-size="11.432"
+         id="tspan865">%m14s1-1 - %m14s2-1 [%m14t-1]</tspan>
+    </text>
+    <path
+       d="M326.33 888.09h129.762v.894h-129.76zM326.33 947.487h129.762v.895h-129.76z"
+       stroke="#000"
+       stroke-width=".056"
+       stroke-linejoin="round"
+       id="path867" />
+    <text
+       style="text-align:start"
+       y="914.646"
+       x="481.034"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text869">%m28-1-hm1-last</text>
+    <path
+       d="M477.236 919.19h135.13v.894h-135.13z"
+       stroke="#000"
+       stroke-width=".056"
+       stroke-linejoin="round"
+       id="path871" />
+    <text
+       style="text-align:start"
+       y="1035.398"
+       x="481.034"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text873">%m28-2-hm1-last</text>
+    <text
+       style="line-height:normal;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       y="1051.263"
+       x="481.034"
+       color="#000"
+       font-size="11.432"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text875">%m24s1-1 - %m24s2-1 [%m24t-1]</text>
+    <path
+       d="M477.294 1039.046h135.13v.895h-135.13z"
+       stroke="#000"
+       stroke-width=".056"
+       stroke-linejoin="round"
+       id="path877" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#d5e5ff"
+       stroke="#000"
+       stroke-width="1.002"
+       d="M64.068 888.705h242.38v23.93H64.067z"
+       id="path879" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width="1.002"
+       d="M64.068 864.488h242.38v23.93H64.067z"
+       id="path881" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width=".895"
+       d="M306.656 864.434h20.71v48.255h-20.71z"
+       id="path883" />
+    <text
+       x="210.428"
+       y="840.976"
+       style="text-align:start"
+       font-size="13.424"
+       font-family="Calibri"
+       transform="translate(99.61 51.826)"
+       id="text885">13</text>
+    <text
+       style="text-align:start"
+       y="936.095"
+       x="62.548"
+       transform="scale(1.06973 .93482)"
+       font-size="14.358"
+       font-family="Calibri"
+       id="text887">%m13-1-hm1-last-s-first</text>
+    <text
+       style="text-align:start"
+       y="962.718"
+       x="62.548"
+       transform="scale(1.06973 .93482)"
+       font-size="14.358"
+       font-family="Calibri"
+       id="text889">%m13-2-hm1-last-s-first</text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="62.623"
+       y="947.597"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text891">
+      <tspan
+         x="62.623"
+         y="947.597"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan893">%m13-1-hm1-country'/'club</tspan>
+    </text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="62.623"
+       y="972.724"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text895">
+      <tspan
+         x="62.623"
+         y="972.724"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan897">%m13-2-hm1-country'/'club</tspan>
+    </text>
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#d5e5ff"
+       stroke="#000"
+       stroke-width="1.002"
+       d="M64.068 947.785h242.38v23.93H64.067z"
+       id="path899" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width="1.002"
+       d="M64.068 923.52h242.38v23.93H64.067z"
+       id="path901" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width=".895"
+       d="M306.48 923.514h20.71v48.255h-20.71z"
+       id="path903" />
+    <text
+       x="210.039"
+       y="900.056"
+       style="text-align:start"
+       font-size="13.424"
+       font-family="Calibri"
+       transform="translate(99.61 51.826)"
+       id="text905">14</text>
+    <text
+       style="text-align:start"
+       y="999.294"
+       x="62.573"
+       transform="scale(1.06973 .93482)"
+       font-size="14.358"
+       font-family="Calibri"
+       id="text907">%m14-1-hm1-last-s-first</text>
+    <text
+       style="text-align:start"
+       y="1025.917"
+       x="62.573"
+       transform="scale(1.06973 .93482)"
+       font-size="14.358"
+       font-family="Calibri"
+       id="text909">%m14-2-hm1-last-s-first</text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="62.648"
+       y="1010.796"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text911">
+      <tspan
+         x="62.648"
+         y="1010.796"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan913">%m14-1-hm1-country'/'club</tspan>
+    </text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="62.648"
+       y="1035.923"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text915">
+      <tspan
+         x="62.648"
+         y="1035.923"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan917">%m14-2-hm1-country'/'club</tspan>
+    </text>
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width=".918"
+       d="M455.98 888.553h20.613v59.398H455.98z"
+       id="path919" />
+    <text
+       style="text-align:start"
+       y="922.649"
+       x="459.217"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text921">23</text>
+    <text
+       style="text-align:start"
+       y="877.539"
+       x="52.062"
+       font-size="10.739"
+       font-family="Calibri"
+       id="text923">4</text>
+    <text
+       style="text-align:start"
+       y="903.347"
+       x="52.077"
+       font-size="10.739"
+       font-family="Calibri"
+       id="text925">20</text>
+    <text
+       style="text-align:start"
+       y="938.724"
+       x="52.062"
+       font-size="10.739"
+       font-family="Calibri"
+       id="text927">12</text>
+    <text
+       style="text-align:start"
+       y="964.532"
+       x="52.077"
+       font-size="10.739"
+       font-family="Calibri"
+       id="text929">28</text>
+    <text
+       style="text-align:start"
+       y="899.291"
+       x="330.159"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text931">
+      <tspan
+         font-size="11.432"
+         id="tspan933">%m13s1-1 - %m13s2-1 [%m13t-1]</tspan>
+    </text>
+    <text
+       style="text-align:start"
+       y="943.839"
+       x="330.159"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text935">%m23-2-hm1-last</text>
+    <text
+       style="text-align:start"
+       y="1006.772"
+       x="329.968"
+       dx="0 0 0 0 0 0 0 0 0 0 0 0 0.38107681"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text937">%m24-1-hm1-last</text>
+    <text
+       style="text-align:start"
+       y="1081.019"
+       x="329.968"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text939">
+      <tspan
+         font-size="11.432"
+         id="tspan941">%m16s1-1 - %m16s2-1 [%m16t-1]</tspan>
+    </text>
+    <path
+       d="M326.14 1010.42H455.9v.894H326.14zM326.14 1069.817H455.9v.895H326.14z"
+       stroke="#000"
+       stroke-width=".056"
+       stroke-linejoin="round"
+       id="path943" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#d5e5ff"
+       stroke="#000"
+       stroke-width="1.002"
+       d="M64.068 1010.923h242.41v23.924H64.067z"
+       id="path945" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width="1.002"
+       d="M64.068 986.82h242.41v23.923H64.067z"
+       id="path947" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width=".895"
+       d="M306.465 986.764h20.71v48.255h-20.71z"
+       id="path949" />
+    <text
+       x="210.224"
+       y="963.306"
+       style="text-align:start"
+       font-size="13.424"
+       font-family="Calibri"
+       transform="translate(99.61 51.826)"
+       id="text951">15</text>
+    <text
+       style="text-align:start"
+       y="1066.955"
+       x="62.37"
+       transform="scale(1.06973 .93482)"
+       font-size="14.358"
+       font-family="Calibri"
+       id="text953">%m15-1-hm1-last-s-first</text>
+    <text
+       style="text-align:start"
+       y="1093.579"
+       x="62.37"
+       transform="scale(1.06973 .93482)"
+       font-size="14.358"
+       font-family="Calibri"
+       id="text955">%m15-2-hm1-last-s-first</text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="62.445"
+       y="1078.458"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text957">
+      <tspan
+         x="62.445"
+         y="1078.458"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan959">%m15-1-hm1-country'/'club</tspan>
+    </text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="62.445"
+       y="1103.584"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text961">
+      <tspan
+         x="62.445"
+         y="1103.584"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan963">%m15-2-hm1-country'/'club</tspan>
+    </text>
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#d5e5ff"
+       stroke="#000"
+       stroke-width="1.001"
+       d="M64.067 1070.12h242.588v23.867H64.067z"
+       id="path965" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width="1.002"
+       d="M64.068 1045.84h242.41v23.923H64.067z"
+       id="path967" />
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width=".895"
+       d="M306.29 1045.785H327v48.255h-20.71z"
+       id="path969" />
+    <text
+       x="209.92"
+       y="1022.386"
+       style="text-align:start"
+       font-size="13.424"
+       font-family="Calibri"
+       transform="translate(99.61 51.767)"
+       id="text971">16</text>
+    <text
+       style="text-align:start"
+       y="1130.154"
+       x="62.394"
+       transform="scale(1.06973 .93482)"
+       font-size="14.358"
+       font-family="Calibri"
+       id="text973">%m16-1-hm1-last-s-first</text>
+    <text
+       style="text-align:start"
+       y="1156.777"
+       x="62.394"
+       transform="scale(1.06973 .93482)"
+       font-size="14.358"
+       font-family="Calibri"
+       id="text975">%m16-2-hm1-last-s-first</text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="62.469"
+       y="1141.657"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text977">
+      <tspan
+         x="62.469"
+         y="1141.657"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan979">%m16-1-hm1-country'/'club</tspan>
+    </text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="62.469"
+       y="1166.783"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text981">
+      <tspan
+         x="62.469"
+         y="1166.783"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan983">%m16-2-hm1-country'/'club</tspan>
+    </text>
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width=".918"
+       d="M455.79 1010.883H476.4v59.398H455.79z"
+       id="path985" />
+    <text
+       style="text-align:start"
+       y="1044.979"
+       x="459.026"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text987">24</text>
+    <text
+       style="text-align:start"
+       y="999.869"
+       x="51.87"
+       font-size="10.739"
+       font-family="Calibri"
+       id="text989">8</text>
+    <text
+       style="text-align:start"
+       y="1025.677"
+       x="51.886"
+       font-size="10.739"
+       font-family="Calibri"
+       id="text991">24</text>
+    <text
+       style="text-align:start"
+       y="1061.054"
+       x="51.87"
+       font-size="10.739"
+       font-family="Calibri"
+       id="text993">16</text>
+    <text
+       style="text-align:start"
+       y="1086.862"
+       x="51.886"
+       font-size="10.739"
+       font-family="Calibri"
+       id="text995">32</text>
+    <text
+       style="text-align:start"
+       y="1021.621"
+       x="329.968"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text997">
+      <tspan
+         font-size="11.432"
+         id="tspan999">%m15s1-1 - %m15s2-1 [%m15t-1]</tspan>
+    </text>
+    <text
+       style="text-align:start"
+       y="1066.169"
+       x="329.968"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text1001">%m24-2-hm1-last</text>
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width=".923"
+       d="M605.085 919.656h20.323v119.85h-20.323z"
+       id="path1003" />
+    <text
+       style="text-align:start"
+       y="983.799"
+       x="608.121"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text1005">28</text>
+    <text
+       style="line-height:normal;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       y="929.495"
+       x="481.034"
+       color="#000"
+       font-size="11.432"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text1007">
+      <tspan
+         style="line-height:normal;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan1009">%m23s1-1 - %m23s2-1 [%m23t-1]</tspan>
+    </text>
+    <path
+       style="isolation:auto;mix-blend-mode:normal"
+       color="#000"
+       overflow="visible"
+       solid-color="#000000"
+       fill="#fff"
+       stroke="#000"
+       stroke-width=".9440498400000001"
+       d="M755.808 727.19h19.848v252.714h-19.848z"
+       id="path1011" />
+    <text
+       x="679.288"
+       y="858.156"
+       style="text-align:start"
+       font-size="13.424"
+       font-family="Calibri"
+       transform="translate(71.99 -9.557) scale(1.01076)"
+       id="text1013">38</text>
+    <text
+       style="text-align:start"
+       y="723.876"
+       x="627.018"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text1015">%m38-1-hm1-last</text>
+    <text
+       style="line-height:normal;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       y="738.726"
+       x="627.018"
+       color="#000"
+       font-size="11.432"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text1017">%m27s1-1 - %m27s2-1 [%m27t-1]</text>
+    <path
+       d="M625.036 726.845h139.606v.895H625.036z"
+       stroke="#000"
+       stroke-width=".056"
+       stroke-linejoin="round"
+       id="path1019" />
+    <text
+       style="line-height:normal;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       y="677.284"
+       x="480.814"
+       color="#000"
+       font-size="11.432"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text1021">
+      <tspan
+         style="line-height:normal;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan1023">%m21s1-1 - %m21s2-1 [%m21t-1]</tspan>
+    </text>
+    <g
+       id="g1025">
+      <path
+         style="isolation:auto;mix-blend-mode:normal"
+         color="#000"
+         overflow="visible"
+         solid-color="#000000"
+         fill="#fff"
+         stroke="#000"
+         stroke-width=".927"
+         d="M910.29 336.748h19.244v518.256H910.29z"
+         id="path1027" />
+      <text
+         x="912.843"
+         y="600.117"
+         style="text-align:start"
+         font-size="13.424"
+         font-family="Calibri"
+         id="text1029">43</text>
+    </g>
+    <text
+       style="text-align:start"
+       y="322.735"
+       x="779.388"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text1031">%m43-1-hm1-last-s-first</text>
+    <text
+       style="line-height:normal;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       y="347.746"
+       x="779.458"
+       color="#000"
+       font-size="11.432"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text1033">%m37s1-1 - %m37s2-1 [%m37t-1]</text>
+    <path
+       d="M775.226 336.313h144.08v.894h-144.08z"
+       stroke="#000"
+       stroke-width=".056"
+       stroke-linejoin="round"
+       id="path1035" />
+    <text
+       style="line-height:125%"
+       x="8.569"
+       y="219.505"
+       font-size="15.243"
+       font-family="sans-serif"
+       letter-spacing="0"
+       word-spacing="0"
+       id="text1037">
+      <tspan
+         x="8.569"
+         y="219.505"
+         style="-inkscape-font-specification:'sans-serif Bold'"
+         font-weight="bold"
+         font-size="30.486"
+         id="tspan1039">A</tspan>
+    </text>
+    <text
+       style="text-align:start"
+       y="592.55"
+       x="745.268"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text1041">
+      <tspan
+         style="-inkscape-font-specification:'Calibri Bold'"
+         font-weight="bold"
+         id="tspan1043">%m43-winner-first</tspan>
+    </text>
+    <rect
+       width="38.694"
+       height="229.677"
+       x="1.056"
+       y="346.09"
+       ry="0"
+       fill="#fea"
+       fill-rule="evenodd"
+       stroke="#000"
+       stroke-width="1.08"
+       id="rect1045" />
+    <text
+       style="line-height:125%"
+       x="8.092"
+       y="472.672"
+       font-size="15.243"
+       font-family="sans-serif"
+       letter-spacing="0"
+       word-spacing="0"
+       id="text1047">
+      <tspan
+         x="8.092"
+         y="472.672"
+         style="-inkscape-font-specification:'sans-serif Bold'"
+         font-weight="bold"
+         font-size="30.486"
+         id="tspan1049">B</tspan>
+    </text>
+    <rect
+       width="38.694"
+       height="229.677"
+       x="1.056"
+       y="612.112"
+       ry="0"
+       fill="#faa"
+       fill-rule="evenodd"
+       stroke="#000"
+       stroke-width="1.08"
+       id="rect1051" />
+    <text
+       style="line-height:125%"
+       x="9.29"
+       y="737.991"
+       font-size="15.243"
+       font-family="sans-serif"
+       letter-spacing="0"
+       word-spacing="0"
+       id="text1053">
+      <tspan
+         x="9.29"
+         y="737.991"
+         style="-inkscape-font-specification:'sans-serif Bold'"
+         font-weight="bold"
+         font-size="30.486"
+         id="tspan1055">C</tspan>
+    </text>
+    <rect
+       width="38.694"
+       height="229.677"
+       x="1.056"
+       y="864.575"
+       ry="0"
+       fill="#fea"
+       fill-rule="evenodd"
+       stroke="#000"
+       stroke-width="1.08"
+       id="rect1057" />
+    <text
+       style="line-height:125%"
+       x="7.102"
+       y="991.158"
+       font-size="15.243"
+       font-family="sans-serif"
+       letter-spacing="0"
+       word-spacing="0"
+       id="text1059">
+      <tspan
+         x="7.102"
+         y="991.158"
+         style="-inkscape-font-specification:'sans-serif Bold'"
+         font-weight="bold"
+         font-size="30.486"
+         id="tspan1061">D</tspan>
+    </text>
+    <rect
+       width="38.366"
+       height="393.965"
+       x="1.22"
+       y="1157.139"
+       ry="0"
+       fill="#fff"
+       fill-rule="evenodd"
+       stroke="#000"
+       stroke-width="1.408"
+       id="rect1063" />
+    <text
+       style="line-height:125%"
+       x="-1447.33"
+       y="37.326"
+       transform="rotate(-89.63)"
+       font-size="15.243"
+       font-family="sans-serif"
+       letter-spacing="0"
+       word-spacing="0"
+       id="text1065">
+      <tspan
+         x="-1447.33"
+         y="37.326"
+         style="-inkscape-font-specification:'sans-serif Bold'"
+         font-weight="bold"
+         font-size="30.486"
+         id="tspan1067">Repechage</tspan>
+    </text>
+    <g
+       id="g1069" />
+    <text
+       style="text-align:start"
+       y="1278.398"
+       x="796.286"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text1129">
+      <tspan
+         style="-inkscape-font-specification:'Calibri Bold'"
+         font-weight="bold"
+         id="tspan1131">%m41-winner-last</tspan>
+    </text>
+    <text
+       style="text-align:start"
+       y="1290.993"
+       x="796.286"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text1133">
+      <tspan
+         style="-inkscape-font-specification:'Calibri Bold'"
+         font-weight="bold"
+         id="tspan1135">%m41-winner-first</tspan>
+    </text>
+    <text
+       style="text-align:start"
+       y="1487.138"
+       x="796.286"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text1137">
+      <tspan
+         style="-inkscape-font-specification:'Calibri Bold'"
+         font-weight="bold"
+         id="tspan1139">%m42-winner-last</tspan>
+    </text>
+    <text
+       style="text-align:start"
+       y="1499.733"
+       x="796.286"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text1141">
+      <tspan
+         style="-inkscape-font-specification:'Calibri Bold'"
+         font-weight="bold"
+         id="tspan1143">%m42-winner-first</tspan>
+    </text>
+    <g
+       id="g1145">
+      <text
+         y="1046.933"
+         x="2.399"
+         style="line-height:125%"
+         font-size="10"
+         font-family="sans-serif"
+         letter-spacing="0"
+         word-spacing="0"
+         transform="matrix(0 -1.5243 1.5243 0 -530.797 1570.14)"
+         id="text1147">
+        <tspan
+           style="-inkscape-font-specification:'MV Boli'"
+           y="1046.933"
+           x="2.399"
+           font-size="5"
+           font-family="MV Boli"
+           fill="gray"
+           id="tspan1149">S.Fuks</tspan>
+      </text>
+    </g>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="728.692"
+       y="355.478"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text1151">
+      <tspan
+         x="728.692"
+         y="355.478"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan1153">%m43-1-hm1-country'/'club</tspan>
+    </text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="728.302"
+       y="937.583"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text1155">
+      <tspan
+         x="728.302"
+         y="937.583"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan1157">%m43-2-hm1-country'/'club</tspan>
+    </text>
+    <text
+       style="text-align:start"
+       y="865.777"
+       x="778.97"
+       font-size="13.424"
+       font-family="Calibri"
+       id="text1159">%m43-2-hm1-last-s-first</text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="593.006"
+       y="1333.438"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text1161">
+      <tspan
+         x="593.006"
+         y="1333.438"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan1163">%m41-1-hm1-country'/'club</tspan>
+    </text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="592.884"
+       y="1556.878"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text1165">
+      <tspan
+         x="592.884"
+         y="1556.878"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan1167">%m42-1-hm1-country'/'club</tspan>
+    </text>
+    <text
+       style="text-align:start"
+       y="1644.998"
+       x="497.972"
+       transform="scale(1.06973 .93482)"
+       font-size="14.358"
+       font-family="Calibri"
+       id="text1169">%m42-2-hm1-last-s-first</text>
+    <text
+       style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+       x="498.047"
+       y="1655.004"
+       transform="scale(1.06973 .93482)"
+       color="#000"
+       font-size="12.228"
+       font-family="Calibri"
+       white-space="normal"
+       overflow="visible"
+       solid-color="#000000"
+       id="text1171">
+      <tspan
+         x="498.047"
+         y="1655.004"
+         style="line-height:normal;-inkscape-font-specification:Calibri;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"
+         font-size="9.527"
+         overflow="visible"
+         solid-color="#000000"
+         id="tspan1173">%m42-2-hm1-country'/'club</tspan>
+    </text>
+  </g>
+</svg>
