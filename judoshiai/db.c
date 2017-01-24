@@ -538,6 +538,13 @@ void db_delete_cat_def_table_data(void)
     db_exec(db_name, cmd, 0, 0);
 }
 
+void db_delete_cat_def_table_age(const gchar *agetext)
+{
+    char cmd[128];
+    snprintf(cmd, sizeof(cmd), "DELETE FROM \"catdef\" WHERE agetext=\"%s\"", agetext);
+    db_exec(db_name, cmd, 0, 0);
+}
+
 void db_insert_cat_def_table_data_begin(void)
 {
     db_open();
