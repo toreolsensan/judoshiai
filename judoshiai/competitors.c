@@ -307,13 +307,14 @@ static void judoka_edited_callback(GtkWidget *widget,
         }
     }
 
+    if (ix == NEW_WCLASS+1)
+	edited.deleted |= TEAM;
+    else if (ix == NEW_WCLASS+2)
+	edited.deleted |= TEAM_EVENT;
+
     ret = display_one_judoka(&edited);
     if (IS_NEW_WCLASS(ix) && ret >= 0) {
         edited.index = ret;
-        if (ix == NEW_WCLASS+1)
-            edited.deleted |= TEAM;
-        else if (ix == NEW_WCLASS+2)
-            edited.deleted |= TEAM_EVENT;
         db_add_category(ret, &edited);
         db_set_system(ret, system);
     }
