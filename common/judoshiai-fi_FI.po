@@ -725,6 +725,12 @@ msgstr "----- Miehet -----"
 msgid "----- Women -----"
 msgstr "----- Naiset -----"
 
+msgid "Men"
+msgstr "Miehet"
+
+msgid "Women"
+msgstr "Naiset"
+
 msgid "Highest age:"
 msgstr "Ylin ikä:"
 
