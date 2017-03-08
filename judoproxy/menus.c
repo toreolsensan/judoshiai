@@ -159,10 +159,12 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
     g_signal_connect(G_OBJECT(advertise), "activate",
 		     G_CALLBACK(toggle_advertise), NULL);
 
+#ifdef VIDEO
     video = gtk_check_menu_item_new_with_label("Show video");
     gtk_menu_shell_append(GTK_MENU_SHELL(preferencesmenu), video);
     g_signal_connect(G_OBJECT(video), "activate",
 		     G_CALLBACK(toggle_video), NULL);
+#endif
 
     //create_separator(preferencesmenu);
     writefile = gtk_menu_item_new_with_label("");

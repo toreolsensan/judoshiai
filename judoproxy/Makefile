@@ -1,7 +1,13 @@
 include ../common/Makefile.inc
 
-LIBS += -L/usr/local/lib -lavutil -lavformat -lavcodec -lz -lavutil -lm \
--lswscale -lxml2 -llzma -lfdk-aac -lmp3lame -lx264 -lavresample
+VIDEO=no
+
+LIBS += -L/usr/local/lib -lxml2
+
+ifeq ($(VIDEO),yes)
+LIBS += -lavutil -lavformat -lavcodec -lz -lavutil -lm \
+-lswscale -llzma -lfdk-aac -lmp3lame -lx264 -lavresample
+endif
 
 OBJDIR := $(JS_BUILD_DIR)/$(LASTPART)/$(OBJDIR)
 
@@ -11,12 +17,19 @@ $(OBJDIR):
 	mkdir -p $(OBJDIR)
 
 OBJS += $(OBJDIR)/main.o $(OBJDIR)/menus.o $(OBJDIR)/comm.o $(OBJDIR)/ip.o \
-	$(OBJDIR)/protocol.o $(OBJDIR)/language.o \
-	$(OBJDIR)/camera-video.o $(OBJDIR)/html.o
+	$(OBJDIR)/protocol.o $(OBJDIR)/language.o $(OBJDIR)/html.o
+
+ifeq ($(VIDEO),yes)
+OBJS += $(OBJDIR)/camera-video.o
+endif
 
 CFLAGS += -DAPPLICATION="\"judoproxy\""
 CFLAGS += -DAPP_NUM=6
 CFLAGS += -I/usr/include/libxml2
+
+ifeq ($(VIDEO),yes)
+CFLAGS += -DVIDEO
+endif
 
 ### Windows executable ###
 ifeq ($(TGT),WIN32)
@@ -32,7 +45,7 @@ judoproxy-icon.rc:
 else
 endif
 
-$(OBJDIR)/judoproxy$(SUFF): $(OBJS)
+$(OBJDIR)/judoproxy$(SUFF): $(OBJS) Makefile
 	$(LD) -g -Wl,-rpath -Wl,bin $(OBJS) -o $(OBJDIR)/judoproxy$(SUFF) $(LIBS)
 
 $(OBJDIR)/avl.o: ../common/avl.c
