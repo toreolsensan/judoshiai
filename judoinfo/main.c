@@ -622,11 +622,31 @@ static gboolean expose(GtkWidget *widget, GdkEventExpose *event, gpointer userda
 }
 
 static gint mjpeg_width = 0, mjpeg_height = 0;
+static gint mjpeg_size = 0;
+static gchar *mjpeg_image = NULL;
+static gint mjpeg_space = 0;
 
-static gboolean write_mjpeg_out(const gchar *buf, gsize count, GError **error, gpointer data)
+static gboolean write_mjpeg_mem(const gchar *buf, gsize count, GError **error, gpointer data)
 {
-    fwrite(buf, 1, count, stdout);
+    if (!mjpeg_image) {
+	mjpeg_size = 0;
+	mjpeg_space = 16*1024;
+	mjpeg_image = g_malloc(mjpeg_space);
+    }
+    while (mjpeg_size + count >= mjpeg_space) {
+	mjpeg_space *= 2;
+	mjpeg_image = g_realloc(mjpeg_image, mjpeg_space);
+	g_printerr("mjpeg_space=%d\n", mjpeg_space);
+    }
+    memcpy(mjpeg_image + mjpeg_size, buf, count);
+    mjpeg_size += count;
     return TRUE;
+}
+
+static void write_mjpeg_out(void)
+{
+    if (!mjpeg_image) return;
+    fwrite(mjpeg_image, 1, mjpeg_size, stdout);
 }
 
 static void convert_rgb_to_bgr(GdkPixbuf *pixbuf)
@@ -666,6 +686,7 @@ static gboolean write_mjpeg(gpointer data)
         pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, TRUE, 8, mjpeg_width, mjpeg_height);
 
     if (frame_num == 0) {
+	mjpeg_size = 0;
         cs = cairo_image_surface_create_for_data(gdk_pixbuf_get_pixels(pixbuf),
                                                  CAIRO_FORMAT_RGB24,
                                                  mjpeg_width, mjpeg_height,
@@ -676,14 +697,12 @@ static gboolean write_mjpeg(gpointer data)
         cairo_show_page(c);
         cairo_destroy(c);
         convert_rgb_to_bgr(pixbuf);
+	gdk_pixbuf_save_to_callback(pixbuf, write_mjpeg_mem, gdk_pixbuf_get_pixels(pixbuf), "jpeg",
+                                &error, NULL);
+        cairo_surface_destroy(cs);
     }
 
-    gdk_pixbuf_save_to_callback(pixbuf, write_mjpeg_out, gdk_pixbuf_get_pixels(pixbuf), "jpeg",
-                                &error, NULL);
-    //cairo_surface_write_to_png_stream(cs, write_func, NULL);
-    if (frame_num == 0)
-        cairo_surface_destroy(cs);
-
+    write_mjpeg_out();
     if (++frame_num > 50) frame_num = 0;
     fflush(stdout);
     return TRUE;
@@ -815,7 +834,8 @@ int main( int   argc,
     GThread   *gth = NULL;         /* thread id */
     gboolean   run_flag = TRUE;   /* used as exit flag for threads */
     gint       i;
-
+    gint       fps = 25;
+    
     putenv("UBUNTU_MENUPROXY=");
 
     init_trees();
@@ -866,8 +886,13 @@ int main( int   argc,
                 mjpeg_width = atoi(argv[i+1]);
                 mjpeg_height = atoi(p+1);
             }
+	    i++;
         } else if (!strcmp(argv[i], "-a")) {
 	    node_ip_addr = inet_addr(argv[i+1]);
+	    i++;
+        } else if (!strcmp(argv[i], "-fps")) {
+	    fps = atoi(argv[i+1]);
+	    i++;
 	}
     }
 
@@ -944,7 +969,7 @@ int main( int   argc,
     /*g_timeout_add(100, timeout, NULL);*/
     g_timeout_add(2000, refresh_graph, NULL);
     if (mjpeg_width && mjpeg_height)
-        g_timeout_add(40, write_mjpeg, NULL);
+        g_timeout_add(1000/fps, write_mjpeg, NULL);
 
     gtk_widget_show_all(window);
 
