@@ -384,7 +384,7 @@ static void create_new_category(GtkWidget *menuitem, gpointer userdata)
             gint n = find_age_index(j->regcategory);
             if (n >= 0) {
                 age1 = category_definitions[n].age;
-                if (category_definitions[n].gender & IS_FEMALE)
+                if (category_definitions[n].flags & IS_FEMALE)
                     female = TRUE;
                 else
                     male = TRUE;
