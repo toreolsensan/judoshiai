@@ -234,6 +234,8 @@ void write_png(GtkWidget *menuitem, gpointer userdata)
 
         cairo_destroy(c_pdf);
         cairo_surface_destroy(cs_pdf);
+
+	db_print_category_to_pdf_comments(ctg);
     } else if (automatic_web_page_update) {
         // print png
         cs_png = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
@@ -314,6 +316,8 @@ void write_png(GtkWidget *menuitem, gpointer userdata)
         cairo_surface_destroy(cs_pdf);
         cairo_destroy(c_png);
         cairo_surface_destroy(cs_png);
+
+	db_print_category_to_pdf_comments(ctg);
     }
 
     free_judoka(ctgdata);
@@ -2180,7 +2184,8 @@ void print_matches(GtkWidget *menuitem, gpointer userdata)
                     j1?j1->first:"", j1?j1->last:"", j1?get_club_text(j1, 0):"",
                     j2?j2->first:"", j2?j2->last:"", j2?get_club_text(j2, 0):"");
             if (pr)
-                fprintf(f, ",\"%s-%s\"", get_points_str(points_b), get_points_str(points_w));
+                fprintf(f, ",\"%s-%s\"", get_points_str(points_b, cat),
+			get_points_str(points_w, cat));
             if (pi)
                 fprintf(f, ",\"%05x-%05x\"", score_b, score_w);
             if (pc) {
