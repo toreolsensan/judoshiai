@@ -41,11 +41,11 @@ Resultater
 ### 20: Time (fight time)
 Tid
 ### 21: Wins (number of wins)
-Seire
+Vant
 ### 22: Pts (short text for points)
-Poeng
+Png
 ### 23: Pos (short text for position = winner, second, bronze)
-Plass
+Pls
 ### 24: Previous winner
 Forrige Vinner
 ### 25: Next (competitors who have the next fight)
@@ -75,25 +75,25 @@ Total
 ### 37: Country
 Land
 ### 38: Not drawn
-Not drawn
+Ikke trukket
 ### 39: Finished
-Finished
+Ferdig
 ### 40: Match ongoing
-Match ongoing
+Kamp pågår
 ### 41: Started (category has started)
-Started
+Startet
 ### 42: Drawing ready
-Drawing ready
+Trekning klar 
 ### 43: Coach
-Coach
+Lagleder
 ### 44: Surname
-Surname
+Etternavn
 ### 45: Status
 Status
 ### 46: Display
-Display
+-visning
 ### 47: "Match after n matches" divided in two parts
 ###     Match after ("Match after" n matches)
-Match after
+Kamp etter
 ### 48: matches (Match after n "matches")
-matches
+kamper

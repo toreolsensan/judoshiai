@@ -136,4 +136,4 @@
 #104 10 10 500 120
 
 # Background picture
-105 ../etc/timer-custom-2.png
+105 ../etc/png/timer-custom-2.png
