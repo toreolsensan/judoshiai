@@ -274,7 +274,7 @@ static void pool_results(FILE *f, gint category, struct judoka *ctg, gint num_ju
         if (IS_LANG_NB) nrprint = 5;
 
         // Spanish have two bronzes in pool system
-        if (i <= 4 && prop_get_int_val(PROP_TWO_POOL_BRONZES) &&
+        if (i <= 4 && prop_get_int_val_cat(PROP_TWO_POOL_BRONZES, category) &&
             (pm.j[pm.c[i]]->deleted & HANSOKUMAKE) == 0) {
             write_result(f, i == 4 ? 3 : i, pm.j[pm.c[i]]->first,
                          pm.j[pm.c[i]]->last, pm.j[pm.c[i]]->club, pm.j[pm.c[i]]->country);
@@ -283,7 +283,8 @@ static void pool_results(FILE *f, gint category, struct judoka *ctg, gint num_ju
         } else if (i <= nrprint &&
             (pm.j[pm.c[i]]->deleted & HANSOKUMAKE) == 0) {
             // Need a victory in Norwegian system to get a result.
-            if (prop_get_int_val(PROP_WIN_NEEDED_FOR_MEDAL) && pm.wins[pm.c[i]] == 0)
+            if (prop_get_int_val_cat(PROP_WIN_NEEDED_FOR_MEDAL, category) &&
+		pm.wins[pm.c[i]] == 0)
                 continue;
 
             write_result(f, i, pm.j[pm.c[i]]->first,
@@ -904,7 +905,7 @@ void write_comp_stat(gint index)
     gchar *cmd = NULL;
     gint numrows = 0;
     struct category_data *catdata = NULL;
-
+    gint catix = 0;
     struct judoka *j = get_data(index);
     if (!j)
         return;
@@ -920,15 +921,16 @@ void write_comp_stat(gint index)
 
     if (index >= 10000) catdata = avl_get_category(index);
     if (catdata) {
+	catix = catdata->index;
         fprintf(f, "<td valign=\"top\"><table class=\"compstat\">"
                 "<tr><th colspan=\"7\">%s</th></tr>\r\n"
                 "<tr><td class=\"cshdr\">#<td class=\"cshdr\">%s<td class=\"cshdr\">%s"
                 "<td align=\"center\" class=\"cshdr\">%s<td class=\"cshdr\">%s"
                 "<td class=\"cshdr\">%s<td class=\"cshdr\">%s</tr>\r\n",
                 j->last, _T(name),
-		prop_get_int_val(PROP_RULES_2017) ? "IW/S" : "IWY/S",
+		prop_get_int_val_cat(PROP_RULES_2017, catix) ? "IW/S" : "IWY/S",
 		_T(points),
-		prop_get_int_val(PROP_RULES_2017) ? "IW/S" : "IWY/S",
+		prop_get_int_val_cat(PROP_RULES_2017, catix) ? "IW/S" : "IWY/S",
 		_T(name), _T(time));
 
         db_print_category_matches(catdata, f);
@@ -945,9 +947,9 @@ void write_comp_stat(gint index)
             utf8_to_html(firstname_lastname() ? j->last : j->first),
             utf8_to_html(j->club),
             _T(category), _T(name),
-	    prop_get_int_val(PROP_RULES_2017) ? "IW/S" : "IWY/S",
+	    prop_get_int_val_cat(PROP_RULES_2017, catix) ? "IW/S" : "IWY/S",
 	    _T(points),
-	    prop_get_int_val(PROP_RULES_2017) ? "IW/S" : "IWY/S",
+	    prop_get_int_val_cat(PROP_RULES_2017, catix) ? "IW/S" : "IWY/S",
 	    _T(name), _T(time));
 
 
@@ -996,7 +998,7 @@ void write_comp_stat(gint index)
                         utf8_to_html(firstname_lastname() ? j1->last : j1->first),
                         prop_get_int_val(PROP_WHITE_FIRST) ? "wscore" : "bscore");
 
-		if (prop_get_int_val(PROP_RULES_2017))
+		if (prop_get_int_val_cat(PROP_RULES_2017, cat))
 		    fprintf(f,
 			    "%d%d/%d%s",
 			    (blue_score>>16)&15, (blue_score>>12)&15,
@@ -1010,11 +1012,11 @@ void write_comp_stat(gint index)
 		fprintf(f,
                         "</td><td align=\"center\">%s - %s</td>"
                         "<td class=\"%s\">",
-                        get_points_str(blue_points),
-                        get_points_str(white_points),
-                        prop_get_int_val(PROP_WHITE_FIRST) ? "bscore" : "wscore");
+                        get_points_str(blue_points, catix),
+                        get_points_str(white_points, catix),
+                        prop_get_int_val_cat(PROP_WHITE_FIRST, cat) ? "bscore" : "wscore");
 
-		if (prop_get_int_val(PROP_RULES_2017))
+		if (prop_get_int_val_cat(PROP_RULES_2017, cat))
 		    fprintf(f,
 			    "%d%d/%d%s",
 			    (white_score>>16)&15, (white_score>>12)&15,

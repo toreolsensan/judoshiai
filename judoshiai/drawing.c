@@ -488,7 +488,7 @@ static gint get_free_pos_by_mask(gint mask, struct mdata *mdata)
         if (((!mdata->mask && (currmask & mask)) ||
 	     (mdata->mask & (1<<(x-1)))) &&
 	    mdata->mpos[x].judoka == 0 &&
-            (!prop_get_int_val(PROP_USE_FIRST_PLACES_ONLY) ||
+            (!prop_get_int_val_cat(PROP_USE_FIRST_PLACES_ONLY, mdata->mcategory_ix) ||
 	     get_competitor_number(x, mdata) <= mdata->mjudokas)) {
             // update the lowest avoid value
             if (place_values[x] < best_value) {
@@ -870,7 +870,7 @@ static gboolean draw_one_comp(struct mdata *mdata)
 	if (!found)
             found = get_free_pos_by_mask(create_mask(0,1,1), mdata); // look everywhere
     } else if (mdata->mfrench_sys >= 0) { // french
-        if (prop_get_int_val(PROP_SEEDED_TO_FIXED_PLACES) &&
+        if (prop_get_int_val_cat(PROP_SEEDED_TO_FIXED_PLACES, mdata->mcategory_ix) &&
             mdata->mcomp[comp].seeded > 0 && mdata->mcomp[comp].seeded <= NUM_SEEDED) {
             gint x;
             switch (mdata->mcomp[comp].seeded) {
