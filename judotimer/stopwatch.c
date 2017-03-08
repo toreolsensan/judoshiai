@@ -605,7 +605,15 @@ static gint get_winner(gboolean final_result)
     // final_result is true when result is sent to judoshiai. It is up to
     // the user to ensure result is correct i.e. shidos determine the winner correctly.
     gint winner = 0;
-    if (bluepts[I] > whitepts[I]) winner = BLUE;
+
+    if (use_ger_u12_rules) {
+	gint p1 = bluepts[I]*use_ger_u12_rules +
+	    bluepts[W]*2 + bluepts[Y];
+	gint p2 = whitepts[I]*use_ger_u12_rules +
+	    whitepts[W]*2 + whitepts[Y];
+	if (p1 > p2) winner = BLUE;
+	else if (p1 < p2) winner = WHITE;
+    } else if (bluepts[I] > whitepts[I]) winner = BLUE;
     else if (bluepts[I] < whitepts[I]) winner = WHITE;
     else if (bluepts[W] > whitepts[W]) winner = BLUE;
     else if (bluepts[W] < whitepts[W]) winner = WHITE;
@@ -1184,30 +1192,61 @@ static void incdecpts(gint *p, gboolean decrement)
 
 void check_ippon(void)
 {
-    if (bluepts[I] > 1)
-        bluepts[I] = 1;
-    if (whitepts[I] > 1)
-        whitepts[I] = 1;
-
-    if (!use_2017_rules) {
+    if (use_ger_u12_rules) {
 	if (bluepts[W] >= 2) {
-	    bluepts[I] = 1;
+	    bluepts[I]++;
 	    bluepts[W] = 0;
 	}
 	if (whitepts[W] >= 2) {
-	    whitepts[I] = 1;
+	    whitepts[I]++;
 	    whitepts[W] = 0;
+	}
+	if (bluepts[I] > 2)
+	    bluepts[I] = 2;
+	if (whitepts[I] > 2)
+	    whitepts[I] = 2;
+    } else {
+	if (bluepts[I] > 1)
+	    bluepts[I] = 1;
+	if (whitepts[I] > 1)
+	    whitepts[I] = 1;
+
+	if (!use_2017_rules) {
+	    if (bluepts[W] >= 2) {
+		bluepts[I] = 1;
+		bluepts[W] = 0;
+	    }
+	    if (whitepts[W] >= 2) {
+		whitepts[I] = 1;
+		whitepts[W] = 0;
+	    }
+	} else {
+	    if (bluepts[L] >= 2)
+		whitepts[I] = 1;
+	    if (whitepts[L] >= 2)
+		bluepts[I] = 1;
 	}
     }
 
     set_points(bluepts, whitepts);
 
-    if (whitepts[I] || bluepts[I]) {
+    if (use_ger_u12_rules) {
+	gint p1 = bluepts[I]*use_ger_u12_rules +
+	    bluepts[W]*2 + bluepts[Y];
+	gint p2 = whitepts[I]*use_ger_u12_rules +
+	    whitepts[W]*2 + whitepts[Y];
+	if (p1 >= 2*use_ger_u12_rules ||
+	    p2 >= 2*use_ger_u12_rules) {
+	    if (rules_stop_ippon_2 == TRUE) {
+		if (oRunning) oToggle();
+		if (running) toggle();
+	    }
+	    beep("SOREMADE");
+	}
+    } else if (whitepts[I] || bluepts[I]) {
         if (rules_stop_ippon_2 == TRUE) {
-	    if (oRunning)
-		oToggle();
-	    if (running)
-		toggle();
+	    if (oRunning) oToggle();
+	    if (running) toggle();
         }
         beep("IPPON");
 
@@ -1221,10 +1260,8 @@ void check_ippon(void)
         beep(_("Golden Score"));
     } else if ((whitepts[S] >= SHIDOMAX || bluepts[S] >= SHIDOMAX) &&
                rules_stop_ippon_2) {
-    	if (oRunning)
-    		oToggle();
-    	if (running)
-    		toggle();
+    	if (oRunning) oToggle();
+    	if (running) toggle();
         beep("SHIDO, Hansokumake");
         gchar *name = get_name(whitepts[I] ? WHITE : BLUE);
         if (name == NULL || name[0] == 0)
@@ -1233,7 +1270,6 @@ void check_ippon(void)
         judotimer_log("%s: %s wins by %f s Shido)!",
                       get_cat(), name, elap);
     }
-
 }
 
 gboolean set_osaekomi_winner(gint who)
@@ -1404,16 +1440,6 @@ void clock_key(guint key, guint event_state)
     case GDK_space:
         toggle();
         break;
-    case GDK_k:
-	// comp1 leg grab
-	bluepts[L] = !bluepts[L];
-        check_ippon();
-	break;
-    case GDK_l:
-	// comp2 leg grab
-	whitepts[L] = !whitepts[L];
-        check_ippon();
-	break;
     case GDK_s:
 	// sonomama removed
 #if 0
@@ -1455,7 +1481,7 @@ void clock_key(guint key, guint event_state)
         }
         break;
     case GDK_F5:
-	if (whitepts[I] && !shift)
+	if (whitepts[I] && !shift && !use_ger_u12_rules)
 	    break;
         incdecpts(&whitepts[I], shift);
 	log_scores("Ippon to ", WHITE);
@@ -1467,9 +1493,19 @@ void clock_key(guint key, guint event_state)
         check_ippon();
         break;
     case GDK_F7:
-	if (use_2017_rules)
-	    whitepts[L] = !whitepts[L];
-	else
+    case GDK_l:
+	if (use_2017_rules) {
+	    if (shift && whitepts[L] >= 2)
+		bluepts[I] = 0;
+	    incdecpts(&whitepts[L], shift);
+	    if (whitepts[L] >= 2) {
+		whitepts[L] = 2;
+                bluepts[I] = 1;
+	    }
+	    incdecpts(&whitepts[S], shift);
+            if (whitepts[S] >= SHIDOMAX)
+                bluepts[I] = 1;
+	} else
 	    incdecpts(&whitepts[Y], shift);
 	log_scores("Yuko to ", WHITE);
         break;
@@ -1492,7 +1528,7 @@ void clock_key(guint key, guint event_state)
         }
         break;
     case GDK_F1:
-	if (bluepts[I] && !shift)
+	if (bluepts[I] && !shift && !use_ger_u12_rules)
 	    break;
         incdecpts(&bluepts[I], shift);
 	log_scores("Ippon to ", BLUE);
@@ -1504,9 +1540,19 @@ void clock_key(guint key, guint event_state)
         check_ippon();
         break;
     case GDK_F3:
-	if (use_2017_rules)
-	    bluepts[L] = !bluepts[L];
-	else
+    case GDK_k:
+	if (use_2017_rules) {
+	    if (shift && bluepts[L] >= 2)
+		whitepts[I] = 0;
+	    incdecpts(&bluepts[L], shift);
+	    if (bluepts[L] >= 2) {
+		bluepts[L] = 2;
+                whitepts[I] = 1;
+	    }
+	    incdecpts(&bluepts[S], shift);
+            if (bluepts[S] >= SHIDOMAX)
+                whitepts[I] = 1;
+	} else
 	    incdecpts(&bluepts[Y], shift);
 	log_scores("Yuko to ", BLUE);
         break;

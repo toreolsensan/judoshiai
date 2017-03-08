@@ -629,55 +629,65 @@ GtkWidget *get_menubar_menu(GtkWidget  *window)
 
 void set_preferences(void)
 {
+    set_preferences_keyfile(keyfile, TRUE);
+}
+
+
+#define SET_CHECKBOX(_w, _yes) do {					\
+	if (gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(_w))) {	\
+	    if (!(_yes)) gtk_menu_item_activate(GTK_MENU_ITEM(_w));	\
+	} else {							\
+	    if (_yes) gtk_menu_item_activate(GTK_MENU_ITEM(_w));	\
+	}} while (0)
+
+#define READ_BOOL(_s, _w, _d) do {					\
+	error = NULL;							\
+	bool = g_key_file_get_boolean(key_file, "preferences", _s, &error); \
+	if (!error) SET_CHECKBOX(_w, bool);				\
+	else if (defaults) SET_CHECKBOX(_w, _d);			\
+    } while (0)
+
+#define READ_BOOL_VAL(_s, _w, _d) do {					\
+	error = NULL;							\
+	bool = g_key_file_get_boolean(key_file, "preferences", _s, &error); \
+	if (!error) _w = bool;						\
+	else if (defaults) _w = _d;					\
+    } while (0)
+
+#define READ_INT_VAL(_s, _w, _d) do {					\
+	error = NULL;							\
+	i = g_key_file_get_integer(key_file, "preferences", _s, &error); \
+	if (!error) _w = i;						\
+	else if (defaults) _w = _d;					\
+    } while (0)
+
+void set_preferences_keyfile(GKeyFile *key_file, gboolean defaults)
+{
     GError *error = NULL;
     gchar  *str;
     gint    i;
     gdouble d;
+    gboolean bool;
 
-    if ((str = g_key_file_get_string(keyfile, "preferences", "color", &error))) {
-        if (strcmp(str, "red") == 0) {
-            gtk_menu_item_activate(GTK_MENU_ITEM(red_background));
-        }
+    if ((str = g_key_file_get_string(key_file, "preferences", "color", &error))) {
+	SET_CHECKBOX(red_background, !strcmp(str, "red"));
         g_free(str);
     }
 
-    error = NULL;
-    if (g_key_file_get_boolean(keyfile, "preferences", "fullscreen", &error)) {
-        gtk_menu_item_activate(GTK_MENU_ITEM(full_screen));
-    }
+    READ_BOOL("fullscreen", full_screen, FALSE);
+    READ_BOOL("stopippon", rules_stop_ippon, FALSE);
+    READ_BOOL("rules2017", rules_2017, TRUE);
+    READ_BOOL("confirmmatch", confirm_match, TRUE);
+    READ_BOOL("whitefirst", whitefirst, TRUE);
+    READ_BOOL("notexts", no_texts, FALSE);
+    READ_BOOL("judogicontrol", judogi_control, FALSE);
+
+    READ_BOOL_VAL("showcompetitornames", show_competitor_names, TRUE);
+    READ_BOOL_VAL("showflags", showflags, FALSE);
+    READ_BOOL_VAL("showletter", showletter, FALSE);
 
     error = NULL;
-    if (g_key_file_get_boolean(keyfile, "preferences", "stopippon", &error)) {
-        gtk_menu_item_activate(GTK_MENU_ITEM(rules_stop_ippon));
-    }
-
-    error = NULL;
-    if (g_key_file_get_boolean(keyfile, "preferences", "rules2017", &error) || error) {
-        gtk_menu_item_activate(GTK_MENU_ITEM(rules_2017));
-    }
-
-    error = NULL;
-    if (g_key_file_get_boolean(keyfile, "preferences", "confirmmatch", &error)) {
-        gtk_menu_item_activate(GTK_MENU_ITEM(confirm_match));
-    }
-
-    error = NULL;
-    if (g_key_file_get_boolean(keyfile, "preferences", "whitefirst", &error)) {
-        gtk_menu_item_activate(GTK_MENU_ITEM(whitefirst));
-    }
-
-    error = NULL;
-    if (g_key_file_get_boolean(keyfile, "preferences", "notexts", &error)) {
-        gtk_menu_item_activate(GTK_MENU_ITEM(no_texts));
-    }
-
-    error = NULL;
-    if (g_key_file_get_boolean(keyfile, "preferences", "judogicontrol", &error)) {
-        gtk_menu_item_activate(GTK_MENU_ITEM(judogi_control));
-    }
-
-    error = NULL;
-    i = g_key_file_get_integer(keyfile, "preferences", "tatami", &error);
+    i = g_key_file_get_integer(key_file, "preferences", "tatami", &error);
     if (!error) {
         switch (i) {
         case 0: gtk_menu_item_activate(GTK_MENU_ITEM(tatami_sel_none)); break;
@@ -695,36 +705,20 @@ void set_preferences(void)
     }
 
     error = NULL;
-    str = g_key_file_get_string(keyfile, "preferences", "customlayoutfile", &error);
+    str = g_key_file_get_string(key_file, "preferences", "customlayoutfile", &error);
     if (!error && str) {
 	custom_layout_file = str;
     }
 
     error = NULL;
-    i = g_key_file_get_integer(keyfile, "preferences", "displaylayout", &error);
-    if (!error) {
-        switch (i) {
-        case 1: gtk_menu_item_activate(GTK_MENU_ITEM(layout_sel_1)); break;
-        case 2: gtk_menu_item_activate(GTK_MENU_ITEM(layout_sel_2)); break;
-        case 3: gtk_menu_item_activate(GTK_MENU_ITEM(layout_sel_3)); break;
-        case 4: gtk_menu_item_activate(GTK_MENU_ITEM(layout_sel_4)); break;
-        case 5: gtk_menu_item_activate(GTK_MENU_ITEM(layout_sel_5)); break;
-        case 6: gtk_menu_item_activate(GTK_MENU_ITEM(layout_sel_6)); break;
-        case 7: gtk_menu_item_activate(GTK_MENU_ITEM(layout_sel_7)); break;
-        }
-    } else {
-        select_display_layout(NULL, (gpointer)6);
-    }
-
-    error = NULL;
-    i = g_key_file_get_integer(keyfile, "preferences", "namelayout", &error);
+    i = g_key_file_get_integer(key_file, "preferences", "namelayout", &error);
     if (!error)
         gtk_menu_item_activate(GTK_MENU_ITEM(name_layouts[i]));
-    else
+    else if (defaults)
         gtk_menu_item_activate(GTK_MENU_ITEM(name_layouts[0]));
 
     error = NULL;
-    str = g_key_file_get_string(keyfile, "preferences", "nodeipaddress", &error);
+    str = g_key_file_get_string(key_file, "preferences", "nodeipaddress", &error);
     if (!error) {
         gulong a,b,c,d1;
         sscanf(str, "%ld.%ld.%ld.%ld", &a, &b, &c, &d1);
@@ -733,138 +727,106 @@ void set_preferences(void)
     }
 
     error = NULL;
-    i = g_key_file_get_integer(keyfile, "preferences", "language", &error);
-    if (!error)
+    i = g_key_file_get_integer(key_file, "preferences", "language", &error);
+    if (!error) {
         language = i;
-    else
+	if (!defaults) change_language(NULL, NULL, gint_to_ptr(language));
+    } else if (defaults)
         language = LANG_FI;
 
     error = NULL;
-    if (g_key_file_get_boolean(keyfile, "preferences", "showcompetitornames", &error)) {
-        show_competitor_names = TRUE;
-    }
-
-    error = NULL;
-    if (g_key_file_get_boolean(keyfile, "preferences", "showflags", &error)) {
-        showflags = TRUE;
-    }
-
-    error = NULL;
-    if (g_key_file_get_boolean(keyfile, "preferences", "showletter", &error)) {
-        showletter = TRUE;
-    }
-
-    error = NULL;
-    d = g_key_file_get_double(keyfile, "preferences", "flagsize", &error);
+    d = g_key_file_get_double(key_file, "preferences", "flagsize", &error);
     if (!error) flagsize = d;
-    else flagsize = 7.0;
+    else if (defaults) flagsize = 7.0;
 
     error = NULL;
-    d = g_key_file_get_double(keyfile, "preferences", "namesize", &error);
+    d = g_key_file_get_double(key_file, "preferences", "namesize", &error);
     if (!error) namesize = d;
-    else namesize = 10.0;
+    else if (defaults) namesize = 10.0;
 
     error = NULL;
-    str = g_key_file_get_string(keyfile, "preferences", "displayfont", &error);
+    str = g_key_file_get_string(key_file, "preferences", "displayfont", &error);
     if (!error) {
         set_font(str);
         g_free(str);
     }
 
     error = NULL;
-    str = g_key_file_get_string(keyfile, "preferences", "videoipaddress", &error);
+    str = g_key_file_get_string(key_file, "preferences", "videoipaddress", &error);
     if (!error) {
         snprintf(video_http_host, sizeof(video_http_host), "%s", str);
         g_free(str);
-    } else
+    } else if (defaults)
         video_http_host[0] = 0;
 
     error = NULL;
-    i = g_key_file_get_integer(keyfile, "preferences", "videoipport", &error);
+    i = g_key_file_get_integer(key_file, "preferences", "videoipport", &error);
     if (!error)
         video_http_port = i;
-    else
+    else if (defaults)
         video_http_port = 0;
 
     error = NULL;
-    str = g_key_file_get_string(keyfile, "preferences", "videoippath", &error);
+    str = g_key_file_get_string(key_file, "preferences", "videoippath", &error);
     if (!error) {
         snprintf(video_http_path, sizeof(video_http_path), "%s", str);
         g_free(str);
-    } else
+    } else if (defaults)
         video_http_path[0] = 0;
 
     error = NULL;
-    str = g_key_file_get_string(keyfile, "preferences", "videoproxyaddress", &error);
+    str = g_key_file_get_string(key_file, "preferences", "videoproxyaddress", &error);
     if (!error) {
         snprintf(video_proxy_host, sizeof(video_proxy_host), "%s", str);
         g_free(str);
-    } else
+    } else if (defaults)
         video_proxy_host[0] = 0;
 
     error = NULL;
-    i = g_key_file_get_integer(keyfile, "preferences", "videoproxyport", &error);
+    i = g_key_file_get_integer(key_file, "preferences", "videoproxyport", &error);
     if (!error)
         video_proxy_port = i;
-    else
+    else if (defaults)
         video_proxy_port = 0;
 
     error = NULL;
-    str = g_key_file_get_string(keyfile, "preferences", "videouser", &error);
+    str = g_key_file_get_string(key_file, "preferences", "videouser", &error);
     if (!error) {
         snprintf(video_http_user, sizeof(video_http_user), "%s", str);
         g_free(str);
-    } else
+    } else if (defaults)
         video_http_user[0] = 0;
 
     error = NULL;
-    str = g_key_file_get_string(keyfile, "preferences", "videopassword", &error);
+    str = g_key_file_get_string(key_file, "preferences", "videopassword", &error);
     if (!error) {
         snprintf(video_http_password, sizeof(video_http_password), "%s", str);
         g_free(str);
-    } else
+    } else if (defaults)
         video_http_password[0] = 0;
 
-#if 0
-    video_update = TRUE;
+    READ_INT_VAL("rulesgeru12", use_ger_u12_rules, 0);
 
-    error = NULL;
-    i = g_key_file_get_integer(keyfile, "preferences", "vlcport", &error);
-    if (!error)
-        vlc_port = i;
-    else
-        vlc_port = 0;
+    if (defaults) {
+	error = NULL;
+	i = g_key_file_get_integer(key_file, "preferences", "displaylayout", &error);
+	if (!error) {
+	    switch (i) {
+	    case 1: gtk_menu_item_activate(GTK_MENU_ITEM(layout_sel_1)); break;
+	    case 2: gtk_menu_item_activate(GTK_MENU_ITEM(layout_sel_2)); break;
+	    case 3: gtk_menu_item_activate(GTK_MENU_ITEM(layout_sel_3)); break;
+	    case 4: gtk_menu_item_activate(GTK_MENU_ITEM(layout_sel_4)); break;
+	    case 5: gtk_menu_item_activate(GTK_MENU_ITEM(layout_sel_5)); break;
+	    case 6: gtk_menu_item_activate(GTK_MENU_ITEM(layout_sel_6)); break;
+	    case 7: gtk_menu_item_activate(GTK_MENU_ITEM(layout_sel_7)); break;
+	    }
+	} else {
+	    gtk_menu_item_activate(GTK_MENU_ITEM(layout_sel_6));
+	}
+    }
 
-    error = NULL;
-    i = g_key_file_get_integer(keyfile, "preferences", "tvlogox", &error);
-    if (!error)
-        tvlogo_x = i;
-    else
-        tvlogo_x = 10;
-
-    error = NULL;
-    i = g_key_file_get_integer(keyfile, "preferences", "tvlogoy", &error);
-    if (!error)
-        tvlogo_y = i;
-    else
-        tvlogo_y = 10;
-
-    error = NULL;
-    d = g_key_file_get_double(keyfile, "preferences", "tvlogoscale", &error);
-    if (!error)
-        tvlogo_scale = d;
-    else
-        tvlogo_scale = 1.0;
-
-    error = NULL;
-    i = g_key_file_get_integer(keyfile, "preferences", "tvlogoport", &error);
-    if (!error)
-        tvlogo_port = i;
-    else
-        tvlogo_port = 0;
-#endif
-
-    set_ssdp_id();
+    if (defaults)
+	set_ssdp_id();
 }
 
 extern void set_menu_white_first(gboolean flag)
