@@ -111,6 +111,7 @@ int websock_encode_msg(struct message *m, unsigned char *buf, int buflen)
 	putstr(m->u.next_match.white_2);
 	put32(m->u.next_match.flags);
 	put32(m->u.next_match.round);
+	putstr(m->u.next_match.layout);
 	break;
     case MSG_RESULT:
 	put32(m->u.result.tatami);
@@ -303,6 +304,7 @@ int websock_decode_msg(struct message *m, cJSON *json)
 	getstr(m->u.next_match.white_2);
 	get32(m->u.next_match.flags);
 	get32(m->u.next_match.round);
+	getstr(m->u.next_match.layout);
 	break;
     case MSG_RESULT:
 	get32(m->u.result.tatami);

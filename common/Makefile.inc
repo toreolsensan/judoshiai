@@ -1,4 +1,4 @@
-SHIAI_VER_NUM=2.6-beta1
+SHIAI_VER_NUM=2.6-beta8
 SHIAI_VERSION="\"$(SHIAI_VER_NUM)\""
 
 ifndef JS_BUILD_DIR
@@ -116,6 +116,8 @@ LIBS=-L$(DEVELDIR)/lib $(DEVELDIR)/lib/glib-2.0.lib -L$(RSVGDIR)/bin \
 -lcroco-0.6-3 -lrsvg-2-2 -lxml2-2 \
 -L/opt/win32/curl/bin -lcurl \
 -L/opt/win32/w32api/lib -lws2_32 -mwindows
+# To add console out:
+# -mconsole
 
 ifeq ($(JUDOPROXY),YES)
 LIBS += -L/opt/win32/webkitgtk/lib -lwebkitgtk-3.0.dll \
