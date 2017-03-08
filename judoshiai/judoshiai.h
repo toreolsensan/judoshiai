@@ -459,7 +459,7 @@ enum default_drawing_system {
 };
 
 // Properties
-enum {
+enum properties {
     PROP_NAME,
     PROP_DATE,
     PROP_PLACE,
@@ -484,8 +484,12 @@ enum {
     PROP_RESOLVE_3_WAY_TIES_BY_TIME,
     PROP_RESOLVE_3_WAY_TIES_BY_WEIGHTS,
     PROP_MIX_POOL_MATCHES_INTO_ROUNDS,
-    PROP_USE_IJF_POINTS,
     PROP_GRADE_NAMES,
+    PROP_CAT_OPTS,
+    PROP_USE_IJF_POINTS,
+    PROP_USE_PTS_100_10_1_h,
+    PROP_USE_PTS_10_7_5_1,
+    PROP_USE_PTS_10_1_h,
     NUM_PROPERTIES
 };
 
@@ -606,11 +610,12 @@ struct next_match_info {
 };
 
 #define NUM_CAT_DEF_WEIGHTS 16
+#define NUM_CAT_OPTS 4
 
 struct cat_def {
     gint     age;
     gchar    agetext[22];
-    gint     gender;
+    gint     flags;
     gint     match_time;
     gint     pin_time_koka;
     gint     pin_time_yuko;
@@ -619,6 +624,7 @@ struct cat_def {
     gint     rest_time;
     gint     gs_time;
     gint     rep_time;
+    gchar    layout[8];
     struct {
         gint comp;
         gint ippons;
@@ -833,6 +839,8 @@ extern guint num_selected_judokas;
 
 extern gint match_crc[NUM_TATAMIS+1];
 
+extern gint cat_opts[NUM_CAT_OPTS];
+
 /** Functions */
 
 extern void progress_show(gdouble progress, const gchar *text);
@@ -879,6 +887,7 @@ extern void belt_cell_data_func (GtkTreeViewColumn *col, GtkCellRenderer *render
 				 gpointer user_data);
 extern gboolean change_language(GtkWidget *eventbox, GdkEventButton *event, void *param);
 extern void set_menu_active(void);
+extern void change_competitor_names(gint cat, gint num, gint comp1, gint comp2);
 
 
 /* utils */
@@ -987,9 +996,10 @@ extern void set_judogi_status(gint index, gint flags);
 extern gint get_judogi_status(gint index);
 extern gint db_force_match_number(gint category);
 extern void update_next_matches_coach_info(void);
-extern void db_event_matches_update(guint category);
+extern gboolean db_event_matches_update(guint category, struct match *last);
 extern void db_print_category_matches(struct category_data *catdata, FILE *f);
 extern void db_change_competitor(gint category, gint number, gboolean is_blue, gint index);
+extern void db_print_category_to_pdf_comments(gint catix);
 
 
 extern void db_synchronize(char *name_2);
@@ -1280,9 +1290,9 @@ extern const gchar *round_name_by_id(gint n);
 extern const gchar *round_name(struct category_data *cd, gint m);
 extern gint num_matches_left(gint index, gint competitors);
 extern gint num_matches_estimate(gint index);
-extern const gchar *get_points_str(gint points);
-extern gint get_points_gint(gint points);
-extern gchar *get_score_str(gint score);
+extern const gchar *get_points_str(gint points, gint catix);
+extern gint get_points_gint(gint points, gint catix);
+extern gchar *get_score_str(gint score, gint catix);
 extern gint match_on_page(gint category, gint match);
 
 /* medal-matches */
@@ -1304,13 +1314,17 @@ extern gint get_svg_match_page(struct compsys systm, gint matchnum, gboolean inf
 /* properties */
 extern void init_property(gchar *prop, gchar *val);
 extern void properties(GtkWidget *w, gpointer data);
+extern const gchar *get_prop_name(enum properties num);
 extern gint prop_get_int_val(gint name);
+extern gint prop_get_int_val_cat(gint name, gint ix);
 extern const gchar *prop_get_str_val(gint name);
 extern void reset_props(GtkWidget *button, void *data);
 extern void reset_props_1(GtkWidget *button, void *data, gboolean if_unset);
+extern void props_save_one(gint prop);
 extern void props_save_to_db(void);
 extern gint props_get_default_wishsys(gint age, gint competitors);
 extern gint props_get_grade(gchar *b);
+extern void prop_set_val(gint n, const gchar *dbval, gint intval);
 
 /* ftp */
 extern gpointer ftp_thread(gpointer args);
