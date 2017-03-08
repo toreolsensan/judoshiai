@@ -1852,7 +1852,7 @@ gchar *get_system_description(gint index, gint competitors)
         if (competitors == 1)
             return "";
         if (competitors == 2) {
-            if (prop_get_int_val(PROP_THREE_MATCHES_FOR_TWO))
+            if (prop_get_int_val_cat(PROP_THREE_MATCHES_FOR_TWO, index))
                 return _("Best of 3");
             return _("One match");
         }
@@ -3006,62 +3006,92 @@ gint num_matches_estimate(gint index)
 
     return mul;
 }
-const gchar *get_points_str(gint points)
+const gchar *get_points_str(gint points, gint catix)
 {
-    if (prop_get_int_val(PROP_RULES_2017)) {
+    if (prop_get_int_val_cat(PROP_USE_PTS_100_10_1_h, catix)) {
 	switch (points) {
-	case 10: return "10";
-	case 7: return "1";
-	case 5: return "1"; // same as waza-ari
-	case 1: return "0";
-	}
-    } else if (prop_get_int_val(PROP_USE_IJF_POINTS)) {
-	switch (points) {
+	case 11: return "=";
 	case 10: return "100";
 	case 7: return "10";
 	case 5: return "1";
+	case 2: return "1";
 	case 1: return "½";
 	}
-    } else {
+    } else if (prop_get_int_val_cat(PROP_USE_PTS_10_7_5_1, catix)) {
 	switch (points) {
+	case 11: return "=";
 	case 10: return "10";
 	case 7: return "7";
 	case 5: return "5";
+	case 2: return "1";
 	case 1: return "1";
+	}
+    } else if (prop_get_int_val_cat(PROP_USE_PTS_10_1_h, catix)) {
+	switch (points) {
+	case 11: return "=";
+	case 10: return "10";
+	case 7: return "1";
+	case 5: return "1";
+	case 2: return "1";
+	case 1: return "½";
+	}
+    } else { // PROP_USE_IJF_POINTS
+	switch (points) {
+	case 11: return "=";
+	case 10: return "10";
+	case 7: return "1";
+	case 5: return "1"; // same as waza-ari
+	case 2: return "1";
+	case 1: return "0";
 	}
     }
     return "0";
 }
 
 /* Convert points to an integer. Return double value to handle half point. */
-gint get_points_gint(gint points)
+gint get_points_gint(gint points, gint catix)
 {
-    if (prop_get_int_val(PROP_RULES_2017)) {
+    if (prop_get_int_val_cat(PROP_USE_PTS_100_10_1_h, catix)) {
 	switch (points) {
-	case 10: return 20;
-	case 7: return 2;
-	case 5: return 2;
-	case 1: return 0;
-	}
-    } else if (prop_get_int_val(PROP_USE_IJF_POINTS)) {
-	switch (points) {
+	case 11: return 0;
 	case 10: return 200;
 	case 7: return 20;
 	case 5: return 2;
+	case 2: return 2;
 	case 1: return 1;
 	}
-    } else {
+    } else if (prop_get_int_val_cat(PROP_USE_PTS_10_7_5_1, catix)) {
 	switch (points) {
+	case 11: return 0;
 	case 10: return 20;
 	case 7: return 14;
 	case 5: return 10;
+	case 2: return 2;
 	case 1: return 2;
+	}
+    } else if (prop_get_int_val_cat(PROP_USE_PTS_10_1_h, catix)) {
+	switch (points) {
+	case 11: return 0;
+	case 10: return 20;
+	case 7: return 2;
+	case 5: return 2;
+	case 2: return 2;
+	case 1: return 1;
+	}
+    } else { // PROP_USE_IJF_POINTS
+	switch (points) {
+	case 11: return 0;
+	case 10: return 20;
+	case 7: return 2;
+	case 5: return 2;
+	case 2: return 2;
+	case 1: return 0;
 	}
     }
     return 0;
 }
 
-gchar *get_score_str(gint score)
+gchar *get_score_str(gint score, gint catix)
 {
     static gchar buf[2][16];
     static gint i = 0;
@@ -3069,9 +3099,10 @@ gchar *get_score_str(gint score)
     gchar *p = buf[i];
     gint a = (score >> 16) & 0x1;
     *p++ = '0' + a;
-    a = (score >> 12) & 0x3;
+    a = (score >> 12) & 0xf;
+    if (a > 9) a = 9;
     *p++ = '0' + a;
-    if (!prop_get_int_val(PROP_RULES_2017)) {
+    if (!prop_get_int_val_cat(PROP_RULES_2017, catix)) {
 	a = (score >> 8) & 0xf;
 	if (a > 9) a = 9;
 	*p++ = '0' + a;
