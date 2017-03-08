@@ -666,11 +666,13 @@ gint paint_svg(struct paint_data *pd)
                         if (attr[next].value == points)
                             snprintf(buf, sizeof(buf), "%s", attr[next+1].code + 1);
                         else if (attr[next+2].value == 0)
-                            snprintf(buf, sizeof(buf), "%s", get_points_str(points));
+                            snprintf(buf, sizeof(buf), "%s",
+				     get_points_str(points, m[fight].category));
                         else
                             buf[0] = 0;
                     } else
-                        snprintf(buf, sizeof(buf), "%s", get_points_str(points));
+                        snprintf(buf, sizeof(buf), "%s",
+				 get_points_str(points, m[fight].category));
 
                     if ((ifmatched == FALSE || MATCHED(fight)) && buf[0])
                         WRITE(buf);
@@ -688,11 +690,13 @@ gint paint_svg(struct paint_data *pd)
                         if (attr[next].value == points)
                             snprintf(buf, sizeof(buf), "%s", attr[next+1].code + 1);
                         else if (attr[next+2].value == 0)
-                            snprintf(buf, sizeof(buf), "%s", get_score_str(points));
+                            snprintf(buf, sizeof(buf), "%s",
+				     get_score_str(points, m[fight].category));
                         else
                             buf[0] = 0;
                     } else
-                        snprintf(buf, sizeof(buf), "%s", get_score_str(points));
+                        snprintf(buf, sizeof(buf), "%s",
+				 get_score_str(points, m[fight].category));
 
                     if ((ifmatched == FALSE || MATCHED(fight)) && buf[0])
                         WRITE(buf);
