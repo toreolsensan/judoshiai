@@ -718,6 +718,12 @@ msgstr "----- Karlar -----"
 msgid "----- Women -----"
 msgstr "----- Konur -----"
 
+msgid "Men"
+msgstr "Karlar"
+
+msgid "Women"
+msgstr "Konur"
+
 msgid "Highest age:"
 msgstr "Hæsti aldur:"
 

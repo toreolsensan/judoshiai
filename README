@@ -17,7 +17,7 @@ software installation. "apt-get install" fetches and installs software packages.
 
 Install the basic development tools:
 
-$ sudo apt-get install build-essential gnome-devel bison flex checkinstall
+$ sudo apt-get install build-essential libgtk-3-dev bison flex checkinstall
 
 You probably already have "build-essential" (compiler, linker). "gnome-devel"
 contains everything needed for GTK+ graphical user interface development. 
@@ -30,7 +30,7 @@ $ sudo apt-get install librsvg2-dev libao-dev libmpg123-dev libcurl4-openssl-dev
 For judoproxy:
 
 $ sudo apt-get install libavcodec-dev libavformat-dev libavresample-dev libavutil-dev libswscale-dev
-$ sudo apt-get install liblzma-dev
+$ sudo apt-get install liblzma-dev libxml2-dev
 
 JudoShiai is under GIT in Sourceforge:
 

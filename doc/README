@@ -1,3 +1,7 @@
+***************************************************************************************
+****** NOTE: 2.6beta7 produced partly corrupted PDF files in Windows environment! *****
+***************************************************************************************
+
 Documentation is included in the software package, but online versions
 as well as other documents are available here:
 http://judoshiai.sourceforge.net/
@@ -9,7 +13,7 @@ Raspberry Pi: judoshiai_n.n-1_armhf.deb
 
 ==============================================
 RELEASE NOTE
-VERSION 2.6
+VERSION 2.6 beta 8
 
 Common
 ------
@@ -26,6 +30,12 @@ JudoShiai
 + Some legacy settings removed.
 + No possibility to manually give points any more. Give scores and they will be
   translated to correct points.
++ Easier category properties editing (open category, click Edit button).
++ Properties per category.
++ JudoShiai display layout setting per category.
++ Team event setup improved ("wizard").
++ If team event match set ends with same number of wins and points an extra match
+  will be created automatically.
 
 JudoTimer
 ----------
@@ -41,6 +51,7 @@ JudoTimer
 + Customized scoreboards can use pictures (yellow and red cards)
   for shidos instead of numbers (like IJF scoreboard).
 + Clocks can be set using mouse wheel.
++ Display layout file can have preferences data.
 
 Web based JudoInfo, JudoWeight, and JudoTimer
 ---------------------------------------------

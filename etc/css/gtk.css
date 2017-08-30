@@ -83,3 +83,9 @@ GtkMenuItem selected{
    background-color: #000;
 }
 
+#button_red{
+    //background-color: red;
+    color: red;
+    font-style: normal;
+    font-weight: bold;
+}

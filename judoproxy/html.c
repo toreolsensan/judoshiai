@@ -679,6 +679,8 @@ static void parse_html(const char *html)
 {
     htmlParserCtxtPtr ctxt;
 
+    if (!html_page) return;
+
     if (page)
 	gtk_widget_destroy(page);
     page = gtk_grid_new();

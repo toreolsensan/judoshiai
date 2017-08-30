@@ -150,6 +150,8 @@ static void paint(cairo_t *c, gdouble paper_width, gdouble paper_height, gpointe
 		gint mul = 1;
 		gint mt = get_category_match_time(catdata->category);
 		if (mt < 180) mt = 180;
+		if (prop_get_int_val_cat(PROP_RULES_2017, catdata->index))
+		    mt = mt*7/6;
 		grp_found++;
 		group_on_tatami = TRUE;
 		if (old_group > max_group[tatami])

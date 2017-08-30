@@ -773,6 +773,12 @@ msgstr "----- Muži -----"
 msgid "----- Women -----"
 msgstr "----- Ženy -----"
 
+msgid "Men"
+msgstr "Muži"
+
+msgid "Women"
+msgstr "Ženy"
+
 msgid "Highest age:"
 msgstr "Najvyšší vek:"
 
@@ -1377,10 +1383,10 @@ msgid "Horizontal display"
 msgstr "Horizontálna Obrazovka"
 
 msgid "White has a judogi problem."
-msgstr "Biely má problém judogi"
+msgstr "Biely má problém s judogi"
 
 msgid "Blue has a judogi problem."
-msgstr "Modrý má problém judogi"
+msgstr "Modrý má problém s judogi"
 
 msgid "Show Competitors"
 msgstr "Zobraziť Pretekárov"
@@ -1737,7 +1743,7 @@ msgid "Country/Club  Surname, Name"
 msgstr "Štát/Klub, Priezvisko, Meno"
 
 msgid "VLC control"
-msgstr "VLC control"
+msgstr "VLC ovládanie"
 
 msgid "X:"
 msgstr "X:"
@@ -1813,151 +1819,151 @@ msgid "Tatami"
 msgstr "Tatami"
 
 msgid "Hikiwake"
-msgstr ""
+msgstr "Hikiwake"
 
 msgid "Require judogi control"
-msgstr ""
+msgstr "Požadovať kontrolu judogi"
 
 msgid "CTL"
-msgstr ""
+msgstr "OVL"
 
 msgid "Show Flags"
-msgstr ""
+msgstr "Zobraziť vlajky"
 
 msgid "Show Initial of Name"
-msgstr ""
+msgstr "Zobraziť prvé písmeno mena"
 
 msgid "Flag size:"
-msgstr ""
+msgstr "Veľkosť vlajky:"
 
 msgid "Name size:"
-msgstr ""
+msgstr "Veľkosť mena:"
 
 msgid "CONTROL"
-msgstr ""
+msgstr "OVLÁDANIE"
 
 msgid "THIS APPLICATION"
-msgstr ""
+msgstr "TÁTO APLIKÁCIA"
 
 msgid "NOT CONNECTED"
-msgstr ""
+msgstr "NEPRIPOJENÉ"
 
 msgid "Team:"
-msgstr ""
+msgstr "Družstvo:"
 
 msgid "Tatami:"
-msgstr ""
+msgstr "Tatami:"
 
 msgid "Create default members:"
-msgstr ""
+msgstr "Vytvoriť základných členov"
 
 msgid "Team"
-msgstr ""
+msgstr "Tatami"
 
 msgid "Messages"
-msgstr ""
+msgstr "Správy"
 
 msgid "Double Pool 3"
-msgstr ""
+msgstr "Dvojitá skupina 3"
 
 msgid "Custom"
-msgstr ""
+msgstr "Vlastný"
 
 msgid "UKR Dbl Repchg"
-msgstr ""
+msgstr "UKR Dvoj repasáž"
 
 msgid "UKR Double Repechage"
-msgstr ""
+msgstr "UKR Dvojitá repasáž"
 
 msgid "Customized"
-msgstr ""
+msgstr "Uspôsobené"
 
 msgid "Load Custom Systems"
-msgstr ""
+msgstr "Natiahnuť vlastné systémy"
 
 msgid "New Team"
-msgstr ""
+msgstr "Nové družstvo"
 
 msgid "New Team Category"
-msgstr ""
+msgstr "Kategória nového družstva"
 
 msgid "Print Selected Accreditation Cards To Default Printer"
-msgstr ""
+msgstr "Vytlačiť vybrané akreditačné karty na predvolenej tlačiarni"
 
 msgid "Results in German"
-msgstr ""
+msgstr "Výsledky - nemecký"
 
 msgid "Results in Russian"
-msgstr ""
+msgstr "Výsledky - ruský"
 
 msgid "Ukrainian System"
-msgstr ""
+msgstr "Ukrajinský systém"
 
 msgid "Open file"
-msgstr ""
+msgstr "Otvoriť súbor"
 
 msgid "New Password:"
-msgstr ""
+msgstr "Nové heslo:"
 
 msgid "Old Password:"
-msgstr ""
+msgstr "Staré heslo:"
 
 msgid "Wrong password!"
-msgstr ""
+msgstr "Nesprávnej heslo!"
 
 msgid "No manual edit"
-msgstr ""
+msgstr "Bez manuálnej editácie"
 
 msgid "Automatic send"
-msgstr ""
+msgstr "Automatické posielanie"
 
 msgid "Print label"
-msgstr ""
+msgstr "Tlač štítka"
 
 msgid "No margins"
-msgstr ""
+msgstr "Bez okrajov"
 
 msgid "Fit page"
-msgstr ""
+msgstr "Na stránku"
 
 msgid "No SOREMADE/IPPON texts"
-msgstr ""
+msgstr "Bez textov SOREMADE/IPPON"
 
 msgid "Custom layout file..."
-msgstr ""
+msgstr "Vlastný súbor formátu"
 
 msgid "Resolve 3-way ties by time:"
-msgstr ""
+msgstr "Pri remíze v skupine umiestnenie podľa času:"
 
 msgid "Move Matches"
-msgstr ""
+msgstr "Presun zápasov"
 
 msgid "Match order from file"
-msgstr ""
+msgstr "Poradie zápasov zo suboru"
 
 msgid "Match Order from File"
-msgstr ""
+msgstr "Poradie Zápasov zo Suboru"
 
 msgid "Move Matches..."
-msgstr ""
+msgstr "Presun zápasov..."
 
 msgid "Use the first places only:"
-msgstr ""
+msgstr "Použiť len prvé miesta:"
 
 msgid "Round"
-msgstr ""
+msgstr "Kolo"
 
 msgid "Round Robin"
-msgstr ""
+msgstr "Skupina"
 
 msgid "Repechage"
-msgstr ""
+msgstr "Repasáž"
 
 msgid "Mix pool matches into rounds:"
-msgstr ""
+msgstr "Zamiešať zápasy skupín do kôl:"
 
 msgid "Use IJF points:"
-msgstr ""
+msgstr "Použiť IJF body:"
 
 msgid "Show bracket"
-msgstr ""
+msgstr "Zobraziť list"

@@ -111,7 +111,7 @@ endif
 	@echo "  make setup"
 	@echo
 	@echo "To make a Debian package run (Linux only)"
-	@echo "  sudo make debian"
+	@echo "  sudo -E JS_BUILD_DIR=$(JS_BUILD_DIR) make debian"
 
 #echo 'gtk-theme-name = "MS-Windows"' >$(RELDIR)/etc/gtk-2.0/gtkrc
 

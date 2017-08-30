@@ -194,7 +194,9 @@ void msg_received(struct message *input_msg)
         if (clock_running() && demo < 2)
             return;
 
-        traffic_last_rec_time = time(NULL);
+	change_custom_layout(input_msg->u.next_match.layout);
+
+	traffic_last_rec_time = time(NULL);
 
         show_message(input_msg->u.next_match.cat_1,
                      input_msg->u.next_match.blue_1,

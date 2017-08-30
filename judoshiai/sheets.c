@@ -82,7 +82,7 @@ static gint current_page = 0;
 #define WRITE_TABLE_PTS(_t, _r, _c, _n) do {                            \
         char _buf[16];                                                  \
         if (team_event) snprintf(_buf, sizeof(_buf)-1, "%d/%d%s", TEAM_PTS(_n)); \
-        else snprintf(_buf, sizeof(_buf)-1, "%s", get_points_str(_n));	\
+        else snprintf(_buf, sizeof(_buf)-1, "%s", get_points_str(_n, category));	\
         write_table(pd, &_t, _r, _c, _buf);                             \
     } while (0)
 
@@ -243,7 +243,8 @@ static double paint_comp(struct paint_data *pd, struct pool_matches *unused1, in
 	    if (blue_pts >= 10000 || white_pts >= 10000) // team event
 		sprintf(buf, "%d/%d%s - %d/%d%s", TEAM_PTS(blue_pts), TEAM_PTS(white_pts));
 	    else
-		sprintf(buf, "%s - %s", get_score_str(score1), get_score_str(score2));
+		sprintf(buf, "%s - %s", get_score_str(score1, pd->category),
+			get_score_str(score2, pd->category));
 
             x = x - NAME_W - 2.0*r2;
 
@@ -485,7 +486,8 @@ static double paint_comp(struct paint_data *pd, struct pool_matches *unused1, in
         if (blue_pts >= 10000 || white_pts >= 10000) // team event
             sprintf(buf, "%d/%d%s - %d/%d%s", TEAM_PTS(blue_pts), TEAM_PTS(white_pts));
         else
-            sprintf(buf, "%s - %s", get_score_str(score1), get_score_str(score2));
+            sprintf(buf, "%s - %s", get_score_str(score1, pd->category),
+		    get_score_str(score2, pd->category));
 
         cairo_save(pd->c);
         cairo_set_font_size(pd->c, 0.75*global_text_h);
@@ -700,7 +702,8 @@ static void paint_pool(struct paint_data *pd, gint category, struct judoka *ctg,
     judoka_table.position_y = judoka_2_table.position_y = POOL_JUDOKAS_Y;
     judoka_table.num_rows = judoka_2_table.num_rows = num_judokas;
 
-    if ((num_judokas == 2 && prop_get_int_val(PROP_THREE_MATCHES_FOR_TWO)) ||
+    if ((num_judokas == 2 &&
+	 prop_get_int_val_cat(PROP_THREE_MATCHES_FOR_TWO, category)) ||
         (pd->systm.system == SYSTEM_BEST_OF_3)) {
         judoka_table.num_cols = 10;
         judoka_2_table.num_cols = 9;
@@ -724,7 +727,8 @@ static void paint_pool(struct paint_data *pd, gint category, struct judoka *ctg,
         char num[5];
         sprintf(num, "%d", i);
         write_table(pd, &judoka_table, 0, 3 + i, num);
-        if ((num_judokas == 2 && prop_get_int_val(PROP_THREE_MATCHES_FOR_TWO)) ||
+        if ((num_judokas == 2 &&
+	     prop_get_int_val_cat(PROP_THREE_MATCHES_FOR_TWO, category)) ||
             (pd->systm.system == SYSTEM_BEST_OF_3)) {
             write_table(pd, &judoka_table, 0, 5 + i, num);
             write_table(pd, &judoka_table, 0, 7 + i, num);
@@ -795,25 +799,27 @@ static void paint_pool(struct paint_data *pd, gint category, struct judoka *ctg,
                             TEAM_PTS(pm.m[i].white_points));
             else if (pm.m[i].blue_score || pm.m[i].white_score)
                 WRITE_TABLE(match_table, i, 5, "%s-%s",
-			    get_score_str(pm.m[i].blue_score),
-			    get_score_str(pm.m[i].white_score));
+			    get_score_str(pm.m[i].blue_score, category),
+			    get_score_str(pm.m[i].white_score, category));
 	    else
                 WRITE_TABLE(match_table, i, 5, "%s-%s",
-			    get_points_str(pm.m[i].blue_points),
-			    get_points_str(pm.m[i].white_points));
+			    get_points_str(pm.m[i].blue_points, category),
+			    get_points_str(pm.m[i].white_points, category));
 
             WRITE_TABLE(match_table, i, 6, "%d:%02d", pm.m[i].match_time/60, pm.m[i].match_time%60);
         }
 
         if (COMP_1_PTS_WIN(pm.m[i])) {
-            if ((num_judokas == 2 && prop_get_int_val(PROP_THREE_MATCHES_FOR_TWO)) ||
+            if ((num_judokas == 2 &&
+		 prop_get_int_val_cat(PROP_THREE_MATCHES_FOR_TWO, category)) ||
                 (pd->systm.system == SYSTEM_BEST_OF_3)) {
                 WRITE_TABLE_PTS(judoka_table, blue, white + 1 + i*2, pm.m[i].blue_points);
             } else {
                 WRITE_TABLE_PTS(judoka_table, blue, white + 3, pm.m[i].blue_points);
             }
         } else if (COMP_2_PTS_WIN(pm.m[i])) {
-            if ((num_judokas == 2 && prop_get_int_val(PROP_THREE_MATCHES_FOR_TWO)) ||
+            if ((num_judokas == 2 &&
+		 prop_get_int_val_cat(PROP_THREE_MATCHES_FOR_TWO, category)) ||
                 (pd->systm.system == SYSTEM_BEST_OF_3)) {
                 WRITE_TABLE_PTS(judoka_table, white, blue + 1 + i*2, pm.m[i].white_points);
             } else {
@@ -829,7 +835,8 @@ static void paint_pool(struct paint_data *pd, gint category, struct judoka *ctg,
     win_table.position_y = judoka_table.position_y;
     win_table.num_rows = num_judokas;
     win_table.position_x = colpos(pd, &judoka_table,
-                                  ((num_judokas==2 && prop_get_int_val(PROP_THREE_MATCHES_FOR_TWO)) ||
+                                  ((num_judokas==2 &&
+				    prop_get_int_val_cat(PROP_THREE_MATCHES_FOR_TWO, category)) ||
                                    (pd->systm.system == SYSTEM_BEST_OF_3)) ? 10 : (num_judokas + 4))
         + judoka_table.position_x;
 
@@ -845,9 +852,9 @@ static void paint_pool(struct paint_data *pd, gint category, struct judoka *ctg,
         if (pm.pts[i] || pm.finished)
             WRITE_TABLE_PTSSUM(win_table, i, 1, pm.pts[i]);
         if (pm.finished)
-            WRITE_TABLE(win_table, pm.c[i], 2, "%d", prop_get_int_val(PROP_TWO_POOL_BRONZES) && i == 4 ? 3 : i);
+            WRITE_TABLE(win_table, pm.c[i], 2, "%d",
+			prop_get_int_val_cat(PROP_TWO_POOL_BRONZES, category) && i == 4 ? 3 : i);
     }
-
 
     /* results */
     result_table.position_y = match_table.position_y +
@@ -860,14 +867,16 @@ static void paint_pool(struct paint_data *pd, gint category, struct judoka *ctg,
     WRITE_TABLE(result_table, 0, 1, "%s", _T(name));
 
     for (i = 1; i <= num_judokas; i++) {
-        WRITE_TABLE(result_table, i, 0, "%d", prop_get_int_val(PROP_TWO_POOL_BRONZES) && i == 4 ? 3 : i);
+        WRITE_TABLE(result_table, i, 0, "%d",
+		    prop_get_int_val_cat(PROP_TWO_POOL_BRONZES, category) && i == 4 ? 3 : i);
         if (pm.finished == FALSE || pm.j[pm.c[i]] == NULL)
             continue;
         WRITE_TABLE_H_2(result_table, i, 1, pm.j[pm.c[i]]->deleted, pm.j[pm.c[i]]->index, "%s",
                       get_name_and_club_text(pm.j[pm.c[i]], 0));
 
         set_competitor_position(pm.j[pm.c[i]]->index, COMP_POS_DRAWN |
-                                (prop_get_int_val(PROP_TWO_POOL_BRONZES) && i == 4 ? 3 : i));
+                                (prop_get_int_val_cat(PROP_TWO_POOL_BRONZES, category) &&
+				 i == 4 ? 3 : i));
     }
 
     /* clean up */
@@ -982,7 +991,8 @@ static void paint_pool_2(struct paint_data *pd, gint category, struct judoka *ct
             WRITE_TABLE_PTSSUM(pool_table_2, 2*i-1, 3+pm.num_matches, pm.pts[i]);
         if (pm.finished)
             WRITE_TABLE(pool_table_2, 2*pm.c[i]-1, 4+pm.num_matches, "%d",
-                        prop_get_int_val(PROP_TWO_POOL_BRONZES) && i == 4 ? 3 : i);
+                        prop_get_int_val_cat(PROP_TWO_POOL_BRONZES, category) &&
+			i == 4 ? 3 : i);
     }
 
     pd->row_height = 1;
@@ -997,14 +1007,15 @@ static void paint_pool_2(struct paint_data *pd, gint category, struct judoka *ct
     WRITE_TABLE(result_table, 0, 1, "%s", _T(name));
 
     for (i = 1; i <= num_judokas; i++) {
-        WRITE_TABLE(result_table, i, 0, "%d", prop_get_int_val(PROP_TWO_POOL_BRONZES) && i == 4 ? 3 : i);
+        WRITE_TABLE(result_table, i, 0, "%d",
+		    prop_get_int_val_cat(PROP_TWO_POOL_BRONZES, category) && i == 4 ? 3 : i);
         if (pm.finished == FALSE || pm.j[pm.c[i]] == NULL)
             continue;
         WRITE_TABLE_H_2(result_table, i, 1, pm.j[pm.c[i]]->deleted, pm.j[pm.c[i]]->index, "%s",
                       get_name_and_club_text(pm.j[pm.c[i]], 0));
 
         set_competitor_position(pm.j[pm.c[i]]->index, COMP_POS_DRAWN |
-                                (prop_get_int_val(PROP_TWO_POOL_BRONZES) && i == 4 ? 3 : i));
+                                (prop_get_int_val_cat(PROP_TWO_POOL_BRONZES, category) && i == 4 ? 3 : i));
     }
 
     /* clean up */
@@ -1195,12 +1206,12 @@ static void paint_dpool(struct paint_data *pd, gint category, struct judoka *ctg
                                     TEAM_PTS(pm.m[i].white_points));
 		    else if (pm.m[i].blue_score || pm.m[i].white_score)
 			WRITE_TABLE(match_table, ix, 5, "%s-%s",
-				    get_score_str(pm.m[i].blue_score),
-				    get_score_str(pm.m[i].white_score));
+				    get_score_str(pm.m[i].blue_score, category),
+				    get_score_str(pm.m[i].white_score, category));
                     else
                         WRITE_TABLE(match_table, ix, 5, "%s-%s",
-				    get_points_str(pm.m[i].blue_points),
-				    get_points_str(pm.m[i].white_points));
+				    get_points_str(pm.m[i].blue_points, category),
+				    get_points_str(pm.m[i].white_points, category));
 
                     WRITE_TABLE(match_table, ix, 6, "%d:%02d", pm.m[i].match_time/60, pm.m[i].match_time%60);
                 }
@@ -1587,12 +1598,12 @@ static void paint_qpool(struct paint_data *pd, gint category, struct judoka *ctg
 					TEAM_PTS(pm.m[i].white_points));
 			else if (pm.m[i].blue_score || pm.m[i].white_score)
 			    WRITE_TABLE(match_table, ix, 5, "%s-%s",
-					get_score_str(pm.m[i].blue_score),
-					get_score_str(pm.m[i].white_score));
+					get_score_str(pm.m[i].blue_score, category),
+					get_score_str(pm.m[i].white_score, category));
                         else
                             WRITE_TABLE(match_table, ix, 5, "%s-%s",
-					get_points_str(pm.m[i].blue_points),
-					get_points_str(pm.m[i].white_points));
+					get_points_str(pm.m[i].blue_points, category),
+					get_points_str(pm.m[i].white_points, category));
                         WRITE_TABLE(match_table, ix, 6, "%d:%02d", pm.m[i].match_time/60, pm.m[i].match_time%60);
                     }
                 }

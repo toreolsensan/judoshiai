@@ -70,7 +70,7 @@
 #define WEBSOCK_PORT   2315
 #define SERIAL_PORT    2316
 
-#define COMM_VERSION 3
+#define COMM_VERSION 4
 
 #define APPLICATION_TYPE_UNKNOWN 0
 #define APPLICATION_TYPE_SHIAI   1
@@ -151,6 +151,7 @@ struct msg_next_match {
     char white_2[64];
     int  flags;
     int  round;
+    char layout[8];
 };
 
 struct msg_result {

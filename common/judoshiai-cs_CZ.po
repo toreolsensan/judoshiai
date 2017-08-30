@@ -749,6 +749,12 @@ msgstr "----- Muž -----"
 msgid "----- Women -----"
 msgstr "----- Žena -----"
 
+msgid "Men"
+msgstr "Muž"
+
+msgid "Women"
+msgstr "Žena"
+
 msgid "Highest age:"
 msgstr "Maximální věk:"
 

@@ -226,7 +226,9 @@ static void select_camera_video( GtkWidget *widget,
 				 GtkWidget *entry )
 {
     gint i = ptr_to_gint(entry);
+#ifdef VIDEO
     set_camera_addr(connections[i].caller.sin_addr.s_addr);
+#endif
     set_html_url(connections[i].caller.sin_addr);
 }
 #endif
@@ -304,7 +306,6 @@ static void load_changed (WebKitWebView  *web_view,
     }
 #endif
 }
-#endif
 
 static void set_active_area(GtkWidget *menuitem, gpointer userdata)
 {
@@ -415,6 +416,7 @@ static gboolean button_notify_callback (GtkWidget      *event_box,
 
     return TRUE;
 }
+#endif
 
 
 int main( int   argc,
@@ -553,6 +555,7 @@ int main( int   argc,
         g_signal_connect (connections[i].out_addr, "activate",
                           G_CALLBACK(enter_callback),
                           gint_to_ptr(i));
+
         g_signal_connect (connections[i].in_addr, "activate",
                           G_CALLBACK(camera_ip_enter_callback),
                           gint_to_ptr(i));
@@ -575,6 +578,7 @@ int main( int   argc,
 
     GtkWidget *w = GTK_WIDGET(gtk_scrolled_window_new(NULL, NULL));
 #ifdef WEBKIT
+#ifdef VIDEO
     web_view = WEBKIT_WEB_VIEW(webkit_web_view_new());
     webkit_web_view_set_transparent(web_view, TRUE);
 
@@ -594,11 +598,13 @@ int main( int   argc,
 
     g_signal_connect(web_view, "download-requested", G_CALLBACK(download_req), NULL);
     //g_signal_connect(web_view, "load-changed", G_CALLBACK(load_changed), NULL);
+#endif
 #else
     /* HTML page */
     html_page = create_html_page();
     gtk_grid_attach_next_to(GTK_GRID(main_vbox), GTK_WIDGET(html_page), NULL, GTK_POS_BOTTOM, 1, 1);
 
+#ifdef VIDEO
     /* Video display */
     camera_image = gtk_image_new();
     gtk_widget_set_size_request(GTK_WIDGET(camera_image), 640, 360);
@@ -635,6 +641,7 @@ int main( int   argc,
     gtk_grid_attach_next_to(GTK_GRID(main_vbox), GTK_WIDGET(w), NULL, GTK_POS_BOTTOM, 1, 1);
 
 #endif
+#endif
 
     /* timers */
 
@@ -666,10 +673,12 @@ int main( int   argc,
                        (GThreadFunc)proxy_ssdp_thread,
                        (gpointer)&run_flag);
 
+#ifdef VIDEO
     gth = g_thread_new("CameraVideo",
 		       camera_video,
 		       (gpointer)&run_flag);
     gth = gth; // make compiler happy
+#endif
 
     gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER_ALWAYS);
 
@@ -678,7 +687,9 @@ int main( int   argc,
 
     //g_timeout_add(100, timeout_ask_for_data, NULL);
     g_timeout_add(1000, check_table, NULL);
+#ifdef VIDEO
     g_timeout_add(100, show_camera_video, NULL);
+#endif
     //g_idle_add(show_camera_video, NULL);
 
     /* All GTK applications must have a gtk_main(). Control ends here
@@ -1368,8 +1379,10 @@ void toggle_advertise(GtkWidget *menu_item, gpointer data)
     g_key_file_set_boolean(keyfile, "preferences", "advertise", advertise_addr);
 }
 
+#ifdef VIDEO
 void toggle_video(GtkWidget *menu_item, gpointer data)
 {
     show_video = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menu_item));
     camera_addr = 0;
 }
+#endif

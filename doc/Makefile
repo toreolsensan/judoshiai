@@ -14,9 +14,10 @@ DOCSHIAI_NL=judoshiai-nl.pdf
 DOCTIMER_FI=judotimer-fi.pdf
 DOCTIMER_EN=judotimer-en.pdf
 DOCTIMER_ES=judotimer-es.pdf
+DOCTIMER_SK=judotimer-sk.pdf
 SQL_GUIDE_EN=sql-guide-en.pdf
 DOCFILES=$(DOCSHIAI_FI) $(DOCSHIAI_EN) $(DOCSHIAI_ES) $(DOCSHIAI_UK) $(DOCSHIAI_NL) \
- $(DOCTIMER_FI) $(DOCTIMER_EN) $(DOCTIMER_ES) $(SQL_GUIDE_EN)
+ $(DOCTIMER_FI) $(DOCTIMER_EN) $(DOCTIMER_ES) $(SQL_GUIDE_EN) $(DOCTIMER_SK)
 
 all: $(DOCFILES)
 

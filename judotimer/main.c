@@ -9,6 +9,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include <locale.h>
+#include <errno.h>
 
 #include <gtk/gtk.h>
 #include <glib.h>
@@ -89,7 +90,8 @@ gboolean fullscreen = FALSE;
 gboolean menu_hidden = FALSE;
 gboolean supports_alpha = FALSE;
 //gboolean rule_no_free_shido = FALSE;
-gboolean use_2017_rules = TRUE;
+gboolean use_2017_rules = FALSE;
+gint use_ger_u12_rules = 0;
 
 #define MY_FONT "Arial"
 static gchar font_face[32];
@@ -101,13 +103,13 @@ static GtkWidget *darea = NULL;
 static cairo_surface_t *surface = NULL;
 
 gchar *custom_layout_file = NULL;
+gchar  custom_layout_file_ext[8];
 static cairo_surface_t *background_image = NULL;
-
 
 static const gchar *num_to_str(guint num)
 {
         static gchar result[10];
-        if (num < 10)
+        if (num >= 0 && num < 10)
                 return num2str[num];
 
         sprintf(result, "%d", num);
@@ -428,12 +430,12 @@ CBFUNC(comp2_country)
 
 CBFUNC(comp1_leg_grab)
 {
-	clock_key(GDK_k, 0);
+        clock_key(GDK_F3, (event->button == 3) ? 1 : (event->state & 1));
         return FALSE;
 }
 CBFUNC(comp2_leg_grab)
 {
-	clock_key(GDK_l, 0);
+        clock_key(GDK_F7, (event->button == 3) ? 1 : (event->state & 1));
         return FALSE;
 }
 
@@ -811,46 +813,63 @@ void set_points(gint blue[5], gint white[5])
         send_label_msg(&msg);
     }
 
-    if (blue[0])
-	set_number(bw, 1);
-    else
-	set_number(bw, 0);
-
+    set_number(bw, blue[0]);
     set_number(by, blue[1]);
     set_number(bk, blue[2]);
     set_number(bs, blue[3]);
 
-    if (white[0])
-	set_number(ww, 1);
-    else
-	set_number(ww, 0);
-
+    set_number(ww, white[0]);
     set_number(wy, white[1]);
     set_number(wk, white[2]);
     set_number(ws, white[3]);
 
-    if (blue[4]) {
-	labels[comp1_leg_grab].fg_r = 0;
-	labels[comp1_leg_grab].fg_g = 0;
-	labels[comp1_leg_grab].fg_b = 0;
-	labels[comp1_leg_grab].size = 0.4;
-    } else {
-	labels[comp1_leg_grab].fg_r = 0.6;
-	labels[comp1_leg_grab].fg_g = 0.6;
-	labels[comp1_leg_grab].fg_b = 0.6;
-	labels[comp1_leg_grab].size = 0.2;
-    }
+    if (use_ger_u12_rules) {
+	    labels[comp1_leg_grab].fg_r = 0;
+	    labels[comp1_leg_grab].fg_g = 0;
+	    labels[comp1_leg_grab].fg_b = 0;
+	    //labels[comp1_leg_grab].size = 0.6;
 
-    if (white[4]) {
-	labels[comp2_leg_grab].fg_r = 1.0;
-	labels[comp2_leg_grab].fg_g = 1.0;
-	labels[comp2_leg_grab].fg_b = 1.0;
-	labels[comp2_leg_grab].size = 0.4;
+	    labels[comp2_leg_grab].fg_r = 1.0;
+	    labels[comp2_leg_grab].fg_g = 1.0;
+	    labels[comp2_leg_grab].fg_b = 1.0;
+	    //labels[comp2_leg_grab].size = 0.6;
+
+	    gchar *t;
+	    if ((t = labels[comp1_leg_grab].text2) && t[0])
+		set_text2(MY_LABEL(comp1_leg_grab), "");
+	    if ((t = labels[comp2_leg_grab].text2) && t[0])
+		set_text2(MY_LABEL(comp2_leg_grab), "");
+
+	    set_number(comp1_leg_grab,
+		       blue[0]*use_ger_u12_rules +
+		       blue[1]*2 + blue[2]);
+	    set_number(comp2_leg_grab,
+		       white[0]*use_ger_u12_rules +
+		       white[1]*2 + white[2]);
     } else {
-	labels[comp2_leg_grab].fg_r = 0.6;
-	labels[comp2_leg_grab].fg_g = 0.6;
-	labels[comp2_leg_grab].fg_b = 1.0;
-	labels[comp2_leg_grab].size = 0.2;
+	if (blue[4]) {
+	    labels[comp1_leg_grab].fg_r = 0;
+	    labels[comp1_leg_grab].fg_g = 0;
+	    labels[comp1_leg_grab].fg_b = 0;
+	    labels[comp1_leg_grab].size = 0.4;
+	} else {
+	    labels[comp1_leg_grab].fg_r = 0.6;
+	    labels[comp1_leg_grab].fg_g = 0.6;
+	    labels[comp1_leg_grab].fg_b = 0.6;
+	    labels[comp1_leg_grab].size = 0.2;
+	}
+
+	if (white[4]) {
+	    labels[comp2_leg_grab].fg_r = 1.0;
+	    labels[comp2_leg_grab].fg_g = 1.0;
+	    labels[comp2_leg_grab].fg_b = 1.0;
+	    labels[comp2_leg_grab].size = 0.4;
+	} else {
+	    labels[comp2_leg_grab].fg_r = 0.6;
+	    labels[comp2_leg_grab].fg_g = 0.6;
+	    labels[comp2_leg_grab].fg_b = 1.0;
+	    labels[comp2_leg_grab].size = 0.2;
+	}
     }
 
     expose_label(NULL, comp1_leg_grab);
@@ -2696,6 +2715,16 @@ static gchar *get_integer(gchar *p, gint *result)
     return p;
 }
 
+void change_custom_layout(gchar *layout)
+{
+    if (dsp_layout != 7) return;
+
+    if (strcmp(layout, custom_layout_file_ext)) {
+	g_strlcpy(custom_layout_file_ext, layout, sizeof(custom_layout_file_ext));
+	select_display_layout(NULL, gint_to_ptr(7));
+    }
+}
+
 #define GF(x) p = get_float(p, &x)
 #define GI(x) p = get_integer(p, &x)
 #define GC(_x) do { gdouble a;				\
@@ -2744,6 +2773,9 @@ void select_display_layout(GtkWidget *menu_item, gpointer data)
     clocks_only = FALSE;
     if (data)
 	dsp_layout = ptr_to_gint(data);
+
+    if (dsp_layout != 7)
+	custom_layout_file_ext[0] = 0;
 
     if (background_image)
 	cairo_surface_destroy(background_image);
@@ -3004,11 +3036,37 @@ void select_display_layout(GtkWidget *menu_item, gpointer data)
     case 7:
 	if (!custom_layout_file)
 	    custom_layout_file = g_build_filename(installation_dir, "etc", "timer-custom.txt", NULL);
-        f = fopen(custom_layout_file, "r");
+
+	if (custom_layout_file_ext[0]) {
+	    gchar *fdir = g_path_get_dirname(custom_layout_file);
+	    gchar *fbase = g_path_get_basename(custom_layout_file);
+	    gchar *p = strrchr(fbase, '.');
+	    gchar *newbase = NULL;
+	    if (p) {
+		*p = 0;
+		newbase = g_strconcat(fbase, custom_layout_file_ext, ".", p+1, NULL);
+	    } else {
+		newbase = g_strconcat(fbase, custom_layout_file_ext, NULL);
+	    }
+	    gchar *newfile = g_build_filename(fdir, newbase, NULL);
+	    f = fopen(newfile, "r");
+	    if (!f) {
+		judotimer_log("%s: %s", newbase, strerror(errno));
+		f = fopen(custom_layout_file, "r");
+		custom_layout_file_ext[0] = 0;
+	    }
+	    g_free(newfile);
+	    g_free(newbase);
+	    g_free(fbase);
+	    g_free(fdir);
+	} else {
+	    f = fopen(custom_layout_file, "r");
+	}
+
         if (f) {
             struct label lbl;
             gint num;
-            gchar line[128];
+            gchar line[256];
             while (fgets(line, sizeof(line), f)) {
                 if (line[0] == '#' || strlen(line) < 4)
                     continue;
@@ -3083,7 +3141,6 @@ void select_display_layout(GtkWidget *menu_item, gpointer data)
 			activate_slave_mode();
 		    GI(hide_scores_if_zero);
 		    GI(show_shido_cards);
-		    g_print("show_shido_cards=%d\n", show_shido_cards);
 		} else if (num == 104) {
 		    /* Window size and position */
 		    gint x, y, w, h;
@@ -3120,6 +3177,15 @@ void select_display_layout(GtkWidget *menu_item, gpointer data)
 
 		    if (fname)
 			g_free(fname);
+		} else if (num == 106) {
+		    char pl[256];
+		    gchar *src = line;
+		    while (*src == ' ' || (*src >= '0' && *src <= '9')) src++;
+		    snprintf(pl, sizeof(pl), "[preferences]\n%s", src);
+		    GKeyFile *key_file = g_key_file_new();
+		    g_key_file_load_from_data(key_file, pl, -1, G_KEY_FILE_NONE, NULL);
+		    set_preferences_keyfile(key_file, FALSE);
+		    g_key_file_free(key_file);
 		} else
 		    g_print("Read error in file %s, num = %d\n", custom_layout_file, num);
 	    }
@@ -3269,6 +3335,7 @@ void set_custom_layout_file_name(GtkWidget *menu_item, gpointer data)
         g_free(last_dir);
         last_dir = gtk_file_chooser_get_current_folder(GTK_FILE_CHOOSER (dialog));
         g_key_file_set_string(keyfile, "preferences", "customlayoutfile", custom_layout_file);
+	custom_layout_file_ext[0] = 0;
     }
 
     gtk_widget_destroy(dialog);

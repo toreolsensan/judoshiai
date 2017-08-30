@@ -777,6 +777,12 @@ msgstr "----- Mężczyźni -----"
 msgid "----- Women -----"
 msgstr "----- Kobiety -----"
 
+msgid "Men"
+msgstr "Mężczyźni"
+
+msgid "Women"
+msgstr "Kobiety"
+
 msgid "Highest age:"
 msgstr "Maksymalny wiek:"
 

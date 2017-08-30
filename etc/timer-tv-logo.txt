@@ -135,4 +135,4 @@
 104 10 10 500 120
 
 # Background picture
-105 ../etc/timer-tv-logo.png
+105 ../etc/png/timer-tv-logo.png

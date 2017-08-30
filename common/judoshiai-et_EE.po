@@ -725,6 +725,12 @@ msgstr "----- Mehed -----"
 msgid "----- Women -----"
 msgstr "----- Naised -----"
 
+msgid "Men"
+msgstr "Mehed"
+
+msgid "Women"
+msgstr "Naised"
+
 msgid "Highest age:"
 msgstr "Suurim vanus:"
 

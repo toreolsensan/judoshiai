@@ -23,6 +23,12 @@ msgstr "----- Чоловіки -----"
 msgid "----- Women -----"
 msgstr "----- Жінки -----"
 
+msgid "Men"
+msgstr "Чоловіки"
+
+msgid "Women"
+msgstr "Жінки"
+
 msgid "Abbreviations in Sheets"
 msgstr "Скорочення в протоколах"
 

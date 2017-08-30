@@ -3,7 +3,7 @@
 /*
  * Copyright (C) 2006-2016 by Hannu Jokinen
  * Full copyright text is included in the software package.
- */ 
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -65,7 +65,7 @@ gint db_exec(const char *dbn, char *cmd, void *data, void *dbcb)
 
     rc = sqlite3_open(dbn, &db);
     if (rc) {
-	fprintf(stderr, "Can't open database: %s\n", 
+	fprintf(stderr, "Can't open database: %s\n",
 		sqlite3_errmsg(db));
 	sqlite3_close(db);
 	if (db_name == dbn)
@@ -160,7 +160,7 @@ gint db_open(void)
     gint rc = sqlite3_open(db_name, &maindb);
 
     if (rc) {
-	g_print("%s: cannot open maindb (%s)!\n", __FUNCTION__, 
+	g_print("%s: cannot open maindb (%s)!\n", __FUNCTION__,
 		sqlite3_errmsg(maindb));
 	sqlite3_close(maindb);
 	maindb = NULL;
@@ -220,7 +220,7 @@ static int db_info_cb(void *data, int argc, char **argv, char **azColName)
     return 0;
 }
 
-static gboolean tatami_exists, number_exists, country_exists, 
+static gboolean tatami_exists, number_exists, country_exists,
     id_exists, numcomp_exists, seeding_exists, comp_comment_exists, match_date_exists;
 
 static int db_callback_tables(void *data, int argc, char **argv, char **azColName)
@@ -228,6 +228,7 @@ static int db_callback_tables(void *data, int argc, char **argv, char **azColNam
     int i;
 
     for (i = 0; i < argc; i++) {
+	if (!argv[i]) continue;
         if (IS(sql)) {
             if (strstr(argv[i], "matches") && strstr(argv[i], "forcedtatami"))
                 tatami_exists = TRUE;
@@ -254,7 +255,7 @@ static int db_callback_tables(void *data, int argc, char **argv, char **azColNam
 gint db_init(const char *dbname)
 {
     gint r = 0;
-    
+
     // try to open db
     FILE *f = fopen(dbname, "rb");
     if (f)
@@ -270,32 +271,32 @@ gint db_init(const char *dbname)
     gint rc = sqlite3_open(dbname, &db);
     if (rc)
         return rc;
-    
-    rc = sqlite3_get_table(db, "select * from competitors limit 1", 
+
+    rc = sqlite3_get_table(db, "select * from competitors limit 1",
                            &tablep, &tablerows, &compcols, &zErrMsg);
     if (tablep) sqlite3_free_table(tablep);
-    rc = sqlite3_get_table(db, "select * from categories limit 1", 
+    rc = sqlite3_get_table(db, "select * from categories limit 1",
                            &tablep, &tablerows, &catcols, &zErrMsg);
     if (tablep) sqlite3_free_table(tablep);
-    rc = sqlite3_get_table(db, "select * from matches limit 1", 
+    rc = sqlite3_get_table(db, "select * from matches limit 1",
                            &tablep, &tablerows, &matchcols, &zErrMsg);
     if (tablep) sqlite3_free_table(tablep);
-    rc = sqlite3_get_table(db, "select * from info limit 1", 
+    rc = sqlite3_get_table(db, "select * from info limit 1",
                            &tablep, &tablerows, &infocols, &zErrMsg);
     if (tablep) sqlite3_free_table(tablep);
-    rc = sqlite3_get_table(db, "select * from catdef limit 1", 
+    rc = sqlite3_get_table(db, "select * from catdef limit 1",
                            &tablep, &tablerows, &catdefcols, &zErrMsg);
     if (tablep) sqlite3_free_table(tablep);
 
     sqlite3_close(db);
 
     if (compcols   > 17 ||
-        catcols    > 17 || 
+        catcols    > 17 ||
         matchcols  > 15 ||
         infocols   > 2  ||
-        catdefcols > 13) {
+        catdefcols > 14) {
         SHOW_MESSAGE("%s", _("Cannot handle: Database created with newer JudoShiai version."));
-        g_print("Number of columns: %d %d %d %d %d\n", compcols, catcols, matchcols, 
+        g_print("Number of columns: %d %d %d %d %d\n", compcols, catcols, matchcols,
                 infocols, catdefcols);
         return -2;
     }
@@ -305,7 +306,7 @@ gint db_init(const char *dbname)
     read_custom_from_db();
 
     db_matches_init();
-	
+
     init_trees();
 
     db_exec(db_name, "SELECT * FROM \"info\"", NULL, db_info_cb);
@@ -314,23 +315,23 @@ gint db_init(const char *dbname)
 
     set_configuration();
 
-    snprintf(hello_message.u.hello.info_competition, 
-             sizeof(hello_message.u.hello.info_competition), 
+    snprintf(hello_message.u.hello.info_competition,
+             sizeof(hello_message.u.hello.info_competition),
              "%s", prop_get_str_val(PROP_NAME));
-    snprintf(hello_message.u.hello.info_date, 
-             sizeof(hello_message.u.hello.info_date), 
+    snprintf(hello_message.u.hello.info_date,
+             sizeof(hello_message.u.hello.info_date),
              "%s", prop_get_str_val(PROP_DATE));
-    snprintf(hello_message.u.hello.info_place, 
-             sizeof(hello_message.u.hello.info_place), 
+    snprintf(hello_message.u.hello.info_place,
+             sizeof(hello_message.u.hello.info_place),
              "%s", prop_get_str_val(PROP_PLACE));
 
     read_cat_definitions();
 
-    tatami_exists = number_exists = country_exists = id_exists = 
+    tatami_exists = number_exists = country_exists = id_exists =
         numcomp_exists = seeding_exists = comp_comment_exists = match_date_exists = FALSE;
 
-    db_exec(db_name, 
-            "SELECT sql FROM sqlite_master", 
+    db_exec(db_name,
+            "SELECT sql FROM sqlite_master",
             NULL, db_callback_tables);
     if (!tatami_exists) {
         g_print("forcedtatami does not exist, add one\n");
@@ -404,11 +405,11 @@ gint db_init(const char *dbname)
         props_save_to_db();
 
         db_exec_str(NULL, NULL, "UPDATE categories SET \"system\"=%d, \"wishsys\"=%d WHERE "
-                    "\"system\"=%d AND \"numcomp\"=2", 
+                    "\"system\"=%d AND \"numcomp\"=2",
                     SYSTEM_BEST_OF_3, CAT_SYSTEM_BEST_OF_3,
                     SYSTEM_POOL);
     }
-    
+
 
     set_menu_active();
 
@@ -425,14 +426,14 @@ void db_new(const char *dbname)
         "\"weight\" INTEGER, \"visible\" INTEGER, "
         "\"category\" TEXT, \"deleted\" INTEGER, "
         "\"country\" TEXT, \"id\" TEXT, \"seeding\" INTEGER, \"clubseeding\" INTEGER, "
-        "\"comment\" TEXT, \"coachid\" TEXT )";
+        "\"comment\" TEXT, \"coachid\" TEXT, UNIQUE(\"index\"))";
     char *cmd3 = "CREATE TABLE categories ("
         "\"index\" INTEGER, \"category\" TEXT, \"tatami\" INTEGER, "
         "\"deleted\" INTEGER, \"group\" INTEGER, \"system\" INTEGER, "
         "\"numcomp\" INTEGER, \"table\" INTEGER, \"wishsys\" INTEGER, "
         "\"pos1\" INTEGER, \"pos2\" INTEGER, \"pos3\" INTEGER, \"pos4\" INTEGER, "
-        "\"pos5\" INTEGER, \"pos6\" INTEGER, \"pos7\" INTEGER, \"pos8\" INTEGER"
-        ")";
+        "\"pos5\" INTEGER, \"pos6\" INTEGER, \"pos7\" INTEGER, \"pos8\" INTEGER,"
+        "UNIQUE(\"index\"))";
     char *cmd4 = "CREATE TABLE matches ("
         "\"category\" INTEGER, \"number\" INTEGER,"
         "\"blue\" INTEGER, \"white\" INTEGER,"
@@ -440,10 +441,10 @@ void db_new(const char *dbname)
         "\"blue_points\" INTEGER, \"white_points\" INTEGER, "
         "\"time\" INTEGER, \"comment\" INTEGER, \"deleted\" INTEGER, "
         "\"forcedtatami\" INTEGER, \"forcednumber\" INTEGER, "
-        "\"date\" INTEGER, \"legend\" INTEGER )";
+        "\"date\" INTEGER, \"legend\" INTEGER, UNIQUE(\"category\", \"number\"))";
     char *cmd5 = "CREATE TABLE \"info\" ("
-        "\"item\" TEXT, \"value\" TEXT )";
-	
+        "\"item\" TEXT, \"value\" TEXT, UNIQUE(\"item\"))";
+
     db_name = dbname;
     if ((f = fopen(db_name, "rb"))) {
         /* exists */
@@ -457,14 +458,14 @@ void db_new(const char *dbname)
     db_exec(db_name, cmd5, NULL, NULL);
 }
 
-void db_set_info(gchar *name, gchar *value) 
+void db_set_info(gchar *name, gchar *value)
 {
-    db_exec_str(NULL, NULL, 
+    db_exec_str(NULL, NULL,
                 "UPDATE \"info\" SET "
                 "\"value\"=\"%s\" WHERE \"item\"=\"%s\"", value, name);
 
     if (db_changes == 0)
-        db_exec_str(NULL, NULL, 
+        db_exec_str(NULL, NULL,
                     "INSERT INTO \"info\" VALUES (\"%s\", \"%s\")",
                     name, value);
 }
@@ -496,7 +497,7 @@ gchar *db_sql_command(const gchar *command)
             ret = g_strdup("UNKNOWN ERROR!");
         goto out;
     }
-        
+
     ret = g_strdup("");
     for (row = 0; row <= rows; row++) {
         for (col = 0; col < cols; col++) {
@@ -528,13 +529,21 @@ void db_create_cat_def_table(void)
         "\"weight\" INTEGER, \"weighttext\" TEXT, "
         "\"matchtime\" INTEGER, \"pintimekoka\" INTEGER, "
         "\"pintimeyuko\" INTEGER, \"pintimewazaari\" INTEGER, \"pintimeippon\" INTEGER, "
-        "\"resttime\" INTEGER, \"gstime\" INTEGER, \"reptime\" INTEGER)";
+        "\"resttime\" INTEGER, \"gstime\" INTEGER, \"reptime\" INTEGER, "
+	"\"layout\" TEXT)";
     db_exec(db_name, cmd, 0, 0);
 }
 
 void db_delete_cat_def_table_data(void)
 {
     char *cmd = "DELETE FROM \"catdef\"";
+    db_exec(db_name, cmd, 0, 0);
+}
+
+void db_delete_cat_def_table_age(const gchar *agetext)
+{
+    char cmd[128];
+    snprintf(cmd, sizeof(cmd), "DELETE FROM \"catdef\" WHERE agetext=\"%s\"", agetext);
     db_exec(db_name, cmd, 0, 0);
 }
 
@@ -554,11 +563,12 @@ void db_insert_cat_def_table_data(struct cat_def *def)
 {
     char buf[1024];
     sprintf(buf, "INSERT INTO catdef VALUES ("
-            "%d, \"%s\", %d, %d, \"%s\", %d, %d, %d, %d, %d, %d, %d, %d)",
-            def->age, def->agetext, def->gender,
+            "%d, \"%s\", %d, %d, \"%s\", %d, %d, %d, %d, %d, %d, %d, %d, \"%s\")",
+            def->age, def->agetext, def->flags,
             def->weights[0].weight, def->weights[0].weighttext,
-            def->match_time, def->pin_time_koka, def->pin_time_yuko, 
-            def->pin_time_wazaari, def->pin_time_ippon, def->rest_time, def->gs_time, def->rep_time); 
+            def->match_time, def->pin_time_koka, def->pin_time_yuko,
+            def->pin_time_wazaari, def->pin_time_ippon, def->rest_time,
+	    def->gs_time, def->rep_time, def->layout);
     db_cmd(NULL, NULL, buf);
     //db_exec(db_name, buf, 0, 0);
 }
@@ -596,25 +606,29 @@ void xxdb_add_colums_to_cat_def_table(void)
             0, 0);
 }
 
-static gboolean catdef_exists, matchtime_exists, gstime_exists, reptime_exists;
+static gboolean catdef_exists, matchtime_exists, gstime_exists, reptime_exists,
+    layout_exists;
 
 static int db_callback_catdef(void *data, int argc, char **argv, char **azColName)
 {
     int i;
 
     for (i = 0; i < argc; i++) {
+	if (!argv[i]) continue;
         if (IS(name)) {
             if (strcmp("catdef", argv[i]) == 0) {
                 catdef_exists = TRUE;
                 return 0;
             }
         } else if (IS(sql)) {
-            if (strstr(argv[i], "matchtime"))
-                matchtime_exists = TRUE;
-            if (strstr(argv[i], "gstime"))
-                gstime_exists = TRUE;
-            if (strstr(argv[i], "reptime"))
-                reptime_exists = TRUE;
+	    if (strstr(argv[i], "matchtime"))
+		matchtime_exists = TRUE;
+	    if (strstr(argv[i], "gstime"))
+		gstime_exists = TRUE;
+	    if (strstr(argv[i], "reptime"))
+		reptime_exists = TRUE;
+	    if (strstr(argv[i], "layout"))
+		layout_exists = TRUE;
         }
     }
 
@@ -623,17 +637,17 @@ static int db_callback_catdef(void *data, int argc, char **argv, char **azColNam
 
 gboolean catdef_needs_init(void)
 {
-    catdef_exists = matchtime_exists = gstime_exists = reptime_exists = FALSE;
-    
+    catdef_exists = matchtime_exists = gstime_exists = reptime_exists =
+	layout_exists = FALSE;
 
-    db_exec(db_name, 
-            "SELECT name FROM sqlite_master WHERE type='table'", 
+    db_exec(db_name,
+            "SELECT name FROM sqlite_master WHERE type='table'",
             NULL, db_callback_catdef);
-	
-    db_exec(db_name, 
-            "SELECT sql FROM sqlite_master", 
+
+    db_exec(db_name,
+            "SELECT sql FROM sqlite_master",
             NULL, db_callback_catdef);
-	
+
     if (!catdef_exists) {
         g_print("catdef does not exist, create one\n");
         db_create_cat_def_table();
@@ -666,7 +680,7 @@ gboolean catdef_needs_init(void)
         db_exec(db_name, "UPDATE catdef SET 'pintimeyuko'=5 WHERE \"age\"<=10", NULL, NULL);
         db_exec(db_name, "UPDATE catdef SET 'pintimewazaari'=10 WHERE \"age\"<=10", NULL, NULL);
         db_exec(db_name, "UPDATE catdef SET 'pintimeippon'=15 WHERE \"age\"<=10", NULL, NULL);
-    }	
+    }
 
     if (!gstime_exists) {
         g_print("catdef gstime does not exist, add one\n");
@@ -683,6 +697,13 @@ gboolean catdef_needs_init(void)
         db_exec(db_name, "UPDATE catdef SET 'reptime'=0", NULL, NULL);
     }
 
+    if (!layout_exists) {
+        g_print("catdef layout does not exist, add one\n");
+
+        db_exec(db_name, "ALTER TABLE catdef ADD \"layout\" TEXT", NULL, NULL);
+        db_exec(db_name, "UPDATE catdef SET 'layout'=\"\"", NULL, NULL);
+    }
+
     return FALSE;
 }
 
@@ -691,7 +712,7 @@ int db_create_blob_table(void)
     sqlite3 *db;
     int rc = sqlite3_open(db_name, &db);
     if (rc) {
-	fprintf(stderr, "%s: Can't open database: %s\n", __FUNCTION__, 
+	fprintf(stderr, "%s: Can't open database: %s\n", __FUNCTION__,
 		sqlite3_errmsg(db));
         sqlite3_close(db);
         return -1;
@@ -713,7 +734,7 @@ int db_write_blob (
     sqlite3 *db;
     int rc = sqlite3_open(db_name, &db);
     if (rc) {
-	fprintf(stderr, "%s: Can't open database: %s\n", __FUNCTION__, 
+	fprintf(stderr, "%s: Can't open database: %s\n", __FUNCTION__,
 		sqlite3_errmsg(db));
         sqlite3_close(db);
         return -1;
@@ -744,7 +765,7 @@ int db_write_blob (
 
 /*
 ** Read a blob from database db. Return an SQLite error code.
-*/ 
+*/
 int db_read_blob(
   int key,
   unsigned char **pzBlob,    /* Set *pzBlob to point to the retrieved blob */
@@ -754,7 +775,7 @@ int db_read_blob(
     sqlite3 *db;
     int rc = sqlite3_open(db_name, &db);
     if (rc) {
-	fprintf(stderr, "%s: Can't open database: %s\n", __FUNCTION__, 
+	fprintf(stderr, "%s: Can't open database: %s\n", __FUNCTION__,
 		sqlite3_errmsg(db));
         sqlite3_close(db);
         return -1;
@@ -798,4 +819,3 @@ void db_free_blob(unsigned char *zBlob)
 {
     free(zBlob);
 }
-

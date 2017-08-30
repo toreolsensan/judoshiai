@@ -1517,6 +1517,12 @@ msgstr "Män"
 msgid "----- Women -----"
 msgstr "Kvinnor"
 
+msgid "Men"
+msgstr "Män"
+
+msgid "Women"
+msgstr "Kvinnor"
+
 msgid "Highest age:"
 msgstr "Högsta ålder:"
 

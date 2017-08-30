@@ -154,3 +154,46 @@
 
 # Background image
 #105
+
+# Preference lines. Line may exist many times. Format:
+#106 option_name=option_value
+#
+# To find correct values set the option manually, quit JudoTimer and look
+# at the relevant line in file judotimer.ini. Copy the line after number 106.
+#
+# Preferences:
+# Set fullscreen
+#  fullscreen            true or false
+# Stop clock automatically after ippon.
+#  stopippon             true or false
+# Use year 2017 rules.
+#  rules2017             true or false
+# Show winner.
+#  confirmmatch          true or false
+# Don't show big texts like "SOREMADE"
+#  notexts               true or false
+# Set judogi control on.
+#  judogicontrol         true or false
+# Show competitors in the beginning.
+#  showcompetitornames   true or false
+# Show flags when showing competitor names.
+#  showflags             true or false
+# Show first initial of the competitor.
+#  showletter            true or false
+# Select name format.
+#  namelayout            integer 0...10
+# Set user interface language.
+#  language              integer 0...13
+# Tune flag size.
+#  flagsize              float, default=7.0
+# Tune name size.
+#  namesize              float, default=10.0
+# Font selection. Size has no effect.
+#  displayfont           string, example: Arial Bold Italic 12
+# JudoShiai's IP address.
+#  nodeipaddress         IP address, example: 192.168.1.12
+#
+# Examples:
+#106 stopippon=false
+#106 rules2017=true
+106 displayfont=Arial Bold

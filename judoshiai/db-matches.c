@@ -9,6 +9,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <gtk/gtk.h>
+#include <glib.h>
+#include <glib/gstdio.h>
 #include <assert.h>
 
 #include "sqlite3.h"
@@ -73,6 +75,8 @@ static struct {
 static gint bluecomp, whitecomp, bluepts, whitepts;
 
 static gint team1_wins, team2_wins, no_team_wins, team1_pts, team2_pts;
+static struct match team_last_match;
+static gboolean team_extra_exists;
 
 /* Use mutex when calling db_next_match(). */
 #if (GTKVER == 3)
@@ -120,6 +124,7 @@ void db_matches_init(void)
 
 static void change_team_competitors_to_real_persons(gint category, gint number, guint *comp1, guint *comp2)
 {
+    gboolean changed = FALSE;
     struct judoka *jc = get_data(category);
     if (jc) {
         gchar *wcname = get_weight_class_name(jc->last, number-1);
@@ -133,6 +138,7 @@ static void change_team_competitors_to_real_persons(gint category, gint number, 
                     gtk_tree_model_get(current_model, &iter,
                                        COL_INDEX, &ix, -1);
                     *comp1 = ix;
+		    changed = TRUE;
                 }
                 free_judoka(jb);
             } // jb
@@ -143,9 +149,15 @@ static void change_team_competitors_to_real_persons(gint category, gint number, 
                     gtk_tree_model_get(current_model, &iter,
                                        COL_INDEX, &ix, -1);
                     *comp2 = ix;
+		    changed = TRUE;
                 }
                 free_judoka(jw);
             } // jw
+	    (void)changed;
+	    /* not sure if this works
+	    if (changed)
+		change_competitor_names(category, number, *comp1, *comp2);
+	    */
         } // wcname
     } // jc
 }
@@ -492,7 +504,8 @@ static int db_callback_matches(void *data, int argc, char **argv, char **azColNa
 		gint j;
 		for (j = i+1; j < next_match_num; j++) {
 		    if (next_match[j].category == m_static.category &&
-			next_match[j].number < m_static.number) {
+			next_match[j].number < m_static.number &&
+			m_static.forcednumber == 0) {
 			/* Cannot insert here. */
 			i = j;
 			DEBUG_LOG("Cannot insert");
@@ -542,13 +555,17 @@ static int db_callback_matches(void *data, int argc, char **argv, char **azColNa
     } else if (flags & DB_FIND_TEAM_WINNER) {
         if (m_static.blue_points && m_static.white_points == 0) {
             team1_wins++;
-            team1_pts += get_points_gint(m_static.blue_points);
+            team1_pts += get_points_gint(m_static.blue_points, m_static.category);
         }
         if (m_static.white_points && m_static.blue_points == 0) {
             team2_wins++;
-            team2_pts += get_points_gint(m_static.white_points);
+            team2_pts += get_points_gint(m_static.white_points, m_static.category);
         }
         if (m_static.blue_points == 0 && m_static.white_points == 0) no_team_wins++;
+        if (m_static.blue > COMPETITOR && m_static.white > COMPETITOR)
+	    team_last_match = m_static;
+	if (m_static.number == 999)
+	    team_extra_exists = TRUE;
     } else if (flags & DB_PRINT_CAT_MATCHES) {
         db_print_one_match(&m_static);
     }
@@ -1004,7 +1021,8 @@ void db_set_match(struct match *m1)
 
         // is this a team event?
         struct category_data *cat = avl_get_category(m1->category);
-        if (cat && (cat->deleted & TEAM_EVENT)) {
+        if (cat && (cat->deleted & TEAM_EVENT) &&
+	    (m1->category & MATCH_CATEGORY_SUB_MASK) == 0) {
             struct match subm;
             memset(&subm, 0, sizeof(subm));
             subm.category = m1->category | (m1->number << MATCH_CATEGORY_SUB_SHIFT);
@@ -1107,7 +1125,7 @@ gint db_set_score(gint category, gint number, gint score, gboolean is_blue, gboo
     gint points = 0;
     gint blue_score, white_score, blue_points, white_points;
 
-    if (prop_get_int_val(PROP_RULES_2017))
+    if (prop_get_int_val_cat(PROP_RULES_2017, category))
 	maxshido = 3;
 
     // find current match data
@@ -1121,11 +1139,11 @@ gint db_set_score(gint category, gint number, gint score, gboolean is_blue, gboo
     blue_points = m_static.blue_points;
     white_points = m_static.white_points;
 
-    if (is_blue) blue_score = score;
-    else white_score = score;
+    if (is_blue) blue_score = score & 0xfffff;
+    else white_score = score & 0xfffff;
 
     if (hikiwake) {
-	blue_points = white_points = 1;
+	blue_points = white_points = 11;
     } else {
 	if ((blue_score & 7) >= maxshido) {
 	    blue_score &= 0xffff;
@@ -1156,6 +1174,11 @@ gint db_set_score(gint category, gint number, gint score, gboolean is_blue, gboo
 	    else if ((winscore & 0xf000) > (losescore & 0xf000)) points = 7;
 	    else if ((winscore & 0xf00) > (losescore & 0xf00)) points = 5;
 	    else if ((winscore & 0xf0) > (losescore & 0xf0)) points = 3;
+
+	    // After golden score only one point to winner if 20th bit set (Slovakia).
+	    if (prop_get_int_val_cat(PROP_GS_WIN_GIVES_1_POINT, category) &&
+		(score & 0x100000))
+		points = 2;
 
 	    if ((blue_score) > (white_score)) {
 		blue_points = points;
@@ -1864,17 +1887,26 @@ void update_next_matches_coach_info(void)
     }
 }
 
-void db_event_matches_update(guint category)
+gboolean db_event_matches_update(guint category, struct match *last)
 {
     gint number = category >> MATCH_CATEGORY_SUB_SHIFT;
     gint category1 = category & MATCH_CATEGORY_MASK;
     team1_wins = team2_wins = no_team_wins = team1_pts = team2_pts = 0;
+    memset(&team_last_match, 0, sizeof(team_last_match));
+    team_extra_exists = FALSE;
     db_exec_str(gint_to_ptr(DB_FIND_TEAM_WINNER), db_callback_matches,
                 "SELECT * FROM matches WHERE \"category\"=%d",
                 category);
     /*g_print("cat=%d/%d nowins=%d t1wins=%d/%d t2wins=%d/%d\n",
             category1, number,
             no_team_wins, team1_wins, team1_pts, team2_wins, team2_pts);*/
+    if (no_team_wins == 0 && team_extra_exists == FALSE &&
+	(team1_wins == team2_wins) && (team1_pts == team2_pts)) {
+	/* No matches left and equal result. One match more is required. */
+	*last = team_last_match;
+	return TRUE;
+    }
+
     if (no_team_wins || ((team1_wins == team2_wins) && (team1_pts == team2_pts))) {
         db_exec_str(NULL, NULL,
                     "UPDATE matches SET \"blue_points\"=0, \"white_points\"=0 "
@@ -1899,6 +1931,7 @@ void db_event_matches_update(guint category)
                     team2_wins, category1, number);
     }
     */
+    return FALSE;
 }
 
 static FILE *matches_file = NULL;
@@ -1928,7 +1961,7 @@ static void db_print_one_match(struct match *m)
             utf8_to_html(firstname_lastname() ? j1->last : j1->first),
             prop_get_int_val(PROP_WHITE_FIRST) ? "wscore" : "bscore");
 
-    if (prop_get_int_val(PROP_RULES_2017))
+    if (prop_get_int_val_cat(PROP_RULES_2017, m->category))
 	fprintf(matches_file,
 		"%d%d/%d%s</td>",
 		(m->blue_score>>16)&15, (m->blue_score>>12)&15,
@@ -1942,11 +1975,11 @@ static void db_print_one_match(struct match *m)
     fprintf(matches_file,
 	    "<td align=\"center\">%s - %s</td>"
             "<td class=\"%s\">",
-            get_points_str(m->blue_points),
-            get_points_str(m->white_points),
+            get_points_str(m->blue_points, m->category),
+            get_points_str(m->white_points, m->category),
             prop_get_int_val(PROP_WHITE_FIRST) ? "bscore" : "wscore");
 
-    if (prop_get_int_val(PROP_RULES_2017))
+    if (prop_get_int_val_cat(PROP_RULES_2017, m->category))
 	fprintf(matches_file,
 		"%d%d/%d%s</td>",
 		(m->white_score>>16)&15, (m->white_score>>12)&15,
@@ -1991,4 +2024,225 @@ void db_change_competitor(gint category, gint number, gboolean is_blue, gint ind
                 "WHERE \"category\"=%d AND \"number\"=%d",
                 is_blue ? "blue" : "white", index,
                 category, number);
+}
+
+static gboolean nocomment = FALSE;
+
+static int db_callback_matches_pdf(void *data, int argc, char **argv, char **azColName)
+{
+    gint i;
+    FILE *out = data;
+    fprintf(out, "<js>");
+    for (i = 0; i < argc; i++) {
+	if (nocomment && IS(comment)) // dont save comments (can be anything...)
+	    fprintf(out, "|");
+	else
+	    fprintf(out, "%s|", argv[i]);
+    }
+    fprintf(out, "</js>\n");
+    return 0;
+}
+
+#define GO_OUT(_s) do { goto out; } while (0)
+
+#define GETNUM(_a) do {					\
+	if (*p < '0' || *p > '9') p++;			\
+	if (*p < '0' || *p > '9') p++;			\
+	if (*p < '0' || *p > '9') GO_OUT("no num");	\
+	_a = atoi(p); } while (0)
+
+#define READ_OBJ(_n)							\
+    do {								\
+	if (_n >= num_xref) GO_OUT("obj too big");			\
+	if (fseek(pdf, xref[_n], SEEK_SET) < 0) GO_OUT("fseek");	\
+	gint r = fread(buf, 1, 256, pdf);				\
+	if (r <= 0) GO_OUT("fread");					\
+	buf[r] = buf[r+1] = 0;						\
+	p = strstr(buf, "endobj");					\
+	if (!p) GO_OUT("no endobj");					\
+	p[6] = 0;								\
+    } while (0)
+
+#define READ_OBJ_ATTR(_ret, _obj, _name)			\
+    do {							\
+	READ_OBJ(_obj);						\
+	p = strstr(buf, _name);					\
+	if (!p) GO_OUT("no name");				\
+	p += strlen(_name);					\
+	while (*p && (*p < '0' || *p > '9')) p++;		\
+	if (!p) GO_OUT("num not found");			\
+	_ret = atoi(p);						\
+    } while (0)
+
+
+void db_print_category_to_pdf_comments(gint catix)
+{
+    gchar buf[260], trailer[260];
+    FILE *pdf = NULL;
+    gchar *p;
+    gint xrefstart = 0, root = 0, i, i1, i2;
+#define NUM_XREF 64
+    gint xref[NUM_XREF];
+    gint num_xref = 0;
+    gint obj1pos, obj2pos, obj3pos, xrefpos;
+    gchar *trailer_p = NULL, *startxref_p = NULL;
+    gint pages, kids;
+    gchar saved;
+    glong metastart;
+    gint metalen;
+
+    struct category_data *catdata =
+        avl_get_category(catix);
+    if (!catdata) return;
+
+    metalen = 0;
+
+    snprintf(buf, sizeof(buf), "%s.pdf", txt2hex(catdata->category));
+    gchar *pdfname = g_build_filename(current_directory, buf, NULL);
+
+    pdf = fopen(pdfname, "rb");
+    if (!pdf) goto out;
+
+    // read last 256 bytes
+    fseek(pdf, -256, SEEK_END);
+    fread(trailer, 256, 1, pdf);
+    trailer[256] = trailer[257] = 0;
+
+    // find trailer
+    trailer_p = strstr(trailer, "trailer");
+    if (!trailer_p) goto out;
+    // get root number
+    p = strstr(trailer_p+8, "/Root");
+    if (!p) goto out;
+    p += 6;
+    GETNUM(root);
+
+    // get startxref
+    p = startxref_p = strstr(trailer_p, "startxref");
+    if (!p) goto out;
+    p += 10;
+    GETNUM(xrefstart);
+
+    // read xref table
+    if (fseek(pdf, xrefstart, SEEK_SET) < 0) goto out;
+    fgets(buf, sizeof(buf), pdf);
+    if (strncmp(buf, "xref", 4)) goto out;
+    fgets(buf, sizeof(buf), pdf);
+    sscanf(buf, "%d %d", &i1, &num_xref);
+    if (i1) goto out;
+    if (num_xref > NUM_XREF) num_xref = NUM_XREF;
+    for (i = 0; i < num_xref; i++) {
+	fgets(buf, sizeof(buf), pdf);
+	xref[i] = atoi(buf);
+    }
+
+    // read first page obj
+    READ_OBJ_ATTR(pages, root, "/Pages");
+    READ_OBJ_ATTR(kids, pages, "/Kids");
+    READ_OBJ(kids);
+
+    fclose(pdf);
+
+    // append to pdf file
+    pdf = fopen(pdfname, "ab");
+    if (!pdf) goto out;
+
+    fseek(pdf, 0, SEEK_END);
+    obj1pos = ftell(pdf);
+    // first page obj is in buf
+    // find << and insert metadata reference
+    p = strstr(buf, "<<");
+    if (!p) goto out;
+    saved = p[2];
+    p[2] = 0;
+    fprintf(pdf, "%s\n", buf);
+    fprintf(pdf, " /Metadata %d 0 R\n", num_xref);
+    p[2] = saved;
+    fprintf(pdf, "%s\n", p+2);
+
+    // add metadata obj
+    obj2pos = ftell(pdf);
+    fprintf(pdf, "%d 0 obj\n", num_xref);
+    fprintf(pdf,
+	    "<< /Type /Metadata /Subtype /XML /Length %d 0 R >>\n"
+	    "stream\n", num_xref+1);
+    metastart = ftell(pdf);
+#if 0
+    fprintf(pdf, "<?xpacket begin=\"\357\273\277\" id=\"W5M0MpCehiHzreSzNTczkc9d\"?>\n");
+#else
+    fprintf(pdf, "<judoshiai>\n");
+#endif
+    fprintf(pdf, "<js>VER %s</js>\n", SHIAI_VERSION);
+
+#ifdef WIN32
+    fprintf(pdf, "<js>OS Win32</js>\n");
+#else
+    fprintf(pdf, "<js>OS Linux</js>\n");
+#endif
+
+    fprintf(pdf, "<js>TBL info</js>\n");
+    db_exec_str(pdf, db_callback_matches_pdf,
+		"SELECT * FROM info");
+    fprintf(pdf, "<js>END</js>\n");
+
+    fprintf(pdf, "<js>TBL categories</js>\n");
+    db_exec_str(pdf, db_callback_matches_pdf,
+		"SELECT * FROM categories WHERE \"index\"=%d", catix);
+    fprintf(pdf, "<js>END</js>\n");
+
+    nocomment = TRUE;
+    fprintf(pdf, "<js>TBL competitors</js>\n");
+    db_exec_str(pdf, db_callback_matches_pdf,
+		"SELECT * FROM competitors WHERE \"index\" IN "
+		"(SELECT blue FROM matches WHERE \"category\"=%d UNION "
+		"SELECT white FROM matches WHERE \"category\"=%d)",
+		catix, catix);
+    fprintf(pdf, "<js>END</js>\n");
+    nocomment = FALSE;
+
+    fprintf(pdf, "<js>TBL matches</js>\n");
+    db_exec_str(pdf, db_callback_matches_pdf,
+		"SELECT * FROM matches WHERE \"category\"=%d", catix);
+    fprintf(pdf, "<js>END</js>\n");
+
+#if 0
+    fprintf(pdf, "<?xpacket#end='w'?>\n");
+#else
+    fprintf(pdf, "</judoshiai>\n");
+#endif
+    metalen = ftell(pdf)-metastart;
+    fprintf(pdf,
+	    "endstream\n"
+	    "endobj\n");
+
+    // add metadata length obj
+    obj3pos = ftell(pdf);
+    fprintf(pdf, "%d 0 obj\n   %d\nendobj\n", num_xref+1, metalen-1);
+
+    xrefpos = ftell(pdf);
+    fprintf(pdf, "xref\n0 1\n0000000000 65535 f\n");
+    fprintf(pdf, "%d 1\n%010d 00000 n\n", kids, obj1pos);
+    fprintf(pdf, "%d 1\n%010d 00000 n\n", num_xref, obj2pos);
+    fprintf(pdf, "%d 1\n%010d 00000 n\n", num_xref+1, obj3pos);
+
+    *startxref_p = 0;
+    p = strstr(trailer_p, ">>");
+    if (!p) goto out;
+    *p = 0;
+    p = strstr(trailer_p, "/Size");
+    if (!p) goto out;
+    p += 5;
+    GETNUM(i2);
+    (void)i2;
+    *p = 0;
+    p++;
+    while(*p >= '0' && *p <= '9') p++;
+    fprintf(pdf, "%s%d%s\n   /Prev %d\n>>\n", trailer_p, num_xref+2, p, xrefstart);
+
+    fprintf(pdf, "startxref\n%d\n%%EOF\n", xrefpos);
+
+
+ out:
+    if (pdfname) g_free(pdfname);
+    if (pdf) fclose(pdf);
 }

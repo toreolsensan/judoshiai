@@ -521,16 +521,6 @@ function clock_key(key, event_state) {
     case GDK_space:
         toggle();
         break;
-    case GDK_k:
-	// comp1 leg grab
-	bluepts[L] = !bluepts[L];
-        check_ippon();
-	break;
-    case GDK_l:
-	// comp2 leg grab
-	whitepts[L] = !whitepts[L];
-        check_ippon();
-	break;
     case GDK_s:
         break;
     case GDK_Up:
@@ -557,7 +547,20 @@ function clock_key(key, event_state) {
         check_ippon();
         break;
     case GDK_F7:
-        incdecpts(WHITE, Y, shift);
+	if (use_2017_rules) {
+	    if (shift && whitepts[L] >= 2)
+		bluepts[I] = 0;
+	    incdecpts(WHITE, L, shift);
+	    if (whitepts[L] >= 2) {
+		whitepts[L] = 2;
+                bluepts[I] = 1;
+	    }
+	    incdecpts(WHITE, S, shift);
+            if (whitepts[S] >= SHIDOMAX)
+                bluepts[I] = 1;
+	} else
+            incdecpts(WHITE, Y, shift);
+	check_ippon();
         break;
     case GDK_F8:
         if (shift) {
@@ -585,7 +588,21 @@ function clock_key(key, event_state) {
         check_ippon();
         break;
     case GDK_F3:
-        incdecpts(BLUE, Y, shift);
+	if (use_2017_rules) {
+	    console.log("F3 shift="+shift+" L="+bluepts[L]+" S="+bluepts[S]);
+	    if (shift && bluepts[L] >= 2)
+		whitepts[I] = 0;
+	    incdecpts(BLUE, L, shift);
+	    if (bluepts[L] >= 2) {
+		bluepts[L] = 2;
+                whitepts[I] = 1;
+	    }
+	    incdecpts(BLUE, S, shift);
+            if (bluepts[S] >= SHIDOMAX)
+                whitepts[I] = 1;
+	} else
+            incdecpts(BLUE, Y, shift);
+	check_ippon();
         break;
     case GDK_F4:
         if (shift) {
@@ -973,10 +990,10 @@ function handle_click(w, shift) {
 	set_osaekomi_winner(WHITE);
 	break;
     case comp1_leg_grab:
-	clock_key(GDK_k, shift ? 1 : 0);
+	clock_key(GDK_F3, shift ? 1 : 0);
 	break;
     case comp2_leg_grab:
-	clock_key(GDK_l, shift ? 1 : 0);
+	clock_key(GDK_F7, shift ? 1 : 0);
 	break;
     }
 }

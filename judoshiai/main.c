@@ -338,6 +338,13 @@ int main( int   argc,
     GThread   *gth = NULL;         /* thread id */
     gboolean   run_flag = TRUE;   /* used as exit flag for threads */
 
+#ifdef WIN32
+    if (argc >= 2 && !strcmp(argv[1], "-console")) {
+	AllocConsole();
+	freopen("CON", "w", stdout);
+    }
+#endif
+
     putenv("UBUNTU_MENUPROXY=");
 
 #ifndef WIN32
